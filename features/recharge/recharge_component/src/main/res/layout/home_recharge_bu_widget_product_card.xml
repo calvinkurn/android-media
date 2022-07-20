@@ -28,21 +28,21 @@
             tools:visibility="visible">
 
             <ImageView
-                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:id="@+id/imageProductBackgroundOverlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_product_card" />
 
         </FrameLayout>
 
         <ImageView
-            android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
             android:id="@+id/imageProduct"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,11 +61,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:id="@+id/imageProductIcon"
                 android:layout_width="@dimen/layout_lvl5"
                 android:layout_height="@dimen/layout_lvl5"
                 android:layout_gravity="center"
+                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:scaleType="centerCrop" />
 
         </androidx.cardview.widget.CardView>
@@ -102,7 +102,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewGimmick"
             app:typographyType="body_3"
-            tools:text="Product Name"
+            tools:text="Product Name\nProduct Name\nProduct Name"
             tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.Label
@@ -116,25 +116,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewProductName"
             tools:text="Cashback"
-            tools:visibility="visible" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineDiscount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.83"/>
+            tools:visibility="gone" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelDiscount"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/product_card_label_discount_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_2"
             android:visibility="gone"
             app:labelType="general_light_red"
+            app:layout_constraintBottom_toTopOf="@id/textViewPrice"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guidelineDiscount"
+            app:layout_constraintTop_toBottomOf="@id/labelPrice"
+            app:layout_constraintVertical_bias="1.0"
             tools:text="20%"
             tools:visibility="visible" />
 
@@ -158,13 +154,6 @@
             tools:text="Rp8.499.000"
             tools:visibility="visible" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.904"/>
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewPrice"
             android:layout_width="@dimen/layout_lvl0"
@@ -177,14 +166,38 @@
             android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/rechargeBuProgressStock"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/guideline"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp7.999.000"
             tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.ProgressBarUnify
+            android:id="@+id/rechargeBuProgressStock"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_flashsale_progressbar_height"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            app:layout_constraintBottom_toTopOf="@id/rechargeBuProgressStockLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/rechargeBuProgressStockLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            android:textColor="@color/Unify_R600"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/rechargeBuProgressStock"
+            app:typographyType="body_2"
+            tools:text="Segera Habis" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

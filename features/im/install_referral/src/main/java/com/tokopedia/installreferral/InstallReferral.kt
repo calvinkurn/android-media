@@ -20,6 +20,7 @@ const val SCREEN_NAME = "install_referral"
 class InstallReferral {
 
     private var referrerClient: InstallReferrerClient? = null
+    private var installReferrerInterface: InstallReferrerInterface? = null
 
     fun initilizeInstallReferral(context: Context) {
         referrerClient = InstallReferrerClient.newBuilder(context.applicationContext).build()
@@ -42,27 +43,30 @@ class InstallReferral {
                                         response.installReferrer?.let { installReferrer ->
                                             trackIfFromCampaignUrl(installReferrer)
                                             sendToGA(context, installReferrer)
+                                            executeInstallReferrerCallback(installReferrer)
                                         }
                                     }
                                     InstallUtils.sendIrisInstallEvent(context)
                                     updateReferralCache()
-
+                                    executeInstallReferrerCallback("")
                                 }
                             }
                             InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED -> {
                                 // API not available on the current Play Store app.
                                 updateReferralCache()
+                                executeInstallReferrerCallback("")
                             }
                             InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE -> {
                                 // Connection couldn't be established.
                                 updateReferralCache()
+                                executeInstallReferrerCallback("")
                             }
                             else -> {
-
+                                executeInstallReferrerCallback("")
                             }
                         }
                     } catch (e: Exception) {
-
+                        executeInstallReferrerCallback("")
                     }
                 }
 
@@ -77,11 +81,17 @@ class InstallReferral {
                 }
 
                 override fun onInstallReferrerServiceDisconnected() {
+                    executeInstallReferrerCallback("")
                 }
             })
         }catch (ex:SecurityException) {
             Timber.d(ex)
         }
+    }
+
+    private fun executeInstallReferrerCallback(installReferrer:String?){
+        installReferrerInterface?.installReferrerDataRetrived(installReferrer)
+        installReferrerInterface = null
     }
 
     fun sendToGA(context: Context, referral: String) {
@@ -100,6 +110,10 @@ class InstallReferral {
             campaign[KEY_SCREEN_NAME] = SCREEN_NAME
             TrackApp.getInstance().gtm.sendCampaign(campaign)
         }
+    }
+
+    fun setInstallReferrerInterface(installReferrerInterface: InstallReferrerInterface?){
+        this.installReferrerInterface = installReferrerInterface
     }
 
 }

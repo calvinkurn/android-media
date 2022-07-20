@@ -69,21 +69,17 @@ object GoldMerchantUtil {
         }
     }
 
-    fun isTenureNewSeller(dateString: String): Boolean {
-        return (totalDays(dateString) in START_TENURE_EIGHTY_THREE until NEW_SELLER_DAYS)
+    fun isTenureNewSeller(shopAge: Long): Boolean {
+        return shopAge in START_TENURE_EIGHTY_THREE until NEW_SELLER_DAYS
     }
 
-    fun getLocale(): Locale {
-        return Locale("id")
-    }
-
-    fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
+    fun format(timeMillis: Long, pattern: String, locale: Locale = DateFormatUtils.DEFAULT_LOCALE): String {
         val sdf = SimpleDateFormat(pattern, locale)
         return sdf.format(timeMillis)
     }
 
     fun getNNextDaysBasedOnFirstMonday(totalRemainderDays: Int, isAddedWeek: Boolean = false): Int {
-        val calendar = Calendar.getInstance(getLocale())
+        val calendar = Calendar.getInstance(DateFormatUtils.DEFAULT_LOCALE)
         calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + totalRemainderDays)
         return when (calendar.get(Calendar.DAY_OF_WEEK)) {
             Calendar.TUESDAY -> SIX_NUMBER

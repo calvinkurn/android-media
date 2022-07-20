@@ -18,7 +18,7 @@ public class LoginProviderModel implements Parcelable {
      * name : Facebook
      * url : https://accounts-alpha.tokopedia.com/fb-login
      * image : https://ecs1.tokopedia.net/img/icon/facebook_icon.png
-     * color : #3A589B
+     * color : # 3A589B
      * imageResource : apk resources, 0 if bean is from server
      */
 

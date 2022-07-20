@@ -14,7 +14,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
-import com.tokopedia.vouchercreation.create.domain.model.upload.ImageUploadResponse
+import com.tokopedia.vouchercreation.shop.create.domain.model.upload.ImageUploadResponse
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher

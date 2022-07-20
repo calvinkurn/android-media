@@ -11,15 +11,17 @@ import com.tokopedia.catalog.model.datamodel.CatalogProductsContainerDataModel
 class CatalogProductsContainerViewHolder(view: View,
                                          private val catalogDetailListener: CatalogDetailListener) : AbstractViewHolder<CatalogProductsContainerDataModel>(view) {
 
-    private val viewPager: ViewPager = itemView.findViewById(R.id.view_pager)
+    private val viewPager: ViewPager? = itemView.findViewById(R.id.view_pager)
     private var catalogPageAdapter : CatalogPagerAdapter? = null
     companion object {
         val LAYOUT = R.layout.item_catalog_products_container
     }
 
     override fun bind(element: CatalogProductsContainerDataModel) {
-        catalogPageAdapter = CatalogPagerAdapter(
-                element,catalogDetailListener.childsFragmentManager!!)
-        viewPager.adapter = catalogPageAdapter
+        if(catalogDetailListener.getChildsFragmentManager() != null){
+            catalogPageAdapter = CatalogPagerAdapter(
+                element,catalogDetailListener.getChildsFragmentManager()!!)
+            viewPager?.adapter = catalogPageAdapter
+        }
     }
 }

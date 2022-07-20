@@ -1,12 +1,11 @@
 package com.tokopedia.seller.menu.common.analytics
 
 import android.view.View
-import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.unifycomponents.ImageUnify
 
 /**
  * Sellerapp Navigation Revamp
@@ -19,7 +18,7 @@ inline fun <R, T : SettingShopInfoImpressionTrackable> R.sendSettingShopInfoImpr
     crossinline action: (T) -> Unit
 ) {
     when (this) {
-        is ImageView -> {
+        is ImageUnify -> {
             addOnImpressionListener(uiModel.impressHolder) { action.invoke(uiModel) }
         }
         is View -> {

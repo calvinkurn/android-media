@@ -1,0 +1,12 @@
+{
+  "is_enable": true,
+  "is_enable_smart_reply": true,
+  "is_seller": false,
+  "templates": [
+    "Hi Barang ini ready ga?",
+    "HI 123",
+    "HALOOOOOO APA INI READYYYY",
+    "Hi template",
+    "Hi terakhir"
+  ]
+}

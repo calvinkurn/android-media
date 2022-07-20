@@ -1,0 +1,16 @@
+{
+  "readme": "Review Reply - click edit on review response",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "review reply page",
+      "productId": "\\d+",
+      "shopId": "\\d+",
+      "screenName": "review reply page",
+      "event": "clickReview",
+      "eventAction": "click - ubah on review response",
+      "sessionIris": ".+",
+      "eventLabel": "feedbackId:\\d+"
+    }
+  ]
+}

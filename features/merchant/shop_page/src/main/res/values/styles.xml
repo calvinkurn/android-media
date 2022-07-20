@@ -1,25 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Button.Shop.Page.Header" parent="Button.Submit.White.Border">
-        <item name="android:layout_height">@dimen/shop_page_header_sub_button_height</item>
-        <item name="android:layout_marginLeft">0dp</item>
-        <item name="android:layout_marginRight">0dp</item>
-        <item name="android:layout_marginBottom">0dp</item>
-        <item name="android:layout_marginTop">0dp</item>
-        <item name="android:textSize">@dimen/sp_12</item>
-    </style>
-
-    <style name="AlertDialogTheme">
-        <item name="android:textSize">@dimen/sp_14</item>
-        <item name="android:layout_margin">@dimen/dp_3</item>
-    </style>
-
-    <style name="AppBarNoBottomShadow">
-        <item name="elevation">0dp</item>
-        <item name="android:windowContentOverlay">@null</item>
-    </style>
-
     <style name="ShopPageActivityTheme" parent="Theme.White">
         <item  name="android:actionButtonStyle">@style/ShopPageActionBarMenuItemStyle</item>
     </style>

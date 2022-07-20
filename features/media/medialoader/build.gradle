@@ -28,13 +28,14 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     kapt rootProject.ext.networkDependencies.glideProcessor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.networkDependencies.glideOkhttp
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants

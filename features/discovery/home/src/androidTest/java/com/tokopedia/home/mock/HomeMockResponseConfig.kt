@@ -38,6 +38,11 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         const val KEY_CONTAINS_CHIPS = "RecommendationFilterChipsQuery"
         const val KEY_CONTAINS_WALLETAPP_GETBALANCES = "walletAppGetBalance"
         const val KEY_CONTAINS_PLAY_GET_WIDGET_V2 = "playGetWidgetV2"
+        const val KEY_CONTAINS_OCC = "mutation add_to_cart_occ_multi"
+        const val KEY_CONTAINS_SLIDE = "homeSlides"
+        const val KEY_CONTAINS_CM_HOME_WIDGET = "notifier_getHtdw"
+        const val KEY_CONTAINS_PAYLATER_WIDGET = "paylater_getHomeWidget"
+        const val KEY_CONTAINS_MISSION_WIDGET = "getHomeMissionWidget"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -217,6 +222,31 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         addMockResponse(
             KEY_CONTAINS_PLAY_GET_WIDGET_V2,
             getRawString(context, R.raw.response_mock_data_play_widget_v2),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_CONTAINS_OCC,
+            getRawString(context, R.raw.response_mock_data_occ_list_carousel),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+                KEY_CONTAINS_SLIDE,
+                getRawString(context, R.raw.response_mock_data_slider_banner),
+                FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_CONTAINS_CM_HOME_WIDGET,
+            getRawString(context, R.raw.response_cm_home_widget),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_CONTAINS_PAYLATER_WIDGET,
+            getRawString(context, R.raw.response_paylater_widget),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_CONTAINS_MISSION_WIDGET,
+            getRawString(context, R.raw.response_mock_data_mission_widget),
             FIND_BY_CONTAINS
         )
         updateMock(context)

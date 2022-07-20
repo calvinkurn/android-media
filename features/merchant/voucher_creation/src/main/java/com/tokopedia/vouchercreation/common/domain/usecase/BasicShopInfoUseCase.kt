@@ -5,8 +5,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
-import com.tokopedia.vouchercreation.create.domain.model.BasicShopInfoResponse
-import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
+import com.tokopedia.vouchercreation.shop.create.domain.model.BasicShopInfoResponse
+import com.tokopedia.vouchercreation.shop.create.domain.model.ShopInfo
 import javax.inject.Inject
 
 class BasicShopInfoUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<ShopInfo>() {

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/dp_32"
     android:paddingBottom="@dimen/dp_32"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:id="@+id/partial_empty_feed"
     android:layout_marginBottom="8dp">
 

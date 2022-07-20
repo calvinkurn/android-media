@@ -49,6 +49,8 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
     private List<T> mItems;
     private final List<T> mOrigItems;
 
+    private String[]  args = null;
+
     protected BaseAdapter(AdapterCallback callback) {
         if (callback == null) {
             throw new RuntimeException("AdapterCallback object cannot be null");
@@ -222,7 +224,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
                 if (!isLoading() && !isLastPage()) {
                     if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                             && firstVisibleItemPosition > 0) {
-                        startDataLoading();
+                        startDataLoading(args);
                     }
                 }
             }
@@ -232,7 +234,11 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
     /**
      * Method to invoke page loading
      */
-    public final void startDataLoading() {
+    public final void startDataLoading(String ... args) {
+        if (args == null)
+            args = "".split("");
+
+        this.args = args;
         if (mCallback != null) {
             if (mCurrentPageIndex == 1) {
                 mCallback.onStartFirstPageLoad();
@@ -241,7 +247,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
             }
         }
 
-        loadData(mCurrentPageIndex);
+        loadData(mCurrentPageIndex, args);
     }
 
     /**
@@ -310,7 +316,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
      * @param currentPageIndex
      */
     @CallSuper
-    public void loadData(int currentPageIndex) {
+    public void loadData(int currentPageIndex, @Nullable String ... args) {
         setLoading(true);
     }
 

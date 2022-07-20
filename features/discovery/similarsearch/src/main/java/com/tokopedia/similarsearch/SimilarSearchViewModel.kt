@@ -22,21 +22,31 @@ import com.tokopedia.similarsearch.title.TitleViewModel
 import com.tokopedia.similarsearch.utils.asObjectDataLayerAddToCart
 import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Subscriber
 import kotlin.math.min
 import com.tokopedia.usecase.UseCase as RxUseCase
 
 internal class SimilarSearchViewModel(
-        dispatcherProvider: CoroutineDispatchers,
+        private val dispatcherProvider: CoroutineDispatchers,
         private val similarSearchQuery: String,
         private val getSimilarProductsUseCase: UseCase<SimilarProductModel>,
         private val addWishlistUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val addToCartUseCase: RxUseCase<AddToCartDataModel>,
         private val userSession: UserSessionInterface
 ): BaseViewModel(dispatcherProvider.main) {
@@ -51,7 +61,9 @@ internal class SimilarSearchViewModel(
     private val routeToLoginPageEventLiveData = MutableLiveData<Event<Boolean>>()
     private val updateWishlistOriginalProductEventLiveData = MutableLiveData<Event<Boolean>>()
     private val addWishlistEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val addWishlistV2EventLiveData = MutableLiveData<Event<AddToWishlistV2Response.Data.WishlistAddV2>>()
     private val removeWishlistEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val removeWishlistV2EventLiveData = MutableLiveData<Event<DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
     private val trackingImpressionSimilarProductEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val trackingEmptyResultEventLiveData = MutableLiveData<Event<Boolean>>()
     private val trackingWishlistEventLiveData = MutableLiveData<Event<WishlistTrackingModel>>()
@@ -240,10 +252,21 @@ internal class SimilarSearchViewModel(
         )
     }
 
+    fun onViewToggleWishlistV2OriginalProduct() {
+        if (!userSession.isLoggedIn) {
+            routeToLoginPageEventLiveData.postValue(Event(true))
+            return
+        }
+
+        toggleWishlistV2ForProduct(
+            originalProduct.id,
+            originalProduct.isWishlisted, createOriginalProductWishlistV2ActionListener()
+        )
+    }
+
     private fun createOriginalProductWishlistActionListener() = object : WishListActionListener {
         override fun onSuccessRemoveWishlist(productId: String?) {
             removeWishlistEventLiveData.postValue(Event(true))
-
             postUpdateWishlistOriginalProductEvent(productId,false)
         }
 
@@ -257,9 +280,35 @@ internal class SimilarSearchViewModel(
 
         override fun onSuccessAddWishlist(productId: String?) {
             addWishlistEventLiveData.postValue(Event(true))
-
             postUpdateWishlistOriginalProductEvent(productId,true)
         }
+    }
+
+    private fun createOriginalProductWishlistV2ActionListener() = object : WishlistV2ActionListener {
+        override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+            addWishlistV2EventLiveData.postValue(Event(AddToWishlistV2Response.Data.WishlistAddV2()))
+        }
+
+        override fun onSuccessAddWishlist(
+            result: AddToWishlistV2Response.Data.WishlistAddV2,
+            productId: String
+        ) {
+            addWishlistV2EventLiveData.postValue(Event(result))
+            postUpdateWishlistOriginalProductEvent(productId,true)
+        }
+
+        override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+            removeWishlistV2EventLiveData.postValue(Event(DeleteWishlistV2Response.Data.WishlistRemoveV2()))
+        }
+
+        override fun onSuccessRemoveWishlist(
+            result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+            productId: String
+        ) {
+            removeWishlistV2EventLiveData.postValue(Event(result))
+            postUpdateWishlistOriginalProductEvent(productId,false)
+        }
+
     }
 
     fun postUpdateWishlistOriginalProductEvent(productId: String?, isWishlisted: Boolean) {
@@ -276,9 +325,33 @@ internal class SimilarSearchViewModel(
     private fun toggleWishlistForProduct(productId: String, isWishlisted: Boolean, wishListActionListener: WishListActionListener) {
         if (!isWishlisted) {
             addWishlistUseCase.createObservable(productId, userSession.userId, wishListActionListener)
+        } else {
+            removeWishListUseCase.createObservable(productId, userSession.userId, wishListActionListener)
+        }
+    }
+
+    private fun toggleWishlistV2ForProduct(productId: String, isWishlisted: Boolean, wishlistV2ActionListener: WishlistV2ActionListener) {
+        if (!isWishlisted) {
+            launch(dispatcherProvider.main) {
+                addToWishlistV2UseCase.setParams(productId, userSession.userId)
+                val result = withContext(dispatcherProvider.io) { addToWishlistV2UseCase.executeOnBackground() }
+                if (result is com.tokopedia.usecase.coroutines.Success) {
+                    wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+                } else if (result is Fail) {
+                    wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
+                }
+            }
         }
         else {
-            removeWishListUseCase.createObservable(productId, userSession.userId, wishListActionListener)
+            launch(dispatcherProvider.main) {
+                deleteWishlistV2UseCase.setParams(productId, userSession.userId)
+                val result = withContext(dispatcherProvider.io) { deleteWishlistV2UseCase.executeOnBackground() }
+                if (result is com.tokopedia.usecase.coroutines.Success) {
+                    wishlistV2ActionListener.onSuccessRemoveWishlist(result.data, productId)
+                } else if (result is Fail) {
+                    wishlistV2ActionListener.onErrorRemoveWishlist(result.throwable, productId)
+                }
+            }
         }
     }
 
@@ -458,8 +531,16 @@ internal class SimilarSearchViewModel(
         return addWishlistEventLiveData
     }
 
+    fun getAddWishlistV2EventLiveData(): LiveData<Event<AddToWishlistV2Response.Data.WishlistAddV2>> {
+        return addWishlistV2EventLiveData
+    }
+
     fun getRemoveWishlistEventLiveData(): LiveData<Event<Boolean>> {
         return removeWishlistEventLiveData
+    }
+
+    fun getRemoveWishlistV2EventLiveData(): LiveData<Event<DeleteWishlistV2Response.Data.WishlistRemoveV2>> {
+        return removeWishlistV2EventLiveData
     }
 
     fun onViewUpdateProductWishlistStatus(productId: String?, isWishlisted: Boolean) {

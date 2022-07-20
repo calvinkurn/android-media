@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
+import com.tokopedia.flight.cancellation.data.FlightCancellationResponseEntity
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.view.enum.FlightPassengerType
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailGetInvoiceEticketUseCase
@@ -17,7 +18,6 @@ import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJour
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailSimpleModel
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailCancellationMapper
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailStatusMapper
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -59,8 +59,8 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
     val invoiceData: LiveData<Result<String>>
         get() = mutableInvoiceData
 
-    private val mutableCancellationData = MutableLiveData<List<FlightCancellationJourney>>()
-    val cancellationData: LiveData<List<FlightCancellationJourney>>
+    private val mutableCancellationData = MutableLiveData<List<FlightCancellationResponseEntity>>()
+    val cancellationData: LiveData<List<FlightCancellationResponseEntity>>
         get() = mutableCancellationData
 
     fun getUserEmail(): String = if (userSession.isLoggedIn) userSession.email else ""

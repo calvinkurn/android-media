@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.product.addedit.common.util.IMSResourceProvider
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -26,7 +27,7 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var resourceProvider: ResourceProvider
+    lateinit var imsResourceProvider: IMSResourceProvider
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -38,14 +39,13 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
                         productName="lemari arsip besi",
                         categoryName="Dapur - Peralatan-Makan-Minum - Sumpit",
                         categoryId="969",
-                        catalogId="0",
                         price=9999.toBigInteger(),
                         stock=1, minOrder=1,
                         condition="NEW", sku="", status=1),
                 variantInputModel= VariantInputModel(
                         products= listOf(
-                            ProductVariantInputModel(combination= listOf(0, 0), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
-                            ProductVariantInputModel(combination= listOf(0, 1), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
+                            ProductVariantInputModel(combination= listOf(0, 0), price=100.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
+                            ProductVariantInputModel(combination= listOf(0, 1), price=10000.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
                             ProductVariantInputModel(combination= listOf(1, 0), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
                             ProductVariantInputModel(combination= listOf(1, 1), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false)),
                         selections= listOf(
@@ -62,7 +62,7 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
 
     protected val viewModel: AddEditProductVariantDetailViewModel by lazy {
         spyk(AddEditProductVariantDetailViewModel(
-                resourceProvider,
+                imsResourceProvider,
                 userSession,
                 testCoroutineDispatcher
         ))

@@ -60,7 +60,6 @@ class RegisterInitialViewModel @Inject constructor(
         private val dynamicBannerUseCase: DynamicBannerUseCase,
         private val checkHasOvoAccUseCase: CheckHasOvoAccUseCase,
         private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
-        @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
         private val dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
@@ -393,9 +392,9 @@ class RegisterInitialViewModel @Inject constructor(
         return {
             if (it.data.errors.isEmpty())
                 mutableRegisterCheckResponse.value = Success(it.data)
-            else if (it.data.errors.isNotEmpty()) mutableRegisterCheckResponse.value =
+            else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty()) mutableRegisterCheckResponse.value =
                     Fail(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0]))
-            else mutableRegisterRequestResponse.value = Fail(RuntimeException())
+            else mutableRegisterCheckResponse.value = Fail(RuntimeException())
             idlingResourceProvider?.decrement()
         }
     }

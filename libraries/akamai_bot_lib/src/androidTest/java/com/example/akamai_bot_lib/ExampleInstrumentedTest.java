@@ -54,7 +54,7 @@ public class ExampleInstrumentedTest {
         Resources resources = context.getResources();
 
         String input = GraphqlHelper.loadRawString(resources, R.raw.mutation_af_register_username);
-        List<String> any = UtilsKt.getAny(input);
+        List<String> any = UtilsKt.getQueryListFromQueryString(input);
         Log.d(this.getClass().getName(), any.toString());
         assertTrue(UtilsKt.getMutation(input, "RegisterUsername"));
         assertEquals(1,any.size());
@@ -68,7 +68,7 @@ public class ExampleInstrumentedTest {
         Resources resources = context.getResources();
 
         String input = GraphqlHelper.loadRawString(resources, R.raw.mutation_register);
-        List<String> any = UtilsKt.getAny(input);
+        List<String> any = UtilsKt.getQueryListFromQueryString(input);
         Log.d(this.getClass().getName(), any.toString());
         assertEquals(1,any.size());
         assertTrue(any.get(0).equalsIgnoreCase("register"));
@@ -83,7 +83,7 @@ public class ExampleInstrumentedTest {
             JSONArray jsonArray = new JSONArray(input);
             JSONObject jsonObject = jsonArray.getJSONObject(0);
             String query = jsonObject.getString("query");
-            List<String> any = UtilsKt.getAny(query);
+            List<String> any = UtilsKt.getQueryListFromQueryString(query);
             Log.d(this.getClass().getName(), any.toString());
             assertEquals(1, any.size());
             assertTrue(any.get(0).equalsIgnoreCase("login_token"));
@@ -122,7 +122,7 @@ public class ExampleInstrumentedTest {
             String input = pair.first[i];
             String name = pair.second[i];
             try {
-                List<String> any = UtilsKt.getAny(input);
+                List<String> any = UtilsKt.getQueryListFromQueryString(input);
                 System.out.println(any.toString()+" ][ name ][ "+name+" [size] "+any.size());
                 Log.d(this.getClass().getName(), any.toString()+" ][ name ][ "+name+" [size] "+any.size());
                 whatitget = any.get(0);
@@ -138,7 +138,7 @@ public class ExampleInstrumentedTest {
         Resources resources = context.getResources();
         String input = GraphqlHelper.loadRawString(resources, R.raw.tp_gql_user_info);
         for (int i = 0; i < 1_000_000; i++) {
-            List<String> any = UtilsKt.getAny(input);
+            List<String> any = UtilsKt.getQueryListFromQueryString(input);
             assertEquals(1, any.size());
             assertTrue(any.get(0).equalsIgnoreCase("mf_get_user_info"));
         }

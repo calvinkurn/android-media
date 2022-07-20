@@ -4,38 +4,37 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.officialstore.R
-import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestActivity
 import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestFullActivity
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixTopViewHolder
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
 import com.tokopedia.officialstore.util.preloadRecomOnOSPage
+import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
+import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -99,13 +98,7 @@ class OSTopAdsVerificationTest {
          * This function needed to remove any loading view, because any infinite loop rendered view such as loading view,
          * shimmering, progress bar, etc can block instrumentation test
          */
-        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val checkLoadingView: View? = activityRule.activity.findViewById<View>(R.id.loading_view)
-                checkLoadingView?.let { checkLoadingView.gone() }
-            }
-        })
+        removeProgressBarOnOsPage(recyclerView, activityRule.activity)
 
         /**
          * This function needed to trigger product recommendation usecase in official store,
@@ -171,6 +164,17 @@ class OSTopAdsVerificationTest {
             is OfficialProductRecommendationViewHolder -> {
                 Espresso.onView(firstView(withId(R.id.os_child_recycler_view)))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+            }
+            is BestSellerViewHolder -> {
+                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.best_seller_recommendation_recycler_view, 0)
+            }
+            is FeaturedShopViewHolder -> {
+                try {
+                    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
+                }
+                catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }

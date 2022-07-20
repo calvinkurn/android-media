@@ -22,6 +22,6 @@
         android:layout_marginStart="@dimen/unify_space_16"
         tools:text="* * * * 6544"
         app:typographyType="body_1"
-        android:textColor="@color/Unify_N0"/>
+        android:textColor="@color/Unify_Static_White"/>
 
 </RelativeLayout>

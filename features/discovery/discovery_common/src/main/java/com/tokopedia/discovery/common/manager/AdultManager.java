@@ -23,6 +23,8 @@ public class AdultManager {
 
     private static final int RESULT_CODE_DOB_VERIFICATION_SUCCESS = 980;
 
+    private static final String EXTRA_IS_LOGIN = "is_login";
+
     private static final int REQUEST_CODE = 5838;
 
     public static void showAdultPopUp(Fragment fragment, int origin, String destinationGtm) {
@@ -49,7 +51,9 @@ public class AdultManager {
                                             @Nullable Intent data, Callback callback) {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                handleLoginPreverifiedResult(callback);
+                if (data != null && data.getBooleanExtra(EXTRA_IS_LOGIN, false)) {
+                    handleLoginPreverifiedResult(callback);
+                }
             } else if (resultCode == RESULT_CODE_DOB_VERIFICATION_SUCCESS && data != null) {
                 handleVerificationSuccessResult(data, callback, activity);
             } else {

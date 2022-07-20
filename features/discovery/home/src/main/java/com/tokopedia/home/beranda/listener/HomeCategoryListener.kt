@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.recharge_component.model.WidgetSource
@@ -64,9 +63,9 @@ interface HomeCategoryListener {
 
     fun onDynamicChannelClicked(applink: String)
 
-    fun onRefreshTokoPointButtonClicked()
+    fun onRetryMembership()
 
-    fun onRefreshTokoCashButtonClicked()
+    fun onRetryWalletApp()
 
     fun onLegoBannerClicked(actionLink: String, trackingAttribution: String)
 
@@ -102,15 +101,11 @@ interface HomeCategoryListener {
 
     fun getBusinessUnit(tabId: Int, position: Int, tabName: String)
 
-    fun getPlayChannel(position: Int)
-
-    fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
-
     fun removeViewHolderAtPosition(position: Int)
 
     fun onDynamicChannelRetryClicked()
 
-    fun getTopAdsBannerNextPageToken(): String
+    fun getTopAdsBannerNextPage(): String
 
     fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int)
 
@@ -122,11 +117,7 @@ interface HomeCategoryListener {
 
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>)
 
-    fun getRechargeRecommendation()
-
     fun declineSalamItem(requestParams: Map<String, Int>)
-
-    fun getSalamWidget()
 
     fun getRechargeBUWidget(source: WidgetSource)
 
@@ -139,8 +130,6 @@ interface HomeCategoryListener {
     fun needToRotateTokopoints(): Boolean
 
     fun setRotateTokopointsDone(boolean: Boolean)
-
-    fun isEligibleForNewGopay(): Boolean
 
     fun onTokonowViewCaptured(view: View?, parentPosition: Int)
 

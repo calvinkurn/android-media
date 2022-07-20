@@ -45,7 +45,6 @@ class TravelCalendarBottomSheet : BottomSheets(), TravelCalendarContract.View {
     }
 
     private fun initInjector() {
-        GraphqlClient.init(activity!!)
         val travelCalendarComponent = TravelCalendarComponentInstance
                 .getComponent(activity!!.application)
         travelCalendarComponent.inject(this)
@@ -159,7 +158,7 @@ class TravelCalendarBottomSheet : BottomSheets(), TravelCalendarContract.View {
     override fun configView(parentView: View?) {
         super.configView(parentView)
         if (bottomSheetsState == BottomSheetsState.FULL) {
-            val frameParent = parentView!!.findViewById(R.id.bottomsheet_container) as FrameLayout
+            val frameParent = parentView!!.findViewById(com.tokopedia.design.R.id.bottomsheet_container) as FrameLayout
             val layoutParam = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
             frameParent.layoutParams = layoutParam
         }

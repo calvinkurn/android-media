@@ -1,0 +1,12 @@
+{
+  "readme": "Product Manage - click on product",
+  "mode": "subset",
+  "query": [
+    {
+      "eventCategory": "product list page",
+      "event": "clickManageProduct",
+      "eventAction": "click on product",
+      "eventLabel": ".+"
+    }
+  ]
+}

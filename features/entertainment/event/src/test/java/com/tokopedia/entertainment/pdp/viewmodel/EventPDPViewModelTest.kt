@@ -265,6 +265,27 @@ class EventPDPViewModelTest {
     }
 
     @Test
+    fun `PDPWhiteList_ShouldReturnWhiteListFalse_ShowThrowableResult`(){
+        //given
+        eventPDPViewModel.getIntialList()
+        val restResponse = RestResponse(Throwable(), 400, false)
+        val whiteListMapped = mapOf<Type, RestResponse>(
+            Throwable::class.java to restResponse
+        )
+
+        coEvery {
+            getEventWhiteListValidationUseCase.executeOnBackground()
+        } returns whiteListMapped
+
+        //when
+        eventPDPViewModel.getWhiteListUser(0,"", ProductDetailData(id="0"))
+
+        //then
+        assertNotNull(eventPDPViewModel.validateScanner.value)
+        assertEquals(eventPDPViewModel.validateScanner.value, false)
+    }
+
+    @Test
     fun `PDPandHolidayData_ShouldReturnPDPandHoliday_ShowNullResult`(){
         //given
         eventPDPViewModel.getIntialList()

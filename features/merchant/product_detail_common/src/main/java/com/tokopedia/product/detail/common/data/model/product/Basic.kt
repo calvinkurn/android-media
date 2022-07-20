@@ -76,6 +76,10 @@ data class Category(
         @Expose
         val isAdult: Boolean = false,
 
+        @SerializedName("isKyc")
+        @Expose
+        val isKyc: Boolean = false,
+
         @SerializedName("title")
         @Expose
         val title: String = ""
@@ -110,13 +114,18 @@ data class Category(
 
 data class TxStatsDynamicPdp(
         @SerializedName("transactionSuccess")
+        @Expose
         val txSuccess: String = "",
         @SerializedName("transactionReject")
+        @Expose
         val txReject: String = "",
         @SerializedName("countSold")
+        @Expose
         val countSold: String = "",
         @SerializedName("paymentVerified")
+        @Expose
         val paymentVerified: String = "",
-        @SerializedName("itemSoldPaymentVerified")
-        val itemSoldPaymentVerified: String = ""
+        @SerializedName("itemSoldFmt")
+        @Expose
+        val itemSoldFmt: String = ""
 )

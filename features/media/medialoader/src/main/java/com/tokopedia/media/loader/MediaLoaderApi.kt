@@ -4,7 +4,9 @@ import android.os.Handler
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.factory.BitmapFactory
@@ -12,8 +14,11 @@ import com.tokopedia.media.loader.common.factory.GifFactory
 import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
 import com.tokopedia.media.loader.module.GlideApp
-import com.tokopedia.media.loader.tracker.PerformanceTracker
 import com.tokopedia.media.loader.transform.TopRightCrop
+import com.tokopedia.media.loader.utils.HEADER_KEY_AUTH
+import com.tokopedia.media.loader.utils.HEADER_USER_ID
+import com.tokopedia.media.loader.utils.HEADER_X_DEVICE
+import com.tokopedia.media.loader.utils.PREFIX_BEARER
 
 internal object MediaLoaderApi {
 
@@ -22,9 +27,13 @@ internal object MediaLoaderApi {
     private val bitmap by lazy { BitmapFactory() }
     private val gif by lazy { GifFactory() }
 
-    @JvmOverloads
-    fun loadImage(imageView: ImageView, properties: Properties) {
-        var tracker: PerformanceMonitoring? = null
+    internal fun LazyHeaders.Builder.headers(accessToken: String, userId: String) {
+        addHeader(HEADER_KEY_AUTH /* Accounts-Authorization */, "$PREFIX_BEARER %s".format(accessToken))
+        addHeader(HEADER_X_DEVICE /* X-Device */, "android-${GlobalConfig.VERSION_NAME}")
+        addHeader(HEADER_USER_ID /* Tkpd-UserId */, userId)
+    }
+
+    fun loadImage(imageView: ImageView, properties: Properties, isSecure: Boolean) {
         val context = imageView.context
 
         // handling empty url
@@ -49,26 +58,38 @@ internal object MediaLoaderApi {
                     // url builder
                     val source = Loader.urlBuilder(properties.data.toString())
 
-                    tracker = PerformanceTracker.preRender(source, context)
-
                     // get the imageView size
                     properties.setImageSize(
-                            width = imageView.measuredWidth,
-                            height = imageView.measuredHeight
+                        width = imageView.measuredWidth,
+                        height = imageView.measuredHeight
                     )
 
+                    properties.setUrlHasQuality(source)
+
                     bitmap.build(
-                            context = context,
-                            performanceMonitoring = tracker,
-                            properties = properties.setUrlHasQuality(source),
-                            request = this
-                    ).load(source)
+                        context = context,
+                        properties = properties,
+                        request = this
+                    ).load(
+                        if (!isSecure) source
+                        else {
+                            GlideUrl(source, LazyHeaders.Builder()
+                                .also {
+                                    it.headers(
+                                        accessToken = properties.accessToken,
+                                        userId = properties.userId
+                                    )
+                                }
+                                .build()
+                            )
+                        }
+                    )
                 }
                 else -> {
                     bitmap.build(
-                            context = context,
-                            properties = properties,
-                            request = this
+                        context = context,
+                        properties = properties,
+                        request = this
                     ).load(properties.data)
                 }
             }
@@ -88,12 +109,12 @@ internal object MediaLoaderApi {
     fun loadImage(imageView: ImageView, source: String?) {
         if (source != null && source.isNotEmpty()) {
             GlideApp.with(imageView.context)
-                    .load(source)
-                    .transform(TopRightCrop())
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .placeholder(PLACEHOLDER_RES_UNIFY)
-                    .error(ERROR_RES_UNIFY)
-                    .into(imageView)
+                .load(source)
+                .transform(TopRightCrop())
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(PLACEHOLDER_RES_UNIFY)
+                .error(ERROR_RES_UNIFY)
+                .into(imageView)
         }
     }
 
@@ -103,10 +124,10 @@ internal object MediaLoaderApi {
 
         if (context.isValid()) {
             GlideApp.with(context)
-                    .asGif()
-                    .load(source)
-                    .apply { gif.build(properties, this) }
-                    .into(imageView)
+                .asGif()
+                .load(source)
+                .apply { gif.build(properties, this) }
+                .into(imageView)
         }
     }
 

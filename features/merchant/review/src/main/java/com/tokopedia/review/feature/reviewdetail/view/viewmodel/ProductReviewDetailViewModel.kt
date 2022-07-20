@@ -6,7 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.review.common.util.*
+import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.common.util.ReviewUtil
+import com.tokopedia.review.common.util.getGeneratedFilterByText
+import com.tokopedia.review.common.util.getGeneratedTimeFilterByText
+import com.tokopedia.review.common.util.getKeyByValue
+import com.tokopedia.review.common.util.getSortBy
+import com.tokopedia.review.common.util.removeFilterElement
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.review.feature.reviewdetail.data.ProductFeedbackFilterData
 import com.tokopedia.review.feature.reviewdetail.data.ProductReviewDetailOverallResponse
@@ -14,7 +20,11 @@ import com.tokopedia.review.feature.reviewdetail.domain.GetProductFeedbackDetail
 import com.tokopedia.review.feature.reviewdetail.domain.GetProductReviewInitialUseCase
 import com.tokopedia.review.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.review.feature.reviewdetail.view.adapter.BaseSellerReviewDetail
-import com.tokopedia.review.feature.reviewdetail.view.model.*
+import com.tokopedia.review.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.ProductFeedbackErrorUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.RatingBarUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.SortFilterItemWrapper
+import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

@@ -22,6 +22,7 @@ dependencies {
     implementation rootProject.ext.firebase.crashlytics
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.workManager
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 

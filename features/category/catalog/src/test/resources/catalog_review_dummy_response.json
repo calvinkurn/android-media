@@ -1,0 +1,26 @@
+{
+  "data": {
+    "catalogGetProductReview": {
+      "header": {
+        "code": 200,
+        "message": ""
+      },
+      "reviewData": {
+        "avgRating": 4.9594593,
+        "totalHelpfulReview": 148,
+        "reviews": [
+          {
+            "rating": 4,
+            "informativeScore": 14,
+            "reviewerName": "",
+            "reviewDate": "",
+            "reviewText": "oke",
+            "reviewImageUrl": [
+              "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/6/23/da418535-56e2-4149-a41a-18519a5ec81f.jpg"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

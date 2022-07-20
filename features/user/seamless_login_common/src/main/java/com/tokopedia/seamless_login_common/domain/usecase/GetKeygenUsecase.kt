@@ -13,7 +13,7 @@ import javax.inject.Inject
  * Copyright (c) 2019 PT. Tokopedia All rights reserved.
  */
 
-class GetKeygenUsecase @Inject constructor(
+open class GetKeygenUsecase @Inject constructor(
         val resources: Resources,
         val repository: GraphqlRepository
 ): GraphqlUseCase<KeyResponse>(repository) {

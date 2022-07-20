@@ -41,7 +41,6 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:itemCount="10"
             tools:spanCount="3"
-            tools:orientation="horizontal"
-            tools:listitem="@layout/layout_sprint_product_item"/>
+            tools:orientation="horizontal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,8 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -173,26 +175,22 @@ class PlayAnalytic(
         )
     }
 
-    fun clickCartIcon() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK cart icon",
-                "$mChannelId - ${mChannelType.value}"
-        )
-    }
-
-    fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>) {
+    fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section) {
         if (products.isEmpty()) return
 
+        val (eventAction, eventLabel) = when(sectionInfo.config.type){
+            ProductSectionType.Active -> Pair("impression - product in ongoing section",generateBaseEventLabel(productId = products.first().first.id, campaignId = sectionInfo.id))
+            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section",generateBaseEventLabel(productId = products.first().first.id, campaignId = sectionInfo.id))
+            else -> Pair("view product", "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - product in bottom sheet")
+        }
         trackingQueue.putEETracking(
-                EventModel(
+                event = EventModel(
                         "productView",
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "view product",
-                        "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - product in bottom sheet"
+                        eventAction,
+                        eventLabel
                 ),
-                hashMapOf(
+                enhanceECommerceMap = hashMapOf(
                         "ecommerce" to hashMapOf(
                                 "currencyCode" to "IDR",
                                 "impressions" to mutableListOf<HashMap<String, Any>>().apply {
@@ -201,39 +199,44 @@ class PlayAnalytic(
                                     }
                                 }
                         )
-                )
+                ),
+                customDimension = if(sectionInfo.config.type != ProductSectionType.Other){
+                    hashMapOf(
+                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                        KEY_USER_ID to userId,
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                    )
+                } else null
         )
     }
 
     fun clickProduct(product: PlayProductUiModel.Product,
+                     sectionInfo: ProductSectionUiModel.Section,
                      position: Int) {
+
+        val (eventAction, eventLabel) = when (sectionInfo.config.type) {
+            ProductSectionType.Upcoming -> Pair("$KEY_TRACK_CLICK - product in upcoming section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - product in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
+            else -> Pair(KEY_TRACK_CLICK, "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet")
+        }
+
         trackingQueue.putEETracking(
                 EventModel(
                         "productClick",
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_TRACK_CLICK,
-                        "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet"
+                        eventAction,
+                        eventLabel
                 ),
                 hashMapOf (
                     "ecommerce" to hashMapOf(
                         "click" to hashMapOf(
-                            "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
-                            "products" to  listOf(convertProductToHashMapWithList(product, position, "bottom sheet"))
+                            "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet"),
+                            "products" to  listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
                         )
                     )
                 ),
-                hashMapOf(
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_ITEM_LIST to "/groupchat - bottom sheet",
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                    KEY_PRODUCT_ID to product.id,
-                    KEY_PRODUCT_NAME to product.title,
-                    KEY_PRODUCT_URL to product.applink.toString(),
-                    KEY_CHANNEL to mChannelName
-                )
+                generateBaseTracking(product = product, sectionInfo.config.type)
         )
     }
 
@@ -253,7 +256,46 @@ class PlayAnalytic(
         }
     }
 
+    fun clickATCBuyWithVariantRSProduct(product: PlayProductUiModel.Product, productAction: ProductAction, sectionInfo: ProductSectionUiModel.Section, shopInfo: PlayPartnerInfo){
+        val action = if(productAction == ProductAction.AddToCart) "atc" else "buy"
+
+        trackingQueue.putEETracking(
+            EventModel(
+                KEY_TRACK_ADD_TO_CART,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK - $action in varian page in ongoing section",
+                "$mChannelId - ${product.id} - ${mChannelType.value} - ${sectionInfo.id}"
+            ),
+            hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "add" to hashMapOf(
+                        "products" to listOf(
+                            hashMapOf(
+                            "name" to product.title,
+                            "id" to product.id,
+                            "price" to when(product.price) {
+                                is DiscountedPrice -> product.price.discountedPriceNumber
+                                is OriginalPrice -> product.price.priceNumber
+                            },
+                            "brand" to "",
+                            "category" to "",
+                            "variant" to "",
+                            "category_id" to "",
+                            "quantity" to product.minQty,
+                            "shop_id" to shopInfo.id,
+                            "shop_name" to shopInfo.name,
+                            "shop_type" to shopInfo.type.value
+                        ))
+                        )
+                    )
+            ),
+            generateBaseTracking(product = product, sectionInfo.config.type)
+        )
+    }
+
     fun clickProductAction(product: PlayProductUiModel.Product,
+                           sectionInfo: ProductSectionUiModel.Section,
                            cartId: String,
                            productAction: ProductAction,
                            bottomInsetsType: BottomInsetsType,
@@ -261,13 +303,19 @@ class PlayAnalytic(
         when(productAction) {
             ProductAction.AddToCart ->
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, cartId, shopInfo)
+                    BottomInsetsType.VariantSheet -> {
+                        if(sectionInfo.config.type != ProductSectionType.Active) clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
+                        else clickATCBuyWithVariantRSProduct(product, productAction, sectionInfo, shopInfo)
+                    }
+                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
                 }
             ProductAction.Buy -> {
                 when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, cartId, shopInfo)
+                    BottomInsetsType.VariantSheet -> {
+                        if(sectionInfo.config.type != ProductSectionType.Active) clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
+                        else clickATCBuyWithVariantRSProduct(product, productAction, sectionInfo, shopInfo)
+                    }
+                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
                 }
             }
         }
@@ -342,58 +390,6 @@ class PlayAnalytic(
         )
     }
 
-    /**
-     * User click copy link
-     */
-    fun clickCopyLink() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_EVENT_ACTION to "click on button share link",
-                        KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                        KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                        KEY_CHANNEL to mChannelName,
-                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId
-                )
-        )
-    }
-
-    fun impressionHighlightedVoucher(voucher: MerchantVoucherUiModel) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
-                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_EVENT_ACTION to "impression on merchant voucher",
-                        KEY_EVENT_LABEL to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                        KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                )
-        )
-    }
-
-    fun clickHighlightedVoucher(voucher: MerchantVoucherUiModel) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_EVENT_ACTION to "click on merchant voucher",
-                        KEY_EVENT_LABEL to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                        KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                        KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                        KEY_CHANNEL to mChannelName,
-                )
-        )
-    }
-
     fun impressFeaturedProducts(products: List<Pair<PlayProductUiModel.Product, Int>>) {
         if (products.isEmpty()) return
 
@@ -401,8 +397,8 @@ class PlayAnalytic(
                 EventModel(
                         "productView",
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "view on featured product",
-                        "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - featured product tagging",
+                    "view - now product carousel",
+                    "$mChannelId - ${products.first().first.id} - ${mChannelType.value}"
                 ),
                 hashMapOf(
                         "ecommerce" to hashMapOf(
@@ -429,7 +425,7 @@ class PlayAnalytic(
                     "productClick",
                     KEY_TRACK_GROUP_CHAT_ROOM,
                     KEY_TRACK_CLICK,
-                    "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging"
+                    "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging",
                 ),
                 hashMapOf(
                     "ecommerce" to hashMapOf(
@@ -642,14 +638,19 @@ class PlayAnalytic(
 
     private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                     product: PlayProductUiModel.Product,
+                                                    sectionInfo: ProductSectionUiModel.Section,
                                                     cartId: String,
                                                     shopInfo: PlayPartnerInfo) {
+        val (eventAction, eventLabel) = when (sectionInfo.config.type) {
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
+            else -> Pair("$KEY_TRACK_CLICK buy in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
+        }
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "$KEY_TRACK_CLICK buy in bottom sheet",
-                        "$mChannelId - ${product.id} - ${mChannelType.value}"
+                        eventAction,
+                        eventLabel
                 ),
                 hashMapOf(
                     "ecommerce" to hashMapOf(
@@ -659,30 +660,25 @@ class PlayAnalytic(
                         )
                     )
                 ),
-                hashMapOf(
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                    KEY_PRODUCT_ID to product.id,
-                    KEY_PRODUCT_NAME to product.title,
-                    KEY_PRODUCT_URL to product.applink.toString(),
-                    KEY_CHANNEL to mChannelName
-                )
+                generateBaseTracking(product = product, sectionInfo.config.type)
         )
     }
 
     private fun clickAtcButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                    product: PlayProductUiModel.Product,
+                                                   sectionInfo: ProductSectionUiModel.Section,
                                                    cartId: String,
                                                    shopInfo: PlayPartnerInfo) {
+        val (eventAction, eventLabel) = when (sectionInfo.config.type) {
+            ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - atc in ongoing section", generateBaseEventLabel(productId = product.id, campaignId = sectionInfo.id))
+            else -> Pair("$KEY_TRACK_CLICK atc in bottom sheet", "$mChannelId - ${product.id} - ${mChannelType.value}")
+        }
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "$KEY_TRACK_CLICK atc in bottom sheet",
-                        "$mChannelId - ${product.id} - ${mChannelType.value}"
+                        eventAction,
+                        eventLabel
                 ),
                 hashMapOf(
                     "ecommerce" to hashMapOf(
@@ -692,17 +688,7 @@ class PlayAnalytic(
                         )
                     )
                 ),
-                hashMapOf(
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
-                    KEY_PRODUCT_ID to product.id,
-                    KEY_PRODUCT_NAME to product.title,
-                    KEY_PRODUCT_URL to product.applink.toString(),
-                    KEY_CHANNEL to mChannelName
-                )
+                generateBaseTracking(product = product, sectionInfo.config.type)
         )
     }
 
@@ -772,9 +758,264 @@ class PlayAnalytic(
         )
     }
 
+    fun clickKebabMenu(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - three dots menu",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$mChannelId - $userId",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId
+                )
+        )
+    }
+
+    fun clickUserReport(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - laporkan video",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$mChannelId - $userId",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId
+            )
+        )
+    }
+
+    fun clickUserReportSubmissionBtnSubmit(isUse: Boolean){
+        val useValue = if(isUse) "use" else "not use"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - laporkan on bottom sheet",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$mChannelId - $userId - $useValue",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId
+            )
+        )
+    }
+
+    fun clickUserReportSubmissionDialogSubmit(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "$KEY_TRACK_CLICK - laporkan on pop up",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$mChannelId - $userId",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId
+            )
+        )
+    }
+
     private fun generateSwipeSession(): String {
         val identifier = if (userId.isNotBlank() && userId.isNotEmpty()) userId else "nonlogin"
         return identifier + System.currentTimeMillis()
+    }
+
+    private fun generateBaseEventLabel(productId: String, campaignId: String): String = "$mChannelId - $productId - ${mChannelType.value} - $campaignId"
+
+    private fun generateBaseTracking(product: PlayProductUiModel.Product, type: ProductSectionType): HashMap<String, Any>{
+        val base: HashMap<String, Any> = hashMapOf(
+            KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+            KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+            KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+            KEY_USER_ID to userId,
+            )
+       if (type == ProductSectionType.Other) {
+           base.putAll(
+               mapOf(
+                   KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
+                   KEY_PRODUCT_ID to product.id,
+                   KEY_PRODUCT_NAME to product.title,
+                   KEY_PRODUCT_URL to product.applink.toString(),
+                   KEY_CHANNEL to mChannelName
+               )
+           )
+       }
+        return base
+    }
+
+    fun clickFollowShopInteractive(
+        interactiveId: String,
+        interactiveType: InteractiveUiModel,
+        shopId: String
+    ) {
+        val (eventAction, eventLabel) = when(interactiveType){
+            is InteractiveUiModel.Quiz -> Pair("click - follow quiz popup","$shopId - $channelId - $userId - $interactiveId")
+            is InteractiveUiModel.Giveaway -> Pair("click follow from engagement tools widget","$channelId - $mChannelType - $interactiveId")
+            else -> Pair("","")
+        }
+        sendCompleteGeneralEvent(
+            event = if(interactiveType is InteractiveUiModel.Quiz) KEY_TRACK_CLICK_CONTENT else KEY_TRACK_CLICK_GROUP_CHAT,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = eventAction,
+            eventLabel = eventLabel
+        )
+    }
+
+    fun impressFollowShopInteractive(
+        shopId: String,
+        interactiveType: InteractiveUiModel,
+    ) {
+        if(interactiveType !is InteractiveUiModel.Quiz) return
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - follow quiz popup",
+            eventLabel = "$shopId - $channelId - $userId - ${interactiveType.id}"
+        )
+    }
+
+    fun clickWinnerBadge(shopId: String, interactiveType: InteractiveUiModel, interactiveId: String) {
+        val (eventAction, eventLabel) = when(interactiveType){
+            is InteractiveUiModel.Giveaway -> Pair("click daftar pemenang on engagement tools widget","$channelId - $mChannelType")
+            else -> Pair("click - hasil game button","$shopId - $channelId - $userId - $interactiveId")
+        }
+
+        sendCompleteGeneralEvent(
+            event = if(interactiveType is InteractiveUiModel.Quiz) KEY_TRACK_CLICK_CONTENT else KEY_TRACK_CLICK_GROUP_CHAT,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = eventAction,
+            eventLabel = eventLabel
+        )
+    }
+
+    fun impressWinnerBadge(
+        shopId: String,
+        interactiveId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - hasil game button",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
+    fun clickTapTap(
+        interactiveId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = com.tokopedia.play.analytic.KEY_TRACK_CLICK_GROUP_CHAT,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "click tap terus icon",
+            eventLabel = "$channelId - $mChannelType - $interactiveId"
+        )
+    }
+
+    fun clickRefreshLeaderBoard(
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_CLICK_CONTENT,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "click - refresh button leaderboard bottomsheet",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
+    fun impressRefreshLeaderBoard(
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - refresh button leaderboard bottomsheet",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
+    fun clickQuizOption(
+        choiceAlphabet: String,
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_CLICK_CONTENT,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "click - multiple choice quiz popup",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId - $choiceAlphabet"
+        )
+    }
+
+    fun impressQuizOptions(
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - multiple choice quiz popup",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
+    fun clickActiveInteractive(
+        interactiveId: String,
+        shopId: String,
+        interactiveType: InteractiveUiModel,
+        ) {
+        if(interactiveType !is InteractiveUiModel.Quiz) return
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_CLICK_CONTENT,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "click - quiz widget",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
+    fun impressActiveInteractive(
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - quiz widget",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
+    fun impressLeaderBoard(interactiveId: String, shopId: String) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - quiz leaderboard bottomsheet",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
+    private fun sendCompleteGeneralEvent(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to event,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to eventAction,
+                KEY_EVENT_LABEL to eventLabel,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_USER_ID to userId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+            )
+        )
     }
 
     companion object {

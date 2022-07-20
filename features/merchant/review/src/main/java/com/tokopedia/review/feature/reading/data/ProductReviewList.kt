@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.reading.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
 
 data class ProductReviewList(
     @SerializedName("productrevGetProductReviewList")
@@ -27,7 +28,7 @@ data class ProductReview(
     var feedbackID: String = "",
     @SerializedName("variantName")
     @Expose
-    val variantName: String = "",
+    var variantName: String = "",
     @SerializedName("message")
     @Expose
     var message: String = "",
@@ -54,14 +55,20 @@ data class ProductReview(
     var user: ProductReviewUser = ProductReviewUser(),
     @SerializedName("imageAttachments")
     @Expose
-    var imageAttachments: List<ProductReviewAttachments> = listOf(),
+    var imageAttachments: List<ProductReviewImageAttachments> = listOf(),
+    @SerializedName("videoAttachments")
+    @Expose
+    var videoAttachments: List<ProductReviewVideoAttachments> = listOf(),
     @SerializedName("likeDislike")
     @Expose
     var likeDislike: LikeDislike = LikeDislike(),
     var shopProductId: String = "",
     @SerializedName("stats")
     @Expose
-    var userReviewStats: List<UserReviewStats> = listOf()
+    var userReviewStats: List<UserReviewStats> = listOf(),
+    @SerializedName("badRatingReasonFmt")
+    @Expose
+    var badRatingReasonFmt: String = ""
 )
 
 data class ProductReviewResponse(
@@ -88,13 +95,25 @@ data class ProductReviewUser(
     val url: String = "",
 )
 
-data class ProductReviewAttachments(
+data class ProductReviewImageAttachments(
+    @SerializedName("attachmentID")
+    @Expose
+    val attachmentID: String = "",
     @SerializedName("imageThumbnailUrl")
     @Expose
     val imageThumbnailUrl: String = "",
     @SerializedName("imageUrl")
     @Expose
-    val imageUrl: String = ""
+    val uri: String = ""
+)
+
+data class ProductReviewVideoAttachments(
+    @SerializedName("attachmentID")
+    @Expose
+    val attachmentID: String = "",
+    @SerializedName("videoUrl")
+    @Expose
+    val url: String = ""
 )
 
 data class ProductReviewShopInfo(
@@ -129,15 +148,3 @@ data class LikeDislike(
         return likeStatus == LIKED
     }
 }
-
-data class UserReviewStats(
-    @SerializedName("key")
-    @Expose
-    val key: String = "",
-    @SerializedName("formatted")
-    @Expose
-    val formatted: String = "",
-    @SerializedName("count")
-    @Expose
-    val count: Int = 0
-)

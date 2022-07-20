@@ -11,8 +11,12 @@
     android:layout_height="wrap_content"
     android:id="@+id/bigGridCardViewInspirationCard">
 
-    <include layout="@layout/search_result_product_big_grid_curated_inspiration_card_layout"/>
+    <include
+        android:id="@+id/bigGridCuratedInspirationCardLayout"
+        layout="@layout/search_result_product_big_grid_curated_inspiration_card_layout"/>
 
-    <include layout="@layout/search_result_product_inspiration_card_layout"/>
+    <include
+        android:id="@+id/bigGridInspirationCardLayout"
+        layout="@layout/search_result_product_inspiration_card_layout"/>
 
 </androidx.cardview.widget.CardView>

@@ -42,9 +42,9 @@ class PdpCartCheckoutJourneyTest {
                 listOf(MockInterceptor(
                         object : MockModelConfig() {
                             override fun createMockModel(context: Context): MockModelConfig {
-                                addMockResponse(CartPageMocks.GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, CartPageMocks.GET_CART_LIST_BUNDLE_MOCK_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
+                                addMockResponse(CartPageMocks.GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, CartPageMocks.GET_CART_LIST_MOCK_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
                                 addMockResponse(CartPageMocks.UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, CartPageMocks.UPDATE_CART_MOCK_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
-                                addMockResponse(CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_BUNDLE_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
+                                addMockResponse(CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.SHIPMENT_ADDRESS_FORM_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
                                 addMockResponse(CheckoutPageMocks.SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.SAVE_SHIPMENT_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
                                 addMockResponse(CheckoutPageMocks.RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.RATES_V3_DEFAULT_RESPONSE), FIND_BY_CONTAINS)
                                 addMockResponse(CheckoutPageMocks.VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, CheckoutPageMocks.VALIDATE_USE_DEFAULT_RESPONSE), FIND_BY_CONTAINS)

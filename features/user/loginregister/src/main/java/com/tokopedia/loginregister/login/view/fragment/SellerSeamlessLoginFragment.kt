@@ -32,6 +32,7 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
+import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.view.constant.SeamlessSellerConstant
 import com.tokopedia.loginregister.login.view.viewmodel.SellerSeamlessViewModel
@@ -79,11 +80,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        val daggerLoginComponent = DaggerLoginComponent
-                .builder().loginRegisterComponent(getComponent(LoginRegisterComponent::class.java))
-                .build() as DaggerLoginComponent
-
-        daggerLoginComponent.inject(this)
+        getComponent(LoginComponent::class.java).inject(this)
     }
 
     companion object {
@@ -290,14 +287,14 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     }
 
     private fun getUserProfile(taskId: String){
-        if(service != null) {
+        if(service != null && activity?.isDestroyed == false) {
             activity?.registerReceiver(broadcastReceiver, IntentFilter().apply { addAction(taskId) })
             service?.getUserProfile(taskId)
         }
     }
 
     private fun getKey(taskId: String){
-        if(service != null) {
+        if(service != null && activity?.isDestroyed == false) {
             activity?.registerReceiver(broadcastReceiver, IntentFilter().apply { addAction(taskId) })
             service?.getDummyKey(taskId)
         }

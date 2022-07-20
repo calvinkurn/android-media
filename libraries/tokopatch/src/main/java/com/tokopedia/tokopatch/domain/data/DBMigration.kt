@@ -14,4 +14,11 @@ object DBMigration {
         }
     }
 
+    val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL(
+                "CREATE TABLE `status` (`id` TEXT NOT NULL, `env` TEXT NOT NULL, `expired` TEXT NOT NULL, `id_token` TEXT NOT NULL, PRIMARY KEY(`id`))"
+            )
+        }
+    }
 }

@@ -50,7 +50,7 @@ internal fun createRepurchaseWidgetRequest(params: Map<String, Any>): GraphqlReq
     val queryParam = createRepurchaseQueryParam(params)
 
     return GraphqlRequest(
-        GetRepurchaseWidget.QUERY,
+        GetRepurchaseWidget.getQuery(),
         GetRepurchaseResponse::class.java,
         mapOf(
             GetRepurchaseWidgetUseCase.PARAM_WAREHOUSE_ID to warehouseID,
@@ -81,6 +81,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
           keywordProcess
         }
         data {
+          isQuerySafe
           suggestion {
             suggestion
             query

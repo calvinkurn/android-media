@@ -15,12 +15,13 @@ interface SellerReviewDetailListener {
 
 interface ProductFeedbackDetailListener {
     fun onOptionFeedbackClicked(view: View, title: String, data: FeedbackUiModel, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean)
-    fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>, feedbackId: String, position: Int)
     fun onFeedbackMoreReplyClicked(feedbackId: String)
 }
 
 interface OverallRatingDetailListener {
     fun onFilterPeriodClicked(view: View, title: String)
+    fun shouldShowTickerForRatingDisclaimer(): Boolean
+    fun updateSharedPreference()
 }
 
 interface SellerRatingAndTopicListener {

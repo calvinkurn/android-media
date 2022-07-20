@@ -6,6 +6,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.search.R
+import com.tokopedia.search.utils.BASE_RADIUS_AREA
+import com.tokopedia.search.utils.CORNER_RADIUS_DEGREE
+import com.tokopedia.search.utils.VERTICAL_SHADOW_MULTIPLIER
 import com.tokopedia.shopwidget.shopcard.ShopCardView
 import kotlin.math.cos
 import kotlin.math.roundToInt
@@ -78,25 +81,36 @@ class ShopListItemDecoration(private val left: Int,
         }
     }
 
+    /**
+     * shadow calculation formula (include the const value) based on CardView shadow formula
+     * https://developer.android.com/reference/kotlin/androidx/cardview/widget/CardView
+     */
+    @Suppress("MagicNumber")
     private fun getHorizontalCardViewOffset(view: View): Int {
         if (view is ShopCardView) {
 
             val maxElevation = view.getMaxCardElevation()
             val radius = view.getRadius()
 
-            return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
+            return (maxElevation + (BASE_RADIUS_AREA - cos(CORNER_RADIUS_DEGREE)) * radius).toFloat().roundToInt() / 2
         }
 
         return 0
     }
 
+    /**
+     * shadow calculation formula (include the const value) based on CardView shadow formula
+     * https://developer.android.com/reference/kotlin/androidx/cardview/widget/CardView
+     */
+    @Suppress("MagicNumber")
     private fun getVerticalCardViewOffset(view: View): Int {
         if (view is ShopCardView) {
 
             val maxElevation = view.getMaxCardElevation()
             val radius = view.getRadius()
 
-            return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
+            return (maxElevation * VERTICAL_SHADOW_MULTIPLIER + (BASE_RADIUS_AREA - cos(
+                CORNER_RADIUS_DEGREE)) * radius).toFloat().roundToInt() / 2
         }
 
         return 0
@@ -111,7 +125,7 @@ class ShopListItemDecoration(private val left: Int,
     }
 
     private fun getTopOffsetWithCardViewOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int {
-        return if (isTopShopItem(parent, absolutePos, relativePos, totalSpanCount)) top else top / 4
+        return if (isTopShopItem(parent, absolutePos, relativePos, totalSpanCount)) top else top / TOP_OFFSET_DIVISOR
     }
 
     private fun isTopShopItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean {
@@ -123,6 +137,11 @@ class ShopListItemDecoration(private val left: Int,
     }
 
     private fun getBottomOffset(): Int {
-        return (bottom / 4) - verticalCardViewOffset
+        return (bottom / BOTTOM_OFFSET_DIVISOR) - verticalCardViewOffset
+    }
+
+    companion object {
+        private const val BOTTOM_OFFSET_DIVISOR = 4
+        private const val TOP_OFFSET_DIVISOR = 4
     }
 }

@@ -17,4 +17,5 @@
 
     <string name="webview_label_download">Download</string>
     <string name="webview_on_back_pressed_disabled_message">Tombol kembali tidak dapat digunakan sekarang</string>
+    <string name="webview_need_install">Anda perlu melakukan update terhadap Android System Webview untuk melanjutkan.</string>
 </resources>

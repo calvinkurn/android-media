@@ -23,12 +23,14 @@ class QuickEditVariantPriceBottomSheet(
         fun createInstance(
             productId: String,
             isBundling: Boolean = false,
+            isMultiLocationShop: Boolean = false,
             onSaveVariantsPrice: (EditVariantResult) -> Unit
         ): QuickEditVariantPriceBottomSheet {
             return QuickEditVariantPriceBottomSheet(onSaveVariantsPrice).apply {
                 val bundle = Bundle()
                 bundle.putString(EXTRA_PRODUCT_ID, productId)
                 bundle.putBoolean(EXTRA_IS_BUNDLING, isBundling)
+                bundle.putBoolean(EXTRA_IS_MULTILOCATION, isMultiLocationShop)
                 arguments = bundle
             }
         }

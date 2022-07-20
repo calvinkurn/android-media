@@ -1,22 +1,33 @@
 package com.tokopedia.productcard.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Outline
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.view.Gravity
 import android.view.TouchDelegate
 import android.view.View
+import android.view.ViewOutlineProvider
+import android.view.ViewStub
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.Space
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
@@ -26,7 +37,12 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.resources.isDarkMode
+import com.tokopedia.video_widget.VideoPlayerView
+import timber.log.Timber
+import com.tokopedia.unifyprinciples.R.color as unifyRColor
 
 internal val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
@@ -38,7 +54,7 @@ internal val View?.isNullOrNotVisible
     get() = this == null || !this.isVisible
 
 internal fun View.doIfVisible(action: (View) -> Unit) {
-    if(this.isVisible) {
+    if (this.isVisible) {
         action(this)
     }
 }
@@ -61,13 +77,20 @@ internal fun ConstraintLayout?.applyConstraintSet(configureConstraintSet: (Const
     }
 }
 
-internal fun TextView?.setTextWithBlankSpaceConfig(textValue: String, blankSpaceConfigValue: Boolean) {
+internal fun TextView?.setTextWithBlankSpaceConfig(
+    textValue: String,
+    blankSpaceConfigValue: Boolean
+) {
     this?.configureVisibilityWithBlankSpaceConfig(textValue.isNotEmpty(), blankSpaceConfigValue) {
         it.text = MethodChecker.fromHtml(textValue)
     }
 }
 
-internal fun <T: View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boolean, blankSpaceConfigValue: Boolean, action: (T) -> Unit) {
+internal fun <T : View> T?.configureVisibilityWithBlankSpaceConfig(
+    isVisible: Boolean,
+    blankSpaceConfigValue: Boolean,
+    action: (T) -> Unit
+) {
     if (this == null) return
 
     visibility = if (isVisible) {
@@ -81,13 +104,12 @@ internal fun <T: View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boo
 internal fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean): Int {
     return if (blankSpaceConfigValue) {
         View.INVISIBLE
-    }
-    else {
+    } else {
         View.GONE
     }
 }
 
-internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
+internal fun <T : View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
     if (this == null) return
 
     if (shouldShow) {
@@ -106,6 +128,7 @@ internal fun ImageView.loadImage(url: String?) {
         }
     }
 }
+
 internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
@@ -118,6 +141,7 @@ internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
         }
     }
 }
+
 internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolean) -> Unit)) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
@@ -189,18 +213,24 @@ private fun Label.setCustomLabelType(labelGroupType: String) {
 private fun Label.trySetCustomLabelType(labelGroupType: String) {
     unlockFeature = true
 
-    val colorRes = labelGroupType.toUnifyLabelColor()
+    val colorRes = labelGroupType.toUnifyLabelColor(context)
     val colorHexInt = ContextCompat.getColor(context, colorRes)
     val colorHexString = "#${Integer.toHexString(colorHexInt)}"
     setLabelType(colorHexString)
 }
 
 @ColorRes
-private fun String?.toUnifyLabelColor(): Int {
-    return when(this) {
-        TRANSPARENT_BLACK -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-        else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-    }
+private fun String?.toUnifyLabelColor(context: Context): Int {
+    return if (context.isDarkMode())
+        when (this) {
+            TRANSPARENT_BLACK -> unifyRColor.Unify_N200_68
+            else -> unifyRColor.Unify_N200_68
+        }
+    else
+        when (this) {
+            TRANSPARENT_BLACK -> unifyRColor.Unify_N700_68
+            else -> unifyRColor.Unify_N700_68
+        }
 }
 
 internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
@@ -216,26 +246,40 @@ private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
 }
 
 private fun String?.toUnifyTextColor(context: Context): Int {
-    return try{
-        when(this) {
-            TEXT_DARK_ORANGE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
-            TEXT_DARK_RED -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
-            TEXT_DARK_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-            TEXT_LIGHT_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
-            TEXT_GREEN -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+    return try {
+        when (this) {
+            TEXT_DARK_ORANGE -> ContextCompat.getColor(
+                context,
+                unifyRColor.Unify_YN500
+            )
+            TEXT_DARK_RED -> ContextCompat.getColor(
+                context,
+                unifyRColor.Unify_RN500
+            )
+            TEXT_DARK_GREY -> ContextCompat.getColor(
+                context,
+                unifyRColor.Unify_NN600
+            )
+            TEXT_LIGHT_GREY -> ContextCompat.getColor(
+                context,
+                unifyRColor.Unify_NN100
+            )
+            TEXT_GREEN -> ContextCompat.getColor(
+                context,
+                unifyRColor.Unify_GN500
+            )
             else -> Color.parseColor(this)
         }
-    } catch (throwable: Throwable){
+    } catch (throwable: Throwable) {
         throwable.printStackTrace()
-        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+        ContextCompat.getColor(context, unifyRColor.Unify_N700)
     }
 }
 
 internal fun safeParseColor(color: String, defaultColor: Int): Int {
     return try {
         Color.parseColor(color)
-    }
-    catch (throwable: Throwable) {
+    } catch (throwable: Throwable) {
         throwable.printStackTrace()
         defaultColor
     }
@@ -258,10 +302,10 @@ internal fun View.expandTouchArea(left: Int, top: Int, right: Int, bottom: Int) 
 }
 
 internal fun renderLabelCampaign(
-        isShow: Boolean,
-        labelCampaignBackground: ImageView?,
-        textViewLabelCampaign: Typography?,
-        productCardModel: ProductCardModel
+    isShow: Boolean,
+    labelCampaignBackground: ImageView?,
+    textViewLabelCampaign: Typography?,
+    productCardModel: ProductCardModel
 ) {
     if (isShow) {
         val labelCampaign = productCardModel.getLabelCampaign() ?: return
@@ -271,8 +315,7 @@ internal fun renderLabelCampaign(
 
         textViewLabelCampaign?.show()
         textViewLabelCampaign?.text = MethodChecker.fromHtml(labelCampaign.title)
-    }
-    else {
+    } else {
         labelCampaignBackground?.hide()
         textViewLabelCampaign?.hide()
     }
@@ -300,7 +343,7 @@ private fun Typography.initLabelBestSeller(labelBestSellerModel: ProductCardMode
 private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardModel.LabelGroup) {
     show()
 
-    val defaultColor = "#E1AA1D"
+    val defaultColor = ContextCompat.getColor(context, unifyRColor.Unify_YN400)
     background.overrideColor(labelBestSellerModel.type, defaultColor)
     text = labelBestSellerModel.title
 }
@@ -355,11 +398,11 @@ private fun Typography.showLabelCategoryBottom(categoryBottomModel: ProductCardM
     setTextColor(categoryBottomModel.type.toUnifyTextColor(context))
 }
 
-internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {
+internal fun Drawable.overrideColor(hexColor: String, defaultColor: Int) {
     when (this) {
-        is GradientDrawable -> setColor(safeParseColor(hexColor, Color.parseColor(defaultColor)))
-        is ShapeDrawable -> paint.color = safeParseColor(hexColor, Color.parseColor(defaultColor))
-        is ColorDrawable -> color = safeParseColor(hexColor, Color.parseColor(defaultColor))
+        is GradientDrawable -> setColor(safeParseColor(hexColor, defaultColor))
+        is ShapeDrawable -> paint.color = safeParseColor(hexColor, defaultColor)
+        is ColorDrawable -> color = safeParseColor(hexColor, defaultColor)
     }
 }
 
@@ -372,14 +415,21 @@ internal fun renderStockBar(
     renderStockLabel(textViewStock, productCardModel)
 }
 
-private fun renderStockPercentage(progressBarStock: ProgressBarUnify?, productCardModel: ProductCardModel) {
+private fun renderStockPercentage(
+    progressBarStock: ProgressBarUnify?,
+    productCardModel: ProductCardModel
+) {
     progressBarStock?.shouldShowWithAction(productCardModel.isStockBarShown()) {
         it.setProgressIcon(icon = null)
         if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
             it.setProgressIcon(
-                icon = ContextCompat.getDrawable(it.context, R.drawable.product_card_ic_fire_filled),
+                icon = ContextCompat.getDrawable(
+                    it.context,
+                    com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card
+                ),
                 width = it.context.resources.getDimension(FIRE_WIDTH).toInt(),
-                height = it.context.resources.getDimension(FIRE_HEIGHT).toInt())
+                height = it.context.resources.getDimension(FIRE_HEIGHT).toInt()
+            )
         }
         it.progressBarColorType = ProgressBarUnify.COLOR_RED
         it.setValue(productCardModel.stockBarPercentage, false)
@@ -400,8 +450,149 @@ private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typograph
         productCardModel.stockBarLabelColor.isNotEmpty() ->
             safeParseColor(
                 productCardModel.stockBarLabelColor,
-                ContextCompat.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                ContextCompat.getColor(
+                    it.context,
+                    unifyRColor.Unify_N700_68
+                )
             )
         else ->
-            MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            MethodChecker.getColor(it.context, unifyRColor.Unify_N700_68)
     }
+
+fun <T: View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T? {
+    val viewStub = findViewById<ViewStub?>(viewStubId.id)
+    if (viewStub == null) {
+        return findViewById<T>(viewId.id)
+    } else {
+        viewStub.inflate()
+    }
+    return findViewById<T>(viewId.id)
+}
+
+fun <T: View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, isShow: Boolean) {
+    if (isShow) {
+        findViewById<T>(viewStubId, viewId)?.show()
+    } else {
+        findViewById<T>(viewId.id)?.gone()
+    }
+}
+
+internal fun setupImageRatio(
+    constraintLayoutProductCard: ConstraintLayout?,
+    imageProduct: ImageView?,
+    mediaAnchorProduct: Space?,
+    videoProduct: VideoPlayerView?,
+    ratio: String,
+) {
+    constraintLayoutProductCard.applyConstraintSet {
+        imageProduct?.id?.let { id ->
+            it.setDimensionRatio(id, ratio)
+        }
+        mediaAnchorProduct?.id?.let { id ->
+            it.setDimensionRatio(id, ratio)
+        }
+        videoProduct?.id?.let { id ->
+            it.setDimensionRatio(id, ratio)
+        }
+    }
+}
+
+internal fun renderLabelReposition(
+    isShow: Boolean,
+    labelRepositionBackground: ImageView?,
+    labelReposition: Typography?,
+    labelGroup: ProductCardModel.LabelGroup?,
+) {
+    if (isShow) {
+        showRepositionLabel(
+            labelRepositionBackground,
+            labelReposition,
+            labelGroup,
+        )
+    } else {
+        labelReposition?.hide()
+        labelRepositionBackground?.hide()
+    }
+}
+
+private fun showRepositionLabel(
+    labelBackground: ImageView?,
+    textViewLabel: Typography?,
+    labelGroup: ProductCardModel.LabelGroup?,
+) {
+    if (labelGroup != null) {
+        textViewLabel.shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+            it.text = labelGroup.title
+
+            val context = it.context
+            it.setTextColor(labelGroup.toRepositionLabelTextColor(context))
+        }
+
+        labelBackground.shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+            val labelBackgroundColor = labelGroup.toRepositionLabelBackground(it.context)
+            it.background?.colorFilter =
+                BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                    labelBackgroundColor,
+                    BlendModeCompat.SRC_ATOP
+                )
+        }
+    } else {
+        textViewLabel?.hide()
+        labelBackground?.hide()
+    }
+}
+
+@ColorInt
+private fun ProductCardModel.LabelGroup.toRepositionLabelTextColor(context: Context?): Int {
+    if (context == null) return 0
+
+    return try {
+        val staticWhiteColor = ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_Static_White
+        )
+        if (isGimmick()) type.toUnifyTextColor(context)
+        else staticWhiteColor
+    } catch (throwable: Throwable) {
+        Timber.e(throwable)
+        ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_Static_White
+        )
+    }
+}
+
+@ColorInt
+private fun ProductCardModel.LabelGroup.toRepositionLabelBackground(context: Context?): Int {
+    if (context == null) return 0
+
+    return try {
+        val whiteColor = ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_NN0
+        )
+        if (isGimmick()) whiteColor
+        else type.toUnifyTextColor(context)
+    } catch (throwable: Throwable) {
+        Timber.e(throwable)
+        ContextCompat.getColor(
+            context,
+            unifyRColor.Unify_NN0
+        )
+    }
+}
+
+internal fun createColorSampleDrawable(context: Context, colorString: String): GradientDrawable {
+    val gradientDrawable = GradientDrawable()
+    val strokeWidth = 1.toPx()
+
+    gradientDrawable.shape = GradientDrawable.OVAL
+    gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+    gradientDrawable.setStroke(
+        strokeWidth,
+        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN200),
+    )
+    gradientDrawable.setColor(com.tokopedia.productcard.safeParseColor(colorString))
+
+    return gradientDrawable
+}

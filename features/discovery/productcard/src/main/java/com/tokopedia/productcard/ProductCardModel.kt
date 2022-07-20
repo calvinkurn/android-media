@@ -1,10 +1,29 @@
 package com.tokopedia.productcard
 
-import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.fashion.FashionStrategy
+import com.tokopedia.productcard.fashion.FashionStrategyControl
+import com.tokopedia.productcard.fashion.FashionStrategyLongImage
+import com.tokopedia.productcard.fashion.FashionStrategyReposition
+import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
+import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
+import com.tokopedia.productcard.utils.LABEL_CATEGORY
+import com.tokopedia.productcard.utils.LABEL_CATEGORY_BOTTOM
+import com.tokopedia.productcard.utils.LABEL_CATEGORY_SIDE
+import com.tokopedia.productcard.utils.LABEL_COST_PER_UNIT
+import com.tokopedia.productcard.utils.LABEL_ETA
+import com.tokopedia.productcard.utils.LABEL_FULFILLMENT
+import com.tokopedia.productcard.utils.LABEL_GIMMICK
+import com.tokopedia.productcard.utils.LABEL_INTEGRITY
+import com.tokopedia.productcard.utils.LABEL_PRICE
+import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
+import com.tokopedia.productcard.utils.LABEL_SHIPPING
+import com.tokopedia.productcard.utils.MIN_LABEL_VARIANT_COUNT
+import com.tokopedia.productcard.utils.MIN_QUANTITY_NON_VARIANT
+import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
+import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
+import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.parcel.Parcelize
 
 data class ProductCardModel (
         val productImageUrl: String = "",
@@ -57,6 +76,12 @@ data class ProductCardModel (
         val variant: Variant? = null,
         val nonVariant: NonVariant? = null,
         val hasSimilarProductButton: Boolean = false,
+        val hasButtonThreeDotsWishlist: Boolean = false,
+        val hasAddToCartWishlist: Boolean = false,
+        val hasSimilarProductWishlist: Boolean = false,
+        val customVideoURL : String = "",
+        val cardInteraction: Boolean = false,
+        val productListType: ProductListType = ProductListType.CONTROL,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -64,6 +89,14 @@ data class ProductCardModel (
     var isProductPreOrder: Boolean = false
     @Deprecated("replace with labelGroupList")
     var isProductWholesale: Boolean = false
+
+    internal val fashionStrategy: FashionStrategy = when (productListType) {
+        ProductListType.CONTROL -> FashionStrategyControl()
+        ProductListType.REPOSITION -> FashionStrategyReposition()
+        ProductListType.LONG_IMAGE -> FashionStrategyLongImage()
+    }
+
+    val hasVideo : Boolean = customVideoURL.isNotBlank()
 
     @Deprecated("replace with LabelGroup")
     data class Label(
@@ -82,17 +115,13 @@ data class ProductCardModel (
             val imageUrl: String = ""
     )
 
-    @Parcelize
     data class LabelGroup(
             val position: String = "",
             val title: String = "",
             val type: String = "",
             val imageUrl: String = ""
-    ):Parcelable {
-
-        fun isShowLabelCampaign(): Boolean {
-            return imageUrl.isNotEmpty() && title.isNotEmpty()
-        }
+    ) {
+        fun isGimmick() = position == LABEL_GIMMICK
     }
 
     data class LabelGroupVariant(
@@ -214,6 +243,8 @@ data class ProductCardModel (
 
     fun isShowShopBadge() = shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() } != null && shopLocation.isNotEmpty()
 
+    fun isShowShopLocation() = shopLocation.isNotEmpty() && !willShowFulfillment()
+
     fun isShowShopRating() = shopRating.isNotEmpty()
 
     fun isShowLabelBestSeller() = getLabelBestSeller()?.title?.isNotEmpty() == true
@@ -224,7 +255,7 @@ data class ProductCardModel (
     fun isShowLabelCategoryBottom() =
         isShowLabelBestSeller() && getLabelCategoryBottom()?.title?.isNotEmpty() == true
 
-    fun isStockBarShown() = stockBarLabel.isNotEmpty() && !isOutOfStock
+    fun isStockBarShown() = stockBarLabel.isNotEmpty()
 
     fun isShowLabelCampaign(): Boolean {
         val labelCampaign = getLabelCampaign()
@@ -243,6 +274,10 @@ data class ProductCardModel (
         return labelGroupVariantList.isNotEmpty()
     }
 
+    fun hasLabelVariantColor(): Boolean {
+        return labelGroupVariantList.any { it.isColor() }
+    }
+
     fun willShowFulfillment(): Boolean{
         val labelFulfillment = getLabelFulfillment()
 
@@ -257,14 +292,17 @@ data class ProductCardModel (
 
     fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
 
+    fun willShowPrimaryButtonWishlist() = hasAddToCartWishlist || hasSimilarProductWishlist
+
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
 
         if (isLabelVariantCountBelowMinimum(colorVariant, sizeVariant))
             return listOf()
 
-        val colorVariantTaken = getLabelVariantColorCount(colorVariant)
-        val sizeVariantTaken = getLabelVariantSizeCount(colorVariantTaken)
+        val colorVariantTaken = fashionStrategy.getLabelVariantColorCount(colorVariant)
+        val sizeVariantTaken =
+            fashionStrategy.getLabelVariantSizeCount(this, colorVariantTaken)
 
         return colorVariant.take(colorVariantTaken) +
                 sizeVariant.take(sizeVariantTaken) +
@@ -277,18 +315,8 @@ data class ProductCardModel (
     ) = colorVariant.size < MIN_LABEL_VARIANT_COUNT
             && sizeVariant.size < MIN_LABEL_VARIANT_COUNT
 
-    private fun getLabelVariantColorCount(colorVariant: List<LabelGroupVariant>) =
-            if (colorVariant.size >= MIN_LABEL_VARIANT_COUNT)
-                MAX_LABEL_VARIANT_COUNT
-            else 0
-
-    private fun getLabelVariantSizeCount(colorVariantTaken: Int): Int {
-        val hasLabelVariantColor = colorVariantTaken > 0
-
-        return if (hasLabelVariantColor) 0 else MAX_LABEL_VARIANT_COUNT
-    }
-
-    private fun getSplittedLabelGroupVariant(): Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
+    private fun getSplittedLabelGroupVariant():
+        Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
         var sizeVariantCount = 0
         var hiddenSizeVariant = 0
 
@@ -302,9 +330,9 @@ data class ProductCardModel (
                     colorVariant.add(element)
                 }
                 element.isSize() -> {
-                    val additionalSize = element.title.length + EXTRA_CHAR_SPACE
+                    val additionalSize = element.title.length + fashionStrategy.extraCharSpace
                     val isWithinCharLimit =
-                            (sizeVariantCount + additionalSize) <= LABEL_VARIANT_CHAR_LIMIT
+                            (sizeVariantCount + additionalSize) <= fashionStrategy.sizeCharLimit
 
                     if (isWithinCharLimit) {
                         sizeVariant.add(element)
@@ -337,5 +365,17 @@ data class ProductCardModel (
 
         customVariant.clear()
         customVariant.add(labelGroupCustomVariant)
+    }
+
+    fun getLabelReposition(): LabelGroup? {
+        return when {
+            getLabelProductStatus() != null -> null
+            getLabelBestSeller() != null -> getLabelBestSeller()
+            else -> getLabelGimmick()
+        }
+    }
+
+    enum class ProductListType {
+        CONTROL, REPOSITION, LONG_IMAGE
     }
 }

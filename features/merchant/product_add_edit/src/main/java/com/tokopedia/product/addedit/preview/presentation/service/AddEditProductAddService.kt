@@ -125,13 +125,13 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 productInputModel.shipmentInputModel,
                 variantInputModel)
         launchCatchError(block = {
-            withContext(Dispatchers.IO) {
+            val result = withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
                 productAddUseCase.executeOnBackground()
             }
             // (4)
             clearProductDraft()
-            setUploadProductDataSuccess()
+            setUploadProductDataSuccess(result.productAddEditV3Data.productId)
             addFlagOnUploadProductSuccess()
             ProductAddUploadTracking.uploadProductFinish(shopId, true)
         }, onError = { throwable ->

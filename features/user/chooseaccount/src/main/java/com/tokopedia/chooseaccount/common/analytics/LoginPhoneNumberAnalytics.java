@@ -49,7 +49,6 @@ public class LoginPhoneNumberAnalytics {
         static final String CLICK_ON_RESEND_VERIFICATION = "click on kirim ulang";
         static final String LOGIN_SUCCESS = "login success";
         static final String CLICK_ON_BUTTON_DAFTAR_PHONE = "click on button daftar - phone number";
-        static final String CLICK_ON_BUTTON_FACEBOOK = "click on button facebook";
         public static final String CHANGE_METHOD = "change method";
 
     }
@@ -95,14 +94,6 @@ public class LoginPhoneNumberAnalytics {
                 Category.REGISTER_PAGE,
                 Action.CLICK_ON_BUTTON_DAFTAR_PHONE,
                 Label.LOGIN_SUCCESS));
-    }
-
-    public void eventSuccessFbPhoneNumber() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_REGISTER,
-                Category.REGISTER_PAGE,
-                Action.CLICK_ON_BUTTON_FACEBOOK,
-                Label.REGISTER_SUCCESS));
     }
 
     public void trackVerifyOtpClick(String mode) {

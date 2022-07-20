@@ -12,11 +12,12 @@ import com.tokopedia.filter.common.helper.ChipSpacingItemDecoration
 import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
 import com.tokopedia.filter.common.helper.createColorSampleDrawable
 import com.tokopedia.filter.common.helper.expandTouchArea
+import com.tokopedia.filter.databinding.SortFilterBottomSheetChipsLayoutBinding
+import com.tokopedia.filter.databinding.SortFilterBottomSheetFilterViewHolderBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_chips_layout.view.*
-import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_filter_view_holder.view.*
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class FilterViewHolder(
         itemView: View,
@@ -27,6 +28,7 @@ internal class FilterViewHolder(
     companion object {
         val LAYOUT = R.layout.sort_filter_bottom_sheet_filter_view_holder
     }
+    private var binding : SortFilterBottomSheetFilterViewHolderBinding? by viewBinding()
 
     private val layoutManager = ChipsLayoutManager
             .newBuilder(itemView.context)
@@ -40,7 +42,7 @@ internal class FilterViewHolder(
     )
 
     init {
-        itemView.optionRecyclerView?.let {
+        binding?.optionRecyclerView?.let {
             it.setRecycledViewPool(recycledViewPool)
             it.layoutManager = layoutManager
             it.isNestedScrollingEnabled = false
@@ -55,24 +57,24 @@ internal class FilterViewHolder(
     }
 
     private fun bindTitle(element: FilterViewModel) {
-        itemView.filterTitleTextView?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(it, element.filter.title, getString(R.string.content_desc_filterTitleTextView)) }
+        binding?.filterTitleTextView?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(it, element.filter.title, getString(R.string.content_desc_filterTitleTextView)) }
     }
 
     private fun bindOptionList(element: FilterViewModel) {
-        itemView.optionRecyclerView?.swapAdapter(OptionAdapter(element, filterViewListener), false)
+        binding?.optionRecyclerView?.swapAdapter(OptionAdapter(element, filterViewListener), false)
     }
 
     private fun bindSeeAll(element: FilterViewModel) {
-        itemView.filterSeeAll?.showWithCondition(element.hasSeeAllButton)
-        itemView.filterSeeAll?.post {
-            itemView.filterSeeAll?.expandTouchArea(
+        binding?.filterSeeAll?.showWithCondition(element.hasSeeAllButton)
+        binding?.filterSeeAll?.post {
+            binding?.filterSeeAll?.expandTouchArea(
                     0,
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_18),
                     0,
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_18)
             )
         }
-        itemView.filterSeeAll?.setOnClickListener {
+        binding?.filterSeeAll?.setOnClickListener {
             filterViewListener.onSeeAllOptionClick(element)
         }
     }
@@ -99,17 +101,19 @@ internal class FilterViewHolder(
             private val filterViewModel: FilterViewModel,
             private val filterViewListener: FilterViewListener
     ): RecyclerView.ViewHolder(itemView) {
+        private var binding: SortFilterBottomSheetChipsLayoutBinding? by viewBinding()
 
         fun bind(optionViewModel: OptionViewModel) {
-            itemView.sortFilterChipsUnify?.chipText = optionViewModel.option.name
-            itemView.sortFilterChipsUnify?.chipType = ChipsUnify.TYPE_NORMAL
-            itemView.sortFilterChipsUnify?.chipSize = ChipsUnify.SIZE_MEDIUM
-            itemView.sortFilterChipsUnify?.chipType =
+            val sortFilterChipsUnify = binding?.sortFilterChipsUnify ?: return
+            sortFilterChipsUnify.chipText = optionViewModel.option.name
+            sortFilterChipsUnify.chipType = ChipsUnify.TYPE_NORMAL
+            sortFilterChipsUnify.chipSize = ChipsUnify.SIZE_MEDIUM
+            sortFilterChipsUnify.chipType =
                     if (optionViewModel.isSelected) ChipsUnify.TYPE_SELECTED
                     else ChipsUnify.TYPE_NORMAL
-            itemView.sortFilterChipsUnify?.showIcon(optionViewModel)
-            itemView.sortFilterChipsUnify?.showNewNotification = optionViewModel.option.isNew
-            itemView.sortFilterChipsUnify?.setOnClickListener {
+            sortFilterChipsUnify.showIcon(optionViewModel)
+            sortFilterChipsUnify.showNewNotification = optionViewModel.option.isNew
+            sortFilterChipsUnify.setOnClickListener {
                 filterViewListener.onOptionClick(filterViewModel, optionViewModel)
             }
         }

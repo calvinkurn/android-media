@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
@@ -20,7 +21,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.util.ViewUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 
 /**
  * Created by yfsx on 3/1/21.
@@ -33,6 +33,8 @@ class BalanceWidgetView: FrameLayout {
     private var rvBalance: RecyclerView? = null
     private var layoutManager: NpaGridLayoutManager? = null
     private var balanceAdapter: BalanceAdapter? = null
+    private var viewBalanceCoachmark: LinearLayout? = null
+    private var viewBalanceCoachmarkNew: LinearLayout? = null
     private lateinit var containerWidget: FrameLayout
 
     private var tokopointsView: View? = null
@@ -46,12 +48,15 @@ class BalanceWidgetView: FrameLayout {
     companion object {
         const val LAYOUT_SPAN_2 = 2
         const val LAYOUT_SPAN_3 = 3
+        var disableAnimation: Boolean = false
     }
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
         containerWidget = view.findViewById(R.id.container_balance_widget)
+        viewBalanceCoachmark = view.findViewById(R.id.view_balance_widget_coachmark)
+        viewBalanceCoachmarkNew = view.findViewById(R.id.view_balance_widget_coachmark_new)
         rvBalance?.itemAnimator?.changeDuration = 0
         this.itemView = view
         this.itemContext = view.context
@@ -65,21 +70,14 @@ class BalanceWidgetView: FrameLayout {
     }
 
     private fun renderWidget(element: HomeBalanceModel) {
-        if (element.isGopayEligible == null) {
-            view_balance_widget_coachmark.visibility = View.GONE
-            view_balance_widget_coachmark_new.visibility = View.GONE
-        }
-        if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible == false) {
-            view_balance_widget_coachmark.visibility = View.INVISIBLE
-            view_balance_widget_coachmark_new.visibility = View.GONE
-        } else if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible == true) {
-            view_balance_widget_coachmark.visibility = View.GONE
-            view_balance_widget_coachmark_new.visibility = View.INVISIBLE
+        if (element.balanceType == TYPE_STATE_2) {
+            viewBalanceCoachmark?.visibility = View.GONE
+            viewBalanceCoachmarkNew?.visibility = View.INVISIBLE
         } else {
-            view_balance_widget_coachmark.visibility = View.GONE
-            view_balance_widget_coachmark_new.visibility = View.GONE
+            viewBalanceCoachmark?.visibility = View.GONE
+            viewBalanceCoachmarkNew?.visibility = View.GONE
         }
-        containerWidget.background = ViewUtils.generateBackgroundWithShadow(containerWidget, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
+        containerWidget.background = ViewUtils.generateBackgroundWithShadow(containerWidget, com.tokopedia.unifyprinciples.R.color.Unify_N0, com.tokopedia.home.R.dimen.ovo_corner_radius, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, com.tokopedia.home.R.dimen.ovo_elevation, Gravity.CENTER)
         layoutManager = getLayoutManager(element)
         if (balanceAdapter == null || rvBalance?.adapter == null) {
             balanceAdapter = BalanceAdapter(listener, object: DiffUtil.ItemCallback<BalanceDrawerItemModel>() {
@@ -118,10 +116,12 @@ class BalanceWidgetView: FrameLayout {
     }
 
     fun startRotationForPosition(position: Int) {
-        val viewholder = rvBalance?.findViewHolderForAdapterPosition(position)
-        viewholder?.let {
-            (it as? BalanceAdapter.Holder)?.let {
-                it.setDrawerItemWithAnimation()
+        if (!disableAnimation) {
+            val viewholder = rvBalance?.findViewHolderForAdapterPosition(position)
+            viewholder?.let {
+                (it as? BalanceAdapter.Holder)?.let {
+                    it.setDrawerItemWithAnimation()
+                }
             }
         }
     }

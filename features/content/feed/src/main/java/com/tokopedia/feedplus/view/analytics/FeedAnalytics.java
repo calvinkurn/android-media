@@ -16,6 +16,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.feedcomponent.domain.mapper.DynamicFeedNewMapperKt.TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT;
 import static com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_CLICK;
 import static com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking.Event.PROMO_VIEW;
 
@@ -41,6 +42,7 @@ public class FeedAnalytics {
     private static final String ACTION_IMPRESSION = "Impression";
     private static final String ACTION_VIEW = "View";
     private static final String ACTION_CLICK = "Click";
+    private static final String ACTION_CLICK_PRODUCT = "click - product";
 
     private static final String PRODUCT_VIEW = "productView";
     private static final String PRODUCT_CLICK = "productClick";
@@ -60,6 +62,8 @@ public class FeedAnalytics {
     private static final String CONTENT_FEED_TIMELINE = "content feed timeline";
     private static final String CONTENT_FEED_TIMELINE_DETAIL = "content feed timeline - product detail";
     private static final String CONTENT_FEED_TIMELINE_BOTTOM_SHEET = "content feed timeline - bottom sheet";
+    private static final String ASGC = "asgc";
+    private static final String ASGC_RECOM = "asgc recom";
     //endregion
 
     private UserSessionInterface userSession;
@@ -188,7 +192,7 @@ public class FeedAnalytics {
     }
 
     public void eventBannerImpression(List<TrackingBannerModel> trackingBannerModels, int userId) {
-        int firstPostId = trackingBannerModels.isEmpty() ? 0 : trackingBannerModels.get(0).getPostId();
+        String firstPostId = trackingBannerModels.isEmpty() ? "" : trackingBannerModels.get(0).getPostId();
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         for (TrackingBannerModel banner : trackingBannerModels) {
             promotionList.add(new FeedEnhancedTracking.Promotion(
@@ -215,7 +219,7 @@ public class FeedAnalytics {
     //docs : https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1878700964
     //screenshot 1
     public void eventBannerClick(String templateType, String activityName, String mediaType,
-                                 String bannerUrl, String applink, int totalBanner, int postId,
+                                 String bannerUrl, String applink, int totalBanner, String postId,
                                  int bannerPosition, int userId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
@@ -252,7 +256,7 @@ public class FeedAnalytics {
 
     public void eventRecommendationImpression(List<TrackingRecommendationModel> trackingList,
                                               int userId) {
-        int firstAuthorId = trackingList.isEmpty() ? 0 : trackingList.get(0).getAuthorId();
+        String firstAuthorId = trackingList.isEmpty() ? "0" : trackingList.get(0).getAuthorId();
         String firstAuthorType = trackingList.isEmpty() ? "" : trackingList.get(0).getAuthorType();
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         for (TrackingRecommendationModel tracking : trackingList) {
@@ -263,7 +267,7 @@ public class FeedAnalytics {
                     "",
                     tracking.getCardPosition(),
                     "",
-                    0,
+                    "0",
                     tracking.getTemplateType()
             ));
         }
@@ -278,7 +282,7 @@ public class FeedAnalytics {
     }
 
     public void eventRecommendationClick(String templateType, String activityName,
-                                         String authorName, String authorType, int authorId,
+                                         String authorName, String authorType, String authorId,
                                          int cardPosition, int userId) {
 
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
@@ -289,7 +293,7 @@ public class FeedAnalytics {
                 "",
                 cardPosition,
                 "",
-                0,
+                "0",
                 templateType
         ));
         trackEnhancedEcommerceEvent(
@@ -304,7 +308,7 @@ public class FeedAnalytics {
 
     public void eventTopadsRecommendationImpression(List<TrackingRecommendationModel> trackingList,
                                                     int userId) {
-        int firstAuthorId = trackingList.isEmpty() ? 0 : trackingList.get(0).getAuthorId();
+        String firstAuthorId = trackingList.isEmpty() ? "0" : trackingList.get(0).getAuthorId();
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         for (TrackingRecommendationModel tracking : trackingList) {
             promotionList.add(new FeedEnhancedTracking.Promotion(
@@ -331,7 +335,7 @@ public class FeedAnalytics {
     // docs : https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1878700964
     // screenshot 13
 
-    public void eventTopadsRecommendationClick(String templateType, int adId, int authorId,
+    public void eventTopadsRecommendationClick(String templateType, String adId, String authorId,
                                                int cardPosition, int userId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
@@ -404,7 +408,7 @@ public class FeedAnalytics {
 
     public void eventCardPostImpression(String templateType, String activityName, String mediaType,
                                         String redirectUrl, String imageUrl, String authorId,
-                                        int totalContent, int postId, int userId,
+                                        int totalContent, String postId, int userId,
                                         int feedPosition, int recomId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
@@ -414,7 +418,7 @@ public class FeedAnalytics {
                 redirectUrl,
                 feedPosition,
                 "",
-                formatStringToInt(authorId),
+                authorId,
                 String.format("%s - %s", templateType, singleOrMultiple(totalContent))
         ));
         trackEnhancedEcommerceEvent(
@@ -429,7 +433,7 @@ public class FeedAnalytics {
 
     public void eventCardPostClick(String templateType, String activityName, String mediaType,
                                    String redirectUrl, String imageUrl, String authorId,
-                                   int totalContent, int postId, int userId,
+                                   int totalContent, String postId, int userId,
                                    int feedPosition, int recomId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
@@ -439,7 +443,7 @@ public class FeedAnalytics {
                 redirectUrl,
                 feedPosition,
                 "",
-                formatStringToInt(authorId),
+                authorId,
                 String.format("%s - %s", templateType, singleOrMultiple(totalContent))
         ));
         trackEnhancedEcommerceEvent(
@@ -489,7 +493,7 @@ public class FeedAnalytics {
     }
 
     public void eventVoteImpression(String activityName, String mediaType, String pollId,
-                                    int postId, int userId) {
+                                    String postId, int userId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                 postId,
@@ -498,7 +502,7 @@ public class FeedAnalytics {
                 "",
                 0,
                 "",
-                0,
+                "",
                 ""
         ));
         trackEnhancedEcommerceEvent(
@@ -512,7 +516,7 @@ public class FeedAnalytics {
     }
 
     public void eventVoteClick(String activityName, String mediaType, String pollId, String optionId,
-                               String optionName, String imageUrl, int postId, int userId) {
+                               String optionName, String imageUrl, String postId, int userId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         promotionList.add(new FeedEnhancedTracking.Promotion(
                 postId,
@@ -521,7 +525,7 @@ public class FeedAnalytics {
                 imageUrl,
                 0,
                 "",
-                0,
+                "0",
                 ""
         ));
         trackEnhancedEcommerceEvent(
@@ -560,20 +564,29 @@ public class FeedAnalytics {
                 )
         );
     }
+    public String getPostType(String type, boolean isFollowed) {
+         if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
+             return ASGC_RECOM;
+        else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && isFollowed)
+             return ASGC;
+        else
+            return ASGC;
+    }
 
-    public void eventDetailProductClick(ProductEcommerce product, int userId, String shopId, String activityId) {
+    public void eventDetailProductClick(ProductEcommerce product, int userId, String shopId, String activityId, String type, boolean isFollowed) {
+        String eventAction = ACTION_CLICK_PRODUCT+" - " + getPostType(type, isFollowed);
         trackEnhancedEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_CLICK,
                         EVENT_CATEGORY, CONTENT_FEED_TIMELINE_BOTTOM_SHEET,
-                        EVENT_ACTION, "click - product - asgc",
+                        EVENT_ACTION, eventAction,
                         EVENT_LABEL, activityId+" - "+shopId+" - "+product.getProductId(),
                         KEY_USER_ID, userId,
                         KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
                         KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
                         EVENT_ECOMMERCE, getProductEcommerceClick(
                                 product,
-                                "/feed - asgc detail"
+                                "/feed - "+ getPostType(type, isFollowed)
                         )
                 )
         );

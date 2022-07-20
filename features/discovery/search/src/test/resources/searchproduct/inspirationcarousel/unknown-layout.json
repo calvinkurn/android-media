@@ -1026,11 +1026,13 @@
         "type": "information",
         "position": 8,
         "layout": "info",
+        "tracking_option": "3",
         "options": [
           {
             "title": "1 - 6 bulan",
             "url": "",
             "applink": "",
+            "component_id": "03.02.01.00",
             "product": [
               {
                 "id": "",
@@ -1041,7 +1043,8 @@
                 "rating" : 0,
                 "count_review": 0,
                 "applink": "tokopedia://search?st=product&q=rattle%20stick",
-                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"]
+                "description": ["Melatih memegang","Mengenal bunyi","Aman masuk mulut"],
+                "component_id": "03.02.01.01"
               }
             ]
           },

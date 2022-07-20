@@ -17,6 +17,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_grid.view.*
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by milhamj on 07/12/18.
@@ -134,7 +135,8 @@ class GridPostAdapter(private val contentPosition: Int,
                     type,
                     isFollowed,
                     shopId,
-                    gridPostViewModel.itemListFeedXProduct[item.index])
+                    gridPostViewModel.itemListFeedXProduct,
+                        item.index)
                 if (item.trackingList.isNotEmpty()) {
                     listener.onAffiliateTrackClicked(item.trackingList, true)
                 }
@@ -180,30 +182,32 @@ class GridPostAdapter(private val contentPosition: Int,
 
             itemView.priceText.hide()
 
-            itemView.setOnClickListener {
+            val function: (v: View) -> Unit = {
                 listener.onGridItemClick(
-                    positionInFeed,
-                    postId,
-                    "0",
-                    if (!TextUtils.isEmpty(actionLink)) actionLink
-                    else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString()),
-                    type,
-                    isFollowed,
-                    shopId,
-                    gridPostViewModel.itemListFeedXProduct[0]
+                        positionInFeed,
+                        postId,
+                        "0",
+                        if (!TextUtils.isEmpty(actionLink)) actionLink
+                        else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString()),
+                        type,
+                        isFollowed,
+                        shopId,
+                        gridPostViewModel.itemListFeedXProduct,
+                        0
                 )
             }
+            itemView.setOnClickListener(function)
         }
 
         private fun setImageMargins(listSize: Int) {
             if (listSize == 1) {
                 itemView.productLayout.setMargin(0, 0, 0, 0)
-                itemView.tagTypeText.setPadding(itemView.getDimens(R.dimen.dp_16), 0, itemView.getDimens(R.dimen.dp_16), 0)
-                itemView.priceText.setPadding(itemView.getDimens(R.dimen.dp_16), 0, itemView.getDimens(R.dimen.dp_16), 0)
+                itemView.tagTypeText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl4), 0, itemView.getDimens(unifyR.dimen.spacing_lvl4), 0)
+                itemView.priceText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl4), 0, itemView.getDimens(unifyR.dimen.spacing_lvl4), 0)
             } else {
-                itemView.productLayout.setMargin(itemView.getDimens(R.dimen.dp_2), 0, itemView.getDimens(R.dimen.dp_2), 0)
-                itemView.tagTypeText.setPadding(itemView.getDimens(R.dimen.dp_4), 0, itemView.getDimens(R.dimen.dp_4), 0)
-                itemView.priceText.setPadding(itemView.getDimens(R.dimen.dp_4), 0, itemView.getDimens(R.dimen.dp_4), 0)
+                itemView.productLayout.setMargin(itemView.getDimens(unifyR.dimen.spacing_lvl1), 0, itemView.getDimens(unifyR.dimen.spacing_lvl1), 0)
+                itemView.tagTypeText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl2), 0, itemView.getDimens(unifyR.dimen.spacing_lvl2), 0)
+                itemView.priceText.setPadding(itemView.getDimens(unifyR.dimen.spacing_lvl2), 0, itemView.getDimens(unifyR.dimen.spacing_lvl2), 0)
             }
         }
     }
@@ -213,9 +217,13 @@ class GridPostAdapter(private val contentPosition: Int,
             positionInFeed: Int, activityId: Int, productId: String,
             redirectLink: String, type: String, isFollowed: Boolean,
             shopId: String,
-            feedXProduct: FeedXProduct
+            feedXProducts: List<FeedXProduct>,
+            index : Int
         )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+    }
+    companion object {
+        var isMute = true
     }
 }

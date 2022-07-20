@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import androidx.annotation.LayoutRes;
+
+import android.annotation.SuppressLint;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -14,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
  */
 
 public class RetryViewHolder extends AbstractViewHolder<HomeRetryModel> {
+    @SuppressLint("ResourcePackage")
     @LayoutRes
     public final static int LAYOUT = R.layout.home_feeds_retry_layout;
     private final View button;

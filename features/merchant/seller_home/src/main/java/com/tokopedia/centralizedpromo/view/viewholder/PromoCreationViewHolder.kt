@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
@@ -16,6 +17,10 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
 
     var onFreeShippingImpression: (() -> Unit)? = null
     var onFreeShippingClicked: (() -> Unit)? = null
+    var onProductCouponImpression: (() -> Unit)? = null
+    var onProductCouponClicked: (() -> Unit)? = null
+    var onTokoMemberImpression: (() -> Unit)? = null
+    var onTokoMemberClicked: (() -> Unit)? = null
 
     companion object {
         val RES_LAYOUT = centralized_promo_item_promo_creation
@@ -30,6 +35,15 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             ImageHandler.loadImageWithId(ivRecommendedPromo, element.imageDrawable)
             tvRecommendedPromoTitle.text = element.title
             tvRecommendedPromoDescription.text = element.description
+
+            newTagLabel.run {
+                if (element.tagLabel.isNotBlank()) {
+                    show()
+                    setLabel(element.tagLabel)
+                } else {
+                    hide()
+                }
+            }
 
             if (element.extra.isNotBlank()) {
                 tvRecommendedPromoExtra.text = element.extra
@@ -51,10 +65,19 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             }
 
             root.addOnImpressionListener(element.impressHolder) {
-                if (isFreeShippingPromo(element.title)) {
-                    onFreeShippingImpression?.invoke()
-                } else {
-                    CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
+                when {
+                    isFreeShippingPromo(element.title) -> {
+                        onFreeShippingImpression?.invoke()
+                    }
+                    isProductCouponPromo(element.title) -> {
+                        onProductCouponImpression?.invoke()
+                    }
+                    isTokoMember(element.title) -> {
+                        onTokoMemberImpression?.invoke()
+                    }
+                    else -> {
+                        CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
+                    }
                 }
             }
 
@@ -73,14 +96,32 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
     }
 
     private fun trackClickPromo(title: String) {
-        if (isFreeShippingPromo(title)) {
-            onFreeShippingClicked?.invoke()
-        } else {
-            CentralizedPromoTracking.sendClickPromoCreation(title)
+        when {
+            isFreeShippingPromo(title) -> {
+                onFreeShippingClicked?.invoke()
+            }
+            isProductCouponPromo(title) -> {
+                onProductCouponClicked?.invoke()
+            }
+            isTokoMember(title) -> {
+                onTokoMemberClicked?.invoke()
+            }
+            else -> {
+                CentralizedPromoTracking.sendClickPromoCreation(title)
+            }
         }
     }
 
     private fun isFreeShippingPromo(title: String): Boolean {
         return title == getString(R.string.centralized_promo_promo_creation_free_shipping_title)
     }
+
+    private fun isProductCouponPromo(title: String): Boolean {
+        return title == getString(R.string.centralized_promo_promo_creation_voucher_product_title)
+    }
+
+    private fun isTokoMember(title: String): Boolean {
+        return title == getString(R.string.centralized_promo_promo_creation_tokomember_title)
+    }
+
 }

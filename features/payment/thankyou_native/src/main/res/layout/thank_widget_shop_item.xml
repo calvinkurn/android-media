@@ -5,6 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivProductBundle"
+        android:layout_width="@dimen/unify_space_16"
+        android:layout_height="@dimen/unify_space_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvInvoiceShopItemName"
+        app:layout_constraintTop_toTopOf="@+id/tvInvoiceShopItemName"
+        app:layout_constraintBottom_toBottomOf="@+id/tvInvoiceShopItemName"
+        android:visibility="gone"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        app:srcCompat="@drawable/thank_product_bundling_icon"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemName"
         android:layout_width="@dimen/layout_lvl0"
@@ -12,15 +24,29 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:maxLines="2"
         android:ellipsize="end"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@+id/tvInvoiceShopItemNameTotalPrice"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivProductBundle"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Product Name" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvGoFooVariantDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toEndOf="@+id/ivProductBundle"
+        app:layout_constraintEnd_toEndOf="@+id/tvInvoiceShopItemName"
+        app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopItemName"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Product Variant"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemNameTotalPrice"
@@ -41,7 +67,7 @@
         android:gravity="start"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopItemName"
+        app:layout_constraintTop_toBottomOf="@+id/tvGoFooVariantDescription"
         app:typographyType="body_3"
         tools:text="1 X RP1000021" />
 

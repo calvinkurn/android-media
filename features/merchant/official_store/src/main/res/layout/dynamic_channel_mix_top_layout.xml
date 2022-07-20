@@ -35,7 +35,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:textSize="@dimen/sp_18"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/banner_description"
         app:layout_constraintEnd_toStartOf="@+id/banner_button"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +69,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/banner_button"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_32"
+        android:layout_height="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"

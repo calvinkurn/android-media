@@ -17,7 +17,7 @@
         app:typographyWeight="bold"
         app:typographyType="body_2"/>
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl0"
@@ -25,6 +25,7 @@
         app:srcCompat="@drawable/unify_chips_ic_chevron_normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/title"
-        app:layout_constraintBottom_toBottomOf="@id/title" />
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        app:unifyImageButtonVariant="image"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,14 +2,14 @@ package com.tokopedia.play.broadcaster.util.preference
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastScope
+import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created by jegul on 09/07/20
  */
-@PlayBroadcastScope
+@ActivityRetainedScope
 class HydraSharedPreferences @Inject constructor(
         @ApplicationContext context: Context,
         private val userSession: UserSessionInterface
@@ -65,6 +65,51 @@ class HydraSharedPreferences @Inject constructor(
                 ).apply()
     }
 
+    fun isFirstGameResult():Boolean {
+        return mSharedPrefs.getBoolean(
+            String.format(KEY_FIRST_GAME_RESULT, userSession.shopId),
+            true
+        )
+    }
+
+    fun setNotFirstGameResult(){
+        mSharedPrefs.edit()
+            .putBoolean(
+                String.format(KEY_FIRST_GAME_RESULT, userSession.shopId),
+                false
+            ).apply()
+    }
+
+    fun isFirstQuizPrice(): Boolean {
+        return mSharedPrefs.getBoolean(
+            String.format(KEY_FIRST_QUIZ_PRIZE, userSession.shopId),
+            true
+        )
+    }
+
+    fun setNotFirstQuizPrice() {
+        mSharedPrefs.edit()
+            .putBoolean(
+                String.format(KEY_FIRST_QUIZ_PRIZE, userSession.shopId),
+                false
+            ).apply()
+    }
+
+    fun isFirstSelectQuizOption(): Boolean {
+        return mSharedPrefs.getBoolean(
+            String.format(KEY_FIRST_SELECT_QUIZ_OPTION, userSession.shopId),
+            true
+        )
+    }
+
+    fun setNotFirstSelectQuizOption() {
+        mSharedPrefs.edit()
+            .putBoolean(
+                String.format(KEY_FIRST_SELECT_QUIZ_OPTION, userSession.shopId),
+                false
+            ).apply()
+    }
+
     companion object {
 
         private const val HYDRA_PREFERENCE_NAME = "hydra_preference"
@@ -72,5 +117,8 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_FIRST_STREAMING = "first_streaming_%s_%s"
         private const val KEY_FIRST_INTERACTIVE = "first_interactive_%s"
         private const val KEY_PERMISSION = "permission_%s"
+        private const val KEY_FIRST_QUIZ_PRIZE = "first_quiz_prize_%s"
+        private const val KEY_FIRST_SELECT_QUIZ_OPTION = "first_select_quiz_option_%s"
+        private const val KEY_FIRST_GAME_RESULT = "first_game_result_%s"
     }
 }

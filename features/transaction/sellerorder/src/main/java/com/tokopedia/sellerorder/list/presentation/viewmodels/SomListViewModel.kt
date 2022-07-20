@@ -140,10 +140,10 @@ class SomListViewModel @Inject constructor(
     val bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
 
     private val _bulkAcceptOrderStatusResult = MediatorLiveData<Pair<Int, Result<SomListBulkAcceptOrderStatusUiModel>>>().apply {
-            addSource(_bulkAcceptOrderResult) {
-                if (it is Success) getBulkAcceptOrderStatus(Int.ZERO)
-            }
+        addSource(_bulkAcceptOrderResult) {
+            if (it is Success) getBulkAcceptOrderStatus(Int.ZERO)
         }
+    }
 
     val bulkRequestPickupFinalResultMediator = MediatorLiveData<BulkRequestPickupResultState>()
     val bulkRequestPickupFinalResult: LiveData<BulkRequestPickupResultState>
@@ -572,7 +572,7 @@ class SomListViewModel @Inject constructor(
 
     fun getTopAdsCategory() {
         launchCatchError(block = {
-            somListGetTopAdsCategoryUseCase.setParams(userSession.shopId.toIntOrZero())
+            somListGetTopAdsCategoryUseCase.setParams(userSession.shopId.toLongOrZero())
             _topAdsCategoryResult.postValue(Success(somListGetTopAdsCategoryUseCase.executeOnBackground()))
         }, onError = {
             _topAdsCategoryResult.postValue(Fail(it))
@@ -611,11 +611,11 @@ class SomListViewModel @Inject constructor(
         this.getOrderListParams = getOrderListParams
     }
 
-    fun setOrderTypeFilter(orderTypes: MutableSet<Int>) {
+    fun setOrderTypeFilter(orderTypes: MutableSet<Long>) {
         this.getOrderListParams.orderTypeList = orderTypes
     }
 
-    fun setSortOrderBy(value: Int) {
+    fun setSortOrderBy(value: Long) {
         this.getOrderListParams.sortBy = value
     }
 

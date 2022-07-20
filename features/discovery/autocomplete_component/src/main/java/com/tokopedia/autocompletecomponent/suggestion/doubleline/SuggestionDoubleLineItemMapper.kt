@@ -1,26 +1,50 @@
 package com.tokopedia.autocompletecomponent.suggestion.doubleline
 
+import com.tokopedia.autocompletecomponent.suggestion.convertToBaseSuggestion
+import com.tokopedia.autocompletecomponent.suggestion.convertToBaseSuggestionShopAds
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionItem
+import com.tokopedia.topads.sdk.domain.model.CpmData
 
-fun SuggestionItem.convertToDoubleLineVisitableList(searchTerm: String, position: Int, dimension90: String): SuggestionDoubleLineDataDataView {
-    val item = SuggestionDoubleLineDataDataView()
-    item.template = this.template
-    item.type = this.type
-    item.applink = this.applink
-    item.url = this.url
-    item.title = this.title
-    item.subtitle = this.subtitle
-    item.iconTitle = this.iconTitle
-    item.iconSubtitle = this.iconSubtitle
-    item.shortcutUrl = this.shortcutUrl
-    item.shortcutImage = this.shortcutImage
-    item.imageUrl = this.imageUrl
-    item.label = this.label
-    item.labelType = this.labelType
-    item.urlTracker = this.urlTracker
-    item.searchTerm = searchTerm
-    item.position = position
-    item.dimension90 = dimension90
-    item.trackingCode = this.tracking.code
-    return item
+fun SuggestionItem.convertToDoubleLineVisitableList(
+    searchTerm: String,
+    position: Int,
+    dimension90: String
+): SuggestionDoubleLineDataDataView {
+    return SuggestionDoubleLineDataDataView(
+        data = convertToBaseSuggestion(
+            searchTerm,
+            position,
+            dimension90,
+        )
+    )
+}
+
+fun SuggestionItem.convertToDoubleLineWithoutImageVisitableList(
+    searchTerm: String,
+    position: Int,
+    dimension90: String
+): SuggestionDoubleLineWithoutImageDataDataView {
+    return SuggestionDoubleLineWithoutImageDataDataView(
+        data = convertToBaseSuggestion(
+            searchTerm,
+            position,
+            dimension90,
+        )
+    )
+}
+
+fun SuggestionItem.convertToDoubleLineShopAds(
+    searchTerm: String,
+    position: Int,
+    dimension90: String,
+    cpmData: CpmData,
+): SuggestionDoubleLineDataDataView {
+    return SuggestionDoubleLineDataDataView(
+        data = convertToBaseSuggestionShopAds(
+            searchTerm,
+            position,
+            dimension90,
+            cpmData,
+        )
+    )
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.logger.datasource.cloud
 
-import com.tokopedia.logger.model.EmbraceBody
+import com.tokopedia.logger.model.embrace.EmbraceBody
 import io.embrace.android.embracesdk.Embrace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

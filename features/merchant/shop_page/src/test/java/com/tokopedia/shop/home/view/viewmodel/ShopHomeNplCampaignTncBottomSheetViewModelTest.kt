@@ -5,15 +5,11 @@ import androidx.lifecycle.Observer
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
-import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
-import com.tokopedia.shop.home.domain.GetShopHomeCampaignNplTncUseCase
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
+import com.tokopedia.shop.home.domain.GetShopHomeMerchantCampaignTncUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,7 +22,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Observable
 
 @ExperimentalCoroutinesApi
 class ShopHomeNplCampaignTncBottomSheetViewModelTest {
@@ -37,7 +32,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
     @RelaxedMockK
-    lateinit var getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase
+    lateinit var getMerchantCampaignTncUseCase: GetShopHomeMerchantCampaignTncUseCase
     @RelaxedMockK
     lateinit var updateFollowStatusUseCase: UpdateFollowStatusUseCase
     @RelaxedMockK
@@ -55,7 +50,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
         viewModel = ShopHomeNplCampaignTncBottomSheetViewModel(
                 testCoroutineDispatcherProvider,
                 userSession,
-                getCampaignNplTncUseCase,
+                getMerchantCampaignTncUseCase,
                 updateFollowStatusUseCase,
                 getFollowStatusUseCase
         )
@@ -78,14 +73,14 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     fun `check whether _campaignTncLiveData and _campaignFollowStatusLiveData post success data`() {
         val sampleCampaignId = "1234"
         val shopId = "12345"
-        coEvery { getCampaignNplTncUseCase.executeOnBackground() } returns ShopHomeCampaignNplTncModel()
+        coEvery { getMerchantCampaignTncUseCase.executeOnBackground() } returns ShopHomeCampaignNplTncModel()
         coEvery { getFollowStatusUseCase.executeOnBackground().followStatus } returns FollowStatus(null, null, null)
         viewModel.getTncBottomSheetData(sampleCampaignId, shopId, false)
 
         viewModel.campaignTncLiveData.observeAwaitValue()
         viewModel.campaignFollowStatusLiveData.observeAwaitValue()
 
-        coVerify { getCampaignNplTncUseCase.executeOnBackground() }
+        coVerify { getMerchantCampaignTncUseCase.executeOnBackground() }
         coVerify { getFollowStatusUseCase.executeOnBackground() }
 
         assert(viewModel.campaignTncLiveData.value is Success)
@@ -96,14 +91,14 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     fun `check whether campaignFollowStatusLiveData value is null if isOwner is true`() {
         val sampleCampaignId = "1234"
         val shopId = "12345"
-        coEvery { getCampaignNplTncUseCase.executeOnBackground() } returns ShopHomeCampaignNplTncModel()
+        coEvery { getMerchantCampaignTncUseCase.executeOnBackground() } returns ShopHomeCampaignNplTncModel()
         coEvery { getFollowStatusUseCase.executeOnBackground().followStatus } returns FollowStatus(null, null, null)
         viewModel.getTncBottomSheetData(sampleCampaignId, shopId, true)
 
         viewModel.campaignTncLiveData.observeAwaitValue()
         viewModel.campaignFollowStatusLiveData.observeAwaitValue()
 
-        coVerify { getCampaignNplTncUseCase.executeOnBackground() }
+        coVerify { getMerchantCampaignTncUseCase.executeOnBackground() }
         coVerify { getFollowStatusUseCase.executeOnBackground() }
 
         assert(viewModel.campaignTncLiveData.value is Success)
@@ -117,14 +112,14 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
         val observer = mockk<Observer<Result<ShopHomeCampaignNplTncUiModel>>>()
         viewModel.campaignTncLiveData.observeForever(observer)
         coEvery { observer.onChanged(any<Success<ShopHomeCampaignNplTncUiModel>>()) } throws Exception()
-        coEvery { getCampaignNplTncUseCase.executeOnBackground() } returns ShopHomeCampaignNplTncModel()
+        coEvery { getMerchantCampaignTncUseCase.executeOnBackground() } returns ShopHomeCampaignNplTncModel()
         coEvery { getFollowStatusUseCase.executeOnBackground().followStatus } returns FollowStatus(null, null, null)
         viewModel.getTncBottomSheetData(sampleCampaignId, shopId, false)
 
         viewModel.campaignTncLiveData.observeAwaitValue()
         viewModel.campaignFollowStatusLiveData.observeAwaitValue()
 
-        coVerify { getCampaignNplTncUseCase.executeOnBackground() }
+        coVerify { getMerchantCampaignTncUseCase.executeOnBackground() }
         coVerify { getFollowStatusUseCase.executeOnBackground() }
 
         assert(viewModel.campaignTncLiveData.value is Fail)
@@ -135,9 +130,9 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     fun `check whether _campaignTncLiveData post fail data`() {
         val sampleCampaignId = "1234"
         val shopId = "0"
-        coEvery { getCampaignNplTncUseCase.executeOnBackground() } throws Exception()
+        coEvery { getMerchantCampaignTncUseCase.executeOnBackground() } throws Exception()
         viewModel.getTncBottomSheetData(sampleCampaignId, shopId, false)
-        coVerify { getCampaignNplTncUseCase.executeOnBackground() }
+        coVerify { getMerchantCampaignTncUseCase.executeOnBackground() }
         assert(viewModel.campaignTncLiveData.value is Fail)
     }
 

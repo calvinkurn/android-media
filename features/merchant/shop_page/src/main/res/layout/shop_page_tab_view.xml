@@ -7,14 +7,13 @@
     android:id="@+id/tab_icon_layout"
     android:background="@color/clr_transparent">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/shop_page_tab_view_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/ic_shop_tab_showcase_inactive"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />

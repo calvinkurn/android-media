@@ -172,7 +172,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     }
 
     private fun setupUI() {
-        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         loader = binding?.loader
         layout = binding?.layout
         labelStartClose = binding?.labelStartClose

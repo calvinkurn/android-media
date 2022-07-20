@@ -5,17 +5,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,11 +32,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
+import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper;
 import com.tokopedia.logisticaddaddress.R;
+import com.tokopedia.logisticaddaddress.data.entity.OldEditAddressResponseData;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
@@ -56,7 +48,6 @@ import com.tokopedia.logisticCommon.data.module.qualifier.LogisticUserSessionQua
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
-import com.tokopedia.purchase_platform.common.analytics.ITransactionAnalyticsAddAddress;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifyprinciples.Typography;
@@ -71,8 +62,9 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
+import static com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS;
+import static com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.EDIT_PARAM;
-import static com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_INSTANCE_TYPE;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
@@ -86,7 +78,7 @@ import static com.tokopedia.logisticaddaddress.common.AddressConstants.REQUEST_C
  * Created by nisie on 9/6/16.
  */
 public class AddAddressFragment extends BaseDaggerFragment
-        implements AddAddressContract.View, ITransactionAnalyticsAddAddress {
+        implements AddAddressContract.View {
 
     public static final int ERROR_RESULT_CODE = 999;
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
@@ -172,6 +164,9 @@ public class AddAddressFragment extends BaseDaggerFragment
             getActivity().finish();
         } else {
             if (!isEdit()) sendAnalyticsScreenName(getScreenName());
+            else {
+                OldEditAddressAnalytics.INSTANCE.sendViewEditAddressPageOldEvent();
+            }
         }
     }
 
@@ -303,7 +298,15 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void finishActivity() {
         Intent intent = getActivity().getIntent();
-        intent.putExtra(EXTRA_ADDRESS, address);
+        intent.putExtra(EXTRA_EDIT_ADDRESS, address.getAddressId());
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public void finishActivityAfterEdit(OldEditAddressResponseData data) {
+        Intent intent = getActivity().getIntent();
+        intent.putExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, data.isStateChosenAddressChanged());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -465,124 +468,112 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void errorSaveAddress() {
+        if (isEdit()) {
+            OldEditAddressAnalytics.INSTANCE.sendClickButtonSimpanEditAddressOldEvent(false);
+        }
         sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(false);
     }
 
     @Override
     public void successSaveAddress() {
+        if (isEdit()) {
+            OldEditAddressAnalytics.INSTANCE.sendClickButtonSimpanEditAddressOldEvent(true);
+        }
         sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(true);
     }
 
-    @Override
     public void sendAnalyticsOnDistrictSelectionClicked() {
         if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickKotaAtauKecamatanPadaTambahAddress();
         }
     }
 
-    @Override
     public void sendAnalyticsOnZipCodeSelectionClicked() {
         if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickKodePosPadaTambahAddress();
         }
     }
 
-    @Override
     public void sendAnalyticsOnLocationSelectionClicked() {
         if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTandaiLokasiPadaTambahAddress();
         }
     }
 
-    @Override
     public void sendAnalyticsOnZipCodeDropdownSelectionClicked() {
         if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickChecklistKodePosPAdaTambahAddress();
         }
     }
 
-    @Override
     public void sendAnalyticsOnZipCodeInputFreeText(String zipCode) {
         if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickFillKodePosPadaTambahAddress(zipCode);
         }
     }
 
-    @Override
     public void sendAnalyticsOnValidationErrorSaveAddress(String errorMessageValidation) {
         if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorNotFill(errorMessageValidation);
         }
     }
 
-    @Override
     public void sendAnalyticsOnInputAddressAsClicked() {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickAlamatSebagaiPadaTambahAddress();
     }
 
-    @Override
     public void sendAnalyticsOnInputAddressAsDropdownSelectionItemCliked() {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickChecklistAlamatSebagaiPadaTambahAddress();
     }
 
-    @Override
     public void sendAnalyticsOnInputNameClicked() {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickNamaPadaTambahAddress();
 
     }
 
-    @Override
     public void sendAnalyticsOnInputPhoneClicked() {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickTeleponPadaTambahAddress();
     }
 
-    @Override
     public void sendAnalyticsOnInputAddressClicked() {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressClickAlamatPadaTambahAddress();
     }
 
-    @Override
     public void sendAnalyticsOnErrorInputAddressAs() {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahAddress();
     }
 
-    @Override
     public void sendAnalyticsOnErrorInputName() {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationNamaPadaTambahAddress();
     }
 
-    @Override
     public void sendAnalyticsOnErrorInputPhone() {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationTeleponPadaTambahAddress();
     }
 
-    @Override
     public void sendAnalyticsOnErrorInputDistrict() {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationKotaKecamatanPadaTambahAddress();
     }
 
-    @Override
     public void sendAnalyticsOnErrorInputZipCode() {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationKodePosPadaTambahAddress();
     }
 
-    @Override
     public void sendAnalyticsOnErrorInputAddress() {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatPadaTambahAddress();
     }
 
-    @Override
     public void sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(boolean success) {
         if (success) {
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
@@ -605,7 +596,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         }
     }
 
-    @Override
     public void sendAnalyticsScreenName(String screenName) {
         checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
     }
@@ -722,40 +712,8 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressBar = view.findViewById(R.id.logistic_spinner);
-        setUserConsent();
+        LogisticUserConsentHelper.INSTANCE.displayUserConsent(requireContext(), userSession.getUserId(), tvUserConsent, getString(R.string.title_save), isEdit() ? LogisticUserConsentHelper.EDIT_ADDRESS : "");
 
-    }
-
-    private void setUserConsent() {
-        ClickableSpan onTermsAndConditionClicked = new ClickableSpan() {
-            @Override
-            public void onClick(View textView) {
-                RouteManager.route(getContext(), ApplinkConst.WEBVIEW+"?url=https://www.tokopedia.com/privacy#data-pengguna");
-            }
-
-            @Override
-            public void updateDrawState(TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setUnderlineText(false);
-                ds.setColor(MethodChecker.getColor(
-                        getContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
-                ));
-            }
-        };
-        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-
-        String tncDescription = getContext().getString(R.string.tnc_description, getContext().getString(R.string.title_save));
-        int firstIndex = tncDescription.indexOf("Syarat");
-        int lastIndex = firstIndex + "Syarat & Ketentuan".length();
-
-        SpannableString consentText = new SpannableString(tncDescription);
-        consentText.setSpan(onTermsAndConditionClicked, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        consentText.setSpan(boldSpan, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        tvUserConsent.setMovementMethod(LinkMovementMethod.getInstance());
-        tvUserConsent.setClickable(true);
-        tvUserConsent.setText(consentText, TextView.BufferType.SPANNABLE);
     }
 
     protected void initialVar() {

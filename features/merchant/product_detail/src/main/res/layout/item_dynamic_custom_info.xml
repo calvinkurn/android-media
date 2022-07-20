@@ -6,13 +6,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/top_separator"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        tools:visibility="visible"
         android:visibility="gone"
-        android:background="@color/Unify_N50" />
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,23 +27,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_power_merchant"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="custom_image" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/custom_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
-            android:layout_marginStart="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/custom_arrow"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/custom_label_check"
             app:layout_constraintStart_toEndOf="@+id/custom_image"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4"
-            tools:text="Bangga Buatan Indonesia"
             app:layout_goneMarginStart="0dp"
-            app:layout_constrainedWidth="true"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="Bangga Buatan Indonesia"
             tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.Barrier
@@ -52,8 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="custom_title,custom_image"
-            />
+            app:constraint_referenced_ids="custom_title,custom_image" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/custom_desc"
@@ -61,31 +61,42 @@
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@+id/custom_arrow"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_barrier"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             tools:text="Buktikan kamu bangga beli produk dalam negeri.Bacass SK untuk dapat cashback."
             tools:visibility="visible" />
 
-        <ImageView
-            android:id="@+id/custom_arrow"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/custom_label_check"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="display_3"
+            android:text="@string/lihat_label"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_right_info"
-            tools:visibility="visible"
-            android:visibility="gone" />
+            app:layout_constraintTop_toTopOf="@id/custom_title"
+            app:layout_constraintBottom_toBottomOf="@id/custom_title"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_GN500"
+            android:layout_height="wrap_content"/>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_custom_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:labelType="general_light_green"
+            app:layout_constraintTop_toBottomOf="@+id/custom_desc"
+            tools:text="Promo Bingkisan"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/bottom_separator"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        tools:visibility="visible"
         android:visibility="gone"
-        android:background="@color/Unify_N50" />
+        tools:visibility="visible" />
 </LinearLayout>

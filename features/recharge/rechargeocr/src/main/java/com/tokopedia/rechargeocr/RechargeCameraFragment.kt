@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -46,6 +47,8 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     @Inject
     lateinit var rechargeCameraAnalytics: RechargeCameraAnalytics
 
+    private var fullImagePreview: ImageView? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_recharge_camera, container, false)
     }
@@ -60,6 +63,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fullImagePreview = view?.findViewById(R.id.full_image_preview)
         setupInfoCamera()
         populateView()
     }
@@ -147,7 +151,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             mCaptureNativeSize?.let {
                 CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.width, mCaptureNativeSize.height) { bitmap ->
                     if (bitmap != null) {
-                        full_image_preview.setImageBitmap(bitmap)
+                        fullImagePreview?.setImageBitmap(bitmap)
                         val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG)
                         if (cameraResultFile!= null) {
                             onSuccessImageTakenFromCamera(cameraResultFile)
@@ -160,7 +164,9 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             if (cameraResultFile!= null) {
                 onSuccessImageTakenFromCamera(cameraResultFile)
                 if (cameraResultFile.exists()) {
-                    ImageHandler.loadImageFromFile(context, full_image_preview, cameraResultFile)
+                    fullImagePreview?.let {
+                        ImageHandler.loadImageFromFile(context, it, cameraResultFile)
+                    }
                 }
             }
         }
@@ -191,18 +197,18 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     private fun showCameraView() {
         image_button_shutter.visibility = View.VISIBLE
-        full_image_preview.visibility = View.GONE
+        fullImagePreview?.visibility = View.GONE
         full_camera_view.visibility = View.VISIBLE
     }
 
     private fun hideCameraButtonAndShowLoading() {
         progress_bar.visibility = View.VISIBLE
         image_button_shutter.visibility = View.GONE
-        full_image_preview.visibility = View.GONE
+        fullImagePreview?.visibility = View.GONE
     }
 
     private fun showImagePreview() {
-        full_image_preview.visibility = View.VISIBLE
+        fullImagePreview?.visibility = View.VISIBLE
         full_camera_view.visibility = View.GONE
         image_button_shutter.visibility = View.GONE
     }

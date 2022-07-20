@@ -9,7 +9,8 @@
           "responseCode": 0,
           "errorMessage": "",
           "additionalParams": "",
-          "keywordProcess": "2"
+          "keywordProcess": "2",
+          "componentId": "01.02.01.01"
         },
         "data": {
           "isQuerySafe": true,
@@ -20,7 +21,15 @@
           "ticker": {
             "text": "",
             "query": "",
-            "typeId": 0
+            "typeId": 0,
+            "componentId": "",
+            "trackingOption": 0
+          },
+          "banner": {
+            "position": 0,
+            "text": "",
+            "applink": "",
+            "imageUrl": ""
           },
           "related": {
             "relatedKeyword": "",
@@ -30,11 +39,13 @@
           "suggestion": {
             "suggestion": "",
             "query": "",
-            "text": ""
+            "text": "",
+            "componentId": "",
+            "trackingOption": 0
           },
           "products": [
             {
-              "id": 938399719,
+              "id": 1118013697,
               "name": "Mock Organic 1",
               "ads": {
                 "id": "",
@@ -47,54 +58,82 @@
                 "id": 342169,
                 "name": "Gudang-HP",
                 "city": "Jakarta Pusat",
-                "rating_average": "<b>4.7</b> Rating Toko"
+                "url": "https://www.tokopedia.com/gudang-hp",
+                "isOfficial": true,
+                "isPowerBadge": true
               },
               "freeOngkir": {
                 "isActive": true,
-                "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
               },
-              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/19/2608727/2608727_f519ad24-4e2c-42db-8c87-b86d5e63babf_800_800",
-              "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/5/19/2608727/2608727_f519ad24-4e2c-42db-8c87-b86d5e63babf_800_800",
-              "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/5/19/2608727/2608727_f519ad24-4e2c-42db-8c87-b86d5e63babf_800_800",
-              "price": "Rp2.613.000",
-              "priceInt": 2613000,
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/6/18/2608727/2608727_a9cc5f8e-5233-4835-81ec-9221fd0c56a6_800_800",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/18/2608727/2608727_a9cc5f8e-5233-4835-81ec-9221fd0c56a6_800_800",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2020/6/18/2608727/2608727_a9cc5f8e-5233-4835-81ec-9221fd0c56a6_800_800",
+              "price": "Rp2.443.000",
+              "priceInt": 2443000,
               "priceRange": "",
               "categoryId": 65,
               "categoryName": "Handphone & Tablet",
               "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
-              "rating": 5,
               "ratingAverage": "4.9",
-              "countReview": 447,
               "originalPrice": "",
               "discountPercentage": 0,
               "warehouseIdDefault": 0,
               "boosterList": "-1",
               "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/gudang-hp/xiaomi-redmi-note-9-6-128-gb-garansi-resmi-merah?whid=0",
               "labelGroups": [
                 {
-                  "title": "Sisa 9",
-                  "position": "gimmick",
-                  "type": "textDarkRed"
+                  "title": "Cashback",
+                  "position": "promo",
+                  "type": "lightGreen",
+                  "url": ""
                 },
                 {
-                  "title": "TokoCabang",
-                  "position": "fulfillment",
+                  "title": "Bisa Tukar Tambah",
+                  "position": "offers",
+                  "type": "lightGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Cashback",
+                  "position": "price",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Terjual 5,9 rb",
+                  "position": "integrity",
                   "type": "textDarkGrey",
-                  "url": "https://images.tokopedia.net/img/jbZAUJ/2021/2/18/6d2cc121-91b9-49bc-99c3-d57437ad64b7.png"
+                  "url": ""
+                },
+                {
+                  "title": "Tiba 24 - 26 Nov",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Super Gadget Day",
+                  "position": "campaign",
+                  "type": "",
+                  "url": "https://images.tokopedia.net/img/phOWBv/2021/11/19/ed4bfb01-75c9-47e8-ac3a-8927309d7551.png"
                 }
               ],
+              "labelGroupVariant": [],
               "badges": [
                 {
                   "title": "Official Store",
-                  "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                  "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
                   "show": true
                 }
               ],
               "wishlist": false,
-              "count_sold": "Terjual 1035"
+              "applink": "tokopedia://product/940611689?extParam=whid%3D0"
             },
             {
-              "id": 867917654,
+              "id": 1945158479,
               "name": "Mock Organic 2",
               "ads": {
                 "id": "",
@@ -104,51 +143,73 @@
                 "tag": 0
               },
               "shop": {
-                "id": 342169,
-                "name": "Gudang-HP",
-                "city": "Jakarta Pusat",
-                "rating_average": "<b>4.7</b> Rating Toko"
+                "id": 1887395,
+                "name": "duniagadgetku",
+                "city": "Jakarta Barat",
+                "url": "https://www.tokopedia.com/duniagadgetku",
+                "isOfficial": true,
+                "isPowerBadge": true
               },
               "freeOngkir": {
                 "isActive": true,
-                "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
               },
-              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/27/2608727/2608727_529ab86e-4046-4e40-9b1f-16eec32cf2a2_800_800",
-              "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/5/27/2608727/2608727_529ab86e-4046-4e40-9b1f-16eec32cf2a2_800_800",
-              "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/5/27/2608727/2608727_529ab86e-4046-4e40-9b1f-16eec32cf2a2_800_800",
-              "price": "Rp1.731.000",
-              "priceInt": 1731000,
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/23/7ca4e097-b139-4f32-8c81-349da35780b6.jpg",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/6/23/7ca4e097-b139-4f32-8c81-349da35780b6.jpg",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/23/7ca4e097-b139-4f32-8c81-349da35780b6.jpg",
+              "price": "Rp3.599.000",
+              "priceInt": 3599000,
               "priceRange": "",
               "categoryId": 65,
               "categoryName": "Handphone & Tablet",
               "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
-              "rating": 5,
-              "ratingAverage": "4.9",
-              "countReview": 375,
+              "ratingAverage": "5.0",
               "originalPrice": "",
               "discountPercentage": 0,
               "warehouseIdDefault": 0,
               "boosterList": "-1",
               "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/duniagadgetku/xiaomi-mi-11-lite-6-64gb-6-128gb-8-128gb-garansi-resmi-6-64-blue?whid=0",
               "labelGroups": [
                 {
-                  "title": "Sisa 4",
-                  "position": "gimmick",
-                  "type": "textDarkRed"
+                  "title": "Cashback",
+                  "position": "promo",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Cashback",
+                  "position": "price",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Terjual 702",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Tiba 24 - 26 Nov",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
                 }
               ],
+              "labelGroupVariant": [],
               "badges": [
                 {
                   "title": "Official Store",
-                  "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                  "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
                   "show": true
                 }
               ],
               "wishlist": false,
-              "count_sold": "Terjual 1020"
+              "applink": "tokopedia://product/1945158473?extParam=whid%3D0"
             },
             {
-              "id": 765202246,
+              "id": 1289626584,
               "name": "Mock Organic 3",
               "ads": {
                 "id": "",
@@ -161,48 +222,82 @@
                 "id": 342169,
                 "name": "Gudang-HP",
                 "city": "Jakarta Pusat",
-                "rating_average": "<b>4.7</b> Rating Toko"
+                "url": "https://www.tokopedia.com/gudang-hp",
+                "isOfficial": true,
+                "isPowerBadge": true
               },
               "freeOngkir": {
                 "isActive": true,
-                "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
               },
-              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/4/3/2608727/2608727_5a79874b-2026-42e2-b663-a427a3ac4db3_800_800",
-              "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/4/3/2608727/2608727_5a79874b-2026-42e2-b663-a427a3ac4db3_800_800",
-              "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/4/3/2608727/2608727_5a79874b-2026-42e2-b663-a427a3ac4db3_800_800",
-              "price": "Rp4.329.000",
-              "priceInt": 4329000,
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/22/01217c9f-7f92-4a45-a684-41f95a57a7d0.jpg",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/6/22/01217c9f-7f92-4a45-a684-41f95a57a7d0.jpg",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/22/01217c9f-7f92-4a45-a684-41f95a57a7d0.jpg",
+              "price": "Rp3.243.000",
+              "priceInt": 3243000,
               "priceRange": "",
               "categoryId": 65,
               "categoryName": "Handphone & Tablet",
               "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
-              "rating": 5,
               "ratingAverage": "4.9",
-              "countReview": 133,
               "originalPrice": "",
               "discountPercentage": 0,
               "warehouseIdDefault": 0,
               "boosterList": "-1",
               "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/gudang-hp/xiaomi-poco-x3-nfc-8-128-gb-garansi-resmi-biru?whid=0",
               "labelGroups": [
                 {
-                  "title": "Sisa 3",
-                  "position": "gimmick",
-                  "type": "textDarkRed"
+                  "title": "Cashback",
+                  "position": "promo",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Bisa Tukar Tambah",
+                  "position": "offers",
+                  "type": "lightGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Cashback",
+                  "position": "price",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Terjual 2,7 rb",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Tiba 24 - 26 Nov",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Tukar Tambah",
+                  "position": "campaign",
+                  "type": "",
+                  "url": "https://images.tokopedia.net/img/phOWBv/2021/10/28/44292110-8556-4710-b280-83370b0427b6.png"
                 }
               ],
+              "labelGroupVariant": [],
               "badges": [
                 {
                   "title": "Official Store",
-                  "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                  "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
                   "show": true
                 }
               ],
               "wishlist": false,
-              "count_sold": "Terjual 346"
+              "applink": "tokopedia://product/1289626569?extParam=whid%3D0"
             },
             {
-              "id": 900991029,
+              "id": 1945318361,
               "name": "Mock Organic 4",
               "ads": {
                 "id": "",
@@ -212,51 +307,73 @@
                 "tag": 0
               },
               "shop": {
-                "id": 131646,
-                "name": "Cellular Mas",
-                "city": "Jakarta Pusat",
-                "rating_average": "<b>4.7</b> Rating Toko"
+                "id": 1773136,
+                "name": "STR-STORE",
+                "city": "Tangerang",
+                "url": "https://www.tokopedia.com/str-store",
+                "isOfficial": true,
+                "isPowerBadge": true
               },
               "freeOngkir": {
                 "isActive": true,
-                "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
               },
-              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/6/9/7332048/7332048_37a78783-0099-4a82-ae0d-2687991ccd6f_839_839",
-              "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/9/7332048/7332048_37a78783-0099-4a82-ae0d-2687991ccd6f_839_839",
-              "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/6/9/7332048/7332048_37a78783-0099-4a82-ae0d-2687991ccd6f_839_839",
-              "price": "Rp2.896.000",
-              "priceInt": 2896000,
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/23/235359ff-3ad3-4c18-9571-be29ae1752f9.png",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/6/23/235359ff-3ad3-4c18-9571-be29ae1752f9.png",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/23/235359ff-3ad3-4c18-9571-be29ae1752f9.png",
+              "price": "Rp1.325.000",
+              "priceInt": 1325000,
               "priceRange": "",
               "categoryId": 65,
               "categoryName": "Handphone & Tablet",
               "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
-              "rating": 5,
               "ratingAverage": "5.0",
-              "countReview": 74,
               "originalPrice": "",
               "discountPercentage": 0,
               "warehouseIdDefault": 0,
               "boosterList": "-1",
               "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/str-store/xiaomi-redmi-9a-3-32-gb-redmi-9a-2-32-gb-100-ori-garansi-resmi-2gb-32gb-biru?whid=0",
               "labelGroups": [
                 {
-                  "title": "Sisa 4",
-                  "position": "gimmick",
-                  "type": "textDarkRed"
+                  "title": "Cashback",
+                  "position": "promo",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Cashback",
+                  "position": "price",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Terjual 418",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Tiba 24 - 26 Nov",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
                 }
               ],
+              "labelGroupVariant": [],
               "badges": [
                 {
                   "title": "Official Store",
-                  "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                  "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
                   "show": true
                 }
               ],
               "wishlist": false,
-              "count_sold": "Terjual 214"
+              "applink": "tokopedia://product/1945318356?extParam=whid%3D0"
             },
             {
-              "id": 870239519,
+              "id": 2094458648,
               "name": "Mock Organic 5",
               "ads": {
                 "id": "",
@@ -266,51 +383,73 @@
                 "tag": 0
               },
               "shop": {
-                "id": 342169,
-                "name": "Gudang-HP",
-                "city": "Jakarta Pusat",
-                "rating_average": "<b>4.7</b> Rating Toko"
+                "id": 3185796,
+                "name": "inoe87",
+                "city": "Jakarta Timur",
+                "url": "https://www.tokopedia.com/inoe87",
+                "isOfficial": false,
+                "isPowerBadge": true
               },
               "freeOngkir": {
                 "isActive": true,
-                "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
               },
-              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/6/2/2608727/2608727_565e1f0e-f0d6-4431-a110-53f819fa7e7a_800_800",
-              "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/2/2608727/2608727_565e1f0e-f0d6-4431-a110-53f819fa7e7a_800_800",
-              "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/6/2/2608727/2608727_565e1f0e-f0d6-4431-a110-53f819fa7e7a_800_800",
-              "price": "Rp1.741.000",
-              "priceInt": 1741000,
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/10/29/1abd2b9b-7a0f-44c7-83ee-e143433af065.jpg",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/29/1abd2b9b-7a0f-44c7-83ee-e143433af065.jpg",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/10/29/1abd2b9b-7a0f-44c7-83ee-e143433af065.jpg",
+              "price": "Rp2.125.000",
+              "priceInt": 2125000,
               "priceRange": "",
               "categoryId": 65,
               "categoryName": "Handphone & Tablet",
               "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
-              "rating": 5,
-              "ratingAverage": "4.9",
-              "countReview": 236,
-              "originalPrice": "",
-              "discountPercentage": 0,
+              "ratingAverage": "5.0",
+              "originalPrice": "Rp2.150.000",
+              "discountPercentage": 1,
               "warehouseIdDefault": 0,
               "boosterList": "-1",
               "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/inoe87/xiaomi-redmi-10-4-64-gb-helio-g88-camera-50mp-5000mah-garansi-resmi-carbon-gray?whid=0",
               "labelGroups": [
                 {
-                  "title": "Sisa 5",
-                  "position": "gimmick",
-                  "type": "textDarkRed"
+                  "title": "Cashback",
+                  "position": "promo",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Bisa Tukar Tambah",
+                  "position": "offers",
+                  "type": "lightGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Terjual 329",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Tiba 24 - 26 Nov",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
                 }
               ],
+              "labelGroupVariant": [],
               "badges": [
                 {
-                  "title": "Official Store",
-                  "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                  "title": "Power Merchant Pro Badge",
+                  "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
                   "show": true
                 }
               ],
               "wishlist": false,
-              "count_sold": "Terjual 737"
+              "applink": "tokopedia://product/1958741131?extParam=whid%3D0"
             },
             {
-              "id": 905121860,
+              "id": 1558506776,
               "name": "Mock Organic 6",
               "ads": {
                 "id": "",
@@ -320,51 +459,85 @@
                 "tag": 0
               },
               "shop": {
-                "id": 342169,
-                "name": "Gudang-HP",
-                "city": "Jakarta Pusat",
-                "rating_average": "<b>4.7</b> Rating Toko"
+                "id": 1163409,
+                "name": "Shopyz ID",
+                "city": "Jakarta Timur",
+                "url": "https://www.tokopedia.com/shopyzid",
+                "isOfficial": true,
+                "isPowerBadge": true
               },
               "freeOngkir": {
                 "isActive": true,
-                "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
               },
-              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/6/9/2608727/2608727_c02257f0-01a6-4644-8dc2-87f0be4d6908_800_800",
-              "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/9/2608727/2608727_c02257f0-01a6-4644-8dc2-87f0be4d6908_800_800",
-              "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/6/9/2608727/2608727_c02257f0-01a6-4644-8dc2-87f0be4d6908_800_800",
-              "price": "Rp2.350.000",
-              "priceInt": 2350000,
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/1/25/15e17507-4741-4c54-a282-0511d112e02f.jpg",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/25/15e17507-4741-4c54-a282-0511d112e02f.jpg",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/1/25/15e17507-4741-4c54-a282-0511d112e02f.jpg",
+              "price": "Rp2.299.900",
+              "priceInt": 2299900,
               "priceRange": "",
               "categoryId": 65,
               "categoryName": "Handphone & Tablet",
               "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
-              "rating": 5,
-              "ratingAverage": "4.9",
-              "countReview": 99,
+              "ratingAverage": "5.0",
               "originalPrice": "",
               "discountPercentage": 0,
               "warehouseIdDefault": 0,
               "boosterList": "-1",
               "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/shopyzid/xiaomi-pocophone-poco-m3-6gb-128gb-6-128-garansi-resmi-power-black?whid=0",
               "labelGroups": [
                 {
-                  "title": "Sisa 7",
-                  "position": "gimmick",
-                  "type": "textDarkRed"
+                  "title": "Cashback",
+                  "position": "promo",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Bisa Tukar Tambah",
+                  "position": "offers",
+                  "type": "lightGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Cashback",
+                  "position": "price",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Terjual 565",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Tiba 24 - 26 Nov",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Tukar Tambah",
+                  "position": "campaign",
+                  "type": "",
+                  "url": "https://images.tokopedia.net/img/phOWBv/2021/10/28/44292110-8556-4710-b280-83370b0427b6.png"
                 }
               ],
+              "labelGroupVariant": [],
               "badges": [
                 {
                   "title": "Official Store",
-                  "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                  "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
                   "show": true
                 }
               ],
               "wishlist": false,
-              "count_sold": "Terjual 320"
+              "applink": "tokopedia://product/1558506763?extParam=whid%3D0"
             },
             {
-              "id": 902266636,
+              "id": 1871808662,
               "name": "Mock Organic 7",
               "ads": {
                 "id": "",
@@ -374,51 +547,79 @@
                 "tag": 0
               },
               "shop": {
-                "id": 342169,
-                "name": "Gudang-HP",
-                "city": "Jakarta Pusat",
-                "rating_average": "<b>4.7</b> Rating Toko"
+                "id": 8920523,
+                "name": "ALFASTORE-",
+                "city": "Tangerang",
+                "url": "https://www.tokopedia.com/alfastore-1",
+                "isOfficial": true,
+                "isPowerBadge": true
               },
               "freeOngkir": {
                 "isActive": true,
-                "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
               },
-              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/6/9/2608727/2608727_b8818455-7bba-4da6-8177-8daedcb75d64_800_800",
-              "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/9/2608727/2608727_b8818455-7bba-4da6-8177-8daedcb75d64_800_800",
-              "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/6/9/2608727/2608727_b8818455-7bba-4da6-8177-8daedcb75d64_800_800",
-              "price": "Rp2.898.000",
-              "priceInt": 2898000,
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/5/9994c671-2c42-4f68-bcdf-e3d4f7dfa0d5.jpg",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/6/5/9994c671-2c42-4f68-bcdf-e3d4f7dfa0d5.jpg",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/6/5/9994c671-2c42-4f68-bcdf-e3d4f7dfa0d5.jpg",
+              "price": "Rp1.899.000",
+              "priceInt": 1899000,
               "priceRange": "",
               "categoryId": 65,
               "categoryName": "Handphone & Tablet",
               "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
-              "rating": 5,
               "ratingAverage": "4.9",
-              "countReview": 50,
               "originalPrice": "",
               "discountPercentage": 0,
               "warehouseIdDefault": 0,
               "boosterList": "-1",
               "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/alfastore-1/xiaomi-redmi-9-ram-4-64-ram-3-32-grs-resmi-ram-3-32?whid=0",
               "labelGroups": [
                 {
-                  "title": "Sisa 8",
-                  "position": "gimmick",
-                  "type": "textDarkRed"
+                  "title": "Cashback",
+                  "position": "promo",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Bisa Tukar Tambah",
+                  "position": "offers",
+                  "type": "lightGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Cashback",
+                  "position": "price",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Terjual 238",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Tiba 24 - 26 Nov",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
                 }
               ],
+              "labelGroupVariant": [],
               "badges": [
                 {
                   "title": "Official Store",
-                  "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                  "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
                   "show": true
                 }
               ],
               "wishlist": false,
-              "count_sold": "Terjual 160"
+              "applink": "tokopedia://product/1221865534?extParam=whid%3D0"
             },
             {
-              "id": 1006401597,
+              "id": 2090895082,
               "name": "Mock Organic 8",
               "ads": {
                 "id": "",
@@ -428,48 +629,76 @@
                 "tag": 0
               },
               "shop": {
-                "id": 256223,
-                "name": "H2 Cellular",
-                "city": "Jakarta Pusat",
-                "rating_average": "<b>4.8</b> Rating Toko"
+                "id": 313395,
+                "name": "CA Shop",
+                "city": "Jakarta Utara",
+                "url": "https://www.tokopedia.com/ca-shop",
+                "isOfficial": true,
+                "isPowerBadge": true
               },
               "freeOngkir": {
                 "isActive": true,
-                "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "imgUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
               },
-              "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/29/1762132/1762132_9a53aa21-c42d-41c2-a47f-bab464520656_800_800",
-              "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/8/29/1762132/1762132_9a53aa21-c42d-41c2-a47f-bab464520656_800_800",
-              "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/8/29/1762132/1762132_9a53aa21-c42d-41c2-a47f-bab464520656_800_800",
-              "price": "Rp10.699.000",
-              "priceInt": 10699000,
+              "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/8/20/60fb5c3d-0771-4b7e-bc74-f8e435ca273f.jpg",
+              "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/20/60fb5c3d-0771-4b7e-bc74-f8e435ca273f.jpg",
+              "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/8/20/60fb5c3d-0771-4b7e-bc74-f8e435ca273f.jpg",
+              "price": "Rp4.575.000",
+              "priceInt": 4575000,
               "priceRange": "",
               "categoryId": 65,
               "categoryName": "Handphone & Tablet",
               "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
-              "rating": 5,
               "ratingAverage": "5.0",
-              "countReview": 58,
               "originalPrice": "",
               "discountPercentage": 0,
               "warehouseIdDefault": 0,
               "boosterList": "-1",
               "source_engine": "0",
+              "minOrder": 1,
+              "url": "https://www.tokopedia.com/ca-shop/xiaomi-poco-x3-gt-8gb-256gb-8-256-new-original-garansi-resmi-cloud-white?whid=0",
               "labelGroups": [
                 {
-                  "title": "Sisa 3",
-                  "position": "gimmick",
-                  "type": "textDarkRed"
+                  "title": "Cashback",
+                  "position": "promo",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Bisa Tukar Tambah",
+                  "position": "offers",
+                  "type": "lightGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Cashback",
+                  "position": "price",
+                  "type": "lightGreen",
+                  "url": ""
+                },
+                {
+                  "title": "Terjual 134",
+                  "position": "integrity",
+                  "type": "textDarkGrey",
+                  "url": ""
+                },
+                {
+                  "title": "Tiba 24 - 26 Nov",
+                  "position": "eta",
+                  "type": "textDarkGrey",
+                  "url": ""
                 }
               ],
+              "labelGroupVariant": [],
               "badges": [
                 {
                   "title": "Official Store",
-                  "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+                  "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
                   "show": true
                 }
               ],
               "wishlist": false,
-              "count_sold": "Terjual 115"
+              "applink": "tokopedia://product/2090895079?extParam=whid%3D0"
             }
           ]
         }

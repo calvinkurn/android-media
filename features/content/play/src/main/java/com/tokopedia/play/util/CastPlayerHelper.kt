@@ -1,6 +1,7 @@
 package com.tokopedia.play.util
 
 import android.net.Uri
+import androidx.annotation.Nullable
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.exoplayer2.util.MimeTypes
@@ -20,17 +21,17 @@ import javax.inject.Inject
  */
 @PlayScope
 class CastPlayerHelper @Inject constructor(
-        val castContext: CastContext,
-        val player: CastPlayer
+    val castContext: CastContext?,
+    val player: CastPlayer?
 ) {
 
     val hasAvailableSession: Boolean
-        get() = player.isCastSessionAvailable
+        get() = player?.isCastSessionAvailable ?: false
 
     private fun getCurrentMediaMetadata(): MediaMetadata? {
-        return castContext.sessionManager
-                .currentCastSession
-                .remoteMediaClient
+        return castContext?.sessionManager
+                ?.currentCastSession
+                ?.remoteMediaClient
                 ?.mediaInfo
                 ?.metadata
     }
@@ -40,7 +41,7 @@ class CastPlayerHelper @Inject constructor(
     }
 
     fun setSessionAvailabilityListener(listener: SessionAvailabilityListener?) {
-        player.setSessionAvailabilityListener(listener)
+        player?.setSessionAvailabilityListener(listener)
     }
 
     fun castPlay(
@@ -52,7 +53,7 @@ class CastPlayerHelper @Inject constructor(
             currentPosition: Long
     ) {
         val mediaItem = getCastMediaItem(channelId, title, partnerName, coverUrl, videoUrl)
-        player.loadItem(mediaItem, currentPosition)
+        player?.loadItem(mediaItem, currentPosition)
     }
 
     private fun getCastMediaItem(
@@ -75,7 +76,7 @@ class CastPlayerHelper @Inject constructor(
         return MediaQueueItem.Builder(mediaInfo).build()
     }
 
-    fun mapCastState(castState: Int): PlayCastState {
+    fun mapCastState(castState: Int?): PlayCastState {
         return when(castState) {
             CastState.CONNECTING -> PlayCastState.CONNECTING
             CastState.CONNECTED -> PlayCastState.CONNECTED
@@ -86,11 +87,11 @@ class CastPlayerHelper @Inject constructor(
     }
 
     fun addCastStateListener(castStateListener: CastStateListener) {
-        castContext.addCastStateListener(castStateListener)
+        castContext?.addCastStateListener(castStateListener)
     }
 
     fun removeCastStateListener(castStateListener: CastStateListener) {
-        castContext.removeCastStateListener(castStateListener)
+        castContext?.removeCastStateListener(castStateListener)
     }
 
     companion object {

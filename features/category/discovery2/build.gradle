@@ -21,6 +21,11 @@ android {
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        consumerProguardFiles 'proguard-rules.pro'
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 }
 dependencies {
@@ -46,7 +51,9 @@ dependencies {
     api projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.productDetailCommon)
-    implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+    api projectOrAar(rootProject.ext.features.promoMvcWidget)
+    implementation projectOrAar(rootProject.ext.features.questWidget)
+    implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
 
     // Libraries Dependency
     implementation projectOrAar(rootProject.ext.libraries.utils)
@@ -79,14 +86,13 @@ dependencies {
 
     // tkpdInternalLibDependencies Dependency
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     // miscDependencies Dependency
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     testImplementation rootProject.ext.miscDependencies.coroutineTest
@@ -98,6 +104,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
+    testImplementation project(rootProject.ext.libraries.unitTest)
     androidTestImplementation rootProject.ext.testDependencies.assertJCore
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting

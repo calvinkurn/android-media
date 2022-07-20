@@ -9,6 +9,7 @@
       "isLoggedInStatus": "true|false",
       "appsflyerId": ".*",
       "shopId": ".*",
+      "theme": ".*",
       "screenName": "review detail page",
       "event": "openScreen",
       "userId": ".*",
@@ -21,7 +22,7 @@
       "eventLabel": "star:.*",
       "isActive": "true|false",
       "shopId": "\\d{1,}",
-      "productId": "\\d{1,}",
+      "productId": ".*",
       "sessionIris": ".{1,}",
       "screenName": "review detail page"
     }

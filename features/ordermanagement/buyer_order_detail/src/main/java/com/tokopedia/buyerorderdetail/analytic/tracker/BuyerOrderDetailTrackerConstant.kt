@@ -24,6 +24,7 @@ object BuyerOrderDetailTrackerConstant {
     // event names
     const val EVENT_NAME_CLICK_PURCHASE_LIST = "clickPurchaseList"
     const val EVENT_NAME_ADD_TO_CART = "add_to_cart"
+    const val EVENT_NAME_CLICK_PG = "clickPG"
 
     // event categories
     const val EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP = "my purchase list detail - mp"
@@ -32,7 +33,8 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_PARTIAL_CLICK = "click"
     const val EVENT_ACTION_PARTIAL_CLICK_ON_PRIMARY_BUTTON = "click on main button"
     const val EVENT_ACTION_PARTIAL_CLICK_ON_SECONDARY_BUTTON = "click on secondary button"
-    const val EVENT_ACTION_PARTIAL_CLICK_ON_FINISH_ORDER_CONFIRMATION_DIALOG = "on finished order confirmation"
+    const val EVENT_ACTION_PARTIAL_CLICK_ON_FINISH_ORDER_CONFIRMATION_DIALOG =
+        "on finished order confirmation"
     const val EVENT_ACTION_CLICK_SEE_ORDER_HISTORY_DETAIL = "click lihat detail"
     const val EVENT_ACTION_CLICK_SEE_ORDER_INVOICE = "click lihat invoice"
     const val EVENT_ACTION_CLICK_COPY_ORDER_INVOICE = "click copy invoice number"
@@ -74,7 +76,18 @@ object BuyerOrderDetailTrackerConstant {
     const val BUTTON_NAME_FINISH_ORDER_CONFIRMATION_CONFIRM_FINISH_ORDER = "selesai"
     const val BUTTON_NAME_FINISH_ORDER_CONFIRMATION_REQUEST_COMPLAINT = "ajukan komplain"
     const val BUTTON_NAME_REVIEW_ORDER = "beri ulasan"
+    const val BUTTON_NAME_SEE_POD = "lihat bukti pengiriman"
 
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"
+
+    //buyer order extension
+    const val EVENT_ACTION_CONFIRMATION_ORDER_EXTENSION =
+        "click on confirmation order extension button"
+    const val EVENT_ACTION_REQUEST_ACTION_ORDER_EXTENSION =
+        "order extension request action"
+    const val EVENT_LABEL_ACCEPT_EXTENSION = "accept extension"
+    const val EVENT_LABEL_REJECT_EXTENSION = "reject extension"
+    const val UOH_SOURCE = "UOH"
+    const val BOM_SOURCE = "BOM"
 }

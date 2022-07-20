@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import androidx.core.content.ContextCompat
+import timber.log.Timber
 
 internal fun createColorSampleDrawable(context: Context, colorString: String): GradientDrawable {
     val gradientDrawable = GradientDrawable()
@@ -21,7 +22,7 @@ internal fun safeParseColor(color: String): Int {
         Color.parseColor(color)
     }
     catch (throwable: Throwable) {
-        throwable.printStackTrace()
+        Timber.w(throwable)
         0
     }
 }

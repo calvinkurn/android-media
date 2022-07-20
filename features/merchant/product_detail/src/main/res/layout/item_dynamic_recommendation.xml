@@ -11,11 +11,10 @@
     android:paddingBottom="16dp"
     tools:visibility="visible">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/recom_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:background="@color/Unify_N50" />
+        android:layout_height="8dp"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pdp_recom_header_container"
@@ -32,7 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/title_other_product"
-            app:typographyType="heading_4"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -52,7 +51,7 @@
             android:layout_marginTop="@dimen/dp_1"
             app:layout_constraintTop_toBottomOf="@id/titleRecom"
             app:layout_constraintStart_toStartOf="@id/titleRecom"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -72,7 +71,8 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:visibility="gone"
             tools:visibility="visible"
-            app:typographyType="heading_5"/>
+            app:typographyWeight="bold"
+            app:typographyType="display_3"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView

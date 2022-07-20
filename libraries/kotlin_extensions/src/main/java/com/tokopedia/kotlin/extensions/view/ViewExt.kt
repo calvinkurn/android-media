@@ -50,6 +50,10 @@ fun View.showWithCondition(shouldShow: Boolean) {
     this.visibility = if (shouldShow) View.VISIBLE else View.GONE
 }
 
+fun View.visibleWithCondition(isShown: Boolean) {
+    visibility = if (isShown) View.VISIBLE else View.INVISIBLE
+}
+
 fun View.shouldShowWithAction(shouldShow: Boolean, action: () -> Unit) {
     if (shouldShow) {
         show()
@@ -57,6 +61,13 @@ fun View.shouldShowWithAction(shouldShow: Boolean, action: () -> Unit) {
     } else {
         hide()
     }
+}
+
+fun <T : View> T.showIfWithBlock(predicate: Boolean, block: T.() -> Unit) {
+    if (predicate) {
+        show()
+        block()
+    } else hide()
 }
 
 fun View.visible() {
@@ -302,9 +313,12 @@ interface ViewHintListener {
 }
 
 fun View.addOneTimeGlobalLayoutListener(onGlobalLayout: () -> Unit) {
-    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+    val vto = viewTreeObserver
+    vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
             onGlobalLayout()
+
+            if (vto.isAlive) vto.removeOnGlobalLayoutListener(this)
             viewTreeObserver.removeOnGlobalLayoutListener(this)
         }
     })

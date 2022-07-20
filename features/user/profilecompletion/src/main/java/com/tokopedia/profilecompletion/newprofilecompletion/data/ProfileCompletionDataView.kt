@@ -8,10 +8,10 @@ import kotlinx.android.parcel.Parcelize
  */
 
 @Parcelize
-data class ProfileCompletionDataView (
-        var gender: Int = 0,
-        var phone: String = "",
-        var bday: String = "",
-        var completion: Int = 0,
-        var isPhoneVerified: Boolean = false
+data class ProfileCompletionDataView(
+    var gender: Int = 0,
+    var phone: String = "",
+    var bday: String = "",
+    var completion: Int = 0,
+    var isPhoneVerified: Boolean = false
 ) : Parcelable

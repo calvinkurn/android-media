@@ -20,16 +20,20 @@ import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalCo
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant.USER_ID
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingCategoryConstant.DIGITAL_HOMEPAGE_CATEGORY
+import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingCategoryConstant.DIGITAL_HOMEPAGE_CATEGORY_TNB
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEEConstant.CREATIVE_NAME
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEEConstant.CREATIVE_SLOT
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEEConstant.ITEM_ID
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEEConstant.ITEM_NAME
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEEConstant.PROMOTIONS
+import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEventNameConstant.CLICK_DIGITAL_EVENT
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEventNameConstant.CLICK_TOPUP_BILLS
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEventNameConstant.SELECT_CONTENT
+import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEventNameConstant.VIEW_DIGITAL_IRIS
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEventNameConstant.VIEW_ITEM
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingLabelConstant.ORDER_LIST
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingLabelConstant.TOPUP_BILLS
+import com.tokopedia.digital.home.model.Tracking
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -178,6 +182,86 @@ class RechargeHomepageAnalytics {
                 RechargeAnalytics.EVENT_KEY, "openScreen",
                 RechargeAnalytics.EVENT_SCREEN_NAME, "recharge homepage - from voice search - mainapp"
         ))
+    }
+
+    fun impressionSearchAutoComplete(tracker: Tracking, userId: String){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "impression search result")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", tracker.userType, tracker.keyword))
+        }
+
+        eventDataLayer.addGeneralViewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
+    }
+
+    fun clickCateoryAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "click category autocomplete")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s - %s", trackerUser.userType, trackerUser.keyword, trackerItem.categoryName))
+        }
+
+        eventDataLayer.addGeneralClickDigitalEvent(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_DIGITAL_EVENT, eventDataLayer)
+    }
+
+    fun clickOperatorAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "click operator autocomplete")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s - %s", trackerUser.userType, trackerUser.keyword, trackerItem.categoryName))
+        }
+
+        eventDataLayer.addGeneralClickDigitalEvent(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_DIGITAL_EVENT, eventDataLayer)
+    }
+
+    fun impressNoResult(tracker: Tracking, userId: String){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "impression no results")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", tracker.userType, tracker.keyword))
+        }
+
+        eventDataLayer.addGeneralViewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
+    }
+
+    fun impressionCategoryAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "impression category autocomplete")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s - %s", trackerUser.userType, trackerUser.keyword, trackerItem.categoryName))
+        }
+
+        eventDataLayer.addGeneralViewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
+    }
+
+    fun impressionOperatorAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "impression operator autocomplete")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s - %s", trackerUser.userType, trackerUser.keyword, trackerItem.categoryName))
+        }
+
+        eventDataLayer.addGeneralViewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
+    }
+
+    private fun Bundle.addGeneralViewDigitalIris(userId: String): Bundle {
+        this.addGeneralTracking(userId)
+        this.putString(TrackAppUtils.EVENT, VIEW_DIGITAL_IRIS)
+        return this
+    }
+
+    private fun Bundle.addGeneralClickDigitalEvent(userId: String): Bundle {
+        this.addGeneralTracking(userId)
+        this.putString(TrackAppUtils.EVENT, CLICK_DIGITAL_EVENT)
+        return this
+    }
+
+    private fun Bundle.addGeneralTracking(userId: String): Bundle {
+        this.putString(TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY_TNB)
+        this.putString(CURRENT_SITE, CURRENT_SITE_RECHARGE)
+        this.putString(BUSINESS_UNIT, BUSINESS_UNIT_RECHARGE)
+        this.putString(USER_ID, userId)
+        return this
     }
 
     companion object {

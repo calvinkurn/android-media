@@ -59,11 +59,12 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 
+import kotlin.Deprecated;
 import timber.log.Timber;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
-
+@Deprecated(message = "Please adopt the image loader with medialoader instead")
 public class ImageHandler {
 
     public static final int IMAGE_WIDTH_HD = 1280;
@@ -481,26 +482,6 @@ public class ImageHandler {
         };
     }
 
-    public static String encodeToBase64(String imagePath) {
-        return encodeToBase64(imagePath, 100);
-    }
-
-    public static String encodeToBase64(String imagePath, int quality) {
-        Bitmap bm = BitmapFactory.decodeFile(imagePath);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, quality, baos);
-        byte[] b = baos.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
-    }
-
-    public static String encodeToBase64(String imagePath, Bitmap.CompressFormat compressFormat) {
-        Bitmap bm = BitmapFactory.decodeFile(imagePath);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(compressFormat, 100, baos);
-        byte[] b = baos.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
-    }
-
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
         return new BitmapImageViewTarget(imageView) {
             @Override
@@ -522,30 +503,12 @@ public class ImageHandler {
                 .into(imageView);
     }
 
-    public static void loadImageFromFileFitCenter(Context context, ImageView imageView, File file) {
-
-        Glide.with(context)
-                .load(file)
-                .centerCrop()
-                .into(imageView);
-    }
-
-
     public static void loadImageFromUriFitCenter(Context context, ImageView imageView, Uri uri) {
 
         Glide.with(context)
                 .asBitmap() // some .jpeg files are actually gif
                 .load(uri)
                 .centerCrop()
-                .into(imageView);
-    }
-
-
-    public static void LoadImageResize(Context context, ImageView imageView, String url, int width, int height) {
-        Glide.with(context)
-                .load(url)
-                .override(width, height)
-                .fitCenter()
                 .into(imageView);
     }
 
@@ -561,19 +524,6 @@ public class ImageHandler {
         Glide.with(imageView.getContext())
                 .asGif()
                 .load(gifDrawable)
-                .placeholder(drawable)
-                .into(imageView);
-    }
-
-    public static void loadGifFromUrl(ImageView imageView, String url, int placeholder) {
-        if(placeholder < 0) {
-            loadImageWithoutPlaceholder(imageView, url);
-            return;
-        }
-        Drawable drawable = AppCompatResources.getDrawable(imageView.getContext(), placeholder);
-        Glide.with(imageView.getContext())
-                .asGif()
-                .load(url)
                 .placeholder(drawable)
                 .into(imageView);
     }
@@ -609,35 +559,6 @@ public class ImageHandler {
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageview);
-    }
-
-    public static void loadImageBlur(final Context context, final ImageView imageView, String imageUrl) {
-        if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .override(80, 80)
-                    .centerCrop()
-                    .into(imageView);
-        }
-
-        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            Glide.with(context)
-                    .asBitmap()
-                    .load(imageUrl)
-                    .thumbnail(Glide.with(context).asBitmap().load(imageUrl))
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @androidx.annotation.Nullable Transition<? super Bitmap> transition) {
-                            Bitmap blurredBitmap = blur(context, resource);
-                            imageView.setImageBitmap(blurredBitmap);
-                        }
-
-                        @Override
-                        public void onLoadCleared(@androidx.annotation.Nullable Drawable placeholder) {
-
-                        }
-                    });
-        }
     }
 
     public static void loadImageBlurWithViewTarget(final Context context,

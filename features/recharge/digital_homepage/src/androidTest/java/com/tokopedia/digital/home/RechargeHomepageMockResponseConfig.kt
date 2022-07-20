@@ -44,6 +44,12 @@ class RechargeHomepageMockResponseConfig: MockModelConfig() {
         var KEY_CONTAINS_SECTION_SWIPE_BANNER = """"sectionIDs": [
         933
       ],""".trimIndent()
+        var KEY_CONTAINS_SECTION_3_ICONS = """sectionIDs": [
+        158
+      ],""".trimIndent()
+        var KEY_CONTAINS_SECTION_PRODUCT_CARD_CUSTOM_BANNER_V2 = """sectionIDs": [
+        161
+      ],""".trimIndent()
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
@@ -97,6 +103,14 @@ class RechargeHomepageMockResponseConfig: MockModelConfig() {
         addMockResponse(
                 KEY_CONTAINS_SECTION_SWIPE_BANNER,
                 getRawString(context, R.raw.recharge_homepage_swipe_banner_mock_response),
+                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_CONTAINS_SECTION_3_ICONS,
+                getRawString(context, R.raw.recharge_homepage_3_icons_mock_response),
+                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_CONTAINS_SECTION_PRODUCT_CARD_CUSTOM_BANNER_V2,
+                getRawString(context, R.raw.recharge_homepage_product_card_custom_banner_v2_mock_response),
                 FIND_BY_CONTAINS)
         return this
     }

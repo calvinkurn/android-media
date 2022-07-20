@@ -8,7 +8,6 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_label"
-        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:text_field_counter="30"
@@ -22,7 +21,6 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_alamat_new"
-        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_32"
@@ -31,7 +29,6 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_courier_note"
-        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_32"

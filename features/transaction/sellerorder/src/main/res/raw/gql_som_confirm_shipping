@@ -1,5 +1,0 @@
-mutation {
-  mpLogisticConfirmShipping(input: {order_id: "#orderId", shipping_ref:"#shippingRef", is_active_saldo_prioritas:false}) {
-    message
-  }
-}

@@ -37,8 +37,8 @@ import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTrip
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
@@ -52,7 +52,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
@@ -72,7 +71,8 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     private var applinkErrorTextResource = -1
     private var isSearchFromWidget: Boolean = false
     private var bannerWidthInPixels = 0
-    private var binding by autoClearedNullable<FragmentFlightHomepageBinding>()
+    private var mbinding: FragmentFlightHomepageBinding? = null
+    private val binding get() = mbinding
 
     override fun getScreenName(): String = FlightHomepageFragment::class.java.simpleName
 
@@ -113,7 +113,6 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                     )
                 }
             }
-
             flightHomepageViewModel.fetchBannerData(true)
             flightHomepageViewModel.fetchTickerData()
         }
@@ -176,7 +175,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentFlightHomepageBinding.inflate(inflater, container, false)
+        mbinding = FragmentFlightHomepageBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -376,6 +375,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                         flightHomepageViewModel.sendTrackingPromoScrolled(current)
                     }
                 }
+
                 val itemParam = { view: View, data: Any ->
                     data as TravelCollectiveBannerModel.Banner
 
@@ -581,7 +581,14 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun measureBannerHeightBasedOnRatio(): Int =
-            (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toInt()
+        (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toInt()
+
+
+    override fun onDestroyView() {
+        binding?.flightHomepageBanner?.timer?.cancel()
+        super.onDestroyView()
+        mbinding = null
+    }
 
     companion object {
         // Banner Ratio = 414 : 139

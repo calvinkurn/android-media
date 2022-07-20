@@ -58,21 +58,27 @@ data class DynamicHomeIcon (
         val bu_identifier: String = "",
 
         @SerializedName("galaxy_attribution")
+        @Expose
         val galaxyAttribution: String = "",
 
         @SerializedName("persona")
+        @Expose
         val persona: String = "",
 
         @SerializedName("brand_id")
+        @Expose
         val brandId: String = "",
 
         @SerializedName("category_persona")
+        @Expose
         val categoryPersona: String = "",
 
         @SerializedName("campaignCode")
+        @Expose
         val campaignCode: String = "",
 
         @SerializedName("withBackground")
+        @Expose
         val withBackground: Boolean = false
     ) : ImpressHolder()
 }

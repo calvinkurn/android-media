@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -9,29 +11,32 @@ import com.tokopedia.sellerhomecommon.domain.model.GetMilestoneDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
 import com.tokopedia.usecase.RequestParams
 
+@GqlQuery("GetMilestoneDataGqlQuery", GetMilestoneDataUseCase.QUERY)
 class GetMilestoneDataUseCase(
     private val gqlRepository: GraphqlRepository,
-    private val mapper: MilestoneMapper
-) : BaseGqlUseCase<List<MilestoneDataUiModel>>() {
+    milestoneMapper: MilestoneMapper,
+    dispatchers: CoroutineDispatchers
+) : CloudAndCacheGraphqlUseCase<GetMilestoneDataResponse, List<MilestoneDataUiModel>>(
+    gqlRepository, milestoneMapper, dispatchers, GetMilestoneDataGqlQuery()
+) {
+
+    override val classType: Class<GetMilestoneDataResponse>
+        get() = GetMilestoneDataResponse::class.java
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
 
     override suspend fun executeOnBackground(): List<MilestoneDataUiModel> {
-        val gqlRequest = GraphqlRequest(
-            QUERY, GetMilestoneDataResponse::class.java,
-            params.parameters
-        )
+        val gqlRequest = GraphqlRequest(graphqlQuery, classType, params.parameters)
         val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
-        val gqlErrors = gqlResponse.getError(GetMilestoneDataResponse::class.java)
+        val gqlErrors = gqlResponse.getError(classType)
         if (gqlErrors.isNullOrEmpty()) {
-            val response: GetMilestoneDataResponse? = gqlResponse.getData<GetMilestoneDataResponse>(
-                GetMilestoneDataResponse::class.java
-            )
+            val response = gqlResponse.getData<GetMilestoneDataResponse>(classType)
             response?.let {
                 val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
-                return mapper.mapMilestoneResponseToUiModel(
-                    it.fetchMilestoneWidgetData?.data.orEmpty(),
-                    isFromCache
-                )
+                return mapper.mapRemoteDataToUiData(it, isFromCache)
             }
             throw NullPointerException("milestone widget data can not be null")
         } else {
@@ -40,9 +45,7 @@ class GetMilestoneDataUseCase(
     }
 
     companion object {
-        private const val DATA_KEYS = "dataKeys"
-
-        private val QUERY = """
+        internal const val QUERY = """
             query fetchMilestoneWidgetData(${'$'}dataKeys: [dataKey!]!) {
               fetchMilestoneWidgetData(dataKeys: ${'$'}dataKeys) {
                 data {
@@ -52,6 +55,7 @@ class GetMilestoneDataUseCase(
                   backgroundColor
                   backgroundImageUrl
                   showNumber
+                  timeDeadline
                   progressBar {
                     description
                     percentage
@@ -64,6 +68,12 @@ class GetMilestoneDataUseCase(
                     title
                     subtitle
                     missionCompletionStatus
+                    progress {
+                      appDescription
+                      percentage
+                      completed
+                      target
+                    }
                     button {
                       title
                       urlType
@@ -94,7 +104,8 @@ class GetMilestoneDataUseCase(
                 }
               }
             }
-        """.trimIndent()
+        """
+        private const val DATA_KEYS = "dataKeys"
 
         fun createParams(dataKeys: List<String>): RequestParams = RequestParams.create().apply {
             val mDataKeys = dataKeys.map {

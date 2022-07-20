@@ -51,13 +51,19 @@ data class ShopReview(
         val replyTime: String = "",
         @SerializedName("attachments")
         @Expose
-        val attachments: List<Attachments> = listOf(),
+        val imageAttachments: List<ImageAttachments> = listOf(),
+        @SerializedName("videoAttachments")
+        @Expose
+        val videoAttachments: List<VideoAttachments> = listOf(),
         @SerializedName("state")
         @Expose
         val state: State = State(),
         @SerializedName("likeDislike")
         @Expose
-        var likeDislike: LikeDislike = LikeDislike()
+        var likeDislike: LikeDislike = LikeDislike(),
+        @SerializedName("badRatingReasonFmt")
+        @Expose
+        var badRatingReasonFmt: String = ""
 )
 
 data class Product (
@@ -87,13 +93,25 @@ data class ProductVariant (
         val variantName : String = ""
 )
 
-data class Attachments (
+data class ImageAttachments (
+        @SerializedName("attachmentID")
+        @Expose
+        val attachmentID: String = "",
         @SerializedName("thumbnailURL")
         @Expose
         val thumbnailURL : String = "",
         @SerializedName("fullsizeURL")
         @Expose
         val fullsizeURL : String = ""
+)
+
+data class VideoAttachments (
+        @SerializedName("attachmentID")
+        @Expose
+        val attachmentID: String = "",
+        @SerializedName("videoUrl")
+        @Expose
+        val videoUrl : String = ""
 )
 
 data class State (

@@ -2,7 +2,12 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -15,7 +20,9 @@ import com.tokopedia.unifycomponents.toPx
 /**
  * Created by Yehezkiel on 13/08/20
  */
-class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductCustomInfoDataModel>(view) {
+class ProductCustomInfoViewHolder(val view: View,
+                                  private val listener: DynamicProductDetailListener)
+    : AbstractViewHolder<ProductCustomInfoDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_custom_info
@@ -28,12 +35,30 @@ class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicP
             binding.customDesc.setMargin(0, 0, 8.toPx(), 0)
         } else {
             binding.customDesc.setMargin(0, 4.toPx(), 8.toPx(), 0)
+            impressComponent(element)
         }
 
         renderSeparator(element.separator)
         renderTitle(element.title, element.icon)
         renderDescription(element.description)
+        renderLabel(element.getLabelTypeByColor(), element.labelValue)
         setupApplink(element.applink, element.title, getComponentTrackData(element))
+    }
+
+    private fun renderLabel(labelColor: Int, labelValue: String) {
+        binding.labelCustomInfo.run {
+            setLabel(labelValue)
+            setLabelType(labelColor)
+            showWithCondition(labelValue.isNotEmpty())
+        }
+    }
+
+    private fun impressComponent(element: ProductCustomInfoDataModel) {
+        val componentTrack = getComponentTrackData(element)
+        itemView.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressComponent(componentTrack)
+            listener.showCustomInfoCoachMark(element.name, binding.customImage)
+        }
     }
 
     private fun renderSeparator(separator: String) = with(binding) {
@@ -43,12 +68,12 @@ class ProductCustomInfoViewHolder(val view: View, private val listener: DynamicP
 
     private fun setupApplink(applink: String, title: String, componentTrackData: ComponentTrackDataModel) = with(binding) {
         if (applink.isNotEmpty()) {
-            customArrow.show()
+            customLabelCheck.show()
             view.setOnClickListener {
                 listener.onBbiInfoClick(applink, title, componentTrackData)
             }
         } else {
-            customArrow.hide()
+            customLabelCheck.hide()
             view.setOnClickListener {}
         }
     }

@@ -1,12 +1,12 @@
 package com.tokopedia.sellerhome.settings.view.viewmodel
 
-import com.tokopedia.gm.common.constant.END_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
+import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.R
@@ -20,11 +20,13 @@ import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoFreeShipping
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -34,25 +36,40 @@ import org.junit.Test
 class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
-    fun `when onCheckDelayErrorResponseTrigger should alter toaster flag between true and false`() =
+    fun `when onCheckDelayErrorResponseTrigger should alter toaster flag between true and false`() {
         coroutineTestRule.runBlockingTest {
+            mViewModel.setDefaultToasterState(false)
             mViewModel.onCheckDelayErrorResponseTrigger()
 
-            mViewModel.isToasterAlreadyShown.observeOnce {
-                Assert.assertTrue(it)
-            }
+            mViewModel.isToasterAlreadyShown.verifyValueEquals(true)
 
             advanceTimeBy(5000L)
 
-            mViewModel.isToasterAlreadyShown.observeOnce {
-                Assert.assertFalse(it)
-            }
+            mViewModel.isToasterAlreadyShown.verifyValueEquals(false)
         }
+    }
 
     @Test
-    fun `when getAllOtherMenuData called should get all other page data`() =
-        runBlocking {
-            onGetFreeShippingRemoteConfigDisabled_thenReturn(false)
+    fun `when onCheckDelayErrorResponseTrigger with isToasterAlreadyShown default value true should do nothing`() {
+        coroutineTestRule.runBlockingTest {
+            mViewModel.setDefaultToasterState(true)
+            mViewModel.onCheckDelayErrorResponseTrigger()
+
+            mViewModel.isToasterAlreadyShown.verifyValueEquals(true)
+
+            advanceTimeBy(5000L)
+
+            mViewModel.isToasterAlreadyShown.verifyValueEquals(true)
+        }
+    }
+
+    @Test
+    fun `when getAllOtherMenuData called should get all other page data`() {
+        coroutineTestRule.runBlockingTest {
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(
+                isFreeShippingEnabled = false,
+                isInTransitionPeriod = false
+            )
             mViewModel.getAllOtherMenuData()
 
             verifyGetShopBadgeCalled()
@@ -64,6 +81,37 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             verifyGetTopAdsKreditCalled()
             verifyGetFreeShippingCalled()
         }
+    }
+
+    @Test
+    fun `when getAllOtherMenuData called with free shipping disabled and in transition period should get all other page data`() {
+        coroutineTestRule.runBlockingTest {
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(
+                isFreeShippingEnabled = false,
+                isInTransitionPeriod = true
+            )
+            mViewModel.getFreeShippingStatus()
+
+            verifyGetFreeShippingNotCalled()
+            val expectedResult = SettingResponseState.SettingSuccess(false to "")
+            mViewModel.freeShippingLiveData.verifyStateSuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `when getAllOtherMenuData called with free shipping enabled and not in transition period should get all other page data`() {
+        coroutineTestRule.runBlockingTest {
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(
+                isFreeShippingEnabled = true,
+                isInTransitionPeriod = false
+            )
+            mViewModel.getFreeShippingStatus()
+
+            verifyGetFreeShippingNotCalled()
+            val expectedResult = SettingResponseState.SettingSuccess(false to "")
+            mViewModel.freeShippingLiveData.verifyStateSuccessEquals(expectedResult)
+        }
+    }
 
     @Test
     fun `when getAllOtherMenuData and two or more (but not all) data fails, should set show multiple error toaster live data true`() =
@@ -91,7 +139,10 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             onGetBalance_thenThrow()
             onGetTopAdsKredit_thenThrow()
             onGetFreeShipping_thenThrow()
-            onGetFreeShippingRemoteConfigDisabled_thenReturn(false)
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(
+                isFreeShippingEnabled = false,
+                isInTransitionPeriod = false
+            )
             mViewModel.getAllOtherMenuData()
 
             mViewModel.reloadErrorData()
@@ -116,7 +167,10 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             onGetBalance_thenThrow()
             onGetFreeShipping_thenThrow()
             onGetTopAdsKredit_thenReturn(0F)
-            onGetFreeShippingRemoteConfigDisabled_thenReturn(false)
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(
+                isFreeShippingEnabled = false,
+                isInTransitionPeriod = false
+            )
             mViewModel.getAllOtherMenuData()
 
             mViewModel.reloadErrorData()
@@ -140,7 +194,10 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             onGetBalance_thenThrow()
             onGetFreeShipping_thenThrow()
             onGetTopAdsKredit_thenThrow()
-            onGetFreeShippingRemoteConfigDisabled_thenReturn(false)
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(
+                isFreeShippingEnabled = false,
+                isInTransitionPeriod = false
+            )
 
             mViewModel.reloadErrorData()
 
@@ -161,8 +218,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 ShopOperationalData(
                     isShopOpen = true,
                     isShopClosed = false,
-                    operationalIconType = IconUnify.RELOAD_24H,
-                    operationalIconColorRes = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
+                    isWeeklyOperationalClosed = true,
+                    isShopActive = true,
                     timeDescriptionRes = R.string.shop_operational_hour_24_hour,
                     timeDescription = "",
                     shopSettingAccess = true
@@ -179,7 +236,10 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                     )
                 )
             )
-            onGetFreeShippingRemoteConfigDisabled_thenReturn(false)
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(
+                isFreeShippingEnabled = false,
+                isInTransitionPeriod = false
+            )
 
             mViewModel.getAllOtherMenuData()
 
@@ -229,6 +289,52 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
             mViewModel.numberOfTopupToggleCounts.observeOnce {
                 Assert.assertTrue(it == 2)
+            }
+        }
+
+    @Test
+    fun `when startToggleTopadsCredit and kredit topads is 0f, should toggle topads topup with delay until max limit`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTopAdsKredit_thenReturn(0f)
+
+            mViewModel.getKreditTopAds()
+
+            mViewModel.startToggleTopadsCredit()
+
+            advanceTimeBy(2000L)
+
+            mViewModel.numberOfTopupToggleCounts.observeOnce {
+                Assert.assertTrue(it == 1)
+            }
+
+            mViewModel.startToggleTopadsCredit()
+
+            advanceTimeBy(1000L)
+
+            mViewModel.numberOfTopupToggleCounts.observeOnce {
+                Assert.assertTrue(it == 2)
+            }
+
+            mViewModel.startToggleTopadsCredit()
+
+            advanceTimeBy(1000L)
+
+            mViewModel.numberOfTopupToggleCounts.observeOnce {
+                Assert.assertTrue(it == 3)
+            }
+
+            mViewModel.startToggleTopadsCredit()
+
+            advanceTimeBy(1000L)
+
+            mViewModel.numberOfTopupToggleCounts.observeOnce {
+                Assert.assertTrue(it == 4)
+            }
+
+            mViewModel.startToggleTopadsCredit()
+
+            mViewModel.numberOfTopupToggleCounts.observeOnce {
+                Assert.assertTrue(it == 4)
             }
         }
 
@@ -286,16 +392,16 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `getShopPeriodType should success`() {
-        val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = END_PERIOD)
+        val shopInfoPeriodUiModel = ShopInfoPeriodUiModel()
 
         coEvery {
-            getShopInfoPeriodUseCase.executeOnBackground()
+            getShopCreatedInfoUseCase.executeOnBackground()
         } returns shopInfoPeriodUiModel
 
         mViewModel.getShopPeriodType()
 
         coVerify {
-            getShopInfoPeriodUseCase.executeOnBackground()
+            getShopCreatedInfoUseCase.executeOnBackground()
         }
 
         val actualResult = (mViewModel.shopPeriodType.observeAwaitValue() as Success).data
@@ -308,13 +414,13 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         val error = IllegalStateException()
 
         coEvery {
-            getShopInfoPeriodUseCase.executeOnBackground()
+            getShopCreatedInfoUseCase.executeOnBackground()
         } throws error
 
         mViewModel.getShopPeriodType()
 
         coVerify {
-            getShopInfoPeriodUseCase.executeOnBackground()
+            getShopCreatedInfoUseCase.executeOnBackground()
         }
 
         assert(mViewModel.shopPeriodType.observeAwaitValue() is Fail)
@@ -326,8 +432,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             val uiModel = ShopOperationalData(
                 isShopOpen = true,
                 isShopClosed = false,
-                operationalIconType = IconUnify.RELOAD_24H,
-                operationalIconColorRes = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
+                isWeeklyOperationalClosed = true,
+                isShopActive = true,
                 timeDescriptionRes = R.string.shop_operational_hour_24_hour,
                 timeDescription = "",
                 shopSettingAccess = true
@@ -425,7 +531,10 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     @Test
     fun `when getFreeShippingStatus disabled by remote config, should set live data false and empty`() {
         coroutineTestRule.runBlockingTest {
-            onGetFreeShippingRemoteConfigDisabled_thenReturn(true)
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(
+                isFreeShippingEnabled = true,
+                isInTransitionPeriod = true
+            )
 
             mViewModel.getFreeShippingStatus()
 
@@ -446,6 +555,62 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             verifyGetUserShopInfoCalled()
             assert((mViewModel.userShopInfoLiveData.value as? SettingResponseState.SettingSuccess)?.data?.userShopInfoWrapper == userShopInfoWrapper)
         }
+
+    @Test
+    fun `when getUserShopInfo returns RM status, should set user session data accordingly`() =
+            coroutineTestRule.runBlockingTest {
+                val userShopInfoWrapper = UserShopInfoWrapper(RegularMerchant.NeedUpgrade)
+                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+
+                mViewModel.getUserShopInfo()
+
+                verifyGetUserShopInfoCalled()
+                verifySetIsGoldMerchantCalled(false)
+                verifySetIsPowerMerchantIdleCalled(false)
+                verifySetIsOfficialStoreCalled(false)
+            }
+
+    @Test
+    fun `when getUserShopInfo returns PM Inactive status, should set user session data accordingly`() =
+            coroutineTestRule.runBlockingTest {
+                val userShopInfoWrapper = UserShopInfoWrapper(PowerMerchantStatus.NotActive)
+                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+
+                mViewModel.getUserShopInfo()
+
+                verifyGetUserShopInfoCalled()
+                verifySetIsGoldMerchantCalled(false)
+                verifySetIsPowerMerchantIdleCalled(true)
+                verifySetIsOfficialStoreCalled(false)
+            }
+
+    @Test
+    fun `when getUserShopInfo returns PM Active status, should set user session data accordingly`() =
+            coroutineTestRule.runBlockingTest {
+                val userShopInfoWrapper = UserShopInfoWrapper(PowerMerchantStatus.Active)
+                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+
+                mViewModel.getUserShopInfo()
+
+                verifyGetUserShopInfoCalled()
+                verifySetIsGoldMerchantCalled(true)
+                verifySetIsPowerMerchantIdleCalled(false)
+                verifySetIsOfficialStoreCalled(false)
+            }
+
+    @Test
+    fun `when getUserShopInfo returns OS status, should set user session data accordingly`() =
+            coroutineTestRule.runBlockingTest {
+                val userShopInfoWrapper = UserShopInfoWrapper(ShopType.OfficialStore)
+                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+
+                mViewModel.getUserShopInfo()
+
+                verifyGetUserShopInfoCalled()
+                verifySetIsGoldMerchantCalled(true)
+                verifySetIsPowerMerchantIdleCalled(false)
+                verifySetIsOfficialStoreCalled(true)
+            }
 
     @Test
     fun `when getUserShopInfo error should set live data state error`() =
@@ -507,10 +672,23 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     }
 
     @Test
-    fun `when getAllOtherMenuData top ads topup value success should set live data success`() =
+    fun `when getAllOtherMenuData top ads topup value then returns true should set live data success`() =
         runBlocking {
             val isTopAdsAutoTopup = true
             onGetTopAdsAutoTopup_thenReturn(true)
+
+            mViewModel.getAllOtherMenuData()
+
+            verifyGetTopAdsAutoTopupCalled()
+            val expectedResult = Success(isTopAdsAutoTopup)
+            mViewModel.isTopAdsAutoTopupLiveData.verifySuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getAllOtherMenuData top ads topup value then returns false should set live data success`() =
+        runBlocking {
+            val isTopAdsAutoTopup = false
+            onGetTopAdsAutoTopup_thenReturn(false)
 
             mViewModel.getAllOtherMenuData()
 
@@ -600,6 +778,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     private suspend fun verifyGetShopBadgeNotCalled() {
         coVerify(exactly = 0) { getShopBadgeUseCase.executeOnBackground() }
     }
+
     private suspend fun onGetShopTotalFollowers_thenReturn(totalFollowers: Long) {
         coEvery { getShopTotalFollowersUseCase.executeOnBackground() } returns totalFollowers
     }
@@ -720,13 +899,28 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         coVerify(atLeast = atLeast) { shopShareInfoUseCase.execute(any()) }
     }
 
-    private fun onGetFreeShippingRemoteConfigDisabled_thenReturn(isDisabled: Boolean) {
+    private fun verifySetIsGoldMerchantCalled(isGoldMerchant: Boolean) {
+        verify { userSession.setIsGoldMerchant(isGoldMerchant) }
+    }
+
+    private fun verifySetIsPowerMerchantIdleCalled(isPowerMerchantIdle: Boolean) {
+        verify { userSession.setIsPowerMerchantIdle(isPowerMerchantIdle) }
+    }
+
+    private fun verifySetIsOfficialStoreCalled(isOfficialStore: Boolean) {
+        verify { userSession.setIsShopOfficialStore(isOfficialStore) }
+    }
+
+    private fun onGetFreeShippingRemoteConfigDisabled_thenReturn(
+        isFreeShippingEnabled: Boolean,
+        isInTransitionPeriod: Boolean
+    ) {
         every {
             remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-        } returns isDisabled
+        } returns isFreeShippingEnabled
         every {
             remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
-        } returns isDisabled
+        } returns isInTransitionPeriod
     }
 
 }

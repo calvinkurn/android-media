@@ -12,6 +12,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
@@ -21,6 +22,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -35,6 +37,7 @@ open class CategoryTestFixtures {
 
     protected val defaultCategoryL1 = "123"
     protected val defaultCategoryL2 = ""
+    protected val defaultExternalServiceType = ""
     protected val defaultQueryParamMap = mapOf<String, String>()
     protected val getCategoryFirstPageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
     protected val getCategoryLoadMorePageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
@@ -47,6 +50,7 @@ open class CategoryTestFixtures {
     protected val getWarehouseUseCase = mockk<GetChosenAddressWarehouseLocUseCase>(relaxed = true)
     protected val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val getCategoryListUseCase = mockk<GetCategoryListUseCase>(relaxed = true)
+    protected val setUserPreferenceUseCase = mockk<SetUserPreferenceUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
@@ -77,12 +81,14 @@ open class CategoryTestFixtures {
     protected open fun `Given category view model`(
             categoryL1: String = defaultCategoryL1,
             categoryL2: String = defaultCategoryL2,
+            externalServiceType: String = defaultExternalServiceType,
             queryParamMap: Map<String, String> = defaultQueryParamMap,
     ) {
         tokoNowCategoryViewModel = TokoNowCategoryViewModel(
                 CoroutineTestDispatchersProvider,
                 categoryL1,
                 categoryL2,
+                externalServiceType,
                 queryParamMap,
                 getCategoryFirstPageUseCase,
                 getCategoryLoadMorePageUseCase,
@@ -93,6 +99,7 @@ open class CategoryTestFixtures {
                 getWarehouseUseCase,
                 getRecommendationUseCase,
                 getCategoryListUseCase,
+                setUserPreferenceUseCase,
                 chooseAddressWrapper,
                 abTestPlatformWrapper,
                 userSession,
@@ -126,11 +133,19 @@ open class CategoryTestFixtures {
         }
     }
 
+    protected fun `Given address data null`() {
+        tokoNowCategoryViewModel.mockSuperClassField("chooseAddressData", null)
+    }
+
     protected fun `Given view already created`() {
         tokoNowCategoryViewModel.onViewCreated()
     }
 
     protected fun `When view created`() {
         tokoNowCategoryViewModel.onViewCreated()
+    }
+
+    protected fun `When view reload page`() {
+        tokoNowCategoryViewModel.onViewReloadPage()
     }
 }

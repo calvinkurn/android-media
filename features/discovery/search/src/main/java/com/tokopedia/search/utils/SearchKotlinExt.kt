@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import timber.log.Timber
 
 fun Map<String, Any>?.convertValuesToString(): Map<String, String> {
     if (this == null) return mapOf()
@@ -27,11 +28,16 @@ internal fun String?.decodeQueryParameter(): String {
     this ?: return ""
 
     val queryParametersSplitIndex = this.indexOf("?")
-    if (queryParametersSplitIndex < 0) return this
 
-    val path = this.substring(0, queryParametersSplitIndex)
-    val queryParameters = this.substring(queryParametersSplitIndex + 1, length)
-    val queryParameterEncoded = UrlParamUtils.generateUrlParamString(UrlParamUtils.getParamMap(queryParameters))
+    return if (queryParametersSplitIndex < 0) this
+    else decodeQueryParameter(queryParametersSplitIndex)
+}
+
+private fun String.decodeQueryParameter(queryParamIndex: Int): String {
+    val path = this.substring(0, queryParamIndex)
+    val queryParameters = this.substring(queryParamIndex + 1, length)
+    val queryParameterEncoded =
+        UrlParamUtils.generateUrlParamString(UrlParamUtils.getParamMap(queryParameters))
 
     return "$path?$queryParameterEncoded"
 }
@@ -41,6 +47,7 @@ internal fun safeCastRupiahToInt(price: String?): Int {
         CurrencyFormatHelper.convertRupiahToInt(price ?: "")
     }
     catch(throwable: Throwable) {
+        Timber.w(throwable)
         0
     }
 }

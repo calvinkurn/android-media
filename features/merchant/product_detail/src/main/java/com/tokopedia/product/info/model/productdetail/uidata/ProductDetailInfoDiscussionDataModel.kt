@@ -8,7 +8,8 @@ import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 data class ProductDetailInfoDiscussionDataModel(
         var componentName: Int = 0,
         var title: String = "",
-        var discussionCount :Int = 0,
+        var discussionCount: Int = 0,
+        var icon: String = "",
         var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
     override fun uniqueIdentifier(): Int = componentName

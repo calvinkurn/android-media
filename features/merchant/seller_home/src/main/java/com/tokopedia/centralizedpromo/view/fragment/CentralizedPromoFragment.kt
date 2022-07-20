@@ -60,8 +60,13 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
 
     private val adapterTypeFactory by lazy {
         CentralizedPromoAdapterTypeFactory(
-            { trackFreeShippingImpression() },
-            { trackFreeShippingClick() }
+            ::trackFreeShippingImpression,
+            ::trackFreeShippingClick,
+            ::trackProductCouponImpression,
+            ::trackProductCouponClick,
+            ::trackProductCouponOngoingPromoClick,
+            ::trackTokoMemberImpression,
+            ::trackTokoMemberClicked
         )
     }
 
@@ -275,6 +280,26 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
 
     private fun trackFreeShippingClick() {
         centralizedPromoViewModel.trackFreeShippingClick()
+    }
+
+    private fun trackProductCouponImpression() {
+        CentralizedPromoTracking.sendImpressionProductCouponPromoCreation(userSession.shopId)
+    }
+
+    private fun trackProductCouponClick() {
+        CentralizedPromoTracking.sendClickProductCouponPromoCreation(userSession.shopId)
+    }
+
+    private fun trackProductCouponOngoingPromoClick(campaignName: String) {
+        CentralizedPromoTracking.sendClickProductCouponOngoingPromo(campaignName, userSession.shopId)
+    }
+
+    private fun trackTokoMemberImpression() {
+        CentralizedPromoTracking.sendViewTokoMember(userSession.shopId)
+    }
+
+    private fun trackTokoMemberClicked() {
+        CentralizedPromoTracking.sendClickTokoMember(userSession.shopId)
     }
 }
 

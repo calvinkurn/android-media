@@ -1,21 +1,16 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.model
 
 import com.google.gson.annotations.SerializedName
-import javax.annotation.Generated
 
 /**
  * Created by fwidjaja on 06/03/20.
  */
 
-@Generated("com.robohorse.robopojogenerator")
 data class Message(
-
         @field:SerializedName("color")
-        val color: String? = null,
-
+        val color: String = "",
         @field:SerializedName("state")
-        val state: String? = null,
-
+        val state: String = "",
         @field:SerializedName("text")
-        val text: String? = null
+        val text: String = ""
 )

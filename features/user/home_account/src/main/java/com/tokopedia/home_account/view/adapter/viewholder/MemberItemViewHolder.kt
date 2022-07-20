@@ -18,6 +18,8 @@ class MemberItemViewHolder(itemView: View, val listener: HomeAccountUserListener
 
     private val binding: HomeAccountItemMemberBinding? by viewBinding()
 
+    fun getSubTitle(): String = binding?.homeAccountItemMemberSubtitle?.text.toString()
+
     fun bind(member: MemberItemDataView) {
         binding?.homeAccountItemMemberSubtitle?.text = member.subtitle
         binding?.homeAccountItemMemberTitle?.text = member.title

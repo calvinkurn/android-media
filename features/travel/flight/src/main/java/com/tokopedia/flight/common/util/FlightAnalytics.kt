@@ -19,7 +19,7 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.getDayDiffFromToday
 import com.tokopedia.utils.date.toDate
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
@@ -57,7 +57,8 @@ class FlightAnalytics @Inject constructor() {
             putString(FlightAnalyticsKeys.ID, banner.id)
             putString(FlightAnalyticsKeys.NAME, "${banner.attribute.promoCode} - slider banner")
             putString(FlightAnalyticsKeys.CREATIVE_SLOT, position.toString())
-            putString(FlightAnalyticsKeys.CREATIVE_NAME, banner.attribute.description.toLowerCase(Locale.getDefault()))
+            putString(FlightAnalyticsKeys.CREATIVE_NAME, banner.attribute.description.toLowerCase(
+                Locale.getDefault()))
             putString(FlightAnalyticsKeys.CREATIVE_URL, banner.attribute.appUrl)
         }
         val mapBundle = constructFlightParams(
@@ -1101,7 +1102,7 @@ class FlightAnalytics @Inject constructor() {
             putString(FlightAnalyticsKeys.DIMENSION74, "${journeyModel.routeList[0].airline} - ${journeyModel.routeList[0].flightNumber}")
             putString(FlightAnalyticsKeys.DIMENSION75, journeyModel.departureTime)
             putString(FlightAnalyticsKeys.DIMENSION76, "${journeyModel.arrivalTime}$dayArrival")
-            putString(FlightAnalyticsKeys.DIMENSION107, "${journeyModel.isSeatDistancing}|${journeyModel.hasFreeRapidTest}")
+            putString(FlightAnalyticsKeys.DIMENSION107, "${journeyModel.seatDistancingLabel}|${journeyModel.freeRapidTestLabel}")
             putString(FlightAnalyticsKeys.DIMENSION40, "/flight")
         }
     }
@@ -1152,7 +1153,7 @@ class FlightAnalytics @Inject constructor() {
             putString(FlightAnalyticsKeys.DIMENSION74, "${journeyModel.routeList[0].airline} - ${journeyModel.routeList[0].flightNumber}")
             putString(FlightAnalyticsKeys.DIMENSION75, journeyModel.departureTime)
             putString(FlightAnalyticsKeys.DIMENSION76, "${journeyModel.arrivalTime}$addDayInfo")
-            putString(FlightAnalyticsKeys.DIMENSION107, "${journeyModel.isSeatDistancing}|${journeyModel.hasFreeRapidTest}")
+            putString(FlightAnalyticsKeys.DIMENSION107, "${journeyModel.seatDistancingLabel}|${journeyModel.freeRapidTestLabel}")
             putString(FlightAnalyticsKeys.DIMENSION40, "/flight")
         }
     }

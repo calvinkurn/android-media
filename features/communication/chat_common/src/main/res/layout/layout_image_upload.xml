@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/chatcommon_15dp"
+    android:paddingTop="@dimen/chatcommon_3dp"
+    android:paddingRight="@dimen/chatcommon_15dp"
+    android:paddingBottom="@dimen/chatcommon_3dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/date"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/chatcommon_3dp"
+        android:textColor="@color/Unify_N700_32"
+        app:typographyType="small"
+        tools:text="Pengguna" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/dot"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@id/label"
+        android:layout_alignBottom="@id/label"
+        android:layout_marginStart="@dimen/chatcommon_3dp"
+        android:layout_toStartOf="@+id/label"
+        android:gravity="center_vertical"
+        android:lineSpacingExtra="@dimen/chatcommon_3sp"
+        android:text="●"
+        android:textColor="@color/Unify_N200"
+        android:textSize="@dimen/chatcommon_5sp"
+        android:textStyle="normal" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/date"
+        android:layout_marginBottom="@dimen/chatcommon_5dp"
+        android:layout_toStartOf="@id/dot"
+        android:textColor="@color/Unify_N700_44"
+        app:typographyType="display_3"
+        tools:text="@tools:sample/lorem/random" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:textAllCaps="true"
+        android:textColor="@color/Unify_N200"
+        app:typographyType="display_3"
+        tools:text="13:16 wib" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_group_chat_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name"
+        android:layout_alignParentEnd="true"
+        app:cardBackgroundColor="@color/Unify_N0"
+        app:cardCornerRadius="@dimen/chatcommon_3dp"
+        app:cardElevation="@dimen/layout_lvl0"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxWidth="@dimen/chatcommon_270dp"
+            android:maxHeight="@dimen/chatcommon_270dp"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:contentDescription="image" />
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/left_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/card_group_chat_message"
+        android:layout_alignBottom="@+id/card_group_chat_message"
+        android:layout_toStartOf="@+id/card_group_chat_message"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_error_to_send"
+        android:contentDescription="left_action" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/card_group_chat_message"
+        android:layout_alignBottom="@+id/card_group_chat_message"
+        android:layout_toStartOf="@+id/card_group_chat_message"
+        android:indeterminateDrawable="@drawable/progress"
+        android:visibility="visible"
+        tools:visibility="gone"
+        tools:ignore="UnifyComponentUsage" />
+
+    <ImageView
+        android:id="@+id/chat_status"
+        android:layout_width="@dimen/chatcommon_11dp"
+        android:layout_height="@dimen/chatcommon_6dp"
+        android:layout_below="@+id/card_group_chat_message"
+        android:layout_alignTop="@+id/hour"
+        android:layout_alignBottom="@+id/hour"
+        android:layout_marginEnd="@dimen/chatcommon_5dp"
+        android:layout_toStartOf="@+id/hour"
+        android:adjustViewBounds="true"
+        tools:src="@drawable/ic_read_thin"
+        android:contentDescription="chat_status" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card_group_chat_message"
+        android:layout_alignEnd="@id/card_group_chat_message"
+        android:layout_marginTop="@dimen/chatcommon_3dp"
+        android:textColor="@color/Unify_N300"
+        app:typographyType="small"
+        tools:text="10:13 pm"
+        tools:visibility="visible" />
+
+</RelativeLayout>

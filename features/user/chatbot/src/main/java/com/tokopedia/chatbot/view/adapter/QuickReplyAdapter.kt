@@ -9,6 +9,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
+import javax.inject.Inject
 
 /**
  * @author by yfsx on 08/05/18.
@@ -16,7 +17,8 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 
 private const val ACTION_IMRESSION_QUICK_REPLIES = "impression quick reply"
 class QuickReplyAdapter(private var quickReplyList: List<QuickReplyViewModel>,
-                        private val listener: QuickReplyListener) : RecyclerView.Adapter<QuickReplyAdapter.Holder>() {
+                        private val listener: QuickReplyListener,
+                        val sendAnalyticsFromAdapter:( impressionType:String)->Unit) : RecyclerView.Adapter<QuickReplyAdapter.Holder>() {
 
     private val END_CHAT = "end chat"
 
@@ -46,7 +48,7 @@ class QuickReplyAdapter(private var quickReplyList: List<QuickReplyViewModel>,
         this.quickReplyList = quickReplylist
         notifyDataSetChanged()
         if (quickReplylist.isNotEmpty()){
-            ChatbotAnalytics.chatbotAnalytics.eventShowView(ACTION_IMRESSION_QUICK_REPLIES)
+            sendAnalyticsFromAdapter(ACTION_IMRESSION_QUICK_REPLIES)
         }
     }
 

@@ -4,6 +4,15 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/spacing_lvl8"
+        android:layout_height="@dimen/spacing_lvl8"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/img_options_heading"
         android:layout_width="wrap_content"
@@ -62,7 +71,20 @@
         app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="@id/thumb_nail_image"
         app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintBottom_toTopOf="@+id/tokopedia_link"
+        app:layout_constraintBottom_toTopOf="@+id/affilate_commision"
+        app:layout_constraintLeft_toRightOf="@id/thumb_nail_image"/>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/affilate_commision"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_19"
+        android:textColor="@color/Unify_N700"
+        android:textSize="14sp"
+        app:typographyType="body_3"
+        android:visibility="gone"
+        android:layout_marginStart="16dp"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@id/thumb_nail_title"
+        app:layout_constraintBottom_toTopOf="@id/tokopedia_link"
         app:layout_constraintLeft_toRightOf="@id/thumb_nail_image"/>
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokopedia_link"
@@ -74,10 +96,9 @@
         app:typographyType="body_3"
         android:layout_marginStart="16dp"
         app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintTop_toBottomOf="@id/thumb_nail_title"
+        app:layout_constraintTop_toBottomOf="@id/affilate_commision"
         app:layout_constraintBottom_toBottomOf="@id/thumb_nail_image"
         app:layout_constraintLeft_toRightOf="@id/thumb_nail_image"/>
-
     <View
         android:id="@+id/separator"
         android:layout_width="wrap_content"

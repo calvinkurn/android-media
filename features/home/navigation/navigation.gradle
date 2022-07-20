@@ -15,7 +15,6 @@ include "features:discovery:productcard"
 include "features:discovery:topadssdk"
 include "features:discovery:wishlist_common"
 include "features:discovery:discovery_common"
-include "features:home:account-home"
 
 include "features:discovery:home_wishlist"
 include "features:transaction:buyerorder"

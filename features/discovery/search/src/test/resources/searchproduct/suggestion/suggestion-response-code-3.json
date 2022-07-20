@@ -1,0 +1,488 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 16,
+      "totalDataText": "16",
+      "defaultView": 1,
+      "responseCode": 3,
+      "errorMessage": "",
+      "additionalParams": "rf=true&nuq=razor mask",
+      "keywordProcess": "0"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home&q=razer%20mask",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0,
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "banner": {
+        "position": 0,
+        "text": "",
+        "applink": "",
+        "imageUrl": ""
+      },
+      "related": {
+        "relatedKeyword": "razor mask",
+        "position": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": "Tidak dapat menemukan hasil untuk <strong>\"razer mask\"</strong>. Menampilkan hasil untuk <strong>\"razor mask\"</strong>",
+        "componentId": "03.08.01.00",
+        "trackingOption": 3
+      },
+      "products": [
+        {
+          "id": 970133008,
+          "name": "Tinkle Eyebrow Razor 1ea & Dermal Essence Face Mask 1ea-OSSAMI TD Set",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 7931631,
+            "name": "Exborders",
+            "city": "Jakarta Utara",
+            "url": "https://www.tokopedia.com/exborders",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/6/23/batch-upload/batch-upload_0f45bb4d-47af-4304-8f42-1bf5da26e0a6.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/23/batch-upload/batch-upload_0f45bb4d-47af-4304-8f42-1bf5da26e0a6.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2020/6/23/batch-upload/batch-upload_0f45bb4d-47af-4304-8f42-1bf5da26e0a6.jpg",
+          "price": "Rp301.000",
+          "priceInt": 301000,
+          "priceRange": "",
+          "categoryId": 61,
+          "categoryName": "Kecantikan",
+          "categoryBreadcrumb": "kecantikan/masker-kecantikan/masker-wajah",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/exborders/tinkle-eyebrow-razor-1ea-dermal-essence-face-mask-1ea-ossami-td-set?refined=true&whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "PO",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Preorder",
+              "position": "status",
+              "type": "transparentBlack",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/970133008?extParam=whid%3D0"
+        },
+        {
+          "id": 1703598594,
+          "name": "Tinkle Eyebrow Razor 1ea & Dermal Essence Face Mask 16ea-OSSAMI TD Set",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 7931631,
+            "name": "Exborders",
+            "city": "Jakarta Utara",
+            "url": "https://www.tokopedia.com/exborders",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/3/25/b71aa18e-0acf-4daa-bbff-746e37b28f3b.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/3/25/b71aa18e-0acf-4daa-bbff-746e37b28f3b.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/3/25/b71aa18e-0acf-4daa-bbff-746e37b28f3b.jpg",
+          "price": "Rp782.100",
+          "priceInt": 782100,
+          "priceRange": "",
+          "categoryId": 61,
+          "categoryName": "Kecantikan",
+          "categoryBreadcrumb": "kecantikan/masker-kecantikan/masker-wajah",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/exborders/tinkle-eyebrow-razor-1ea-dermal-essence-face-mask-16ea-ossami-td-set?refined=true&whid=0",
+          "labelGroups": [
+            {
+              "title": "Cashback",
+              "position": "promo",
+              "type": "lightGreen",
+              "url": ""
+            },
+            {
+              "title": "PO",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Preorder",
+              "position": "status",
+              "type": "transparentBlack",
+              "url": ""
+            },
+            {
+              "title": "Cashback",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/1703598594?extParam=whid%3D0"
+        },
+        {
+          "id": 2206192941,
+          "name": "PADISON - Clay Mask Scrub 2in1 Mask+Cleanser (FREE DAILY RAZOR! )",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 12355403,
+            "name": "cassandrazelda",
+            "city": "Jakarta Selatan",
+            "url": "https://www.tokopedia.com/cassandrazelda-2",
+            "isOfficial": false,
+            "isPowerBadge": false
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/9/23/f6f537f2-e027-4569-8a72-f6a6b88a0df8.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/9/23/f6f537f2-e027-4569-8a72-f6a6b88a0df8.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/9/23/f6f537f2-e027-4569-8a72-f6a6b88a0df8.jpg",
+          "price": "Rp126.000",
+          "priceInt": 126000,
+          "priceRange": "",
+          "categoryId": 61,
+          "categoryName": "Kecantikan",
+          "categoryBreadcrumb": "kecantikan/masker-kecantikan/masker-wajah",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/cassandrazelda-2/padison-clay-mask-scrub-2in1-mask-cleanser-free-daily-razor?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [],
+          "wishlist": false,
+          "applink": "tokopedia://product/2206192941?extParam=whid%3D0"
+        },
+        {
+          "id": 2293700575,
+          "name": "PADISON - Clay Mask Scrub 2in1 Mask+Cleanser (FREE DAILY RAZOR! )",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 12532713,
+            "name": "ikacahyaningsih",
+            "city": "Jakarta Selatan",
+            "url": "https://www.tokopedia.com/ikacahyaningsih",
+            "isOfficial": false,
+            "isPowerBadge": false
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/10/15/52ee2328-039a-449a-90ce-a6b9dc59cf15.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/10/15/52ee2328-039a-449a-90ce-a6b9dc59cf15.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/10/15/52ee2328-039a-449a-90ce-a6b9dc59cf15.png",
+          "price": "Rp154.000",
+          "priceInt": 154000,
+          "priceRange": "",
+          "categoryId": 61,
+          "categoryName": "Kecantikan",
+          "categoryBreadcrumb": "kecantikan/masker-kecantikan/masker-wajah",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/ikacahyaningsih/padison-clay-mask-scrub-2in1-mask-cleanser-free-daily-razor?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [],
+          "wishlist": false,
+          "applink": "tokopedia://product/2293700575?extParam=whid%3D0"
+        },
+        {
+          "id": 2008774564,
+          "name": "T-Shirt Distro King Palestine Barbed wire razor wire Covid face mask 1",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 2983057,
+            "name": "Tshirtking",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/tshirtking",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/7/18/042f7d30-e2b8-4346-aa77-f5c91ad3c85e.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/7/18/042f7d30-e2b8-4346-aa77-f5c91ad3c85e.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/7/18/042f7d30-e2b8-4346-aa77-f5c91ad3c85e.jpg",
+          "price": "Rp115.000",
+          "priceInt": 115000,
+          "priceRange": "",
+          "categoryId": 1759,
+          "categoryName": "Fashion Pria",
+          "categoryBreadcrumb": "fashion-pria/atasan-pria/kaos-pria",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/tshirtking/t-shirt-distro-king-palestine-barbed-wire-razor-wire-covid-face-mask-1?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2008774564?extParam=whid%3D0"
+        },
+        {
+          "id": 773275806,
+          "name": "PADISON - Clay Mask Scrub 2in1 Mask+Cleanser (FREE DAILY RAZOR! ) Mask",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 8058350,
+            "name": "brazzercity",
+            "city": "Jakarta Pusat",
+            "url": "https://www.tokopedia.com/brazzercity",
+            "isOfficial": false,
+            "isPowerBadge": false
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/6/026949b2-6130-4443-bc9d-8e7206cc61bd.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/5/6/026949b2-6130-4443-bc9d-8e7206cc61bd.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/6/026949b2-6130-4443-bc9d-8e7206cc61bd.jpg",
+          "price": "Rp172.500",
+          "priceInt": 172500,
+          "priceRange": "",
+          "categoryId": 61,
+          "categoryName": "Kecantikan",
+          "categoryBreadcrumb": "kecantikan/masker-kecantikan/masker-wajah",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/brazzercity/padison-clay-mask-scrub-2in1-mask-cleanser-free-daily-razor-mask?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [],
+          "wishlist": false,
+          "applink": "tokopedia://product/773275806?extParam=whid%3D0"
+        },
+        {
+          "id": 1415764286,
+          "name": "Masker Wajah Organik Padison Clay Mask Free Daily Razor",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 10338319,
+            "name": "Something Grooming",
+            "city": "Jakarta Pusat",
+            "url": "https://www.tokopedia.com/somethinggrooming",
+            "isOfficial": false,
+            "isPowerBadge": false
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/9/b75ca824-dacd-4c6d-9239-20f63849cb29.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/9/b75ca824-dacd-4c6d-9239-20f63849cb29.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/b75ca824-dacd-4c6d-9239-20f63849cb29.png",
+          "price": "Rp90.000",
+          "priceInt": 90000,
+          "priceRange": "",
+          "categoryId": 61,
+          "categoryName": "Kecantikan",
+          "categoryBreadcrumb": "kecantikan/masker-kecantikan/masker-wajah",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/somethinggrooming/masker-wajah-organik-padison-clay-mask-free-daily-razor?refined=true&whid=0",
+          "labelGroups": [
+            {
+              "title": "Grosir",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Grosir",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [],
+          "wishlist": false,
+          "applink": "tokopedia://product/1415764286?extParam=whid%3D0"
+        },
+        {
+          "id": 1932047648,
+          "name": "PADISON - Clay Mask Scrub 2in1 Mask+Cleanser (FREE DAILY RAZOR! )",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 11674588,
+            "name": "iinpermatasari",
+            "city": "Jakarta Selatan",
+            "url": "https://www.tokopedia.com/iinpermatasari",
+            "isOfficial": false,
+            "isPowerBadge": false
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/6/18/5751f5af-a8eb-488d-a0b9-d9d99cfff842.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/6/18/5751f5af-a8eb-488d-a0b9-d9d99cfff842.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/6/18/5751f5af-a8eb-488d-a0b9-d9d99cfff842.png",
+          "price": "Rp176.000",
+          "priceInt": 176000,
+          "priceRange": "",
+          "categoryId": 61,
+          "categoryName": "Kecantikan",
+          "categoryBreadcrumb": "kecantikan/perawatan-wajah/minyak-wajah",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/iinpermatasari/padison-clay-mask-scrub-2in1-mask-cleanser-free-daily-razor?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [],
+          "wishlist": false,
+          "applink": "tokopedia://product/1932047648?extParam=whid%3D0"
+        }
+      ]
+    }
+  }
+}

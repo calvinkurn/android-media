@@ -4,6 +4,7 @@ import android.util.TypedValue
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -17,6 +18,7 @@ import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.unifycomponents.NotificationUnify
+import java.util.*
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -58,11 +60,7 @@ class CardViewHolder(
     private fun observeState(element: CardWidgetUiModel) {
         val data = element.data
         when {
-            null == data -> {
-                showViewComponent(element, false)
-                showOnError(false)
-                showShimmer(true)
-            }
+            null == data || element.showLoadingState -> showLoadingState(element)
             data.error.isNotBlank() -> {
                 showShimmer(false)
                 showOnError(true)
@@ -76,6 +74,12 @@ class CardViewHolder(
                 setupTag(element)
             }
         }
+    }
+
+    private fun showLoadingState(element: CardWidgetUiModel) {
+        showViewComponent(element, false)
+        showOnError(false)
+        showShimmer(true)
     }
 
     private fun showViewComponent(element: CardWidgetUiModel, isShown: Boolean) {
@@ -102,6 +106,7 @@ class CardViewHolder(
                     shcCardValueCountdownView.invisible()
                     tvCardValue.text = shownValue.parseAsHtml()
                 }
+                setupRefreshButton(element)
             }
         }
 
@@ -125,9 +130,20 @@ class CardViewHolder(
                 tvCardValue.visible()
                 tvCardValue.text = (element.data?.value ?: ZERO_STR).parseAsHtml()
             }
-            tvCardSubValue.text = element.data?.description?.parseAsHtml()
+            if (element.data?.description.isNullOrBlank()) {
+                tvCardSubValue.invisible()
+            } else {
+                tvCardSubValue.visible()
+                tvCardSubValue.show(
+                    primary = element.data?.description.orEmpty(),
+                    secondary = element.data?.secondaryDescription.orEmpty()
+                )
+            }
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendCardImpressionEvent(element)
+                if (!element.data?.description.isNullOrBlank()) {
+                    tvCardSubValue.showTextWithAnimation()
+                }
             }
 
             root.setOnClickListener {
@@ -140,6 +156,26 @@ class CardViewHolder(
 
             showCardState(element.data)
         }
+    }
+
+    private fun setupRefreshButton(element: CardWidgetUiModel) {
+        with(binding) {
+            containerCard.viewTreeObserver.addOnPreDrawListener {
+                element.data?.lastUpdated?.let {
+                    val shouldShowRefreshButton =
+                        it.needToUpdated.orFalse() && !element.showLoadingState
+                    icShcRefreshCard.isVisible = shouldShowRefreshButton && it.isEnabled
+                    icShcRefreshCard.setOnClickListener {
+                        refreshWidget(element)
+                    }
+                }
+                return@addOnPreDrawListener true
+            }
+        }
+    }
+
+    private fun refreshWidget(element: CardWidgetUiModel) {
+        listener.onReloadWidget(element)
     }
 
     private fun showCardState(data: CardDataUiModel?) {
@@ -160,7 +196,7 @@ class CardViewHolder(
             tvCardTitle.visible()
             tvCardValue.visible()
             tvCardValue.text = root.context.getString(R.string.shc_load_failed)
-            tvCardSubValue.text = ""
+            tvCardSubValue.invisible()
         }
     }
 
@@ -169,6 +205,9 @@ class CardViewHolder(
             val visibility = if (isLoading) View.VISIBLE else View.GONE
             shimmerCardTitle.visibility = visibility
             shimmerCardValue.visibility = visibility
+            if (isLoading) {
+                icShcRefreshCard.gone()
+            }
         }
     }
 

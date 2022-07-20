@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.DealsSearchConstants
 import com.tokopedia.deals.search.domain.DealsSearchGqlQueries
+import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.deals.search.model.response.CuratedData
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -47,6 +48,9 @@ class DealCategoryViewModel @Inject constructor(
     val observableProducts: LiveData<List<DealsBaseItemDataView>>
         get() = privateObservableProducts
 
+    private val privateObservableCategories = MutableLiveData<List<Category>>()
+    val observableCategories:LiveData<List<Category>> get() = privateObservableCategories
+
     init {
         shimmeringCategory()
     }
@@ -60,6 +64,13 @@ class DealCategoryViewModel @Inject constructor(
     private fun onGetCategorySuccess(): (CuratedData) -> Unit {
         return {
             privateObservableChips.value = mapCategoryLayout.mapCategoryToChips(it.eventChildCategory.categories)
+            privateObservableCategories.value = it.eventChildCategory.categories.map { category ->
+                return@map if (category.id == CATEGORY_ID){
+                    category.copy(isCard = 1)
+                }else{
+                    category
+                }
+            }
         }
     }
 
@@ -126,5 +137,6 @@ class DealCategoryViewModel @Inject constructor(
     companion object {
         const val BRAND_POPULAR = 0
         const val PRODUCT_LIST = 1
+        const val CATEGORY_ID = "25"
     }
 }

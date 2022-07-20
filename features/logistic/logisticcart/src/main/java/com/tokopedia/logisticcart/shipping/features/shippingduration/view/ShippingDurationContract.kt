@@ -14,7 +14,7 @@ interface ShippingDurationContract {
         fun showLoading()
         fun hideLoading()
         fun showErrorPage(message: String)
-        fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModel: LogisticPromoUiModel?, preOrderModel: PreOrderModel?)
+        fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModelList: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?)
         fun showNoCourierAvailable(message: String?)
         fun stopTrace()
         fun isDisableCourierPromo(): Boolean

@@ -25,7 +25,7 @@ class GetContentFormSubscriber(private val view: CreatePostContract.View?,
             e!!.printStackTrace()
         }
         view?.hideLoading()
-        view?.onErrorGetContentForm(ErrorHandler.getErrorMessage(view.getContext(), e))
+        view?.onErrorGetContentForm(ErrorHandler.getErrorMessage(view.getContext(), e), e)
     }
 
     override fun onNext(domain: GetContentFormDomain) {
@@ -41,7 +41,7 @@ class GetContentFormSubscriber(private val view: CreatePostContract.View?,
 
         view?.hideLoading()
         if (!TextUtils.isEmpty(data.feedContentForm.error)) {
-            view?.onErrorGetContentForm(data.feedContentForm.error)
+            view?.onErrorGetContentForm(data.feedContentForm.error, null)
             return
         }
         view?.onSuccessGetContentForm(data.feedContentForm, !templateToken.isNullOrEmpty())

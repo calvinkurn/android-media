@@ -1,14 +1,10 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.app.Activity.RESULT_OK
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -20,8 +16,6 @@ import com.tokopedia.product.manage.common.feature.list.constant.DRAFT_PRODUCT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
@@ -32,16 +26,17 @@ import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import javax.inject.Inject
 
-class ProductManageSellerFragment : ProductManageFragment() {
+open class ProductManageSellerFragment : ProductManageFragment() {
 
     companion object {
-        private const val FILTER_OPTIONS = "filter_options"
-        private const val SEARCH_KEYWORD_OPTIONS = "search_keyword_options"
+        const val FILTER_OPTIONS = "filter_options"
+        const val SEARCH_KEYWORD_OPTIONS = "search_keyword_options"
 
         @JvmStatic
         fun newInstance(
-                filterOptions: ArrayList<String>,
-                searchKeyWord: String): ProductManageSellerFragment {
+            filterOptions: ArrayList<String>,
+            searchKeyWord: String
+        ): ProductManageSellerFragment {
             return ProductManageSellerFragment().apply {
                 arguments = Bundle().apply {
                     putStringArrayList(FILTER_OPTIONS, filterOptions)
@@ -50,8 +45,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
             }
         }
     }
-
-    private lateinit var draftBroadCastReceiver: BroadcastReceiver
 
     @Inject
     lateinit var productDraftListCountViewModel: ProductDraftListCountViewModel
@@ -70,7 +63,12 @@ class ProductManageSellerFragment : ProductManageFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        activity?.window?.decorView?.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
         tvDraftProduct?.visibility = View.GONE
         getDefaultKeywordOptionFromArguments()
         getDefaultFilterOptionsFromArguments()
@@ -79,31 +77,15 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     override fun initInjector() {
         ProductManageListInstance.getComponent(requireContext())
-                .inject(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        productDraftListCountViewModel.detachView()
+            .inject(this)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
-        if(!hidden) {
+        if (!hidden) {
             sendNormalSendScreen()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        registerDraftReceiver()
-        productDraftListCountViewModel.getAllDraftCount()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        unregisterDraftReceiver()
     }
 
     override fun callInitialLoadAutomatically() = false
@@ -139,11 +121,19 @@ class ProductManageSellerFragment : ProductManageFragment() {
         if (rowCount == 0L) {
             tvDraftProduct?.visibility = View.GONE
         } else {
-            tvDraftProduct?.text = MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount))
+            tvDraftProduct?.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.product_manage_you_have_x_unfinished_product,
+                    rowCount
+                )
+            )
             tvDraftProduct?.setOnClickListener {
                 ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
-                startActivityForResult(intent, REQUEST_CODE_DRAFT_PRODUCT)
+                val intent = RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT
+                )
+                startActivity(intent)
             }
             tvDraftProduct?.visibility = View.VISIBLE
         }
@@ -155,37 +145,16 @@ class ProductManageSellerFragment : ProductManageFragment() {
     }
 
     private fun getDefaultKeywordOptionFromArguments() {
-        val searchKeyword = arguments?.getString(SEARCH_KEYWORD_OPTIONS).orEmpty()
-        super.setSearchKeywordOptions(searchKeyword)
+        arguments?.getString(SEARCH_KEYWORD_OPTIONS)?.let {
+            super.setSearchKeywordOptions(it)
+        }
     }
 
     private fun getDefaultFilterOptionsFromArguments() {
         val filterOptionKeys: List<String> = arguments?.getStringArrayList(FILTER_OPTIONS).orEmpty()
-        val filterOptions: List<FilterOption> = FilterMapper.mapKeysToFilterOptionList(filterOptionKeys)
+        val filterOptions: List<FilterOption> =
+            FilterMapper.mapKeysToFilterOptionList(filterOptionKeys)
         super.setDefaultFilterOptions(filterOptions)
-    }
-
-    private fun registerDraftReceiver() {
-        draftBroadCastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                if (intent.action == BROADCAST_ADD_PRODUCT) {
-                    productDraftListCountViewModel.getAllDraftCount()
-                }
-            }
-        }
-
-        activity?.let {
-            val intentFilters = IntentFilter().apply {
-                addAction(BROADCAST_ADD_PRODUCT)
-            }
-            LocalBroadcastManager.getInstance(it).registerReceiver(draftBroadCastReceiver, intentFilters)
-        }
-    }
-
-    private fun unregisterDraftReceiver() {
-        activity?.let {
-            LocalBroadcastManager.getInstance(it).unregisterReceiver(draftBroadCastReceiver)
-        }
     }
 
     private fun observeGetAllDraftCount() {
@@ -195,6 +164,13 @@ class ProductManageSellerFragment : ProductManageFragment() {
                 is Fail -> {
                     onDraftCountLoadError()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.GET_ALL_DRAFT_COUNT_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         }

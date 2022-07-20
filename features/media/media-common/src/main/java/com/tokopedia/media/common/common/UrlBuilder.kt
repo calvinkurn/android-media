@@ -12,7 +12,7 @@ object UrlBuilder {
         val connectionType = when(qualitySettings) {
             LOW_QUALITY_SETTINGS -> LOW_QUALITY // (2g / 3g)
             HIGH_QUALITY_SETTINGS -> HIGH_QUALITY // (4g / wifi)
-            else -> networkState
+            else -> networkState // adaptive
         }
 
         return if (connectionType == LOW_QUALITY)

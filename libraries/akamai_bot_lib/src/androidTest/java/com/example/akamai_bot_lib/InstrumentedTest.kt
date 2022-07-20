@@ -5,7 +5,7 @@ import android.util.Log
 import android.util.Pair
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.akamai_bot_lib.getAny
+import com.tokopedia.akamai_bot_lib.getQueryListFromQueryString
 import com.tokopedia.akamai_bot_lib.registeredGqlFunctions
 import com.tokopedia.akamai_bot_lib.test.R
 import org.junit.Test
@@ -52,7 +52,7 @@ class InstrumentedTest {
             val input = pair.first[i]
             val name = pair.second[i]
             try {
-                val xTkpdAkamai = getAny(input)
+                val xTkpdAkamai = getQueryListFromQueryString(input)
                         .asSequence()
                         .filter { it ->
                             registeredGqlFunctions.containsKey(it)

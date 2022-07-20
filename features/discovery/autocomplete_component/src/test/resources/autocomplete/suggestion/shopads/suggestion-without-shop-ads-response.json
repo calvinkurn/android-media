@@ -1,0 +1,35 @@
+{
+  "data": {
+    "id": "suggestion",
+    "name": "SUGGESTION",
+    "items": [
+      {
+        "template": "list_double_line_shop_ads",
+        "type": "",
+        "applink": "",
+        "url": "",
+        "title": "",
+        "subtitle": "",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "discount_percentage": "",
+        "original_price": "",
+        "tracking_option": 3,
+        "component_id": "02.11.03.01",
+        "child_items": []
+      }
+    ]
+  },
+  "top_shops": [],
+  "headlineAds": {
+    "data": []
+  }
+}

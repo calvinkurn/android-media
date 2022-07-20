@@ -1,12 +1,8 @@
-[
-  {
-    "data": {
-      "finish_order_buyer": {
-        "success": 1,
-        "message": [
-          "Gimana pengalaman belanjamu? Transaksimu sudah selesai. Ayo ceritain gimana pengalaman belanjamu barusan."
-        ]
-      }
-    }
+{
+  "finish_order_buyer": {
+    "success": 1,
+    "message": [
+      "Gimana pengalaman belanjamu? Transaksimu sudah selesai. Ayo ceritain gimana pengalaman belanjamu barusan."
+    ]
   }
-]
+}

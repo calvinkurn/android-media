@@ -5,11 +5,11 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.network.constant.ErrorNetMessage
@@ -18,7 +18,11 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
-import com.tokopedia.promocheckout.common.util.*
+import com.tokopedia.promocheckout.common.util.EXTRA_INPUT_TYPE
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.util.INPUT_TYPE_COUPON
+import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
+import com.tokopedia.promocheckout.common.util.mapToVariantPromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
@@ -28,9 +32,22 @@ import com.tokopedia.promocheckout.detail.view.presenter.CheckPromoCodeDetailExc
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
 import com.tokopedia.promocheckout.widget.TimerPromoCheckout
-import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
-import kotlinx.android.synthetic.main.include_period_tnc_promo.*
-import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.buttonCancel
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.buttonUse
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.containerButton
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.imageBannerPromo
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.mainView
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.progressBarLoading
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.textTitlePromo
+import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.webviewTnc
+import kotlinx.android.synthetic.main.include_period_tnc_promo.imageMinTrans
+import kotlinx.android.synthetic.main.include_period_tnc_promo.imagePeriod
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.imageMinTrans
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.textMinTrans
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.textPeriod
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.timerUsage
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.titleMinTrans
+import kotlinx.android.synthetic.main.include_period_tnc_promo.view.titlePeriod
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -51,7 +68,11 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_checkout_detail_layout, container, false)
     }
 
@@ -134,15 +155,17 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
             textTitlePromo?.text = it.title
             hideTimerView()
             if ((it.usage.activeCountDown > 0 &&
-                            it.usage.activeCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                        it.usage.activeCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)
+            ) {
                 setActiveTimerUsage(it.usage.activeCountDown.toLong())
             } else if ((it.usage.expiredCountDown > 0 &&
-                            it.usage.expiredCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                        it.usage.expiredCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)
+            ) {
                 setExpiryTimerUsage(it.usage.expiredCountDown.toLong())
             }
             view?.textPeriod?.text = it.usage.usageStr
             webviewTnc?.settings?.javaScriptEnabled = true
-            webviewTnc?.loadData(getFormattedHtml(it.tnc), "text/html", "UTF-8")
+            webviewTnc?.loadPartialWebView(it.tnc)
             enableOrDisableViews(it)
         }
     }
@@ -228,7 +251,8 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         if (e is CheckPromoCodeException) {
             message = e.message.toString()
         }
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, message) { onClickUse() }.showRetrySnackbar()
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, message) { onClickUse() }
+            .showRetrySnackbar()
     }
 
     override fun onErrorCheckPromoStacking(e: Throwable) {
@@ -255,17 +279,19 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
         val intent = Intent()
         val variant = "global"
-        val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
+        val typePromo =
+            if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
         val promoStackingData = PromoStackingData(
-                typePromo = typePromo,
-                promoCode = data.codes[0],
-                description = data.message.text,
-                title = data.titleDescription,
-                counterLabel = "",
-                amount = data.cashbackWalletAmount,
-                state = data.message.state.mapToStatePromoStackingCheckout(),
-                variant = variant.mapToVariantPromoStackingCheckout(),
-                trackingDetailUiModels = data.trackingDetailUiModel)
+            typePromo = typePromo,
+            promoCode = data.codes[0],
+            description = data.message.text,
+            title = data.titleDescription,
+            counterLabel = "",
+            amount = data.cashbackWalletAmount,
+            state = data.message.state.mapToStatePromoStackingCheckout(),
+            variant = variant.mapToVariantPromoStackingCheckout(),
+            trackingDetailUiModels = data.trackingDetailUiModel
+        )
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_COUPON)
         activity?.setResult(Activity.RESULT_OK, intent)
@@ -280,7 +306,10 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         isUse = false
         validateButton()
         val intent = Intent()
-        val promoStackingData = PromoStackingData(PromoStackingData.TYPE_COUPON, state = TickerPromoStackingCheckoutView.State.EMPTY)
+        val promoStackingData = PromoStackingData(
+            PromoStackingData.TYPE_COUPON,
+            state = TickerPromoStackingCheckoutView.State.EMPTY
+        )
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
@@ -308,7 +337,10 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     private fun getFormattedHtml(content: String?): String {
-        return getString(R.string.promo_label_html_tnc_promo, content)
+        return String.format(
+            getString(R.string.promo_label_html_tnc_promo),
+            content
+        )
     }
 
     override fun onErroGetDetail(e: Throwable) {

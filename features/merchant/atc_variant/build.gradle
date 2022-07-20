@@ -14,6 +14,12 @@ buildscript {
     }
 }
 
+android {
+    buildFeatures {
+        buildConfig true
+    }
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -25,6 +31,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
@@ -37,8 +44,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -65,8 +73,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }

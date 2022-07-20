@@ -15,6 +15,5 @@ object ShopCommonParamApiConstant {
     const val QUERY_SHOP_SCORE = "gql_query_shop_score"
     const val QUERY_STAMP_PROGRESS = "query_stamp_progress"
     const val QUERY_CLAIM_MEMBERSHIP = "query_claim_membership"
-    const val GQL_PRODUCT_LIST = "gql_product_list"
     const val GQL_UPDATE_PRODUCT = "gql_update_product"
 }

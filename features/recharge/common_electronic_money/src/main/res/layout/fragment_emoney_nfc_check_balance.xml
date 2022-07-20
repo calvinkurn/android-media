@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.common_electronic_money.compoundview.ETollUpdateBalanceResultView
         android:id="@+id/view_update_balance_result"

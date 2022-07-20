@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:id="@+id/main_layout"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/left_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="body_3"
+            tools:text="Biaya"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/right_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            app:typographyType="heading_6"
+            tools:text="Rp44.000"/>
+    </LinearLayout>
+    <View
+        android:id="@+id/line_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/order_detail_seperator_1dp"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:background="@color/Unify_N50"
+        android:visibility="gone"/>
+</LinearLayout>

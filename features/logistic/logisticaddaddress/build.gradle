@@ -12,6 +12,10 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
 }
 
 repositories {
@@ -53,11 +57,11 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.playServicesDependencies.base
@@ -88,6 +92,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     //-------------------------------------------------------------------//
 }

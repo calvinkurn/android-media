@@ -1,30 +1,38 @@
 package com.tokopedia.product.detail.view.listener
 
-import android.app.Application
 import android.util.SparseIntArray
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifyprinciples.Typography
 
 interface DynamicProductDetailListener {
-    fun getApplicationContext(): Application?
-    fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
     fun isNavOld(): Boolean
     fun getFragmentTrackingQueue(): TrackingQueue?
     fun getVariantString(): String
+    fun getParentViewModelStoreOwner(): ViewModelStore
+    fun getParentLifeCyclerOwner(): LifecycleOwner
+    fun getRemoteConfigInstance(): RemoteConfig?
 
     /**
      * ProductMediaViewHolder
@@ -33,8 +41,15 @@ interface DynamicProductDetailListener {
     fun onVideoVolumeCLicked(isMute: Boolean)
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
+    fun onThumbnailImpress(position: Int,
+                           media: MediaDataModel,
+                           componentTrackDataModel: ComponentTrackDataModel?)
+    fun trackThumbnailClicked(position: Int,
+                              media: MediaDataModel,
+                              componentTrackDataModel: ComponentTrackDataModel?)
 
-    fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int)
+    fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
+    fun showThumbnailImage(): Boolean
 
     /**
      * ProductSnapshotViewHolder
@@ -54,13 +69,20 @@ interface DynamicProductDetailListener {
     fun onCategoryClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun goToApplink(url: String)
+    fun goToEducational(url: String)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun showCustomInfoCoachMark(componentName: String, viewTarget: View)
 
     /**
      * BestSellerViewHolder
      */
     fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String)
+
+    /**
+     * OneLinerViewHolder
+     */
+    fun onImpressStockAssurance(componentTrackDataModel: ComponentTrackDataModel, label: String)
 
     /**
      * ProductDiscussionViewHolder
@@ -74,11 +96,10 @@ interface DynamicProductDetailListener {
     /**
      * ProductReviewViewHolder
      */
-    fun onSeeAllLastItemImageReview(componentTrackDataModel: ComponentTrackDataModel?)
-    fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String)
+    fun onSeeAllLastItemMediaReview(componentTrackDataModel: ComponentTrackDataModel?)
+    fun onMediaReviewClick(reviewID: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?, detailedMediaResult: ProductrevGetReviewMedia)
     fun onReviewClick()
     fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
-    fun shouldShowRatingAndReviewCount(): Boolean
 
     /**
      * ProductMerchantVoucherViewHolder
@@ -86,10 +107,22 @@ interface DynamicProductDetailListener {
     fun isOwner(): Boolean
 
     /**
+     * FintechWidgetViewHolder
+     */
+    fun fintechRedirection(
+            fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
+            redirectionUrl: String
+    )
+
+    /**
      * ProductShopCredibilityViewHolder
      */
     fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopMultilocClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopTickerClicked(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopTickerImpressed(tickerDataResponse: ShopInfo.TickerDataResponse, componentTrackDataModel: ComponentTrackDataModel)
+    fun onShopCredibilityImpressed(countLocation: String, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductRecommendationAnnotationChipViewHolder
@@ -123,18 +156,20 @@ interface DynamicProductDetailListener {
      */
     fun loadTopads(pageName: String)
 
+    fun loadPlayWidget()
+
     /**
      * ProductDefaultErrorViewHolder
      */
     fun onRetryClicked(forceRefresh: Boolean)
     fun goToHomePageClicked()
     fun goToWebView(url: String)
+    fun onImpressPageNotFound()
 
     /**
      * ImpressionComponent
      */
     fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel)
-
     /**
      * ProductNotifyMeViewHolder
      */
@@ -159,7 +194,8 @@ interface DynamicProductDetailListener {
     /**
      * ProductDetailInfoViewHolder
      */
-    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>, componentTrackDataModel: ComponentTrackDataModel)
+    fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>,
+                                    componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductReportViewHolder
@@ -174,21 +210,35 @@ interface DynamicProductDetailListener {
     /**
      * ProductShippingViewHolder
      */
-    fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
+    fun openShipmentClickedBottomSheet(title: String, chipsLabel: List<String>, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
     fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
-    fun showCoachmark(view: Typography?, isBoeType: Boolean)
 
     /**
      * ProductCategoryCarouselViewHolder
      */
     fun onCategoryCarouselImageClicked(url: String, categoryTitle: String, categoryId: String, componentTrackDataModel: ComponentTrackDataModel?)
-    fun onCategoryCarouselSeeAllClicked(url:String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onCategoryCarouselSeeAllClicked(url: String, componentTrackDataModel: ComponentTrackDataModel?)
 
     /**
      * ProductBundlingViewHolder
      */
-    fun onImpressionProductBundling(bundleId: String, bundleType: String, componentTrackDataModel:ComponentTrackDataModel)
+    fun onImpressionProductBundling(bundleId: String, bundleType: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onClickCheckBundling(bundleId: String, bundleType: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onClickProductInBundling(bundleId: String, bundleProductId: String, componentTrackDataModel: ComponentTrackDataModel)
 
+    /**
+     * ContentWidgetViewHolder
+     */
+    fun onImpressChannelCard(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetChannelUiModel)
+    fun onClickChannelCard(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetChannelUiModel)
+    fun onClickBannerCard(componentTrackDataModel: ComponentTrackDataModel)
+    fun onClickViewAll(componentTrackDataModel: ComponentTrackDataModel)
+    fun onClickToggleReminderChannel(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetChannelUiModel, isRemindMe: Boolean)
+
+    /**
+     * ProductDetailNavigation / Navigation Bar / Tab
+     */
+    fun onImpressBackToTop(label: String)
+    fun onImpressProductDetailNavigation(labels: List<String>)
+    fun onClickProductDetailnavigation(position: Int, label: String)
 }

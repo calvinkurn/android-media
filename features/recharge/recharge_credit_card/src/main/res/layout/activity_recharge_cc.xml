@@ -5,7 +5,7 @@
     android:id="@+id/banner_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <FrameLayout
         android:id="@+id/container_background"
@@ -63,9 +63,10 @@
         android:id="@+id/cc_logo_verified"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl7"
+        android:layout_marginRight="@dimen/layout_lvl7"
         android:scaleType="fitCenter"
-        android:src="@drawable/cc_ic_logo_verified"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CheckBox.Wishlist.Revamped" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="colorAccent">@color/Unify_G500</item>
+    </style>
+</resources>

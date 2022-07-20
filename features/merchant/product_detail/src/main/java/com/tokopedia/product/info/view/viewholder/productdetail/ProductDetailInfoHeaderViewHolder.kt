@@ -65,24 +65,25 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
         }
     }
 
-    private fun setupItem(socProofBinding: ItemInfoProductDetailBinding, data: ProductDetailInfoContent) = with(socProofBinding) {
+    private fun setupItem(socProofBinding: ItemInfoProductDetailBinding,
+                          data: ProductDetailInfoContent) = with(socProofBinding) {
         infoDetailTitle.text = data.title
         infoDetailValue.text = data.subtitle
 
         infoDetailValue.run {
             if (data.applink.isNotEmpty()) {
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 setWeight(Typography.BOLD)
 
-                setOnClickListener {
-                    when (data.title.toLowerCase(Locale.getDefault())) {
+                infoDetailClickArea.setOnClickListener {
+                    when (data.title.lowercase(Locale.getDefault())) {
                         ProductDetailCommonConstant.KEY_CATEGORY -> {
                             listener.goToCategory(data.applink)
                         }
-                        ProductDetailCommonConstant.KEY_ETALASE  -> {
+                        ProductDetailCommonConstant.KEY_ETALASE -> {
                             listener.goToEtalase(data.applink)
                         }
-                        ProductDetailCommonConstant.KEY_CATALOG  -> {
+                        ProductDetailCommonConstant.KEY_CATALOG -> {
                             listener.goToCatalog(data.applink, data.subtitle)
                         }
                         else -> {
@@ -90,11 +91,20 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
                         }
                     }
                 }
-            } else {
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                setWeight(Typography.REGULAR)
-                setOnClickListener { }
             }
+
+            if (data.infoLink.isNotEmpty()) {
+                infoDetailIcon.show()
+                infoDetailClickArea.setOnClickListener {
+                    listener.goToEducational(data.infoLink, data.title, data.subtitle, adapterPosition + 1)
+                }
+
+                data.icon.toIntOrNull()?.let { icon ->
+                    infoDetailIcon.setImage(icon)
+                }
+            }
+
+            listener.onImpressInfo(data.title, data.subtitle, adapterPosition + 1)
         }
     }
 }

@@ -41,7 +41,6 @@ class CavPlayTrackingLiveTest {
             performShop()
             performWatchArea()
             performLike()
-            performPinnedMessage()
             performSendChatQuickReply()
             performClose()
             Thread.sleep(2000)
@@ -55,8 +54,8 @@ class CavPlayTrackingLiveTest {
     private fun performShop() {
         register(idlResShopInfo)
         Espresso.onView(ViewMatchers.withId(R.id.tv_partner_name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.tv_follow)).perform(ViewActions.click()) // follow
-        Espresso.onView(ViewMatchers.withId(R.id.tv_follow)).perform(ViewActions.click()) // unfollow
+        Espresso.onView(ViewMatchers.withId(R.id.btn_follow)).perform(ViewActions.click()) // follow
+        Espresso.onView(ViewMatchers.withId(R.id.btn_follow)).perform(ViewActions.click()) // unfollow
         unregister(idlResShopInfo)
     }
 
@@ -70,13 +69,9 @@ class CavPlayTrackingLiveTest {
 
     private fun performLike() {
         register(idlResLike)
-        Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // like
-        Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // unlike
+        Espresso.onView(ViewMatchers.withId(R.id.icon_like)).perform(ViewActions.click()) // like
+        Espresso.onView(ViewMatchers.withId(R.id.icon_like)).perform(ViewActions.click()) // unlike
         unregister(idlResLike)
-    }
-
-    private fun performPinnedMessage() {
-        Espresso.onView(ViewMatchers.withId(R.id.tv_pinned_action)).perform(ViewActions.click())
     }
 
     private fun performSendChatQuickReply() {
@@ -122,7 +117,7 @@ class CavPlayTrackingLiveTest {
                     override fun getName(): String = "clickLike"
 
                     override fun idleState(): Boolean {
-                        val view = intentsTestRule.activity.findViewById<View>(R.id.animation_like)
+                        val view = intentsTestRule.activity.findViewById<View>(R.id.icon_like)
                         return view.isClickable
                     }
                 }

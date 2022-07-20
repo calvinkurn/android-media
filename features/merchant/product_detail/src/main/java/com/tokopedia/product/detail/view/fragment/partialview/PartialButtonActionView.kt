@@ -7,12 +7,18 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
+import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product.detail.common.generateTopchatButtonPdp
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_ATC_MAX_ORDER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_MIN_QTY
@@ -65,7 +71,7 @@ class PartialButtonActionView private constructor(val view: View,
     private val btnChat = view.findViewById<UnifyButton>(R.id.btn_topchat)
 
     companion object {
-        fun build(_view: View, _buttonListener: PartialButtonActionListener) = PartialButtonActionView(_view, _buttonListener)
+        fun build(view: View, buttonListener: PartialButtonActionListener) = PartialButtonActionView(view, buttonListener)
 
         private const val QUANTITY_REGEX = "[^0-9]"
         private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 500L
@@ -137,7 +143,7 @@ class PartialButtonActionView private constructor(val view: View,
         } else {
             showViewTokoNowNonVar()
             renderTokoNowNonVar(tokonowButtonData?.selectedMiniCart
-                    ?: MiniCartItem(), tokonowButtonData?.minQuantity ?: DEFAULT_MIN_QTY,
+                    ?: MiniCartItem.MiniCartItemProduct(), tokonowButtonData?.minQuantity ?: DEFAULT_MIN_QTY,
                     tokonowButtonData?.maxQuantity ?: DEFAULT_ATC_MAX_ORDER)
         }
 
@@ -222,7 +228,7 @@ class PartialButtonActionView private constructor(val view: View,
         btnAddToCart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
     }
 
-    private fun renderTokoNowNonVar(selectedMiniCart: MiniCartItem, minQuantity: Int, maxQuantity: Int) = with(view) {
+    private fun renderTokoNowNonVar(selectedMiniCart: MiniCartItem.MiniCartItemProduct, minQuantity: Int, maxQuantity: Int) = with(view) {
         localQuantity = selectedMiniCart.quantity
         qtyButtonPdp?.run {
             minValue = minQuantity
@@ -246,7 +252,7 @@ class PartialButtonActionView private constructor(val view: View,
         }
     }
 
-    private fun initTextWatcherDebouncer(minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem) {
+    private fun initTextWatcherDebouncer(minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem.MiniCartItemProduct) {
         quantityDebounceSubscription = Observable.create(
                 Observable.OnSubscribe<Int> { subscriber ->
                     textWatcher = object : TextWatcher {
@@ -290,7 +296,7 @@ class PartialButtonActionView private constructor(val view: View,
         buttonListener.getRxCompositeSubcription().add(quantityDebounceSubscription)
     }
 
-    private fun onNextValueQuantity(quantity: Int, minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem) {
+    private fun onNextValueQuantity(quantity: Int, minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem.MiniCartItemProduct) {
         qtyButtonPdp?.run {
             if (quantity < minQuantity) {
                 setValue(minQuantity)
@@ -307,41 +313,6 @@ class PartialButtonActionView private constructor(val view: View,
                     //fire again to update + and - button
                     setValue(localQuantity)
                 }
-            }
-        }
-    }
-
-    private fun UnifyButton.generateTheme(colorDescription: String) {
-        when (colorDescription) {
-            ProductDetailCommonConstant.KEY_BUTTON_PRIMARY -> {
-                this.buttonVariant = UnifyButton.Variant.FILLED
-                this.buttonType = UnifyButton.Type.TRANSACTION
-                this.isEnabled = true
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_DISABLE -> {
-                this.buttonVariant = UnifyButton.Variant.FILLED
-                this.buttonType = UnifyButton.Type.MAIN
-                this.isEnabled = false
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN -> {
-                this.buttonVariant = UnifyButton.Variant.FILLED
-                this.buttonType = UnifyButton.Type.MAIN
-                this.isEnabled = true
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN -> {
-                this.buttonVariant = UnifyButton.Variant.GHOST
-                this.buttonType = UnifyButton.Type.MAIN
-                this.isEnabled = true
-            }
-            ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY -> {
-                this.buttonVariant = UnifyButton.Variant.GHOST
-                this.buttonType = UnifyButton.Type.ALTERNATE
-                this.isEnabled = true
-            }
-            else -> {
-                this.buttonVariant = UnifyButton.Variant.GHOST
-                this.buttonType = UnifyButton.Type.TRANSACTION
-                this.isEnabled = true
             }
         }
     }
@@ -462,5 +433,5 @@ data class TokoNowButtonData(
         //non var
         val minQuantity: Int = DEFAULT_MIN_QTY,
         val maxQuantity: Int = DEFAULT_ATC_MAX_ORDER,
-        val selectedMiniCart: MiniCartItem? = null
+        val selectedMiniCart: MiniCartItem.MiniCartItemProduct? = null
 )

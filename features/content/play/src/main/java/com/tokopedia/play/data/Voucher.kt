@@ -6,6 +6,11 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by mzennis on 2020-03-06.
  */
+data class MerchantVoucher(
+        @SerializedName("vouchers")
+        val listOfVouchers: List<Voucher> = emptyList()
+)
+
 class Voucher (
         @SerializedName("voucher_id")
         val id: String = "",

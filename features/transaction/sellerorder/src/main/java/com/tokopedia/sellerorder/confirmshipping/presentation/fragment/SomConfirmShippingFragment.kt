@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -16,21 +17,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_AGENCY_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
-import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
 import com.tokopedia.sellerorder.confirmshipping.di.SomConfirmShippingComponent
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
@@ -40,6 +37,7 @@ import com.tokopedia.sellerorder.databinding.FragmentSomConfirmShippingBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
@@ -49,6 +47,9 @@ import javax.inject.Inject
 class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierListAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var currOrderId = ""
     private var currShipmentId = 0L
@@ -115,6 +116,11 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         observingChangeCourier()
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateShopActive()
+    }
+
     override fun onPause() {
         super.onPause()
         (fragmentManager?.findFragmentByTag(TAG_BOTTOMSHEET) as? BottomSheetUnify)?.let {
@@ -155,6 +161,14 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
             setBtnToConfirmShipping()
         }
         view?.setOnTouchListener(hideKeyboardTouchListener)
+        setupHeader()
+    }
+
+    private fun setupHeader() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.hide()
+            setSupportActionBar(binding?.headerSomConfirmShipping)
+        }
     }
 
     private fun setupListeners() {
@@ -183,24 +197,14 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     private fun setBtnToChangeCourier() {
         binding?.clChangeCourier?.visibility = View.VISIBLE
         binding?.btnConfirmShipping?.setOnClickListener {
-            val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_change_courier)
-            val queryString = rawQuery
-                    .replace(INPUT_ORDER_ID, currOrderId)
-                    .replace(INPUT_SHIPPING_REF, binding?.tfNoResi?.textFieldInput?.text.toString())
-                    .replace(INPUT_AGENCY_ID, currShipmentId.toString())
-                    .replace(INPUT_SP_ID, currShipmentProductId)
-            processChangeCourier(queryString)
+            processChangeCourier(currOrderId, binding?.tfNoResi?.textFieldInput?.text.toString(), currShipmentId, currShipmentProductId.toLongOrZero())
         }
     }
 
     private fun setBtnToConfirmShipping() {
         binding?.clChangeCourier?.visibility = View.GONE
         binding?.btnConfirmShipping?.setOnClickListener {
-            val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_confirm_shipping)
-            val queryString = rawQuery
-                    .replace(INPUT_ORDER_ID, currOrderId)
-                    .replace(INPUT_SHIPPING_REF, binding?.tfNoResi?.textFieldInput?.text.toString())
-            processConfirmShipping(queryString)
+            processConfirmShipping(currOrderId, binding?.tfNoResi?.textFieldInput?.text.toString())
         }
         observingConfirmShipping()
     }
@@ -216,16 +220,16 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         intentIntegrator.setCaptureActivity(customClass).initiateScan()
     }
 
-    private fun processConfirmShipping(queryString: String) {
-        somConfirmShippingViewModel.confirmShipping(queryString)
+    private fun processConfirmShipping(orderId: String, shippingRef: String) {
+        somConfirmShippingViewModel.confirmShipping(orderId, shippingRef)
     }
 
-    private fun processChangeCourier(queryString: String) {
-        somConfirmShippingViewModel.changeCourier(queryString)
+    private fun processChangeCourier(orderId: String, shippingRef: String, agencyId: Long, spId: Long) {
+        somConfirmShippingViewModel.changeCourier(orderId, shippingRef, agencyId, spId)
     }
 
     private fun getCourierList() {
-        somConfirmShippingViewModel.getCourierList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_courier_list))
+        somConfirmShippingViewModel.getCourierList()
     }
 
     private fun observingConfirmShipping() {
@@ -249,6 +253,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.CONFIRM_SHIPPING_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -286,6 +297,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_COURIER_LIST)
                     Utils.showToasterError(getString(R.string.global_error), view)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_COURIER_LIST_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -308,6 +326,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     context?.run {
                         Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
                     }
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.CHANGE_COURIER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })

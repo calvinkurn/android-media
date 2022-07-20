@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.product.addedit.R
-import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class ShipmentInfoBottomSheet: BottomSheetUnify() {
+class ShipmentInfoBottomSheet: TabletAdaptiveBottomSheet() {
 
     private var bottomSheetState: Int = 1
 

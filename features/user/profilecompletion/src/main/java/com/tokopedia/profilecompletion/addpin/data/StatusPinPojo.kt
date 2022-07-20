@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.addpin.data
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -9,28 +8,21 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class StatusPinPojo(
-        @SerializedName("status_pin")
-        @Expose
-        var data: StatusPinData = StatusPinData()
+    @SerializedName("status_pin")
+    var data: StatusPinData = StatusPinData()
 )
 
 data class StatusPinData(
-        @SerializedName("is_registered")
-        @Expose
-        var isRegistered: Boolean = false,
-        @SerializedName("is_blocked")
-        @Expose
-        var isBlocked: Boolean = false,
-        @SerializedName("is_phone_number_exist")
-        @Expose
-        var isPhoneNumberExist: Boolean = false,
-        @SerializedName("is_phone_number_verified")
-        @Expose
-        var isPhoneNumberVerified: Boolean = false,
-        @SerializedName("msisdn")
-        @Expose
-        var msisdn: String = "",
-        @SerializedName("error_message")
-        @Expose
-        var errorMessage: String = ""
+    @SerializedName("is_registered")
+    var isRegistered: Boolean = false,
+    @SerializedName("is_blocked")
+    var isBlocked: Boolean = false,
+    @SerializedName("is_phone_number_exist")
+    var isPhoneNumberExist: Boolean = false,
+    @SerializedName("is_phone_number_verified")
+    var isPhoneNumberVerified: Boolean = false,
+    @SerializedName("msisdn")
+    var msisdn: String = "",
+    @SerializedName("error_message")
+    var errorMessage: String = ""
 )

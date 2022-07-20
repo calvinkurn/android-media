@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.payment.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingFragment
-import com.tokopedia.oneclickcheckout.payment.topup.view.OvoTopUpWebViewFragment
+import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewFragment
 import dagger.Component
 
 @PaymentScope
@@ -11,5 +11,5 @@ import dagger.Component
 interface PaymentComponent{
     fun inject(paymentListingActivity: PaymentListingActivity)
     fun inject(paymentListingFragment: PaymentListingFragment)
-    fun inject(ovoTopUpWebViewFragment: OvoTopUpWebViewFragment)
+    fun inject(paymentTopUpWebViewFragment: PaymentTopUpWebViewFragment)
 }

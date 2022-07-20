@@ -3,7 +3,11 @@ package com.tokopedia.product.detail.view.util
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
-import android.text.*
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
@@ -105,7 +109,10 @@ fun String.boldOrLinkText(isLink: Boolean, context: Context,
     return builder
 }
 
-fun String.renderHtmlBold(context: Context): CharSequence? {
+fun String.renderHtmlBold(
+    context: Context,
+    boldColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+): CharSequence? {
     if (this.isEmpty()) return null
     val spannedHtmlString: Spanned = MethodChecker.fromHtml(this)
     val spanHandler = SpannableStringBuilder(spannedHtmlString)
@@ -121,7 +128,7 @@ fun String.renderHtmlBold(context: Context): CharSequence? {
         val boldStart = spanHandler.getSpanStart(it)
         val boldEnd = spanHandler.getSpanEnd(it)
 
-        spanHandler.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        spanHandler.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, boldColor)), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
         spanHandler.setSpan(UnifyCustomTypefaceSpan(getTypeface(context, "RobotoBold.ttf")), boldStart, boldEnd, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
     }
 
@@ -268,7 +275,7 @@ inline fun <reified T> GraphqlResponse.doActionIfNotNull(listener: (T) -> Unit) 
 fun getIdLocale() = Locale("id", "ID")
 
 fun String.goToWebView(context: Context) {
-    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, this))
+    RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, this))
 }
 
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)
@@ -347,6 +354,9 @@ internal fun RecommendationItem.createProductCardOptionsModel(position: Int): Pr
     productCardOptionsModel.productId = productId.toString()
     productCardOptionsModel.isTopAds = isTopAds
     productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
+    productCardOptionsModel.topAdsClickUrl = clickUrl
+    productCardOptionsModel.productName = name
+    productCardOptionsModel.productImageUrl = imageUrl
     productCardOptionsModel.productPosition = position
     productCardOptionsModel.screenName = header
     return productCardOptionsModel

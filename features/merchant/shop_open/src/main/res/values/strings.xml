@@ -18,6 +18,7 @@
     <string name="open_shop_revamp_error_domain_too_short">Domain Toko terlalu pendek, minimum 3 karakter</string>
     <string name="open_shop_revamp_error_shop_name_already_taken_hint_input_shop">Maaf nama toko tersebut telah digunakan</string>
     <string name="open_shop_revamp_error_domain_already_taken_hint_input_shop">Domain sudah terdaftar. Coba rekomendasi ini</string>
+    <string name="open_shop_revamp_error_domain_already_taken">Domain sudah terdaftar.</string>
     <string name="open_shop_revamp_error_shop_name_unavailable">Nama Toko Tidak Tersedia</string>
     <string name="open_shop_revamp_error_domain_unavailable">Domain Toko Tidak Tersedia</string>
     <string name="open_shop_revamp_tnc_open_shop">Syarat dan Ketentuan dan Kebijakan Privasi.</string>

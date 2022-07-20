@@ -7,6 +7,30 @@ import com.tokopedia.logger.utils.Priority
 
 object LoggingUtils {
     const val DEFAULT_RESP_SIZE_THRES = 10000L
+    const val STATUS_CODE_ERROR = 500
+
+    @JvmStatic
+    fun logGqlSuccessRateBasedOnStatusCode(operationName: String, httpStatusCode: Int) {
+        if (httpStatusCode >= STATUS_CODE_ERROR) {
+            logGqlSuccessRate(operationName, "0")
+        } else {
+            logGqlSuccessRate(operationName, "1")
+        }
+    }
+
+    @JvmStatic
+    fun logGqlSuccessRate(operationName: String, gqlResult: String) {
+        if (operationName.isNotBlank()) {
+            ServerLogger.log(
+                Priority.SF,
+                "GP",
+                mapOf(
+                    "on" to operationName,
+                    "s" to gqlResult
+                )
+            )
+        }
+    }
 
     @JvmStatic
     fun logGqlParseSuccess(classType: String, request: String) {
@@ -43,8 +67,24 @@ object LoggingUtils {
     }
 
     @JvmStatic
-    fun logGqlErrorSsl(classType: String, request: String, throwable: Throwable, tls: String, cipherSuites: String) {
-        ServerLogger.log(Priority.P1, "GQL_ERROR", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim(), "tls" to tls, "cipher" to cipherSuites))
+    fun logGqlErrorSsl(
+        classType: String,
+        request: String,
+        throwable: Throwable,
+        tls: String,
+        cipherSuites: String
+    ) {
+        ServerLogger.log(
+            Priority.P1,
+            "GQL_ERROR",
+            mapOf(
+                "type" to classType,
+                "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(),
+                "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim(),
+                "tls" to tls,
+                "cipher" to cipherSuites
+            )
+        )
     }
 
     @JvmStatic

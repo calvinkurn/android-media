@@ -1,12 +1,21 @@
 package com.tokopedia.mvcwidget.trackers
 
 import com.tokopedia.mvcwidget.FollowWidgetType
-import com.tokopedia.mvcwidget.trackers.MvcSource
 
 interface MvcTrackerImpl {
     //1 Pdp
     //16 Shop
-    fun userClickEntryPoints(shopId: String, userId: String?, @MvcSource source: Int, isTokomember:Boolean)
+    fun userClickEntryPoints(
+        shopId: String,
+        userId: String?,
+        @MvcSource source: Int,
+        isTokomember: Boolean,
+        productId: String
+    )
+
+    fun userClickEntryPointOnMVCLockToProduct(shopId: String, userId: String?, @MvcSource source: Int, productId: String)
+
+    fun viewMVCLockToProduct(shopId: String, userId: String?, @MvcSource source: Int, productId: String)
 
     //3, 18
     fun clickFollowButton(@FollowWidgetType widgetType: String, shopId: String, userId: String?, @MvcSource source: Int, buttonTitle:String?)
@@ -56,6 +65,6 @@ interface MvcTrackerImpl {
 
     fun viewMVCCoupon(label: String, mapData: HashMap< String,Any> , @MvcSource source: Int)
 
-    fun mvcMultiShopCardClick(shopName: String, eventAction: String, @MvcSource source: Int, userId: String?, label: String = "")
+    fun mvcMultiShopCardClick(shopName: String, eventAction: String, @MvcSource source: Int, userId: String?, productPosition:Int, label: String = "")
 
 }

@@ -7,13 +7,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
+import com.tokopedia.homenav.databinding.HolderHomeNavTickerBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import kotlinx.android.synthetic.main.holder_home_nav_ticker.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeNavTickerViewHolder(itemView: View,
                               private val listener: HomeNavListener
 ): AbstractViewHolder<HomeNavTickerDataModel>(itemView) {
+    private var binding: HolderHomeNavTickerBinding? by viewBinding()
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_home_nav_ticker
@@ -21,11 +23,11 @@ class HomeNavTickerViewHolder(itemView: View,
 
     override fun bind(element: HomeNavTickerDataModel) {
         val context = itemView.context
-        itemView.nav_ticker?.tickerTitle = element.title
-        itemView.nav_ticker?.setHtmlDescription(element.description)
-        itemView.nav_ticker?.tickerType = element.tickerType
+        binding?.navTicker?.tickerTitle = element.title
+        binding?.navTicker?.setHtmlDescription(element.description)
+        binding?.navTicker?.tickerType = element.tickerType
 
-        itemView.nav_ticker?.setDescriptionClickEvent(object: TickerCallback {
+        binding?.navTicker?.setDescriptionClickEvent(object: TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 RouteManager.route(context, element.applink)
                 TrackingProfileSection.onClickOpenShopSection(listener.getUserId())

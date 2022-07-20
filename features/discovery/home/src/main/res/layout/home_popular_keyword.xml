@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/unify_space_12"
-        android:paddingTop="12dp">
+        android:paddingTop="9dp">
 
         <ViewStub
             tools:visibility="visible"

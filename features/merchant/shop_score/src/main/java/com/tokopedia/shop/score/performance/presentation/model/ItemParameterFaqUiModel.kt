@@ -1,7 +1,9 @@
 package com.tokopedia.shop.score.performance.presentation.model
 
+import androidx.annotation.StringRes
+
 data class ItemParameterFaqUiModel(
-    val title: String = "",
-    val desc: String = "",
-    var score: String = ""
+    @StringRes val title: Int? = null,
+    @StringRes val desc: Int? = null,
+    @StringRes var score: Int? = null
 )

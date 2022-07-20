@@ -17,7 +17,7 @@ class StatsInfoViewComponent(
         @IdRes idRes: Int
 ) : ViewComponent(container, idRes) {
 
-    private val tvTotalView = findViewById<Typography>(com.tokopedia.play_common.R.id.tv_total_views)
+    private val tvTotalView = findViewById<Typography>(R.id.tv_play_total_view)
     private val liveBadge = findViewById<View>(R.id.live_badge)
 
     fun setTotalViews(totalView: String) {

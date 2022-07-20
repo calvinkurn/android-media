@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 
 data class OrderProduct(
@@ -25,6 +26,7 @@ data class OrderProduct(
         var weightActual: Int = 0,
         var notes: String = "",
         var maxCharNote: Int = 0,
+        var placeholderNote: String = "",
         var isEditingNotes: Boolean = false,
         var cashback: String = "",
         var warehouseId: Long = 0,
@@ -43,6 +45,7 @@ data class OrderProduct(
         var productInformation: List<String> = emptyList(),
         var errorMessage: String = "",
         var isError: Boolean = false,
+        var addOn: AddOnsDataModel = AddOnsDataModel(),
 
         // Analytics
         var hasTriggerViewErrorProductLevelTicker: Boolean = false

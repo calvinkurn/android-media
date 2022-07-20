@@ -1,3 +1,6 @@
+
+
+
 # Obfuscation parameters:
 -dontwarn java.nio.file.Files
 -dontwarn java.nio.file.Path
@@ -18,7 +21,6 @@
 -dontwarn com.squareup.picasso.**
 -dontwarn com.squareup.javapoet.**
 -dontwarn com.squareup.okhttp.**
--dontwarn com.facebook.**
 -dontwarn okio.**
 -dontwarn com.viewpagerindicator.LinePageIndicator
 -dontwarn sun.misc.Unsafe
@@ -276,6 +278,24 @@
 # Window
 -keep class androidx.window.** { *; }
 
+-keep class io.jsonwebtoken.** { *; }
+-keepnames class io.jsonwebtoken.* { *; }
+-keepnames interface io.jsonwebtoken.* { *; }
+
+-keep class org.bouncycastle.** { *; }
+-keepnames class org.bouncycastle.** { *; }
+-dontwarn org.bouncycastle.**
+
 # Keep fragment class name
 -keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
--keepnames class com.tokopedia.review_shop.shop.view.ReviewShopFragment
+-keepnames class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
+-keepnames class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
+
+# feed_shop
+-keepnames class com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment
+-keep class com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment
+
+-keep class com.tokopedia.stability.**{*;}
+-keepclassmembers class **{
+public static com.tokopedia.stability.ChangeDelegate *;
+}

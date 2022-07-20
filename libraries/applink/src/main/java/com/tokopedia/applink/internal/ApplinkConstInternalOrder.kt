@@ -33,6 +33,7 @@ object ApplinkConstInternalOrder {
     const val PARAM_MODALTOKO = "modaltoko"
     const val PARAM_HOTEL = "hotel"
     const val PARAM_TRAVEL_ENTERTAINMENT = "travelent"
+    const val PARAM_TOKOFOOD = "tokofood"
     const val PARAM_HISTORY = "history"
     const val PARAM_FILTER_ID = "filter_id"
     const val PARAM_ORDER_LIST = "order_list"
@@ -72,6 +73,8 @@ object ApplinkConstInternalOrder {
     const val HOST_ORDERLIST = "orderlist"
 
     const val PATH_BUYER_ORDER_DETAIL = "buyer-order-detail"
+
+    const val PATH_BUYER_ORDER_EXTENSION = "buyer-order-extension"
 
     const val INTERNAL_SELLER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SELLER"
 
@@ -151,6 +154,8 @@ object ApplinkConstInternalOrder {
 
     const val UNIFY_ORDER_TRAVEL_ENTERTAINMENT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_TRAVEL_ENTERTAINMENT"
 
+    const val UNIFY_ORDER_TOKOFOOD = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_TOKOFOOD"
+
     const val DIGITAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDER"
 
     const val DIGITAL_ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDERLIST"
@@ -177,6 +182,8 @@ object ApplinkConstInternalOrder {
 
     const val MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_ORDER_DETAIL"
 
+    const val MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_ORDER_EXTENSION"
+
     const val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
 
     const val MP_INTERNAL_CONFIRMED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=5"
@@ -194,4 +201,11 @@ object ApplinkConstInternalOrder {
 
     // buyer request cancel
     const val INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PATH_CANCELLATION_REQUEST"
+
+    object OrderExtensionKey {
+        const val IS_FROM_UOH = "is_from_uoh"
+        const val TOASTER_MESSAGE = "toaster_message"
+        const val TOASTER_TYPE = "toaster_type"
+        const val IS_ORDER_EXTENDED = "is_order_extended"
+    }
 }

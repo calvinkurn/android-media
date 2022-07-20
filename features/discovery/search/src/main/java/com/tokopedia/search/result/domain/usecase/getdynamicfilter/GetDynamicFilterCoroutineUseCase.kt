@@ -14,7 +14,7 @@ class GetDynamicFilterCoroutineUseCase (
 
     override suspend fun executeOnBackground(): DynamicFilterModel {
         graphqlUseCase.setTypeClass(GqlDynamicFilterResponse::class.java)
-        graphqlUseCase.setGraphqlQuery(FilterSortProduct.GQL_QUERY)
+        graphqlUseCase.setGraphqlQuery(FilterSortProduct())
         graphqlUseCase.setRequestParams(createRequestParams())
 
         return graphqlUseCase.executeOnBackground().dynamicFilterModel

@@ -1,5 +1,7 @@
 package com.tokopedia.common.topupbills.view.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -8,6 +10,7 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
 
@@ -60,11 +63,33 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     }
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {
-        return TopupBillsFavoriteNumberFragment
-                .newInstance(clientNumberType, number, operatorData, currentCategoryName, dgCategoryIds)
+        return TopupBillsFavoriteNumberFragment.newInstance(
+            clientNumberType,
+            number,
+            operatorData,
+            currentCategoryName,
+            dgCategoryIds
+        )
     }
 
     companion object {
+        fun createInstance(
+            context: Context,
+            clientNumber: String,
+            dgCategoryIds: ArrayList<String>,
+            categoryName: String,
+        ): Intent {
+            val intent = Intent(context, TopupBillsFavoriteNumberActivity::class.java)
+            val extras = Bundle()
+            extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL.value)
+            extras.putString(EXTRA_CLIENT_NUMBER, clientNumber)
+            extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
+            extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
+
+            intent.putExtras(extras)
+            return intent
+        }
+
         const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
         const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"

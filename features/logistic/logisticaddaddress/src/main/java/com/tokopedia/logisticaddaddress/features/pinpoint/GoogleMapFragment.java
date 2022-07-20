@@ -206,6 +206,12 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (!RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -348,7 +354,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
                 .bearing(0)
                 .build();
 
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     @Override

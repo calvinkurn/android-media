@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient android:startColor="@color/recharge_component_dms_mccm_start_color" android:endColor="@color/recharge_component_dms_mccm_end_color" android:angle="180"/>
+</shape>

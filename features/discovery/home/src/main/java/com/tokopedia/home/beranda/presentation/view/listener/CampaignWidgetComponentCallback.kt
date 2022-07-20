@@ -33,10 +33,10 @@ class CampaignWidgetComponentCallback(
         adapterPosition: Int,
         position: Int
     ) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+        homeCategoryListener.getTrackingQueueObj()?.putEETracking(
             CampaignWidgetTracking.getCampaignWidgetItemImpressionTracking(
                 channelGrid, channel, position, adapterPosition, homeCategoryListener.userId
-            )
+            ) as HashMap<String, Any>
         )
     }
 

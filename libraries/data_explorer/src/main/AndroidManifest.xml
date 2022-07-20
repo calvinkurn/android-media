@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.data_explorer">
+
+    <application>
+        <activity
+            android:name="com.tokopedia.data_explorer.db_explorer.presentation.DataExplorerActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:label="@string/title_app_data_explorer"
+            android:theme="@style/Theme.WhiteUnify"
+            android:taskAffinity="com.tokopedia.db_inspector.task"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:path="@string/path_data_explorer"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.tokopedia.data_explorer.db_explorer.presentation.schema.SchemaActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_app_db_explorer"
+            android:theme="@style/Theme.WhiteUnify"/>
+
+        <activity android:name="com.tokopedia.data_explorer.db_explorer.presentation.databases.DbExplorerActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_schema"
+            android:theme="@style/Theme.WhiteUnify"/>
+
+        <activity android:name="com.tokopedia.data_explorer.db_explorer.presentation.content.ContentActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"/>
+
+    </application>
+</manifest>

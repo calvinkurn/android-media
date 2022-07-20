@@ -4,8 +4,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoChec
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 
 data class OrderPromo(
-        var lastApply: LastApplyUiModel? = null,
-        var promoErrorDefault: PromoCheckoutErrorDefault? = null,
+        var lastApply: LastApplyUiModel = LastApplyUiModel(),
+        var promoErrorDefault: PromoCheckoutErrorDefault = PromoCheckoutErrorDefault(),
         var state: OccButtonState = OccButtonState.DISABLE,
         var isDisabled: Boolean = false
 )

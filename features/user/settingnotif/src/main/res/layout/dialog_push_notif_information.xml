@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_notif_dp_176"
-        android:background="@color/Unify_N0_44">
+        android:background="@color/Unify_Background">
 
         <ImageView
             android:layout_width="match_parent"

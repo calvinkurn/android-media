@@ -16,6 +16,8 @@ data class ProductVariant(
         val sizeChart: String = "",
         @SerializedName("defaultChild")
         val defaultChild: String = "",
+        @SerializedName("maxFinalPrice")
+        val maxFinalPrice: Float = 0F,
         @SerializedName(value = "variants", alternate = ["variant"])
         val variants: List<Variant> = listOf(),
         @SerializedName("children")

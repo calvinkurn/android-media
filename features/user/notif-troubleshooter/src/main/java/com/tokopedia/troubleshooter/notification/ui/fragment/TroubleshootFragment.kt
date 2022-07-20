@@ -340,7 +340,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 message,
                 getString(buttonText)
         )
-        viewModel.tickers(ticker, status)
+        viewModel.tickers(ticker)
         adapter.updateStatus(type, status)
     }
 

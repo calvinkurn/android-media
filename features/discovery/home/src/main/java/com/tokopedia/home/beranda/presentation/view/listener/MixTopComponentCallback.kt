@@ -41,7 +41,8 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
                         grid = channelGrid,
                         products = listOf(product),
                         headerName = channel.channelHeader.name,
-                        positionOnWidgetHome = adapterPosition.toString()
+                        positionOnWidgetHome = adapterPosition.toString(),
+                        buType = channel.trackingAttributionModel.galaxyAttribution
                 ) as HashMap<String, Any>)
         
         //iris
@@ -50,7 +51,8 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
                 products = listOf(product),
                 headerName = channel.channelHeader.name,
                 channelId = channel.id,
-                positionOnWidgetHome = adapterPosition.toString()
+                positionOnWidgetHome = adapterPosition.toString(),
+                buType = channel.trackingAttributionModel.galaxyAttribution
         ) as java.util.HashMap<String, Any>)
 
     }
@@ -64,7 +66,8 @@ class MixTopComponentCallback(val homeCategoryListener: HomeCategoryListener)
                 headerName = channel.channelHeader.name,
                 channelId = channel.id,
                 positionOnWidgetHome = adapterPosition.toString(),
-                campaignCode = channel.trackingAttributionModel.campaignCode
+                campaignCode = channel.trackingAttributionModel.campaignCode,
+                buType = channel.trackingAttributionModel.galaxyAttribution
         ) as HashMap<String, Any>)
         homeCategoryListener.onDynamicChannelClicked(channelGrid.applink)
     }

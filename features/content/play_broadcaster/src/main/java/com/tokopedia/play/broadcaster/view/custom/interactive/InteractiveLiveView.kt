@@ -47,7 +47,7 @@ class InteractiveLiveView : RoundedConstraintLayout {
                 MethodChecker.getColor(context, unifyR.color.Unify_Static_White)
         )
         binding.clTimerContainer.setBackgroundColor(
-                MethodChecker.getColor(context, unifyR.color.Neutral_N75)
+                MethodChecker.getColor(context, R.color.play_dms_Neutral_N75)
         )
     }
 
@@ -66,7 +66,7 @@ class InteractiveLiveView : RoundedConstraintLayout {
                 MethodChecker.getColor(context, R.color.play_dms_broadcast_interactive_live_title)
         )
         binding.clTimerContainer.setBackgroundColor(
-                MethodChecker.getColor(context, unifyR.color.Neutral_N75)
+                MethodChecker.getColor(context, R.color.play_dms_Neutral_N75)
         )
     }
 

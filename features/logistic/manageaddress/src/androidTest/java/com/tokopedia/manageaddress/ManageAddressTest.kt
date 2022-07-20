@@ -19,8 +19,8 @@ import com.tokopedia.manageaddress.di.FakeAppModule
 import com.tokopedia.manageaddress.di.FakeGraphqlUseCase
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_IS_LOCALIZATION
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_ACTION_CHECKOUT_CHANGE_ADDRESS
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.core.IsNot.not
 import org.junit.Before

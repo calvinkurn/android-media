@@ -51,6 +51,9 @@ public class ProductData implements Parcelable {
     @SerializedName("promo_code")
     @Expose
     private String promoCode;
+    @SerializedName("ui_rates_hidden")
+    @Expose
+    private boolean uiRatesHidden;
     @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     @Expose
@@ -93,12 +96,15 @@ public class ProductData implements Parcelable {
         checkSum = in.readString();
         unixTime = in.readString();
         promoCode = in.readString();
+        uiRatesHidden = in.readByte() != 0;
         price = in.readParcelable(PriceData.class.getClassLoader());
         etd = in.readParcelable(EstimatedTimeDeliveryData.class.getClassLoader());
         insurance = in.readParcelable(InsuranceData.class.getClassLoader());
         texts = in.readParcelable(ProductTextData.class.getClassLoader());
         error = in.readParcelable(ErrorProductData.class.getClassLoader());
+        codProductData = in.readParcelable(CodProductData.class.getClassLoader());
         features = in.readParcelable(ProductFeatures.class.getClassLoader());
+        estimatedTimeArrival = in.readParcelable(EstimatedTimeArrival.class.getClassLoader());
     }
 
     @Override
@@ -115,12 +121,15 @@ public class ProductData implements Parcelable {
         dest.writeString(checkSum);
         dest.writeString(unixTime);
         dest.writeString(promoCode);
+        dest.writeByte((byte) (uiRatesHidden ? 1 : 0));
         dest.writeParcelable(price, flags);
         dest.writeParcelable(etd, flags);
         dest.writeParcelable(insurance, flags);
         dest.writeParcelable(texts, flags);
         dest.writeParcelable(error, flags);
+        dest.writeParcelable(codProductData, flags);
         dest.writeParcelable(features, flags);
+        dest.writeParcelable(estimatedTimeArrival, flags);
     }
 
     @Override
@@ -298,5 +307,13 @@ public class ProductData implements Parcelable {
 
     public void setEstimatedTimeArrival(EstimatedTimeArrival estimatedTimeArrival) {
         this.estimatedTimeArrival = estimatedTimeArrival;
+    }
+
+    public boolean isUiRatesHidden() {
+        return uiRatesHidden;
+    }
+
+    public void setUiRatesHidden(boolean uiRatesHidden) {
+        this.uiRatesHidden = uiRatesHidden;
     }
 }

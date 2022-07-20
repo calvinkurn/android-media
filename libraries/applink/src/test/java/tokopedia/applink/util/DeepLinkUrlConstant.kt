@@ -48,9 +48,11 @@ object DeepLinkUrlConstant {
     const val DEALS_LINK_URL = "https://www.tokopedia.com/deals/"
     const val AKTIVASI_POWER_MERCHANT_LINK_URL = "https://www.tokopedia.com/terms/aktivasi-powermerchant"
     const val SHOP_LINK_URL = "https://www.tokopedia.com/nicestuff88"
+    const val SHOP_MVC_LOCKED_TO_PRODUCT_LINK_URL = "https://www.tokopedia.com/nicestuff88/voucher/456"
     const val PRODUCT_LINK_URL = "https://www.tokopedia.com/nicestuff88/magic-tas-kantong-belanja-shopping-bag-roll-up-berkualitas"
     const val CAMPAIGN_LINK_URL = "https://www.tokopedia.com/dettol/campaign/123"
     const val LOGIN_BY_QR_LINK_URL = "https://www.tokopedia.com/qrcode-login"
+    const val TOKOPEDIANOW_SEARCH_LINK_URL = "https://www.tokopedia.com/now/search?q=jj%20royal"
 
     object DIGITAL {
         const val AXIS = "https://www.tokopedia.com/pulsa/axis/"
@@ -151,6 +153,11 @@ object DeepLinkUrlConstant {
         const val PBB_KAB_LEBAK = "https://www.tokopedia.com/pajak/pbb/kab-lebak/"
         const val PBB_KAB_BEKASI = "https://www.tokopedia.com/pajak/pbb/kab-bekasi/"
         const val PBB_SUBANG = "https://www.tokopedia.com/pajak/pbb/kab-subang/"
+    }
+
+    object RECOMMENDATION {
+        const val RECOMMENDATION_WITH_ID = "https://www.tokopedia.com/rekomendasi/3190804069"
+        const val RECOMMENDATION_WITH_ID_AND_QUERY = "https://www.tokopedia.com/rekomendasi/2137719991?msrc=product-feed&utm_source=facebook&utm_medium=ocpm&utm_campaign=alon-smda-DPO-WIB-SER-18-55-MF-AUTO-180-SMDA-NWB-PG-11110000-0020-alon-smda&ref=fbdpa"
     }
 
     object CONTENT {

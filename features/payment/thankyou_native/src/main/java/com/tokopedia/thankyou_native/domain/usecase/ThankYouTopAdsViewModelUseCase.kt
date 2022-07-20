@@ -17,7 +17,7 @@ class ThankYouTopAdsViewModelUseCase @Inject constructor(
     private val KEY_THANKS_DATA_PARAM = "KEY_THANKS_DATA_PARAM"
 
 
-    fun getAppLinkPaymentInfo(
+    fun getTopAdsData(
         topAdsParams: TopAdsRequestParams,
         thanksPageData: ThanksPageData,
         onSuccess: (List<TopAdsUIModel>) -> Unit,

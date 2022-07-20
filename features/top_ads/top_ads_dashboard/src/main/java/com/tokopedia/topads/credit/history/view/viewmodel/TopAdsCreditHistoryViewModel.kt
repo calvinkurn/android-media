@@ -59,8 +59,8 @@ class TopAdsCreditHistoryViewModel @Inject constructor(
         })
     }
 
-    fun getAutoTopUpStatus(rawQuery: String) {
-        autoTopUpUSeCase.setQuery(rawQuery)
+    fun getAutoTopUpStatus() {
+        autoTopUpUSeCase.setQuery()
         autoTopUpUSeCase.setParams()
         autoTopUpUSeCase.execute({ data ->
             when {

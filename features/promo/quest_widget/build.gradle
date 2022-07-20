@@ -1,0 +1,69 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    implementation rootProject.ext.unifyDependencies.carousel
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.viewModel
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+
+    kaptTest rootProject.ext.miscDependencies.daggerCompiler
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
+
+}
+
+project.ext {
+    artifactId = 'quest-widget'
+    groupId = 'com.tokopedia.promo'
+    versionName = "0.0.1"
+    artifactName = "quest-widget-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

@@ -5,5 +5,23 @@
     <dimen name="spacing_show_case">12dp</dimen>
     <dimen name="arrow_width_show_case">16dp</dimen>
     <dimen name="fontvs">12sp</dimen>
+    <dimen name="top_ads_dp_14">14dp</dimen>
+    <dimen name="top_ads_dp_40">40dp</dimen>
     <dimen name="dp_55">55dp</dimen>
+    <dimen name="top_ads_dp_52">52dp</dimen>
+    <dimen name="dp_90">90dp</dimen>
+
+    <dimen name="edit_icon_size">12dp</dimen>
+    <dimen name="top_spacing">12dp</dimen>
+    <dimen name="edit_icon_left_spacing">10dp</dimen>
+    <dimen name="topads_dashboard_empty_image_height">200dp</dimen>
+    <dimen name="topads_dashboard_empty_image_width">150dp</dimen>
+    <dimen name="topads_dashboard_dp_210">210dp</dimen>
+    <dimen name="topads_dashboard_dp_14">14dp</dimen>
+    <dimen name="topads_dashboard_dp_140">140dp</dimen>
+    <dimen name="topads_dashboard_dp_6">6dp</dimen>
+    <dimen name="topads_dashboard_dp_60">60dp</dimen>
+    <dimen name="topads_dashboard_dp_56">56dp</dimen>
+    <dimen name="topads_dashboard_dp_25">25dp</dimen>
+    <dimen name="topads_dp_120">120dp</dimen>
 </resources>

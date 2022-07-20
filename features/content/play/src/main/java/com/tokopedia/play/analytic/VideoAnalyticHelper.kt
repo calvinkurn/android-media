@@ -2,7 +2,11 @@ package com.tokopedia.play.analytic
 
 import android.content.Context
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play.view.storage.PlayChannelData
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import kotlin.math.abs
 
 /**
@@ -10,7 +14,9 @@ import kotlin.math.abs
  */
 class VideoAnalyticHelper(
         private val context: Context,
-        private val analytic: PlayAnalytic
+        private val analytic: PlayAnalytic,
+        private val log: PlayLog,
+        private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon(),
 ) {
 
     @TrackingField
@@ -26,6 +32,11 @@ class VideoAnalyticHelper(
             watchTime = null,
             cumulationDuration = 0L
     )
+
+    private var watchDurationInSeconds: Long = 0L
+
+    private var mChannelId = ""
+    private var videoPlayer : PlayVideoPlayerUiModel = PlayVideoPlayerUiModel.Unknown
 
     fun onPause() {
         bufferTrackingModel = bufferTrackingModel.copy(
@@ -54,6 +65,9 @@ class VideoAnalyticHelper(
                     shouldTrackNext = bufferTrackingModel.shouldTrackNext
             )
 
+            val bufferEvent = liveRoomMetricsCommon.getBufferingEventData(bufferCount = bufferTrackingModel.bufferCount, timestamp = bufferTrackingModel.lastBufferMs)
+            log.logBufferEvent(bufferingCount = bufferEvent.second, bufferingEvent = bufferEvent.first)
+
         } else if ((state is PlayViewerVideoState.Play || state is PlayViewerVideoState.Pause) && bufferTrackingModel.isBuffering) {
             if (bufferTrackingModel.shouldTrackNext) sendVideoBufferingAnalytic()
 
@@ -62,6 +76,11 @@ class VideoAnalyticHelper(
                     shouldTrackNext = true
             )
         }
+
+        if(bufferTrackingModel.bufferCount > 0 && watchDurationModel.cumulationDuration > MAX_WATCH_DURATION_CUMULATION){
+            log.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
+            log.sendAll(mChannelId, videoPlayer)
+        }
     }
 
     private fun handleDurationAnalytics(state: PlayViewerVideoState) {
@@ -69,13 +88,16 @@ class VideoAnalyticHelper(
             if (watchDurationModel.watchTime == null) watchDurationModel = watchDurationModel.copy(
                     watchTime = System.currentTimeMillis()
             )
+            watchDurationInSeconds = watchDurationModel.watchTime ?: 0L / DURATION_DIVIDER
         } else {
             val watchTime = watchDurationModel.watchTime
             if (watchTime != null) watchDurationModel = watchDurationModel.copy(
                     watchTime = null,
                     cumulationDuration = watchDurationModel.cumulationDuration + abs(System.currentTimeMillis() - watchTime)
             )
+            watchDurationInSeconds = watchDurationModel.cumulationDuration / DURATION_DIVIDER
         }
+        log.logWatchingDuration(watchDurationInSeconds.toString())
     }
 
     /**
@@ -92,11 +114,21 @@ class VideoAnalyticHelper(
     private fun sendVideoBufferingAnalytic() {
         analytic.trackVideoBuffering(
                 bufferCount = bufferTrackingModel.bufferCount,
-                bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt()
+                bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / DURATION_DIVIDER).toInt()
         )
     }
 
     private fun sendErrorStateVideoAnalytic(errorMessage: String) {
         analytic.trackVideoError(errorMessage)
+    }
+
+    fun setVideoData(channelId: String, videoPlayerUiModel: PlayVideoPlayerUiModel){
+        this.mChannelId = channelId
+        this.videoPlayer = videoPlayerUiModel
+    }
+
+    companion object {
+        private const val DURATION_DIVIDER = 1000
+        private const val MAX_WATCH_DURATION_CUMULATION = 30
     }
 }

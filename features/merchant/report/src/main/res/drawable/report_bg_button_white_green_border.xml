@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/report_bg_button_disabled_green_border" android:state_enabled="false" />
-    <item android:drawable="@drawable/report_bg_button_white_enabled_green_border" android:state_enabled="true" />
+    <item android:drawable="@drawable/report_bg_button_disabled_green_border" android:state_enabled="false"/>
+    <item android:drawable="@drawable/report_bg_button_white_enabled_green_border" android:state_enabled="true"/>
 </selector>

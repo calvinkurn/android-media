@@ -2,19 +2,67 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
+import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.model.ShopCoreInfoResponse
 import com.tokopedia.sellerhome.domain.model.ShopInfoResultResponse
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.utils.observeAwaitValue
+import com.tokopedia.sellerhome.view.helper.SellerHomeLayoutHelper
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
-import com.tokopedia.sellerhomecommon.domain.usecase.*
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCalendarDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLayoutUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMilestoneDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
@@ -24,11 +72,14 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -63,7 +114,7 @@ class SellerHomeViewModelTest {
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var getTickerUseCase: GetTickerUseCase
+    lateinit var getTickerUseCase: GetSellerHomeTickerUseCase
 
     @RelaxedMockK
     lateinit var getLayoutUseCase: GetLayoutUseCase
@@ -108,6 +159,9 @@ class SellerHomeViewModelTest {
     lateinit var getMilestoneDataUseCase: GetMilestoneDataUseCase
 
     @RelaxedMockK
+    lateinit var getCalendarDataUseCase: GetCalendarDataUseCase
+
+    @RelaxedMockK
     lateinit var getShopInfoByIdUseCase: GetShopInfoByIdUseCase
 
     @RelaxedMockK
@@ -122,12 +176,31 @@ class SellerHomeViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
+    private lateinit var sellerHomeLayoutHelper: SellerHomeLayoutHelper
     private lateinit var viewModel: SellerHomeViewModel
     private lateinit var dynamicParameter: DynamicParameterModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+
+        sellerHomeLayoutHelper = SellerHomeLayoutHelper(
+            { getCardDataUseCase },
+            { getLineGraphDataUseCase },
+            { getProgressDataUseCase },
+            { getPostDataUseCase },
+            { getCarouselDataUseCase },
+            { getTableDataUseCase },
+            { getPieChartDataUseCase },
+            { getBarChartDataUseCase },
+            { getMultiLineGraphUseCase },
+            { getAnnouncementDataUseCase },
+            { getRecommendationDataUseCase },
+            { getMilestoneDataUseCase },
+            { getCalendarDataUseCase },
+            { remoteConfig },
+            coroutineTestRule.dispatchers
+        )
 
         viewModel = SellerHomeViewModel(
             { userSession },
@@ -146,8 +219,10 @@ class SellerHomeViewModelTest {
             { getAnnouncementDataUseCase },
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
+            { getCalendarDataUseCase },
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
+            { sellerHomeLayoutHelper },
             remoteConfig,
             coroutineTestRule.dispatchers
         )
@@ -165,15 +240,9 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get ticker should success`() = runBlocking {
-        val isNewCachingEnabled = false
         val tickerList = listOf(TickerItemUiModel())
-        val pageName = "seller"
-
-        onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
-        getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
-
         coEvery {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         } returns tickerList
 
         viewModel.getTicker()
@@ -181,21 +250,100 @@ class SellerHomeViewModelTest {
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         }
 
         Assertions.assertEquals(Success(tickerList), viewModel.homeTicker.value)
     }
 
     @Test
+    fun `get ticker when cache enabled then fetch from cache should success result`() {
+        coroutineTestRule.runBlockingTest {
+            val networkException = Exception("from network")
+            val cacheResult = listOf(TickerItemUiModel())
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+
+            var useCaseExecutedCount = 0
+            coEvery {
+                getTickerUseCase.execute(any(), any(), any())
+            } coAnswers {
+                useCaseExecutedCount++
+                if (useCaseExecutedCount <= 1) {
+                    throw networkException
+                } else {
+                    cacheResult
+                }
+            }
+
+            viewModel.getTicker()
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), false)
+            }
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), true)
+            }
+
+            coVerify(exactly = 2) {
+                getTickerUseCase.execute(any(), any(), any())
+            }
+
+            val expectedResult = Success(cacheResult)
+            viewModel.homeTicker.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get ticker when cache enabled then throw exception should return remote exception`() {
+        coroutineTestRule.runBlockingTest {
+            val networkException = Exception("from network")
+            val cacheException = Exception("from cache")
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+
+            var useCaseExecutedCount = 0
+            coEvery {
+                getTickerUseCase.execute(any(), any(), any())
+            } coAnswers {
+                useCaseExecutedCount++
+                if (useCaseExecutedCount <= 1) {
+                    throw networkException
+                } else {
+                    throw cacheException
+                }
+            }
+
+            viewModel.getTicker()
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), false)
+            }
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), true)
+            }
+
+            coVerify(exactly = 2) {
+                getTickerUseCase.execute(any(), any(), any())
+            }
+
+            val expectedResult = Fail(networkException)
+            viewModel.homeTicker.verifyErrorEquals(expectedResult)
+        }
+    }
+
+    @Test
     fun `should failed when get tickers then throws exception`() = runBlocking {
         val throwable = RuntimeException("")
-        val pageName = "seller"
-
-        getTickerUseCase.params = GetTickerUseCase.createParams(pageName)
 
         coEvery {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         } throws throwable
 
         viewModel.getTicker()
@@ -203,7 +351,7 @@ class SellerHomeViewModelTest {
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
-            getTickerUseCase.executeOnBackground()
+            getTickerUseCase.execute(any(), any(), any())
         }
 
         assert(viewModel.homeTicker.value is Fail)
@@ -228,9 +376,11 @@ class SellerHomeViewModelTest {
         viewModel.getWidgetLayout()
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-        coVerify {
+
+        verify {
             userSession.shopId
         }
+
         coVerify {
             getLayoutUseCase.executeOnBackground()
         }
@@ -240,10 +390,11 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get widget layout and set height as 0f, should also success`() = runBlocking {
-
         val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
         val shopId = "123456"
         val page = "seller-home"
+        val widgetHeightInDp = 0f
+        val isCachingEnabled = true
 
         val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
         val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
@@ -272,12 +423,15 @@ class SellerHomeViewModelTest {
         every {
             remoteConfig.isSellerHomeDashboardCachingEnabled()
         } returns true
+
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns layoutList
-        coEvery {
+
+        every {
             getLayoutUseCase.isFirstLoad
         } returns true
+
         everyGetWidgetData_shouldSuccess(
             cardData,
             lineGraphDataUiModel,
@@ -293,13 +447,15 @@ class SellerHomeViewModelTest {
             milestoneDataUiModel
         )
 
-        viewModel.getWidgetLayout(0f)
+        viewModel.getWidgetLayout(widgetHeightInDp)
 
-        coVerify {
+        verify {
             userSession.shopId
         }
+
         coVerify {
             getLayoutUseCase.executeOnBackground()
+            sellerHomeLayoutHelper.getInitialWidget(layoutList, widgetHeightInDp, isCachingEnabled)
         }
 
         val successLayoutList = layoutList.map {
@@ -330,107 +486,16 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `when get widget layout and height param is not null, should also success`() = runBlocking {
-
-        val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
-        val shopId = "123456"
-        val page = "seller-home"
-
-        val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
-        val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
-        val progressDataUiModel =
-            ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
-        val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
-        val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
-        val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
-        val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
-        val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
-        val multiLineGraphDataUiModel =
-            MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
-        val announcementDataUiModel =
-            AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
-        val recommendationDataUiModel =
-            RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
-        val milestoneDataUiModel =
-            MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
-
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
-
-        every {
-            userSession.shopId
-        } returns shopId
-
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-        coEvery {
-            getLayoutUseCase.executeOnBackground()
-        } returns layoutList
-        coEvery {
-            getLayoutUseCase.isFirstLoad
-        } returns true
-        everyGetWidgetData_shouldSuccess(
-            cardData,
-            lineGraphDataUiModel,
-            progressDataUiModel,
-            postListDataUiModel,
-            carouselDataUiModel,
-            tableDataUiModel,
-            pieChartDataUiModel,
-            barChartDataUiModel,
-            multiLineGraphDataUiModel,
-            announcementDataUiModel,
-            recommendationDataUiModel,
-            milestoneDataUiModel
-        )
-
-        viewModel.getWidgetLayout(5000f)
-
-        coVerify {
-            userSession.shopId
-        }
-        coVerify {
-            getLayoutUseCase.executeOnBackground()
-        }
-
-        val successLayoutList = layoutList.map {
-            when (it) {
-                is CardWidgetUiModel -> it.apply { data = cardData }
-                is LineGraphWidgetUiModel -> it.apply { data = lineGraphDataUiModel }
-                is ProgressWidgetUiModel -> it.apply { data = progressDataUiModel }
-                is PostListWidgetUiModel -> it.apply { data = postListDataUiModel }
-                is CarouselWidgetUiModel -> it.apply { data = carouselDataUiModel }
-                is TableWidgetUiModel -> it.apply { data = tableDataUiModel }
-                is PieChartWidgetUiModel -> it.apply { data = pieChartDataUiModel }
-                is BarChartWidgetUiModel -> it.apply { data = barChartDataUiModel }
-                is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
-                is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
-                is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
-                is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
-                else -> it
-            }
-        }.map {
-            it.apply {
-                isLoading = false
-            }
-        }
-
-        assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
-            successLayoutList.find { it.data == actualWidget.data } != null
-        } == true)
-    }
-
-    @Test
-    fun `when get widget layout and height param is not null and is new caching enabled, should also success`() =
+    fun `when get widget layout and height param is not null, should also success`() {
         runBlocking {
-
             val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
             val shopId = "123456"
             val page = "seller-home"
 
             val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
             val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
-            val progressDataUiModel = ProgressDataUiModel(DATA_KEY_PROGRESS, showWidget = true)
+            val progressDataUiModel =
+                ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
             val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
             val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
             val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
@@ -454,12 +519,10 @@ class SellerHomeViewModelTest {
             every {
                 remoteConfig.isSellerHomeDashboardCachingEnabled()
             } returns true
-            onGetIsNewCachingEnabled_thenReturn(true)
             coEvery {
                 getLayoutUseCase.executeOnBackground()
             } returns layoutList
-            onGetLayoutFlow_thenReturn(layoutList)
-            coEvery {
+            every {
                 getLayoutUseCase.isFirstLoad
             } returns true
             everyGetWidgetData_shouldSuccess(
@@ -479,11 +542,11 @@ class SellerHomeViewModelTest {
 
             viewModel.getWidgetLayout(5000f)
 
-            coVerify {
+            verify {
                 userSession.shopId
             }
             coVerify {
-                getLayoutUseCase.getResultFlow()
+                getLayoutUseCase.executeOnBackground()
             }
 
             val successLayoutList = layoutList.map {
@@ -512,42 +575,40 @@ class SellerHomeViewModelTest {
                 successLayoutList.find { it.data == actualWidget.data } != null
             } == true)
         }
+    }
 
     @Test
-    fun `given new caching enabled and use case already start collecting, get layout should not being called`() =
-        runBlocking {
-            val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
-            val shopId = "123456"
-            val page = "seller-home"
-
-            getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
-
-            every {
-                userSession.shopId
-            } returns shopId
+    fun `when get widget layout with given height and new caching disabled then throws exception should return failed result`() {
+        coroutineTestRule.runBlockingTest {
+            val exception = Throwable()
+            val isCachingEnabled = true
+            val isFirstLoad = false
 
             every {
                 remoteConfig.isSellerHomeDashboardCachingEnabled()
-            } returns true
-            onGetIsNewCachingEnabled_thenReturn(true)
+            } returns isCachingEnabled
+
             coEvery {
                 getLayoutUseCase.executeOnBackground()
-            } returns layoutList
-            onGetLayoutFlow_thenReturn(layoutList)
+            } throws exception
+
             coEvery {
                 getLayoutUseCase.isFirstLoad
-            } returns true
-            coEvery {
-                getLayoutUseCase.collectingResult
-            } returns true
+            } returns isFirstLoad
 
-            viewModel.getWidgetLayout(10f)
+            viewModel.getWidgetLayout(5000f)
 
-            assert(viewModel.widgetLayout.value == null)
+            coVerify {
+                getLayoutUseCase.executeOnBackground()
+            }
+
+            val expected = Fail(exception)
+            viewModel.widgetLayout.verifyErrorEquals(expected)
         }
+    }
 
     @Test
-    fun `given old and new caching not enabled, use case with transform flow should only called once`() {
+    fun `given old and use case with transform flow should only called once`() {
         val layoutList = listOf<BaseWidgetUiModel<*>>()
         val shopId = "123456"
         val page = "seller-home"
@@ -559,7 +620,7 @@ class SellerHomeViewModelTest {
         every {
             remoteConfig.isSellerHomeDashboardCachingEnabled()
         } returns false
-        onGetIsNewCachingEnabled_thenReturn(false)
+
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } returns layoutList
@@ -569,36 +630,6 @@ class SellerHomeViewModelTest {
         coVerify(exactly = 1) {
             getLayoutUseCase.executeOnBackground()
         }
-    }
-
-    @Test
-    fun `get widget layout should failed`() = runBlocking {
-        val throwable = MessageErrorException("error message")
-        val shopId = "123456"
-        val page = "seller-home"
-
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
-
-        every {
-            userSession.shopId
-        } returns shopId
-
-        coEvery {
-            getLayoutUseCase.executeOnBackground()
-        } throws throwable
-
-        viewModel.getWidgetLayout()
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-        coVerify {
-            userSession.shopId
-        }
-
-        coVerify {
-            getLayoutUseCase.executeOnBackground()
-        }
-
-        assert(viewModel.widgetLayout.value is Fail)
     }
 
     @Test
@@ -616,7 +647,7 @@ class SellerHomeViewModelTest {
         coEvery {
             getLayoutUseCase.executeOnBackground()
         } throws throwable
-        onGetIsNewCachingEnabled_thenReturn(false)
+
         coEvery {
             remoteConfig.isSellerHomeDashboardCachingEnabled()
         } returns true
@@ -635,7 +666,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `given getting cached data from use case with transform flow first time failed, should still execute use case`() =
+    fun `get widget layout on first load with height provided should failed`() =
         runBlocking {
             val throwable = MessageErrorException("error message")
             val shopId = "123456"
@@ -648,15 +679,13 @@ class SellerHomeViewModelTest {
             } returns shopId
 
             coEvery {
-                getLayoutUseCase.setUseCache(true)
-            } throws throwable
-            coEvery {
                 getLayoutUseCase.executeOnBackground()
             } throws throwable
-            onGetIsNewCachingEnabled_thenReturn(false)
+
             coEvery {
                 remoteConfig.isSellerHomeDashboardCachingEnabled()
             } returns true
+
             coEvery {
                 getLayoutUseCase.isFirstLoad
             } returns true
@@ -790,6 +819,34 @@ class SellerHomeViewModelTest {
                 ShopShareDataUiModel(
                     shopUrl = shopInfo.coreInfo?.url.orEmpty(),
                     shopSnippetURL = shopInfo.shopSnippetURL.orEmpty()
+                )
+            )
+            viewModel.shopShareData.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when fetch shop info by id then return null data should still success`() {
+        coroutineTestRule.runBlockingTest {
+            val shopId = "12345"
+            val shopInfo = ShopInfoResultResponse(
+                coreInfo = null,
+                shopSnippetURL = null
+            )
+            every {
+                userSession.userId
+            } returns shopId
+
+            coEvery {
+                getShopInfoByIdUseCase.execute(anyLong())
+            } returns shopInfo
+
+            viewModel.getShopInfoById()
+
+            val expected = Success(
+                ShopShareDataUiModel(
+                    shopUrl = "",
+                    shopSnippetURL = ""
                 )
             )
             viewModel.shopShareData.verifySuccessEquals(expected)
@@ -942,7 +999,6 @@ class SellerHomeViewModelTest {
 
         viewModel.getLineGraphWidgetData(dataKeys)
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             getLineGraphDataUseCase.executeOnBackground()
         }
@@ -951,11 +1007,140 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get progress widget data then returns success result`() = runBlocking {
+    fun `when get line graph from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf("x", "y", "z")
+
+        getLineGraphDataUseCase.params =
+            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getLineGraphDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getLineGraphWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getLineGraphDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getLineGraphDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getLineGraphDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.lineGraphWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `get calendar widget data then returns success result`() = runBlocking {
+        val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+
+        val result = listOf(CalendarDataUiModel())
+        getCalendarDataUseCase.params = GetCalendarDataUseCase.createParams(dataKeys)
+
+        coEvery {
+            getCalendarDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getCalendarWidgetData(dataKeys)
+
+        coVerify {
+            getCalendarDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+        Assertions.assertEquals(expectedResult, viewModel.calendarWidgetData.value)
+    }
+
+    @Test
+    fun `get calendar widget data then returns failed result`() = runBlocking {
+        val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+
+        val throwable = MessageErrorException("error message")
+        getCalendarDataUseCase.params = GetCalendarDataUseCase.createParams(dataKeys)
+
+        coEvery {
+            getCalendarDataUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.getCalendarWidgetData(dataKeys)
+
+        coVerify {
+            getCalendarDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.calendarWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `when get calendar from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+
+        getCalendarDataUseCase.params = GetCalendarDataUseCase.createParams(dataKeys)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getCalendarDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getCalendarWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getCalendarDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getCalendarDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getCalendarDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.calendarWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `get progress widget data from remote then returns success result`() = runBlocking {
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
-        val progressDataList =
-            listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
+        val progressDataList = listOf(
+            ProgressDataUiModel(),
+            ProgressDataUiModel(), ProgressDataUiModel()
+        )
 
         getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
 
@@ -965,7 +1150,6 @@ class SellerHomeViewModelTest {
 
         viewModel.getProgressWidgetData(dataKeys)
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
         coVerify {
             getProgressDataUseCase.executeOnBackground()
         }
@@ -999,31 +1183,74 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get post widget data then returns success result`() = runBlocking {
-        val dataKeys = listOf(
-            TableAndPostDataKey("x", "x", 6, 3),
-            TableAndPostDataKey("y", "y", 6, 3)
-        )
-        val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
+    fun `when get progress from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf("x", "y", "z")
+        val dateStr = "02-02-2020"
 
-        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
 
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
         coEvery {
-            getPostDataUseCase.executeOnBackground()
-        } returns postList
-
-        viewModel.getPostWidgetData(dataKeys)
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        coVerify {
-            getPostDataUseCase.executeOnBackground()
+            getProgressDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
         }
 
-        val expectedResult = Success(postList)
-        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
-        Assertions.assertEquals(expectedResult, viewModel.postListWidgetData.value)
+        viewModel.getProgressWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getProgressDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getProgressDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getProgressDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.progressWidgetData.verifyErrorEquals(expectedResult)
     }
+
+    @Test
+    fun `get post widget data then returns success result`() =
+        runBlocking {
+            val dataKeys = listOf(
+                TableAndPostDataKey("x", "x", 6, 3),
+                TableAndPostDataKey("y", "y", 6, 3)
+            )
+            val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
+
+            getPostDataUseCase.params =
+                GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+            coEvery {
+                getPostDataUseCase.executeOnBackground()
+            } returns postList
+
+            viewModel.getPostWidgetData(dataKeys)
+
+            coVerify {
+                getPostDataUseCase.executeOnBackground()
+            }
+
+            val expectedResult = Success(postList)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.postListWidgetData.value)
+        }
 
     @Test
     fun `get post widget data then returns failed result`() = runBlocking {
@@ -1048,6 +1275,51 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.postListWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `when get post list from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
+
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getPostDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getPostWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getPostDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getPostDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getPostDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.postListWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -1081,37 +1353,85 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Success(carouselList)
         Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
-        Assertions.assertEquals(expectedResult, viewModel.carouselWidgetData.value)
+        viewModel.carouselWidgetData.verifySuccessEquals(expectedResult)
     }
 
     @Test
-    fun `get carousel widget data then returns failed results`() = runBlocking {
+    fun `get carousel widget data then returns failed results`() {
+        runBlocking {
+            val dataKeys = listOf(
+                anyString(),
+                anyString(),
+                anyString(),
+                anyString()
+            )
+            val throwable = MessageErrorException("error")
+
+            getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
+
+            coEvery {
+                getCarouselDataUseCase.executeOnBackground()
+            } throws throwable
+
+            viewModel.getCarouselWidgetData(dataKeys)
+
+            coVerify {
+                getCarouselDataUseCase.executeOnBackground()
+            }
+
+            assert(viewModel.carouselWidgetData.value is Fail)
+        }
+    }
+
+    @Test
+    fun `when get carousel from network and cache are failed, will return throwable from network`() {
         val dataKeys = listOf(
             anyString(),
             anyString(),
             anyString(),
             anyString()
         )
-        val throwable = MessageErrorException("error")
 
         getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
 
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
         coEvery {
             getCarouselDataUseCase.executeOnBackground()
-        } throws throwable
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
 
         viewModel.getCarouselWidgetData(dataKeys)
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-        coVerify {
+        verify(exactly = 1) {
+            getCarouselDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getCarouselDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
             getCarouselDataUseCase.executeOnBackground()
         }
 
-        assert(viewModel.carouselWidgetData.value is Fail)
+        val expectedResult = Fail(networkException)
+        viewModel.carouselWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
-    fun `should success when get table widget data`() = runBlocking {
+    fun `should success when get table widget data on caching disabled`() = runBlocking {
         val dataKeys = listOf(
             TableAndPostDataKey("x", "x", 6, 3),
             TableAndPostDataKey("y", "y", 6, 3)
@@ -1127,15 +1447,13 @@ class SellerHomeViewModelTest {
 
         viewModel.getTableWidgetData(dataKeys)
 
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             getTableDataUseCase.executeOnBackground()
         }
 
         val expectedResult = Success(result)
-        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
-        Assertions.assertEquals(expectedResult, viewModel.tableWidgetData.value)
+        assert(expectedResult.data.size == dataKeys.size)
+        viewModel.tableWidgetData.verifySuccessEquals(expectedResult)
     }
 
     @Test
@@ -1164,6 +1482,52 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when get table data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
+
+        getTableDataUseCase.params =
+            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getTableDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getTableWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getTableDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getTableDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getTableDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.tableWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
     fun `should success when get pie chart widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
         val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
@@ -1184,8 +1548,8 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(result)
-        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
-        Assertions.assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
+        assert(expectedResult.data.size == dataKeys.size)
+        viewModel.pieChartWidgetData.verifySuccessEquals(expectedResult)
     }
 
     @Test
@@ -1208,6 +1572,49 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.pieChartWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `when get pie chart data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(anyString())
+
+        getPieChartDataUseCase.params =
+            GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getPieChartDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getPieChartWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getPieChartDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getPieChartDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getPieChartDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.pieChartWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -1255,6 +1662,49 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.barChartWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `when get bar chart data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(anyString())
+
+        getBarChartDataUseCase.params =
+            GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getBarChartDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getBarChartWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getBarChartDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getBarChartDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getBarChartDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.barChartWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -1308,6 +1758,49 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when get multi line graph data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(anyString())
+
+        getMultiLineGraphUseCase.params =
+            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getMultiLineGraphUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getMultiLineGraphUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getMultiLineGraphUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getMultiLineGraphUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.multiLineGraphWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
     fun `should success when get announcement widget data`() = runBlocking {
         val dataKeys = listOf(anyString())
         val result = listOf(AnnouncementDataUiModel())
@@ -1353,6 +1846,48 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.announcementWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `when get announcement data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(anyString())
+
+        getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getAnnouncementDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getAnnouncementWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getAnnouncementDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getAnnouncementDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getAnnouncementDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.announcementWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -1406,6 +1941,48 @@ class SellerHomeViewModelTest {
         viewModel.recommendationWidgetData.verifyErrorEquals(expected)
     }
 
+    @Test
+    fun `when get recommendation data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(anyString())
+
+        getRecommendationDataUseCase.params = GetRecommendationDataUseCase.createParams(dataKeys)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getRecommendationDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getRecommendationWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getRecommendationDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getRecommendationDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getRecommendationDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.recommendationWidgetData.verifyErrorEquals(expectedResult)
+    }
+
     // example using get card widget data, any usecase is fine
     @Test
     fun `should execute use case two times when caching enabled and is first load`() {
@@ -1429,14 +2006,10 @@ class SellerHomeViewModelTest {
         viewModel.getCardWidgetData(dataKeys)
 
         verify(exactly = 1) {
-            getCardDataUseCase.setUseCache(true)
-        }
-
-        verify(exactly = 1) {
             getCardDataUseCase.setUseCache(false)
         }
 
-        coVerify(exactly = 2) {
+        coVerify(exactly = 1) {
             getCardDataUseCase.executeOnBackground()
         }
 
@@ -1493,7 +2066,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `should not get data from cache if not first load`() {
+    fun `when get card widget data should not get from cache if not first load`() {
         val dataKeys = listOf("a", "b", "c")
 
         val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
@@ -1531,76 +2104,45 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `given new caching enabled when getTicker flow success should set homeTicker liveData success`() {
-        coroutineTestRule.runBlockingTest {
-            val isNewCachingEnabled = true
-            val tickerList = listOf(TickerItemUiModel())
+    fun `when get card data from network and cache failed, return throwable from network result`() {
+        val dataKeys = listOf("a", "b", "c")
 
-            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
-            onGetTickerListFlow_thenReturn(tickerList)
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
 
-            viewModel.getTicker()
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
 
-            verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
-
-            val expectedResult = Success(listOf(TickerItemUiModel()))
-            val actualResult = viewModel.homeTicker.value
-
-            Assertions.assertEquals(expectedResult, actualResult)
+        var useCaseExecutedCount = 0
+        coEvery {
+            getCardDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
         }
-    }
 
-    @Test
-    fun `given new caching enabled when getTicker twice should set homeTicker liveData with first value`() {
-        coroutineTestRule.runBlockingTest {
-            val isCollectingResult = true
-            val isNewCachingEnabled = true
-            val firstTickerList = listOf(TickerItemUiModel(message = "ticker"))
-            val secondTickerList = listOf(TickerItemUiModel(message = "another ticker"))
+        viewModel.getCardWidgetData(dataKeys)
 
-            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
-            onGetTickerListFlow_thenReturn(firstTickerList)
-
-            viewModel.getTicker()
-
-            verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
-
-            onGetCollectingResult_thenReturn(isCollectingResult)
-            onGetTickerListFlow_thenReturn(secondTickerList)
-
-            viewModel.getTicker()
-
-            verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
-
-            val expectedResult = Success(firstTickerList)
-            val actualResult = viewModel.homeTicker.value
-
-            Assertions.assertEquals(expectedResult, actualResult)
+        verify(exactly = 1) {
+            getCardDataUseCase.setUseCache(false)
         }
-    }
 
-    @Test
-    fun `given new caching enabled when getTicker flow error should set homeTicker liveData error`() {
-        coroutineTestRule.runBlockingTest {
-            val isNewCachingEnabled = true
-            val error = IllegalStateException()
-
-            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
-            onGetTickerListFlow_thenReturn(error)
-
-            viewModel.getTicker()
-
-            verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
-
-            val expectedResult = Fail(error)
-            val actualResult = viewModel.homeTicker.value
-
-            Assertions.assertEquals(expectedResult, actualResult)
+        verify(exactly = 1) {
+            getCardDataUseCase.setUseCache(true)
         }
+
+        coVerify(exactly = 2) {
+            getCardDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.cardWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -1623,7 +2165,8 @@ class SellerHomeViewModelTest {
                     isLoading = false,
                     isFromCache = false,
                     isNeedToBeRemoved = false,
-                    emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+                    emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                    gridSize = 4
                 ),
                 CardWidgetUiModel(
                     id = DATA_KEY_CARD,
@@ -1635,6 +2178,7 @@ class SellerHomeViewModelTest {
                     appLink = "",
                     dataKey = DATA_KEY_CARD,
                     ctaText = "",
+                    gridSize = 2,
                     isShowEmpty = true,
                     data = null,
                     isLoaded = false,
@@ -1653,6 +2197,7 @@ class SellerHomeViewModelTest {
                     appLink = "",
                     dataKey = DATA_KEY_CARD,
                     ctaText = "",
+                    gridSize = 2,
                     isShowEmpty = true,
                     data = null,
                     isLoaded = false,
@@ -1671,6 +2216,7 @@ class SellerHomeViewModelTest {
                     appLink = "",
                     dataKey = DATA_KEY_CARD,
                     ctaText = "",
+                    gridSize = 2,
                     isShowEmpty = true,
                     data = null,
                     isLoaded = false,
@@ -1722,6 +2268,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = "section",
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -1740,6 +2287,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_ANNOUNCEMENT,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -1758,6 +2306,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = "section_other",
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -1776,6 +2325,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_CAROUSEL,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -1794,6 +2344,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_POST_LIST,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -1815,6 +2366,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = "section_other2",
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -1833,6 +2385,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -1901,6 +2454,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -1919,6 +2473,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_ANNOUNCEMENT,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -1974,6 +2529,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2024,6 +2580,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2074,6 +2631,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -2124,6 +2682,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = false,
                 data = null,
                 isLoaded = false,
@@ -2175,6 +2734,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_POST_LIST,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2233,6 +2793,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_TABLE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2284,52 +2845,6 @@ class SellerHomeViewModelTest {
         assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
     }
 
-    private suspend fun onGetTickerListFlow_thenReturn(tickerList: List<TickerItemUiModel>) {
-        coEvery {
-            getTickerUseCase.getResultFlow()
-        } returns MutableSharedFlow<List<TickerItemUiModel>>(replay = 1).apply {
-            emit(tickerList)
-        }
-    }
-
-    private suspend fun onGetLayoutFlow_thenReturn(tickerList: List<BaseWidgetUiModel<*>>) {
-        coEvery {
-            getLayoutUseCase.getResultFlow()
-        } returns MutableSharedFlow<List<BaseWidgetUiModel<*>>>(replay = 1).apply {
-            emit(tickerList)
-        }
-    }
-
-    private fun onGetCollectingResult_thenReturn(isCollectingResult: Boolean) {
-        coEvery {
-            getTickerUseCase.collectingResult
-        } returns isCollectingResult
-    }
-
-    private fun onGetTickerListFlow_thenReturn(error: Throwable) {
-        coEvery {
-            getTickerUseCase.getResultFlow()
-        } throws error
-    }
-
-    private fun onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled: Boolean) {
-        coEvery {
-            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
-        } returns isNewCachingEnabled
-    }
-
-    private fun verifyGetTickerUseCaseCalled() {
-        coVerify {
-            getTickerUseCase.executeOnBackground(any(), any())
-        }
-    }
-
-    private fun verifyGetTickerResultFlowCalled() {
-        coVerify {
-            getTickerUseCase.getResultFlow()
-        }
-    }
-
     private fun provideCompleteSuccessWidgetLayout(): List<BaseWidgetUiModel<*>> {
         return listOf(
             CardWidgetUiModel(
@@ -2342,6 +2857,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_CARD,
                 ctaText = "",
+                gridSize = 2,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2360,6 +2876,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PROGRESS,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2378,6 +2895,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_LINE_GRAPH,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2396,6 +2914,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_ANNOUNCEMENT,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2414,6 +2933,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_CAROUSEL,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2432,6 +2952,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_POST_LIST,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2453,6 +2974,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_TABLE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2484,6 +3006,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_PIE_CHART,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2502,6 +3025,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_BAR_CHART,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2520,6 +3044,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_MULTI_LINE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2539,6 +3064,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_RECOMMENDATION,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,
@@ -2557,6 +3083,7 @@ class SellerHomeViewModelTest {
                 appLink = "",
                 dataKey = DATA_KEY_MILESTONE,
                 ctaText = "",
+                gridSize = 4,
                 isShowEmpty = true,
                 data = null,
                 isLoaded = false,

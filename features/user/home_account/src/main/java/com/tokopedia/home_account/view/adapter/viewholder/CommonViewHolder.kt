@@ -20,6 +20,8 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener) :
 
     private val binding: HomeAccountItemCommonBinding? by viewBinding()
 
+    fun getTitle() = binding?.accountUserItemCommonTitle?.text.toString()
+
     fun bind(common: CommonDataView) {
         binding?.accountUserItemCommonTitle?.text = common.title
         if (common.icon != 0) {

@@ -5,7 +5,7 @@
     android:id="@+id/ll_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:foreground="?selectableItemBackground"
     android:paddingStart="9dp"
     android:paddingTop="16dp"
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        app:typographyType="body_2"
+        app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="TopDonasi100 donasi" />
 

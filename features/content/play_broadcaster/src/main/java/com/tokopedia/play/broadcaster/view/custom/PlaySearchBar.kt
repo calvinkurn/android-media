@@ -42,7 +42,6 @@ class PlaySearchBar : ConstraintLayout {
     private val clSearch: ConstraintLayout = view.findViewById(R.id.cl_search)
     private val etSearch: EditText = view.findViewById(R.id.et_search)
     private val ivClear: ImageView = view.findViewById(R.id.iv_clear)
-    private val tvCancel: TextView = view.findViewById(R.id.tv_cancel)
 
     private var mListener: Listener? = null
 
@@ -66,7 +65,6 @@ class PlaySearchBar : ConstraintLayout {
     }
 
     fun cancel() {
-        tvCancel.performClick()
     }
 
     fun forceFocus() {
@@ -74,10 +72,19 @@ class PlaySearchBar : ConstraintLayout {
         showKeyboard()
     }
 
+    fun setHint(hint: String) {
+        etSearch.hint = hint
+    }
+
+    fun clear() {
+        clearFocus()
+        etSearch.removeTextChangedListener(getTextWatcher())
+        etSearch.setText("")
+    }
+
     override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
         val newState = SavedState(superState)
-        newState.cancelBtnVisibility = tvCancel.visibility
         newState.clearBtnVisibility = ivClear.visibility
         return newState
     }
@@ -85,7 +92,6 @@ class PlaySearchBar : ConstraintLayout {
     override fun onRestoreInstanceState(state: Parcelable?) {
         val savedState = state as SavedState
         super.onRestoreInstanceState(savedState.superState)
-        tvCancel.visibility = savedState.cancelBtnVisibility
         ivClear.visibility = savedState.clearBtnVisibility
     }
 
@@ -93,11 +99,9 @@ class PlaySearchBar : ConstraintLayout {
         etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 onChangeFocusTransition()
-                tvCancel.visible()
                 etSearch.addTextChangedListener(getTextWatcher())
             }
             else {
-                if (etSearch.text.isEmpty()) tvCancel.performClick()
                 hideKeyboard()
                 etSearch.removeTextChangedListener(getTextWatcher())
             }
@@ -113,17 +117,7 @@ class PlaySearchBar : ConstraintLayout {
 
         ivClear.setOnClickListener {
             clearText()
-            etSearch.requestFocus()
-        }
-
-        tvCancel.setOnClickListener {
-            onChangeFocusTransition()
-
-            clearText()
-            tvCancel.gone()
-            etSearch.clearFocus()
-            updateClearButton()
-            mListener?.onCanceled(this@PlaySearchBar)
+            mListener?.onCleared(this@PlaySearchBar)
         }
     }
 
@@ -155,7 +149,6 @@ class PlaySearchBar : ConstraintLayout {
 
     private fun getCancelButtonTransition(): Transition {
         return Slide(Gravity.END)
-                .addTarget(tvCancel)
                 .setDuration(300)
     }
 
@@ -232,7 +225,8 @@ class PlaySearchBar : ConstraintLayout {
 
         fun onEditStateChanged(view: PlaySearchBar, isEditing: Boolean) {}
         fun onCanceled(view: PlaySearchBar) {}
+        fun onCleared(view: PlaySearchBar) {}
         fun onNewKeyword(view: PlaySearchBar, keyword: String)
-        fun onSearchButtonClicked(view: PlaySearchBar, keyword: String)
+        fun onSearchButtonClicked(view: PlaySearchBar, keyword: String) {}
     }
 }

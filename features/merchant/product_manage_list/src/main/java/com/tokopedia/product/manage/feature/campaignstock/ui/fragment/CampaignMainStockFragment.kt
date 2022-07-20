@@ -163,9 +163,14 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
             }
         } else {
             mutableListOf<Visitable<CampaignStockTypeFactory>>().apply {
+                val sellableProduct = sellableProductList.firstOrNull()
                 addAll(listOf(
-                    ActiveProductSwitchUiModel(isActive, access),
-                    TotalStockEditorUiModel(stockCount.orZero(), access, sellableProductList.firstOrNull()?.campaignTypeList)
+                    ActiveProductSwitchUiModel(isActive, sellableProduct?.productId, access),
+                    TotalStockEditorUiModel(
+                        stockCount.orZero(),
+                        access,
+                        sellableProduct?.campaignTypeList,
+                        sellableProduct?.productId)
                 ))
             }
         }
@@ -234,6 +239,7 @@ class CampaignMainStockFragment : BaseListFragment<Visitable<CampaignStockTypeFa
     }
 
     private fun onOngoingPromotionClicked(campaignTypeList: List<ProductCampaignType>)  {
+        if (!isAdded) return
         showOngoingPromotionBottomSheet(campaignTypeList)
     }
 

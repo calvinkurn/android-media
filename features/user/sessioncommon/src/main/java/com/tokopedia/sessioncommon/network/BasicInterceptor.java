@@ -3,8 +3,8 @@ package com.tokopedia.sessioncommon.network;
 import android.content.Context;
 import android.util.Base64;
 
-import com.tokopedia.authentication.AuthConstant;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthConstant;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.user.session.UserSession;

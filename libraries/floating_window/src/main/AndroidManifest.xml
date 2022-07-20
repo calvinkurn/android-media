@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.floatingwindow">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application>
@@ -10,9 +10,6 @@
             android:name=".service.FloatingWindowService"
             android:excludeFromRecents="true"
             android:exported="false"
-            android:stopWithTask="true"
-            />
-
+            android:stopWithTask="true" />
     </application>
-
 </manifest>

@@ -12,5 +12,8 @@ data class ProductrevWaitForFeedbackLabelAndImage(
     val labelSubtitle: String = "",
     @SerializedName("imageURL")
     @Expose
-    val imageURL: String = ""
+    val imageURL: String = "",
+    @SerializedName("applink")
+    @Expose
+    val appLink: String = ""
 )

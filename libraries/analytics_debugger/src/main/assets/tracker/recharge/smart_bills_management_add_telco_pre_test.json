@@ -77,7 +77,7 @@
       "event": "viewSmartBillIris",
       "eventAction": "view error - toaster box",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".* - .*"
     },
     {
       "businessUnit": "top up and tagihan",

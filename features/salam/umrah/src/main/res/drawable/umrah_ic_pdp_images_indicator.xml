@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
-        <shape android:shape="ring"
-            android:innerRadius="@dimen/unify_space_0"
-            android:thickness="@dimen/spacing_lvl2"
-            android:useLevel="false">
-            <solid android:color="@color/Green_G500" />
+        <shape android:shape="ring" android:innerRadius="@dimen/unify_space_0" android:thickness="@dimen/spacing_lvl2" android:useLevel="false">
+            <solid android:color="@color/Green_G500"/>
         </shape>
     </item>
     <item>
-        <shape android:shape="ring"
-            android:innerRadius="@dimen/unify_space_0"
-            android:thickness="@dimen/spacing_lvl2"
-            android:useLevel="false">
-            <solid android:color="@color/Neutral_N0" />
+        <shape android:shape="ring" android:innerRadius="@dimen/unify_space_0" android:thickness="@dimen/spacing_lvl2" android:useLevel="false">
+            <solid android:color="@color/Neutral_N0"/>
         </shape>
     </item>
 </selector>

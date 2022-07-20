@@ -21,30 +21,30 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailStatusOrder"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:textColor="@color/Unify_N700_96"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@id/labelBuyerOrderDetailPreOrder"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="wrap"
         app:typographyType="heading_5"
         tools:text="Menunggu Konfirmasi" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelBuyerOrderDetailPreOrder"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="8dp"
         app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailStatusOrder"
         app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailSeeDetail"
         app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailStatusOrder"
         app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailStatusOrder"
-        app:layout_constraintWidth_default="wrap"
         tools:text="PO: 1001 Malam" />
 
     <com.tokopedia.unifyprinciples.Typography

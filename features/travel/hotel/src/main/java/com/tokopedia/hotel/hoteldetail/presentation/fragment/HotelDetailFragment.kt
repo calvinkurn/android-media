@@ -73,6 +73,7 @@ import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.round
+import android.widget.LinearLayout
 
 /**
  * @author by furqan on 22/04/19
@@ -97,7 +98,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var hotelHomepageModel = HotelHomepageModel()
     private var isButtonEnabled: Boolean = true
     private var hotelName: String = ""
-    private var hotelId: Long = 0
+    private var hotelId: String = "0"
     private var roomPrice: String = "0"
     private var roomPriceAmount: String = ""
     private var isDirectPayment: Boolean = true
@@ -406,6 +407,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 setType(Typography.BODY_3)
                 setWeight(Typography.BOLD)
                 setPadding(getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1))
+                val params: LinearLayout.LayoutParams =
+                    LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                params.setMargins(IMAGE_COUNTER_ZERO, IMAGE_COUNTER_ZERO, getDimens(R.dimen.hotel_6dp), IMAGE_COUNTER_ZERO)
+                layoutParams = params
             }
             binding?.hotelRatingContainer?.addView(textView)
         }
@@ -457,7 +462,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun setupShareLink(propertyDetailData: PropertyDetailData) {
         binding?.hotelShareButton?.setOnClickListener {
-            trackingHotelUtil.clickShareUrl(requireContext(), PDP_SCREEN_NAME, hotelId.toString(), roomPriceAmount)
+            trackingHotelUtil.clickShareUrl(requireContext(), PDP_SCREEN_NAME, hotelId, roomPriceAmount)
             if(::hotelShare.isInitialized) {
                 hotelShare.shareEvent(propertyDetailData, isPromo,
                         { showProgressDialog() },
@@ -608,7 +613,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 it.tvHotelDetailAllReviews.setOnClickListener {
                     trackingHotelUtil.hotelClickHotelReviews(context, hotelId, roomPriceAmount, PDP_SCREEN_NAME)
                     context?.run {
-                        startActivityForResult(HotelReviewActivity.getCallingIntent(this, hotelHomepageModel.locId), RESULT_REVIEW)
+                        startActivityForResult(HotelReviewActivity.getCallingIntent(this, hotelHomepageModel.locId.toString()), RESULT_REVIEW)
                     }
                 }
             }

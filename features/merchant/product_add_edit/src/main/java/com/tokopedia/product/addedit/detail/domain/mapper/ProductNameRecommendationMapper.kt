@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.detail.domain.mapper
 
 import com.tokopedia.product.addedit.detail.domain.UniverseSearchResponse
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_SUGGESTION_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIVERSE_SEARCH_TYPE
 
 object ProductNameRecommendationMapper {
@@ -11,10 +12,9 @@ object ProductNameRecommendationMapper {
 
     fun getFinalProductName(getProductNameAutoComplete: List<UniverseSearchResponse.UniverseSearch.Data>): List<String> {
         val productNameList: MutableList<String> = mutableListOf()
-        val maxSuggestionName = 5
         getProductNameAutoComplete.map {  data ->
             data.items.forEach {
-                if(productNameList.size <= maxSuggestionName) {
+                if(productNameList.size <= MAX_SUGGESTION_NAME) {
                     productNameList.add(it.keyword)
                 }
             }

@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.createreputation.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class ProductData(
     @SerializedName("productIDStr")
@@ -23,4 +24,4 @@ data class ProductData(
     @SerializedName("productStatus")
     @Expose
     val productStatus: Int = 0
-)
+) : Serializable

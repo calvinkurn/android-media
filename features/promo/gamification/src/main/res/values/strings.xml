@@ -22,8 +22,6 @@
     <string name="rewards_increased_points_front_text">+%1$s\u0020</string>
     <string name="egg_source">%1$s %2$s</string>
 
-    <string name="gami_recom_go_to_wishlist">Lihat Wishlist</string>
-
     <!--For TapTap-->
     <string name="points_not_available">Maaf, Points kamu tidak mencukupi untuk main lagi.</string>
     <string name="tap_arg_text">TAP\n%1$sX</string>
@@ -73,5 +71,7 @@
     <string name="gami_back_button_title">Belum mau kirim hadiah ini?.</string>
     <string name="gami_back_button_ok">Cek Daftar Hadiah Game</string>
     <string name="gami_back_button_cancel">Ke Home</string>
+
+    <string name="gami_remote_image_user_no_reward">https://ecs7.tokopedia.net/android/res/xxhdpi/user_no_reward.png</string>
 
 </resources>

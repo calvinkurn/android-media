@@ -33,14 +33,14 @@
             android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:lines="1"
-            android:textSize="@dimen/sp_18"
+            android:textSize="18sp"
             android:textColor="@color/Unify_N700"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_3"
             tools:text="Tonton Keseruannya"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/play_txt_see_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,6 +56,8 @@
             android:textColor="@color/Unify_G500"
             android:textStyle="bold"
             android:textSize="@dimen/fontSize_lvl2"
+            app:typographyType="heading_6"
+            app:typographyWeight="bold"
             app:layout_constraintLeft_toRightOf="@+id/title"
             app:layout_constraintBottom_toTopOf="@+id/video_player"
             app:layout_constraintTop_toTopOf="parent"
@@ -76,6 +78,7 @@
             android:layout_marginTop="@dimen/home_play_banner_thumbnail_margin_top"
             android:visibility="visible"
             android:scaleType="centerCrop"
+            android:contentDescription="@string/content_desc_thumbnail_image_play"
             app:layout_constraintDimensionRatio="2:1"
             tools:visibility="visible"
             app:layout_constraintTop_toBottomOf="@+id/title"/>

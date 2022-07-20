@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -26,6 +27,7 @@ private const val POINTER_HEIGHT = 8
 private const val POINTER_ACTUAL_WIDTH = 79
 private const val BUBBLE_HEIGHT = 52
 private const val DOT_HALF_DIMEN = 8
+private const val PRICE_PADDING_WIDTH = 8F
 private const val CENTER_POS_X = 0.5
 private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.70
 
@@ -55,10 +57,11 @@ class PostTagView @JvmOverloads constructor(
     private var position: Int = 0
     private var feedXTag: com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging = feedXMediaTagging
     private var initialBubbleVisible: Boolean
+    private var view : View
 
     init {
         initialBubbleVisible = false
-        val view =
+        view =
             LayoutInflater.from(context).inflate(R.layout.product_tag_detail_view, this, true)
 
         view.run {
@@ -74,6 +77,14 @@ class PostTagView @JvmOverloads constructor(
             finalPointerView = productTagPointerTop
         }
     }
+
+    fun convertPxToDp( px: Float): Float {
+        return px / context.resources.displayMetrics.density
+    }
+    fun convertDpToPx(dp: Float): Float {
+        return dp * context.resources.displayMetrics.density
+    }
+
     fun bindData(
         dynamicPostListener: DynamicPostViewHolder.DynamicPostListener?,
         products: List<FeedXProduct>,
@@ -88,7 +99,6 @@ class PostTagView @JvmOverloads constructor(
         this.postImageHeight = height
         this.postImageWidth = width
         val product = products[feedXTag.tagIndex]
-
         productViewName.text = product.name
 
         if (product.isDiscount) {
@@ -98,6 +108,24 @@ class PostTagView @JvmOverloads constructor(
             productViewSlashedPrice.gone()
             productViewPrice.text = product.priceFmt
         }
+
+        view.doOnLayout {
+            var result = 0F
+
+            var priceWidthPX: Float = productViewPrice.width.toFloat()
+            var slashedPriceWidthPX: Float = productViewSlashedPrice.width.toFloat()
+            var priceWidthDP = convertPxToDp(priceWidthPX)
+            var slashedPriceWidthDP = convertPxToDp(slashedPriceWidthPX)
+
+            if (priceWidthDP > 0)
+                result += priceWidthPX
+            if (slashedPriceWidthDP > 0)
+                result += slashedPriceWidthPX + convertDpToPx(PRICE_PADDING_WIDTH)
+            if (result > productViewName.maxWidth && productViewSlashedPrice.isVisible)
+                productViewName.maxWidth = result.toInt()
+
+        }
+
 
         if (feedXTag.posY > THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD) {
             this.finalPointerView = productTagPointerBottom
@@ -145,14 +173,14 @@ class PostTagView @JvmOverloads constructor(
 
     }
 
-    fun showExpandedView(): Boolean {
-        val isProductDotVisible = productTagDot.isVisible
-
-        if (productTagDot.isVisible) {
+    fun toggleExpandedView(): Boolean {
+        val isGoingToVisible = if (productTagDot.isVisible) {
             productTagDot.gone()
             showBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
+            true
         } else if (finalPointerView.isVisible && productTagExpandedView.isVisible) {
             hideBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
+            false
         } else if (!initialBubbleVisible) {
             val params = productTagExpandedView.layoutParams as MarginLayoutParams
             if (position == POSITION_BOTTOM) {
@@ -165,9 +193,21 @@ class PostTagView @JvmOverloads constructor(
             }
             productTagExpandedView.layoutParams = params
             showBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
+            true
         } else {
             showBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
+            true
+        }
+        return isGoingToVisible
 
+    }
+    fun hideExpandedViewIfShown(): Boolean {
+        val isProductDotVisible = productTagDot.isVisible
+
+        if (productTagDot.isVisible) {
+            productTagDot.gone()
+        } else if (finalPointerView.isVisible && productTagExpandedView.isVisible) {
+            hideBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)
         }
         return isProductDotVisible
 
@@ -184,14 +224,14 @@ class PostTagView @JvmOverloads constructor(
     ): Int {
         return if (feedXTag.posX <= CENTER_POS_X) {
             if (dotMarginStart >= bubbleInflatedWidth / 2)
-                dotMarginStart - bubbleInflatedWidth / 2
+                dotMarginStart + calculateGreyAreaY(bitmap) - bubbleInflatedWidth / 2
             else
                 calculateGreyAreaY(bitmap)
 
         } else {
             val endMargin = postImageWidth - dotMarginStart
             if (endMargin >= bubbleInflatedWidth / 2)
-                dotMarginStart - bubbleInflatedWidth / 2
+                dotMarginStart - calculateGreyAreaY(bitmap) - bubbleInflatedWidth / 2
             else
                 postImageWidth - bubbleInflatedWidth - calculateGreyAreaY(bitmap)
         }

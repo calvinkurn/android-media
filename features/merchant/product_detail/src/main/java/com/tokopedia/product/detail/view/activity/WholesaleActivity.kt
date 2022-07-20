@@ -21,7 +21,7 @@ class WholesaleActivity : BaseSimpleActivity() {
     private var wholesaleAdapter: WholesaleAdapter? = null
 
     companion object {
-        val KEY_WHOLESALE_DATA = "WHOLESALE_DATA"
+        private const val KEY_WHOLESALE_DATA = "WHOLESALE_DATA"
 
         @JvmStatic
         fun getIntent(context: Context, wholesaleList: ArrayList<Wholesale>): Intent {

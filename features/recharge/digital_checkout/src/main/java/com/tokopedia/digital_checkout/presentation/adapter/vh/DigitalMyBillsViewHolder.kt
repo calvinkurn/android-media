@@ -3,8 +3,6 @@ package com.tokopedia.digital_checkout.presentation.adapter.vh
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
-import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
-import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_digital_checkout_my_bills_section.view.*
@@ -13,32 +11,40 @@ import kotlinx.android.synthetic.main.item_digital_checkout_my_bills_section.vie
  * @author by jessica on 10/03/21
  */
 
-class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) : RecyclerView.ViewHolder(view) {
-    fun bindSubscription(subscription: CartDigitalInfoData.CrossSellingConfig, crossSellingType: Int) {
+class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) :
+    RecyclerView.ViewHolder(view) {
+    fun bindSubscription(subscription: FintechProduct) {
         with(itemView) {
-            if (subscription.bodyTitle.isNotEmpty()) {
+            if (subscription.info.title.isNotEmpty()) {
                 itemView.show()
-                if (crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id) {
-                    widgetMyBills.disableCheckBox()
-                }
-                widgetMyBills.hasMoreInfo(false)
+                listener.onSubscriptionImpression(subscription)
 
-                widgetMyBills.setTitle(subscription.bodyTitle)
-                if (subscription.isChecked) widgetMyBills.setDescription(subscription.bodyContentAfter)
-                else widgetMyBills.setDescription(subscription.bodyContentBefore)
+                widgetMyBills.hasMoreInfo(true)
+                widgetMyBills.setTitle(subscription.info.title)
+                if (subscription.optIn) {
+                    widgetMyBills.setDescription(subscription.info.checkedSubtitle)
+                } else {
+                    widgetMyBills.setDescription(subscription.info.subtitle)
+                }
 
                 widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
-                    override fun onMoreInfoClicked() {}
+                    override fun onMoreInfoClicked() {
+                        listener.onSubscriptionMoreInfoClicked(subscription)
+                    }
 
                     override fun onCheckChanged(isChecked: Boolean) {
-                        if (isChecked) widgetMyBills.setDescription(subscription.bodyContentAfter)
-                        else widgetMyBills.setDescription(subscription.bodyContentBefore)
+                        if (isChecked) widgetMyBills.setDescription(subscription.info.checkedSubtitle)
+                        else widgetMyBills.setDescription(subscription.info.subtitle)
                         listener.onSubscriptionChecked(subscription, isChecked)
                     }
                 }
 
-                if (!widgetMyBills.isChecked() && subscription.isChecked) {
-                    widgetMyBills.setChecked(true)
+                if (subscription.checkBoxDisabled) {
+                    widgetMyBills.disableCheckBox()
+                } else {
+                    if (!widgetMyBills.isChecked() && subscription.optIn) {
+                        widgetMyBills.setChecked(subscription.optIn)
+                    }
                 }
             }
         }
@@ -49,8 +55,10 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
             if (fintechProduct.info.title.isNotEmpty()) {
                 widgetMyBills.setTitle(fintechProduct.info.title)
                 widgetMyBills.setDescription(fintechProduct.info.subtitle)
-                widgetMyBills.hasMoreInfo(fintechProduct.info.urlLink.isNotEmpty() ||
-                        fintechProduct.info.tooltipText.isNotEmpty())
+                widgetMyBills.hasMoreInfo(
+                    fintechProduct.info.urlLink.isNotEmpty() ||
+                            fintechProduct.info.tooltipText.isNotEmpty()
+                )
 
                 widgetMyBills.setAdditionalImage(fintechProduct.info.iconUrl)
                 if (fintechProduct.info.iconUrl.isNotEmpty()) {
@@ -86,7 +94,9 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
 }
 
 interface MyBillsActionListener {
-    fun onSubscriptionChecked(subscription: CartDigitalInfoData.CrossSellingConfig, isChecked: Boolean)
+    fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean)
+    fun onSubscriptionImpression(fintechProduct: FintechProduct)
+    fun onSubscriptionMoreInfoClicked(fintechProduct: FintechProduct)
     fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int)
     fun onCrossellImpression(fintechProduct: FintechProduct, position: Int)
     fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean)

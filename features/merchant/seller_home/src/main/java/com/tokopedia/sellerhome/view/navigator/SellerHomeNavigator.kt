@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.view.navigator
 
 import android.content.Context
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -24,13 +25,9 @@ class SellerHomeNavigator(
     private val context: Context,
     private val fm: FragmentManager,
     private val sellerHomeRouter: SellerHomeRouter?,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private var navigationHomeMenu: View?
 ) {
-
-    companion object {
-        private const val OTHER_MENU_REVAMP_EXPERIMENT = "sa_lainnyarevamp"
-        private const val OTHER_MENU_REVAMP_VALUE = "sa_lainnyarevamp"
-    }
 
     private var homeFragment: Fragment? = null
     private var productManageFragment: Fragment? = null
@@ -62,7 +59,7 @@ class SellerHomeNavigator(
     }
 
     fun showPage(@FragmentType page: Int) {
-        if(isActivityResumed()) {
+        if (isActivityResumed()) {
             val transaction = fm.beginTransaction()
             val fragment = getPageFragment(page)
 
@@ -88,9 +85,9 @@ class SellerHomeNavigator(
 
                 if (currentFragment != null && currentFragment != selectedPage) {
                     transaction
-                            .remove(currentFragment)
-                            .add(R.id.sahContainer, selectedPage, currentTag)
-                            .commitNowAllowingStateLoss()
+                        .remove(currentFragment)
+                        .add(R.id.sahContainer, selectedPage, currentTag)
+                        .commitNowAllowingStateLoss()
                 } else {
                     showFragment(selectedPage, transaction)
                 }
@@ -102,7 +99,7 @@ class SellerHomeNavigator(
     }
 
     fun getPageTitle(@FragmentType pageType: Int): String? {
-        return when(pageType) {
+        return when (pageType) {
             FragmentType.HOME -> getHomeTitle()
             FragmentType.PRODUCT -> pages[productManageFragment]
             FragmentType.CHAT -> pages[chatFragment]
@@ -160,7 +157,8 @@ class SellerHomeNavigator(
     private fun initFragments() {
         clearFragments()
         homeFragment = SellerHomeFragment.newInstance()
-        productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
+        productManageFragment =
+            sellerHomeRouter?.getProductManageFragment(arrayListOf(), "", navigationHomeMenu)
         chatFragment = sellerHomeRouter?.getChatListFragment()
         somListFragment = sellerHomeRouter?.getSomListFragment(
             context,
@@ -169,18 +167,13 @@ class SellerHomeNavigator(
             "",
             ""
         )
-        otherSettingsFragment =
-            if (useRevampedOtherMenu()) {
-                OtherMenuFragment.createInstance()
-            } else {
-                com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment.createInstance()
-            }
+        otherSettingsFragment = OtherMenuFragment.createInstance()
 
         addPage(homeFragment, context.getString(R.string.sah_home))
         addPage(productManageFragment, context.getString(R.string.sah_product_list))
         addPage(chatFragment, context.getString(R.string.sah_chat))
-        addPage(somListFragment, context.getString(R.string.sah_sale))
-        addPage(otherSettingsFragment, context.getString(R.string.sah_sale))
+        addPage(somListFragment, context.getString(R.string.sah_som_list))
+        addPage(otherSettingsFragment, context.getString(R.string.sah_others))
     }
 
     private fun clearFragments() {
@@ -237,10 +230,19 @@ class SellerHomeNavigator(
         when {
             page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock -> {
                 val filterOptions = arrayListOf(filterOptionEmptyStock)
-                productManageFragment = sellerHomeRouter?.getProductManageFragment(filterOptions, searchKeyword)
+                productManageFragment = sellerHomeRouter?.getProductManageFragment(
+                    filterOptions,
+                    searchKeyword,
+                    navigationHomeMenu
+                )
             }
             page.tabPage.isBlank() && searchKeyword.isNotBlank() -> {
-                productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), searchKeyword)
+                productManageFragment =
+                    sellerHomeRouter?.getProductManageFragment(
+                        arrayListOf(),
+                        searchKeyword,
+                        navigationHomeMenu
+                    )
             }
         }
 
@@ -262,7 +264,10 @@ class SellerHomeNavigator(
         fragment?.let { pages[it] = title }
     }
 
-    private fun showOnlySelectedFragment(transaction: FragmentTransaction, fragment: Fragment? = null) {
+    private fun showOnlySelectedFragment(
+        transaction: FragmentTransaction,
+        fragment: Fragment? = null
+    ) {
         hideAllPages(transaction)
         fragment?.let {
             scrollFragmentToTop(it)
@@ -303,20 +308,10 @@ class SellerHomeNavigator(
 
     private fun getHomeTitle(): String? {
         val shopName = userSession.shopName
-        return if(shopName.isNullOrEmpty()) {
+        return if (shopName.isNullOrEmpty()) {
             pages[homeFragment]
         } else {
             shopName
-        }
-    }
-
-    private fun useRevampedOtherMenu(): Boolean {
-        return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                OTHER_MENU_REVAMP_EXPERIMENT, "")
-            remoteConfigRollenceValue.equals(OTHER_MENU_REVAMP_VALUE, ignoreCase = true)
-        } catch (ex: Exception) {
-            false
         }
     }
 

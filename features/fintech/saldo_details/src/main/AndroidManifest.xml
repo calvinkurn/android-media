@@ -7,8 +7,8 @@
             android:label="@string/saldo_detail_title_activity_people_deposit"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -20,21 +20,18 @@
                     android:path="@string/path_saldo_deposit"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".commom.design.SaldoWebViewActivity"
             android:label="@string/saldo_detail_title_activity_people_deposit"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"/>
-
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".intro.SaldoIntroActivity"
             android:label="@string/saldo_detail_title_header_saldo_intro"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -46,26 +43,25 @@
                     android:path="@string/path_saldo_intro"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-
         </activity>
-
-        <activity android:name=".saldoHoldInfo.SaldoHoldInfoActivity"
+        <activity
+            android:name=".saldoHoldInfo.SaldoHoldInfoActivity"
             android:screenOrientation="portrait"
             android:label="@string/saldo_info_toolbar_title"
-            android:theme="@style/Theme.WhiteUnify"/>
-
-        <activity android:name=".transactionDetailPages.withdrawal.SaldoWithdrawalDetailActivity"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".transactionDetailPages.withdrawal.SaldoWithdrawalDetailActivity"
             android:screenOrientation="portrait"
             android:label="@string/saldo_withdrawal_detail_title"
-            android:theme="@style/Theme.WhiteUnify"/>
-
-        <activity android:name=".transactionDetailPages.penjualan.SaldoSalesDetailActivity"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".transactionDetailPages.penjualan.SaldoSalesDetailActivity"
             android:screenOrientation="portrait"
             android:label="@string/saldo_sales_detail_title"
-            android:theme="@style/Theme.WhiteUnify"/>
-
-        <activity android:name=".transactionDetailPages.invoice.InvoiceDetailActivity"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".transactionDetailPages.invoice.InvoiceDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"/>
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 </manifest>

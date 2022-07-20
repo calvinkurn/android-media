@@ -38,7 +38,7 @@ abstract class BaseOtpActivity : BaseSimpleActivity(), HasComponent<OtpComponent
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

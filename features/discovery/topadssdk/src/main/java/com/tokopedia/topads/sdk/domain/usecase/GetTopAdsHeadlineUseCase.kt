@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
+import com.tokopedia.topads.sdk.utils.*
 
 const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${'$'}displayParams: String!) {
   displayAdsV3(displayParams: ${'$'}displayParams) {
@@ -29,7 +30,9 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
         button_text
         layout
         position
-        description
+        widget_image_url 
+        description,
+        widget_title
         image {
           full_url
           full_ecs
@@ -60,6 +63,7 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
             }
             price_format
             product_rating
+            uri
             count_review_format
             label_group {
               title
@@ -91,7 +95,8 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
   }
 }
 """
-const val PARAMS_QUERY = "displayParams"
+private const val PARAMS_QUERY = "displayParams"
+private const val KEY_SEEN_ADS = "seen_ads"
 
 @GqlQuery("GetTopadsHeadlineQuery", GET_TOPADS_HEADLINE_QUERY)
 class GetTopAdsHeadlineUseCase constructor(graphqlRepository: GraphqlRepository)
@@ -108,5 +113,32 @@ class GetTopAdsHeadlineUseCase constructor(graphqlRepository: GraphqlRepository)
                  PARAMS_QUERY to params
         )
         setRequestParams(queryParams)
+    }
+
+    fun createParams(
+        userId: String,
+        page: String,
+        ep: String = "headline",
+        src: String,
+        templateId: String,
+        headlineProductCount: String,
+        item: String,
+        device: String = "android",
+        seenAds: String
+    ): String {
+        val map = mapOf(
+            PARAM_USER_ID to userId,
+            PARAM_PAGE to page,
+            PARAM_EP to ep,
+            PARAM_SRC to src,
+            PARAM_TEMPLATE_ID to templateId,
+            PARAM_HEADLINE_PRODUCT_COUNT to headlineProductCount,
+            PARAM_ITEM to item,
+            PARAM_DEVICE to device,
+            KEY_SEEN_ADS to seenAds
+        )
+
+        return map.entries.joinToString("&")
+
     }
 }

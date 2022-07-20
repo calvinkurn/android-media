@@ -9,16 +9,14 @@ object TransactionRepository {
 
     @JvmStatic
     fun insert(
-            context: Context,
-            data: ApplinkNotificationModel,
-            notificationType: Int,
-            notificationId: Int
+        context: Context,
+        data: ApplinkNotificationModel,
+        notificationType: Int,
+        notificationId: Int
     ) {
         if (data.transactionId.isNotEmpty()) {
-            val database = PushNotificationDB.getInstance(context)
-
-            if (database.isOpen) {
-                database.transactionNotificationDao()
+            runCatching {
+                PushNotificationDB.getInstance(context).transactionNotificationDao()
                     .storeNotification(mapToTransaction(data, notificationType, notificationId))
             }
         }
@@ -27,16 +25,9 @@ object TransactionRepository {
     @JvmStatic
     fun isRenderable(context: Context, transactionId: String): Boolean {
         if (transactionId.isBlank()) return true
-
         return try {
-            val database = PushNotificationDB.getInstance(context)
-
-            if (database.isOpen) {
-                database.transactionNotificationDao()
-                    .isRenderable(transactionId.trim()) == 0
-            } else {
-                true
-            }
+            PushNotificationDB.getInstance(context).transactionNotificationDao()
+                .isRenderable(transactionId.trim()) == 0
         } catch (e: Exception) {
             true
         }

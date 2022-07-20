@@ -1,15 +1,14 @@
-<manifest xmlns:dist="http://schemas.android.com/apk/distribution"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.df.recharge.emoney">
 
-    <dist:module
-        dist:title="@string/title_digital_emoney">
+    <dist:module dist:title="@string/title_digital_emoney">
         <dist:delivery>
-            <dist:on-demand/>
+            <dist:on-demand />
             <dist:install-time>
                 <dist:conditions>
-                    <dist:min-sdk dist:value="21"/>
-                    <dist:max-sdk dist:value="23"/>
+                    <dist:min-sdk dist:value="21" />
+                    <dist:max-sdk dist:value="23" />
                 </dist:conditions>
             </dist:install-time>
         </dist:delivery>

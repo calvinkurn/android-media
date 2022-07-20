@@ -1,11 +1,11 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
-import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
-import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopOrderUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.ShopProductUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
 import com.tokopedia.seller.menu.domain.query.ShopScoreLevelResponse
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -41,7 +41,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
     @Test
     fun `when getShopAccountTickerPeriod success should set live data success`() {
         coroutineTestRule.runBlockingTest {
-            val shopInfoPeriodResponse = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD)
+            val shopInfoPeriodResponse = ShopInfoPeriodUiModel()
 
             onGetShopInfoPeriodUseCase_thenReturn(shopInfoPeriodResponse)
 
@@ -167,10 +167,33 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
     }
 
     @Test
+    fun `given getAllShopInfo returns PartialSettingFail and PartialSettingSuccess, when getAllSettingShopInfo, should set live data success`() {
+        val response = createShopSettingsResponse(successPair = false to true)
+        val shopScoreResponse = ShopScoreLevelResponse.ShopScoreLevel.Result(shopScore = 70)
+        onGetAllShopInfoUseCase_thenReturn(response)
+        onGetShopScoreLevel_thenReturn(anyString(), shopScoreResponse)
+
+        viewModel.getAllSettingShopInfo(shopAge = 65)
+
+        assert(viewModel.settingShopInfoLiveData.value is Success)
+    }
+    
+    @Test
+    fun `given getAllShopInfo returns both PartialSettingFail, when getAllSettingShopInfo, should set live data fails`() {
+        val errorResponse = PartialSettingFail to PartialSettingFail
+        onGetAllShopInfoUseCase_thenReturn(errorResponse)
+
+        viewModel.getAllSettingShopInfo(shopAge = 65)
+
+        assert(viewModel.settingShopInfoLiveData.value is Fail)
+    }
+
+    @Test
     fun `given isToasterRetry true when getAllSettingShopInfo should set isToasterAlreadyShown true`() {
         coroutineTestRule.runBlockingTest {
             val isToasterRetry = true
 
+            viewModel.setIsToasterAlreadyShown(false)
             viewModel.getAllSettingShopInfo(isToasterRetry, shopAge = 65)
 
             val expectedIsToasterAlreadyShown = true
@@ -181,25 +204,12 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
     }
 
     @Test
-    fun `given isToasterRetry false when getAllSettingShopInfo should NOT set isToasterAlreadyShown true`() {
-        val isToasterRetry = false
-
-        viewModel.getAllSettingShopInfo(isToasterRetry, shopAge = 65)
-
-        val expectedIsToasterAlreadyShown = false
-        val actualIsToasterAlreadyShown = viewModel.isToasterAlreadyShown.value
-
-        assertEquals(expectedIsToasterAlreadyShown, actualIsToasterAlreadyShown)
-    }
-
-    @Test
-    fun `given isToasterRetry true when getAllSettingShopInfo should set isToasterAlreadyShown false`() {
+    fun `given isToasterRetry false when getAllSettingShopInfo should set isToasterAlreadyShown false`() {
         coroutineTestRule.runBlockingTest {
-            val isToasterRetry = true
+            val isToasterRetry = false
 
+            viewModel.setIsToasterAlreadyShown(false)
             viewModel.getAllSettingShopInfo(isToasterRetry, shopAge = 65)
-
-            advanceTimeBy(5000L)
 
             val expectedIsToasterAlreadyShown = false
             val actualIsToasterAlreadyShown = viewModel.isToasterAlreadyShown.value
@@ -207,4 +217,30 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
             assertEquals(expectedIsToasterAlreadyShown, actualIsToasterAlreadyShown)
         }
     }
+
+    @Test
+    fun `given isToasterRetry true when getAllSettingShopInfo should not set isToasterAlreadyShown value`() {
+        coroutineTestRule.runBlockingTest {
+            val isToasterRetry = true
+
+            viewModel.setIsToasterAlreadyShown(true)
+            viewModel.getAllSettingShopInfo(isToasterRetry, shopAge = 65)
+
+            val actualIsToasterAlreadyShown = viewModel.isToasterAlreadyShown.value
+
+            advanceTimeBy(5100L)
+
+            assertEquals(viewModel.isToasterAlreadyShown.value, actualIsToasterAlreadyShown)
+        }
+    }
+    
+    @Test
+    fun `given isToasterRetry null when getAllSettingShopInfo should not set isToasterAlreadyShown value`() {
+        coroutineTestRule.runBlockingTest {
+            viewModel.getAllSettingShopInfo(true, shopAge = 65)
+
+            assertEquals(viewModel.isToasterAlreadyShown.value, null)
+        }
+    }
+
 }

@@ -1,10 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -13,10 +11,17 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.databinding.ItemDynamicReviewBinding
-import com.tokopedia.product.detail.view.adapter.ImageReviewAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
@@ -24,7 +29,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
-        const val GRID_LAYOUT_MANAGER_SPAN_COUNT = 5
         const val RATING_ONE = 1
         const val RATING_TWO = 2
         const val RATING_THREE = 3
@@ -34,10 +38,16 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private val binding = ItemDynamicReviewBinding.bind(view)
+    private var element: ProductMostHelpfulReviewDataModel? = null
+
+    init {
+        binding.reviewMediaThumbnails.setListener(ReviewMediaThumbnailListener())
+    }
 
     override fun bind(element: ProductMostHelpfulReviewDataModel?) {
+        this.element = element
         element?.let {
-            if (it.imageReviews == null && it.listOfReviews == null) {
+            if (it.mediaThumbnails == null && element.review == null) {
                 showShimmering()
                 hideAllOtherElements()
                 return
@@ -49,10 +59,13 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 listener.onImpressComponent(componentData)
             }
             setSeeAllReviewClickListener(componentData)
-            it.imageReviews?.let { images ->
-                renderImageReview(images, element.totalRating, element.ratingScore, element.formattedRating, element.totalRatingCount, element.totalReviewCount, componentData)
-            }
-            val reviewData = it.listOfReviews?.firstOrNull()
+            renderImageReview(
+                element.mediaThumbnails,
+                element.formattedRating,
+                element.totalRatingCount,
+                element.totalReviewCount
+            )
+            val reviewData = it.review
             reviewData?.let { review ->
                 setReviewStars(review)
                 setReviewAuthor(reviewData)
@@ -85,42 +98,39 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
     }
 
-    private fun renderImageReview(imageReviews: List<ImageReviewItem>, totalRating: Int, ratingScore: Float, formattedRating: String, formattedRatingCount: String, formattedReviewCount: String, componentTrackDataModel: ComponentTrackDataModel) {
-        val showSeeAll = if (imageReviews.isNotEmpty()) {
-            imageReviews.first().hasNext
-        } else {
-            false
-        }
-
+    private fun renderImageReview(
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel?,
+        formattedRating: String,
+        formattedRatingCount: String,
+        formattedReviewCount: String
+    ) {
         with(binding) {
             reviewCount.apply {
-                text = if (listener.shouldShowRatingAndReviewCount()) {
-                    if (formattedReviewCount == "0") {
-                        context.getString(R.string.pdp_review_rating_only_count, formattedRatingCount)
-                    } else {
-                        context.getString(R.string.pdp_review_rating_and_review_count, formattedRatingCount, formattedReviewCount)
-                    }
+                text = if (formattedReviewCount == "0") {
+                    context.getString(R.string.pdp_review_rating_only_count, formattedRatingCount)
                 } else {
-                    context.getString(R.string.review_out_of_total_reviews, totalRating)
+                    context.getString(
+                        R.string.pdp_review_rating_and_review_count,
+                        formattedRatingCount,
+                        formattedReviewCount
+                    )
                 }
                 show()
             }
             reviewRating.apply {
                 setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_review_rating_star), null, null, null)
-                text = if (listener.shouldShowRatingAndReviewCount()) formattedRating else ratingScore.toString()
+                text = formattedRating
                 show()
             }
 
-            if (imageReviews.isNotEmpty()) {
-                imageReviewList.apply {
-                    adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllLastItemImageReview,
-                            componentTrackDataModel)
+            if (reviewMediaThumbnailUiModel?.mediaThumbnails?.isNotEmpty() == true) {
+                reviewMediaThumbnails.apply {
+                    setData(reviewMediaThumbnailUiModel)
                     show()
-                    layoutManager = GridLayoutManager(context, GRID_LAYOUT_MANAGER_SPAN_COUNT)
                 }
                 return
             }
-            imageReviewList.gone()
+            reviewMediaThumbnails.gone()
         }
     }
 
@@ -195,7 +205,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             txtSeeAllPartial.hide()
             reviewRating.hide()
             reviewCount.hide()
-            imageReviewList.hide()
+            reviewMediaThumbnails.hide()
             ratingReviewPdp.hide()
             txtDateUserPdp.hide()
             txtVariantReviewPdp.hide()
@@ -209,6 +219,41 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             txtDescReviewPdp.hide()
             txtVariantReviewPdp.hide()
             txtDateUserPdp.hide()
+        }
+    }
+
+    private inner class ReviewMediaThumbnailListener : ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            element?.let {
+                if (item is ReviewMediaImageThumbnailUiModel) {
+                    if (item.uiState is ReviewMediaImageThumbnailUiState.ShowingSeeMore) {
+                        listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
+                    } else {
+                        listener.onMediaReviewClick(
+                            item.getReviewID(),
+                            position,
+                            getComponentTrackData(it),
+                            DynamicProductDetailMapper.generateDetailedMediaResult(
+                                it.mediaThumbnails
+                            )
+                        )
+                    }
+                } else if (item is ReviewMediaVideoThumbnailUiModel) {
+                    if (item.uiState is ReviewMediaVideoThumbnailUiState.ShowingSeeMore) {
+                        listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
+                    } else {
+                        listener.onMediaReviewClick(
+                            item.getReviewID(),
+                            position,
+                            getComponentTrackData(it),
+                            DynamicProductDetailMapper.generateDetailedMediaResult(
+                                it.mediaThumbnails
+                            )
+                        )
+                    }
+                }
+                return@let
+            }
         }
     }
 }

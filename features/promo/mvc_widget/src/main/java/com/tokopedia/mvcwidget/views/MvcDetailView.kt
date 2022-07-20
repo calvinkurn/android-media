@@ -18,9 +18,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.CtaCatalog
+import com.tokopedia.mvcwidget.FollowWidgetType
+import com.tokopedia.mvcwidget.IntentManger
+import com.tokopedia.mvcwidget.LiveDataResult
+import com.tokopedia.mvcwidget.MvcCouponListItem
+import com.tokopedia.mvcwidget.MvcDetailViewModel
+import com.tokopedia.mvcwidget.MvcListItem
+import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.TickerText
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCListResponse
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTracker
@@ -52,7 +61,14 @@ class MvcDetailView @JvmOverloads constructor(
     private val CONTAINER_SHIMMER = 1
     private val CONTAINER_ERROR = 2
     private var shopId = ""
+    private var productId = ""
+
+    override fun getProductId(): String {
+        return this.productId
+    }
+
     var bundleForDataUpdate:Bundle? = null
+
     override fun getShopId(): String {
         return this.shopId
     }
@@ -144,7 +160,7 @@ class MvcDetailView @JvmOverloads constructor(
 
 
         globalError.setActionClickListener {
-            viewModel.getListData(shopId)
+            viewModel.getListData(shopId, productId = productId, source = mvcSource)
         }
     }
 
@@ -211,12 +227,14 @@ class MvcDetailView @JvmOverloads constructor(
         }
     }
 
-    fun show(shopId: String, addBottomMarginOnToast: Boolean, @MvcSource mvcSource: Int, mvcTracker: MvcTracker?) {
+    fun show(shopId: String, addBottomMarginOnToast: Boolean, @MvcSource mvcSource: Int, mvcTracker: MvcTracker?, productId: String) {
         this.addBottomMarginOnToast = addBottomMarginOnToast
         this.mvcTracker = mvcTracker
         this.shopId = shopId
+        this.productId = productId
         this.mvcSource = mvcSource
-        viewModel.getListData(shopId)
+        viewModel.getListData(shopId, productId, source = mvcSource)
+        this.adapter.setTracker(mvcTracker)
     }
 
     fun setupData(response: TokopointsCatalogMVCListResponse) {
@@ -251,7 +269,7 @@ class MvcDetailView @JvmOverloads constructor(
 
                 spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 val mvcListItem = MvcCouponListItem(it.tagImageURLs, it.title ?: "", it.minimumUsageLabel
-                        ?: "", spannableString2)
+                        ?: "", spannableString2, it.ctaCatalog?:CtaCatalog())
                 tempCouponList.add(mvcListItem)
             }
         }

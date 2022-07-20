@@ -36,4 +36,15 @@
     <string name="title_setting_fingerprint_switch">Masuk dengan Sidik Jari</string>
     <string name="description_fingerprint_setting">Kalau kamu mematikan fitur ini atau mengatur ulang kata sandi, sidik jari di Tokopedia harus diaktifkan lagi.</string>
 
+
+    <string name="title_biometric_offering_dialog">Kamu bisa daftarkan sidik jari dulu, lho~</string>
+    <string name="subtitle_biometric_offering_dialog">Nanti kamu bisa verifikasi dan masuk ke akunmu pakai sidik jari. Makin gampang dan praktis, deh!</string>
+
+    <string name="button_primary_biometric_offering_dialog">Daftarkan Sidik Jari</string>
+    <string name="button_secondary_biometric_offering_dialog">Lanjut Keluar Akun</string>
+
+    <string name="title_biometric_offering_success_dialog">Sidik jarimu udah terdaftar</string>
+    <string name="subtitle_biometric_offering_success_dialog">Hore! Sekarang kamu bisa verifikasi dan masuk ke akunmu pakai sidik jari.</string>
+
+    <string name="button_primary_biometric_offering_success_dialog">Keluar Akun</string>
 </resources>

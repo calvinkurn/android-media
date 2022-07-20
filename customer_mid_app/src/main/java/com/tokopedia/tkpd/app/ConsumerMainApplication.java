@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.app;
 
+import static android.os.Process.killProcess;
+import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
+
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,6 +16,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,15 +25,16 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
-import com.facebook.FacebookSdk;
 import com.google.firebase.FirebaseApp;
+import com.google.gson.Gson;
+import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
-import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
+import com.tokopedia.analytics.mapper.model.EmbraceConfig;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
-import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
@@ -45,8 +50,10 @@ import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallback
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLifecycleCallbacks;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
+import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
@@ -54,6 +61,7 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -63,12 +71,14 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
+import com.tokopedia.telemetry.TelemetryActLifecycleCallback;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -85,11 +95,9 @@ import javax.crypto.SecretKey;
 import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
-
-import static android.os.Process.killProcess;
-import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -114,6 +122,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_customerapp_log_config_scalyr";
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
     private static final String REMOTE_CONFIG_EMBRACE_KEY_LOG = "android_customerapp_log_config_embrace";
+    private static final String REMOTE_CONFIG_TELEMETRY_ENABLED = "android_telemetry_enabled";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
@@ -124,7 +133,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     @Override
     public void onCreate() {
-        SplashScreenPerformanceTracker.isColdStart = true;
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
@@ -148,8 +156,26 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         checkAppPackageNameAsync();
 
         Loader.init(this);
+        initializationNewRelic();
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
+        }
+        EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
+
+        Typography.Companion.setFontTypeOpenSauceOne(true);
+    }
+
+    private void initializationNewRelic() {
+        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY)) {
+            WeaveInterface initNrWeave = new WeaveInterface() {
+                @NotNull
+                @Override
+                public Object execute() {
+                    NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(ConsumerMainApplication.this);
+                    return true;
+                }
+            };
+            Weaver.Companion.executeWeaveCoRoutineNow(initNrWeave);
         }
     }
 
@@ -158,7 +184,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @NotNull
             @Override
             public Object execute() {
-                if (!checkPackageName()) {
+                if (!isPackageNameValid() || !isVersionNameValid()) {
                     killProcess(android.os.Process.myPid());
                 }
                 return true;
@@ -167,7 +193,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppPackageNameWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this, true);
     }
 
-    private boolean checkPackageName() {
+    private boolean isPackageNameValid() {
         boolean packageNameValid = this.getPackageName().equals(getOriginalPackageApp());
         if (!packageNameValid) {
             Map<String, String> messageMap = new HashMap<>();
@@ -175,6 +201,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
         }
         return packageNameValid;
+    }
+
+    private boolean isVersionNameValid() {
+        String numberRegex = ".*[0-9].*";
+        return com.tokopedia.config.GlobalConfig.VERSION_NAME.matches(numberRegex) &&
+                com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME.matches(numberRegex);
     }
 
     protected abstract String getOriginalPackageApp();
@@ -205,9 +237,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
-        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall(getUserSession()));
+        registerActivityLifecycleCallbacks(new GqlActivityCallback());
+        registerActivityLifecycleCallbacks(new DataVisorLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new TelemetryActLifecycleCallback(new Function0<Boolean>() {
+            @Override
+            public Boolean invoke() {
+                return remoteConfig.getBoolean(REMOTE_CONFIG_TELEMETRY_ENABLED, true);
+            }
+        }));
     }
-
 
     private void createAndCallPreSeq() {
         //don't convert to lambda does not work in kit kat
@@ -296,6 +335,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         createCustomSoundNotificationChannel();
 
         initLogManager();
+        initEmbraceConfig();
         DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
@@ -410,6 +450,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         });
     }
 
+    private void initEmbraceConfig() {
+        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
+        if (!TextUtils.isEmpty(logEmbraceConfigString)) {
+            EmbraceConfig dataLogConfigEmbrace = new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
+
+            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().clear();
+            EmbraceMonitoring.INSTANCE.getALLOW_EMBRACE_MOMENTS().addAll(dataLogConfigEmbrace.getAllowedMoments());
+        }
+    }
+
     private void openShakeDetectCampaignPage(boolean isLongShake) {
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -475,7 +525,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private void initializeSdk() {
         try {
             FirebaseApp.initializeApp(this);
-            FacebookSdk.sdkInitialize(this);
         } catch (Exception e) {
 
         }
@@ -485,7 +534,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         RemoteConfigInstance.initAbTestPlatform(this);
     }
 
-    private void createAndCallFetchAbTest(){
+    private void createAndCallFetchAbTest() {
         //don't convert to lambda does not work in kit kat
         WeaveInterface weave = new WeaveInterface() {
             @NotNull
@@ -520,8 +569,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             com.tokopedia.config.GlobalConfig.VERSION_CODE = versionCode();
         }
     }
-
-    public abstract void generateConsumerAppNetworkKeys();
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
         if (deepLinkUri != null) {

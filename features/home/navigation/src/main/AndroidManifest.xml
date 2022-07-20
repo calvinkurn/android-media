@@ -6,23 +6,19 @@
             android:name=".presentation.activity.InboxMainActivity"
             android:label="@string/inbox"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_home"
-                    android:path="@string/path_inbox"/>
+                    android:path="@string/path_inbox" />
             </intent-filter>
-
         </activity>
-        <activity
-            android:name=".presentation.activity.NotificationActivity"
-            android:label="@string/notifications"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
     </application>
 </manifest>

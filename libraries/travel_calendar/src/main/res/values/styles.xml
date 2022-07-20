@@ -3,15 +3,15 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/Unify_G500</item>
+        <item name="colorPrimaryDark">@color/Unify_G500</item>
+        <item name="colorAccent">@color/Unify_G500</item>
     </style>
 
     <style name="CustomTabLayout" parent="Widget.Design.TabLayout" >
-        <item name="tabIndicatorColor">@color/tkpd_main_green</item>
+        <item name="tabIndicatorColor">@color/travelcalendar_dms_main_green</item>
         <item name="tabIndicatorHeight">@dimen/spacing_lvl2</item>
-        <item name="tabSelectedTextColor">@color/tkpd_main_green</item>
+        <item name="tabSelectedTextColor">@color/travelcalendar_dms_main_green</item>
         <item name="tabPaddingStart">10dp</item>
         <item name="tabPaddingEnd">10dp</item>
         <item name="tabTextAppearance">@style/CustomTabTextAppearance</item>
@@ -19,7 +19,7 @@
 
     <style name="CustomTabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/Neutral_N700_68</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
         <item name="textAllCaps">false</item>
     </style>
 

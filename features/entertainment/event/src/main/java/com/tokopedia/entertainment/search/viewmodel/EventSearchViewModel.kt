@@ -29,7 +29,6 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
         private val SEARCHQUERY = "search_query"
     }
 
-    lateinit var resources: Resources
     lateinit var job: Job
 
     val searchList: MutableLiveData<List<SearchEventItem<*>>> by lazy { MutableLiveData<List<SearchEventItem<*>>>() }
@@ -66,7 +65,7 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                 block = {
                     val dataLocation = getLocationSuggestionData(text, cacheType,query)
                     dataLocation.let {
-                        searchList.value = SearchMapper.mappingLocationandKegiatantoSearchList(it,text,resources)
+                        searchList.value = SearchMapper.mappingLocationandKegiatantoSearchList(it,text)
                         isItRefreshing.value = false
                     }
                 },

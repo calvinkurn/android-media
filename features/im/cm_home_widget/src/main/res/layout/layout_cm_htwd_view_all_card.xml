@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.viewallcard.ViewAllCard xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cm_home_widget_view_all_card"
+    android:layout_width="@dimen/cm_home_widget_dp_144"
+    android:layout_height="@dimen/cm_home_widget_dp_174"
+    app:view_all_card_unify_mode="invert" />
+

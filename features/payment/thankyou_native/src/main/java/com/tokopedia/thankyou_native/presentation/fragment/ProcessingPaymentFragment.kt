@@ -60,10 +60,10 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         tvInterestRate.text = getString(R.string.thank_interest_rate, thanksPageData.additionalInfo.interest)
         tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
-        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization?.customWtvText.isNullOrBlank()) {
+        if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage?.wtvText.isNullOrBlank()) {
             tvCheckPaymentStatusTitle.text = getString(R.string.thank_processing_payment_check_order)
         } else {
-            tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization?.customWtvText
+            tvCheckPaymentStatusTitle.text = thanksPageData.customDataMessage?.wtvText
         }
     }
 

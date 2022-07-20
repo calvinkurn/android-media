@@ -1,27 +1,36 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
+import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.category.navbottomsheet.view.CategoryNavBottomSheet
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.datamapper.updateComponentsQueryParams
 import com.tokopedia.discovery2.di.getSubComponent
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TabsUnify
 
 private const val TAB_START_PADDING = 20
+private const val DELAY_400 : Long = 400
 private const val SHOULD_HIDE_L1 = false
 private const val SOURCE = "best-seller"
+const val CLICK_UNIFY_TAB = "click section tab"
+const val CLICK_MEGA_TAB = "click mega tab"
 
 class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         AbstractViewHolder(itemView, fragment.viewLifecycleOwner),
@@ -30,6 +39,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private val tabsHolder: TabsUnify = itemView.findViewById(R.id.discovery_tabs_holder)
     private lateinit var tabsViewModel: TabsViewModel
     private var selectedTab: TabLayout.Tab? = null
+    private var isParentUnifyTab : Boolean = true
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         tabsViewModel = discoveryBaseViewModel as TabsViewModel
@@ -44,24 +54,44 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             openCategoryBottomSheet()
         }
         tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, {
+            isParentUnifyTab = false
             tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
             tabsHolder.tabLayout.removeAllTabs()
+            if((fragment.activity as DiscoveryActivity).isFromCategory())
+                tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
+            var selectedPosition = 0
             it.forEachIndexed { index, tabItem ->
                 if (tabItem.data?.isNotEmpty() == true) {
                     tabItem.data?.firstOrNull()?.name?.let { tabTitle ->
-                        tabsHolder.addNewTab(tabTitle)
-                        if (tabItem.data?.firstOrNull()?.isSelected == true)
-                            tabsHolder.getUnifyTabLayout().getTabAt(index)?.select()
+                        if(tabItem.data?.firstOrNull()?.isSelected == true)
+                            selectedPosition = index
+                        tabsHolder.addNewTab(tabTitle, tabItem.data?.firstOrNull()?.isSelected ?: false)
                     }
                 }
             }
+            tabsHolder.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        fragment.activity?.let { activity ->
+                            if (selectedPosition >= 0 && (activity as DiscoveryActivity).isFromCategory()) {
+                                tabsHolder.gone()
+                                tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                                Handler().postDelayed({
+                                    tabsHolder.show()
+                                }, DELAY_400)
+                                selectedPosition = -1
+                            }
+                        }
+                    }
+                })
         })
 
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
+            isParentUnifyTab = true
             tabsHolder.tabLayout.apply {
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_56)
+                layoutParams.height = tabsHolder.context.resources.getDimensionPixelSize(R.dimen.dp_55)
                 tabMode = TabLayout.MODE_SCROLLABLE
                 removeAllTabs()
                 setBackgroundResource(0)
@@ -83,13 +113,24 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private fun openCategoryBottomSheet() {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryTreeDropDownClick(tabsViewModel.isUserLoggedIn())
         selectedTab?.position?.let { it ->
-            CategoryNavBottomSheet.getInstance(tabsViewModel
-                    .getTabItemData(it)?.filterValue ?: "",
+            if ((fragment.activity as DiscoveryActivity).isFromCategory()) {
+                CategoryNavBottomSheet.getInstance(
+                    tabsViewModel.components.data?.get(it)?.id ?: tabsViewModel.components.pageEndPoint,
+                    this,
+                    this,
+                    true).show(fragment.childFragmentManager, "")
+
+            } else {
+                CategoryNavBottomSheet.getInstance(
+                    tabsViewModel
+                        .getTabItemData(it)?.filterValue ?: "",
                     this,
                     this,
                     SHOULD_HIDE_L1,
-                    source = SOURCE)
+                    source = SOURCE
+                )
                     .show(fragment.childFragmentManager, "")
+            }
         }
     }
 
@@ -111,7 +152,17 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onTabSelected(tab: TabLayout.Tab) {
         selectedTab = tab
         if (tabsViewModel.setSelectedState(tab.position, true)) {
+            (fragment.activity as DiscoveryActivity).let {
+                if (it.isFromCategory()) {
+                    tabsViewModel.components.getComponentsItem()?.get(tab.position).apply {
+                        (fragment as DiscoveryFragment).getDiscoveryAnalytics().setOldTabPageIdentifier(this?.data?.firstOrNull()?.id ?: "")
+                        it.getViewModel().pageIdentifier =
+                            this?.data?.firstOrNull()?.id ?: ""
+                    }
+                }
+            }
             tabsViewModel.onTabClick()
+            (fragment as DiscoveryFragment).currentTabPosition = tab.position + 1
             trackTabsGTMStatus(tab)
         }
         if (tab.customView != null && tab.customView is CustomViewCreator) {
@@ -137,13 +188,22 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     }
 
     private fun sendTabTrackingData(tab: TabLayout.Tab) {
-        tabsViewModel.components.data?.let {
+        tabsViewModel.components.data?.let { it ->
             if (it.size >= tab.position)
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                        ?.trackTabsClick(tabsViewModel.components.id,
-                                tabsViewModel.components.position,
-                                it[tab.position],
-                                tab.position)
+                        ?.let { discoAnalytics ->
+                            if(isParentUnifyTab) {
+                                discoAnalytics.trackTabsClick(tabsViewModel.components.id,
+                                        tabsViewModel.position,
+                                        it[tab.position],
+                                        tab.position, CLICK_MEGA_TAB)
+                            }else{
+                                discoAnalytics.trackUnifyTabsClick(tabsViewModel.components.id,
+                                        tabsViewModel.position,
+                                        it[tab.position],
+                                        tab.position, CLICK_UNIFY_TAB)
+                            }
+                        }
         }
     }
 
@@ -154,6 +214,28 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel.reInitTabTargetComponents()
         tabsViewModel.reInitTabComponentData()
         tabsViewModel.fetchDynamicTabData()
+        (fragment.activity as DiscoveryActivity).let {
+            if (it.isFromCategory()) {
+                RouteManager.route(itemView.context, appLink)
+                it.finish()
+            }
+        }
+    }
+
+    override fun onL2Expanded(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickExpandNavigationAccordion(id)
+    }
+
+    override fun onL2Collapsed(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCollapseNavigationAccordion(id)
+    }
+
+    override fun onL3Clicked(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCategoryOption(id)
+    }
+
+    override fun onL2Clicked(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCategoryOption(id)
     }
 
     override fun onBottomSheetClosed() {

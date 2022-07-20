@@ -1,20 +1,30 @@
 package com.tokopedia.autocompletecomponent.suggestion.domain.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class SuggestionChildItem(
-        @SerializedName("template")
-        val template: String = "",
+    @SerializedName("component_id")
+    @Expose
+    val componentId: String = "",
 
-        @SerializedName("type")
-        val type: String = "",
+    @SerializedName("template")
+    @Expose
+    val template: String = "",
 
-        @SerializedName("applink")
-        val applink: String = "",
+    @SerializedName("type")
+    @Expose
+    val type: String = "",
 
-        @SerializedName("url")
-        val url: String = "",
+    @SerializedName("applink")
+    @Expose
+    val applink: String = "",
 
-        @SerializedName("title")
-        val title: String = ""
+    @SerializedName("url")
+    @Expose
+    val url: String = "",
+
+    @SerializedName("title")
+    @Expose
+    val title: String = ""
 )

@@ -20,11 +20,11 @@ class SettingStateViewModel @Inject constructor(
 ): ViewModel(), SettingFieldContract.SettingState {
 
     private val pinnedItems = arrayListOf<VisitableSettings>()
-    private val temporaryList = arrayListOf<ParentSetting>()
+    private val settingStateList = arrayListOf<ParentSetting>()
 
     override fun getPinnedItems() = pinnedItems
 
-    override fun getSettingStates() = temporaryList
+    override fun getSettingStates() = settingStateList
 
     private fun addPinnedItems(
             data: UserSettingDataView,
@@ -86,13 +86,13 @@ class SettingStateViewModel @Inject constructor(
 
     override fun saveLastStateAll(list: MutableList<Visitable<*>>) {
         val listMapper = mapCloneSettings(list)
-        temporaryList.clear()
-        temporaryList.addAll(listMapper)
+        settingStateList.clear()
+        settingStateList.addAll(listMapper)
     }
 
     override fun updateSettingState(setting: ParentSetting?) {
         if (setting == null) return
-        temporaryList.find { it.key == setting.key }.let {
+        settingStateList.find { it.key == setting.key }.let {
             it.apply {
                 it?.status = setting.status
                 it?.isEnabled = setting.isEnabled

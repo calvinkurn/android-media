@@ -64,6 +64,11 @@ class ReviewCredibilityViewModelTest : ReviewCredibilityViewModelTestFixture() {
         Assert.assertTrue(viewModel.isUsersOwnCredibility(expectedUserId))
     }
 
+    @Test
+    fun `when getUserId should return expected value`() {
+        Assert.assertEquals("", viewModel.userId)
+    }
+
     private fun onGetReviewCredibilitySuccess_thenReturn(expectedResponse: ReviewerCredibilityStatsResponse) {
         coEvery { getReviewerCredibilityUseCase.executeOnBackground() } returns expectedResponse
     }

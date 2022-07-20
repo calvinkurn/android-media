@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -17,14 +18,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginEnd="@dimen/unify_space_16"
-            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
             android:paddingBottom="16dp"
             android:orientation="vertical">
 
             <include
-                android:id="@+id/card_address"
+                android:id="@+id/card_address_pinpoint"
                 layout="@layout/card_address_new_loc"
                 android:visibility="visible"/>
 
@@ -32,7 +33,7 @@
                 android:id="@+id/form_address"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginTop="16dp"
                 layout="@layout/form_address_new_alamat"
                 android:visibility="visible"/>
 
@@ -40,14 +41,14 @@
                 android:id="@+id/form_account"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginTop="16dp"
                 layout="@layout/form_address_new_akun" />
 
             <include
                 android:id="@+id/form_address_negative"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginTop="16dp"
                 layout="@layout/form_address_new_alamat_negative"
                 android:visibility="gone"/>
 
@@ -75,9 +76,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:layout_marginTop="@dimen/unify_space_12"
-                    android:layout_marginBottom="@dimen/unify_space_12"
-                    android:layout_marginEnd="@dimen/unify_space_12"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginEnd="12dp"
                     android:textColor="@color/Unify_N700_96"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -112,5 +113,16 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_address_form"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

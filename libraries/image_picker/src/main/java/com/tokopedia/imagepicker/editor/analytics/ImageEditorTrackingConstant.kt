@@ -20,4 +20,7 @@ object ImageEditorTrackingConstant {
     const val LABEL_ROTATION = "rotation"
     const val LABEL_WATERMARK_DESIGN_ONE = "watermark - design1"
     const val LABEL_WATERMARK_DESGIN_TWO = "watermark - design2"
+    const val LABEL_REMOVE_BACKGROUND_NORMAL = "removebg - original"
+    const val LABEL_REMOVE_BACKGROUND_WHITE = "removebg - putih"
+    const val LABEL_REMOVE_BACKGROUND_GREY = "removebg - kelabu"
 }

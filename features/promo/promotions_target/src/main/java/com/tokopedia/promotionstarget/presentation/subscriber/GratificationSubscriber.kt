@@ -186,7 +186,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                 }
             }
             return gratificationData
-        } catch (ex: Exception) {
+        } catch (ex: Throwable) {
             Timber.e(ex)
             return null
         }

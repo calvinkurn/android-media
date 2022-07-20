@@ -1,12 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.homecredit" >
+    package="com.tokopedia.homecredit">
 
     <application>
         <activity
             android:name=".view.activity.HomeCreditRegisterActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
-
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -20,5 +20,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

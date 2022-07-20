@@ -9,9 +9,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-
 
 /**
  * Created by Rafli Syam on 2020-02-04.
@@ -22,7 +19,6 @@ object DeeplinkMapperMerchant {
     const val PARAM_CREATE_SHOWCASE = "is_create_showcase"
     private const val PARAM_RATING = "rating"
     private const val PARAM_SOURCE = "source"
-    private const val ACTION_REVIEW = "review"
     private const val PRODUCT_SEGMENT = "product"
     private const val FEED_SEGMENT = "feed"
     private const val PARAM_BUNDLE_ID = "bundleId"
@@ -64,14 +60,7 @@ object DeeplinkMapperMerchant {
                 val feedbackId = segments.last()
                 return UriUtil.buildUri(ApplinkConstInternalMarketplace.INBOX_REPUTATION_DETAIL, feedbackId)
             }
-            return if (goToInboxUnified()) {
-                Uri.parse(ApplinkConstInternalMarketplace.INBOX).buildUpon().apply {
-                    appendQueryParameter(ApplinkConst.Inbox.PARAM_PAGE, ApplinkConst.Inbox.VALUE_PAGE_REVIEW)
-                    appendQueryParameter(ApplinkConst.Inbox.PARAM_ROLE, ApplinkConst.Inbox.VALUE_ROLE_BUYER)
-                }.build().toString()
-            } else {
-                return ApplinkConstInternalMarketplace.INBOX_REPUTATION
-            }
+            return ApplinkConstInternalMarketplace.INBOX_REPUTATION
         }
         return deeplink
     }
@@ -79,11 +68,6 @@ object DeeplinkMapperMerchant {
     fun isShopPage(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
         return deeplink.startsWithPattern(ApplinkConst.SHOP) && uri.pathSegments.size == SHOP_PAGE_SEGMENT_SIZE
-    }
-
-    fun isShopReview(deeplink: String): Boolean {
-        val uri = Uri.parse(deeplink)
-        return deeplink.startsWithPattern(ApplinkConst.SHOP_REVIEW) && uri.lastPathSegment == ACTION_REVIEW
     }
 
     fun getRegisteredNavigationShopPage(deeplink: String): String {
@@ -95,22 +79,6 @@ object DeeplinkMapperMerchant {
             }
         }
         return deeplink
-    }
-
-    fun getRegisteredNavigationShopReview(shopId: String?): String {
-        return if (isUsingNewShopReviewPage()) {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_REVIEW, shopId)
-        } else {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, shopId)
-        }
-    }
-
-    fun isUsingNewShopReviewPage(): Boolean {
-        val shopReviewAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-                RollenceKey.AB_TEST_SHOP_REVIEW,
-                RollenceKey.OLD_REVIEW_SHOP
-        )
-        return shopReviewAbTestKey.equals(RollenceKey.NEW_REVIEW_SHOP, true)
     }
 
     fun getRegisteredNavigationProductReview(uri: Uri): String {
@@ -132,15 +100,23 @@ object DeeplinkMapperMerchant {
     fun getRegisteredNavigationProductDetailReview(uri: Uri): String {
         val segments = uri.pathSegments
         val productId = segments.first()
-        val newUri = if(goToNewReadProductReview()) {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
-        } else {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW_OLD, productId)
-        }
-        return Uri.parse(newUri)
-                .buildUpon()
-                .build()
-                .toString()
+        return Uri.parse(
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.PRODUCT_REVIEW,
+                productId
+            )
+        ).buildUpon().build().toString()
+    }
+
+    fun getRegisteredProductEducational(uri: Uri): String {
+        val segments = uri.pathSegments
+        val type = segments.last()
+        return Uri.parse(
+                UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL_EDUCATIONAL,
+                        type
+                )
+        ).buildUpon().build().toString()
     }
 
     fun isShopPageDeeplink(uri: Uri?): Boolean {
@@ -332,6 +308,11 @@ object DeeplinkMapperMerchant {
         return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
     }
 
+    fun getRegisteredNavigationForCreateVoucherProduct(deeplink: String): String {
+        val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.CREATE_VOUCHER_PRODUCT, lastSegment)
+    }
+
     fun isShopPageSettingSellerApp(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
         return deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_SETTINGS_SELLER_APP) && uri.lastPathSegment == SHOP_PAGE_SETTING_SEGMENT
@@ -342,6 +323,28 @@ object DeeplinkMapperMerchant {
         return (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT)
     }
 
+    fun isCreateVoucherProductApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT)
+    }
+
+    fun isVoucherProductListApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.VOUCHER_PRODUCT_LIST)
+    }
+
+    fun isVoucherProductDetailApplink(deeplink: String): Boolean {
+        return deeplink.startsWith(ApplinkConst.SellerApp.VOUCHER_PRODUCT_DETAIL)
+    }
+
+    fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {
+        val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_LIST, lastSegment)
+    }
+
+    fun getRegisteredNavigationForVoucherProductDetail(deeplink: String): String {
+        val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_DETAIL, lastSegment)
+    }
+
     fun getRegisteredNavigationForCreateShowcase(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         if (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT) {
@@ -350,27 +353,5 @@ object DeeplinkMapperMerchant {
             }.build().toString()
         }
         return deeplink
-    }
-
-    fun goToInboxUnified(): Boolean {
-        if (GlobalConfig.isSellerApp()) return false
-        return try {
-            val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-            ) == RollenceKey.VARIANT_NEW_INBOX
-            useNewInbox
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun goToNewReadProductReview(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING, RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
-            ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
-        } catch (e: Exception) {
-            false
-        }
     }
 }

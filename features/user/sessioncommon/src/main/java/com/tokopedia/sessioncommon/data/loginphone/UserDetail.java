@@ -1,4 +1,3 @@
-
 package com.tokopedia.sessioncommon.data.loginphone;
 
 import android.os.Parcel;
@@ -7,7 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UserDetail implements Parcelable{
+public class UserDetail implements Parcelable {
 
     @SerializedName("name")
     @Expose
@@ -20,13 +19,13 @@ public class UserDetail implements Parcelable{
     private String image;
     @SerializedName("tkpd_user_id")
     @Expose
-    private int tkpdUserId;
+    private String tkpdUserId;
 
     protected UserDetail(Parcel in) {
         name = in.readString();
         email = in.readString();
         image = in.readString();
-        tkpdUserId = in.readInt();
+        tkpdUserId = in.readString();
     }
 
     public static final Creator<UserDetail> CREATOR = new Creator<UserDetail>() {
@@ -65,11 +64,11 @@ public class UserDetail implements Parcelable{
         this.image = image;
     }
 
-    public int getTkpdUserId() {
+    public String getTkpdUserId() {
         return tkpdUserId;
     }
 
-    public void setTkpdUserId(int tkpdUserId) {
+    public void setTkpdUserId(String tkpdUserId) {
         this.tkpdUserId = tkpdUserId;
     }
 
@@ -83,6 +82,6 @@ public class UserDetail implements Parcelable{
         dest.writeString(name);
         dest.writeString(email);
         dest.writeString(image);
-        dest.writeInt(tkpdUserId);
+        dest.writeString(tkpdUserId);
     }
 }

@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.NestedScrollingParent3
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.CatalogCustomRecyclerView
+import com.tokopedia.catalog.model.util.OrientationAwareRecyclerView
 
 open class NestedRecyclerView : CatalogCustomRecyclerView, NestedScrollingParent3 {
     private var nestedScrollTarget: View? = null
@@ -13,7 +15,7 @@ open class NestedRecyclerView : CatalogCustomRecyclerView, NestedScrollingParent
     private var nestedScrollTargetWasUnableToScroll = false
     private var skipsTouchInterception = false
     private var nestedCanScroll = false
-
+    private var nestedOrientationAwareRVWasUnableToScroll = false
 
     constructor(context: Context) :
             super(context)
@@ -38,6 +40,11 @@ open class NestedRecyclerView : CatalogCustomRecyclerView, NestedScrollingParent
 
         // First dispatch, potentially skipping our onInterceptTouchEvent
         var handled = super.dispatchTouchEvent(ev)
+
+        if(nestedOrientationAwareRVWasUnableToScroll){
+            super.dispatchTouchEvent(ev)
+            nestedOrientationAwareRVWasUnableToScroll = false
+        }
 
         if (temporarilySkipsInterception) {
             skipsTouchInterception = false
@@ -85,6 +92,13 @@ open class NestedRecyclerView : CatalogCustomRecyclerView, NestedScrollingParent
             nestedScrollTarget = target
             nestedScrollTargetIsBeingDragged = false
             nestedScrollTargetWasUnableToScroll = false
+        }else {
+            if(axes == SCROLL_AXIS_HORIZONTAL
+                && (target is OrientationAwareRecyclerView
+                && (type == ViewCompat.TYPE_TOUCH))){
+                // Handling for OrientationAwareRecyclerView Skip First TOUCH Glitch
+                nestedOrientationAwareRVWasUnableToScroll = true
+            }
         }
     }
 

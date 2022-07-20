@@ -166,6 +166,10 @@ public final class ImagePickerActivity extends BaseSimpleActivity
         InternalStorageCleaner.cleanUpInternalStorageIfNeeded(this, ImageProcessingUtil.DEFAULT_DIRECTORY);
     }
 
+    protected int getToolbarResourceID() {
+        return com.tokopedia.imagepicker.R.id.toolbar;
+    }
+
     protected void onDoneClicked() {
         if (selectedImagePaths.size() > 0) {
             if (imagePickerBuilder.isContinueToEditAfterPick()) {

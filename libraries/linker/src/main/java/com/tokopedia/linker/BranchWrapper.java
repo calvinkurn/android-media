@@ -48,7 +48,6 @@ import timber.log.Timber;
 public class BranchWrapper implements WrapperInterface {
 
     private String deferredDeeplinkPath;
-    private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
     private static boolean isBranchInitialized = false;
     private RemoteConfig remoteConfig;
     private static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
@@ -59,6 +58,7 @@ public class BranchWrapper implements WrapperInterface {
     private String KEY_APP_FIRST_OPEN = "app_first_open";
     private LocalCacheHandler localCacheHandler;
     private boolean lastFirstOpenUpdatedValue;
+    private static final String IDENTIFIER_OPPO_INSTALL_REFERRER = "oppopaipreinstall_int";
 
     @Override
     public void init(Context context) {
@@ -99,7 +99,12 @@ public class BranchWrapper implements WrapperInterface {
     public void createShareUrl(LinkerShareRequest linkerShareRequest, Context context) {
         if (linkerShareRequest != null && linkerShareRequest.getDataObj() != null && linkerShareRequest.getDataObj() instanceof LinkerShareData) {
 
-            if (isFDLActivated(context)){
+            if(((LinkerShareData)linkerShareRequest.getDataObj()).getLinkerData().isAffiliate()){
+                generateAffiliateLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
+                        context, linkerShareRequest.getShareCallbackInterface(),
+                        ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+            }
+            else if (isFDLActivated(context)){
                 generateFirebaseLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
                         context, linkerShareRequest.getShareCallbackInterface(),
                         ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
@@ -163,6 +168,9 @@ public class BranchWrapper implements WrapperInterface {
                     if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://") &&
                             !TextUtils.isEmpty(deeplink)) {
                         deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
+                    }
+                    else {
+                        deferredDeeplinkPath = deeplink;
                     }
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                         linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
@@ -248,6 +256,19 @@ public class BranchWrapper implements WrapperInterface {
         Branch.sessionBuilder(activity)
                 .withCallback(getBranchCallbackForUtmParams(activity, uriHaveCampaignData))
                 .init();
+    }
+
+    @Override
+    public void setDelayedSessionInitFlag() {
+        Branch.expectDelayedSessionInitialization(true);
+    }
+
+    @Override
+    public void setDataFromInstallReferrerParams(String installReferrerParams) {
+        if (!TextUtils.isEmpty(installReferrerParams) && installReferrerParams.contains(IDENTIFIER_OPPO_INSTALL_REFERRER)) {
+            Branch.getInstance().setPreinstallCampaign("oppopreinstallol-dp_int-tp-10001511-0000-alon-alon");
+            Branch.getInstance().setPreinstallPartner("a_custom_884988300975328897");
+        }
     }
 
     @Override
@@ -350,10 +371,19 @@ public class BranchWrapper implements WrapperInterface {
         return branchUniversalObject;
     }
 
+    private void generateAffiliateLink(){
+
+    }
+
     private void generateFirebaseLink(final LinkerData data, final Context context,
                                       final ShareCallback shareCallback, final UserData userData) {
         new FirebaseDLWrapper().createShortLink(shareCallback,data);
 
+    }
+
+    private void generateAffiliateLink(final LinkerData data, final Context context,
+                                      final ShareCallback shareCallback, final UserData userData) {
+        new AffiliateWrapper().executeAffiliateUseCase(data, shareCallback, context);
     }
 
     private void generateBranchLink(final LinkerData data, final Context context,
@@ -416,6 +446,9 @@ public class BranchWrapper implements WrapperInterface {
 
         if (LinkerData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.PRODUCT_INFO, data.getId());
+            if(!TextUtils.isEmpty(data.getAdditionalQueryParam())){
+                deeplinkPath = appendQueryParams(deeplinkPath, data.getAdditionalQueryParam());
+            }
         } else if (LinkerData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.SHOP, data.getId());//"shop/" + data.getId();
         } else if (LinkerData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {
@@ -426,8 +459,16 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = getApplinkPath(LinkerConstants.PROMO_DETAIL, data.getId());
         } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getUri();
+        } else if (LinkerData.PLAY_VIEWER.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.PLAY, data.getId());
         } else if (LinkerData.MERCHANT_VOUCHER.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.NOW_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.NOW, data.getId());
+        } else if (LinkerData.FOOD_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.WEBVIEW_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.WEBVIEW, data.getId());
         } else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.REFERRAL_WELCOME, data.getId());
             if (userData != null) {
@@ -437,7 +478,7 @@ public class BranchWrapper implements WrapperInterface {
         } else if (LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.GROUPCHAT, data.getId());
             if (context.getApplicationContext() instanceof LinkerRouter) {
-                desktopUrl = DESKTOP_GROUPCHAT_URL;
+                desktopUrl = LinkerConstants.DESKTOP_GROUPCHAT_URL;
                 linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, desktopUrl);
                 linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
                 linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
@@ -449,7 +490,8 @@ public class BranchWrapper implements WrapperInterface {
             }
         } else if (LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
-        } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType())) {
+        } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType()) ||
+                    LinkerData.PLAY_VIEWER.equalsIgnoreCase(data.getType())) {
             linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
             linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
         } else if (LinkerData.HOTEL_TYPE.equalsIgnoreCase(data.getType())) {
@@ -462,6 +504,16 @@ public class BranchWrapper implements WrapperInterface {
             }
             if (!data.getCustmMsg().isEmpty()) linkProperties.addTag(data.getCustmMsg());
             linkProperties.setCampaign(LinkerConstants.SHARE_LABEL);
+            deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.ENTERTAINMENT_TYPE.equalsIgnoreCase(data.getType())){
+            if (!desktopUrl.isEmpty()) {
+                linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
+            }
+            deeplinkPath = data.getDeepLink();
+        }else if (LinkerData.USER_PROFILE_SOCIAL.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.USER_PROFILE_SOCIAL, data.getId());
+        } else if (LinkerData.FEED_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getDeepLink())){
             deeplinkPath = data.getDeepLink();
         }
 
@@ -568,7 +620,7 @@ public class BranchWrapper implements WrapperInterface {
     private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm, String clickTime) {
         if (!(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
-            param.put(LinkerConstants.SCREEN_NAME_KEY, LinkerConstants.SCREEN_NAME_VALUE);
+            param.put(LinkerConstants.SCREEN_NAME_KEY, mapDeeplinkToScreenName());
             param.put(LinkerConstants.UTM_SOURCE, utmSource);
             param.put(LinkerConstants.UTM_CAMPAIGN, utmCampaign);
             param.put(LinkerConstants.UTM_MEDIUM, utmMedium);
@@ -579,6 +631,18 @@ public class BranchWrapper implements WrapperInterface {
             sendCampaignToTrackApp(context, param);
             logValidCampaignUtmParams(context, utmSource, utmMedium, utmCampaign, clickTime);
         }
+    }
+
+    private String mapDeeplinkToScreenName(){
+        if(!TextUtils.isEmpty(getDefferedDeeplinkForSession())
+                && getDefferedDeeplinkForSession().startsWith(LinkerConstants.TOKOPEDIA_SCHEME)
+                && getDefferedDeeplinkForSession().contains(LinkerConstants.DISCOVERY_PATH)) {
+            String[] deeplinkArray = getDefferedDeeplinkForSession().split(LinkerConstants.QUERY_PARAM_SEPARATOR);
+            if (deeplinkArray.length > 0 && !TextUtils.isEmpty(deeplinkArray[0])) {
+                return LinkerConstants.DEEPLINK_VALUE + deeplinkArray[0].replace(LinkerConstants.TOKOPEDIA_SCHEME, "");
+            }
+        }
+        return LinkerConstants.SCREEN_NAME_VALUE;
     }
 
     private void sendCampaignToTrackApp(Context context, Map<String, Object> param) {
@@ -643,7 +707,7 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
-    private boolean isFirstOpen(Context context) {
+    public boolean isFirstOpen(Context context) {
         if (!lastFirstOpenUpdatedValue) {
             lastFirstOpenUpdatedValue = getLocalCacheHandler(context).getBoolean(KEY_APP_FIRST_OPEN);
         }
@@ -690,5 +754,17 @@ public class BranchWrapper implements WrapperInterface {
     private Boolean isFDLActivated(Context context) {
         return ((LinkerRouter) context.getApplicationContext()).
                 getBooleanRemoteConfig(LinkerConstants.FIREBASE_KEY_FDL_ENABLE, false);
+    }
+
+    private String appendQueryParams(String sourceString, String additionalQueryParams){
+        if(!TextUtils.isEmpty(sourceString) && !TextUtils.isEmpty(additionalQueryParams)){
+            if(!sourceString.contains(LinkerConstants.QUERY_INITIATOR)){
+                return sourceString+LinkerConstants.QUERY_INITIATOR+additionalQueryParams;
+            }
+            else {
+                return sourceString+LinkerConstants.QUERY_PARAM_SEGREGATOR+additionalQueryParams;
+            }
+        }
+        return sourceString;
     }
 }

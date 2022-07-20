@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
@@ -13,14 +14,14 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.MultipleVarian
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_select_bottom_sheet_content.view.*
 import java.math.BigInteger
 
 class MultipleVariantEditSelectBottomSheet(
-        private val multipleVariantEditListener: MultipleVariantEditListener? = null,
-        private val couldShowMultiLocationTicker: Boolean = false
-): BottomSheetUnify(), MultipleVariantEditInputBottomSheet.MultipleVariantEditInputListener,
+    private val multipleVariantEditListener: MultipleVariantEditListener? = null,
+    private val couldShowMultiLocationTicker: Boolean = false
+): BottomSheetUnify(), MultipleVariantEditListener,
         MultipleVariantEditSelectAdapter.OnSelectionsDataListener {
 
     companion object {
@@ -28,17 +29,15 @@ class MultipleVariantEditSelectBottomSheet(
     }
 
     private var contentView: View? = null
+    private var checkboxSelectAll: CheckboxUnify? = null
+    private var recyclerViewVariantCheck: RecyclerView? = null
+    private var buttonNext: UnifyButton? = null
+
     private var selectAdapter: MultipleVariantEditSelectAdapter? = null
     private var enableEditSku = true
     private var enableEditPrice = true
     private var trackerShopId = ""
     private var trackerIsEditMode = false
-
-    interface MultipleVariantEditListener {
-        fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
-        fun onMultipleEditInputValidatePrice(price: BigInteger): String
-        fun onMultipleEditInputValidateStock(stock: BigInteger): String
-    }
 
     init {
         selectAdapter = MultipleVariantEditSelectAdapter()
@@ -53,7 +52,7 @@ class MultipleVariantEditSelectBottomSheet(
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
         selectAdapter?.getSelectedData()?.let {
             multipleVariantEditInputModel.selection = it
-            multipleVariantEditListener?.onMultipleEditFinished(multipleVariantEditInputModel)
+            multipleVariantEditListener?.onMultipleEditInputFinished(multipleVariantEditInputModel)
         }
     }
 
@@ -63,6 +62,10 @@ class MultipleVariantEditSelectBottomSheet(
 
     override fun onMultipleEditInputValidateStock(stock: BigInteger): String {
         return multipleVariantEditListener?.onMultipleEditInputValidateStock(stock).orEmpty()
+    }
+
+    override fun onMultipleEditInputValidateWeight(weight: BigInteger): String {
+        return multipleVariantEditListener?.onMultipleEditInputValidateWeight(weight).orEmpty()
     }
 
     override fun onSelectionsDataChanged(selectedCount: Int) {
@@ -113,12 +116,16 @@ class MultipleVariantEditSelectBottomSheet(
         setTitle(getString(R.string.label_variant_multiple_select_bottom_sheet_title))
         contentView = View.inflate(context,
                 R.layout.add_edit_product_multiple_variant_edit_select_bottom_sheet_content, null)
-        contentView?.recyclerViewVariantCheck?.apply {
+        checkboxSelectAll = contentView?.findViewById(R.id.checkboxSelectAll)
+        recyclerViewVariantCheck = contentView?.findViewById(R.id.recyclerViewVariantCheck)
+        buttonNext = contentView?.findViewById(R.id.buttonNext)
+
+        recyclerViewVariantCheck?.apply {
             setHasFixedSize(true)
             adapter = selectAdapter
             layoutManager = LinearLayoutManager(context)
         }
-        contentView?.buttonNext?.setOnClickListener {
+        buttonNext?.setOnClickListener {
             dismiss()
             val multipleVariantEditSelectBottomSheet =
                     MultipleVariantEditInputBottomSheet(enableEditSku, enableEditPrice, couldShowMultiLocationTicker, this)
@@ -128,7 +135,7 @@ class MultipleVariantEditSelectBottomSheet(
             multipleVariantEditSelectBottomSheet.show(fragmentManager)
             sendTrackerContinueManageAllData()
         }
-        contentView?.checkboxSelectAll?.setOnClickListener {
+        checkboxSelectAll?.setOnClickListener {
             val isSelected = (it as CheckboxUnify).isChecked
             selectAdapter?.setAllDataSelected(isSelected)
             sendTrackerSelectManageAllData()

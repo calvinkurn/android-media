@@ -1,82 +1,78 @@
-[
-  {
-    "data": {
-      "fetchCardWidgetData": {
-        "data": [
-          {
-            "dataKey": "newOrder",
-            "value": "0",
-            "state": "GOOD",
-            "description": "",
-            "error": false,
-            "errorMsg": "",
-            "showWidget": true
-          },
-          {
-            "dataKey": "readyToShipOrder",
-            "value": "0",
-            "state": "GOOD",
-            "description": "",
-            "error": false,
-            "errorMsg": "",
-            "showWidget": true
-          },
-          {
-            "dataKey": "complaint",
-            "value": "0",
-            "state": "GOOD",
-            "description": "",
-            "error": false,
-            "errorMsg": "",
-            "showWidget": true
-          },
-          {
-            "dataKey": "unreadChat",
-            "value": "2",
-            "state": "GOOD",
-            "description": "",
-            "error": false,
-            "errorMsg": "",
-            "showWidget": true
-          },
-          {
-            "dataKey": "discussion",
-            "value": "0",
-            "state": "GOOD",
-            "description": "",
-            "error": false,
-            "errorMsg": "",
-            "showWidget": true
-          },
-          {
-            "dataKey": "unrepliedReview",
-            "value": "0",
-            "state": "GOOD",
-            "description": "",
-            "error": false,
-            "errorMsg": "",
-            "showWidget": true
-          },
-          {
-            "dataKey": "productViewStatistic",
-            "value": "20",
-            "state": "GOOD",
-            "description": "\u003cspan style\u003dcolor:#EF144A;\u003e\u003cb\u003e-9.09%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
-            "error": false,
-            "errorMsg": "",
-            "showWidget": true
-          },
-          {
-            "dataKey": "productSoldVerified",
-            "value": "0",
-            "state": "GOOD",
-            "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
-            "error": false,
-            "errorMsg": "",
-            "showWidget": true
-          }
-        ]
+{
+  "fetchCardWidgetData": {
+    "data": [
+      {
+        "dataKey": "newOrder",
+        "value": "0",
+        "state": "GOOD",
+        "description": "",
+        "error": false,
+        "errorMsg": "",
+        "showWidget": true
+      },
+      {
+        "dataKey": "readyToShipOrder",
+        "value": "0",
+        "state": "GOOD",
+        "description": "",
+        "error": false,
+        "errorMsg": "",
+        "showWidget": true
+      },
+      {
+        "dataKey": "complaint",
+        "value": "0",
+        "state": "GOOD",
+        "description": "",
+        "error": false,
+        "errorMsg": "",
+        "showWidget": true
+      },
+      {
+        "dataKey": "unreadChat",
+        "value": "2",
+        "state": "GOOD",
+        "description": "",
+        "error": false,
+        "errorMsg": "",
+        "showWidget": true
+      },
+      {
+        "dataKey": "discussion",
+        "value": "0",
+        "state": "GOOD",
+        "description": "",
+        "error": false,
+        "errorMsg": "",
+        "showWidget": true
+      },
+      {
+        "dataKey": "unrepliedReview",
+        "value": "0",
+        "state": "GOOD",
+        "description": "",
+        "error": false,
+        "errorMsg": "",
+        "showWidget": true
+      },
+      {
+        "dataKey": "productViewStatistic",
+        "value": "20",
+        "state": "GOOD",
+        "description": "\u003cspan style\u003dcolor:#EF144A;\u003e\u003cb\u003e-9.09%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
+        "error": false,
+        "errorMsg": "",
+        "showWidget": true
+      },
+      {
+        "dataKey": "productSoldVerified",
+        "value": "0",
+        "state": "GOOD",
+        "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
+        "error": false,
+        "errorMsg": "",
+        "showWidget": true
       }
-    }
+    ]
   }
-]
+}

@@ -11,7 +11,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_112"
+        android:layout_height="112dp"
         app:cardCornerRadius="8dp"
         android:layout_gravity="center">
 
@@ -41,8 +41,8 @@
                 tools:targetApi="lollipop">
 
                 <ImageView
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="@dimen/dp_32"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_gravity="center"
                     app:srcCompat="@drawable/recom_ic_reload_yellow_32dp"
                     />
@@ -67,8 +67,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/konten_gagal_ditampilkan"
                     android:textStyle="bold"
-                    android:lineSpacingExtra="@dimen/sp_6"
-                    android:textSize="@dimen/sp_22"
+                    android:lineSpacingExtra="6sp"
+                    android:textSize="22sp"
                     android:textColor="@color/Unify_N700_96"
                     />
 
@@ -78,9 +78,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="@string/recom_message_retry_general"
-                    android:textSize="@dimen/sp_12"
+                    android:textSize="12sp"
                     android:textColor="@color/Unify_N700_68"
-                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:lineSpacingExtra="6sp"
                     />
 
             </LinearLayout>

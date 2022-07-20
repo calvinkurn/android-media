@@ -6,10 +6,12 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductRecommendationCarouselBinding
+import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
@@ -47,11 +49,9 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
             ShopPageHomeMapper.mapToProductCardPersonalizationModel(
                     shopHomeProductViewModel = it,
                     isHasATC = isHasATC(element),
-                    isHasOCCButton = element.name != RECENT_ACTIVITY,
+                    isHasOCCButton = (element.name == BUY_AGAIN) || (element.name == REMINDER),
                     occButtonText = if(isAtcOcc(element.name)) {
-                        itemView.context.getString(
-                                R.string.occ_text
-                        )
+                        itemView.context.getString(R.string.occ_text)
                     } else ""
             )
         }
@@ -128,10 +128,10 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 return element.productList.getOrNull(carouselProductCardPosition)
             }
         }
-
+        recyclerView?.isNestedScrollingEnabled = false
         when (element.name) {
 
-            RECENT_ACTIVITY -> {
+            RECENT_ACTIVITY, ADD_ONS -> {
                 recyclerView?.bindCarouselProductCardViewGrid(
                         productCardModelList = carouselProductList,
                         carouselProductCardOnItemAddToCartListener = productAddToCartListener,
@@ -149,6 +149,13 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 )
             }
 
+        }
+        setWidgetImpressionListener(element)
+    }
+
+    private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {
+        itemView.addOnImpressionListener(model.impressHolder) {
+            shopHomeCarouselProductListener.onCarouselProductWidgetImpression(adapterPosition, model)
         }
     }
 

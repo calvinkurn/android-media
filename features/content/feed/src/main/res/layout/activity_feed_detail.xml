@@ -1,85 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/Unify_Background"
     android:layout_height="match_parent"
     tools:context=".view.activity.FeedPlusDetailActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <include
+        android:id="@+id/shop_info_card"
+        layout="@layout/feed_detail_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/fragment_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <include
-            android:id="@+id/shop_info_card"
-            layout="@layout/feed_detail_header" />
-
-    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/footer"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@color/Unify_N0"
-        android:clickable="true"
-        android:elevation="4dp"
-        android:focusable="true"
-        android:padding="4dp"
-        app:layout_anchor="@id/fragment_container"
-        app:layout_anchorGravity="bottom"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/detail_list"
-        app:layout_constraintVertical_bias="1"
-        tools:ignore="UnusedAttribute">
-
-        <ImageButton
-            android:id="@+id/share_button"
-            android:layout_width="@dimen/dp_44"
-            android:layout_height="@dimen/dp_44"
-            android:layout_margin="4dp"
-            android:background="@drawable/rounded_button_grey_outline"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:gravity="center"
-            android:padding="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/see_shop"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_system_action_share_grey_24"
-            tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toBottomOf="@id/shop_info_card" />
 
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/see_shop"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/btn_height"
-            android:layout_margin="4dp"
-            android:background="@drawable/rounded_button_green_background"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:gravity="center"
-            android:text="@string/see_shop"
-            android:textColor="@color/Unify_N0"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/share_button"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4"
-            app:typographyWeight="bold" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

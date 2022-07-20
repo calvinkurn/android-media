@@ -8,6 +8,7 @@
       "isLoggedInStatus": "true|false",
       "appsflyerId": ".*",
       "shopId": ".*",
+      "theme": ".*",
       "screenName": "rating produk",
       "event": "openScreen",
       "userId": ".*",
@@ -15,7 +16,7 @@
     },
     {
       "eventCategory": "ulasan - rating produk",
-      "shopId": ".+",
+      "shopId": ".*",
       "screenName": "rating produk",
       "event": "clickReview",
       "eventAction": "click - sort on rating product page",
@@ -24,7 +25,7 @@
     },
     {
       "eventCategory": "ulasan - rating produk",
-      "shopId": ".+",
+      "shopId": ".*",
       "screenName": "rating produk",
       "event": "clickReview",
       "eventAction": "click - select sort on bottomsheet",

@@ -2,10 +2,11 @@ package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 
 data class DiscoveryResponse(
 
-        @SerializedName("components")
+        @SerializedName("components",alternate = ["component_data"])
         var components: MutableList<ComponentsItem>,
 
         @SerializedName("component")
@@ -24,6 +25,7 @@ data class DiscoveryResponse(
         val creativeName: String? = null
 
 ) {
-    lateinit var componentMap: MutableMap<String, ComponentsItem>
-    var cartMap : MutableMap<String,MiniCartItem>? = null
+        lateinit var componentMap: MutableMap<String, ComponentsItem>
+        var cartMap: Map<MiniCartItemKey, MiniCartItem>? = null
+        var sectionMap: MutableMap<String, Int>? = null
 }

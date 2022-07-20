@@ -21,7 +21,6 @@ class FeedContainerModule {
 
     @Provides
     fun provideGraphQlRepository(@ApplicationContext context: Context): GraphqlRepository {
-        GraphqlClient.init(context)
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 

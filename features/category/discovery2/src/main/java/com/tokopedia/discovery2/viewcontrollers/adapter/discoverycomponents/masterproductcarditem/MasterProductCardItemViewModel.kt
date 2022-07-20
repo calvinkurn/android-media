@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.datamapper.setComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
@@ -20,6 +21,7 @@ import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -137,6 +139,31 @@ class MasterProductCardItemViewModel(val application: Application, val component
         } ?: ProductCardOptionsModel()
     }
 
+    fun getThreeDotsWishlistOptionsModel():ProductCardOptionsModel {
+        return components.data?.firstOrNull()?.let {
+            ProductCardOptionsModel(
+                hasWishlist = true,
+                hasVisitShop = true,
+                hasShareProduct = true,
+                isWishlisted = it.isWishList,
+                productId = it.productId.toString(),
+                isTopAds = it.isTopads ?: false,
+                topAdsWishlistUrl = it.wishlistUrl ?: "",
+                productPosition = position,
+                shop = ProductCardOptionsModel.Shop(
+                    it.shopId ?: "",
+                    it.shopName ?: "",
+                    it.shopURLDesktop ?: ""
+                ),
+                productName = it.name ?: "",
+                productImageUrl = it.imageUrlMobile ?: "",
+                productUrl = it.productURLDesktop ?: "",
+                formattedPrice = it.price ?: "",
+
+            )
+        } ?: ProductCardOptionsModel()
+    }
+
 
     fun getTemplateType() = components.properties?.template ?: GRID
     fun getShowLoginData(): LiveData<Boolean> = showLoginLiveData
@@ -174,7 +201,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private fun getNotifyRequestBundle(dataItem: DataItem): CampaignNotifyMeRequest {
         val campaignNotifyMeRequest = CampaignNotifyMeRequest()
         campaignNotifyMeRequest.campaignID = dataItem.campaignId.toIntOrZero()
-        campaignNotifyMeRequest.productID = dataItem.productId.toIntOrZero()
+        campaignNotifyMeRequest.productID = dataItem.productId.toLongOrZero()
         campaignNotifyMeRequest.action = if (dataItem.notifyMe == true) {
             UNREGISTER
         } else {
@@ -273,6 +300,12 @@ class MasterProductCardItemViewModel(val application: Application, val component
             }?:CAROUSEL_NOT_FOUND
         }else
             CAROUSEL_NOT_FOUND
+    }
+
+    fun saveProductCardComponent() {
+        components.data?.firstOrNull()?.productId?.let { prodId ->
+            setComponent(prodId, components.pageEndPoint, components)
+        }
     }
 
 }

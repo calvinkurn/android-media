@@ -18,6 +18,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -32,6 +33,7 @@ import com.tokopedia.thankyou_native.recommendation.presentation.adapter.Product
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.ProductCardViewListener
 import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.MarketPlaceRecommendationViewModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -58,6 +60,10 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
     lateinit var userSessionInterface: dagger.Lazy<UserSessionInterface>
 
     var isObserverAttached = false
+
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
+    }
 
     private val viewModel: MarketPlaceRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(fragment, viewModelFactory.get())
@@ -102,7 +108,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
         this.paymentId = thanksPageData.paymentID
         this.fragment = fragment
         startViewModelObserver()
-        viewModel.loadRecommendationData()
+        viewModel.loadRecommendationData(thanksPageData)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -129,6 +135,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
     private fun addResultToUI(data: ProductRecommendationData) {
         tvTitle.text = data.title
         tvTitle.visible()
+        tvSubtitle.displayTextOrHide(data.subtitle.orEmpty())
         setupRecyclerView(data.thankYouProductCardModelList, data.maxHeight)
         adapter.notifyDataSetChanged()
     }
@@ -154,13 +161,14 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
         return object : ProductCardViewListener {
             override fun onProductClick(item: RecommendationItem,
                                         layoutType: String?, vararg position: Int) {
+                topAdsUrlHitter.hitClickUrl(this@MarketPlaceRecommendation.javaClass.simpleName, item.clickUrl,"","","")
                 if (position.isNotEmpty())
                     onRecomProductClick(item, position[0])
             }
 
 
             override fun onProductImpression(item: RecommendationItem, position: Int) {
-
+                topAdsUrlHitter.hitImpressionUrl(this@MarketPlaceRecommendation.javaClass.simpleName, item.trackerImageUrl, "", "", "")
             }
 
 

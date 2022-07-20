@@ -15,6 +15,7 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckRepositoryImpl
+import com.tokopedia.promocheckout.common.domain.deals.DealsCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.deals.DealsCheckoutApi
 import com.tokopedia.promocheckout.common.domain.deals.PromoCheckoutDealsRepository
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
@@ -120,15 +121,21 @@ class PromoCheckoutDetailModule {
     @PromoCheckoutDetailScope
     @Provides
     fun provideDetailDealsPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                    dealsCheckRepository: PromoCheckoutDealsRepository,
-                                    compositeSubscription: CompositeSubscription): PromoCheckoutDetailDealsPresenter {
-        return PromoCheckoutDetailDealsPresenter(getDetailCouponMarketplaceUseCase, dealsCheckRepository, compositeSubscription)
+                                    dealsCheckVoucherUseCase: DealsCheckVoucherUseCase
+    ): PromoCheckoutDetailDealsPresenter {
+        return PromoCheckoutDetailDealsPresenter(getDetailCouponMarketplaceUseCase, dealsCheckVoucherUseCase)
     }
 
     @PromoCheckoutDetailScope
     @Provides
     fun provideGetDetailMarketplaceUseCase(@ApplicationContext context: Context): GetDetailCouponMarketplaceUseCase {
         return GetDetailCouponMarketplaceUseCase(context.resources)
+    }
+
+    @PromoCheckoutDetailScope
+    @Provides
+    fun provideDealsPromoUseCase(): DealsCheckVoucherUseCase {
+        return DealsCheckVoucherUseCase(GraphqlUseCase())
     }
 
     @PromoCheckoutDetailScope

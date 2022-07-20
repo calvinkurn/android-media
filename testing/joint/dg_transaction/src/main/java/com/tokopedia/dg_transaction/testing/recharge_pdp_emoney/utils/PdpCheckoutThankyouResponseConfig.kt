@@ -33,6 +33,11 @@ class PdpCheckoutThankyouResponseConfig(val isLogin: Boolean) : MockModelConfig(
             InstrumentationMockHelper.getRawString(context, R.raw.response_mock_get_cart),
             FIND_BY_CONTAINS
         )
+        addMockResponse(
+            KEY_QUERY_THANKS_PAGE_DATA,
+            InstrumentationMockHelper.getRawString(context, R.raw.response_mock_thanks_page_data),
+            FIND_BY_CONTAINS
+        )
 
         return this
     }
@@ -55,5 +60,8 @@ class PdpCheckoutThankyouResponseConfig(val isLogin: Boolean) : MockModelConfig(
 
         /* digital_checkout */
         const val KEY_DG_CHECKOUT_GET_CART = "rechargeGetCart"
+
+        /* thankyou_native*/
+        const val KEY_QUERY_THANKS_PAGE_DATA = "thanksPageData"
     }
 }

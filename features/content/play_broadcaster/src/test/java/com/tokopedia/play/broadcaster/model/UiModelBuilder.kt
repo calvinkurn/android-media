@@ -6,6 +6,9 @@ import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelRespon
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizChoiceDetailResponse
+import com.tokopedia.play.broadcaster.type.PriceUnknown
+import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
@@ -13,6 +16,8 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditSt
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import java.io.File
 import java.util.*
 
@@ -50,8 +55,9 @@ class UiModelBuilder {
             name: String = "Product 1",
             imageUrl: String = "https://www.tokopedia.com",
             originalImageUrl: String = "https://www.tokopedia.com",
-            stock: ProductStock = StockAvailable(1)
-    ) = ProductData(id, name, imageUrl, originalImageUrl, stock)
+            stock: ProductStock = StockAvailable(1),
+            price: ProductPrice = PriceUnknown,
+    ) = ProductData(id, name, imageUrl, originalImageUrl, stock, price)
 
     private fun loadJsonToString(path: String): String {
         val file = File(this::class.java.classLoader!!.getResource(path).path)
@@ -153,4 +159,26 @@ class UiModelBuilder {
         isActive = isActive,
         editStatus = editStatus,
     )
+
+    fun buildException(message: String = "Network Error") = Exception(message)
+
+    fun buildQuizModel(
+        id: String = "",
+        title: String = "",
+        waitingDuration: Long = 0,
+        duration: Int = 0,
+        choices: List<QuizChoicesUiModel> = emptyList(),
+        reward: String = ""
+    ): InteractiveUiModel.Quiz {
+        return InteractiveUiModel.Quiz(
+            id = id,
+            title = title,
+            waitingDuration = waitingDuration,
+            status = InteractiveUiModel.Quiz.Status.Ongoing(Calendar.getInstance().apply {
+                add(Calendar.SECOND, duration)
+            }),
+            listOfChoices = choices,
+            reward = reward
+        )
+    }
 }

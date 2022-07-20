@@ -69,7 +69,7 @@
             {
               "available_buttons": [
                 {
-                  "cart_type": "occ",
+                  "cart_type": "normal",
                   "color": "secondary_green",
                   "onboarding_message": "",
                   "show_recommendation": false,

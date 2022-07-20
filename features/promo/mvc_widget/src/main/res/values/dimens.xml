@@ -8,4 +8,8 @@
     <dimen name="mvc_shadow_elevation">6dp</dimen>
     <dimen name="mvc_shadow_outline_height">43dp</dimen>
     <dimen name="mvc_muiltishop_height">144dp</dimen>
+    <dimen name="mvc_dp_44">44dp</dimen>
+    <dimen name="mvc_dp_5">5dp</dimen>
+    <dimen name="mvc_dp_10">10dp</dimen>
+    <dimen name="mvc_dp_17">17dp</dimen>
 </resources>

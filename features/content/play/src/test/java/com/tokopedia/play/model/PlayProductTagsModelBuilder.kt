@@ -22,16 +22,17 @@ class PlayProductTagsModelBuilder {
     )
 
     fun buildProductLine(
-            id: String = "1",
-            shopId: String = "123",
-            imageUrl: String = "https://www.tokopedia.com",
-            title: String = "Barang Murah",
-            stock: ProductStock = OutOfStock,
-            isVariantAvailable: Boolean = false,
-            price: ProductPrice = buildOriginalProductPrice(),
-            minQty: Int = 1,
-            isFreeShipping: Boolean = false,
-            applink: String? = null
+        id: String = "1",
+        shopId: String = "123",
+        imageUrl: String = "https://www.tokopedia.com",
+        title: String = "Barang Murah",
+        stock: ProductStock = OutOfStock,
+        isVariantAvailable: Boolean = false,
+        price: ProductPrice = buildOriginalProductPrice(),
+        minQty: Int = 1,
+        isFreeShipping: Boolean = false,
+        applink: String? = null,
+        isTokoNow: Boolean = false,
     ) = PlayProductUiModel.Product(
             id = id,
             shopId = shopId,
@@ -42,21 +43,26 @@ class PlayProductTagsModelBuilder {
             price = price,
             minQty = minQty,
             isFreeShipping = isFreeShipping,
-            applink = applink
+            applink = applink,
+            isTokoNow = isTokoNow,
     )
 
     fun buildMerchantVoucher(
-            type: MerchantVoucherType = MerchantVoucherType.Discount,
-            title: String = "Diskon 10%",
-            description: String = "Min. Pembelanjaan 10rb"
+        type: MerchantVoucherType = MerchantVoucherType.Discount,
+        title: String = "Diskon 10%",
+        description: String = "Min. Pembelanjaan 10rb",
+        expiredDate: String = "2018-12-07T23:30:00Z",
+        voucherStock: Int = 0,
     ) = MerchantVoucherUiModel(
-            type = type,
-            title = title,
-            description = description,
-            id = "1",
-            code = "123",
-            copyable = true,
-            highlighted = true
+        type = type,
+        title = title,
+        description = description,
+        id = "1",
+        code = "123",
+        copyable = true,
+        highlighted = true,
+        expiredDate = expiredDate,
+        voucherStock = voucherStock
     )
 
     fun buildOriginalProductPrice(

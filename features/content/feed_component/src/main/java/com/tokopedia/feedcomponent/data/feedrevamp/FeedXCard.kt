@@ -55,12 +55,20 @@ data class FeedXCard(
     var share: FeedXShare = FeedXShare(),
     @SerializedName("followers", alternate = ["fol"])
     var followers: FeedXFollowers = FeedXFollowers(),
+    @SerializedName("maximumDiscountPercentage")
+    var maxDiscPercent:Int = 0,
+    @SerializedName("maximumDiscountPercentageFmt")
+    var maximumDisPercentFmt: String = "",
 
     //FeedXCardPost Data Type
     @SerializedName("appLink")
     var appLink: String = "",
     @SerializedName("webLink")
     var webLink: String = "",
+    @SerializedName("appLinkProductList")
+    var appLinkProductList: String = "",
+    @SerializedName("webLinkProductList")
+    var webLinkProductList: String = "",
     @SerializedName("actionButtonLabel")
     var actionButtonLabel: String = "",
     @SerializedName("actionButtonOperationWeb")
@@ -76,6 +84,9 @@ data class FeedXCard(
     @SerializedName("hashtagWebLinkFmt")
     var hashtagWebLinkFmt: String = "",
     val impressHolder: ImpressHolder = ImpressHolder(),
+    //Active carousel index
+    var lastCarouselIndex : Int = 0,
+    var isAsgcColorChangedAsPerWidgetColor: Boolean = false,
     //Topads
     val isTopAds: Boolean = false,
     val shopId: String = "",
@@ -91,13 +102,29 @@ data class FeedXCard(
     @SerializedName("mediaRatio")
     var mediaRatio: FeedXMediaRatio = FeedXMediaRatio(),
     @SerializedName("views")
-    var views: FeedXViews = FeedXViews()
+    var views: FeedXViews = FeedXViews(),
 
-) : ImpressHolder() {
+
+
+    ) : ImpressHolder() {
+
+    val isTypeProductHighlight: Boolean
+        get() = typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
+
+    val isTypeVOD: Boolean
+        get() = typename == TYPE_FEED_X_CARD_VOD
+
+    val useASGCNewDesign: Boolean
+        get() = mods.contains(USE_ASGC_NEW_DESIGN)
+
+    val isASGCDiscountToko: Boolean
+         get() = type == ASGC_DISCOUNT_TOKO
+
     fun copyPostData(): FeedXCard {
         return FeedXCard(
             typename = typename,
             id = id,
+            type = type,
             playChannelID = playChannelID,
             mediaRatio = mediaRatio,
             author = author,
@@ -109,6 +136,8 @@ data class FeedXCard(
             deletable = deletable,
             appLink = appLink,
             webLink = webLink,
+            webLinkProductList = webLinkProductList,
+            appLinkProductList = appLinkProductList,
             actionButtonLabel = actionButtonLabel,
             actionButtonOperationApp = actionButtonOperationApp,
             actionButtonOperationWeb = actionButtonOperationWeb,
@@ -121,6 +150,8 @@ data class FeedXCard(
             comments = comments,
             share = share,
             followers = followers,
+            maximumDisPercentFmt = maximumDisPercentFmt,
+            maxDiscPercent = maxDiscPercent,
             publishedAt = publishedAt,
             mods = mods,
             impressHolder = impressHolder,
@@ -130,5 +161,14 @@ data class FeedXCard(
             cpmData = cpmData,
             listProduct = listProduct
         )
+    }
+
+    companion object {
+        private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT = "FeedXCardProductsHighlight"
+        private const val TYPE_FEED_X_CARD_VOD = "FeedXCardPlay"
+
+        private const val USE_ASGC_NEW_DESIGN: String = "use_new_design"
+        private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
+
     }
 }

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     tools:context=".ScreenRecorderActivity">
 
     <com.tokopedia.unifyprinciples.Typography

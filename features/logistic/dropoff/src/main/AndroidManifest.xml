@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.dropoff">
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +12,8 @@
             android:name="com.tokopedia.dropoff.ui.dropoff_picker.DropoffPickerActivity"
             android:label="@string/title_dropoff_picker"
             android:screenOrientation="portrait"
-            android:theme="@style/LogisticTheme">
+            android:theme="@style/LogisticTheme"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -25,11 +26,9 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.dropoff.ui.autocomplete.AutoCompleteActivity"
             android:label="@string/title_autocomplete_page"
             android:theme="@style/LogisticTheme" />
-
     </application>
 </manifest>

@@ -46,7 +46,6 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
 
         `Then verify request params for local search recommendation`(listOf(0))
         `Then verify view interaction for success get local search recommendation`(localSearchRecommendationModel)
-        `Then verify has next page`(true)
     }
 
     private fun `Given get local search recommendation will return SearchProductModel`(
@@ -113,7 +112,12 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
         visitableList.first().assertSearchProductTitle()
 
         localSearchRecommendationModel.searchProduct.data.productList.forEachIndexed { index, product ->
-            visitableList[index + 1].assertOrganicProduct(product, index + 1)
+            visitableList[index + 1].assertOrganicProduct(
+                product,
+                index + 1,
+                searchProductPageTitle,
+                localSearchRecommendationModel.getProductListType()
+            )
         }
     }
 
@@ -121,10 +125,6 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
         val searchProductTitleViewModel = this as SearchProductTitleDataView
         searchProductTitleViewModel.title shouldBe searchProductPageTitle
         searchProductTitleViewModel.isRecommendationTitle shouldBe true
-    }
-
-    private fun `Then verify has next page`(expectedHasNextPage: Boolean) {
-        productListPresenter.hasNextPage() shouldBe expectedHasNextPage
     }
 
     @Test
@@ -175,7 +175,6 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
 
         `Then verify request params for local search recommendation`(listOf(0, 8))
         `Then verify visitable list for set empty recommendation page 2`(localSearchRecommendationModel)
-        `Then verify has next page`(false)
     }
 
     private fun `Given mechanism to set product position`() {
@@ -207,7 +206,12 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
         visitableList.size shouldBe localSearchRecommendationModel.searchProduct.data.productList.size
 
         localSearchRecommendationModel.searchProduct.data.productList.forEachIndexed { index, product ->
-            visitableList[index].assertOrganicProduct(product, index + 9)
+            visitableList[index].assertOrganicProduct(
+                product,
+                index + 9,
+                searchProductPageTitle,
+                localSearchRecommendationModel.getProductListType()
+            )
         }
     }
 }

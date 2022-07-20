@@ -1,6 +1,5 @@
 package com.tokopedia.notifications.inApp.viewEngine
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
@@ -11,7 +10,7 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.IrisAnalyticsEvents
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.AmplificationCMInApp
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.SerializedCMInAppData
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +20,7 @@ import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class CMInAppController(
-    private val application: Application?,
+    private val applicationContext: Context,
     private val listenerOnNewInApp: OnNewInAppDataStoreListener
 ) : CoroutineScope {
 
@@ -29,23 +28,15 @@ class CMInAppController(
         get() = Dispatchers.IO
 
 
-    fun processAndSaveRemoteDataCMInApp(remoteMessage: RemoteMessage) {
+    fun processAndSaveCMInAppRemotePayload(remoteMessage: RemoteMessage) {
         try {
             val cmInApp: CMInApp? = CmInAppBundleConvertor.getCmInApp(remoteMessage)
             cmInApp?.let {
-                if (application != null) {
-                    IrisAnalyticsEvents.trackCmINAppEvent(
-                        application, cmInApp,
-                        IrisAnalyticsEvents.INAPP_DELIVERED, null
-                    )
-                    downloadImagesAndUpdateDB(application, cmInApp)
-                } else {
-                    val messageMap: MutableMap<String, String> = HashMap()
-                    messageMap["type"] = "validation"
-                    messageMap["reason"] = "application_null"
-                    messageMap["data"] = ""
-                    log(Priority.P2, "CM_VALIDATION", messageMap)
-                }
+                IrisAnalyticsEvents.trackCmINAppEvent(
+                    applicationContext, cmInApp,
+                    IrisAnalyticsEvents.INAPP_DELIVERED, null
+                )
+                downloadImagesAndUpdateDB(applicationContext, cmInApp)
             }
         } catch (e: Exception) {
             val data: Map<String, String> = remoteMessage.data
@@ -61,24 +52,15 @@ class CMInAppController(
         }
     }
 
-    fun processAndSaveAmplificationInAppData(dataString: String?) {
+    fun processAndSaveCMInAppAmplificationData(dataString: String?) {
         try {
             val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
-            val amplificationCMInApp = gson.fromJson(dataString, AmplificationCMInApp::class.java)
+            val amplificationCMInApp = gson.fromJson(dataString, SerializedCMInAppData::class.java)
             val cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp)
             cmInApp?.let {
-                if (application != null) {
-                    cmInApp.isAmplification = true
-                    IrisAnalyticsEvents.sendAmplificationInAppEvent(
-                        application, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp)
-                    downloadImagesAndUpdateDB(application, cmInApp)
-                } else {
-                    val messageMap: MutableMap<String, String> = HashMap()
-                    messageMap["type"] = "validation"
-                    messageMap["reason"] = "application_null"
-                    messageMap["data"] = ""
-                    log(Priority.P2, "CM_VALIDATION", messageMap)
-                }
+                IrisAnalyticsEvents.sendAmplificationInAppEvent(
+                    applicationContext, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp)
+                downloadImagesAndUpdateDB(applicationContext, cmInApp)
             }
         } catch (e: Exception) {
             val messageMap: MutableMap<String, String> = HashMap()

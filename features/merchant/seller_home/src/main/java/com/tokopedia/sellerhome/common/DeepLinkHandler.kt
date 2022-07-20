@@ -13,9 +13,9 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 
 object DeepLinkHandler {
 
-    fun handleAppLink(context: Context,
-            intent: Intent?,
-            callback: (page: PageFragment) -> Unit
+    fun handleAppLink(
+        intent: Intent?,
+        callback: (page: PageFragment) -> Unit
     ) {
         if (null == intent) return
 

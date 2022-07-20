@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.usecase.GetPdpLayoutUseCaseTest
 import java.io.File
@@ -38,17 +39,17 @@ object ProductDetailTestUtil {
     }
 
     fun getMockP2Data(): ProductInfoP2UiData {
-        val mockData : ProductInfoP2Data.Response = createMockGraphqlSuccessResponse(MOCK_P2_DATA_UT_VIEW_MODEL, ProductInfoP2Data.Response::class.java)
+        val mockData: ProductInfoP2Data.Response = createMockGraphqlSuccessResponse(MOCK_P2_DATA_UT_VIEW_MODEL, ProductInfoP2Data.Response::class.java)
         return mapP2DataIntoUiData(mockData.response)
     }
 
-    fun getMockPdpLayout() : ProductDetailDataModel{
-        val mockData : ProductDetailLayout= createMockGraphqlSuccessResponse(GetPdpLayoutUseCaseTest.GQL_GET_PDP_LAYOUT_JSON, ProductDetailLayout::class.java)
+    fun getMockPdpLayout(): ProductDetailDataModel {
+        val mockData: ProductDetailLayout = createMockGraphqlSuccessResponse(GetPdpLayoutUseCaseTest.GQL_GET_PDP_LAYOUT_JSON, ProductDetailLayout::class.java)
         return mapIntoModel(mockData.data ?: PdpGetLayout())
     }
 
-    fun getMockPdpThatShouldRemoveUnusedComponent() : ProductDetailDataModel {
-        val mockData : ProductDetailLayout = createMockGraphqlSuccessResponse(GetPdpLayoutUseCaseTest.GQL_GET_PDP_LAYOUT_REMOVE_COMPONENT_JSON, ProductDetailLayout::class.java)
+    fun getMockPdpThatShouldRemoveUnusedComponent(): ProductDetailDataModel {
+        val mockData: ProductDetailLayout = createMockGraphqlSuccessResponse(GetPdpLayoutUseCaseTest.GQL_GET_PDP_LAYOUT_REMOVE_COMPONENT_JSON, ProductDetailLayout::class.java)
         return mapIntoModel(mockData.data ?: PdpGetLayout())
     }
 
@@ -83,10 +84,11 @@ object ProductDetailTestUtil {
             p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
             p2UiData.merchantVoucherSummary = merchantVoucherSummary
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
-            p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
+            p2UiData.imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
             p2UiData.rating = rating
             p2UiData.ticker = ticker
+            p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
         }
         return p2UiData
     }
@@ -98,8 +100,37 @@ object ProductDetailTestUtil {
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
     }
 
-    fun generateMiniCartMock(productId:String): Map<String, MiniCartItem> {
-        return mapOf(productId to MiniCartItem(cartId = "111", productId = productId, quantity = 4, notes = "notes gan"))
+    fun generateMiniCartMock(productId: String): Map<String, MiniCartItem.MiniCartItemProduct> {
+        return mapOf(productId to MiniCartItem.MiniCartItemProduct(cartId = "111", productId = productId, quantity = 4, notes = "notes gan"))
+    }
+
+    fun generateNotifyMeMock(): Map<String, ProductUpcomingData> {
+        return mapOf(
+                "518076293" to ProductUpcomingData(
+                        campaignId = "123",
+                        campaignType = "campaigntype",
+                        campaignTypeName = "campaignTypeName",
+                        startDate = "startdate",
+                        endDate = "enddate",
+                        notifyMe = false,
+                        productId = "518076293",
+                        ribbonCopy = "ribboncopy",
+                        upcomingType = "upcomingtype",
+                        bgColorUpcoming = "bgcolorupcoming"
+                ),
+                "518076286" to ProductUpcomingData(
+                        campaignId = "123",
+                        campaignType = "campaigntype",
+                        campaignTypeName = "campaignTypeName",
+                        startDate = "startdate",
+                        endDate = "enddate",
+                        notifyMe = true,
+                        productId = "518076286",
+                        ribbonCopy = "ribboncopy",
+                        upcomingType = "upcomingtype",
+                        bgColorUpcoming = "bgcolorupcoming"
+                )
+        )
     }
 }
 

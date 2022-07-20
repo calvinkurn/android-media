@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

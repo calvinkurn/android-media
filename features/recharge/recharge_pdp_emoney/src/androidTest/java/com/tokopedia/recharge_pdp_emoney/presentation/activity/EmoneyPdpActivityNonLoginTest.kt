@@ -20,8 +20,10 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
@@ -46,6 +48,7 @@ class EmoneyPdpActivityNonLoginTest {
     var mActivityRule = ActivityTestRule(EmoneyPdpActivity::class.java,
             false, false)
 
+    private val graphqlCacheManager = GraphqlCacheManager()
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private lateinit var localCacheHandler: LocalCacheHandler
 
@@ -55,16 +58,15 @@ class EmoneyPdpActivityNonLoginTest {
     @Before
     fun stubAllIntent() {
         Intents.init()
+        graphqlCacheManager.deleteAll()
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK,
                 null))
+        setUpLaunchActivity()
     }
 
     @Test
     fun testNonLoginFlow() {
         //Setup intent cart page & launch activity
-        setupGraphqlMockResponse(EmoneyPdpResponseConfig(isLogin = false))
-        setUpLaunchActivity()
-
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(not(isDisplayed())))
         clickPromoTabAndSalinPromo()
         scanEmoneyCard()
@@ -75,19 +77,17 @@ class EmoneyPdpActivityNonLoginTest {
     }
 
     private fun setUpLaunchActivity() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         setupGraphqlMockResponse(EmoneyPdpResponseConfig(isLogin = false))
-        val intent = Intent(context, EmoneyPdpActivity::class.java).setData(
-                Uri.parse("tokopedia://digital/form?category_id=34&menu_id=267&template=electronicmoney")
-        )
-        mActivityRule.launchActivity(intent)
-        Thread.sleep(2000)
-
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         localCacheHandler = LocalCacheHandler(context, EmoneyPdpFragment.EMONEY_PDP_PREFERENCES_NAME)
         localCacheHandler.apply {
             putBoolean(EmoneyPdpFragment.EMONEY_PDP_COACH_MARK_HAS_SHOWN, true)
             applyEditor()
         }
+        val intent = Intent(context, EmoneyPdpActivity::class.java).setData(
+            Uri.parse("tokopedia://digital/form?category_id=34&menu_id=267&template=electronicmoney")
+        )
+        mActivityRule.launchActivity(intent)
     }
 
     private fun scanEmoneyCard() {
@@ -151,7 +151,7 @@ class EmoneyPdpActivityNonLoginTest {
     }
 
     private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = "8768567891012344")
+        val orderClientNumber = TopupBillsSearchNumberDataModel(clientNumber = "8768567891012344")
         val resultData = Intent()
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,

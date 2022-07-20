@@ -1,7 +1,18 @@
 package com.tokopedia.broadcaster.utils
 
+import com.wmspanel.libstream.StreamerGL
 import kotlinx.coroutines.delay
 import java.io.IOException
+
+internal fun <T> StreamerGL.safeExecute(
+    execute: StreamerGL.() -> T
+): T? {
+    return try {
+        execute()
+    } catch(e: Throwable) {
+        null
+    }
+}
 
 /*
 * exponential retry back-off

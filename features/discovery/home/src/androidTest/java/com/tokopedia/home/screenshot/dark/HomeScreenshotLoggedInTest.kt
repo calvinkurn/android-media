@@ -20,6 +20,7 @@ import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.BALANCE_EXP
 import com.tokopedia.remoteconfig.RollenceKey.BALANCE_VARIANT_NEW
+import com.tokopedia.test.application.annotations.ScreenshotTest
 
 import com.tokopedia.test.application.espresso_component.CommonActions.findViewHolderAndScreenshot
 import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
@@ -32,6 +33,7 @@ import org.junit.Test
 /**
  * Created by devarafikry on 12/04/21.
  */
+@ScreenshotTest
 class HomeScreenshotLoggedInTest {
     private val TAG = "HomeScreenshotTest"
     private val context = InstrumentationRegistry.getInstrumentation().targetContext

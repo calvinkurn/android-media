@@ -9,32 +9,42 @@ import androidx.annotation.IdRes
 import androidx.core.app.ActivityCompat
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.utils.view.binding.internal.MethodType
-import com.tokopedia.utils.view.binding.internal.ViewBindingCache
+import com.tokopedia.utils.view.binding.internal.ViewBindingMethodBinder
 import com.tokopedia.utils.view.binding.internal.findRootView
 import com.tokopedia.utils.view.binding.noreflection.ViewBindingProperty
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 @JvmName("viewBindingActivity")
-inline fun <reified T : ViewBinding> ComponentActivity.viewBinding(@IdRes viewBindingRootId: Int) =
-        viewBinding(T::class.java, viewBindingRootId)
+inline fun <reified T : ViewBinding> ComponentActivity.viewBinding(
+    @IdRes viewBindingRootId: Int,
+    noinline onClear: T?.() -> Unit? = {}
+) = viewBinding(T::class.java, viewBindingRootId, onClear)
 
 @JvmName("viewBindingActivity")
 fun <T : ViewBinding> ComponentActivity.viewBinding(
         viewBindingClass: Class<T>,
-        @IdRes viewBindingRootId: Int
+        @IdRes viewBindingRootId: Int,
+        onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<ComponentActivity, T> {
-    return viewBinding { activity ->
-        val rootView = ActivityCompat.requireViewById<View>(activity, viewBindingRootId)
-        ViewBindingCache.getBind(viewBindingClass).bind(rootView)
-    }
+    return viewBinding(
+        { activity ->
+            val rootView = ActivityCompat.requireViewById<View>(activity, viewBindingRootId)
+            ViewBindingMethodBinder.getBind(viewBindingClass).bind(rootView)
+        },
+        onClear
+    )
 }
 
 @JvmName("viewBindingActivity")
 fun <T : ViewBinding> ComponentActivity.viewBinding(
         viewBindingClass: Class<T>,
-        rootViewProvider: (ComponentActivity) -> View
+        rootViewProvider: (ComponentActivity) -> View,
+        onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<ComponentActivity, T> {
-    return viewBinding { activity -> ViewBindingCache.getBind(viewBindingClass).bind(rootViewProvider(activity)) }
+    return viewBinding(
+        { activity -> ViewBindingMethodBinder.getBind(viewBindingClass).bind(rootViewProvider(activity)) },
+        onClear
+    )
 }
 
 @JvmName("inflateViewBindingActivity")
@@ -45,12 +55,18 @@ inline fun <reified T : ViewBinding> ComponentActivity.viewBinding(
 @JvmName("inflateViewBindingActivity")
 fun <T : ViewBinding> ComponentActivity.viewBinding(
         viewBindingClass: Class<T>,
-        methodType: MethodType = MethodType.Bind
+        methodType: MethodType = MethodType.Bind,
+        onClear: T?.() -> Unit? = {}
 ): ViewBindingProperty<ComponentActivity, T> {
     return when (methodType) {
-        MethodType.Bind -> viewBinding(viewBindingClass, ::findRootView)
-        MethodType.Inflate -> viewBinding {
-            ViewBindingCache.getInflateWithLayoutInflater(viewBindingClass).inflate(layoutInflater, null, false)
-        }
+        MethodType.Bind -> viewBinding(viewBindingClass, ::findRootView, onClear)
+        MethodType.Inflate -> viewBinding(
+            {
+                ViewBindingMethodBinder
+                    .getInflateWithLayoutInflater(viewBindingClass)
+                    .inflate(layoutInflater, null, false)
+            },
+            onClear
+        )
     }
 }

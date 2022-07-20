@@ -9,7 +9,10 @@ import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.FollowWidgetType
+import com.tokopedia.mvcwidget.IntentManger
+import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.setMargin
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.mvcwidget.views.MvcDetailView
@@ -31,14 +34,16 @@ class TransParentActivity : BaseActivity() {
 
     companion object {
         const val SHOP_ID = "shopId"
+        const val PRODUCT_ID = "productId"
         const val MVC_SOURCE = "mvcSource"
         const val REDIRECTION_LINK = "redirectionLink"
         const val SHOP_NAME = "shopName"
         const val DATA_HASH_CODE = "dataHash"
 
-        fun getIntent(context: Context, shopId: String, @MvcSource source: Int, redirectionLink: String = "", shopName: String = "",hashCode:Int = 0): Intent {
+        fun getIntent(context: Context, shopId: String, @MvcSource source: Int, redirectionLink: String = "", shopName: String = "",hashCode:Int = 0, productId: String = ""): Intent {
             val intent = Intent(context, TransParentActivity::class.java)
             intent.putExtra(SHOP_ID, shopId)
+            intent.putExtra(PRODUCT_ID, productId)
             intent.putExtra(MVC_SOURCE, source)
             intent.putExtra(REDIRECTION_LINK, redirectionLink)
             intent.putExtra(SHOP_NAME, shopName)
@@ -51,6 +56,7 @@ class TransParentActivity : BaseActivity() {
     val REQUEST_CODE_LOGIN = 12
     lateinit var userSession: UserSession
     lateinit var shopId: String
+    lateinit var productId: String
 
     @MvcSource
     var mvcSource = MvcSource.DEFAULT
@@ -60,6 +66,7 @@ class TransParentActivity : BaseActivity() {
         userSession = UserSession(this)
         handleDimming()
         shopId = intent.extras?.getString(SHOP_ID, "0") ?: "0"
+        productId = intent.extras?.getString(PRODUCT_ID, "") ?: ""
         mvcSource = intent.extras?.getInt(MVC_SOURCE, MvcSource.DEFAULT) ?: MvcSource.DEFAULT
         appLink = intent.extras?.getString(REDIRECTION_LINK, "") ?: ""
         shopName = intent.extras?.getString(SHOP_NAME, "") ?: ""
@@ -115,7 +122,7 @@ class TransParentActivity : BaseActivity() {
         }
         bottomSheet.setChild(childView)
         bottomSheet.show(supportFragmentManager, "BottomSheet Tag")
-        childView?.show(shopId, false, mvcSource, mvcTracker)
+        childView?.show(shopId, false, mvcSource, mvcTracker, productId)
         bottomSheet.setShowListener {
             val titleMargin = dpToPx(16).toInt()
             bottomSheet.bottomSheetWrapper.setPadding(0, dpToPx(16).toInt(), 0, 0)

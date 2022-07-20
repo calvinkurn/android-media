@@ -3,7 +3,6 @@ package com.tokopedia.createpost.view.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.text.InputType
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
@@ -60,10 +59,11 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         return v
     }
 
+
+
     private fun initialiseViews(v: View) {
         captionTxt = v.findViewById(R.id.caption)
         contentPreviewRv = v.findViewById(R.id.content_post_image_rv)
-
     }
 
 
@@ -104,6 +104,7 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         if (createContentPostViewModel.getPostData() != null)
         createPostModel = createContentPostViewModel.getPostData()!!
     }
+
     private fun initView() {
         adapter?.updateProduct(createPostModel.completeImageList)
         if (!createPostModel.isEditState)
@@ -123,8 +124,6 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
     private fun updateCaption() {
         if (createPostModel.caption.isNotEmpty())
             captionTxt?.setText(createPostModel.caption)
-        if (createPostModel.caption.isEmpty())
-            captionTxt?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
 
 
         captionTxt?.afterTextChanged {
@@ -168,4 +167,12 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         super.onDestroy()
     }
 
+    fun deleteAllProducts() {
+        createPostModel.completeImageList.forEach {
+            it.products.clear()
+            it.tags.clear()
+        }
+        createContentPostViewModel.setNewContentData(createPostModel)
+        adapter?.updateProduct(createPostModel.completeImageList)
+    }
 }

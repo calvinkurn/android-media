@@ -16,6 +16,7 @@
     <string name="path_forgot_password">/forgot-password</string>
     <string name="path_add_password">/add-password</string>
     <string name="path_profile_completion">/profile-completion</string>
+    <string name="path_edit_profile_info">/edit-profile-info</string>
     <string name="path_setting_profile">/setting-profile</string>
     <string name="path_liveness_detection">/liveness-detection</string>
     <string name="path_telephony_masking">/telephony-masking</string>
@@ -40,6 +41,7 @@
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>
     <string name="path_cotp">/cotp</string>
+    <string name="path_silent_verif">/silent-verification</string>
     <string name="path_otp_push_notif_receiver">/otp-push-notif-receiver</string>
     <string name="path_otp_push_notif_setting">/otp-push-notif-setting</string>
     <string name="path_qr_login">/qr-login</string>
@@ -58,6 +60,7 @@
     <string name="path_dynamic_features_install" translatable="false">/dynamic-features-install/.*\\/</string>
     <string name="path_add_bod">/add-bod</string>
     <string name="path_logout" translatable="false">/logout</string>
+    <string name="path_inactive_phone_number" translatable="false">/input-old-phone-number</string>
     <string name="path_add_pin">/add-pin</string>
     <string name="path_add_pin_from_2fa">/add-pin-from-2fa</string>
     <string name="path_add_pin_onboarding">/add-pin-onboarding</string>
@@ -110,5 +113,6 @@
     <string name="path_ovo_regis_init">/ovo-reg-init</string>
 
     <string name="path_image_picker_insta">/image-picker/v2/</string>
-
+    <string name="up_path_user_profile_follower">/people/followers/</string>
+    <string name="path_data_explorer">/data-explorer</string>
 </resources>

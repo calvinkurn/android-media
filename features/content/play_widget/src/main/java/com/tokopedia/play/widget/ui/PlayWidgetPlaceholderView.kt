@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.ui.adapter.PlayWidgetCardPlaceholderAdapter
 import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardPlaceholderItemDecoration
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by jegul on 12/10/20
@@ -37,7 +36,7 @@ class PlayWidgetPlaceholderView : ConstraintLayout {
     }
 
     fun setData() {
-        adapter.setItemsAndAnimateChanges(List(PLACEHOLDER_COUNT) { PlayWidgetUiModel.Placeholder })
+        adapter.setItemsAndAnimateChanges(List(PLACEHOLDER_COUNT) { })
     }
 
     companion object {

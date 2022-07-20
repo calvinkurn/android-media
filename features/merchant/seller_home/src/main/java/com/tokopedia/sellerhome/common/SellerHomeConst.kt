@@ -11,4 +11,8 @@ object SellerHomeConst {
     const val SHOP_SHARE_OTHERS_CHANNEL = "others"
     const val SHOP_SHARE_GQL_TRACKER_ACTION = "ShopSharing"
     const val SHOP_SHARE_GQL_TRACKER_SOURCE = "seller-home"
+
+    object Images {
+        const val IMG_ERROR_500 = "https://images.tokopedia.net/img/android/unify/unify_globalerrors_500.png"
+    }
 }

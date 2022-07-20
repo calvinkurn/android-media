@@ -1,6 +1,5 @@
 package com.tokopedia.home.testcase
 
-import android.content.Context
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewInteraction
@@ -8,13 +7,11 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writeFPIPerformanceFile
 import com.tokopedia.home.R
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
-import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import org.junit.Before
 import org.junit.Rule
@@ -35,7 +32,6 @@ class FpiHomeDynamicChannelPerformanceTest {
     var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            disableCoachMark()
             setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
         }
     }
@@ -45,13 +41,6 @@ class FpiHomeDynamicChannelPerformanceTest {
 //    fun testHomeLayout() {
 //        Thread.sleep(10000000)
 //    }
-    private fun disableCoachMark(){
-        val sharedPrefs = InstrumentationRegistry
-                .getInstrumentation().context
-                .getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putBoolean(
-                NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
-    }
 
     @Before
     fun deleteDatabase() {

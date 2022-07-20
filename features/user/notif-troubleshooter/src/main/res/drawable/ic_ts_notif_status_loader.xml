@@ -1,14 +1,4 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt"
-    android:viewportWidth="84"
-    android:viewportHeight="84"
-    android:width="84dp"
-    android:height="84dp">
-    <path
-        android:pathData="M0 40.25C0 18.0205 18.0205 0 40.25 0H43.75C65.9795 0 84 18.0205 84 40.25V43.75C84 65.9795 65.9795 84 43.75 84H40.25C18.0205 84 0 65.9795 0 43.75V40.25Z"
-        android:fillType="evenOdd"
-        android:fillColor="@color/Unify_N100_44" />
-    <path
-        android:pathData="M14 42C14 26.536 26.536 14 42 14C57.464 14 70 26.536 70 42C70 57.464 57.464 70 42 70C26.536 70 14 57.464 14 42Z"
-        android:fillType="evenOdd"
-        android:fillColor="@color/Unify_N100_68" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:viewportWidth="84" android:viewportHeight="84" android:width="84dp" android:height="84dp">
+    <path android:pathData="M0 40.25C0 18.02 18.02 0 40.25 0h3.5C65.98 0 84 18.02 84 40.25v3.5C84 65.98 65.98 84 43.75 84h-3.5C18.02 84 0 65.98 0 43.75v-3.5z" android:fillType="evenOdd" android:fillColor="@color/Unify_N100_44"/>
+    <path android:pathData="M14 42c0-15.464 12.536-28 28-28s28 12.536 28 28-12.536 28-28 28-28-12.536-28-28z" android:fillType="evenOdd" android:fillColor="@color/Unify_N100_68"/>
 </vector>

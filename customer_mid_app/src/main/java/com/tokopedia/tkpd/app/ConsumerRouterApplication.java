@@ -33,7 +33,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.app.common.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -49,6 +49,8 @@ import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
@@ -62,7 +64,7 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
-import com.tokopedia.oms.OmsModuleRouter;
+import com.tokopedia.notifications.worker.PushWorker;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
@@ -99,7 +101,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
-
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker;
+import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker;
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -111,7 +114,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoyaltyModuleRouter,
         GamificationRouter,
         NetworkRouter,
-        OmsModuleRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter {
 
@@ -134,12 +136,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initialiseHansel();
         initFirebase();
         GraphqlClient.setContextData(getApplicationContext());
-        GraphqlClient.init(getApplicationContext());
+        GraphqlClient.init(getApplicationContext(), getAuthenticator());
         NetworkClient.init(getApplicationContext());
         warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
         initResourceDownloadManager();
+    }
+
+    private TkpdAuthenticatorGql getAuthenticator() {
+        return new TkpdAuthenticatorGql(this, this, new UserSession(context), new RefreshTokenGql());
     }
 
     private void warmUpGQLClient() {
@@ -181,11 +187,34 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initCMPushNotification();
         initTetraDebugger();
         initCMDependencies();
+        initDataStoreMigration();
+        initSeamlessLoginWorker();
         return true;
     }
 
+    // To Refresh the seamless login token every week
+    private void initSeamlessLoginWorker() {
+        UserSessionInterface userSession = new UserSession(context);
+        if(userSession.isLoggedIn()) {
+            TemporaryTokenWorker.Companion.scheduleWorker(this);
+        }
+    }
+
+    private void initDataStoreMigration() {
+        UserSessionInterface userSession = new UserSession(context);
+        if(userSession.isLoggedIn()) {
+            DataStoreMigrationWorker.Companion.scheduleWorker(this);
+        }
+    }
+
     private void initCMDependencies(){
-        GratifCmInitializer.INSTANCE.start(this);
+        WeaveInterface gratiWeave = () -> {
+            GratifCmInitializer.INSTANCE.start(ConsumerRouterApplication.this);
+            return true;
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(gratiWeave, RemoteConfigKey.ENABLE_ASYNC_GRATIFICATION_INIT, getApplicationContext(), false);
+
+
     }
 
     private void initialiseHansel() {
@@ -261,12 +290,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onNewIntent(Context context, Intent intent) {
         NFCSubscriber.onNewIntent(context, intent);
-    }
-
-
-    @Override
-    public Interceptor getChuckerInterceptor() {
-        return getAppComponent().ChuckerInterceptor();
     }
 
     private Intent getInboxReputationIntent(Context context) {
@@ -512,6 +535,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         excludeScreenList.add(CmInAppConstant.ScreenListConstants.DEEPLINK_HANDLER_ACTIVITY);
         CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(ConsumerRouterApplication.this), false);
+        PushWorker.Companion.schedulePeriodicWorker(this);
     }
 
     @Override

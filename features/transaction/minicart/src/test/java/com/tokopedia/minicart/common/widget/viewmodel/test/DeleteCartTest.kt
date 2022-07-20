@@ -18,8 +18,14 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
+import com.tokopedia.minicart.common.widget.viewmodel.utils.ProductUtils.getBundleProductList
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -85,7 +91,7 @@ class DeleteCartTest {
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
         //then
-        assert(viewModel.lastDeletedProductItem != null)
+        assert(viewModel.lastDeletedProductItems != null)
     }
 
     @Test
@@ -106,7 +112,9 @@ class DeleteCartTest {
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
         //then
-        assert(viewModel.lastDeletedProductItem?.productId == productId)
+        viewModel.lastDeletedProductItems?.forEach {
+            assert(it.productId == productId)
+        }
     }
 
     @Test
@@ -319,5 +327,69 @@ class DeleteCartTest {
 
         //then
         assert(viewModel.globalEvent.value?.state == 0)
+    }
+
+    @Test
+    fun `WHEN bulk delete unavailable items with hidden items THEN should remove all items including hidden items`() {
+        //given
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        viewModel.toggleUnavailableItemsAccordion()
+
+        val mockResponse = DataProvider.provideDeleteFromCartSuccess()
+        val slotUnavailableCartIdList = slot<List<String>>()
+        coEvery { deleteCartUseCase.setParams(capture(slotUnavailableCartIdList)) } just Runs
+        coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.bulkDeleteUnavailableCartItems()
+
+        //then
+        assert(slotUnavailableCartIdList.captured.size == 2)
+    }
+
+    @Test
+    fun `WHEN delete multiple cart items success THEN temporary variable to store last deleted item should not be empty`() {
+        //given
+        val bundleId = "36012"
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        val miniCartProductUiModel = miniCartListUiModel.getBundleProductList(bundleId)
+
+        val mockResponse = DataProvider.provideDeleteFromCartSuccess()
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
+        coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.deleteMultipleCartItems(miniCartProductUiModel)
+
+        //then
+        assert(viewModel.lastDeletedProductItems != null)
+    }
+
+    @Test
+    fun `WHEN delete multiple cart items error THEN global event should have throwable with correct error message`() {
+        //given
+        val bundleId = "36012"
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        val miniCartProductUiModel = miniCartListUiModel.getBundleProductList(bundleId)
+
+        val errorMessage = "Error Message"
+        val throwable = ResponseErrorException(errorMessage)
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
+        coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        //when
+        viewModel.deleteMultipleCartItems(miniCartProductUiModel)
+
+        //then
+        assert(viewModel.globalEvent.value?.throwable?.message?.equals(errorMessage) == true)
     }
 }

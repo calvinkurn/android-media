@@ -2,7 +2,12 @@ package com.tokopedia.product.detail.view.widget
 
 import android.content.Context
 import android.net.Uri
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DefaultLoadControl
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.LoadControl
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -128,7 +133,9 @@ class ProductExoPlayer(val context: Context) {
     fun isMute(): Boolean = exoPlayer.volume == MUTE_VOLUME
 
     private fun prepareIfVideoDifferent(mediaSource: MediaSource, lastVideoPosition: Long, shouldPrepare: Boolean) {
-        if (shouldPrepare) exoPlayer.prepare(mediaSource, lastVideoPosition == VIDEO_AT_FIRST_POSITION, false)
+        if (shouldPrepare) exoPlayer.prepare(mediaSource,
+                lastVideoPosition == VIDEO_AT_FIRST_POSITION,
+                false)
     }
 
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {

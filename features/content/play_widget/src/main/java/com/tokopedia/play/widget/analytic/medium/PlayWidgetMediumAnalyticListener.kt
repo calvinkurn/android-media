@@ -1,9 +1,10 @@
 package com.tokopedia.play.widget.analytic.medium
 
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumBannerUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 
 /**
@@ -11,58 +12,94 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
  */
 interface PlayWidgetMediumAnalyticListener {
 
+    /**
+     * View all
+     */
+    fun onImpressViewAll(
+        view: PlayWidgetMediumView
+    ) {}
+
     fun onClickViewAll(
-            view: PlayWidgetMediumView
+        view: PlayWidgetMediumView
     ) {}
 
-    fun onImpressOverlayCard(
-            view: PlayWidgetMediumView,
-            item: PlayWidgetMediumOverlayUiModel,
-            channelPositionInList: Int
-    ) {}
-
-    fun onClickOverlayCard(
-            view: PlayWidgetMediumView,
-            item: PlayWidgetMediumOverlayUiModel,
-            channelPositionInList: Int
-    ) {}
-
-    fun onClickChannelCard(
-            view: PlayWidgetMediumView,
-            item: PlayWidgetMediumChannelUiModel,
-            channelPositionInList: Int,
-            isAutoPlay: Boolean
-    ) {}
-
-    fun onClickToggleReminderChannel(
-            view: PlayWidgetMediumView,
-            item: PlayWidgetMediumChannelUiModel,
-            channelPositionInList: Int,
-            isRemindMe: Boolean
-    ) {}
-
-    fun onClickMenuActionChannel(
-            view: PlayWidgetMediumView,
-            item: PlayWidgetMediumChannelUiModel,
-            channelPositionInList: Int
-    ) {}
-
-    fun onClickDeleteChannel(
-            view: PlayWidgetMediumView,
-            item: PlayWidgetMediumChannelUiModel,
-            channelPositionInList: Int
-    ) {}
-
-    fun onImpressChannelCard(
-            view: PlayWidgetMediumView,
-            item: PlayWidgetMediumChannelUiModel,
-            channelPositionInList: Int,
-            isAutoPlay: Boolean
+    /**
+     * Banner
+     */
+    fun onImpressBannerCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int,
     ) {}
 
     fun onClickBannerCard(
-            view: PlayWidgetMediumView,
-            item: PlayWidgetMediumBannerUiModel,
-            channelPositionInList: Int
+        view: PlayWidgetMediumView,
+        item: PlayWidgetBannerUiModel,
+        channelPositionInList: Int
     ) {}
+
+    /**
+     * Overlay
+     */
+    fun onImpressOverlayCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetBackgroundUiModel,
+        channelPositionInList: Int
+    ) {}
+
+    fun onClickOverlayCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetBackgroundUiModel,
+        channelPositionInList: Int
+    ) {}
+
+    /**
+     * Reminder
+     */
+    fun onImpressReminderIcon(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isReminded: Boolean,
+    ) {}
+
+    fun onClickToggleReminderChannel(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isRemindMe: Boolean
+    ) {}
+
+    /**
+     * Channel
+     */
+    fun onImpressChannelCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int,
+    ) {
+    }
+
+    fun onClickChannelCard(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        channelPositionInList: Int,
+    ) {
+    }
+
+    fun onClickMenuActionChannel(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int
+    ) {
+    }
+
+    fun onClickDeleteChannel(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int
+    ) {
+    }
 }

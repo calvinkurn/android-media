@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/server_logger_nav"
+    app:startDestination="@id/serverLoggerFragment">
+
+    <fragment
+        android:id="@+id/serverLoggerFragment"
+        android:name="com.tokopedia.analyticsdebugger.serverlogger.presentation.fragment.ServerLoggerFragment"
+        android:label="Server Logger List">
+        <action
+            android:id="@+id/action_serverLoggerFragment_to_serverLoggerDetailFragment"
+            app:destination="@id/serverLoggerDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/serverLoggerDetailFragment"
+        android:name="com.tokopedia.analyticsdebugger.serverlogger.presentation.fragment.ServerLoggerDetailFragment"
+        android:label="Server Logger Detail">
+        <argument
+            android:name="tag"
+            app:argType="string" />
+        <argument
+            android:name="priority"
+            app:argType="string" />
+        <argument
+            android:name="serverChannel"
+            app:argType="string[]" />
+        <argument
+            android:name="message"
+            app:argType="string" />
+        <argument
+            android:name="dateTime"
+            app:argType="string" />
+    </fragment>
+
+</navigation>

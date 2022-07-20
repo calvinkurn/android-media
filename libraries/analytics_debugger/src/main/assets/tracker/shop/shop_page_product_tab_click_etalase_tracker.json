@@ -13,14 +13,15 @@
       "eventLabel":"etalase (.+)"
     },
     {
-      "pageType": "/shoppage",
       "eventCategory": "shop page - (buyer|seller)",
       "shopId": ".+",
-      "shopType": ".+",
+      "userId": ".+",
       "event": "clickShopPage",
-      "eventAction": "click etalase (.+)",
+      "eventAction": "click etalase chip",
       "sessionIris": ".+",
-      "eventLabel":""
+      "businessUnit": ".+",
+      "currentSite": ".+",
+      "eventLabel":"click - etalase chip - (.+)"
     }
   ]
 }

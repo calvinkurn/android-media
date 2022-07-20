@@ -177,8 +177,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrier_product_info"
-        app:unify_text_field_counter="144"
-        app:unify_text_field_label="@string/occ_lbl_notes_label" />
+        app:unify_text_field_label="@string/occ_lbl_notes_label"
+        app:unify_text_field_label_static="true" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/qty_editor_product"
@@ -353,5 +353,13 @@
         android:layout_height="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_protection_description" />
+
+    <com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
+        android:id="@+id/button_gifting_addon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/space_note" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

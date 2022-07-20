@@ -47,5 +47,17 @@ data class RechargePersoItem(
         @SerializedName("tracking")
         val tracking: List<RechargeBUWidgetTrackingData> = listOf(),
         @SerializedName("tracking_data")
-        val trackingData: RechargeBUWidgetNewTrackingData = RechargeBUWidgetNewTrackingData()
+        val trackingData: RechargeBUWidgetNewTrackingData = RechargeBUWidgetNewTrackingData(),
+        @Expose
+        @SerializedName("sold_percentage_value")
+        val soldPercentageValue: Int = 0,
+        @Expose
+        @SerializedName("sold_percentage_label")
+        val soldPercentageLabel: String = "",
+        @Expose
+        @SerializedName("sold_percentage_label_color")
+        val soldPercentageLabelColor: String = "",
+        @Expose
+        @SerializedName("show_sold_percentage")
+        val showSoldPercentage: Boolean = false
 )

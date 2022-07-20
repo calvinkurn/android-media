@@ -6,11 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.presentation.adapter.SelectVariantMainAdapter
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.add_edit_product_select_variant_main_bottom_sheet_content.view.*
+import com.tokopedia.unifycomponents.UnifyButton
 
 class SelectVariantMainBottomSheet(
         private val listener: SelectVariantMainListener? = null
@@ -57,15 +58,19 @@ class SelectVariantMainBottomSheet(
         setTitle(getString(R.string.label_variant_main_select_bottom_sheet_title))
         contentView = View.inflate(context,
                 R.layout.add_edit_product_select_variant_main_bottom_sheet_content, null)
-        contentView?.recyclerViewVariantMain?.apply {
+        val recyclerViewVariantMain: RecyclerView? = contentView?.findViewById(R.id.recyclerViewVariantMain)
+        val buttonSave: UnifyButton? = contentView?.findViewById(R.id.buttonSave)
+
+        recyclerViewVariantMain?.apply {
             setHasFixedSize(true)
             adapter = selectAdapter
             layoutManager = LinearLayoutManager(context)
         }
-        contentView?.buttonSave?.setOnClickListener {
+        buttonSave?.setOnClickListener {
             dismiss()
             listener?.onSelectVariantMainFinished(selectAdapter?.getSelectedData().orEmpty())
         }
+
         setChild(contentView)
         clearContentPadding = true
     }

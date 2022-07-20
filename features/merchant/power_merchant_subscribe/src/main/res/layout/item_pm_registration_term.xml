@@ -4,35 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/unify_space_12">
+    android:paddingBottom="16dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icPmHeaderTermItem"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmTermItemTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginStart="12dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_N700"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icPmHeaderTermItem"
         app:layout_constraintTop_toTopOf="@+id/icPmHeaderTermItem"
-        app:typographyType="heading_5"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
         tools:text="Skor Toko : 85" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmTermItemDesc"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icPmHeaderTermItem"
         app:layout_constraintTop_toBottomOf="@+id/tvPmTermItemTitle"

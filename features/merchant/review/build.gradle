@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
 
 buildscript {
     repositories {
@@ -33,18 +33,20 @@ android {
                     pathSources + 'reading',
                     pathSources + 'gallery',
                     pathSources + 'imagepreview',
-                    pathSources + 'common'
+                    pathSources + 'common',
+                    pathSources + 'media'
             ]
         }
-    }
-    androidExtensions {
-        experimental = true
+        androidTest {
+            resources.srcDirs += "$projectDir/src/androidTest/resources"
+        }
     }
     defaultConfig {
         multiDexEnabled true
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 }
 
@@ -59,10 +61,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.chatcommon)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.features.reputationCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
     implementation projectOrAar(rootProject.ext.features.reviewInbox)
+    implementation projectOrAar(rootProject.ext.features.reviewCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -84,17 +88,21 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.lottie
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.networkDependencies.retrofit
+
+    implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -108,9 +116,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
 
     implementation rootProject.ext.unifyDependencies.coach_mark
@@ -143,6 +151,10 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
     androidTestImplementation rootProject.ext.miscDependencies.exoPlayer
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
+
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

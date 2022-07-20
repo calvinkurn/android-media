@@ -1,0 +1,36 @@
+{
+  "status":"OK",
+  "profile":{
+    "name":"Rama",
+    "full_name":"Rama Widragama Putra",
+    "completion":100,
+    "user_id":"17211378",
+    "profilePicture":"https://ecs7.tokopedia.net/img/cache/300/user-1/2020/1/10/17211378/17211378_e4f52052-69dd-4d24-bcc9-dc397bc65a71.jpg",
+    "phone_verified":true
+  },
+  "tokopoints":{
+    "status":{
+      "tier":{
+        "id":440,
+        "name":"Silver",
+        "nameDesc":"Member Silver",
+        "imageURL":"https://ecs7.tokopedia.net/assets/images/promo/tokopoints/egg-icon/v2-egg-silver.png",
+        "eggImageURL":"https://assets.tokopedia.net/asts/rewards/unify/silver.svg",
+        "eggImageHomepageURL":"https://ecs7.tokopedia.net/img/blog/promo/2021/04/silver.png",
+        "backgroundImgURL":"",
+        "backgroundImgURLMobile":"https://ecs7.tokopedia.net/tokopointsimprovement/tokopointsattribute/img-bg-tokopoints-silver.png"
+      },
+      "points":{
+        "reward":0,
+        "rewardStr":"0 Points",
+        "loyalty":0,
+        "loyaltyStr":"0 Loyalty"
+      }
+    }
+  },
+  "openDebitSettings":{
+    "data":{
+      "redirectURL":"https://pay.tokopedia.com/v2/direct-debit/settings?customer_email=\u0026customer_msisdn=\u0026customer_name=\u0026merchant_code=tokopedia\u0026profile_code=TKPD_DEFAULT\u0026signature=e3746b17caef7b58cd3e641f968e4ea16c47b417\u0026transaction_id=\u0026user_id=17211378"
+    }
+  }
+}

@@ -2,21 +2,24 @@
     package="com.tokopedia.homenav">
 
     <application>
-        <activity android:name=".view.activity.HomeNavActivity"
+        <activity
+            android:name=".view.activity.HomeNavActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/NavigationTheme"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/host_navigation"
                     android:pathPattern="/main"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-
         </activity>
     </application>
 </manifest>

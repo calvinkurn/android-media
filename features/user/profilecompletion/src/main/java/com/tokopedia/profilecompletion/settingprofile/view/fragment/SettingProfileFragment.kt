@@ -39,7 +39,6 @@ import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActiv
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
-import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
 import com.tokopedia.profilecompletion.settingprofile.domain.UrlSettingProfileConst
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
@@ -85,7 +84,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private var chancesChangeName = "0"
 
-    private val editPhotoListener = object: View.OnClickListener {
+    private val editPhotoListener = object : View.OnClickListener {
         override fun onClick(v: View?) {
             val ctx = context ?: return
             val builder = ImagePickerBuilder.getSquareImageBuilder(ctx).apply {
@@ -105,8 +104,10 @@ class SettingProfileFragment : BaseDaggerFragment() {
         ColorUtils.setBackgroundColor(context, activity)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_setting_profile, container, false)
         overlayView = view.findViewById(R.id.overlay_view)
         tickerPhoneVerification = view.findViewById(R.id.ticker_phone_verification)
@@ -180,17 +181,17 @@ class SettingProfileFragment : BaseDaggerFragment() {
             }
         })
 
-        profileInfoViewModel.uploadProfilePictureResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessUploadProfilePicture(it.data)
-                is Fail -> onErrorUploadProfilePicture(it.throwable)
-            }
-        })
-
         profileRoleViewModel.userProfileRole.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetProfileRole(it.data)
                 is Fail -> onErrorGetProfileRole(it.throwable)
+            }
+        })
+
+        profileInfoViewModel.saveImageProfileResponse.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> onSuccessUploadProfilePicture(it.data)
+                is Fail -> onErrorUploadProfilePicture(it.throwable)
             }
         })
     }
@@ -199,27 +200,24 @@ class SettingProfileFragment : BaseDaggerFragment() {
         dismissLoading()
         view?.run {
             Toaster.showError(
-                    this,
-                    ErrorHandlerSession.getErrorMessage(throwable, context, false),
-                    Snackbar.LENGTH_LONG)
+                this,
+                ErrorHandlerSession.getErrorMessage(throwable, context, false),
+                Snackbar.LENGTH_LONG
+            )
         }
     }
 
-    private fun onSuccessUploadProfilePicture(result: UploadProfilePictureResult) {
+    private fun onSuccessUploadProfilePicture(imgPath: String) {
         dismissLoading()
-
-        if (result.uploadProfileImageModel.data.filePath.isNotBlank()) {
-            userSession.profilePicture = result.uploadProfileImageModel.data.filePath
-
-            view?.run {
-                Toaster.showNormal(this, getString(R.string.success_change_profile_picture), Snackbar.LENGTH_LONG)
-            }
-            ImageHandler.loadImageCircle2(context, profilePhoto,
-                    result.uploadProfileImageModel.data.filePath)
-        } else {
-            onErrorUploadProfilePicture(MessageErrorException(getString(R.string.failed_to_upload_picture)))
+        view?.run {
+            Toaster.build(
+                this,
+                getString(R.string.success_change_profile_picture),
+                Snackbar.LENGTH_LONG
+            ).show()
         }
-
+        userSession.profilePicture = imgPath
+        ImageHandler.loadImageCircle2(context, profilePhoto, imgPath)
     }
 
     private fun initSettingProfileData() {
@@ -290,13 +288,21 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun onSuccessEditPhone() {
         view?.run {
-            Toaster.showNormal(this, getString(R.string.success_change_phone_number), Snackbar.LENGTH_LONG)
+            Toaster.showNormal(
+                this,
+                getString(R.string.success_change_phone_number),
+                Snackbar.LENGTH_LONG
+            )
         }
     }
 
     private fun onSuccessChangeEmail() {
         view?.run {
-            Toaster.make(this, getString(R.string.change_email_change_success), Snackbar.LENGTH_LONG)
+            Toaster.make(
+                this,
+                getString(R.string.change_email_change_success),
+                Snackbar.LENGTH_LONG
+            )
         }
     }
 
@@ -310,15 +316,19 @@ class SettingProfileFragment : BaseDaggerFragment() {
             val genderResult = getInt(ChangeGenderFragment.EXTRA_SELECTED_GENDER, 1)
 
             view?.run {
-                Toaster.showNormal(this, getString(R.string.success_add_gender), Snackbar.LENGTH_LONG)
+                Toaster.showNormal(
+                    this,
+                    getString(R.string.success_add_gender),
+                    Snackbar.LENGTH_LONG
+                )
             }
             gender.showFilled(
-                    getString(R.string.subtitle_gender_setting_profile),
-                    if (genderResult == GENDER_MALE)
-                        getString(R.string.profile_completion_man)
-                    else getString(R.string.profile_completion_woman),
-                    showVerified = false,
-                    showButton = false
+                getString(R.string.subtitle_gender_setting_profile),
+                if (genderResult == GENDER_MALE)
+                    getString(R.string.profile_completion_man)
+                else getString(R.string.profile_completion_woman),
+                showVerified = false,
+                showButton = false
             )
         }
     }
@@ -328,7 +338,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
             val phoneString = getString(AddPhoneFragment.EXTRA_PHONE, "")
             if (phoneString.isNotBlank()) {
                 view?.run {
-                    Toaster.showNormal(this, getString(R.string.success_add_phone), Snackbar.LENGTH_LONG)
+                    Toaster.showNormal(
+                        this,
+                        getString(R.string.success_add_phone),
+                        Snackbar.LENGTH_LONG
+                    )
                 }
             }
             AddPhoneNumberTracker().viewPersonalDataPage(true)
@@ -340,7 +354,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
             val emailString = getString(AddEmailFragment.EXTRA_EMAIL, "")
             if (emailString.isNotBlank()) {
                 view?.run {
-                    Toaster.showNormal(this, getString(R.string.success_add_email), Snackbar.LENGTH_LONG)
+                    Toaster.showNormal(
+                        this,
+                        getString(R.string.success_add_email),
+                        Snackbar.LENGTH_LONG
+                    )
                 }
             }
         }
@@ -357,7 +375,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
                 } else {
                     showLoading(true)
-                    profileInfoViewModel.uploadProfilePicture(requireContext(), savedLocalImageUrl)
+                    profileInfoViewModel.uploadPicture(file)
                 }
 
             } else {
@@ -371,9 +389,10 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onErrorGetProfilePhoto(errorException: Exception) {
         view?.run {
             Toaster.showError(
-                    this,
-                    ErrorHandlerSession.getErrorMessage(errorException, context, false),
-                    Snackbar.LENGTH_LONG)
+                this,
+                ErrorHandlerSession.getErrorMessage(errorException, context, false),
+                Snackbar.LENGTH_LONG
+            )
         }
     }
 
@@ -387,7 +406,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         val myClipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val myClip: ClipData = ClipData.newPlainText("User Id", userSession.userId)
         myClipboard.setPrimaryClip(myClip)
-        if(view != null) {
+        if (view != null) {
             Toaster.build(requireView(), "User Id Copied", Toaster.LENGTH_SHORT).show()
         }
     }
@@ -407,7 +426,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 DateFormatUtils.formatDate(
                     DateFormatUtils.FORMAT_YYYY_MM_DD,
                     DateFormatUtils.FORMAT_DD_MMMM_YYYY,
-                    birthDay),
+                    birthDay
+                ),
                 showVerified = false,
                 showButton = true
             ) {
@@ -439,7 +459,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun checkEmail(profileCompletionData: ProfileCompletionData){
+    private fun checkEmail(profileCompletionData: ProfileCompletionData) {
         val isEmailDone = profileCompletionData.isEmailDone
         if (profileCompletionData.email.isEmpty() || !isEmailDone) {
             email?.showEmpty(
@@ -494,11 +514,14 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 }
             }
 
-            checkMsisdnVerified(profileCompletionData.isMsisdnVerified, profileCompletionData.msisdn)
+            checkMsisdnVerified(
+                profileCompletionData.isMsisdnVerified,
+                profileCompletionData.msisdn
+            )
         }
     }
 
-    private fun checkMsisdnVerified(isMsisdnVerified: Boolean, msisdn: String){
+    private fun checkMsisdnVerified(isMsisdnVerified: Boolean, msisdn: String) {
         if (isMsisdnVerified) {
             tickerPhoneVerification?.visibility = View.GONE
         } else {
@@ -510,6 +533,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     goToAddPhoneBy(PhoneNumberUtil.replace62with0(msisdn))
                 }
+
                 override fun onDismiss() {}
             })
 
@@ -546,7 +570,10 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onSuccessGetProfileRole(profileRoleData: ProfileRoleData) {
         dismissLoading()
         bod?.isEnabled = profileRoleData.isAllowedChangeDob
-        name?.isEnabled = profileRoleData.isAllowedChangeName && remoteConfig.getBoolean(REMOTE_KEY_CHANGE_NAME, false)
+        name?.isEnabled = profileRoleData.isAllowedChangeName && remoteConfig.getBoolean(
+            REMOTE_KEY_CHANGE_NAME,
+            false
+        )
         chancesChangeName = profileRoleData.chancesChangeName
     }
 
@@ -566,7 +593,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun goToAddPhoneBy(phone: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
+        val intent =
+            RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
@@ -579,13 +607,19 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun goToAddBod() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD_TITLE, getString(R.string.title_add_bod))
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_BOD_TITLE,
+            getString(R.string.title_add_bod)
+        )
         startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
     }
 
     private fun goToChangeBod(bod: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD_TITLE, getString(R.string.title_change_bod))
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_BOD_TITLE,
+            getString(R.string.title_change_bod)
+        )
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD, bod)
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
@@ -603,10 +637,10 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun renderNameField(profileCompletionData: ProfileCompletionData) {
         name?.showFilled(
-                getString(R.string.subtitle_name_setting_profile),
-                profileCompletionData.fullName,
-                showVerified = false,
-                showButton = true
+            getString(R.string.subtitle_name_setting_profile),
+            profileCompletionData.fullName,
+            showVerified = false,
+            showButton = true
         ) {
             ChangeNameTracker().clickOnChangeName()
             val intent = RouteManager.getIntent(
@@ -653,6 +687,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
         const val REQUEST_CODE_EDIT_PHONE = 203
         const val REQUEST_CODE_EDIT_BOD = 204
+        const val REQUEST_CODE_VERIFY_PHONE = 205
 
         const val REQUEST_CODE_CHANGE_NAME = 300
         const val REQUEST_CODE_ADD_BOD = 301
@@ -660,10 +695,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_ADD_PHONE = 303
         const val REQUEST_CODE_ADD_GENDER = 304
         const val REQUEST_CODE_CHANGE_EMAIL = 305
+        const val REQUEST_CODE_CHANGE_USERNAME_BIO = 306
+
 
         const val REMOTE_KEY_CHANGE_NAME = "android_customer_change_public_name"
 
-        const val HEADER_PICT_URL = "https://ecs7.tokopedia.net/img/android/others/bg_setting_profile_header.png"
+        const val HEADER_PICT_URL =
+            "https://ecs7.tokopedia.net/img/android/others/bg_setting_profile_header.png"
 
         private const val DEFAULT_NAME = "Toppers-"
         private const val MAX_FILE_SIZE = 2048

@@ -12,6 +12,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.Reco
  */
 data class BestSellerDataModel(
         val filterChip: List<RecommendationFilterChipsEntity.RecommendationFilterChip> = listOf(),
+        val channelId: String = "",
         val id: String = "",
         val title: String = "",
         val subtitle: String = "",

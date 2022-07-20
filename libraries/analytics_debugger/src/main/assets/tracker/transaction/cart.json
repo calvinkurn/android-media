@@ -43,11 +43,14 @@
           "item_variant": "none/other",
           "dimension49": "",
           "dimension48": "\\d+",
-          "dimension59": ".*"
+          "dimension59": ".*",
+          "dimension119": ".*"
         }
       ],
       "eventLabel": "",
-      "checkout_option": "view cart page"
+      "checkout_option": "view cart page",
+      "userId": ".+",
+      "promoFlag": "true|false"
     },
     {
       "eventCategory": "cart",
@@ -79,11 +82,14 @@
           "item_variant": "none/other",
           "dimension49": "",
           "dimension48": "\\d+",
-          "dimension59": ".*"
+          "dimension59": ".*",
+          "dimension119": ".*"
         }
       ],
       "eventLabel": "success - (.*)",
-      "checkout_option": "cart page loaded"
+      "checkout_option": "cart page loaded",
+      "userId": ".+",
+      "promoFlag": "true|false"
     }
   ],
   "readme": "Cart Page Tracking"

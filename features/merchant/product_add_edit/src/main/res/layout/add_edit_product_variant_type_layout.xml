@@ -1,35 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="wrap_content"
+    <com.tokopedia.product.addedit.common.customview.TitleLayoutView
+        android:id="@+id/titleLayoutVariantType"
+        app:titleLayoutViewTitle="@string/label_variant_type"
+        app:titleLayoutViewSubtitle="@string/label_variant_type_desc"
+        app:titleLayoutViewActionText="@string/action_variant_custom_edit"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl1"
-        android:text="@string/label_variant_type"
-        android:textColor="@color/Unify_N700_96"
-        app:typographyType="heading_4" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/body_3"
-        android:text="@string/label_variant_type_desc"
-        android:textColor="@color/Unify_N700_68"
-        app:typographyType="body_3" />
+        android:layout_marginBottom="12dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewVariantType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/layout_lvl1" />
+
+    <com.tokopedia.product.addedit.common.customview.AddItemButton
+        android:id="@+id/buttonAddVariantType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:addItemButtonText="@string/action_variant_custom_add" />
+
 </LinearLayout>

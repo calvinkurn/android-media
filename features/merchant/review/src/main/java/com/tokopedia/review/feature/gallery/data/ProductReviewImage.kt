@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.gallery.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.review.feature.reading.data.UserReviewStats
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
 
 data class ProductrevGetReviewImageResponse(
     @SerializedName("productrevGetReviewImage")
@@ -97,7 +97,10 @@ data class ReviewDetail(
     val totalLike: Int = 0,
     @SerializedName("userStats")
     @Expose
-    val userStats: List<UserReviewStats> = listOf()
+    val userStats: List<UserReviewStats> = listOf(),
+    @SerializedName("badRatingReasonFmt")
+    @Expose
+    val badRatingReasonFmt: String = ""
 )
 
 data class ReviewGalleryImage(

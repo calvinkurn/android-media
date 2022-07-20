@@ -16,7 +16,7 @@
         android:orientation="vertical"
         android:visibility="visible"
         tools:ignore="UselessParent"
-        tools:visbility="visible">
+        tools:visibility="gone">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_error"

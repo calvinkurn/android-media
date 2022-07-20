@@ -6,11 +6,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
@@ -64,17 +68,13 @@ class PostListViewHolder(
     private fun observeState(postListWidgetUiModel: PostListWidgetUiModel) {
         val data = postListWidgetUiModel.data
         when {
-            data == null -> onLoading()
+            data == null || postListWidgetUiModel.showLoadingState -> showLoadingState()
             data.error.isNotEmpty() -> {
                 onError(postListWidgetUiModel.title)
                 listener.setOnErrorWidget(adapterPosition, postListWidgetUiModel, data.error)
             }
             else -> onSuccessLoadData(postListWidgetUiModel)
         }
-    }
-
-    private fun onLoading() {
-        showLoadingState()
     }
 
     private fun onError(cardTitle: String) {
@@ -90,7 +90,7 @@ class PostListViewHolder(
     }
 
     private fun onSuccessLoadData(postListWidgetUiModel: PostListWidgetUiModel) {
-        val isEmpty = postListWidgetUiModel.data?.isEmptyPost().orFalse()
+        val isEmpty = postListWidgetUiModel.data?.isWidgetEmpty().orFalse()
         when {
             isEmpty && !postListWidgetUiModel.isShowEmpty -> {
                 if (listener.getIsShouldRemoveWidget()) {
@@ -99,16 +99,37 @@ class PostListViewHolder(
                     listener.onRemoveWidget(adapterPosition)
                     itemView.toggleWidgetHeight(false)
                 }
+                setupLastUpdated(postListWidgetUiModel)
             }
             else -> showSuccessState(postListWidgetUiModel)
         }
+
+        with(binding.shcPostListSuccessView) {
+            horLineShcPostListBtm.isVisible = luvShcPost.isVisible || tvPostListSeeDetails.isVisible
+        }
+    }
+
+    private fun setupLastUpdated(element: PostListWidgetUiModel) {
+        with(binding.shcPostListSuccessView.luvShcPost) {
+            element.data?.lastUpdated?.let { lastUpdated ->
+                isVisible = lastUpdated.isEnabled
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                setRefreshButtonVisibility(lastUpdated.needToUpdated)
+                setRefreshButtonClickListener {
+                    refreshWidget(element)
+                }
+            }
+        }
+    }
+
+    private fun refreshWidget(element: PostListWidgetUiModel) {
+        listener.onReloadWidget(element)
     }
 
     private fun showEmptyState(element: PostListWidgetUiModel) {
         with(binding.shcPostListSuccessView) {
             rvPostList.gone()
             tvPostListSeeDetails.gone()
-            icPostListSeeDetails.gone()
             imgShcPostEmpty.visible()
             tvShcPostEmptyTitle.run {
                 text = element.emptyState.title.takeIf { it.isNotBlank() }
@@ -124,10 +145,10 @@ class PostListViewHolder(
                 showWithCondition(element.emptyState.ctaText.isNotBlank())
                 setOnClickListener { goToSellerEducationCenter(element) }
             }
-            ImageHandler.loadImageWithoutPlaceholderAndError(
-                imgShcPostEmpty,
-                element.emptyState.imageUrl.takeIf { it.isNotBlank() }
-                    ?: SellerHomeUrl.IMG_EMPTY_STATE)
+
+            val imageUrl = element.emptyState.imageUrl
+                .takeIf { it.isNotBlank() } ?: SellerHomeUrl.IMG_EMPTY_STATE
+            imgShcPostEmpty.loadImage(imageUrl)
         }
     }
 
@@ -157,8 +178,9 @@ class PostListViewHolder(
             showCtaButtonIfNeeded(element)
             showListLayout()
             addImpressionTracker(element)
+            setupLastUpdated(element)
 
-            if (isEmptyPost()) {
+            if (isWidgetEmpty()) {
                 showEmptyState(element)
             } else {
                 setupPostPager(postPagers)
@@ -221,11 +243,11 @@ class PostListViewHolder(
     }
 
     private fun showListLayout() {
-        binding.shcPostListSuccessView.sahPostListOnSuccessLayout.visible()
+        binding.shcPostListSuccessView.root.visible()
     }
 
     private fun hideListLayout() {
-        binding.shcPostListSuccessView.sahPostListOnSuccessLayout.gone()
+        binding.shcPostListSuccessView.root.gone()
     }
 
     private fun hideErrorLayout() {
@@ -262,26 +284,35 @@ class PostListViewHolder(
         } else {
             Pair(element.ctaText, element.appLink)
         }
-        binding.shcPostListSuccessView.tvPostListSeeDetails.text = ctaText
-        binding.shcPostListSuccessView.tvPostListSeeDetails.setOnClickListener {
-            goToDetails(
-                element,
-                appLink
+        with(binding.shcPostListSuccessView) {
+            tvPostListSeeDetails.text = ctaText
+            tvPostListSeeDetails.setOnClickListener {
+                goToDetails(
+                    element,
+                    appLink
+                )
+            }
+
+            val iconColor = root.context.getResColor(
+                com.tokopedia.unifyprinciples.R.color.Unify_G400
+            )
+            val iconWidth = root.context.resources.getDimension(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+            )
+            val iconHeight = root.context.resources.getDimension(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+            )
+            tvPostListSeeDetails.setUnifyDrawableEnd(
+                IconUnify.CHEVRON_RIGHT,
+                iconColor,
+                iconWidth,
+                iconHeight
             )
         }
     }
 
-    private fun toggleCtaButtonVisibility(isShow: Boolean) = with(binding.shcPostListSuccessView) {
-        when {
-            isShow -> {
-                tvPostListSeeDetails.visible()
-                icPostListSeeDetails.visible()
-            }
-            else -> {
-                tvPostListSeeDetails.gone()
-                icPostListSeeDetails.gone()
-            }
-        }
+    private fun toggleCtaButtonVisibility(isShow: Boolean) {
+        binding.shcPostListSuccessView.tvPostListSeeDetails.isVisible = isShow
     }
 
     private fun showBottomSheet(tooltip: TooltipUiModel) {
@@ -336,7 +367,6 @@ class PostListViewHolder(
 
         if (pagers != pagerAdapter?.pagers) {
             pagerAdapter?.pagers = pagers
-            pagerAdapter?.notifyDataSetChanged()
         }
     }
 

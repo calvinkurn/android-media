@@ -100,4 +100,24 @@ public class LinkerManager {
             wrapperObj.initSession(activity, uriHaveCampaignData);
         }
     }
+
+    public void setDelayedSessionInitFlag(){
+        if(wrapperObj != null){
+            wrapperObj.setDelayedSessionInitFlag();
+        }
+    }
+
+    public void setDataFromInstallReferrerParams(String installReferrerData) {
+        if(wrapperObj != null){
+            wrapperObj.setDataFromInstallReferrerParams(installReferrerData);
+        }
+    }
+
+    public boolean isFirstAppOpen(Context context){
+        boolean isFirstAppOpen = false;
+        if(wrapperObj != null){
+            isFirstAppOpen = wrapperObj.isFirstOpen(context);
+        }
+        return isFirstAppOpen;
+    }
 }

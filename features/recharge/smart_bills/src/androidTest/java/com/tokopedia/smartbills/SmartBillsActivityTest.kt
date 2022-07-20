@@ -14,6 +14,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -26,6 +27,7 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.ResourcePathUtil
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
@@ -42,6 +44,9 @@ class SmartBillsActivityTest {
     @get:Rule
     var activityRule =
             ActivityTestRule(SmartBillsActivity::class.java, false, false)
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     @Before
     fun setup() {
@@ -69,7 +74,6 @@ class SmartBillsActivityTest {
                     ResourcePathUtil.getJsonFromResource(PATH_DELELTE_BILLS),
                     MockModelConfig.FIND_BY_CONTAINS)
         }
-        setupAbTestRemoteConfig()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         LocalCacheHandler(context, SmartBillsFragment.SMART_BILLS_PREF).also {
@@ -82,11 +86,6 @@ class SmartBillsActivityTest {
         activityRule.launchActivity(intent)
     }
 
-    private fun setupAbTestRemoteConfig() {
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.SBM_ADD_BILLS_KEY,
-                RollenceKey.SBM_ADD_BILLS_TRUE)
-    }
 
     @Test
     fun validateSmartBills() {
@@ -101,7 +100,10 @@ class SmartBillsActivityTest {
         click_delete_cancel()
         click_delete_success()
 
-        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, SMART_BILLS_VALIDATOR_QUERY), hasAllSuccess())
+        MatcherAssert.assertThat(
+            cassavaTestRule.validate(SMART_BILLS_VALIDATOR_QUERY),
+            hasAllSuccess()
+        )
     }
 
     private fun validate_onboarding() {
@@ -177,6 +179,10 @@ class SmartBillsActivityTest {
 
     private fun click_add_bills(){
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Thread.sleep(3000)
+        onView(withId(R.id.tv_sbm_add_bills)).perform(click())
+        Thread.sleep(3000)
+        onView(withId(R.id.bottom_sheet_close)).perform(click())
         Thread.sleep(3000)
         onView(withId(R.id.tv_sbm_add_bills)).perform(click())
         Thread.sleep(3000)

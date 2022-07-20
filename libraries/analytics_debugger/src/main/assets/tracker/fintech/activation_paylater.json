@@ -1,0 +1,39 @@
+{
+  "readme": "Fintech Partner Button Click",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "viewFintechIris",
+      "eventAction": "pre occ page - impression activated buyer",
+      "eventCategory": "fin - optimize occ page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewFintechIris",
+      "eventAction": "view break up - impression",
+      "eventCategory": "fin - optimize occ page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickFintech",
+      "eventAction": "tenure option - click",
+      "eventCategory": "fin - optimize occ page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickFintech",
+      "eventAction": "CTA beli langsung - click activated buyers",
+      "eventCategory": "fin - occ page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+
+  ]
+}

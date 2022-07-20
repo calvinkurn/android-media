@@ -1,0 +1,30 @@
+[
+  {
+    "data": {
+      "OTPModeList": {
+        "success": true,
+        "message": "OTP Mode Found",
+        "errorMessage": "",
+        "otpDigit": 6,
+        "linkType": 1,
+        "enableTicker": false,
+        "tickerTrouble": "",
+        "modeLists": [
+          {
+            "modeCode": 6,
+            "modeText": "email",
+            "otpListText": "E-mail ke rivaldy.firmansyah+130@tokopedia.com",
+            "afterOtpListText": "Kode verifikasi telah dikirim melalui e-mail ke rivaldy.firmansyah+130@tokopedia.com.",
+            "afterOtpListTextHtml": "Kode verifikasi telah dikirim melalui e-mail ke rivaldy.firmansyah+130@tokopedia.com.",
+            "otpListImgUrl": "https://ecs7.tokopedia.net/otp/cotp/ICON_EMAIL_NEW.png",
+            "usingPopUp": false,
+            "popUpHeader": "",
+            "popUpBody": "",
+            "countdown": true,
+            "otpDigit": 6
+          }
+        ]
+      }
+    }
+  }
+]

@@ -1,0 +1,41 @@
+{
+  "data": {
+    "catalogComparisonList": {
+      "header": {
+        "code": 200,
+        "message": ""
+      },
+      "catalogComparisonList": [
+        {
+          "id": "71980",
+          "name": "Apple iPad 9",
+          "brand": "Apple",
+          "catalogImage": [
+            {
+              "imageUrl": "https://images.tokopedia.net/img/cache/300/attachment/2021/10/22/162840464/162840464_8a4c5f2a-b1ee-471e-9de8-4c676f4b6aee.jpg",
+              "isPrimary": true
+            },
+            {
+              "imageUrl": "https://images.tokopedia.net/img/cache/300/attachment/2021/10/23/115075297/115075297_22f2a8f8-b873-451a-a65a-9ef6e2fcc624.png",
+              "isPrimary": true
+            },
+            {
+              "imageUrl": "https://images.tokopedia.net/img/cache/300/attachment/2021/10/23/115075297/115075297_e61f68d7-1481-4926-b5bf-67f55e0eacbe.png",
+              "isPrimary": true
+            }
+          ],
+          "marketPrice": [
+            {
+              "min": 6000000,
+              "max": 8400000,
+              "minFmt": "Rp6.000.000",
+              "maxFmt": "Rp8.400.000",
+              "date": "2021-10-22",
+              "name": "Tokopedia"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

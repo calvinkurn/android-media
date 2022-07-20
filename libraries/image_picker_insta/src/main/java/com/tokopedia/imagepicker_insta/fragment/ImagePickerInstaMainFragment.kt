@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker_insta.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -11,47 +12,59 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.otaliastudios.cameraview.size.AspectRatio
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.coachmark.*
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
+import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
+import com.tokopedia.imagepicker_insta.di.ImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
-import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.toPx
-import com.tokopedia.imagepicker_insta.util.AlbumUtil
-import com.tokopedia.imagepicker_insta.util.CameraUtil
-import com.tokopedia.imagepicker_insta.util.PermissionUtil
-import com.tokopedia.imagepicker_insta.util.VideoUtil
+import com.tokopedia.imagepicker_insta.util.*
+import com.tokopedia.imagepicker_insta.util.VideoUtil.getImageDimensions
+import com.tokopedia.imagepicker_insta.util.VideoUtil.getVideoDimensions
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.imagepicker_insta.views.MediaView
 import com.tokopedia.imagepicker_insta.views.NoPermissionsView
 import com.tokopedia.imagepicker_insta.views.ToggleImageView
 import com.tokopedia.imagepicker_insta.views.adapters.ImageAdapter
-import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentContract {
 
     lateinit var viewModel: PickerViewModel
 
+    private lateinit var toolbarCommon: ImagePickerCommonToolbar
     lateinit var rv: RecyclerView
     lateinit var selectedMediaView: MediaView
     lateinit var recentSection: LinearLayout
@@ -73,16 +86,46 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     lateinit var loadingMediaText: String
     lateinit var queryConfiguration: QueryConfiguration
     var maxMultiSelect: Int = DEFAULT_MULTI_SELECT_LIMIT
+    val coachMarkItem = ArrayList<CoachMark2Item>()
+    private  lateinit var coachMark: CoachMark2
+
+    @Inject
+    lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
+
+    private val daggerComponent: ImagePickerComponent by lazy {
+        DaggerImagePickerComponent.builder()
+            .baseAppComponent(
+                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+            )
+            .build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectFragment()
         super.onCreate(savedInstanceState)
         initDagger()
         setHasOptionsMenu(true)
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when(childFragment) {
+            is FeedAccountTypeBottomSheet -> {
+                childFragment.setAnalytic(feedAccountAnalytic)
+                childFragment.setData(viewModel.feedAccountList)
+                childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+                    override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                        viewModel.setSelectedFeedAccount(feedAccount)
+                    }
+                })
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val menuTitle = (activity as? ImagePickerInstaActivity)?.menuTitle ?: activity?.getString(R.string.imagepicker_insta_lanjut)
-        if(!menuTitle.isNullOrEmpty()) {
+        val menuTitle = (activity as? ImagePickerInstaActivity)?.menuTitle
+            ?: activity?.getString(R.string.imagepicker_insta_lanjut)
+        if (!menuTitle.isNullOrEmpty()) {
             MenuManager.addCustomMenu(activity, menuTitle, hasReadPermission(), menu) {
                 proceedNextStep()
                 TrackerProvider.tracker?.onNextButtonClick()
@@ -121,23 +164,30 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
 
         if (!selectedImageAdapterData.isNullOrEmpty()) {
-            val filteredResults = arrayListOf<Pair<ImageAdapterData,ZoomInfo>>()
+            val filteredResults = arrayListOf<Pair<ImageAdapterData, ZoomInfo>>()
             selectedImageAdapterData.forEach {
-                if (zoomImageAdapterDataMap[it]!=null) {
-                    filteredResults.add(Pair(it,zoomImageAdapterDataMap[it]!!))
+                if (zoomImageAdapterDataMap[it] != null) {
+                    filteredResults.add(Pair(it, zoomImageAdapterDataMap[it]!!))
                 }
             }
-            viewModel.getUriOfSelectedMedia(selectedMediaView.assetView.width, selectedMediaView.assetView.height, filteredResults)
+            viewModel.getUriOfSelectedMedia(
+                selectedMediaView.assetView.width,
+                selectedMediaView.assetView.height,
+                filteredResults
+            )
         } else {
             showToast(getString(R.string.imagepicker_insta_samf), Toaster.TYPE_NORMAL)
         }
     }
 
+    private fun injectFragment() {
+        daggerComponent.inject(this)
+    }
+
     private fun initDagger() {
         if (context is AppCompatActivity) {
             viewModel = ViewModelProviders.of(this)[PickerViewModel::class.java]
-            val component = DaggerImagePickerComponent.builder().build()
-            component.inject(viewModel)
+            daggerComponent.inject(viewModel)
         }
     }
 
@@ -152,6 +202,11 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         setObservers()
         setClicks()
         return v
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getFeedAccountList()
     }
 
     private fun hasReadPermission(): Boolean {
@@ -228,9 +283,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     }
 
-    fun prepareDataFromActivity(){
-        var maxDuration = (activity as? ImagePickerInstaActivity)?.videoMaxDurationInSeconds?:VideoUtil.DEFAULT_DURATION_MAX_LIMIT
-        if(maxDuration == 0L){
+    fun prepareDataFromActivity() {
+        var maxDuration = (activity as? ImagePickerInstaActivity)?.videoMaxDurationInSeconds
+            ?: VideoUtil.DEFAULT_DURATION_MAX_LIMIT
+        if (maxDuration == 0L) {
             maxDuration = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
         }
 
@@ -238,31 +294,38 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             maxMultiSelect = (activity as ImagePickerInstaActivity).maxMultiSelectAllowed
         }
 
-        queryConfiguration  = QueryConfiguration(maxDuration)
+        queryConfiguration = QueryConfiguration(maxDuration)
     }
 
-    fun setupToolbar(v: View) {
-        val toolbarCommon: ImagePickerCommonToolbar = v.findViewById(R.id.toolbar_common)
-        toolbarCommon.toolbarNavIcon.setOnClickListener {
+    private fun setupToolbar(v: View) {
+        toolbarCommon = v.findViewById(R.id.toolbar_common)
+        toolbarCommon.setOnBackClickListener {
             TrackerProvider.tracker?.onBackButtonFromPicker()
             activity?.finish()
         }
 
         (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbarCommon)
-            setToolbarIcon(this, toolbarCommon.toolbarIcon)
-            toolbarCommon.toolbarTitle.text = this.toolbarTitle
-            toolbarCommon.toolbarSubtitle.text = this.toolbarSubTitle
+            toolbarCommon.title = toolbarTitle
         }
     }
 
-    private fun setToolbarIcon(activity: ImagePickerInstaActivity, imageView: AppCompatImageView) {
-        if (activity.toolbarIconRes != null && activity.toolbarIconRes != 0) {
-            imageView.setImageResource(activity.toolbarIconRes)
-        } else if (!activity.toolbarIconUrl.isNullOrEmpty()) {
-            imageView.loadImageCircle(activity.toolbarIconUrl)
-        } else {
-            imageView.visibility = View.GONE
+    private fun openFeedAccountBottomSheet(){
+        try {
+            feedAccountAnalytic.clickAccountInfo()
+            FeedAccountTypeBottomSheet
+                .getFragment(childFragmentManager, requireActivity().classLoader)
+                .showNow(childFragmentManager)
+        }
+        catch (e: Exception) {
+
+        }
+    }
+
+    private fun showFabCoachMark() {
+        Prefs.saveShouldShowCoachMarkValue(activity as Context)
+        if (::coachMark.isInitialized) {
+            coachMark.showCoachMark(coachMarkItem)
         }
     }
 
@@ -357,7 +420,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     fun setupRv() {
 
-        val columnCount = 3
+        val columnCount = DEFAULT_COLUMN_COUNT
         val lm = GridLayoutManager(context, columnCount)
         rv.layoutManager = lm
         val width = context?.resources?.displayMetrics?.widthPixels ?: 0
@@ -365,7 +428,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         imageAdapter = ImageAdapter(imageDataList, contentHeight, this, maxMultiSelect, lm)
         rv.adapter = imageAdapter
-        val itemPadding = 4.toPx().toInt()
+        val itemPadding = DEFAULT_ITEM_PADDING.toPx().toInt()
         rv.addItemDecoration(GridItemDecoration(itemPadding, true))
         rv.itemAnimator = null
     }
@@ -386,7 +449,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         CameraUtil.openCamera(
             this,
             (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture,
-            queryConfiguration.videoMaxDuration
+            queryConfiguration.videoMaxDuration,
+            viewModel.selectedFeedAccountId,
+            TAKE_PICT_REQUEST_CODE,
         )
     }
 
@@ -410,18 +475,64 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     override fun showErrorToast(@AdapterErrorType type: Int) {
-        when(type){
-            AdapterErrorType.MULTISELECT-> showToast(getString(R.string.imagepicker_max_limit_reached,maxMultiSelect), Toaster.TYPE_ERROR)
-            AdapterErrorType.VIDEO_DURATION-> showToast(getString(R.string.imagepicker_max_vid_dur,queryConfiguration.videoMaxDuration), Toaster.TYPE_ERROR)
+        when (type) {
+            AdapterErrorType.MULTISELECT -> showToast(
+                getString(
+                    R.string.imagepicker_max_limit_reached,
+                    maxMultiSelect
+                ), Toaster.TYPE_ERROR
+            )
+            AdapterErrorType.VIDEO_DURATION -> showToast(
+                getString(
+                    R.string.imagepicker_max_vid_dur,
+                    queryConfiguration.videoMaxDuration
+                ), Toaster.TYPE_ERROR
+            )
         }
     }
 
     private fun setObservers() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.selectedFeedAccount.collectLatest {
+                toolbarCommon.subtitle = it.name
+                toolbarCommon.icon = it.iconUrl
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.feedAccountListState.collectLatest {
+                if(viewModel.isAllowChangeAccount) {
+                    toolbarCommon.getToolbarParentView().addOneTimeGlobalLayoutListener {
+                        coachMark = CoachMark2(requireContext())
+
+                        coachMarkItem.add(
+                            CoachMark2Item(
+                                toolbarCommon.getToolbarParentView(),
+                                getString(R.string.imagepicker_coachmark_header),
+                                getString(R.string.imagepicker_coachmark_text),
+                                CoachMark2.POSITION_BOTTOM
+                            )
+                        )
+
+                        if (Prefs.getShouldShowCoachMarkValue(requireContext()))
+                            showFabCoachMark()
+                    }
+
+                    toolbarCommon.setOnAccountClickListener {
+                        openFeedAccountBottomSheet()
+                    }
+                }
+                else {
+                    toolbarCommon.setOnAccountClickListener(null)
+                }
+            }
+        }
+
         viewLifecycleOwner.lifecycle.addObserver(selectedMediaView)
 
         viewLifecycleOwner.lifecycleScope.launch {
             MediaRepository.getMediaChangeFlow().collect {
-                viewModel.handleFileAddedEvent(arrayListOf(it),queryConfiguration)
+                viewModel.handleFileAddedEvent(arrayListOf(it), queryConfiguration)
             }
         }
 
@@ -441,19 +552,19 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             }
         }
 
-            viewModel.folderFlow.onEach {
-                when (it.status) {
-                    LiveDataResult.STATUS.LOADING -> {
-                    }
-
-                    LiveDataResult.STATUS.SUCCESS -> {
-                        updateFolders(it.data)
-                    }
-                    LiveDataResult.STATUS.ERROR -> {
-                        updateFolders(null)
-                    }
+        viewModel.folderFlow.onEach {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
                 }
-            }.launchIn(viewLifecycleOwner.lifecycleScope)
+
+                LiveDataResult.STATUS.SUCCESS -> {
+                    updateFolders(it.data)
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                    updateFolders(null)
+                }
+            }
+        }.launchIn(viewLifecycleOwner.lifecycleScope)
 
 
         imageMultiSelect.toggleCallback = { isMultiSelect ->
@@ -488,11 +599,24 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             { imageAdapterData: ImageAdapterData, isSelected: Boolean ->
                 if (isSelected) {
 
+                    var zoomInfo: ZoomInfo? = null
+                    imageAdapter.getListOfIndexWhichAreSelected()
+
                     if (!isMultiSelectEnable()) {
                         zoomImageAdapterDataMap.clear()
+                    } else {
+                        val firstSelectedMedia = imageAdapter.selectionOrder.getOrderList().last()
+                        zoomInfo = if (imageAdapterData.asset is PhotosData) {
+                            getZoomInfoForImage(firstSelectedMedia, imageAdapterData)
+                        } else {
+                            getZoomInfoForVideo(firstSelectedMedia, imageAdapterData)
+                        }
+                        zoomImageAdapterDataMap[imageAdapterData] = zoomInfo
                     }
-
-                    selectedMediaView.loadAsset(imageAdapterData, prepareZoomInfo(imageAdapterData))
+                    if (zoomInfo == null) {
+                        zoomInfo = prepareZoomInfo(imageAdapterData)
+                    }
+                    selectedMediaView.loadAsset(imageAdapterData, zoomInfo)
                 } else {
                     //DO nothing
                 }
@@ -508,6 +632,89 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 imageMultiSelect.toggle(true)
             }
         }
+    }
+
+    private fun getZoomInfoForVideo(
+        firstSelectedMedia: ImageAdapterData,
+        originalImageAdapterData: ImageAdapterData
+    ): ZoomInfo {
+        val originalWidth =
+            originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).width
+        val originalHeight =
+            originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
+
+        val width = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpWidth
+        val height = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpHeight
+
+        var ratio = 0.0f
+
+        try {
+            if (width != null && height != null) {
+                val ar = AspectRatio.of(width, height)
+                ratio = (ar.x.toFloat() / ar.y)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        /*
+        * As we are supposed to maintain the orientation PORTRAIT
+        * So will keep the width same
+        * And change height according to aspect ratio
+        */
+
+        val zoomInfo = ZoomInfo()
+        zoomInfo.bmpWidth = originalWidth
+        if (ratio != 0.0F) {
+            zoomInfo.bmpHeight = originalWidth.div(ratio).toInt()
+        } else {
+            zoomInfo.bmpHeight = originalHeight
+        }
+        return zoomInfo
+    }
+
+    private fun getZoomInfoForImage(
+        firstSelectedMedia: ImageAdapterData,
+        originalImageAdapterData: ImageAdapterData
+    ): ZoomInfo {
+
+        // getting original width of the new selected video
+        val originalWidth =
+            originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext()).width
+        val originalHeight =
+            originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
+
+        //TODO get selected media ki list ka first index
+        val width = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpWidth
+        val height = zoomImageAdapterDataMap[firstSelectedMedia]?.bmpHeight
+
+        var ratio = 0.0f
+
+        try {
+            if (width != null && height != null) {
+                val ar = AspectRatio.of(width, height)
+                ratio = (ar.x.toFloat() / ar.y)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        /*
+        * As we are supposed to maintain the orientation PORTRAIT
+        * So will keep the width same
+        * And change height according to aspect ratio
+        */
+
+
+        val zoomInfo = ZoomInfo()
+        zoomInfo.bmpWidth = originalWidth
+        if (ratio != 0.0F) {
+            zoomInfo.bmpHeight = originalWidth.div(ratio).toInt()
+        } else {
+            zoomInfo.bmpHeight = originalHeight
+        }
+        return zoomInfo
+
     }
 
     private fun updateMediaToUi(mediaVmMData: MediaVmMData?) {
@@ -611,17 +818,16 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun handleSuccessSelectedUri(uris: List<Uri>) {
-//        if(true){
-//            startActivity(Intent(context,DummyActivity::class.java))
-//            return
-//        }
+
         if (!uris.isNullOrEmpty()) {
 
             val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
             if (!applink.isNullOrEmpty()) {
 
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
-                RouteManager.route(activity, finalApplink)
+                val intent = RouteManager.getIntent(activity, finalApplink)
+                intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, viewModel.selectedFeedAccountId)
+                startActivityForResult(intent, CREATE_POST_REQUEST_CODE)
             } else {
                 activity?.setResult(
                     Activity.RESULT_OK,
@@ -636,6 +842,16 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         var zoomInfo = zoomImageAdapterDataMap[imageAdapterData]
         if (zoomInfo == null) {
             zoomInfo = ZoomInfo()
+
+            if (imageAdapterData.asset is PhotosData) {
+                val size = imageAdapterData.asset.contentUri.getImageDimensions(requireContext())
+                zoomInfo.bmpWidth = size.width
+                zoomInfo.bmpHeight = size.height
+            } else {
+                val size = imageAdapterData.asset.contentUri.getVideoDimensions(requireContext())
+                zoomInfo.bmpWidth = size.width
+                zoomInfo.bmpHeight = size.height
+            }
             zoomImageAdapterDataMap[imageAdapterData] = zoomInfo
         }
         return zoomInfo
@@ -652,7 +868,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             //Update current UI
             val uriList = data?.extras?.getParcelableArrayList<Uri>(BundleData.URIS)
             if (!uriList.isNullOrEmpty()) {
-                viewModel.handleFileAddedEvent(uriList,queryConfiguration)
+                viewModel.handleFileAddedEvent(uriList, queryConfiguration)
             }
         } else {
             activity?.setResult(Activity.RESULT_OK, data)
@@ -691,8 +907,26 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if((requestCode == CREATE_POST_REQUEST_CODE || requestCode == TAKE_PICT_REQUEST_CODE) &&
+            resultCode == Activity.RESULT_OK
+        ) {
+            val selectedFeedAccountId = data?.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
+            viewModel.setSelectedFeedAccountId(selectedFeedAccountId)
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         stopMedia()
+    }
+
+    companion object {
+        private const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
+        private const val CREATE_POST_REQUEST_CODE = 101
+        private const val TAKE_PICT_REQUEST_CODE = 102
+        private const val DEFAULT_COLUMN_COUNT = 3
+        private const val DEFAULT_ITEM_PADDING = 4
     }
 }

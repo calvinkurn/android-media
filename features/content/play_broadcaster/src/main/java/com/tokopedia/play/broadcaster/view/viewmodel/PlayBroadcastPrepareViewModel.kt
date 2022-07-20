@@ -13,9 +13,13 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.error.ClientException
 import com.tokopedia.play.broadcaster.error.PlayErrorCode
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -24,13 +28,14 @@ import javax.inject.Inject
  * Created by jegul on 20/05/20
  */
 class PlayBroadcastPrepareViewModel @Inject constructor(
-        private val mDataStore: PlayBroadcastDataStore,
-        private val channelConfigStore: ChannelConfigStore,
-        private val dispatcher: CoroutineDispatchers,
-        private val getLiveFollowersDataUseCase: GetLiveFollowersDataUseCase,
-        private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase,
-        private val userSession: UserSessionInterface,
-        private val playBroadcastMapper: PlayBroadcastMapper
+    private val mDataStore: PlayBroadcastDataStore,
+    private val hydraConfigStore: HydraConfigStore,
+    private val setupDataStore: PlayBroadcastSetupDataStore,
+    private val channelConfigStore: ChannelConfigStore,
+    private val dispatcher: CoroutineDispatchers,
+    private val createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase,
+    private val userSession: UserSessionInterface,
+    private val playBroadcastMapper: PlayBroadcastMapper
 ) : ViewModel() {
 
     private val channelId: String
@@ -42,9 +47,12 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     val maxDurationDesc: String
         get() = try { channelConfigStore.getMaxDurationDesc() } catch (e: Throwable) { "" }
 
-    val observableFollowers: LiveData<FollowerDataUiModel>
-        get() = _observableFollowers
-    private val _observableFollowers = MutableLiveData<FollowerDataUiModel>()
+    val maxTitleChars: Int
+        get() = hydraConfigStore.getMaxTitleChars()
+
+    val observableUploadTitleEvent: LiveData<Event<NetworkResult<Unit>>>
+        get() = _observableUploadTitleEvent
+    private val _observableUploadTitleEvent = MutableLiveData<Event<NetworkResult<Unit>>>()
 
     val observableCreateLiveStream: LiveData<NetworkResult<LiveStreamInfoUiModel>>
         get() = _observableCreateLiveStream
@@ -60,10 +68,6 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     }
 
     init {
-        _observableFollowers.value = FollowerDataUiModel.init(MAX_FOLLOWERS_PREVIEW)
-        scope.launch {
-            _observableFollowers.value = getLiveFollowers()
-        }
         _observableIngestUrl.observeForever(ingestUrlObserver)
     }
 
@@ -76,12 +80,23 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         mDataStore.setFromSetupStore(setupDataStore)
     }
 
-    fun createLiveStream() {
-        if (!isDataAlreadyValid()) {
-            _observableCreateLiveStream.value = NetworkResult.Fail(IllegalStateException("Oops tambah cover dulu sebelum mulai"))
-            return
-        }
+    /** Setup Title */
+    fun uploadTitle(title: String) {
+        viewModelScope.launchCatchError(dispatcher.main, block = {
+            setupDataStore.setTitle(title)
+            uploadTitle()
 
+            _observableUploadTitleEvent.value = Event(NetworkResult.Success(Unit))
+        }) {
+            _observableUploadTitleEvent.value = Event(NetworkResult.Fail(it))
+        }
+    }
+
+    private suspend fun uploadTitle() = withContext(dispatcher.io) {
+        return@withContext setupDataStore.uploadTitle(hydraConfigStore.getChannelId())
+    }
+
+    fun createLiveStream() {
         _observableCreateLiveStream.value = NetworkResult.Loading
         scope.launch {
             val liveStream = doCreateLiveStream(channelId).map { playBroadcastMapper.mapLiveStream(channelId, it) }
@@ -109,18 +124,14 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getLiveFollowers(): FollowerDataUiModel = withContext(dispatcher.io) {
-        getLiveFollowersDataUseCase.params = GetLiveFollowersDataUseCase.createParams(userSession.shopId, MAX_FOLLOWERS_PREVIEW)
-        return@withContext try {
-            playBroadcastMapper.mapLiveFollowers(getLiveFollowersDataUseCase.executeOnBackground())
-        } catch (e: Throwable) {
-            FollowerDataUiModel.init(MAX_FOLLOWERS_PREVIEW)
-        }
-    }
-
-    private fun isDataAlreadyValid(): Boolean {
+    fun isCoverAvailable(): Boolean {
         val currentCover = mDataStore.getSetupDataStore().getSelectedCover()
-        return currentCover?.croppedCover is CoverSetupState.Cropped
+        return when(val cover = currentCover?.croppedCover) {
+            is CoverSetupState.Cropped.Uploaded -> {
+                cover.localImage != null || cover.coverImage.toString().isNotEmpty()
+            }
+            else -> false
+        }
     }
 
     private fun setIngestUrl(ingestUrl: String) {

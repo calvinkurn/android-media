@@ -14,13 +14,15 @@ import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductD
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepositoryImpl
 import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.UploadStatusDao
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepository
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepositoryImpl
 import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
-import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
@@ -49,7 +51,7 @@ class ProductManageListModule(private val context: Context) {
 
     @Provides
     @ProductManageListScope
-    fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource?): GMCommonRepository {
+    fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource): GMCommonRepository {
         return GMCommonRepositoryImpl(gmCommonDataSource)
     }
 
@@ -106,16 +108,6 @@ class ProductManageListModule(private val context: Context) {
 
     @ProductManageListScope
     @Provides
-    @Named(ShopCommonParamApiConstant.GQL_PRODUCT_LIST)
-    fun provideProductListQuery(): String {
-        return GraphqlHelper.loadRawString(
-            context.resources,
-            com.tokopedia.shop.common.R.raw.gql_get_product_list
-        )
-    }
-
-    @ProductManageListScope
-    @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)
     fun provideGqlQueryShopInfo(): String {
         return GraphqlHelper.loadRawString(
@@ -152,6 +144,14 @@ class ProductManageListModule(private val context: Context) {
     @ProductManageListScope
     @Provides
     fun provideProductDraftDao(draftDb: AddEditProductDraftDb): AddEditProductDraftDao = draftDb.getDraftDao()
+
+    @ProductManageListScope
+    @Provides
+    fun provideUploadStatusDao(draftDb: AddEditProductDraftDb): UploadStatusDao = draftDb.uploadStatusDao()
+
+    @ProductManageListScope
+    @Provides
+    fun provideUploadStatusRepository(dao: UploadStatusDao): UploadStatusRepository = UploadStatusRepositoryImpl(dao)
 
     @ProductManageListScope
     @Provides

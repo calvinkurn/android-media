@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-
-    <stroke
-        android:width="0.01dp"
-        android:color="@color/Unify_N300" />
-
-    <size
-        android:width="@dimen/spacing_lvl4"
-        android:height="@dimen/spacing_lvl4"/>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <stroke android:width="0.01dp" android:color="@color/Unify_N300"/>
+    <size android:width="@dimen/spacing_lvl4" android:height="@dimen/spacing_lvl4"/>
 </shape>

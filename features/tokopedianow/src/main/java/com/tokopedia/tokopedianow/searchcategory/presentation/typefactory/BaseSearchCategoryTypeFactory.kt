@@ -9,6 +9,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
 
 interface BaseSearchCategoryTypeFactory: AdapterTypeFactory {
 
@@ -20,4 +21,5 @@ interface BaseSearchCategoryTypeFactory: AdapterTypeFactory {
     fun type(productCountDataView: ProductCountDataView): Int
     fun type(productItemDataView: ProductItemDataView): Int
     fun type(progressBarDataView: ProgressBarDataView): Int
+    fun type(switcherWidgetDataView: SwitcherWidgetDataView): Int
 }

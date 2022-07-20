@@ -8,6 +8,15 @@ data class RechargePerso(
         @SerializedName("title")
         val title: String = "",
         @Expose
+        @SerializedName("subtitle")
+        val subtitle: String = "",
+        @Expose
+        @SerializedName("start_time")
+        val startTime: String = "",
+        @Expose
+        @SerializedName("end_time")
+        val endTime: String = "",
+        @Expose
         @SerializedName("media_url")
         val mediaUrl: String = "",
         @Expose
@@ -37,6 +46,9 @@ data class RechargePerso(
         @Expose
         @SerializedName("tracking")
         val tracking: List<RechargeBUWidgetTrackingData> = listOf(),
+        @Expose
+        @SerializedName("tracking_data")
+        val trackingData:RechargeBUWidgetTrackUserData = RechargeBUWidgetTrackUserData(),
         @Expose
         @SerializedName("items")
         val items: List<RechargePersoItem> = listOf()

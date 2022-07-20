@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical"
     android:padding="@dimen/unify_space_12">
 
@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:text="@string/digital_cart_user_price_info"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.CardUnify

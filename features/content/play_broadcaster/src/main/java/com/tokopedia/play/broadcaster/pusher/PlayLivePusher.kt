@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.pusher
 
 import android.content.Context
 import android.os.Handler
-import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
+import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import kotlin.jvm.Throws
 
 

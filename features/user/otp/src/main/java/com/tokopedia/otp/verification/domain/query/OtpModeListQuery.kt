@@ -10,10 +10,12 @@ object OtpModeListQuery {
     private const val userId = "\$userId"
     private const val msisdn = "\$msisdn"
     private const val email = "\$email"
+    private const val timeUnix = "\$Timeunix"
+    private const val authenticity = "\$AuthenticitySignature"
 
     val query: String = """
-        query otp_mode_list($otpType: String!, $userId: String, $msisdn: String, $email: String){
-            OTPModeList(otpType: $otpType, userID: $userId, msisdn: $msisdn, email: $email) {
+        query otp_mode_list($otpType: String!, $userId: String, $msisdn: String, $email: String, $timeUnix: String, $authenticity: String){
+            OTPModeList(otpType: $otpType, userID: $userId, msisdn: $msisdn, email: $email, Timeunix: $timeUnix, AuthenticitySignature: $authenticity) {
                 success
                 message
                 errorMessage
@@ -21,6 +23,7 @@ object OtpModeListQuery {
                 linkType
                 enableTicker
                 tickerTrouble
+                defaultMode
                 modeLists {
                     modeCode
                     modeText

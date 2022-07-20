@@ -65,6 +65,7 @@ class TopAdsDashboardModule {
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
+    @TopAdsDashboardScope
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 

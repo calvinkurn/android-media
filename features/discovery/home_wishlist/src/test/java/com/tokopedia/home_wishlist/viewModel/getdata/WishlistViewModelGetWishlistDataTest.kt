@@ -646,4 +646,101 @@ class WishlistViewModelGetWishlistDataTest {
         Assert.assertEquals(3, wishlistViewModel.wishlistLiveData.value!!.size)
 
     }
+
+    @Test
+    fun `Fetch 4 of wishlist data success and get topads and recomm after`(){
+        val defaultGetWishlistPageNumber = 0
+
+        wishlistViewModel = createWishlistViewModel(userSessionInterface= userSessionInterface, getWishlistDataUseCase = getWishlistDataUseCase, getRecommendationUseCase = getRecommendationUseCase)
+
+        getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
+
+        wishlistViewModel.getWishlistData()
+
+        every { userSessionInterface.userId } returns mockUserId
+
+        // Get wishlist use case successfully returns 4 wishlist item data
+        coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(
+                items = listOf(
+                        WishlistItem(id="1"),
+                        WishlistItem(id="2"),
+                        WishlistItem(id="3"),
+                        WishlistItem(id="4")
+                ),
+                hasNextPage = true
+        )
+
+        // Get topadsImageView usecase successfully returns data
+        topAdsImageViewUseCase.givenGetImageData(arrayListOf())
+
+        // Get recommendation usecase successfully returns data
+        getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf())
+
+
+        // View model get wishlist data
+        wishlistViewModel.getWishlistData()
+
+
+        // Expect page number become 4
+        Assert.assertEquals(defaultGetWishlistPageNumber + 1, wishlistViewModel.currentPage)
+    }
+
+    @Test
+    fun `Fetch 25 of wishlist data success and get topads and recomm after`(){
+        val defaultGetWishlistPageNumber = 0
+
+        wishlistViewModel = createWishlistViewModel(userSessionInterface= userSessionInterface, getWishlistDataUseCase = getWishlistDataUseCase, getRecommendationUseCase = getRecommendationUseCase)
+
+        getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
+
+        wishlistViewModel.getWishlistData()
+
+        every { userSessionInterface.userId } returns mockUserId
+
+        // Get wishlist use case successfully returns 25 wishlist item data
+        coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(
+                items = listOf(
+                        WishlistItem(id="1"), WishlistItem(id="2"), WishlistItem(id="3"), WishlistItem(id="4"), WishlistItem(id="5"),
+                        WishlistItem(id="6"), WishlistItem(id="7"), WishlistItem(id="8"), WishlistItem(id="9"), WishlistItem(id="10"),
+                        WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
+                        WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20"),
+                        WishlistItem(id="21"), WishlistItem(id="22"), WishlistItem(id="23"), WishlistItem(id="24"), WishlistItem(id="25")),
+                hasNextPage = true
+        )
+
+        // Get topadsImageView usecase successfully returns data
+        topAdsImageViewUseCase.givenGetImageData(arrayListOf())
+
+        // Get recommendation usecase successfully returns data
+        getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf())
+
+
+        // View model get wishlist data
+        wishlistViewModel.getWishlistData()
+
+
+        // Expect page number become 25
+        Assert.assertEquals(defaultGetWishlistPageNumber + 1, wishlistViewModel.currentPage)
+    }
+
+    @Test
+    fun `Fetch wishlist data failed`(){
+        wishlistViewModel = createWishlistViewModel(userSessionInterface= userSessionInterface, getWishlistDataUseCase = getWishlistDataUseCase, getRecommendationUseCase = getRecommendationUseCase)
+
+        getWishlistDataUseCase.givenThrowable()
+
+        wishlistViewModel.getWishlistData()
+
+        every { userSessionInterface.userId } returns mockUserId
+
+        // Get wishlist use case return failed
+        coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(isSuccess = false)
+
+        // View model get wishlist data
+        wishlistViewModel.getWishlistData()
+
+        // Expect error
+        Assert.assertEquals(ErrorWishlistDataModel::class.java,
+                wishlistViewModel.wishlistLiveData.value!![0].javaClass)
+    }
 }

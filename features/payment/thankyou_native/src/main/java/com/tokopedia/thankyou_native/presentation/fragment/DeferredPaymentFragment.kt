@@ -81,11 +81,11 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
                 )
             }
         }
-        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customWtvText.isNullOrBlank()) {
+        if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.wtvText.isNullOrBlank()) {
             tvCheckPaymentStatusTitle.text =
                 getString(R.string.thank_processing_payment_check_order)
         } else {
-            tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization.customWtvText
+            tvCheckPaymentStatusTitle.text = thanksPageData.customDataMessage.wtvText
         }
 
 

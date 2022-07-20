@@ -2,26 +2,33 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.model.ImpressHolder
+import java.util.*
 
 data class MilestoneDataUiModel(
     override var dataKey: String = "",
     override var error: String = "",
     override var isFromCache: Boolean = false,
     override val showWidget: Boolean = true,
+    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
     val title: String = "",
     val subTitle: String = "",
     val backgroundColor: String = "",
     val backgroundImageUrl: String = "",
     val showNumber: Boolean = false,
     val isError: Boolean = false,
-    val isShowMission: Boolean = true,
     val milestoneProgress: MilestoneProgressbarUiModel = MilestoneProgressbarUiModel(),
     val milestoneMissions: List<BaseMilestoneMissionUiModel> = emptyList(),
-    val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel()
-) : BaseDataUiModel {
+    val milestoneCta: MilestoneCtaUiModel = MilestoneCtaUiModel(),
+    val deadlineMillis: Long = 0L
+) : BaseDataUiModel, LastUpdatedDataInterface {
 
-    override fun shouldRemove(): Boolean {
-        return (!isFromCache && !showWidget) || milestoneMissions.isNullOrEmpty()
+    override fun isWidgetEmpty(): Boolean {
+        return milestoneMissions.isNullOrEmpty() || isOverDue()
+    }
+
+    fun isOverDue(): Boolean {
+        val now = Date().time
+        return deadlineMillis < now
     }
 }
 
@@ -74,8 +81,14 @@ data class MilestoneMissionUiModel(
     override val subTitle: String = "",
     override val missionCompletionStatus: Boolean = false,
     override val missionButton: MissionButtonUiModel = MissionButtonUiModel(),
-    override val impressHolder: ImpressHolder = ImpressHolder()
-) : BaseMilestoneMissionUiModel
+    override val impressHolder: ImpressHolder = ImpressHolder(),
+    val missionProgress: MissionProgressUiModel = MissionProgressUiModel()
+) : BaseMilestoneMissionUiModel {
+
+    fun isProgressAvailable(): Boolean {
+        return missionProgress.target.isNotBlank() && missionProgress.completed.isNotBlank()
+    }
+}
 
 data class MilestoneFinishMissionUiModel(
     override val itemMissionKey: String = BaseMilestoneMissionUiModel.FINISH_MISSION_KEY,

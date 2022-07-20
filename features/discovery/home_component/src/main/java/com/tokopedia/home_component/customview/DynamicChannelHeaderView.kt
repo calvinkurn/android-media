@@ -22,6 +22,7 @@ import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.util.getLink
 import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -92,7 +93,7 @@ class DynamicChannelHeaderView: FrameLayout {
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
                     if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView?.context)
-                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView?.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView?.context)
             )
         } else {
             channelTitleContainer.visibility = View.GONE
@@ -116,7 +117,7 @@ class DynamicChannelHeaderView: FrameLayout {
             channelSubtitle?.visibility = View.VISIBLE
             channelSubtitle?.setTextColor(
                     if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView?.context)
-                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView?.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView?.context)
             )
         } else {
             channelSubtitle?.visibility = View.GONE
@@ -141,10 +142,9 @@ class DynamicChannelHeaderView: FrameLayout {
             handleSubtitlePosition(channelSubtitleName, channel, channelTitleContainer)
 
             if(channel.style == ChannelStyle.ChannelHome){
-                seeAllButton?.setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
+                seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             } else if(channel.style == ChannelStyle.ChannelOS){
-                seeAllButton?.setTypeface(null, Typeface.NORMAL)
-                seeAllButton?.setTextColor(ContextCompat.getColor(context, R.color.Unify_P600))
+                seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_P600))
             }
 
             seeAllButton?.show()
@@ -243,7 +243,7 @@ class DynamicChannelHeaderView: FrameLayout {
                     }
 
                     visibility = View.VISIBLE
-                    channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, context.resources.getDimensionPixelSize(R.dimen.dp_8))
+                    channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, 8f.toDpInt())
                     // calculate date diff
                     targetDate = Calendar.getInstance().apply {
                         val currentDate = Date()
@@ -262,7 +262,7 @@ class DynamicChannelHeaderView: FrameLayout {
         } else {
             countDownView?.let {
                 it.visibility = View.GONE
-                channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, context.resources.getDimensionPixelSize(R.dimen.dp_12))
+                channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, 12f.toDpInt())
             }
         }
     }
@@ -275,7 +275,7 @@ class DynamicChannelHeaderView: FrameLayout {
 
             titleContainer.setPadding(
                     titleContainer.paddingLeft,
-                    convertDpToPixel(10f, titleContainer.context),
+                    convertDpToPixel(TITLE_TOP_PADDING, titleContainer.context),
                     titleContainer.paddingRight,
                     titleContainer.paddingBottom)
         }
@@ -292,5 +292,9 @@ class DynamicChannelHeaderView: FrameLayout {
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
         return viewStub?.parent == null
+    }
+
+    companion object {
+        private const val TITLE_TOP_PADDING = 10f
     }
 }

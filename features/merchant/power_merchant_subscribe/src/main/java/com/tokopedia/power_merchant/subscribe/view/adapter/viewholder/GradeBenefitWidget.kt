@@ -2,23 +2,27 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gm.common.constant.PMConstant
-import com.tokopedia.kotlin.extensions.view.asCamelCase
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmGradeBenefitBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.GradeBenefitPagerAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
+import com.tokopedia.unifycomponents.setIconUnify
 import com.tokopedia.utils.view.binding.viewBinding
 import timber.log.Timber
 
@@ -26,12 +30,19 @@ import timber.log.Timber
  * Created By @ilhamsuaib on 02/03/21
  */
 
-class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefitUiModel>(itemView) {
+class GradeBenefitWidget(
+    itemView: View,
+    private val listener: Listener,
+    private val powerMerchantTracking: PowerMerchantTracking
+) : AbstractViewHolder<WidgetGradeBenefitUiModel>(itemView) {
 
     companion object {
+        private const val SATURATION_INACTIVE = 0.0f
+        private const val SATURATION_ACTIVE = 1f
         val RES_LAYOUT = R.layout.widget_pm_grade_benefit
     }
 
+    private var highestHeight = Int.ZERO
     private val binding: WidgetPmGradeBenefitBinding? by viewBinding()
 
     override fun bind(element: WidgetGradeBenefitUiModel) {
@@ -43,31 +54,16 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
 
     private fun setupView(element: WidgetGradeBenefitUiModel) = binding?.run {
         tvPmLearMorePowerMerchant.setOnClickListener {
-            RouteManager.route(root.context, element.ctaApplink)
+            powerMerchantTracking.sendEventClickLearnMorePM(element.shopScore.toString())
+            RouteManager.route(root.context, element.ctaAppLink)
         }
-
-        val isPmPro = element.selectedPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        tvPmGradeBenefitDescription.isVisible = isPmPro
-
-        if (element.benefitPages.isNotEmpty()) {
-            val selectedTab = element.benefitPages.firstOrNull { it.isActive }
-                    ?: element.benefitPages[0]
-            val gradeName = selectedTab.gradeName.asCamelCase()
-            setGradeBenefitTitle(isPmPro, gradeName)
+        tvPmLearMorePowerMerchant.addOnImpressionListener(element.impressHolder){
+            powerMerchantTracking.sendEventImpressUpliftPmPro(element.shopScore.toString())
         }
-    }
-
-    private fun setGradeBenefitTitle(isPmPro: Boolean, grade: String) {
-        val title = if (isPmPro) {
-            itemView.context.getString(R.string.pm_grade_benefit_widget_title_pm_pro, Constant.POWER_MERCHANT_PRO_CHARGING, grade)
-        } else {
-            getString(R.string.pm_grade_benefit_widget_title_pm)
-        }
-        binding?.tvPmGradeBenefitTitle?.text = title
     }
 
     private fun selectDefaultTab(element: WidgetGradeBenefitUiModel) = binding?.run {
-        val selected = element.benefitPages.indexOfFirst { it.isActive }
+        val selected = element.benefitPages.indexOfFirst { it.isTabActive }
         if (selected != RecyclerView.NO_POSITION) {
             rvPmGradeBenefitPager.scrollToPosition(selected)
             tabPmGradeBenefit.tabLayout.getTabAt(selected)?.select()
@@ -75,31 +71,65 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
     }
 
     private fun setupTabLayout(element: WidgetGradeBenefitUiModel) {
-       binding?.tabPmGradeBenefit?.run {
-            val isSinglePage = element.benefitPages.size <= 1
-            if (isSinglePage) {
-                gone()
-                return@run
-            }
-
-            visible()
+        binding?.tabPmGradeBenefit?.run {
             tabLayout.removeAllTabs()
-            element.benefitPages.forEach {
-                addNewTab(it.gradeName.asCamelCase())
+            try {
+                val activeTabIndex = element.benefitPages.indexOfLast { it.isTabActive }
+                element.benefitPages.forEachIndexed { i, page ->
+                    addNewTab(page.tabLabel)
+                    getUnifyTabLayout().getTabAt(i)?.run {
+                        setIconUnify(page.tabResIcon)
+                        if (i == activeTabIndex) {
+                            setUnifyTabIconColorFilter(this.customView, SATURATION_ACTIVE)
+                        } else {
+                            setUnifyTabIconColorFilter(this.customView, SATURATION_INACTIVE)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
             }
-
             tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    val selectedTabIndex = tabLayout.selectedTabPosition
-                    setOnTabSelected(selectedTabIndex)
+                    setOnTabSelected(tabLayout.selectedTabPosition)
+
+                    for (i in Int.ZERO..getUnifyTabLayout().tabCount.minus(Int.ONE)) {
+                        val view = getUnifyTabLayout().getTabAt(i)
+                        if (i == tabLayout.selectedTabPosition) {
+                            setUnifyTabIconColorFilter(view?.customView, SATURATION_ACTIVE)
+                        } else {
+                            setUnifyTabIconColorFilter(view?.customView, SATURATION_INACTIVE)
+                        }
+                    }
+
+                    sendTrackerOnTabSelected(element.benefitPages, tabLayout.selectedTabPosition)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
+            post {
+                val selectedTabPosition = element.benefitPages.indexOfLast { it.isTabActive }
+                if (selectedTabPosition != RecyclerView.NO_POSITION) {
+                    tabLayout.getTabAt(selectedTabPosition)?.select()
+                }
+            }
         }
+    }
+
+    private fun sendTrackerOnTabSelected(pages: List<PMGradeWithBenefitsUiModel>, position: Int) {
+        val tabLabel = pages.getOrNull(position)?.tabLabel.orEmpty()
+        powerMerchantTracking.sendEventClickTabPowerMerchantPro(tabLabel)
+    }
+
+    private fun setUnifyTabIconColorFilter(view: View?, saturation: Float) {
+        val colorMatrix = ColorMatrix()
+        colorMatrix.setSaturation(saturation)
+        val colorMatrixColorFilter = ColorMatrixColorFilter(colorMatrix)
+        view?.findViewById<IconUnify>(com.tokopedia.unifycomponents.R.id.tab_item_icon_unify_id)?.colorFilter =
+            colorMatrixColorFilter
     }
 
     private fun setOnTabSelected(position: Int) = binding?.run {
@@ -111,17 +141,16 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
             val mLayoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
                 override fun canScrollVertically(): Boolean = false
             }
-            val pagerAdapter = GradeBenefitPagerAdapter(element.benefitPages)
+            val pagerAdapter = GradeBenefitPagerAdapter(
+                element, listener::showShopLevelInfoBottomSheet
+            )
             layoutManager = mLayoutManager
             adapter = pagerAdapter
 
-            val isSinglePage = element.benefitPages.size <= 1
-            if (!isSinglePage) {
-                try {
-                    PagerSnapHelper().attachToRecyclerView(this)
-                } catch (e: IllegalStateException) {
-                    Timber.e(e)
-                }
+            try {
+                PagerSnapHelper().attachToRecyclerView(this)
+            } catch (e: IllegalStateException) {
+                Timber.e(e)
             }
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -130,8 +159,37 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         selectTab(mLayoutManager)
                     }
+                    val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    if (position != RecyclerView.NO_POSITION && element.benefitPages.size > Int.ONE) {
+                        mLayoutManager.findViewByPosition(position)?.let { view ->
+                            refreshTableHeight(view)
+                        }
+                    }
                 }
             })
+        }
+    }
+
+    private fun refreshTableHeight(view: View) {
+        view.post {
+            binding?.run {
+                val wMeasureSpec =
+                    View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+                val hMeasureSpec =
+                    View.MeasureSpec.makeMeasureSpec(Int.ZERO, View.MeasureSpec.UNSPECIFIED)
+                view.measure(wMeasureSpec, hMeasureSpec)
+
+                if (rvPmGradeBenefitPager.layoutParams?.height != view.measuredHeight) {
+                    rvPmGradeBenefitPager.layoutParams =
+                        (rvPmGradeBenefitPager.layoutParams as? ConstraintLayout.LayoutParams)
+                            ?.also { lp ->
+                                if (view.measuredHeight > highestHeight) {
+                                    highestHeight = view.measuredHeight
+                                    lp.height = view.measuredHeight
+                                }
+                            }
+                }
+            }
         }
     }
 
@@ -140,5 +198,9 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         if (selectedPage != RecyclerView.NO_POSITION) {
             tabPmGradeBenefit.tabLayout.getTabAt(selectedPage)?.select()
         }
+    }
+
+    interface Listener {
+        fun showShopLevelInfoBottomSheet() {}
     }
 }

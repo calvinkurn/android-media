@@ -164,6 +164,7 @@ class FlightBookingActivityTest {
             passengerFirstName = "Muhammad"
             passengerLastName = "Furqan"
             passengerBirthdate = ""
+            identificationNumber = "1111111111111111"
             flightBookingLuggageMetaViewModels = arrayListOf()
             flightBookingMealMetaViewModels = arrayListOf()
             passengerTitleId = 1

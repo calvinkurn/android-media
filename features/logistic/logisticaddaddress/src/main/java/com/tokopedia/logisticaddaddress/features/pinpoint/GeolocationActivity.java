@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;

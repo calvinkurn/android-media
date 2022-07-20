@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.TextAreaUnify
+<androidx.appcompat.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/tfSpecification"
-    android:layout_marginStart="@dimen/layout_lvl2"
-    android:layout_marginEnd="@dimen/layout_lvl2"
-    android:layout_marginTop="@dimen/layout_lvl1"
-    android:layout_marginBottom="@dimen/layout_lvl1"
+    android:orientation="vertical"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:text_area_clearable="true" />
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.TextAreaUnify
+        android:id="@+id/tfSpecification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text_area_clearable="true" />
+
+    <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardView
+        android:id="@+id/tooltipRequired"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:text="@string/label_specification_item_imei_required"/>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

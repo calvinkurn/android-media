@@ -6,9 +6,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
+import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.JumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
@@ -21,8 +24,6 @@ import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFact
 import com.tokopedia.tokopedianow.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_QUERY_PARAM_MAP
-import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
-import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
@@ -42,22 +43,23 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class TokoNowSearchViewModel @Inject constructor (
-        baseDispatcher: CoroutineDispatchers,
-        @Named(SEARCH_QUERY_PARAM_MAP)
+    baseDispatcher: CoroutineDispatchers,
+    @Named(SEARCH_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
-        @param:Named(SEARCH_FIRST_PAGE_USE_CASE)
+    @param:Named(SEARCH_FIRST_PAGE_USE_CASE)
         private val getSearchFirstPageUseCase: UseCase<SearchModel>,
-        @param:Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
+    @param:Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
         private val getSearchLoadMorePageUseCase: UseCase<SearchModel>,
-        getFilterUseCase: UseCase<DynamicFilterModel>,
-        getProductCountUseCase: UseCase<String>,
-        getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-        cartService: CartService,
-        getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-        getRecommendationUseCase: GetRecommendationUseCase,
-        chooseAddressWrapper: ChooseAddressWrapper,
-        abTestPlatformWrapper: ABTestPlatformWrapper,
-        userSession: UserSessionInterface
+    getFilterUseCase: UseCase<DynamicFilterModel>,
+    getProductCountUseCase: UseCase<String>,
+    getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+    cartService: CartService,
+    getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+    getRecommendationUseCase: GetRecommendationUseCase,
+    setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    chooseAddressWrapper: ChooseAddressWrapper,
+    abTestPlatformWrapper: ABTestPlatformWrapper,
+    userSession: UserSessionInterface
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
@@ -67,6 +69,7 @@ class TokoNowSearchViewModel @Inject constructor (
         cartService,
         getWarehouseUseCase,
         getRecommendationUseCase,
+        setUserPreferenceUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
         userSession,
@@ -127,6 +130,8 @@ class TokoNowSearchViewModel @Inject constructor (
         return TitleDataView(
                 titleType = titleType,
                 hasSeeAllCategoryButton = hasSeeAllCategoryButton,
+                serviceType = chooseAddressData?.service_type.orEmpty(),
+                is15mAvailable = chooseAddressData?.warehouses?.find { it.service_type == NOW_15M }?.warehouse_id.orZero() != 0L
         )
     }
 
@@ -169,10 +174,16 @@ class TokoNowSearchViewModel @Inject constructor (
     override fun createFooterVisitableList(): List<Visitable<SearchTypeFactory>> {
         val broadMatchVisitableList = createBroadMatchVisitableList()
 
-        return broadMatchVisitableList + listOf(
-            createCategoryJumperDataView(),
-            CTATokopediaNowHomeDataView(),
-        )
+        return broadMatchVisitableList + if (chooseAddressData?.service_type == NOW_15M) {
+            listOf(
+                createCategoryJumperDataView(),
+            )
+        } else {
+            listOf(
+                createCategoryJumperDataView(),
+                CTATokopediaNowHomeDataView(),
+            )
+        }
     }
 
     private fun createBroadMatchVisitableList(): List<Visitable<SearchTypeFactory>> {
@@ -228,7 +239,7 @@ class TokoNowSearchViewModel @Inject constructor (
                             quantity = cartService.getProductQuantity(otherRelatedProduct.id)
                         ),
                     )
-                },
+                }
         )
 
 
@@ -241,7 +252,8 @@ class TokoNowSearchViewModel @Inject constructor (
 
         return CategoryJumperDataView(
                 title = searchCategoryJumper?.getTitle() ?: "",
-                itemList = categoryJumperItemList
+                itemList = categoryJumperItemList,
+                serviceType = chooseAddressData?.service_type.orEmpty()
         )
     }
 
@@ -264,9 +276,6 @@ class TokoNowSearchViewModel @Inject constructor (
     }
 
     override fun getKeywordForGeneralSearchTracking() = query
-
-    override fun getPageSourceForGeneralSearchTracking() =
-        "$TOKOPEDIA_NOW.$TOKONOW.$LOCAL_SEARCH.$warehouseId"
 
     override fun executeLoadMore() {
         getSearchLoadMorePageUseCase.cancelJobs()

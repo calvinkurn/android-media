@@ -15,7 +15,6 @@ import androidx.annotation.IntDef
 ])
 annotation class FragmentType {
     companion object {
-        const val NONE: Int = -1 //means no page selected
         const val HOME: Int = 0
         const val PRODUCT: Int = 1
         const val CHAT: Int = 2

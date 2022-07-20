@@ -1,0 +1,80 @@
+[
+  {
+    "data": {
+      "getProductV3": {
+        "productName": "HP Huawei honor - Biru",
+        "url": "https://staging.tokopedia.com/cobacobasatu/hp-huawei-honor-biru",
+        "price": 6000000,
+        "variant": {
+          "selections": [
+            {
+              "options": [
+                {
+                  "value": "Biru pastel"
+                },
+                {
+                  "value": "Cokelat"
+                },
+                {
+                  "value": "Biru Muda"
+                },
+                {
+                  "value": "Merahku"
+                },
+                {
+                  "value": "Putih"
+                },
+                {
+                  "value": "Hitam"
+                }
+              ]
+            }
+          ],
+          "products": [
+            {
+              "productID": "15459392",
+              "combination": [
+                4
+              ]
+            },
+            {
+              "productID": "15459393",
+              "combination": [
+                5
+              ]
+            },
+            {
+              "productID": "15459394",
+              "combination": [
+                2
+              ]
+            },
+            {
+              "productID": "15459395",
+              "combination": [
+                3
+              ]
+            },
+            {
+              "productID": "15607447",
+              "combination": [
+                0
+              ]
+            },
+            {
+              "productID": "15607448",
+              "combination": [
+                1
+              ]
+            }
+          ]
+        },
+        "pictures": [
+          {
+            "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/9/15/8968543/8968543_607c3b62-d723-4655-8e76-7e89c97b4201_459_459"
+          }
+        ]
+      }
+    }
+  }
+]

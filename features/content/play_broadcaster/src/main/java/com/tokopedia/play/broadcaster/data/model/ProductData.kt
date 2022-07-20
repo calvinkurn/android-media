@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.data.model
 
+import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 
 /**
@@ -10,5 +11,6 @@ data class ProductData(
         val name: String,
         val imageUrl: String,
         val originalImageUrl: String,
-        val stock: ProductStock
+        val stock: ProductStock,
+        val price: ProductPrice,
 )

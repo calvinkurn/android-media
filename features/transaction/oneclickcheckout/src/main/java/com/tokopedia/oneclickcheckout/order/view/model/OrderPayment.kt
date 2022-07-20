@@ -4,37 +4,42 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 data class OrderPayment(
-    val isEnable: Boolean = false,
-    val isCalculationError: Boolean = false,
-    val gatewayCode: String = "",
-    val gatewayName: String = "",
-    val minimumAmount: Long = 0,
-    val maximumAmount: Long = 0,
-    val fee: Double = 0.0,
-    val walletAmount: Long = 0,
-    val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
-    val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
-    val revampErrorMessage: OrderPaymentRevampErrorMessage = OrderPaymentRevampErrorMessage(),
-    val errorTickerMessage: String = "",
-    val isDisablePayButton: Boolean = false,
+        val isEnable: Boolean = false,
+        val isCalculationError: Boolean = false,
+        val gatewayCode: String = "",
+        val gatewayName: String = "",
+        val minimumAmount: Long = 0,
+        val maximumAmount: Long = 0,
+        val fee: Double = 0.0,
+        val walletAmount: Long = 0,
+        val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
+        val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
+        val revampErrorMessage: OrderPaymentRevampErrorMessage = OrderPaymentRevampErrorMessage(),
+        val isDisablePayButton: Boolean = false,
         // flag to determine continue using ovo flow
-    val isOvoOnlyCampaign: Boolean = false,
-    val ovoData: OrderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(),
-    val walletErrorData: OrderPaymentWalletErrorData? = null,
-    val errorData: OrderPaymentErrorData? = null,
-    val bid: String = "",
-    val specificGatewayCampaignOnlyType: Int = 0,
-    val walletData: OrderPaymentWalletAdditionalData = OrderPaymentWalletAdditionalData()
+        val isOvoOnlyCampaign: Boolean = false,
+        val ovoData: OrderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(),
+        val walletErrorData: OrderPaymentWalletErrorData? = null,
+        val errorData: OrderPaymentErrorData? = null,
+        val bid: String = "",
+        val specificGatewayCampaignOnlyType: Int = 0,
+        val walletData: OrderPaymentWalletAdditionalData = OrderPaymentWalletAdditionalData()
 ) {
     val isOvo: Boolean
         get() = gatewayCode.contains("OVO")
 
     fun isError(): Boolean {
-        return isCalculationError || errorMessage.message.isNotEmpty() || errorTickerMessage.isNotEmpty()
+        return isCalculationError || errorData != null || walletErrorData != null
     }
 
     fun getRealFee(): Double {
-        return creditCard.selectedTerm?.fee ?: fee
+        if (creditCard.selectedTerm != null) {
+            return creditCard.selectedTerm.fee
+        }
+        if (walletData.isGoCicil) {
+            return walletData.goCicilData.selectedTerm?.feeAmount ?: 0.0
+        }
+        return fee
     }
 }
 
@@ -137,18 +142,29 @@ data class OrderPaymentOvoAdditionalData(
 }
 
 data class OrderPaymentWalletAdditionalData(
-    val walletType: Int = 0,
-    val enableWalletAmountValidation: Boolean = false,
-    val callbackUrl: String = "",
-    val activation: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
-    val topUp: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
-    val phoneNumber: OrderPaymentWalletActionData = OrderPaymentWalletActionData()
+        val walletType: Int = 0,
+        val enableWalletAmountValidation: Boolean = false,
+        val callbackUrl: String = "",
+        val activation: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
+        val topUp: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
+        val phoneNumber: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
+        val goCicilData: OrderPaymentGoCicilData = OrderPaymentGoCicilData(),
 ) {
     val isActivationRequired: Boolean
         get() = activation.isRequired
 
     val isPhoneNumberMissing: Boolean
         get() = phoneNumber.isRequired
+
+    val isGoCicil: Boolean
+        get() = walletType == WALLET_TYPE_GOPAYLATERCICIL
+
+    companion object {
+        const val WALLET_TYPE_OVO = 1
+        const val WALLET_TYPE_GOPAY = 2
+        const val WALLET_TYPE_GOPAYLATER = 3
+        const val WALLET_TYPE_GOPAYLATERCICIL = 4
+    }
 }
 
 @Parcelize
@@ -156,7 +172,7 @@ data class OrderPaymentOvoCustomerData(
         val name: String = "",
         val email: String = "",
         val msisdn: String = ""
-): Parcelable
+) : Parcelable
 
 data class OrderPaymentOvoActionData(
         val isRequired: Boolean = false,
@@ -167,14 +183,14 @@ data class OrderPaymentOvoActionData(
 )
 
 data class OrderPaymentWalletActionData(
-    val isRequired: Boolean = false,
-    val buttonTitle: String = "",
-    val successToaster: String = "",
-    val errorToaster: String = "",
-    val errorMessage: String = "",
-    val isHideDigital: Boolean = false,
-    val headerTitle: String = "",
-    val urlLink: String = ""
+        val isRequired: Boolean = false,
+        val buttonTitle: String = "",
+        val successToaster: String = "",
+        val errorToaster: String = "",
+        val errorMessage: String = "",
+        val isHideDigital: Boolean = false,
+        val headerTitle: String = "",
+        val urlLink: String = ""
 )
 
 data class OrderPaymentWalletErrorData(
@@ -191,4 +207,39 @@ data class OrderPaymentWalletErrorData(
         const val TYPE_TOP_UP = 2
         const val TYPE_MISSING_PHONE = 3
     }
+}
+
+data class OrderPaymentGoCicilData(
+        val selectedTerm: OrderPaymentGoCicilTerms? = null,
+        val availableTerms: List<OrderPaymentGoCicilTerms> = emptyList(),
+        val errorMessageInvalidTenure: String = "",
+        val errorMessageTopLimit: String = "",
+        val errorMessageBottomLimit: String = "",
+        val errorMessageUnavailableTenures: String = "",
+        val selectedTenure: Int = 0,
+) {
+    val hasValidTerm: Boolean
+        get() = selectedTerm != null && selectedTerm.isActive && availableTerms.isNotEmpty()
+
+    val hasInvalidTerm: Boolean
+        get() = selectedTerm != null && !selectedTerm.isActive && availableTerms.isNotEmpty()
+}
+
+data class OrderPaymentGoCicilTerms(
+        val installmentTerm: Int = 0,
+        val optionId: String = "",
+        val firstInstallmentDate: String = "",
+        val lastInstallmentDate: String = "",
+        val firstDueMessage: String = "",
+        val interestAmount: Double = 0.0,
+        val feeAmount: Double = 0.0,
+        val installmentAmountPerPeriod: Double = 0.0,
+        val labelType: String = "",
+        val labelMessage: String = "",
+        val isActive: Boolean = false,
+        val description: String = "",
+        val isRecommended: Boolean = false,
+) {
+    val hasPromoLabel: Boolean
+        get() = labelMessage.isNotBlank()
 }

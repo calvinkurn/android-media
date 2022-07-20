@@ -22,12 +22,14 @@ import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVA
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
+@UiTest
 class OrderSummaryPageActivityRevampTest {
 
     @get:Rule
@@ -107,6 +109,7 @@ class OrderSummaryPageActivityRevampTest {
                 assertSummary(
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp15.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp116.000"
                 )
@@ -362,6 +365,7 @@ class OrderSummaryPageActivityRevampTest {
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp0",
                         isBbo = true,
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp101.000"
                 )
@@ -407,6 +411,7 @@ class OrderSummaryPageActivityRevampTest {
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp0",
                         isBbo = true,
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp101.000"
                 )
@@ -435,6 +440,7 @@ class OrderSummaryPageActivityRevampTest {
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp38.000",
                         isBbo = false,
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp139.000"
                 )
@@ -557,6 +563,7 @@ class OrderSummaryPageActivityRevampTest {
                 assertSummary(
                         productPrice = "Rp100.000",
                         shippingPrice = "Rp38.000",
+                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.000",
                         totalPrice = "Rp139.000"
                 )

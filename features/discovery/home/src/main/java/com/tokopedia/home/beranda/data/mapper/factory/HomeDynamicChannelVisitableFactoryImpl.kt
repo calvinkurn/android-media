@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -47,10 +48,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val PROMO_NAME_UNKNOWN = "/ - p%s - %s - %s"
         private const val PROMO_NAME_TOPADS_BANNER = "/ - p%s - dynamic channel ads - %s"
         private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - dynamic channel carousel - %s"
+        private const val PROMO_NAME_BANNER_SPECIAL_RELEASE = "/ - p%s - dynamic channel feature campaign - banner - %s"
 
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
         private const val VALUE_BANNER_DEFAULT = "default"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
+
+        private const val CUE_WIDGET_MIN_SIZE = 4
+        private const val VPS_WIDGET_SIZE = 4
     }
 
     override fun buildVisitableList(homeChannelData: HomeChannelData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeDynamicChannelVisitableFactory {
@@ -93,12 +98,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
                     createDynamicChannel(channel)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingDataForCombination = channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
-                            isCombined = true)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
                     createDynamicChannel(
@@ -152,8 +151,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_CAMPAIGN_WIDGET -> {
                     createCampaignWidget(channel, position, isCache)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET,
-                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> {
+                DynamicHomeChannel.Channels.LAYOUT_CAMPAIGN_FEATURING -> {
+                    createCampaignFeaturingWidget(channel, position, isCache)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
                     createDynamicChannel(
                         channel,
                         trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
@@ -163,6 +164,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
                             channel
                         ),
                         isCombined = false
+                    )
+                }
+                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> {
+                    createCategoryWidgetV2(
+                        channel, position, isCache
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
@@ -186,6 +192,27 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_QUESTWIDGET -> {
+                    createQuestChannel(channel, position , questData = QuestData())
+                }
+                DynamicHomeChannel.Channels.LAYOUT_MERCHANT_VOUCHER -> {
+                    createMerchantVoucher(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_CM_HOME_TO_DO -> {
+                    createHomeToDoWidget(channel)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_PAYLATER_CICIL -> {
+                    createPayLaterHomeToDoWidget(channel)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_CUE_WIDGET -> {
+                    createCueCategory(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_VPS_WIDGET -> {
+                    createVpsWidget(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET -> {
+                    createMissionWidgetChannel(channel, position)
+                }
             }
         }
         if (addLoadingMore) {
@@ -197,7 +224,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createFeaturedShopComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(FeaturedShopDataModel(
-                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition)
+                DynamicChannelComponentMapper.mapHomeChannelToComponentBannerHeader(channel, verticalPosition)
         ))
         if (!isCache && channel.convertPromoEnhanceLegoBannerDataLayerForCombination().isNotEmpty()) {
             HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
@@ -346,12 +373,22 @@ class HomeDynamicChannelVisitableFactoryImpl(
         }
     }
 
+    private fun createCampaignFeaturingWidget(
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int,
+        isCache: Boolean
+    ) {
+        visitableList.add(
+            mappingCampaignFeaturingComponent(
+                channel, isCache, verticalPosition
+            )
+        )
+    }
+
     private fun setDynamicChannelPromoName(position: Int, channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
             if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT) {
                 channel.setPosition(position)
-            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL) {
-                // do nothing
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_6_IMAGE) {
                 channel.promoName =
                     String.format(PROMO_NAME_LEGO_6_IMAGE, position.toString(), channel.header.name)
@@ -391,6 +428,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channel.promoName = String.format(PROMO_NAME_TOPADS_BANNER, position.toString(), channel.header.name)
                 channel.setPosition(position)
             } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2) {
+                channel.promoName = String.format(PROMO_NAME_BANNER_CAROUSEL, position.toString(),
+                        if (channel.header.name.isNotEmpty()) channel.header.name
+                        else VALUE_BANNER_DEFAULT
+                )
+                channel.setPosition(position)
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_CAMPAIGN_FEATURING) {
+                channel.promoName = String.format(
+                    PROMO_NAME_BANNER_SPECIAL_RELEASE,
+                    position.toString(),
+                    if (channel.header.name.isNotEmpty()) channel.header.name
+                    else VALUE_BANNER_DEFAULT
+                )
+            }
+            else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_MERCHANT_VOUCHER) {
                 channel.promoName = String.format(PROMO_NAME_BANNER_CAROUSEL, position.toString(),
                         if (channel.header.name.isNotEmpty()) channel.header.name
                         else VALUE_BANNER_DEFAULT
@@ -478,6 +529,13 @@ class HomeDynamicChannelVisitableFactoryImpl(
         return viewModel
     }
 
+    private fun mappingQuestWidgetComponent(channel: DynamicHomeChannel.Channels,
+                                                 verticalPosition: Int, questData: QuestData): Visitable<*> {
+        return QuestWidgetModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+            questData = null)
+    }
+
     private fun mappingMixLeftComponent(channel: DynamicHomeChannel.Channels,
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
@@ -529,6 +587,72 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingCampaignFeaturingComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return SpecialReleaseDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
+    private fun mappingMerchantVoucherComponent(channel: DynamicHomeChannel.Channels,
+                                        isCache: Boolean,
+                                        verticalPosition: Int): Visitable<*> {
+        return MerchantVoucherDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache = isCache
+        )
+    }
+
+    private fun mappingCueCategoryComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return CueCategoryDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
+    private fun mappingVpsWidgetComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return VpsDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
+    private fun createMissionWidgetChannel(
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int
+    ) {
+        if (!isCache) visitableList.add(
+            MissionWidgetListDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                    channel,
+                    verticalPosition
+                ),
+                status = MissionWidgetListDataModel.STATUS_LOADING
+            )
+        )
+    }
+
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         if (!isCache) visitableList.add(
             PopularKeywordListDataModel(
@@ -571,6 +695,71 @@ class HomeDynamicChannelVisitableFactoryImpl(
         ))
     }
 
+    private fun createCategoryWidgetV2(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(
+            CategoryWidgetV2DataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache
+            )
+        )
+        if (!isCache) {
+            trackingQueue?.putEETracking(
+                CategoryWidgetTracking.getCategoryWidgetBannerImpression(
+                    channel.grids.toList(),
+                    userSessionInterface?.userId ?: "",
+                    false,
+                    channel
+                ) as HashMap<String, Any>
+            )
+        }
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+            visitableList.size, channel) }
+    }
+
+    private fun createQuestChannel(
+        channel: DynamicHomeChannel.Channels,
+        position: Int,
+        questData: QuestData
+    ) {
+        if(!isCache && !visitableList.any { it is QuestWidgetModel }) {
+            visitableList.add(
+                mappingQuestWidgetComponent(
+                    channel,
+                    position,
+                    questData
+                )
+            )
+        }
+    }
+
+    private fun createMerchantVoucher(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(mappingMerchantVoucherComponent(
+                channel, isCache, verticalPosition
+        ))
+    }
+
+    private fun createCueCategory(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        val gridSize = channel.grids.size
+        if (gridSize >= CUE_WIDGET_MIN_SIZE) {
+            visitableList.add(
+                mappingCueCategoryComponent(
+                    channel, isCache, verticalPosition
+                )
+            )
+        }
+    }
+
+    private fun createVpsWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        val gridSize = channel.grids.size
+        if (gridSize >= VPS_WIDGET_SIZE) {
+            visitableList.add(
+                mappingVpsWidgetComponent(
+                    channel, isCache, verticalPosition
+                )
+            )
+        }
+    }
+
     override fun build(): List<Visitable<*>> = visitableList
 
     /**
@@ -585,5 +774,13 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
         val listOfRegisteredPlayWidget = visitableList.filterIsInstance(CarouselPlayWidgetDataModel::class.java)
         if (listOfRegisteredPlayWidget.isEmpty()) visitableList.add(dataModel)
+    }
+
+    private fun createHomeToDoWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(CMHomeWidgetDataModel(null, channel))
+    }
+
+    private fun createPayLaterHomeToDoWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(HomePayLaterWidgetDataModel(null, channel))
     }
 }

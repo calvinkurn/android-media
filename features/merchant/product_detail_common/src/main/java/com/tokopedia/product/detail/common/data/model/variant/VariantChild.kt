@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.common.data.model.variant
 import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.VariantConstant.DEFAULT_MAX_ORDER
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 
@@ -100,6 +101,15 @@ data class VariantChild(
         get() {
             return if (campaign?.isActive == true) {
                 campaign.discountedPercentage.toString()
+            } else {
+                ""
+            }
+        }
+
+    val roundedDiscountPercentage: String
+        get() {
+            return if (campaign?.isActive == true) {
+                campaign.discountedPercentage.toIntSafely().toString()
             } else {
                 ""
             }

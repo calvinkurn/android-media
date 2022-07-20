@@ -12,9 +12,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.otp.R
+import com.tokopedia.otp.databinding.ItemVerificationMethodBinding
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
-import kotlinx.android.synthetic.main.item_verification_method.view.*
+import com.tokopedia.unifyprinciples.R as RUnify
 
 /**
  * @author rival
@@ -27,10 +27,8 @@ open class VerificationMethodAdapter(
 ) : RecyclerView.Adapter<VerificationMethodAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.item_verification_method, parent, false)
-        )
+        val viewBinding = ItemVerificationMethodBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(viewBinding)
     }
 
     override fun getItemCount(): Int {
@@ -47,31 +45,33 @@ open class VerificationMethodAdapter(
         holder.bind(listData[position], listener, position)
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(val binding: ItemVerificationMethodBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(modeList: ModeListData, listener: ClickListener?, position: Int) {
-            itemView.method_icon.setImageUrl(modeList.otpListImgUrl)
-            itemView.method_icon.scaleType = ImageView.ScaleType.FIT_CENTER
-            itemView.setOnClickListener {
-                listener?.onModeListClick(modeList, position)
-            }
-
-            val otpListTextHtml = MethodChecker.fromHtml(modeList.otpListText)
-            val indexNewline = otpListTextHtml.indexOf("\n")
-            val clickableSpan = object : ClickableSpan() {
-                override fun onClick(widget: View) {}
-
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(itemView.context, R.color.Unify_N700)
-                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            with(binding) {
+                methodIcon.setImageUrl(modeList.otpListImgUrl)
+                methodIcon.scaleType = ImageView.ScaleType.FIT_CENTER
+                binding.container.setOnClickListener {
+                    listener?.onModeListClick(modeList, position)
                 }
-            }
 
-            val spannable: Spannable
-            spannable = SpannableString(otpListTextHtml)
-            if(indexNewline > -1) {
-                spannable.setSpan(clickableSpan, 0, indexNewline, 0)
+                val otpListTextHtml = MethodChecker.fromHtml(modeList.otpListText)
+                val indexNewline = otpListTextHtml.indexOf("\n")
+                val clickableSpan = object : ClickableSpan() {
+                    override fun onClick(widget: View) {}
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.color = MethodChecker.getColor(methodText.context, RUnify.color.Unify_N700)
+                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                    }
+                }
+
+                val spannable: Spannable
+                spannable = SpannableString(otpListTextHtml)
+                if(indexNewline > -1) {
+                    spannable.setSpan(clickableSpan, 0, indexNewline, 0)
+                }
+                methodText.setText(spannable, TextView.BufferType.SPANNABLE)
             }
-            itemView.method_text.setText(spannable, TextView.BufferType.SPANNABLE)
         }
     }
 

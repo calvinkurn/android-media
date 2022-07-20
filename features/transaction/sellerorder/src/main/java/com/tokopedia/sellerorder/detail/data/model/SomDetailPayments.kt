@@ -11,8 +11,7 @@ data class SomDetailPayments (
 
     data class PaymentDataUiModel(
             val label: String = "",
-            val value: String = "",
-            val textColor: String = ""
+            val value: String = ""
     )
 
     data class PaymentMethodUiModel(
@@ -22,7 +21,6 @@ data class SomDetailPayments (
 
     data class PricingData(
             val label: String = "",
-            val value: String = "",
-            val textColor: String = ""
+            val value: String = ""
     )
 }

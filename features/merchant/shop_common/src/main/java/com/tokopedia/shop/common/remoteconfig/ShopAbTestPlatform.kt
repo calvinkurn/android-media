@@ -65,7 +65,7 @@ class ShopAbTestPlatform (
 
     override fun getString(key: String?, defaultValue: String): String {
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue) ?: defaultValue
-        if (cacheValue.isNotEmpty() && !cacheValue.equals(defaultValue, ignoreCase = true)) {
+        if (!cacheValue.equals(defaultValue, ignoreCase = true)) {
             return cacheValue
         }
         return defaultValue

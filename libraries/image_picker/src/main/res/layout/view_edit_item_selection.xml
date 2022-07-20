@@ -11,36 +11,43 @@
         android:id="@+id/selection_container"
         android:layout_width="@dimen/image_editor_main_height"
         android:layout_height="@dimen/image_editor_main_height"
-        android:layout_margin="@dimen/dp_1"
+        android:layout_margin="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/img_item_selection"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/dp_1"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/thumbnail_image_watermark_preview"
-            tools:src="@tools:sample/avatars" />
-
-        <ImageView
-            android:id="@+id/img_item_placeholder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/dp_1"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
-            android:contentDescription="@string/placeholder_image_watermark_preview"
-            tools:src="@tools:sample/avatars"
-            tools:visibility="visible" />
 
         <View
             android:id="@+id/view_selection"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/image_picker_rect_stroke_green" />
+
+        <ImageView
+            android:id="@+id/img_item_selection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/thumbnail_image_watermark_preview"
+            tools:src="@tools:sample/avatars" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:layout_margin="1dp"
+            app:cardCornerRadius="@dimen/unify_space_8">
+
+            <ImageView
+                android:id="@+id/img_item_placeholder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/placeholder_image_watermark_preview"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                tools:src="@tools:sample/avatars"
+                tools:visibility="visible" />
+        </androidx.cardview.widget.CardView>
 
     </FrameLayout>
 

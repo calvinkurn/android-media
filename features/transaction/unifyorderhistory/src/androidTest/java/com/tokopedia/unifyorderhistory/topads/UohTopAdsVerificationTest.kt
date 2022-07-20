@@ -11,18 +11,20 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
+import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.getUohItemAdapter
 import com.tokopedia.unifyorderhistory.runBot
 import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohRecommendationItemViewHolder
-import com.tokopedia.unifyorderhistory.R
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 
+@TopAdsTest
 class UohTopAdsVerificationTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var topAdsCount = 0

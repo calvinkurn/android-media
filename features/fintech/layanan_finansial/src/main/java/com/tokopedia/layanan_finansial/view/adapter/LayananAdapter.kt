@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.layanan_finansial.R
@@ -19,6 +18,8 @@ import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSIAL_CATEGORY
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_VIEW_ACTION
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_click_ACTION
 import com.tokopedia.layanan_finansial.view.models.LayananListItem
+import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.media.loader.loadImage
 import kotlinx.android.synthetic.main.layanan_card_item.view.*
 import java.util.*
 import kotlin.collections.HashMap
@@ -29,7 +30,9 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
    inner class LayananViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
        fun setData(layananListItem: LayananListItem) {
            itemView.apply {
-               ImageLoader.LoadImage(icon,layananListItem.iconUrl)
+               icon.loadImage(layananListItem.iconUrl) {
+                   setPlaceHolder(R.drawable.lf_squircle)
+               }
                name.text = layananListItem.name
                category.text = layananListItem.categrory
                desc_1.text = layananListItem.desc1

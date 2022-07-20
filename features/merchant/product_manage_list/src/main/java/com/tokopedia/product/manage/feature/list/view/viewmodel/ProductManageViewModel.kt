@@ -5,10 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
@@ -17,6 +20,7 @@ import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProduc
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.model.UploadStatusModel
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
@@ -59,7 +63,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
@@ -79,6 +86,8 @@ class ProductManageViewModel @Inject constructor(
     private val editProductVariantUseCase: EditProductVariantUseCase,
     private val getProductVariantUseCase: GetProductVariantUseCase,
     private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
+    private val getUploadStatusUseCase: GetUploadStatusUseCase,
+    private val clearUploadStatusUseCase: ClearUploadStatusUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -139,6 +148,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _deleteProductDialog
     val topAdsInfo: LiveData<TopAdsInfo>
         get() = _topAdsInfo
+    val uploadStatus: MutableLiveData<UploadStatusModel>
+        get() = _uploadStatus
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _showTicker = MutableLiveData<Boolean>()
@@ -165,12 +176,33 @@ class ProductManageViewModel @Inject constructor(
     private val _onClickPromoTopAds = MutableLiveData<TopAdsPage>()
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
+    private val _uploadStatus = MutableLiveData<UploadStatusModel>()
 
     private var access: ProductManageAccess? = null
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
     private var warehouseId: String = ""
     private var totalProductCount = 0
+
+
+    init {
+        initGetUploadStatus()
+    }
+
+    private fun initGetUploadStatus() = launch {
+        getUploadStatusUseCase
+            .getUploadStatus()
+            .flowOn(dispatchers.io)
+            .collect {
+                _uploadStatus.value = it
+            }
+    }
+
+    fun clearUploadStatus() {
+        launchCatchError(block = {
+            clearUploadStatusUseCase.clearUploadStatus()
+        }) { /* do nothing */ }
+    }
 
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
 
@@ -271,7 +303,7 @@ class ProductManageViewModel @Inject constructor(
         getProductListJob?.cancel()
 
         launchCatchError(block = {
-            val productList = withContext(dispatchers.io) {
+            val productListResponse = withContext(dispatchers.io) {
                 if (withDelay) {
                     delay(REQUEST_DELAY)
                 }
@@ -279,12 +311,12 @@ class ProductManageViewModel @Inject constructor(
                 val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, warehouseId, filterOptions, sortOption, extraInfo)
                 val getProductList = getProductListUseCase.execute(requestParams)
-                val productListResponse = getProductList.productList
-                productListResponse?.data
+                getProductList.productList
             }
             _refreshList.value = isRefresh
 
-            showProductList(productList)
+            totalProductCount = productListResponse?.meta?.totalHits.orZero()
+            showProductList(productListResponse?.data)
             showTicker()
             hideProgressDialog()
         }, onError = {
@@ -341,7 +373,6 @@ class ProductManageViewModel @Inject constructor(
 
             _productFiltersTab.apply {
                 val data = mapToFilterTabResult(response)
-                totalProductCount = data.totalProductCount
                 value = Success(data)
             }
         }, onError = {
@@ -443,7 +474,7 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
                 val shopId = userSessionInterface.shopId
-                val variantInputParam = mapResultToUpdateParam(shopId, result)
+                val variantInputParam = mapResultToUpdateParam(shopId, result, false)
                 val requestParams = EditProductVariantUseCase.createRequestParams(variantInputParam)
                 editProductVariantUseCase.execute(requestParams).productUpdateV3Data
             }
@@ -486,8 +517,7 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val popupResult = withContext(dispatchers.io) {
-                    val shopId = productId.toLongOrZero()
-                    val isSuccess = getShopManagerPopupsUseCase.execute(shopId)
+                    val isSuccess = getShopManagerPopupsUseCase.execute(userSessionInterface.shopId.toLongOrZero())
                     GetPopUpResult(productId, isSuccess)
                 }
                 _getPopUpResult.value = Success(popupResult)},
@@ -547,12 +577,13 @@ class ProductManageViewModel @Inject constructor(
     fun setSelectedFilter(selectedFilter: List<FilterOption>) {
         val selectedFilterAndSort = _selectedFilterAndSort.value
 
+        var selectedFilterCount = countSelectedFilter(selectedFilter)
+
         _selectedFilterAndSort.value = if (selectedFilterAndSort != null) {
             val list = arrayListOf<Boolean>()
             list.addAll(selectedFilterAndSort.filterShownState)
             list[list.size - 1] = true
 
-            var selectedFilterCount = countSelectedFilter(selectedFilter)
             selectedFilterAndSort.sortOption?.let { selectedFilterCount++ }
 
             selectedFilterAndSort.copy(
@@ -561,7 +592,11 @@ class ProductManageViewModel @Inject constructor(
                     selectedFilterCount = selectedFilterCount
             )
         } else {
-            FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, false))
+            FilterOptionWrapper(
+                sortOption = null,
+                filterOptions = selectedFilter,
+                filterShownState = listOf(true, true, false, false),
+                selectedFilterCount = selectedFilterCount)
         }
     }
 

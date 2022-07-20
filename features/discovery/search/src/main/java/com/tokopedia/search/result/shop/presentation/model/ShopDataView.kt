@@ -4,7 +4,10 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.discovery.common.constants.SearchConstant.ShopStatus.*
+import com.tokopedia.discovery.common.constants.SearchConstant.ShopStatus.KEY_SHOP_IS_GOLD
+import com.tokopedia.discovery.common.constants.SearchConstant.ShopStatus.KEY_SHOP_STATUS_CLOSED
+import com.tokopedia.discovery.common.constants.SearchConstant.ShopStatus.KEY_SHOP_STATUS_MODERATED
+import com.tokopedia.discovery.common.constants.SearchConstant.ShopStatus.KEY_SHOP_STATUS_INACTIVE
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 
 internal data class ShopDataView(

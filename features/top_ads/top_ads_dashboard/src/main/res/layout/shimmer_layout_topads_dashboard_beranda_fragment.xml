@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N75"
+    android:paddingHorizontal="@dimen/spacing_lvl3"
+    android:paddingVertical="@dimen/spacing_lvl3">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl7"
+        app:card_type="shadow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:paddingHorizontal="@dimen/spacing_lvl4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/v1layout1"
+                style="@style/TopAdsHomeShimmerStyle"
+                android:layout_width="@dimen/layout_lvl3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/v2layout2"
+                style="@style/TopAdsHomeShimmerStyle"
+                android:layout_width="@dimen/unify_space_128"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/v1layout1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                style="@style/TopAdsHomeShimmerStyle"
+                android:layout_width="@dimen/unify_space_96"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/layout2"
+        style="@style/TopAdsHomeShimmerStyle"
+        android:layout_width="@dimen/unify_space_128"
+        android:layout_marginStart="@dimen/topads_dashboard_dp_6"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout1" />
+
+    <include
+        android:id="@+id/layout3"
+        layout="@layout/shimmer_layout_topads_dashboard_rv_ringkasan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintTop_toBottomOf="@id/layout2" />
+
+    <include
+        android:id="@+id/layout4"
+        layout="@layout/shimmer_layout_topads_dashboard_rv_ringkasan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintTop_toBottomOf="@id/layout3" />
+
+    <include
+        android:id="@+id/layout5"
+        layout="@layout/shimmer_layout_topads_dashboard_rv_ringkasan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintTop_toBottomOf="@id/layout4" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/layout6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:card_type="shadow"
+        app:layout_constraintTop_toBottomOf="@id/layout5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lvl4">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                style="@style/TopAdsHomeShimmerStyle"
+                android:layout_width="@dimen/topads_dashboard_dp_140" />
+
+            <include layout="@layout/shimmer_layout_topads_dashboard_rv_latest_reading" />
+
+            <include layout="@layout/shimmer_layout_topads_dashboard_rv_latest_reading" />
+
+            <include layout="@layout/shimmer_layout_topads_dashboard_rv_latest_reading" />
+        </LinearLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_marginHorizontal="@dimen/spacing_lvl4"
+            android:layout_marginVertical="@dimen/spacing_lvl3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:loader_type="rect" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

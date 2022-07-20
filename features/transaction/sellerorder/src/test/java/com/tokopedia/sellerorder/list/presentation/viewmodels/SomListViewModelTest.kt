@@ -2004,7 +2004,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
     @Test
     fun setOrderTypeFilterTest() = coroutineTestRule.runBlockingTest {
-        val orderTypes = mutableSetOf(1, 2, 3, 4, 5)
+        val orderTypes = mutableSetOf<Long>(1, 2, 3, 4, 5)
         setGetDataOrderListParams()
         viewModel.setOrderTypeFilter(orderTypes)
         assert(viewModel.getDataOrderListParams().orderTypeList == orderTypes)

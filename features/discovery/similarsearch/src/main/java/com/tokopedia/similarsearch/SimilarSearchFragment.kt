@@ -32,6 +32,8 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.similarsearch.databinding.SimilarSearchFragmentLayoutBinding
+import com.tokopedia.similarsearch.databinding.SimilarSearchToolbarLayoutBinding
 import com.tokopedia.similarsearch.emptyresult.EmptyResultListener
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.originalproduct.OriginalProductViewListener
@@ -41,8 +43,14 @@ import com.tokopedia.similarsearch.recyclerview.SimilarSearchItemDecoration
 import com.tokopedia.similarsearch.tracking.SimilarSearchTracking
 import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
-import kotlinx.android.synthetic.main.similar_search_toolbar_layout.*
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
+import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 
 internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener, EmptyResultListener {
 
@@ -53,6 +61,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
         const val REQUEST_CODE_GO_TO_PRODUCT_DETAIL = 123
     }
+
+    private var binding: SimilarSearchFragmentLayoutBinding? by viewBinding()
+    private val toolbarBinding: SimilarSearchToolbarLayoutBinding?
+        get() = binding?.toolbarContent
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null
     private var similarSearchAdapter: SimilarSearchAdapter? = null
@@ -83,7 +95,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         activity?.run {
             if (this !is AppCompatActivity) return
 
-            setSupportActionBar(toolbar)
+            setSupportActionBar(binding?.toolbar)
             configureSupportActionBar(supportActionBar)
             configureToolbarOnClick()
         }
@@ -96,7 +108,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun configureToolbarOnClick() {
-        imageViewBack?.setOnClickListener {
+        toolbarBinding?.imageViewBack?.setOnClickListener {
             activity?.onBackPressed()
         }
     }
@@ -121,12 +133,12 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun initRecyclerViewAdapter() {
         similarSearchAdapter = SimilarSearchAdapter(this, this)
-        recyclerViewSimilarSearch?.adapter = similarSearchAdapter
+        binding?.recyclerViewSimilarSearch?.adapter = similarSearchAdapter
     }
 
     private fun initRecyclerViewLayoutManager() {
         recyclerViewLayoutManager = createRecyclerViewSimilarSearchLayoutManager()
-        recyclerViewSimilarSearch?.layoutManager = recyclerViewLayoutManager
+        binding?.recyclerViewSimilarSearch?.layoutManager = recyclerViewLayoutManager
     }
 
     private fun createRecyclerViewSimilarSearchLayoutManager(): RecyclerView.LayoutManager {
@@ -138,7 +150,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun initRecyclerViewEndlessScrollListener() {
         endlessRecyclerViewScrollListener = createEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
-            recyclerViewSimilarSearch?.addOnScrollListener(it)
+            binding?.recyclerViewSimilarSearch?.addOnScrollListener(it)
         }
     }
 
@@ -152,13 +164,15 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun initRecyclerViewItemDecoration() {
         activity?.let { activity ->
-            recyclerViewSimilarSearch?.addItemDecoration(createSimilarSearchItemDecoration(activity))
+            binding?.recyclerViewSimilarSearch?.addItemDecoration(
+                createSimilarSearchItemDecoration(activity)
+            )
         }
     }
 
     private fun initRecyclerViewAnimateOriginalProductViewListener() {
         val recyclerViewOnScrollListener = createRecyclerViewOnScrollListener()
-        recyclerViewSimilarSearch?.addOnScrollListener(recyclerViewOnScrollListener)
+        binding?.recyclerViewSimilarSearch?.addOnScrollListener(recyclerViewOnScrollListener)
     }
 
     private fun createRecyclerViewOnScrollListener(): RecyclerView.OnScrollListener {
@@ -167,7 +181,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
                 recyclerViewVerticalScrollDistance += dy
 
                 applyToolbarElevation()
-                originalProductView?.animateBasedOnScroll(dy)
+                toolbarBinding?.originalProductView?.animateBasedOnScroll(dy)
             }
         }
     }
@@ -175,10 +189,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun applyToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (recyclerViewVerticalScrollDistance >= 10) {
-                toolbar.applyElevation()
+                binding?.toolbar?.applyElevation()
             }
             else {
-                toolbar.removeElevation()
+                binding?.toolbar?.removeElevation()
             }
         }
     }
@@ -193,7 +207,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun Toolbar.removeElevation() {
         if (this.elevation > 0f) {
-            toolbar.elevation = 0f
+            binding?.toolbar?.elevation = 0f
         }
     }
 
@@ -211,7 +225,9 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         observeRouteToLoginEventLiveData()
         observeUpdateWishlistOriginalProductEventLiveData()
         observeAddWishlistEventLiveData()
+        observeAddWishlistV2EventLiveData()
         observeRemoveWishlistEventLiveData()
+        observeRemoveWishlistV2EventLiveData()
         observeAddToCartEventLiveData()
         observeRouteToCartEventLiveData()
         observeTrackingImpressionSimilarProductEventLiveData()
@@ -228,10 +244,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun initOriginalProductView(originalProduct: Product) {
-        originalProductView?.visible()
+        toolbarBinding?.originalProductView?.visible()
 
         val originalProductViewListener = createOriginalProductViewListener(originalProduct)
-        originalProductView?.bindOriginalProductView(originalProduct, originalProductViewListener)
+        toolbarBinding?.originalProductView?.bindOriginalProductView(originalProduct, originalProductViewListener)
     }
 
     private fun createOriginalProductViewListener(originalProduct: Product): OriginalProductViewListener {
@@ -242,7 +258,11 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
             }
 
             override fun onButtonWishlistClicked() {
-                similarSearchViewModel?.onViewToggleWishlistOriginalProduct()
+                context?.let {
+                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
+                        similarSearchViewModel?.onViewToggleWishlistV2OriginalProduct()
+                    } else similarSearchViewModel?.onViewToggleWishlistOriginalProduct()
+                }
             }
 
             override fun onButtonBuyClicked() {
@@ -282,7 +302,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun updateProgressBarVisiblity(visibility: Int) {
-        progressBarSimilarSearch?.visibility = visibility
+        binding?.progressBarSimilarSearch?.visibility = visibility
     }
 
     private fun updateAdapterList(similarSearchLiveData: State<List<Any>>) {
@@ -302,7 +322,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun observeUpdateWishlistOriginalProductEventLiveData() {
         similarSearchViewModel?.getUpdateWishlistOriginalProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            originalProductView?.updateWishlistStatus(it)
+            toolbarBinding?.originalProductView?.updateWishlistStatus(it)
         })
     }
 
@@ -312,13 +332,50 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         })
     }
 
+    private fun observeAddWishlistV2EventLiveData() {
+        similarSearchViewModel?.getAddWishlistV2EventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleAddWishlistV2Event(it)
+        })
+    }
+
+    private fun observeRemoveWishlistV2EventLiveData() {
+        similarSearchViewModel?.getRemoveWishlistV2EventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleRemoveWishlistV2Event(it)
+        })
+    }
+
     private fun handleAddWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
-            showSnackbar(R.string.similar_search_add_wishlist_success)
+            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+            view?.let {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishList() }.show()
+            }
         }
         else {
             showSnackbar(R.string.similar_search_add_wishlist_failed, Toaster.TYPE_ERROR)
         }
+    }
+
+    private fun handleAddWishlistV2Event(result: AddToWishlistV2Response.Data.WishlistAddV2) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+            }
+        }
+    }
+
+    private fun handleRemoveWishlistV2Event(result: DeleteWishlistV2Response.Data.WishlistRemoveV2) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+            }
+        }
+    }
+
+    private fun goToWishList() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
+        startActivity(intent)
     }
 
     private fun showSnackbar(@StringRes messageStringResource: Int, toasterType: Int = Toaster.TYPE_NORMAL) {
@@ -335,7 +392,11 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun handleRemoveWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
-            showSnackbar(R.string.similar_search_remove_wishlist_success)
+            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+            view?.let {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
+            }
         }
         else {
             showSnackbar(R.string.similar_search_remove_wishlist_failed, Toaster.TYPE_ERROR)
@@ -462,5 +523,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     override fun onEmptyResultButtonClicked() {
         activity?.finish()
+    }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
     }
 }

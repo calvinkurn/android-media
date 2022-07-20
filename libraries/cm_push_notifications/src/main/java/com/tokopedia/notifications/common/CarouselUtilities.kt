@@ -114,15 +114,18 @@ object CarouselUtilities {
      */
     @Nullable
     fun loadImageFromStorage(path: String?): Bitmap? {
+        var result: Bitmap? = null
         if (path == null)
             return null
         try {
             val f = File(path)
-            return BitmapFactory.decodeStream(FileInputStream(f))
+            val fis = FileInputStream(f)
+            result = BitmapFactory.decodeStream(fis)
+            fis.close()
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return null
+        return result
     }
 
     suspend fun deleteCarouselImageDirectory(context: Context) = withContext(Dispatchers.IO) {

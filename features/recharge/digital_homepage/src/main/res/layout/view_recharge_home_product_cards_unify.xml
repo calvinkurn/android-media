@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/view_recharge_home_product_cards_unify_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_recharge_home_product_cards_unify_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_lvl4"
+            app:typographyType="heading_4" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_recharge_home_product_cards_unify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/unify_space_12" />
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/view_recharge_home_product_cards_unify_shimmering"
+        layout="@layout/view_recharge_home_product_cards_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:visibility="gone" />
+
+</LinearLayout>

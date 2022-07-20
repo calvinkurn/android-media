@@ -14,6 +14,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.loginregister.R
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
@@ -104,7 +105,7 @@ class LoginTextView : LinearLayout {
         shape?.shape = GradientDrawable.RECTANGLE
         shape?.cornerRadii = floatArrayOf(CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII)
         shape?.setColor(backgroundColorCustom)
-        if (backgroundColorCustom == MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) shape?.setStroke(1,
+        if (backgroundColorCustom == MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)) shape?.setStroke(1,
                 MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
     }
 
@@ -116,7 +117,7 @@ class LoginTextView : LinearLayout {
     fun setImage(image: String) {
         if (!TextUtils.isEmpty(image)) {
             val imageUnify: ImageUnify = findViewById(R.id.provider_image)
-            ImageHandler.LoadImage(imageUnify, image)
+            imageUnify.loadImage(image)
         }
     }
 

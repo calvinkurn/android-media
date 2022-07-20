@@ -20,6 +20,11 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 20/09/18.
  */
 
+@Deprecated(
+    message = "This usecase will be deleted, use new dependency implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)",
+    replaceWith = ReplaceWith("GetWishlistV2UseCase",
+        imports = ["import com.tokopedia.wishlistcommon.domain.GetWishlistV2UseCase"])
+)
 class GetWishlistUseCase @Inject constructor(private val context: Context) : UseCase<GetWishlistResponse>() {
 
     companion object {

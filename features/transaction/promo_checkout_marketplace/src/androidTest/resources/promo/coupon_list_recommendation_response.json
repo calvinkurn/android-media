@@ -26,7 +26,6 @@
               "sub_title": "Kamu bisa gabungkan promo biar makin hemat",
               "icon_url": "",
               "is_enabled": true,
-              "is_collapsed": false,
               "tags": [],
               "coupons": [],
               "sub_sections": [
@@ -35,28 +34,43 @@
                   "sub_title": "Promo dipilih",
                   "icon_url": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/color%403x.png",
                   "is_enabled": true,
-                  "is_collapsed": true,
                   "tags": [],
+                  "id": "my_coupons",
+                  "coupon_groups": [
+                    {
+                      "id": 9598,
+                      "count": 1
+                    }
+                  ],
                   "coupons": [
                     {
                       "code": "KRDCICIL598GSNML0AM",
                       "title": "Discount Rp143.100",
                       "message": "",
                       "expiry_info": "Berakhir 3 hari lagi!",
-                      "expiry_count_down": 1593536399,
                       "coupon_url": "",
                       "coupon_app_link": "",
                       "unique_id": "",
                       "shop_id": 0,
-                      "tag_image_urls": [
-                        "https://ecs7.tokopedia.net/img/blog/promo/2020/05/Kredivo-1.png"
-                      ],
                       "benefit_amount": 143100,
                       "is_recommended": true,
                       "is_selected": false,
                       "is_attempted": false,
-                      "radio_check_state": "enabled",
-                      "clashing_infos": []
+                      "clashing_infos": [],
+                      "is_highlighted": true,
+                      "group_id": 9598,
+                      "is_group_header": true,
+                      "promo_infos": [
+                        {
+                          "type": "promo_validity",
+                          "title": "Berakhir 14 hari lagi!",
+                          "icon": "CLOCK"
+                        }, {
+                          "type": "top_banner",
+                          "title": "Jangan Lewatkan",
+                          "icon": ""
+                        }
+                      ]
                     }
                   ]
                 },
@@ -65,30 +79,58 @@
                   "sub_title": "Promo dipilih",
                   "icon_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
                   "is_enabled": true,
-                  "is_collapsed": false,
+                  "id": "merchant_vouchers",
                   "tags": [],
+                  "coupon_groups": [
+                    {
+                      "id": 9324,
+                      "count": 6
+                    }
+                  ],
                   "coupons": [
                     {
                       "code": "POMAH09JBL",
                       "title": "Cashback Rp25.000",
                       "message": "",
                       "expiry_info": "Berakhir 29 menit lagi!",
-                      "expiry_count_down": 1593275350,
                       "coupon_url": "HCKCSCP239594-",
                       "coupon_app_link": "HCKCSCP239594-",
                       "unique_id": "239594-0-301643",
                       "shop_id": 239594,
-                      "tag_image_urls": [],
                       "benefit_amount": 25000,
                       "is_recommended": true,
                       "is_selected": false,
                       "is_attempted": false,
-                      "radio_check_state": "enabled",
-                      "clashing_infos": []
+                      "clashing_infos": [],
+                      "is_highlighted": false,
+                      "group_id": 9324,
+                      "is_group_header": true,
+                      "promo_infos": [
+                        {
+                          "type": "promo_info",
+                          "title": "Khusus pengiriman <b>Go-Send Instant</b>",
+                          "icon": "COURIER"
+                        },
+                        {
+                          "type": "promo_validity",
+                          "title": "Berakhir 7 hari lagi!",
+                          "icon": "CLOCK"
+                        }
+                      ]
                     }
                   ]
                 }
               ]
+            }
+          ],
+          "section_tabs": [
+            {
+              "id": "my_coupons",
+              "title": "Kupon Saya"
+            },
+            {
+              "id": "merchant_vouchers",
+              "title": "Kupon Toko"
             }
           ]
         }

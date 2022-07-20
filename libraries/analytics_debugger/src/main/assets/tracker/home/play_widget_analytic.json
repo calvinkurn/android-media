@@ -50,7 +50,7 @@
       "event": "view_item",
       "eventCategory": "homepage-cmp",
       "eventAction": "impression on play sgc channel",
-      "eventLabel":"(.+) - (.+) - (.+) - (.+) - (.+) - (.+) - (.+)",
+      "eventLabel":"(.+) - (.+) - (.+) - (.+) - (.+) - (.+) - (.+) - (.+)",
       "promotions": [
         {
           "creative_name": ".+",
@@ -69,7 +69,7 @@
       "event": "select_content",
       "eventCategory": "homepage-cmp",
       "eventAction": "click",
-      "eventLabel":"(.+) - (.+) - (.+) - (.+) - (.+) - (.+) - (.+)",
+      "eventLabel":"click channel - (.+) - (.+) - (.+) - (.+) - (.+) - (.+) - (.+) - (.+)",
       "promotions": [
         {
           "creative_name": ".+",

@@ -4,32 +4,31 @@ import androidx.appcompat.widget.AppCompatImageView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.home.R
-import kotlinx.android.synthetic.main.layout_template_icon_business_widget.view.*
-import kotlinx.android.synthetic.main.layout_template_mid_business.view.*
 
 class SizeMiddleBusinessViewHolder (
-        itemView: View,
-        listener: BusinessUnitItemViewListener
-) : SizeSmallBusinessViewHolder(itemView, listener) {
+    itemView: View,
+    listener: BusinessUnitItemViewListener,
+    cardInteraction: Boolean = false
+) : SizeSmallBusinessViewHolder(itemView, listener, cardInteraction) {
 
     companion object {
         val LAYOUT: Int = R.layout.layout_template_mid_business
     }
 
     override fun getProductName(): TextView {
-        return itemView.productName
+        return itemView.findViewById(R.id.productName)
     }
 
     override fun getIcon(): AppCompatImageView {
-        return itemView.icon
+        return itemView.findViewById(R.id.icon)
     }
 
     override fun getTitle(): TextView {
-        return itemView.title
+        return itemView.findViewById(R.id.title)
     }
 
     override fun getSubtitle(): TextView {
-        return itemView.subtitle
+        return itemView.findViewById(R.id.subtitle)
     }
 
 }

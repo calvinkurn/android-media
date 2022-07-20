@@ -3,16 +3,18 @@ package com.tokopedia.chatbot.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -25,6 +27,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -36,11 +39,21 @@ import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ENTRY
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.EVENT
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.FALSE
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IMAGE_URL
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.IS_ATTACHED
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.STATUS_ID
+import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FIVE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_FOUR
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
@@ -52,8 +65,9 @@ import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_CSAT
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
 import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
+import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheet
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheetListener
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
@@ -82,6 +96,7 @@ import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
+import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_URI
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.ImageRetryBottomSheetAdapter
@@ -92,11 +107,9 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -106,7 +119,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
-import java.io.File
 import javax.inject.Inject
 
 /**
@@ -150,6 +162,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     @Inject
     lateinit var session: UserSessionInterface
 
+    @Inject
+    lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
+
     lateinit var replyEditText: EditText
     lateinit var replyEditTextContainer: LinearLayout
 
@@ -165,6 +180,18 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isStickyButtonClicked = false
     private var isChatRefreshed = false
     private var isFirstPage = true
+    private var isArticleEntry = false
+    private var hashMap: Map<String,String> = HashMap<String,String>()
+    var isAttached : Boolean = false
+    private lateinit var invoiceLabel: Label
+    private lateinit var invoiceName : Typography
+    private lateinit var invoiceImage : ImageView
+    private lateinit var invoiceCancel : ImageView
+    private lateinit var sendButton : ImageView
+    private var isSendButtonActivated : Boolean = true
+    private var isFloatingSendButton: Boolean = false
+    private var isFloatingInvoiceCancelled : Boolean = false
+    private var isArticleDataSent : Boolean = false
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -216,7 +243,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun showCsatRatingView() {
-        chatbotAnalytics.eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
+        chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
         chatbot_view_help_rate.txt_help_title.setText(mCsatResponse.attachment?.attributes?.title)
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(new_comment.getWindowToken(), 0)
@@ -234,7 +261,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             ChatBotProvideRatingActivity
                     .getInstance(it, number, mCsatResponse)
         }, REQUEST_SUBMIT_FEEDBACK)
-        chatbotAnalytics.eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, number.toString())
+        chatbotAnalytics.get().eventClick(ACTION_CSAT_SMILEY_BUTTON_CLICKED, number.toString())
     }
 
     override fun getUserSession(): UserSessionInterface {
@@ -245,7 +272,21 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return ""
     }
 
+    lateinit var textWatcher : TextWatcher
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        val bundle = this.arguments
+        if (bundle != null) {
+            val intentData = bundle.getString(DEEP_LINK_URI, "")
+            var uri: Uri = Uri.parse(intentData)
+
+            isAttached = checkForIsAttachedInvoice(uri)
+            hashMap = presenter.getValuesForArticleEntry(uri)
+            isArticleEntry = checkForArticleEntry(uri)
+
+        }
+
         val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
         replyEditText = view.findViewById(R.id.new_comment)
         replyEditTextContainer = view.findViewById(R.id.new_comment_container)
@@ -253,10 +294,187 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         ticker = view.findViewById(R.id.chatbot_ticker)
         dateIndicator = view.findViewById(R.id.dateIndicator)
         dateIndicatorContainer = view.findViewById(R.id.dateIndicatorContainer)
+
+        invoiceLabel = view.findViewById(R.id.tv_status)
+        invoiceName = view.findViewById(R.id.tv_invoice_name)
+        invoiceImage = view.findViewById(R.id.iv_thumbnail)
+        invoiceCancel = view.findViewById(R.id.iv_cross)
+        sendButton = view.findViewById(R.id.send_but)
+
+        isFloatingInvoiceCancelled = false
         setChatBackground()
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
         return view
     }
+
+    private fun checkForArticleEntry(uri: Uri): Boolean {
+        if (uri.getQueryParameter(USED_BY) != null && uri.getQueryParameter(USED_BY) == ARTICLE_ENTRY) {
+            return true
+        }
+        return false
+    }
+
+    private fun checkForIsAttachedInvoice(uri: Uri): Boolean {
+        if (uri.getQueryParameter(IS_ATTACHED) != null) {
+            return uri.getQueryParameter(IS_ATTACHED) != FALSE
+        }
+        return false
+    }
+
+    override fun sendInvoiceForArticle() {
+        if (isArticleEntry && !isArticleDataSent) {
+            if (!isAttached) {
+
+                if (hashMap.get(CODE)?.isNotEmpty() == true) {
+                    val attachInvoiceSingleViewModel = presenter.createAttachInvoiceSingleViewModel(hashMap)
+                    var invoice: InvoiceLinkPojo =
+                        AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(
+                            attachInvoiceSingleViewModel
+                        )
+                    val generatedInvoice = presenter.generateInvoice(invoice, opponentId)
+                    getViewState()?.onShowInvoiceToChat(generatedInvoice)
+                    presenter.sendInvoiceAttachment(
+                        messageId, invoice, generatedInvoice.startTime,
+                        opponentId, isArticleEntry,hashMap.get(USED_BY).toBlankOrString()
+                    )
+                }
+                if (hashMap.get(ARTICLE_ID)?.isNotEmpty() == true) {
+                    val startTime = SendableUiModel.generateStartTime()
+                    val msg = hashMap.get(ARTICLE_TITLE).toBlankOrString()
+                    var quickReplyViewModel = QuickReplyViewModel(msg, msg, msg)
+
+                    presenter.sendQuickReplyInvoice(
+                        messageId,
+                        quickReplyViewModel,
+                        startTime,
+                        opponentId,
+                        hashMap.get(EVENT).toBlankOrString(),
+                        hashMap.get(USED_BY).toBlankOrString()
+                    )
+                }
+                enableTyping()
+            } else {
+
+                isSendButtonActivated = false
+                isFloatingSendButton = true
+                sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+
+                invoiceLabel.text = hashMap.get(STATUS).toBlankOrString()
+                val labelType = getLabelType(hashMap.get(STATUS_ID).toIntOrZero())
+                invoiceLabel?.setLabelType(labelType)
+
+
+                invoiceName.setText(hashMap.get(CODE).toBlankOrString())
+                if (hashMap.get(IMAGE_URL)?.isNotEmpty() == true)
+                    ImageHandler.loadImage(
+                        context,
+                        invoiceImage,
+                        hashMap.get(IMAGE_URL)!!.toBlankOrString(),
+                        R.drawable.ic_retry_image_send
+                    )
+                invoiceCancel.setOnClickListener {
+                    float_chat_item.visibility = View.GONE
+                    isAttached = false
+                    isFloatingInvoiceCancelled = true
+                }
+                if (isFloatingSendButton) {
+
+                    textWatcher = object : TextWatcher {
+                        override fun afterTextChanged(s: Editable?) {
+                            if (replyEditText.text.toString().isEmpty()) {
+                                sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+                                isSendButtonActivated = false
+                            }
+                        }
+
+                        override fun beforeTextChanged(
+                            s: CharSequence?,
+                            start: Int,
+                            count: Int,
+                            after: Int
+                        ) {
+
+                        }
+
+                        override fun onTextChanged(
+                            s: CharSequence?,
+                            start: Int,
+                            before: Int,
+                            count: Int
+                        ) {
+                            if (replyEditText.text.toString().isNotEmpty()) {
+                                sendButton.setImageResource(R.drawable.ic_chatbot_send)
+                                isSendButtonActivated = true
+                            }
+                        }
+                    }
+                    replyEditText.addTextChangedListener(textWatcher)
+
+                }
+
+                float_chat_item.show()
+
+            }
+            isArticleDataSent(true)
+        }
+
+    }
+
+    private fun isArticleDataSent(dataSentState: Boolean) {
+        isArticleDataSent = dataSentState
+    }
+
+    private fun onSendFloatingInvoiceClicked() {
+
+        float_chat_item.hide()
+        isSendButtonActivated = true
+        sendButton.setImageResource(R.drawable.ic_chatbot_send)
+        replyEditText.removeTextChangedListener(textWatcher)
+
+        if(!isFloatingInvoiceCancelled) {
+
+            val attachInvoiceSingleViewModel = presenter.createAttachInvoiceSingleViewModel(hashMap)
+            var invoice: InvoiceLinkPojo =
+                AttachInvoiceMapper.invoiceViewModelToDomainInvoicePojo(
+                    attachInvoiceSingleViewModel
+                )
+            val generatedInvoice = presenter.generateInvoice(invoice, opponentId)
+            getViewState()?.onShowInvoiceToChat(generatedInvoice)
+            presenter.sendInvoiceAttachment(
+                messageId, invoice, generatedInvoice.startTime,
+                opponentId, isArticleEntry, hashMap.get(USED_BY).toBlankOrString()
+            )
+        }
+
+        val startTime = SendableUiModel.generateStartTime()
+        val msg = replyEditText.text.toString()
+        var quickReplyViewModel = QuickReplyViewModel(msg, msg, msg)
+
+        presenter.sendQuickReplyInvoice(
+            messageId,
+            quickReplyViewModel,
+            startTime,
+            opponentId,
+            hashMap.get(EVENT).toString(),
+            hashMap.get(USED_BY).toString()
+        )
+        emptyReplyEditText()
+        isFloatingSendButton = false
+    }
+
+    private fun emptyReplyEditText(){
+        replyEditText.setText("")
+    }
+
+    private fun getLabelType(statusId: Int?): Int {
+        if (statusId == null) return Label.GENERAL_DARK_GREY
+        return when (OrderStatusCode.MAP[statusId]) {
+            OrderStatusCode.COLOR_RED -> Label.GENERAL_LIGHT_RED
+            OrderStatusCode.COLOR_GREEN -> Label.GENERAL_LIGHT_GREEN
+            else -> Label.GENERAL_DARK_GREY
+        }
+    }
+
 
     private fun setChatBackground() {
         activity?.window?.setBackgroundDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.layered_chatbot_background) })
@@ -362,7 +580,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 (activity as BaseChatToolbarActivity).getToolbar(),
                 adapter,
-                onChatMenuButtonClicked
+                onChatMenuButtonClicked,
+                sendAnalytics = { impressionType ->
+                    chatbotAnalytics.get().eventShowView(impressionType)
+            }
         )
     }
 
@@ -549,7 +770,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun sendEventForWelcomeMessage(visitable: Visitable<*>) {
         if (visitable is BaseChatUiModel && visitable.message.contains(WELCOME_MESSAGE_VALIDATION)) {
-            chatbotAnalytics.eventShowView(ACTION_IMPRESSION_WELCOME_MESSAGE)
+            chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_WELCOME_MESSAGE)
         }
     }
 
@@ -570,7 +791,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, opponentId)
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(messageId, invoiceLinkPojo, generatedInvoice.startTime,
-                opponentId)
+                opponentId,isArticleEntry,hashMap.get(USED_BY).toBlankOrString())
         enableTyping()
     }
 
@@ -578,7 +799,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val generatedInvoice = presenter.generateInvoice(selectedInvoice, "")
         getViewState()?.onShowInvoiceToChat(generatedInvoice)
         presenter.sendInvoiceAttachment(messageId, selectedInvoice, generatedInvoice.startTime,
-                opponentId)
+                opponentId,isArticleEntry,hashMap.get(USED_BY).toBlankOrString())
     }
 
     fun showSearchInvoiceScreen() {
@@ -590,11 +811,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onQuickReplyClicked(model: QuickReplyViewModel) {
-        chatbotAnalytics.eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
+        chatbotAnalytics.get().eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
         presenter.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
     }
 
-    override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
+    override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
 
         activity?.let {
 
@@ -667,15 +888,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun getFilters(data: Intent?, reasonList: List<String?>?): String? {
-        val selectedOption = data?.getStringExtra(SELECTED_ITEMS)?.split(";")
-        var filters = ""
-        if (!selectedOption.isNullOrEmpty()) {
-            for (filter in selectedOption) {
-                filters += reasonList?.get(filter.toInt()) + ","
+        try {
+            val selectedOption = data?.getStringExtra(SELECTED_ITEMS)?.split(";")
+            var filters = ""
+            if (!selectedOption.isNullOrEmpty()) {
+                for (filter in selectedOption) {
+                    if (filter.isNotEmpty())
+                        filters += reasonList?.get(filter.toInt()) + ","
+                }
+                return filters.substring(0, filters.length - 1)
             }
-            return filters.substring(0, filters.length - 1)
+            return ""
+        } catch (e : Exception) {
+            return ""
         }
-        return ""
     }
 
     private fun onSuccessSubmitCsatRating(): (String) -> Unit {
@@ -761,13 +987,25 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun prepareListener() {
-        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
-            onSendButtonClicked()
+        sendButton.setOnClickListener {
+            if (isSendButtonActivated) {
+                if (isFloatingSendButton) {
+                    onSendFloatingInvoiceClicked()
+                } else {
+                    onSendButtonClicked()
+                }
+            } else
+                Toaster.make(
+                    it,
+                    getString(R.string.chatbot_float_invoice_input_length_zero),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL
+                )
         }
     }
 
     override fun onSendButtonClicked() {
-        chatbotAnalytics.eventClick(ACTION_REPLY_BUTTON_CLICKED)
+        chatbotAnalytics.get().eventClick(ACTION_REPLY_BUTTON_CLICKED)
         val sendMessage = replyEditText.text.toString()
         val startTime = SendableUiModel.generateStartTime()
         presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
@@ -783,7 +1021,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onChatActionBalloonSelected(selected: ChatActionBubbleViewModel, model: ChatActionSelectionBubbleViewModel) {
-        chatbotAnalytics.eventClick(ACTION_ACTION_BUBBLE_CLICKED)
+        chatbotAnalytics.get().eventClick(ACTION_ACTION_BUBBLE_CLICKED)
         if (selected.action.equals(SEE_ALL_INVOICE_TEXT, true)) {
             showSearchInvoiceScreen()
         } else {
@@ -801,9 +1039,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun sendEvent(rating: Int) {
         if (rating == ChatRatingViewModel.RATING_GOOD) {
-            chatbotAnalytics.eventClick(ACTION_THUMBS_UP_BUTTON_CLICKED)
+            chatbotAnalytics.get().eventClick(ACTION_THUMBS_UP_BUTTON_CLICKED)
         } else {
-            chatbotAnalytics.eventClick(ACTION_THUMBS_DOWN_BUTTON_CLICKED)
+            chatbotAnalytics.get().eventClick(ACTION_THUMBS_DOWN_BUTTON_CLICKED)
         }
     }
 
@@ -1065,6 +1303,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun transactionNotFoundClick() {
         val selected = presenter.getActionBubbleforNoTrasaction()
         presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
+        getViewState()?.handleReplyBox(true)
     }
 }
 

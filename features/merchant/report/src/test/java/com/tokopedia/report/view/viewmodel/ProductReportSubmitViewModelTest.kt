@@ -1,97 +1,124 @@
 package com.tokopedia.report.view.viewmodel
 
 import com.tokopedia.mediauploader.common.state.UploadResult
-import io.mockk.*
+import com.tokopedia.report.data.model.SubmitReportResponse
+import com.tokopedia.report.data.model.SubmitReportResponseWrapper
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import io.mockk.coEvery
+import io.mockk.coVerify
 import org.junit.Test
-import org.mockito.ArgumentMatchers.*
-import rx.observers.TestSubscriber
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyLong
 
 class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture() {
 
     @Test
     fun `when submitReport success should return expected result`() {
-        val expectedReturn = mockk<Boolean>(relaxed = true)
-        val testSubscriber: TestSubscriber<Boolean> = TestSubscriber()
+        val productId = anyLong()
+        val categoryId = anyInt()
 
-        coEvery {
-            submitReportUseCase.execute(any(), any())
-        } answers {
-            testSubscriber.onStart()
-            testSubscriber.onCompleted()
-            testSubscriber.onNext(expectedReturn)
-        }
+        val uploadParam1 = getUploadParam1()
+        val uploadParam2 = getUploadParam2()
 
-        onUploadImage_thenReturn("photo")
+        val fakeUploadId1 = "123"
+        val fakeUploadId2 = "456"
 
-        val onSuccess: (Boolean) -> Unit = mockk()
-        val onError: (Throwable?) -> Unit = mockk()
+        val response = SubmitReportResponse("success")
+        val wrapper = SubmitReportResponseWrapper(response)
 
-        viewModel.submitReport(anyLong(), anyInt(), reportInput, onSuccess, onError)
+        coEvery { submitReportUseCase.executeOnBackground() } returns wrapper
 
-        verifySubmitReportUseCaseCalled()
+        coEvery { uploaderUseCase(uploadParam1) } returns UploadResult.Success(fakeUploadId1)
+        coEvery { uploaderUseCase(uploadParam2) } returns UploadResult.Success(fakeUploadId2)
 
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertValue(expectedReturn)
-        testSubscriber.assertCompleted()
+        viewModel.submitReport(productId, categoryId, reportInput)
+
+        viewModel.getSubmitResult().verifySuccessEquals(Success(true))
+        coVerify { uploaderUseCase(uploadParam1) }
+        coVerify { uploaderUseCase(uploadParam2) }
+        coVerify { submitReportUseCase.executeOnBackground() }
+
+        val currentParams = viewModel.getCurrentParams()
+        assert(currentParams != null)
+        assert(currentParams?.productId == productId)
+        assert(currentParams?.categoryId == categoryId)
+
+        val uploadIds = currentParams?.fields?.get("upload_ids") as List<*>
+        assert(uploadIds[0] == fakeUploadId1)
+        assert(uploadIds[1] == fakeUploadId2)
     }
 
     @Test
     fun `when submitReport fail due to upload image should return expected failure`() {
-        onUploadImageError_thenReturn(anyString())
+        val uploadParam1 = getUploadParam1()
+        val errorUploadMessage = "some error message"
 
-        val onSuccess: (Boolean) -> Unit = mockk()
-        val onError: (Throwable?) -> Unit = mockk()
+        coEvery { uploaderUseCase(uploadParam1) } returns UploadResult.Error(errorUploadMessage)
 
-        viewModel.submitReport(anyLong(), anyInt(), reportInput, onSuccess, onError)
+        viewModel.submitReport(anyLong(), anyInt(), reportInput)
 
-        verify { onError.invoke(any()) }
+
+        assert(viewModel.getSubmitResult().value is Fail)
+        val currentErrorMessage = (viewModel.getSubmitResult().value as Fail).throwable.message
+        assert(currentErrorMessage == errorUploadMessage)
+
+        coVerify { uploaderUseCase(uploadParam1) }
+        coVerify(exactly = 0) { submitReportUseCase.executeOnBackground() }
+
     }
 
     @Test
     fun `when submitReport fail due to submit call should return expected failure`() {
-        val expectedReturn = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<Boolean> = TestSubscriber()
+        val productId = anyLong()
+        val categoryId = anyInt()
+        val fakeUploadId1 = "123"
+        val fakeUploadId2 = "456"
 
-        coEvery {
-            submitReportUseCase.execute(any(), any())
-        } answers {
-            testSubscriber.onStart()
-            testSubscriber.onCompleted()
-            testSubscriber.onError(expectedReturn)
-        }
+        val uploadParam1 = getUploadParam1()
+        val uploadParam2 = getUploadParam2()
 
-        onUploadImage_thenReturn("photo")
+        val expectedThrowable = Throwable()
 
-        val onSuccess: (Boolean) -> Unit = mockk()
-        val onError: (Throwable?) -> Unit = mockk()
+        coEvery { uploaderUseCase(uploadParam1) } returns UploadResult.Success(fakeUploadId1)
+        coEvery { uploaderUseCase(uploadParam2) } returns UploadResult.Success(fakeUploadId2)
+        coEvery { submitReportUseCase.executeOnBackground() } throws expectedThrowable
 
-        viewModel.submitReport(anyLong(), anyInt(), reportInput, onSuccess, onError)
+        viewModel.submitReport(anyLong(), anyInt(), reportInput)
 
-        verifySubmitReportUseCaseCalled()
+        viewModel.getSubmitResult().verifyValueEquals(Fail(expectedThrowable))
 
-        testSubscriber.assertError(expectedReturn)
-        testSubscriber.assertCompleted()
+        val currentParams = viewModel.getCurrentParams()
+        assert(currentParams != null)
+        assert(currentParams?.productId == productId)
+        assert(currentParams?.categoryId == categoryId)
+
+        val uploadIds = currentParams?.fields?.get("upload_ids") as List<*>
+        assert(uploadIds[0] == fakeUploadId1)
+        assert(uploadIds[1] == fakeUploadId2)
+
+        coVerify { uploaderUseCase(uploadParam1) }
+        coVerify { uploaderUseCase(uploadParam2) }
     }
 
     @Test
-    fun onCleared() {
-        every { submitReportUseCase.unsubscribe() } just runs
+    fun `when upload input photos is empty submitReport can be success`() {
+        val reportInputNoPhoto = reportInput.toMutableMap()
+        reportInputNoPhoto.remove("photo")
 
-        val method = viewModel::class.java.getDeclaredMethod("onCleared")
-        method.isAccessible = true
-        method.invoke(viewModel)
+        val response = SubmitReportResponse("success")
+        val wrapper = SubmitReportResponseWrapper(response)
 
-        verify { submitReportUseCase.unsubscribe() }
+        coEvery { submitReportUseCase.executeOnBackground() } returns wrapper
+
+        viewModel.submitReport(anyLong(), anyInt(), reportInputNoPhoto)
+        viewModel.getSubmitResult().verifySuccessEquals(Success(true))
+
+        coVerify(exactly = 0) { uploaderUseCase(any()) }
+        coVerify { submitReportUseCase.executeOnBackground() }
     }
 
-    private fun onUploadImage_thenReturn(uploadId: String) {
-        coEvery { uploaderUseCase.invoke(any()) } returns UploadResult.Success(uploadId)
-    }
-    private fun onUploadImageError_thenReturn(errorMessage: String) {
-        coEvery { uploaderUseCase.invoke(any()) } returns UploadResult.Error(errorMessage)
-    }
-
-    private fun verifySubmitReportUseCaseCalled() {
-        verify { submitReportUseCase.execute(any(), any()) }
-    }
 }

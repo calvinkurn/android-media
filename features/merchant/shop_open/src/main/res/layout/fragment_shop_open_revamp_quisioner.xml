@@ -8,7 +8,7 @@
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/toolbar_questioner"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="64dp"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
@@ -28,8 +28,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/next_button_quisioner_page"
@@ -52,4 +52,3 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

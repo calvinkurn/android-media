@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.product.detail.R
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -20,7 +19,7 @@ class GqlRawQueryModule {
     @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_WISHLIST_STATUS)
     fun provideRawWishlistQuery(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.wishlist.common.R.raw.gql_get_is_wishlisted)
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.wishlist_common.R.raw.gql_get_is_wishlisted)
 
     @ProductDetailScope
     @Provides
@@ -38,12 +37,6 @@ class GqlRawQueryModule {
 
     @ProductDetailScope
     @Provides
-    @Named(SubmitHelpTicketUseCase.QUERY_NAME)
-    fun provideSubmitHelpTicket(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
-
-    @ProductDetailScope
-    @Provides
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
     fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
@@ -55,11 +48,4 @@ class GqlRawQueryModule {
     fun provideAddToCartOcsMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_shipment)
     }
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
-    @StringKey(RawQueryKeyConstant.MUTATION_NOTIFY_ME)
-    fun provideNotifyMeStatus(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_check_campaign_notify_me)
 }

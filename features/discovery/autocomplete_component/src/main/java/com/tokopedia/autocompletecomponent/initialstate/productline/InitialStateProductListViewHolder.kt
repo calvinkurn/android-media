@@ -6,12 +6,12 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
-import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
+import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteProductListBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class InitialStateProductListViewHolder(
-        itemView: View,
-        clickListener: InitialStateItemClickListener
+    itemView: View,
+    clickListener: ProductLineListener,
 ): AbstractViewHolder<InitialStateProductListDataView>(itemView) {
 
     companion object {
@@ -19,14 +19,16 @@ class InitialStateProductListViewHolder(
         val LAYOUT = R.layout.layout_autocomplete_product_list
     }
 
-    private val adapter: InitialStateProductListAdapter
+    private val adapter = InitialStateProductListAdapter(clickListener)
+    private var binding: LayoutAutocompleteProductListBinding? by viewBinding()
 
     init {
-        val layoutManager = LinearLayoutManager(itemView.context)
-        itemView.recyclerView?.layoutManager = layoutManager
-        ViewCompat.setLayoutDirection(itemView.recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
-        adapter = InitialStateProductListAdapter(clickListener)
-        itemView.recyclerView?.adapter = adapter
+        binding?.recyclerViewProductList?.let { recyclerView ->
+            val layoutManager = LinearLayoutManager(itemView.context)
+            recyclerView.layoutManager = layoutManager
+            ViewCompat.setLayoutDirection(recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
+            recyclerView.adapter = adapter
+        }
     }
 
     override fun bind(element: InitialStateProductListDataView) {

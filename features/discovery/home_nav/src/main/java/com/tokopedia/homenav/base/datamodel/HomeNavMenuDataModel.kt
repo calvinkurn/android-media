@@ -9,7 +9,7 @@ data class HomeNavMenuDataModel(
         val sectionId: Int = 0,
         val id: Int = 0,
         val srcImage: String = "",
-        val srcIconId: Int? = null,
+        var srcIconId: Int? = null,
         val itemTitle: String = "",
         val applink: String = "",
         var notifCount: String = "",

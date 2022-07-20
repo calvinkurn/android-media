@@ -75,13 +75,13 @@ class SomFilterViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         return getSomFilterUiModel(nameFilter)?.somFilterData.orEmpty()
     }
 
-    private fun findFirstSelectedFilterUiModelItemId(nameFilter: String): Int {
+    private fun findFirstSelectedFilterUiModelItemId(nameFilter: String): Long {
         return getSomFilterUiModelItems(nameFilter).find {
             it.isSelected
         }?.id.orZero()
     }
 
-    private fun findAllSelectedFilterUiModelItemsIds(nameFilter: String): MutableSet<Int> {
+    private fun findAllSelectedFilterUiModelItemsIds(nameFilter: String): MutableSet<Long> {
         return getSomFilterUiModelItems(nameFilter).filter {
             it.isSelected
         }.map {

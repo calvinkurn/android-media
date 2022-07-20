@@ -2,14 +2,19 @@ package com.tokopedia.report.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.report.usecase.SubmitReportUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.report.domain.interactor.SubmitReportUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
+import java.io.File
 
 abstract class ProductReportSubmitViewModelTestFixture {
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
+    protected lateinit var viewModel: ProductReportSubmitViewModel
 
     @RelaxedMockK
     lateinit var submitReportUseCase: SubmitReportUseCase
@@ -17,19 +22,35 @@ abstract class ProductReportSubmitViewModelTestFixture {
     @RelaxedMockK
     lateinit var uploaderUseCase: UploaderUseCase
 
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
+    private val sourceId = "OfQTGl"
 
-    protected lateinit var viewModel: ProductReportSubmitViewModel
+    private val photos = listOf(
+        "/storage/emulated/0/Tokopedia/Tokopedia Edit/1314740.jpg",
+        "/storage/emulated/0/Tokopedia/Tokopedia Edit/1314147.jpg"
+    )
 
-    protected var reportInput = mapOf(
-            "photo" to listOf("/storage/emulated/0/Tokopedia/Tokopedia Edit/1314740.jpg", "/storage/emulated/0/Tokopedia/Tokopedia Edit/1314147.jpg"),
-            "report_reason" to "testing ajaaaaaaaaaaaaa productnya gppp kokkkkkkk"
+    protected val reportInput = mapOf(
+        "photo" to photos,
+        "report_reason" to "testing ajaaaaaaaaaaaaa productnya gppp kokkkkkkk"
+    )
+
+    protected fun getUploadParam1() = uploaderUseCase.createParams(
+        sourceId = sourceId,
+        filePath = File(photos[0])
+    )
+
+    protected fun getUploadParam2() = uploaderUseCase.createParams(
+        sourceId = "OfQTGl",
+        filePath = File(photos[1])
     )
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ProductReportSubmitViewModel(submitReportUseCase, uploaderUseCase, CoroutineTestDispatchersProvider)
+        viewModel = ProductReportSubmitViewModel(
+            submitReportUseCase,
+            uploaderUseCase,
+            CoroutineTestDispatchersProvider
+        )
     }
 }

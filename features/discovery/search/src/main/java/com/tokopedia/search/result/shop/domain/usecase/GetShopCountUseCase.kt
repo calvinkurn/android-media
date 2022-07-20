@@ -7,6 +7,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.coroutines.UseCase
+import timber.log.Timber
 
 internal class GetShopCountUseCase(
         private val graphqlUseCase: GraphqlUseCase<GetShopCountModel>
@@ -32,6 +33,7 @@ internal class GetShopCountUseCase(
             graphqlUseCase.executeOnBackground().searchShopCount.countText
         }
         catch (exception: Throwable) {
+            Timber.w(exception)
             0
         }
     }

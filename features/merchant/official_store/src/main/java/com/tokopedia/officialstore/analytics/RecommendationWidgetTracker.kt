@@ -63,14 +63,15 @@ object RecommendationWidgetTracker : BaseTrackerConst() {
         recommendationItem: RecommendationItem,
     ): Product {
         return Product(
-            id = recommendationItem.productId.toString(),
-            name = recommendationItem.name,
-            productPrice = recommendationItem.priceInt.toString(),
-            productPosition = recommendationItem.position.toString(),
-            isFreeOngkir = false,
-            category = recommendationItem.categoryBreadcrumbs,
-            variant = "",
-            brand = ""
+                id = recommendationItem.productId.toString(),
+                name = recommendationItem.name,
+                productPrice = recommendationItem.priceInt.toString(),
+                productPosition = recommendationItem.position.toString(),
+                isFreeOngkir = false,
+                category = recommendationItem.categoryBreadcrumbs,
+                variant = "",
+                brand = "",
+                isTopAds = recommendationItem.isTopAds
         )
 
     }

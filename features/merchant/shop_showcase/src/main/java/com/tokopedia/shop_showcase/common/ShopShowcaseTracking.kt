@@ -393,4 +393,18 @@ class ShopShowcaseTracking (context: Context?) {
         )
     }
 
+    fun userTypeSearch(shopId: String, userId: String, keyword: String) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                EVENT to CLICK_SHOP_PAGE,
+                EVENT_ACTION to ACTION_CLICK_SEARCH_AT_SHOWCASE,
+                EVENT_CATEGORY to CATEGORY_SHOP_PAGE_BUYER,
+                EVENT_LABEL to String.format(LABEL_CLICK_SEARCH, keyword),
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to shopId,
+                USER_ID to userId
+        )
+        tracker.sendGeneralEvent(eventMap)
+    }
+
 }

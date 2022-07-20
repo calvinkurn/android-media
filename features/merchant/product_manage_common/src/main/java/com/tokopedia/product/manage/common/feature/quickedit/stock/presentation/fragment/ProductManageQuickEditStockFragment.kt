@@ -20,26 +20,20 @@ import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.databinding.FragmentQuickEditStockBinding
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
-import com.tokopedia.product.manage.common.feature.list.ext.getId
-import com.tokopedia.product.manage.common.feature.list.ext.getName
-import com.tokopedia.product.manage.common.feature.list.ext.getStatus
-import com.tokopedia.product.manage.common.feature.list.ext.getStock
+import com.tokopedia.product.manage.common.feature.list.ext.*
 import com.tokopedia.product.manage.common.feature.list.ext.hasEditProductAccess
-import com.tokopedia.product.manage.common.feature.list.ext.hasEditStockAccess
 import com.tokopedia.product.manage.common.feature.list.ext.isActive
-import com.tokopedia.product.manage.common.feature.list.ext.isCampaign
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper
-import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK_LENGTH
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
+import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.quickedit.stock.di.DaggerProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.common.feature.quickedit.stock.di.ProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.viewmodel.ProductManageQuickEditStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class ProductManageQuickEditStockFragment(
@@ -50,7 +44,6 @@ class ProductManageQuickEditStockFragment(
     companion object {
         private const val TOGGLE_ACTIVE = "active"
         private const val TOGGLE_NOT_ACTIVE = "not active"
-
         private const val KEY_CACHE_MANAGER_ID = "product_edit_cache_manager"
         private const val KEY_PRODUCT = "product"
 
@@ -348,7 +341,13 @@ class ProductManageQuickEditStockFragment(
         when {
             !product.hasEditStockAccess() -> disableStockEditor(stock)
             stock >= MAXIMUM_STOCK -> setMaxStockBehavior()
-            stock <= MINIMUM_STOCK -> setZeroStockBehavior()
+            stock <= MINIMUM_STOCK -> {
+                if (product.suspendAccess()){
+                    setZeroStockSuspendBehavior()
+                }else{
+                    setZeroStockBehavior()
+                }
+            }
             else -> setNormalBehavior()
         }
     }
@@ -358,8 +357,14 @@ class ProductManageQuickEditStockFragment(
         binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = false
     }
 
+    private fun setZeroStockSuspendBehavior() {
+        binding?.suspendStockInfo?.visible()
+        binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = false
+    }
+
     private fun setNormalBehavior() {
         binding?.zeroStockInfo?.gone()
+        binding?.suspendStockInfo?.gone()
         binding?.quickEditStockQuantityEditor?.addButton?.isEnabled = true
         binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = true
     }

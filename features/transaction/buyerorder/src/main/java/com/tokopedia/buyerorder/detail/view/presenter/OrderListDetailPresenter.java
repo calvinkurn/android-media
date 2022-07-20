@@ -134,8 +134,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                         if (response != null) {
                             DetailsData data = response.getData(DetailsData.class);
                             if (data != null && getView() != null) {
-                                orderDetails = data.orderDetails();
-                                getView().setDetailsData(data.orderDetails());
+                                orderDetails = data.getOrderDetails();
+                                getView().setDetailsData(data.getOrderDetails());
                                 orderListAnalytics.sendOrderDetailImpression(
                                         userSessionInterface.getUserId()
                                 );

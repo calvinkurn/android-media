@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.entertainment.common.util.EventQuery
+import com.tokopedia.entertainment.pdp.data.EventContentByIdEntity
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
 import com.tokopedia.entertainment.pdp.data.checkout.CheckoutGeneralV2InstantParams
 import com.tokopedia.entertainment.pdp.data.checkout.CheckoutGeneralV2Params
@@ -33,6 +34,10 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     val eventProductDetail: LiveData<EventProductDetailEntity>
         get() = eventProductDetailMutable
 
+    private val eventTNCPDPMutable = MutableLiveData<String>()
+    val eventTNCPDP: LiveData<String>
+        get() = eventTNCPDPMutable
+
     private val isErrorMutable = MutableLiveData<EventPDPErrorEntity>()
     val isError: LiveData<EventPDPErrorEntity>
         get() = isErrorMutable
@@ -50,18 +55,17 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         get() = eventCheckoutInstantResponseMutable
 
     fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String) {
-        launchCatchError(block =  {
+        launch {
             val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp)
             when (result) {
                 is Success -> {
                     eventProductDetailMutable.value = result.data.eventProductDetailEntity
+                    eventTNCPDPMutable.value = getTNCfromContent(result.data.eventContentByIds)
                 }
                 is Fail -> {
                     isErrorMutable.value = EventPDPErrorEntity(true, result.throwable)
                 }
             }
-        }){
-            isErrorMutable.value = EventPDPErrorEntity(true, it)
         }
     }
 
@@ -91,8 +95,20 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
+    fun getTNCfromContent(content: EventContentByIdEntity): String {
+        val sections = content.eventContentById.data.sectionData
+        val tnc = if (!sections.isNullOrEmpty()) {
+            sections.filter {
+                it.section == SECTION_INFORMATION
+            }.map {
+                it.content.firstOrNull()?.valueAccordion?.firstOrNull()?.content ?: ""
+            }.firstOrNull() ?: ""
+        } else ""
+        return tnc
+    }
 
     companion object {
         const val PARAM = "params"
+        const val SECTION_INFORMATION = "Informasi Penting"
     }
 }

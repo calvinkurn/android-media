@@ -254,7 +254,6 @@
         motion:constraintSetStart="@+id/error_state"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
     <Transition
-        motion:autoTransition="animateToEnd"
         motion:constraintSetEnd="@+id/loading"
         motion:constraintSetStart="@+id/error_state_loading_intermediary"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
@@ -266,7 +265,6 @@
         motion:constraintSetStart="@+id/empty_state_error"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
     <Transition
-        motion:autoTransition="animateToEnd"
         motion:constraintSetEnd="@+id/loading"
         motion:constraintSetStart="@+id/empty_state_error_loading_intermediary"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />

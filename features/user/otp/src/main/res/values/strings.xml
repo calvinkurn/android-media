@@ -25,9 +25,12 @@
     <string name="cotp_miscall_verification_desc">Ini kode verifikasimu, jangan kasih ke orang lain!</string>
     <string name="cotp_miscall_resend">Missed call ulang</string>
     <string name="cotp_miscall_use_other_method">ubah metode verifikasi</string>
-    <string name="cotp_miscall_resend_with_other_method">Nggak ada telepon yang masuk? Missed call ulang atau ubah metode verifikasi.</string>
+    <string name="cotp_miscall_resend_with_other_method">Nggak ada telepon yang masuk?\n Missed call ulang atau ubah metode verifikasi.</string>
     <string name="cotp_miscall_coundown_text"><![CDATA[Mohon tunggu <b> %d detik </b> untuk missed call ulang.]]></string>
-    
+
+    <string name="cotp_miscall_v2_verification_title">Kami akan segera missed call kamu</string>
+    <string name="cotp_miscall_v2_verification_desc">Tunggu teleponnya masuk, ya! Telepon ini nggak perlu diangkat.</string>
+
     <string name="title_activity_activation">Aktivasi Akun</string>
     <string name="validation_title">Masukkan Kode Aktivasi</string>
     <string name="title_validation_otp">Aktivasi</string>
@@ -74,4 +77,29 @@
     <string name="user_title_login_by_qr">Masuk Sebagai:</string>
     <string name="approve_button_login_by_qr">Ya, Lanjut masuk</string>
     <string name="reject_button_login_by_qr">Batal</string>
+
+    <!--  otp silent verif  -->
+    <string name="fragment_silent_verif_title">Siap-siap masuk ke akunmu &#128640;</string>
+    <string name="fragment_silent_verif_title_success">Verifikasinya berhasil! &#127881;</string>
+    <string name="fragment_silent_verif_subtitle">Tunggu sebentar ya, nomor HP kamu\nsedang diverifikasi.</string>
+    <string name="fragment_silent_verif_subtitle_success">Selamat belanja di Tokopedia, ya!</string>
+    <string name="fragment_silent_verif_title_fail">Oops, ada sedikit gangguan</string>
+    <string name="fragment_silent_verif_subtitle_fail">Nomor HP kamu belum berhasil diverifikasi.\nCoba sekali lagi, yuk!</string>
+    <string name="fragment_silent_verif_title_fail_limit">Coba metode lainnya, yuk!</string>
+    <string name="fragment_silent_verif_subtitle_fail_limit">Kamu udah coba metode ini tiga kali, ubah\nmetode biar bisa lanjut verifikasi.</string>
+    <string name="fragment_silent_verif_label_button_change_method">Ubah Metode Verifikasi</string>
+    <string name="fragment_silent_verif_subtitle_fail_change_method">Nomor HP kamu belum berhasil diverifikasi.\nCoba metode lain, yuk!</string>
+    <string name="fragment_silent_verif_try_again_btn">Coba Lagi</string>
+    <string name="dialog_silent_verif_title">Pastikan paket datamu aktif</string>
+    <string name="dialog_silent_verif_desc">Kamu perlu paket data untuk pakai metode verifikasi ini.</string>
+    <string name="dialog_silent_verif_lanjut">Lanjut Verifikasi</string>
+    <string name="dialog_silent_verif_batal">Batal</string>
+
+    <!--  otp inactive phone  -->
+    <string name="inactive_phone_text_footer_have_not_email">Saya tidak punya akses ke e-mail</string>
+    <string name="inactive_phone_text_footer_email_challenge_meta">Tidak punya akses ke email?</string>
+    <string name="inactive_phone_text_footer_email_challenge_action">Ajukan perubahan nomor HP</string>
+    <string name="inactive_phone_text_footer_pin_challenge_meta">Lupa pin Tokopedia?</string>
+    <string name="inactive_phone_text_footer_pin_challenge_action">Ajukan perubahan nomor HP</string>
+    <string name="inactive_phone_text_footer_phone_not_active">Nomor saya sudah tidak aktif</string>
 </resources>

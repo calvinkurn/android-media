@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.common.util
 
 import android.text.format.DateFormat
+import java.lang.Exception
 import java.util.*
 
 object DateUtil {
@@ -16,8 +17,12 @@ object DateUtil {
         return returnDate
     }
 
-    fun calendarToStringFormat(dateParam: GregorianCalendar, format: String) : CharSequence {
-        return DateFormat.format(format, dateParam.time)
+    fun calendarToStringFormat(dateParam: Calendar, format: String) : CharSequence {
+        return try {
+            DateFormat.format(format, dateParam.time)
+        } catch (e: Exception) {
+            DateFormat.format(format, GregorianCalendar().time)
+        }
     }
 
     private fun stringToCalendar(stringParam: CharSequence) : GregorianCalendar {

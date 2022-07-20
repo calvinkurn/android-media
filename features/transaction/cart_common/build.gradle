@@ -23,7 +23,7 @@ buildscript {
 dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
     implementation projectOrAar(rootProject.ext.libraries.graphql)

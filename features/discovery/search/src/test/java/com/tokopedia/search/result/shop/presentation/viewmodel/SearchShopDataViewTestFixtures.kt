@@ -11,6 +11,7 @@ import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.dyna
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.searchShopModel
 import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.UseCase
@@ -31,6 +32,7 @@ internal open class SearchShopDataViewTestFixtures {
     protected val getDynamicFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
     protected val getShopCountUseCase = mockk<UseCase<Int>>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
+    protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val shopCpmViewModelMapper = shopViewModelMapperModule.provideShopCpmViewModelMapper()
     protected val shopViewModelMapper = shopViewModelMapperModule.provideShopViewModelMapper()
     protected val defaultKeyword = "samsung"
@@ -48,15 +50,16 @@ internal open class SearchShopDataViewTestFixtures {
 
     protected open fun createSearchShopViewModel(parameter: Map<String, Any> = searchShopParameterCommon): SearchShopViewModel {
         return SearchShopViewModel(
-                CoroutineTestDispatchersProvider,
-                parameter,
-                { searchShopFirstPageUseCase },
-                { searchShopLoadMoreUseCase },
-                { getDynamicFilterUseCase },
-                { getShopCountUseCase },
-                { shopCpmViewModelMapper },
-                { shopViewModelMapper },
-                { userSession }
+            CoroutineTestDispatchersProvider,
+            parameter,
+            { searchShopFirstPageUseCase },
+            { searchShopLoadMoreUseCase },
+            { getDynamicFilterUseCase },
+            { getShopCountUseCase },
+            { shopCpmViewModelMapper },
+            { shopViewModelMapper },
+            { userSession },
+            chooseAddressWrapper
         )
     }
 

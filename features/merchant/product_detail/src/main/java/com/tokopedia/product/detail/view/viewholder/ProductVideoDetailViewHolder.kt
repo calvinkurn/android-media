@@ -32,9 +32,9 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
 
     private var mPlayer: ProductExoPlayer? = null
     private var mVideoId: String = ""
-    private var video_volume: IconUnify? = null
-    private var video_minimize: IconUnify? = null
-    private var video_close_btn: IconUnify? = null
+    private var videoVolume: IconUnify? = null
+    private var videoMinimize: IconUnify? = null
+    private var videoCloseBtn: IconUnify? = null
     private val videoListener: VideoListener = object : VideoListener {
         override fun onVideoSizeChanged(width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
             val data = height.toFloat() / width.toFloat()
@@ -49,25 +49,25 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
     }
 
     init {
-        video_volume = binding.pdpMainVideo.findViewById(R.id.pdp_volume_control)
-        video_minimize = binding.pdpMainVideo.findViewById(R.id.pdp_mainimize_control)
-        video_close_btn = binding.pdpMainVideo.findViewById(R.id.pdp_video_detail_close)
+        videoVolume = binding.pdpMainVideo.findViewById(R.id.pdp_volume_control)
+        videoMinimize = binding.pdpMainVideo.findViewById(R.id.pdp_mainimize_control)
+        videoCloseBtn = binding.pdpMainVideo.findViewById(R.id.pdp_video_detail_close)
     }
 
     override fun bind(data: ProductVideoDataModel) {
         mVideoId = data.videoId
         productVideoCoordinator?.configureVideoCoordinator(view.context, data)
 
-        video_volume?.setOnClickListener {
+        videoVolume?.setOnClickListener {
             viewListener.onVolumeVideoClicked(mPlayer?.isMute() != true)
             productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.videoId)
         }
 
-        video_minimize?.setOnClickListener {
+        videoMinimize?.setOnClickListener {
             viewListener.onMinimizeVideoClicked()
         }
 
-        video_close_btn?.setOnClickListener {
+        videoCloseBtn?.setOnClickListener {
             viewListener.onMinimizeVideoClicked()
         }
     }
@@ -82,7 +82,7 @@ class ProductVideoDetailViewHolder(val view: View, private val productVideoCoord
     }
 
     private fun setupVolume(isMute: Boolean) {
-        video_volume?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
+        videoVolume?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
     }
 
     override fun setPlayer(player: ProductExoPlayer?) = with(binding) {

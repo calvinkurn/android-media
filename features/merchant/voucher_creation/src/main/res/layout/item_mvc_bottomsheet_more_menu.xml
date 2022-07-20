@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iuMenu"
+        android:layout_width="@dimen/mvc_dimen_20dp"
+        android:layout_height="@dimen/mvc_dimen_20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toBottomOf="@+id/iuMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iuMenu"
+        app:layout_constraintTop_toTopOf="@+id/iuMenu"
+        app:typographyType="heading_5"
+        tools:text="Ubah Kuota" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/chatcommon_15dp"
+    android:paddingTop="@dimen/chatcommon_3dp"
+    android:paddingRight="@dimen/chatcommon_15dp"
+    android:paddingBottom="@dimen/chatcommon_3dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:textAllCaps="true"
+        android:textColor="@color/Unify_N200"
+        android:visibility="gone"
+        app:typographyType="display_3"
+        tools:text="13:16 wib" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/date"
+        android:layout_marginEnd="@dimen/chatcommon_19dp"
+        android:background="@drawable/left_bubble"
+        android:linksClickable="true"
+        android:maxWidth="@dimen/chatcommon_270dp"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingEnd="@dimen/chatcommon_18dp"
+        android:paddingBottom="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_N700_68"
+        android:textColorLink="@color/Unify_N700_68"
+        android:textIsSelectable="true"
+        android:visibility="visible"
+        app:typographyType="display_2"
+        tools:text="@tools:sample/lorem" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/message"
+        android:layout_marginTop="@dimen/chatcommon_3dp"
+        android:textColor="@color/Unify_N300"
+        android:visibility="gone"
+        app:typographyType="small"
+        tools:text="11:50" />
+
+</RelativeLayout>

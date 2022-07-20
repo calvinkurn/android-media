@@ -25,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerfeedback.BuildConfig
 import com.tokopedia.sellerfeedback.R
 import com.tokopedia.sellerfeedback.SellerFeedbackTracking
 import com.tokopedia.sellerfeedback.data.SubmitResult

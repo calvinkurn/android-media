@@ -10,7 +10,7 @@ import java.util.*
 
 object ReviewInboxUtil {
 
-    fun convertMapObjectToString(map: HashMap<String, Any>): HashMap<String, String>? {
+    fun convertMapObjectToString(map: HashMap<String, Any>): HashMap<String, String> {
         val newMap = HashMap<String, String>()
         for ((key, value) in map) {
             newMap[key] = value.toString()

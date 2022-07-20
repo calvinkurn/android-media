@@ -10,9 +10,13 @@ import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 
 object TopadsFeedXMapper {
     var authorName = ""
+    var shopName = ""
+    var redirectWeblinkShop = ""
     fun cpmModelToFeedXDataModel(impressHolder: ImpressHolder, cpmData: CpmModel , variant:Int=0): FeedXCard {
         val media = arrayListOf<FeedXMedia>()
         val data = cpmData.data[0]
+        shopName = data.cpm.cpmShop.domain
+        redirectWeblinkShop = data.redirect
         val merchantVouchers = data.cpm.cpmShop.merchantVouchers
 
         val feedXTagging = arrayListOf<FeedXMediaTagging>()
@@ -53,7 +57,7 @@ object TopadsFeedXMapper {
             FeedXCardDataItem(
                 id = cpmData.data[0].id,
                 appLink = data.applinks,
-                webLink = data.applinks,
+                webLink = data.redirect,
                 coverUrl = data.cpm.cpmImage.fullUrl,
                 mods = listOf,
                 products = feedXProducts
@@ -89,7 +93,7 @@ object TopadsFeedXMapper {
             share = share,
             followers = followers,
             appLink = data.applinks,
-            webLink = data.applinks,
+            webLink = redirectWeblinkShop,
             media = media,
             tags = feedXProducts,
             impressHolder = impressHolder,
@@ -113,8 +117,9 @@ object TopadsFeedXMapper {
                 id = id,
                 type = "image",
                 appLink = applinks,
+                webLink = uri,
                 mediaUrl = image.m_url,
-                tagging = arrayListOf(FeedXMediaTagging(index,0.5f,0.5f,mediaIndex = index)),
+                tagging = arrayListOf(FeedXMediaTagging(index,0.5f,0.44f,mediaIndex = index)),
                 isImageImpressedFirst = true,
                 productName = name,
                 price = product.priceFormat,
@@ -122,13 +127,13 @@ object TopadsFeedXMapper {
                 discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
                 isCashback = isProductCashback,
                 variant = variant,
-                cashBackFmt = cashback,
+                cashBackFmt = cashback
             )
         }
     }
 
     private fun getFeedxMediaTagging(index:Int):FeedXMediaTagging{
-        return FeedXMediaTagging(index,0.5f, 0.5f,mediaIndex = index)
+        return FeedXMediaTagging(index,0.5f, 0.44f,mediaIndex = index)
     }
 
     private fun cpmProductToFeedXProduct(
@@ -150,20 +155,21 @@ object TopadsFeedXMapper {
                 isCashback = isProductCashback,
                 bebasOngkirURL = freeOngkir.imageUrl,
                 name = name,
-                priceOriginalFmt = campaign.originalPrice,
-                priceFmt = priceFormat,
+                priceOriginalFmt = campaign.originalPrice.replace(" ",""),
+                priceFmt = priceFormat.replace(" ",""),
                 isDiscount = isDiscount,
                 coverURL = imageProduct.imageUrl,
                 id = id,
-                webLink = applinks,
+                webLink = uri,
                 authorName = authorName,
                 isTopads = true,
                 adClickUrl = imageProduct.imageClickUrl,
                 star = productRating,
                 totalSold = countSold.toIntOrNull()?:0,
                 discountFmt = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
-                priceDiscountFmt = priceFormat
-                    )
+                priceDiscountFmt = priceFormat.replace(" ",""),
+                shopName = shopName
+                )
         }
     }
 }

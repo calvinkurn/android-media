@@ -40,12 +40,12 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.label_add_product_price_tips).orEmpty()
     }
 
-    fun getEmptyProductPriceErrorMessage(): String? {
-        return getString(R.string.error_empty_product_price)
+    fun getEmptyProductPriceErrorMessage(): String {
+        return getString(R.string.error_empty_product_price).orEmpty()
     }
 
-    fun getMinLimitProductPriceErrorMessage(): String? {
-        return getString(R.string.error_product_price_less_than_min_limit)
+    fun getMinLimitProductPriceErrorMessage(): String {
+        return getString(R.string.error_product_price_less_than_min_limit).orEmpty()
     }
 
     // product whole sale quantity string properties
@@ -86,16 +86,16 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     // product stock string properties
 
-    fun getEmptyProductStockErrorMessage(): String? {
-        return getString(R.string.error_empty_product_stock)
+    fun getEmptyProductStockErrorMessage(): String {
+        return getString(R.string.error_empty_product_stock).orEmpty()
     }
 
-    fun getMinLimitProductStockErrorMessage(minStock: Int = 1): String? {
+    fun getMinLimitProductStockErrorMessage(minStock: Int = 1): String {
         return try {
             context?.getString(R.string.error_minimum_stock_quantity, minStock)
         } catch (e: Resources.NotFoundException) {
             null
-        }
+        }.orEmpty()
     }
 
     fun getMaxLimitProductStockErrorMessage(): String? {

@@ -16,6 +16,5 @@ object SomTabConst {
     const val STATUS_IN_SHIPPING = "in_shipping"
     const val STATUS_DONE = "done"
     const val STATUS_ORDER_CANCELLED = "order_canceled"
-    const val STATUS_DELIVERED = "delivered"
     const val DEFAULT_ORDER_TYPE_FILTER = "0"
 }

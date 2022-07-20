@@ -5,8 +5,8 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.analyticsdebugger.AnalyticsSource;
-import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -17,6 +17,8 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.validation.BranchHelperValidation;
 import com.tokopedia.track.TrackApp;
 
+
+import org.json.JSONArray;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -256,11 +258,13 @@ public class BranchHelper {
     }
 
     public static void sendSearchEvent(Context context, ArrayList<String> searchItems) {
-        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.SEARCH)
-                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
-                .addCustomDataProperty(LinkerConstants.KEY_ITEM_ID, String.valueOf(searchItems));
-        branchEvent.logEvent(context);
-        saveBranchEvent(branchEvent);
+        if(context != null && searchItems != null && searchItems.size() > 0) {
+            BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.SEARCH)
+                    .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
+                    .addCustomDataProperty(LinkerConstants.KEY_ITEM_ID, new JSONArray(searchItems).toString());
+            branchEvent.logEvent(context);
+            saveBranchEvent(branchEvent);
+        }
     }
 
     public static void sendFirebaseFirstTransactionEvent(Context context, PaymentData branchIOPayment, String userId, double revenuePrice, double shippingPrice) {
@@ -291,8 +295,7 @@ public class BranchHelper {
         }
         try {
             HashMap<String, Object> map = gson.fromJson(gson.toJson(branchEvent), type);
-            String eventName = (String) map.get("eventName");
-            GtmLogger.getInstance(LinkerManager.getInstance().getContext()).save(eventName, map, AnalyticsSource.BRANCH_IO);
+            GtmLogger.getInstance(LinkerManager.getInstance().getContext()).save(map, null, AnalyticsSource.BRANCH_IO);
         } catch (Throwable throwable) {
             Timber.d(throwable);
         }

@@ -7,7 +7,10 @@ import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.usecase.RequestParams
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
@@ -29,19 +32,20 @@ class ChatBotSecureImageUploadUseCase @Inject constructor() : RestRequestUseCase
         val requestBodyMap = HashMap<String, RequestBody>()
 
 
-        val reqImgFile: RequestBody = RequestBody.create(MediaType.parse(MEDIA_TYPE_IMAGE), File(imageFilePath))
+        val reqImgFile: RequestBody = File(imageFilePath)
+            .asRequestBody(MEDIA_TYPE_IMAGE.toMediaTypeOrNull())
 
         try {
             requestBodyMap["file" + "\"; filename=\"" + URLEncoder.encode(
-                    imageFilePath,
-                    ENCODING_UTF_8
+                imageFilePath,
+                ENCODING_UTF_8
             )] =
-                    reqImgFile
+                reqImgFile
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
         }
 
-        requestBodyMap[MSG_ID] = RequestBody.create(MediaType.parse(MEDIA_TYPE_TEXT), messageId)
+        requestBodyMap[MSG_ID] = messageId.toRequestBody(MEDIA_TYPE_TEXT.toMediaTypeOrNull())
 
         return requestBodyMap
     }

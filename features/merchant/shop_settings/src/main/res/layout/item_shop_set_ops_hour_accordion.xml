@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="340dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_N0"
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants"
+    android:paddingBottom="@dimen/dp_8">
+
+    <RadioGroup
+        android:id="@+id/ops_hour_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/option_all_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shop_operational_hour_24_hours"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/option_choose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shop_operational_hour_choose"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="@dimen/dp_12"
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/text_field_time_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/text_field_start_time_ops_hour"
+                android:layout_width="140dp"
+                android:layout_height="64dp"
+                app:unify_text_field_label_static="true"
+                app:unify_text_field_label="@string/label_open"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="32dp"
+                />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify2
+                android:id="@+id/text_field_end_time_ops_hour"
+                android:layout_width="140dp"
+                android:layout_height="64dp"
+                app:unify_text_field_label_static="true"
+                app:unify_text_field_label="@string/label_close"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/text_field_start_time_ops_hour"
+                />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_copy_to_all_day"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="4dp"
+                app:icon_name="COPY"
+                app:icon_color_light_enable="@color/Unify_G500"
+                app:layout_constraintTop_toBottomOf="@id/text_field_start_time_ops_hour"
+                app:layout_constraintLeft_toLeftOf="@id/text_field_start_time_ops_hour"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_copy_to_all_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shop_operational_hour_apply_to_all_day"
+                app:layout_constraintTop_toTopOf="@id/ic_copy_to_all_day"
+                app:layout_constraintBottom_toBottomOf="@+id/ic_copy_to_all_day"
+                app:layout_constraintLeft_toRightOf="@id/ic_copy_to_all_day"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_G500"
+                android:layout_marginStart="8dp"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/option_holiday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shop_operational_hour_holiday"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="@dimen/dp_12"
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/holiday_can_atc_description_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_can_atc_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N700_68"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                android:layout_marginTop="6dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/option_holiday_cannot_atc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shop_operational_hour_holiday_cannot_atc"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="@dimen/dp_12"
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/holiday_cannot_atc_description_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_cannot_atc_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shop_operational_hour_holiday_cannot_atc_description"
+                android:textColor="@color/Unify_N700_68"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                android:layout_marginTop="6dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RadioGroup>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

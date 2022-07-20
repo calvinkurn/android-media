@@ -1,0 +1,75 @@
+{
+  "event_verify": {
+    "error": "",
+    "error_description": "",
+    "status": "0",
+    "metadata": {
+      "product_ids": [
+        "7419"
+      ],
+      "product_names": [
+        "Test GiftN Gratis 7419"
+      ],
+      "provider_ids": [
+        "6"
+      ],
+      "item_ids": [
+        "7419"
+      ],
+      "category_name": "deal",
+      "quantity": 1,
+      "total_price": 0,
+      "item_map": [
+        {
+          "id": "7419",
+          "name": "Test GiftN Gratis 7419",
+          "product_id": "7419",
+          "category_id": "15",
+          "child_category_ids": "25",
+          "provider_id": "6",
+          "product_name": "Asana Grove Hotel Yogyakarta",
+          "package_name": "",
+          "end_time": " 30 Dec 2022 09:30",
+          "start_time": " 18 Oct 2019 10:30",
+          "price": 0,
+          "quantity": 1,
+          "total_price": 0,
+          "location_name": "",
+          "location_desc": "",
+          "product_app_url": "tokopedia://deals/test-giftn-7419",
+          "web_app_url": "https://staging.tokopedia.com/deals/i/test-giftn-7419/",
+          "product_web_url": "https://staging.tokopedia.com/deals/i/test-giftn-7419/",
+          "product_image": "https://images-staging.tokopedia.net/img/cache/300-square/HrTQDp/2021/1/8/01c37667-d6ad-4c62-bad4-2ec51bbe7603.png",
+          "flag_id": "1025",
+          "package_id": "0",
+          "order_trace_id": "06a6c735-41c7-453a-5f1e-22494946e3db",
+          "error": "",
+          "email": "elly.susilowati+089@tokopedia.com",
+          "mobile": "089676848398",
+          "schedule_timestamp": "1672367400",
+          "description": "",
+          "provider_ticket_id": "",
+          "provider_schedule_id": "",
+          "base_price": "0",
+          "commission": 0,
+          "commission_type": "",
+          "currency_price": 0,
+          "passenger_forms": [],
+          "invoice_item_id": "0",
+          "provider_order_id": "",
+          "provider_invoice_code": "",
+          "provider_package_id": "",
+          "invoice_id": "554138",
+          "invoice_status": "BOOKED",
+          "payment_type": "-",
+          "buttons": []
+        }
+      ],
+      "error": "",
+      "order_title": "Asana Grove Hotel Yogyakarta",
+      "order_subTitle": "Test GiftN Gratis 7419",
+      "buttons": []
+    },
+    "gateway_code": "zero"
+  }
+}

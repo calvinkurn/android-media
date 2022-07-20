@@ -1,0 +1,244 @@
+[
+  {
+    "data": {
+      "paylater_getOptimizedCheckout": {
+        "data": [
+          {
+            "gateway_id": 7,
+            "payment_gateway_code": "PEMUDACICIL",
+            "gateway_name": "GoPayLater Cicil",
+            "subtitle": "Limit tersedia Rp988.399",
+            "subtitle2": "Jatuh tempo pertama 30 hari lagi (30 Apr 2022)",
+            "light_img_url": "https://images.tokopedia.net/img/fintech/paylater/GoPayLater.png",
+            "dark_img_url": "https://images.tokopedia.net/img/fintech/paylater/GoPayLater.png",
+            "disable": false,
+            "label": "Bunga 0%",
+            "reason_short": "",
+            "reason_long": "",
+            "user_state": "ACTIVATED",
+            "user_balance_amt": "Rp 988.399",
+            "detail": [
+              {
+                "tenure": 6,
+                "label": "",
+                "chip_title": "Cicil 6x Rp155.333",
+                "monthly_installment": "Rp155.333",
+                "description": "Termasuk biaya cicilan 2.75%",
+                "installment_details": {
+                  "header": "Rincian pembayaran",
+                  "content": [
+                    {
+                      "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                      "value": "\u003cb\u003eRp800.000\u003c/b\u003e",
+                      "type": 1
+                    },
+                    {
+                      "title": "Biaya Cicilan (2.75% per bulan)",
+                      "value": "+Rp132.000",
+                      "type": 1
+                    },
+                    {
+                      "title": "Biaya Layanan",
+                      "value": "Gratis",
+                      "type": 1
+                    },
+                    {
+                      "title": "",
+                      "value": "",
+                      "type": 2
+                    },
+                    {
+                      "title": "Total Tagihan",
+                      "value": "Rp932.000",
+                      "type": 1
+                    },
+                    {
+                      "title": "Lama Pembayaran",
+                      "value": "Cicil 6x",
+                      "type": 1
+                    },
+                    {
+                      "title": "",
+                      "value": "",
+                      "type": 2
+                    },
+                    {
+                      "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                      "value": "\u003cb\u003eRp155.333\u003c/b\u003e",
+                      "type": 1
+                    },
+                    {
+                      "title": "Jatuh Tempo Pertama",
+                      "value": "30 Apr 2022",
+                      "type": 1
+                    },
+                    {
+                      "title": "Perkiraan Jatuh Tempo Terakhir",
+                      "value": "30 Sep 2022",
+                      "type": 1
+                    },
+                    {
+                      "title": "",
+                      "value": "",
+                      "type": 2
+                    },
+                    {
+                      "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                      "value": "",
+                      "type": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "tenure": 3,
+                "label": "Bunga 0%",
+                "chip_title": "Cicil 3x Rp266.666",
+                "monthly_installment": "Rp266.666",
+                "description": "Biaya cicilan 0%",
+                "installment_details": {
+                  "header": "Rincian pembayaran",
+                  "content": [
+                    {
+                      "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                      "value": "\u003cb\u003eRp800.000\u003c/b\u003e",
+                      "type": 1
+                    },
+                    {
+                      "title": "Biaya Cicilan (0% per bulan)",
+                      "value": "Gratis",
+                      "type": 1
+                    },
+                    {
+                      "title": "Biaya Layanan",
+                      "value": "Gratis",
+                      "type": 1
+                    },
+                    {
+                      "title": "",
+                      "value": "",
+                      "type": 2
+                    },
+                    {
+                      "title": "Total Tagihan",
+                      "value": "Rp800.000",
+                      "type": 1
+                    },
+                    {
+                      "title": "Lama Pembayaran",
+                      "value": "Cicil 3x",
+                      "type": 1
+                    },
+                    {
+                      "title": "",
+                      "value": "",
+                      "type": 2
+                    },
+                    {
+                      "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                      "value": "\u003cb\u003eRp266.667\u003c/b\u003e",
+                      "type": 1
+                    },
+                    {
+                      "title": "Jatuh Tempo Pertama",
+                      "value": "30 Apr 2022",
+                      "type": 1
+                    },
+                    {
+                      "title": "Perkiraan Jatuh Tempo Terakhir",
+                      "value": "30 Jun 2022",
+                      "type": 1
+                    },
+                    {
+                      "title": "",
+                      "value": "",
+                      "type": 2
+                    },
+                    {
+                      "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                      "value": "",
+                      "type": 4
+                    }
+                  ]
+                }
+              },
+              {
+                "tenure": 2,
+                "label": "",
+                "chip_title": "Cicil 2x Rp422.000",
+                "monthly_installment": "Rp422.000",
+                "description": "Termasuk biaya cicilan 2.75%",
+                "installment_details": {
+                  "header": "Rincian pembayaran",
+                  "content": [
+                    {
+                      "title": "\u003cb\u003eTotal Harga\u003c/b\u003e",
+                      "value": "\u003cb\u003eRp800.000\u003c/b\u003e",
+                      "type": 1
+                    },
+                    {
+                      "title": "Biaya Cicilan (2.75% per bulan)",
+                      "value": "+Rp44.000",
+                      "type": 1
+                    },
+                    {
+                      "title": "Biaya Layanan",
+                      "value": "Gratis",
+                      "type": 1
+                    },
+                    {
+                      "title": "",
+                      "value": "",
+                      "type": 2
+                    },
+                    {
+                      "title": "Total Tagihan",
+                      "value": "Rp844.000",
+                      "type": 1
+                    },
+                    {
+                      "title": "Lama Pembayaran",
+                      "value": "Cicil 2x",
+                      "type": 1
+                    },
+                    {
+                      "title": "",
+                      "value": "",
+                      "type": 2
+                    },
+                    {
+                      "title": "\u003cb\u003eCicilan per Bulan*\u003c/b\u003e",
+                      "value": "\u003cb\u003eRp422.000\u003c/b\u003e",
+                      "type": 1
+                    },
+                    {
+                      "title": "Jatuh Tempo Pertama",
+                      "value": "30 Apr 2022",
+                      "type": 1
+                    },
+                    {
+                      "title": "Perkiraan Jatuh Tempo Terakhir",
+                      "value": "31 Mei 2022",
+                      "type": 1
+                    },
+                    {
+                      "title": "",
+                      "value": "",
+                      "type": 2
+                    },
+                    {
+                      "title": "* Ongkir dan asuransi akan dihitung saat Pembayaran.",
+                      "value": "",
+                      "type": 4
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "footer": "Ongkir dan asuransi akan dihitung saat pembayaran."
+      }
+    }
+  }
+]

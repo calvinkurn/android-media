@@ -2,13 +2,11 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.df.base">
 
-    <dist:module
-        dist:title="@string/onboarding_app_name">
+    <dist:module dist:title="@string/onboarding_app_name">
         <dist:delivery>
-            <dist:install-time/>
+            <dist:install-time />
         </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
-
     <application android:hasCode="false" />
 </manifest>

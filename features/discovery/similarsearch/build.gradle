@@ -6,6 +6,9 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 
 android {
+    buildFeatures {
+        viewBinding true
+    }
     testOptions {
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
@@ -36,6 +39,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -43,17 +47,17 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
@@ -79,8 +83,8 @@ dependencies {
 //    testImplementation rootProject.ext.testDependencies.junit
 //    androidTestImplementation projectOrAar(rootProject.ext.libraries.commonNetwork)
 //    androidTestImplementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
-//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
-//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
+//    androidTestimplementation projectOrAar(rootProject.ext.libraries.network)
+//    androidTest
 //    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 }
 

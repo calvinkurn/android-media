@@ -6,7 +6,7 @@
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl2"
     android:paddingRight="@dimen/layout_lvl2"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 

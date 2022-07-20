@@ -1,7 +1,7 @@
 package com.tokopedia.test.application.environment.network;
 
-import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.authentication.AuthKey;
+import com.tokopedia.network.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthKey;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;

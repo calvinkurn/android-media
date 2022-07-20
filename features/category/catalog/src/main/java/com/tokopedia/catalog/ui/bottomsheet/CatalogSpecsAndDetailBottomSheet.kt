@@ -28,6 +28,11 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
     var list: ArrayList<Fragment> = ArrayList()
     private var openPage : String? = DESCRIPTION
     var catalogId : String = ""
+    var catalogName : String = ""
+    private var jumpToFullSpecIndex : Int = 0
+
+    private var tabLayout : TabLayout? = null
+    private var viewPager : ViewPager2? = null
 
     init {
         isFullpage = true
@@ -38,20 +43,24 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
+        const val ARG_CATALOG_NAME = "ARG_CATALOG_NAME"
         const val ARG_CATALOG_ID = "ARG_CATALOG_ID"
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
         const val OPEN_PAGE = "OPEN_PAGE"
+        private const val JUMP_TO_FULL_SPEC_INDEX = "JUMP_TO_FULL_SPEC_INDEX"
         const val PAGE_DESCRIPTION = 0
         const val PAGE_SPECIFICATIONS = 1
-        fun newInstance(catalogId :String, description: String, specifications: ArrayList<FullSpecificationsComponentData>,
-                        openPage : String): CatalogSpecsAndDetailBottomSheet {
+        fun newInstance(catalogName : String, catalogId :String, description: String, specifications: ArrayList<FullSpecificationsComponentData>,
+                        openPage : String, jumpTo : Int = 0): CatalogSpecsAndDetailBottomSheet {
             return CatalogSpecsAndDetailBottomSheet().apply {
                 arguments = Bundle().apply {
+                    putString(ARG_CATALOG_NAME, catalogName)
                     putString(ARG_CATALOG_ID, catalogId)
                     putString(DESCRIPTION, description)
                     putParcelableArrayList(SPECIFICATION, specifications)
                     putString(OPEN_PAGE,openPage)
+                    putInt(JUMP_TO_FULL_SPEC_INDEX , jumpTo)
                 }
             }
         }
@@ -86,14 +95,16 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)
             openPage = arguments?.getString(OPEN_PAGE)
             catalogId = arguments?.getString(ARG_CATALOG_ID) ?: ""
+            catalogName = arguments?.getString(ARG_CATALOG_NAME) ?: ""
+            jumpToFullSpecIndex = arguments?.getInt(JUMP_TO_FULL_SPEC_INDEX) ?: 0
         }
         list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.DESCRIPTION_TYPE, description, specifications))
-        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications))
+        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications,jumpToFullSpecIndex))
     }
 
     private fun initViews() {
-        val tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_specs)
-        val viewPager = view?.findViewById<ViewPager2>(R.id.view_pager_specs)
+        tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_specs)
+        viewPager = view?.findViewById<ViewPager2>(R.id.view_pager_specs)
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
         activity?.let {
             setTitle(it.resources.getString(R.string.catalog_detail_product))
@@ -101,7 +112,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
             val adapter = CatalogDetailsAndSpecsPagerAdapter(it, context, list)
             viewPager?.adapter = adapter
             if(tabLayout != null && viewPager != null){
-                TabLayoutMediator(tabLayout, viewPager) { _, _ ->
+                TabLayoutMediator(tabLayout!!, viewPager!!) { _, _ ->
 
                 }.attach()
             }
@@ -109,26 +120,26 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    tab?.position?.let { position -> adapter.setUnSelectView(tabLayout,position) }
+                    tab?.position?.let { position -> adapter.setUnSelectView(tab) }
                 }
 
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.let { position ->
-                        adapter.setOnSelectView(tabLayout,position)
+                        adapter.setOnSelectView(tab)
                         if(position == PAGE_DESCRIPTION){
                             CatalogDetailAnalytics.sendEvent(
-                                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                                     CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                     CatalogDetailAnalytics.ActionKeys.CLICK_TAB_DESCRIPTION,
-                                    catalogId,session.userId)
+                                    "$catalogName - $catalogId",session.userId,catalogId)
                             openPage = DESCRIPTION
                         } else if (position == PAGE_SPECIFICATIONS){
                             if(openPage != SPECIFICATION) {
                                 CatalogDetailAnalytics.sendEvent(
-                                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                                         CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                                         CatalogDetailAnalytics.ActionKeys.CLICK_TAB_SPECIFICATIONS,
-                                        catalogId, session.userId)
+                                        "$catalogName - $catalogId", session.userId,catalogId)
                             }
                         }
                     }
@@ -153,6 +164,14 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         }
 
         return bottomSheetDialog
+    }
+
+    override fun onDestroyView() {
+        viewPager?.adapter = null
+        tabLayout?.addOnTabSelectedListener(null)
+        viewPager = null
+        tabLayout = null
+        super.onDestroyView()
     }
 
     private fun setCustomTabText(context : Context?, tabLayout: TabLayout?){

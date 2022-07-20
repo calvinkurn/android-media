@@ -61,6 +61,9 @@ object DeepLinkChecker {
     const val LOGIN_BY_QR = 39
     const val POWER_MERCHANT = 40
     const val SALDO_DEPOSIT = 41
+    const val SNAPSHOT = 42
+    const val TOKOFOOD = 43
+    const val TOP_ADS_CLICK_LINK = 44
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -134,6 +137,9 @@ object DeepLinkChecker {
         if (!URLUtil.isNetworkUrl(url)) {
             return APPLINK
         }
+        if (url.contains("ta.tokopedia.com")|| url.contains("ta-staging.tokopedia.com")) {
+            return TOP_ADS_CLICK_LINK
+        }
         return try {
             val uriData = Uri.parse(url)
             if (isExcludedHostUrl(context, uriData) || isExcludedUrl(context, uriData))
@@ -192,11 +198,6 @@ object DeepLinkChecker {
     }
 
     @JvmStatic
-    fun openFind(url: String, context: Context): Boolean {
-        return openIfExist(context, getFindIntent(context, url))
-    }
-
-    @JvmStatic
     fun openCatalog(url: String, context: Context): Boolean {
         return openIfExist(context, getCatalogIntent(context, url))
     }
@@ -230,19 +231,13 @@ object DeepLinkChecker {
 
     // function for enable Hansel
 
-    private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity"
+    private fun getCatalogDetailClassName() = "com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity"
 
     private fun getHotIntent(context: Context, url: String): Intent {
         val uri = Uri.parse(url)
         val query = if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""
         query.replace("-","+")
         return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.DISCOVERY_SEARCH + "?q=" + query))
-    }
-
-    private fun getFindIntent(context: Context, url: String): Intent {
-        val uri = Uri.parse(url)
-        val segments = uri.pathSegments
-        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.FIND + "/" + if (segments.size > 1) segments[segments.lastIndex] else ""))
     }
 
     private fun getCatalogIntent(context: Context, url: String): Intent {

@@ -10,8 +10,8 @@
         android:id="@+id/ivRatingFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/review_ic_rating_star_four" />
@@ -24,9 +24,9 @@
         android:text="@string/kejar_ulasan_label"
         android:visibility="gone"
         app:labelType="general_light_orange"
+        app:layout_constraintBottom_toBottomOf="@id/ivRatingFeedback"
         app:layout_constraintStart_toEndOf="@id/ivRatingFeedback"
         app:layout_constraintTop_toTopOf="@id/ivRatingFeedback"
-        app:layout_constraintBottom_toBottomOf="@id/ivRatingFeedback"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -71,20 +71,41 @@
         app:typographyWeight="reguler"
         tools:text="Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi." />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvItemAttachmentFeedback"
-        android:layout_width="@dimen/layout_lvl0"
+    <com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
+        android:id="@+id/review_media_thumbnails"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingEnd="@dimen/spacing_lvl4"
-        android:paddingRight="@dimen/spacing_lvl4"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview" />
+
+    <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
+        android:id="@+id/badRatingReasonReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_media_thumbnails" />
+
+    <com.tokopedia.review.common.presentation.widget.ReviewBadRatingDisclaimerWidget
+        android:id="@+id/badRatingReasonDisclaimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/badRatingReasonReview" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/reply_feedback_item_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="badRatingReasonReview, badRatingReasonDisclaimer, review_media_thumbnails, tvFeedbackReview"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerFeedbackReply"
@@ -93,18 +114,20 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
+        app:layout_constraintTop_toBottomOf="@id/reply_feedback_item_barrier"
+        app:layout_goneMarginTop="16dp"
+        tools:viewBindingIgnore="true" />
 
     <View
         android:id="@+id/replyFeedbackState"
         android:layout_width="@dimen/spacing_lvl2"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        tools:background="@drawable/rectangle_8"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply" />
+        app:layout_constraintTop_toBottomOf="@id/dividerFeedbackReply"
+        tools:background="@drawable/rectangle_8" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvReplyUser"
@@ -176,6 +199,6 @@
         app:constraint_referenced_ids="dividerFeedbackReply, replyFeedbackState, tvReplyUser, tvReplyDate, tvReplyComment, tvReplyEdit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
+        app:layout_constraintTop_toBottomOf="@id/review_media_thumbnails" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

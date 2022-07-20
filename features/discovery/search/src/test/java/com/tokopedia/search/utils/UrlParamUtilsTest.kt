@@ -10,7 +10,7 @@ internal class UrlParamUtilsTest {
         val actual = UrlParamUtils.generateUrlParamString(this)
 
         if (actual != expected) {
-            throw Exception("Test failed. Expected: $expected, Actual: $actual")
+            throw AssertionError("Test failed. Expected: $expected, Actual: $actual")
         }
     }
 

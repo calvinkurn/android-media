@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <FrameLayout
         android:id="@+id/feed_background_frame"
@@ -65,10 +66,10 @@
             android:layout_marginTop="-5dp"
             android:layout_height="@dimen/dp_25"/>
 
-        <com.tokopedia.design.component.Tabs
+        <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:visibility="visible"
             app:layout_scrollFlags="enterAlways"
             app:tabMode="fixed"
@@ -121,7 +122,15 @@
         app:backgroundTint="@color/Unify_GN500"
         app:fbType="circle"
         app:srcCompat="@drawable/ic_feed_post_plus"
-        tools:visibility="visible"
+        />
+
+    <com.tokopedia.feedplus.view.customview.FeedFloatingButton
+        android:id="@+id/feed_floating_button"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/unify_space_16"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

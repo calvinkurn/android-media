@@ -35,10 +35,9 @@ import com.tokopedia.explore.view.uimodel.ExploreCategoryViewModel
 import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
 import com.tokopedia.explore.view.uimodel.ExploreViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.user.session.UserSessionInterface
-import io.embrace.android.embracesdk.Embrace
 import javax.inject.Inject
+import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 
 /**
  * @author by milhamj on 19/07/18.
@@ -83,6 +82,8 @@ class ContentExploreFragment :
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var analytics: ContentExploreAnalytics
+    @Inject
+    lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
 
     private lateinit var exploreCategoryRv: RecyclerView
     private lateinit var exploreImageRv: RecyclerView
@@ -122,7 +123,6 @@ class ContentExploreFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        GraphqlClient.init(requireContext())
         initVar()
         initView()
         presenter.attachView(this)
@@ -170,28 +170,31 @@ class ContentExploreFragment :
                 }
             }
         }
+        exploreImageRv.addOnScrollListener(feedFloatingButtonManager.scrollListener)
         exploreImageRv.layoutManager = gridLayoutManager
         exploreImageRv.addOnScrollListener(onScrollListener(gridLayoutManager))
         val typeFactory = ExploreImageTypeFactoryImpl(this)
         imageAdapter.setTypeFactory(typeFactory)
         exploreImageRv.adapter = imageAdapter
+        feedFloatingButtonManager.setDelayForExpandFab(exploreImageRv)
     }
 
     private fun initVar() {
         if (arguments != null) {
-            categoryId = Integer.valueOf(arguments!!.getString(
+            categoryId = Integer.valueOf(requireArguments().getString(
                     PARAM_CATEGORY_ID,
                     DEFAULT_CATEGORY)
             )
             presenter.updateCategoryId(categoryId)
         }
+
+        feedFloatingButtonManager.setInitialData(parentFragment)
     }
 
     private fun loadData() {
         if (userVisibleHint && isAdded && activity != null && ::presenter.isInitialized) {
             if (!hasLoadedOnce) {
                 performanceMonitoring = PerformanceMonitoring.start(PEFORMANCE_EXPLORE)
-                Embrace.getInstance().startEvent(PEFORMANCE_EXPLORE, null, false)
                 presenter.getExploreData(true)
                 hasLoadedOnce = !hasLoadedOnce
             }
@@ -202,6 +205,12 @@ class ContentExploreFragment :
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        exploreImageRv.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        feedFloatingButtonManager.cancel()
     }
 
     override fun onSuccessGetExploreData(exploreViewModel: ExploreViewModel, clearData: Boolean) {
@@ -394,7 +403,6 @@ class ContentExploreFragment :
     override fun stopTrace() {
         if (::performanceMonitoring.isInitialized && !isTraceStopped) {
             performanceMonitoring.stopTrace()
-            Embrace.getInstance().endEvent(PEFORMANCE_EXPLORE)
             isTraceStopped = true
         }
     }

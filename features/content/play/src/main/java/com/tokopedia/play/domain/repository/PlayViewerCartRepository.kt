@@ -1,11 +1,11 @@
 package com.tokopedia.play.domain.repository
 
+import com.tokopedia.play.data.CartFeedbackResponseModel
+
 /**
  * Created by jegul on 29/07/21
  */
 interface PlayViewerCartRepository {
-
-    suspend fun getItemCountInCart(): Int
 
     suspend fun addItemToCart(
             productId: String,
@@ -13,5 +13,5 @@ interface PlayViewerCartRepository {
             productShopId: String,
             price: String,
             qty: Int,
-    ): Boolean
+    ): CartFeedbackResponseModel
 }

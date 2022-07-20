@@ -14,7 +14,6 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
         val inputView = itemView as TopupBillsInputFieldWidget
         inputView.resetState()
         inputView.setLabel(enquiryData.text)
-        inputView.setHint("")
         inputView.setInputType(enquiryData.style)
         if (!isAddSBM) {
             inputView.isCustomInput = enquiryData.isFavoriteNumber
@@ -58,7 +57,7 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
         if (enquiryData.value.isNotEmpty() && !isAddSBM) {
             inputView.setInputText(enquiryData.value, false)
             listener.onFinishInput(enquiryData.name, enquiryData.value, adapterPosition)
-        }
+        } else inputView.setInputText("", false)
     }
 
     private fun verifyField(fieldValidation: List<CatalogProductInput.Validation>,

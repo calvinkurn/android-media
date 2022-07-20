@@ -56,7 +56,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
                            propertyId: Long, searchParam: HotelHomepageModel, source: String) {
         launch {
             getHotelInfo(hotelInfoQuery, propertyId, source)
-            getHotelReview(hotelReviewQuery, propertyId)
+            getHotelReview(hotelReviewQuery, propertyId.toString())
             getRoomList(roomListQuery, searchParam)
             getNearbyLandmarks(hotelNearbyLandmarksQuery, propertyId)
         }
@@ -65,7 +65,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
     fun getHotelDetailDataWithoutRoom(hotelInfoQuery: String, hotelReviewQuery: String, hotelNearbyLandmarksQuery: String, propertyId: Long, source: String) {
         launch {
             getHotelInfo(hotelInfoQuery, propertyId, source)
-            getHotelReview(hotelReviewQuery, propertyId)
+            getHotelReview(hotelReviewQuery, propertyId.toString())
             getNearbyLandmarks(hotelNearbyLandmarksQuery, propertyId)
         }
     }
@@ -97,7 +97,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getHotelReview(rawQuery: String, propertyId: Long) {
+    private suspend fun getHotelReview(rawQuery: String, propertyId: String) {
 
         val requestReviewParams = HotelReviewParam(propertyId = propertyId,
                 page = DEFAULT_PAGE_REVIEW,

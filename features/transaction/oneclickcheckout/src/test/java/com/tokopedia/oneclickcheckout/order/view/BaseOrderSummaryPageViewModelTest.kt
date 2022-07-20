@@ -1,18 +1,26 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
+import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
-import com.tokopedia.oneclickcheckout.order.view.processor.*
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCalculator
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCartProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageCheckoutProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogisticProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -42,6 +50,9 @@ open class BaseOrderSummaryPageViewModelTest {
     @MockK(relaxed = true)
     lateinit var updateCartOccUseCase: UpdateCartOccUseCase
 
+    @MockK(relaxed = true)
+    lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
+
     private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
 
     @MockK
@@ -60,6 +71,9 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var creditCardTenorListUseCase: CreditCardTenorListUseCase
 
     @MockK(relaxed = true)
+    lateinit var goCicilInstallmentOptionUseCase: GoCicilInstallmentOptionUseCase
+
+    @MockK(relaxed = true)
     lateinit var clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>
 
     @MockK(relaxed = true)
@@ -70,6 +84,9 @@ open class BaseOrderSummaryPageViewModelTest {
 
     @MockK(relaxed = true)
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
+
+    @MockK(relaxed = true)
+    lateinit var gson: Gson
 
     val testDispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers
 
@@ -84,10 +101,10 @@ open class BaseOrderSummaryPageViewModelTest {
         orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers,
                 OrderSummaryPageCartProcessor(addToCartOccMultiExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
                 OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, chooseAddressRepository, chooseAddressMapper, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
-                OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers, gson),
                 OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
-                { OrderSummaryPagePaymentProcessor(creditCardTenorListUseCase, testDispatchers) },
+                { OrderSummaryPagePaymentProcessor(creditCardTenorListUseCase, goCicilInstallmentOptionUseCase, testDispatchers) },
                 OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
-                userSessionInterface, orderSummaryAnalytics)
+                userSessionInterface, orderSummaryAnalytics, eligibleForAddressUseCase)
     }
 }

@@ -10,16 +10,13 @@ import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
 import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransformer
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import dagger.Module
 import dagger.Provides
 
 @Module(includes = [MediaUploaderModule::class])
 class PlayBroadcastSetupModule {
-
-    @Provides
-    fun provideGraphQLRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
-    }
 
     @Provides
     fun provideUpdateChannelUseCase(graphqlRepository: GraphqlRepository): UpdateChannelUseCase {
@@ -34,4 +31,9 @@ class PlayBroadcastSetupModule {
     @PlayBroadcastSetupScope
     fun provideCoverImageTransformer(): ImageTransformer = PlayMinimumCoverImageTransformer()
 
+    @Provides
+    @PlayBroadcastSetupScope
+    fun provideHtmlTextTransformer(): HtmlTextTransformer {
+        return DefaultHtmlTextTransformer()
+    }
 }

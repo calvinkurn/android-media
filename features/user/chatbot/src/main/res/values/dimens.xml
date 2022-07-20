@@ -20,4 +20,7 @@
     <dimen name="dp_chatbot_87">87dp</dimen>
     <dimen name="dp_chatbot_110">110dp</dimen>
     <dimen name="dp_chatbot_240">240dp</dimen>
+    <dimen name="dp_chatbot_220">220dp</dimen>
+    <dimen name="dp_chatbot_80">80dp</dimen>
+    <dimen name="dp_chatbot_14">14dp</dimen>
 </resources>

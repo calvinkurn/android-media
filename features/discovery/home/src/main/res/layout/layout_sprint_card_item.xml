@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:maxEms="12"
-            android:textSize="@dimen/sp_18"
+            android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/count_down"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -59,7 +59,7 @@
             tools:layout_width="100dp"
             tools:visibility="visible" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/see_all_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,8 +72,8 @@
             android:lineSpacingExtra="3sp"
             android:text="@string/lihat_semua"
             android:textColor="@color/Unify_G500"
-            android:textSize="13sp"
             android:textStyle="normal"
+            app:typographyType="heading_6"
             app:layout_constraintBottom_toBottomOf="@+id/channel_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/channel_title" />

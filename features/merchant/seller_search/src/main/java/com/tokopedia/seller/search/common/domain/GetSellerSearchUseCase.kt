@@ -38,6 +38,10 @@ class GetSellerSearchUseCase @Inject constructor(
                       url
                       app_url
                       image_url
+                      sub_item {
+                        title
+                        app_url
+                      }
                     }
                   }
                   count

@@ -3,7 +3,7 @@ package com.tokopedia.analyticsdebugger.debugger.data.source
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.tokopedia.analyticsdebugger.AnalyticsSource
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource
 
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.repository.PER_PAGE

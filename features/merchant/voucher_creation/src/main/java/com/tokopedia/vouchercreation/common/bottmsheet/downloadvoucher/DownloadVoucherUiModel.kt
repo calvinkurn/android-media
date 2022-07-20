@@ -1,7 +1,7 @@
 package com.tokopedia.vouchercreation.common.bottmsheet.downloadvoucher
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.DownloadVoucherFactory
+import com.tokopedia.vouchercreation.shop.voucherlist.view.adapter.factory.DownloadVoucherFactory
 
 /**
  * Created By @ilhamsuaib on 28/04/20

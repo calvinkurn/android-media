@@ -1,0 +1,16 @@
+{
+  "readme": "Review Reply - click three dots menu",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "review reply page",
+      "productId": "\\d+",
+      "shopId": "\\d+",
+      "screenName": "review reply page",
+      "event": "clickReview",
+      "eventAction": "click - three dots",
+      "sessionIris": ".+",
+      "eventLabel": "feedbackId:\\d+"
+    }
+  ]
+}

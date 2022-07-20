@@ -88,12 +88,44 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvPieChartSubValue"
                 app:layout_constraintVertical_bias="0.0" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierShcPieChart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="pieChartShc, btnShcPieChartEmpty" />
+
+            <View
+                android:id="@+id/horLineShcPieChartBtm"
+                android:layout_width="0dp"
+                android:layout_height="0.1dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/barrierShcPieChart"
+                tools:layout_constraintTop_toBottomOf="@+id/pieChartShc" />
+
+            <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
+                android:id="@+id/luvShcPieChart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcPieChartBtm"
+                app:layout_constraintEnd_toStartOf="@+id/btnShcPieChartSeeMore"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/horLineShcPieChartBtm" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btnShcPieChartSeeMore"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="@dimen/layout_lvl2"
                 android:gravity="end"
                 android:paddingStart="@dimen/layout_lvl0"
@@ -101,27 +133,12 @@
                 android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/fontSize_lvl3"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/icShcPieChartSeeMore"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pieChartShc"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcPieChartBtm"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/horLineShcPieChartBtm"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
                 tools:text="Selengkapnya"
-                tools:visibility="visible" />
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/icShcPieChartSeeMore"
-                android:layout_width="@dimen/layout_lvl3"
-                android:layout_height="@dimen/layout_lvl3"
-                android:layout_marginEnd="@dimen/layout_lvl2"
-                android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya"
-                android:visibility="gone"
-                app:icon_color_light_enable="@color/Unify_G500"
-                app:icon_name="CHEVRON_RIGHT"
-                app:layout_constraintBottom_toBottomOf="@+id/btnShcPieChartSeeMore"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/btnShcPieChartSeeMore"
                 tools:visibility="visible" />
 
             <include

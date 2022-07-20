@@ -13,12 +13,16 @@ import com.tokopedia.discovery2.analytics.LIST
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent: AbstractViewHolder? = null)
     : ListAdapter<ComponentsItem, AbstractViewHolder>(ComponentsDiffCallBacks()) {
@@ -62,9 +66,9 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     override fun getItemId(position: Int): Long {
-        if (componentList.isNullOrEmpty() || position >= componentList.size ||
-            componentList[position].data.isNullOrEmpty()
-        ) {
+        if (componentList.isNullOrEmpty() || position >= componentList.size
+            || componentList[position].data.isNullOrEmpty()
+            || componentList[position].data?.firstOrNull()?.productId.isNullOrEmpty()) {
             return super.getItemId(position)
         }
         return componentList[position].data?.firstOrNull()?.productId?.toLongOrNull()
@@ -99,7 +103,10 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         val layoutParams = holder.itemView.layoutParams
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             layoutParams.isFullSpan = when (holder) {
-                is ProductCardItemViewHolder -> false
+                is CalendarWidgetItemViewHolder -> false
+                is ShimmerCalendarViewHolder -> false
+                is ShopBannerInfiniteItemViewHolder -> false
+                is ShopCardItemViewHolder -> false
                 is MasterProductCardItemViewHolder -> template == LIST
                 is ShimmerProductCardViewHolder -> template == LIST
                 else -> true
@@ -122,9 +129,17 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     fun setCurrentHeader(currentHeader : Pair<Int, RecyclerView.ViewHolder>?){
         mCurrentHeader = currentHeader
+        if (currentHeader == null) {
+            (fragment as DiscoveryFragment).stickyHeaderIsHidden()
+        } else
+            (fragment as DiscoveryFragment).showingStickyHeader()
     }
 
     fun getCurrentHeader() = mCurrentHeader
+
+    fun notifySectionId(it: String) {
+        (fragment as? DiscoveryFragment)?.updateSelectedSection(it)
+    }
 
 }
 

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/containerProductAttachment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginEnd="@dimen/spacing_lvl2"
-    app:widthMultiplier="1" />

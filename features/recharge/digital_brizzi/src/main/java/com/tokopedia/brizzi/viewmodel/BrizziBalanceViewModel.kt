@@ -2,7 +2,7 @@ package com.tokopedia.brizzi.viewmodel
 
 import android.content.Intent
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.authentication.AuthKey
+import com.tokopedia.network.authentication.AuthKey
 import com.tokopedia.brizzi.data.BrizziInquiryLogResponse
 import com.tokopedia.brizzi.data.BrizziTokenResponse
 import com.tokopedia.brizzi.mapper.BrizziCardObjectMapper
@@ -15,6 +15,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -112,7 +113,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             }.getSuccessData<BrizziInquiryLogResponse>()
 
             data.brizziInquiryLog?.let {
-                inquiryIdBrizzi = it.inquiryId
+                inquiryIdBrizzi = it.inquiryId.toIntOrZero()
             }
         }) {
             inquiryIdBrizzi = -1

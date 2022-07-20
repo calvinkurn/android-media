@@ -6,12 +6,11 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.common.utils.convertToBitmap
 
 class ThumbnailFileView @JvmOverloads constructor(
         context: Context,
@@ -41,7 +40,7 @@ class ThumbnailFileView @JvmOverloads constructor(
             val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.ThumbnailFileView, 0, 0)
             typedArray?.let {
                 val imageAttr = it.getInteger(R.styleable.ThumbnailFileView_image, 0)
-                val titleAttr = it.getString(R.styleable.ThumbnailFileView_title) ?: ""
+                val titleAttr = it.getString(R.styleable.ThumbnailFileView_title).orEmpty()
 
                 textTitle.text = titleAttr
                 if (imageAttr != 0) {
@@ -54,18 +53,16 @@ class ThumbnailFileView @JvmOverloads constructor(
     }
 
     fun setImage(url: String) {
-        imageThumbnail.scaleType = ImageView.ScaleType.CENTER_CROP
-        convertToBitmap(url)?.let {
-            imageThumbnail.setImageBitmap(it)
+        imageThumbnail.apply {
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            loadImage(url) {
+                useCache(false)
+                setCacheStrategy(MediaCacheStrategy.NONE)
+            }
         }
     }
 
-    fun setImage(@DrawableRes drawable: Int) {
-        imageThumbnail.clearImage()
-        imageThumbnail.setImage(drawable, IMAGE_RADIUS)
-    }
-
-    companion object {
-        const val IMAGE_RADIUS = 6f
+    private fun setImage(@DrawableRes drawable: Int) {
+        imageThumbnail.loadImage(drawable)
     }
 }

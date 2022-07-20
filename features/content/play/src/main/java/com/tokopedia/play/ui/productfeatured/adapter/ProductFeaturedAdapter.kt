@@ -4,8 +4,6 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.adapter.delegate.ProductFeaturedAdapterDelegate
 import com.tokopedia.play.ui.productfeatured.adapter.delegate.ProductFeaturedPlaceholderAdapterDelegate
-import com.tokopedia.play.ui.productfeatured.adapter.delegate.ProductFeaturedSeeMoreAdapterDelegate
-import com.tokopedia.play.ui.productfeatured.viewholder.ProductFeaturedSeeMoreViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 
 /**
@@ -13,13 +11,11 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
  */
 class ProductFeaturedAdapter(
         productFeaturedListener: ProductBasicViewHolder.Listener,
-        productSeeMoreListener: ProductFeaturedSeeMoreViewHolder.Listener
 ) : BaseDiffUtilAdapter<PlayProductUiModel>() {
 
     init {
         delegatesManager
                 .addDelegate(ProductFeaturedAdapterDelegate(productFeaturedListener))
-                .addDelegate(ProductFeaturedSeeMoreAdapterDelegate(productSeeMoreListener))
                 .addDelegate(ProductFeaturedPlaceholderAdapterDelegate())
     }
 

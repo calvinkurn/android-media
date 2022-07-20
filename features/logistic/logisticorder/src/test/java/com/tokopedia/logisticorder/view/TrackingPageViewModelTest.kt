@@ -3,8 +3,11 @@ package com.tokopedia.logisticorder.view
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.tokopedia.logisticorder.domain.response.GetDriverTipResponse
 import com.tokopedia.logisticorder.domain.response.GetLogisticTrackingResponse
+import com.tokopedia.logisticorder.mapper.DriverTipMapper
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
+import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.usecase.TrackingPageRepository
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
@@ -31,24 +34,25 @@ class TrackingPageViewModelTest {
 
     private val repo: TrackingPageRepository = mockk(relaxed = true)
     private val mapper = TrackingPageMapperNew()
-
-    private val trackingPageRepository: TrackingPageRepository = mockk(relaxed = true)
+    private val driverTipMapper = DriverTipMapper()
 
     private lateinit var trackingPageViewModel: TrackingPageViewModel
 
     private val trackingDataObserver: Observer<Result<TrackingDataModel>> = mockk(relaxed = true)
     private val retryBookingObserver: Observer<Result<RetryBookingResponse>> = mockk(relaxed = true)
     private val retryAvailabilityObserver: Observer<Result<RetryAvailabilityResponse>> = mockk(relaxed = true)
+    private val driverTipDataObserver: Observer<Result<LogisticDriverModel>> = mockk(relaxed = true)
 
     private val defaultThrowable = Throwable("test error")
 
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        trackingPageViewModel = TrackingPageViewModel(repo, mapper)
+        trackingPageViewModel = TrackingPageViewModel(repo, mapper, driverTipMapper)
         trackingPageViewModel.trackingData.observeForever(trackingDataObserver)
         trackingPageViewModel.retryBooking.observeForever(retryBookingObserver)
         trackingPageViewModel.retryAvailability.observeForever(retryAvailabilityObserver)
+        trackingPageViewModel.driverTipData.observeForever(driverTipDataObserver)
     }
 
     @Test
@@ -93,5 +97,17 @@ class TrackingPageViewModelTest {
         verify { retryAvailabilityObserver.onChanged(match { it is Fail }) }
     }
 
+    @Test
+    fun `Driver Tips Data Success`() {
+        coEvery { repo.getDriverTip(any()) } returns GetDriverTipResponse()
+        trackingPageViewModel.getDriverTipsData("12234")
+        verify { driverTipDataObserver.onChanged(match { it is Success }) }
+    }
 
+    @Test
+    fun `Driver Tips Data Fail`() {
+        coEvery { repo.getDriverTip(any()) } throws defaultThrowable
+        trackingPageViewModel.getDriverTipsData("12234")
+        verify { driverTipDataObserver.onChanged(match { it is Fail }) }
+    }
 }

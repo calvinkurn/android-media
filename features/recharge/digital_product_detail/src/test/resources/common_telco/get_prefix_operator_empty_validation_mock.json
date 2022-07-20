@@ -1,0 +1,11 @@
+{
+  "rechargeCatalogPrefixSelect": {
+    "componentID": 5,
+    "name": "client_number",
+    "paramName": "operator",
+    "text": "Masukkan Nomor HP",
+    "help": "Input Nomor Telepon Anda\t",
+    "placeholder": "Nomor Telepon\t",
+    "validations": []
+  }
+}

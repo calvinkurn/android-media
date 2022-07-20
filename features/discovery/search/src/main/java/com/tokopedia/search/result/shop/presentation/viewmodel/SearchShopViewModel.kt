@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.State
@@ -22,8 +22,10 @@ import com.tokopedia.filter.common.helper.getFilterParams
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.analytics.GeneralSearchTrackingShop
 import com.tokopedia.search.analytics.SearchEventTracking
+import com.tokopedia.search.result.shop.chooseaddress.ChooseAddressDataView
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopDataView
@@ -32,7 +34,9 @@ import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTit
 import com.tokopedia.search.result.shop.presentation.model.ShopSuggestionDataView
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.convertValuesToString
+import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.search.utils.createSearchShopDefaultQuickFilter
+import com.tokopedia.search.utils.toSearchParams
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -41,7 +45,9 @@ import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
+import java.util.ArrayList
 
+@Suppress("LongParameterList")
 internal class SearchShopViewModel(
         dispatcher: CoroutineDispatchers,
         searchParameter: Map<String, Any>,
@@ -51,7 +57,8 @@ internal class SearchShopViewModel(
         private val getShopCountUseCase: Lazy<UseCase<Int>>,
         private val shopCpmDataViewMapper: Lazy<Mapper<SearchShopModel, ShopCpmDataView>>,
         private val shopDataViewMapper: Lazy<Mapper<SearchShopModel, ShopDataView>>,
-        private val userSession: Lazy<UserSessionInterface>
+        private val userSession: Lazy<UserSessionInterface>,
+        private val chooseAddressWrapper: ChooseAddressWrapper,
 ) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -74,11 +81,11 @@ internal class SearchShopViewModel(
     private val dynamicFilterEventLiveData = MutableLiveData<Event<Boolean>>()
     private val openFilterPageTrackingEventMutableLiveData = MutableLiveData<Event<Boolean>>()
     private val openFilterPageEventLiveData = MutableLiveData<Event<Boolean>>()
-    private val shopItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
-    private val productPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
+    private val shopItemImpressionTrackingEventLiveData = MutableLiveData<Event<ArrayList<Any>>>()
+    private val productPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<ArrayList<Any>>>()
     private val searchShopFirstPagePerformanceMonitoringEventLiveData = MutableLiveData<Event<Boolean>>()
-    private val shopRecommendationItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
-    private val shopRecommendationProductPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
+    private val shopRecommendationItemImpressionTrackingEventLiveData = MutableLiveData<Event<ArrayList<Any>>>()
+    private val shopRecommendationProductPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<ArrayList<Any>>>()
     private val clickShopItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem>>()
     private val clickNotActiveShopItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem>>()
     private val clickShopRecommendationItemTrackingEventLiveData = MutableLiveData<Event<ShopDataView.ShopItem>>()
@@ -96,6 +103,9 @@ internal class SearchShopViewModel(
     val generalSearchTrackingLiveData: LiveData<GeneralSearchTrackingShop> =
             generalSearchTrackingMutableLiveData
     var dynamicFilterModel: DynamicFilterModel? = null
+        private set
+    var chooseAddressData: LocalCacheModel? = null
+        private set
 
     init {
         setSearchParameterUniqueId()
@@ -132,6 +142,8 @@ internal class SearchShopViewModel(
     }
 
     fun onViewCreated() {
+        this.chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+
         if (shouldLoadDataOnViewCreated() && !hasLoadData) {
             hasLoadData = true
             searchShop()
@@ -147,6 +159,8 @@ internal class SearchShopViewModel(
             hasLoadData = true
             searchShop()
         }
+
+        reCheckChooseAddressData()
     }
 
     private fun searchShop() {
@@ -178,6 +192,7 @@ internal class SearchShopViewModel(
 
         putRequestParamsParameters(requestParams)
         requestParams.putAll(searchParameter)
+        putRequestParamsChooseAddress(requestParams)
 
         return requestParams
     }
@@ -189,6 +204,11 @@ internal class SearchShopViewModel(
         requestParams.putString(SearchApiConst.ROWS, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS)
         requestParams.putString(SearchApiConst.IMAGE_SIZE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE)
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE)
+    }
+
+    private fun putRequestParamsChooseAddress(requestParams: RequestParams) {
+        val chooseAddressData = chooseAddressData ?: return
+        requestParams.putAllString(chooseAddressData.toSearchParams())
     }
 
     private fun onSearchShopSuccess(searchShopModel: SearchShopModel) {
@@ -285,6 +305,7 @@ internal class SearchShopViewModel(
     private fun createSearchShopListWithHeader(searchShopModel: SearchShopModel): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
+        processChooseAddress(visitableList)
         processCPM(searchShopModel, visitableList)
         processSuggestion(searchShopModel, visitableList)
         processShopItem(searchShopModel, visitableList)
@@ -292,6 +313,10 @@ internal class SearchShopViewModel(
         addLoadingMoreModel(visitableList)
 
         return visitableList
+    }
+
+    private fun processChooseAddress(visitableList: MutableList<Visitable<*>>) {
+        visitableList.add(ChooseAddressDataView())
     }
 
     private fun processCPM(searchShopModel: SearchShopModel, visitableList: MutableList<Visitable<*>>) {
@@ -304,9 +329,7 @@ internal class SearchShopViewModel(
     }
 
     private fun shouldShowCpmShop(searchShopModel: SearchShopModel): Boolean {
-        if (searchShopModel.cpmModel.data.size <= 0) return false
-
-        val cpm = searchShopModel.cpmModel.data?.first()?.cpm ?: return false
+        val cpm = searchShopModel.cpmModel.data?.firstOrNull()?.cpm ?: return false
 
         return if (isViewWillRenderCpmShop(cpm)) true
         else isViewWillRenderCpmDigital(cpm)
@@ -401,8 +424,8 @@ internal class SearchShopViewModel(
     private fun postImpressionTrackingEvent(searchShopModel: SearchShopModel, visitableList: List<Visitable<*>>) {
         if (!searchShopModel.hasShopList()) return
 
-        val dataLayerShopItemList = mutableListOf<Any>()
-        val dataLayerShopItemProductList = mutableListOf<Any>()
+        val dataLayerShopItemList = ArrayList<Any>()
+        val dataLayerShopItemProductList = ArrayList<Any>()
 
         for (shopItem in visitableList) {
             if (shopItem is ShopDataView.ShopItem) {
@@ -475,8 +498,8 @@ internal class SearchShopViewModel(
     private fun postRecommendationImpressionTrackingEvent(searchShopModel: SearchShopModel, visitableList: List<Visitable<*>>) {
         if (!searchShopModel.hasRecommendationShopList()) return
 
-        val dataLayerShopItemList = mutableListOf<Any>()
-        val dataLayerShopItemProductList = mutableListOf<Any>()
+        val dataLayerShopItemList = ArrayList<Any>()
+        val dataLayerShopItemProductList = ArrayList<Any>()
 
         for (shopItem in visitableList) {
             if (shopItem is ShopDataView.ShopItem) {
@@ -838,7 +861,7 @@ internal class SearchShopViewModel(
         shopCountMutableLiveData.value = shopCount.toString()
     }
 
-    private fun catchRequestShopCountError(throwable: Throwable) {
+    private fun catchRequestShopCountError(ignored: Throwable) {
         setShopCount(0)
     }
 
@@ -846,6 +869,24 @@ internal class SearchShopViewModel(
         RequestParams.create().also {
             it.putAll(mapParameter)
         }
+
+    fun onLocalizingAddressSelected() {
+        chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+        dynamicFilterModel = null
+
+        onViewReloadData()
+    }
+
+    fun onViewResume() {
+        reCheckChooseAddressData()
+    }
+
+    fun reCheckChooseAddressData() {
+        val chooseAddressData = chooseAddressData ?: return
+        val isAddressDataUpdated = chooseAddressWrapper.isChooseAddressUpdated(chooseAddressData)
+
+        if (isAddressDataUpdated) onLocalizingAddressSelected()
+    }
 
     fun getSearchParameter() = searchParameter.toMap()
 
@@ -864,18 +905,18 @@ internal class SearchShopViewModel(
 
     fun getActiveFilterOptionListForEmptySearch() = filterController.getActiveFilterOptionList()
 
-    fun getShopItemImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> = shopItemImpressionTrackingEventLiveData
+    fun getShopItemImpressionTrackingEventLiveData(): LiveData<Event<ArrayList<Any>>> = shopItemImpressionTrackingEventLiveData
 
-    fun getProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> =
+    fun getProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<ArrayList<Any>>> =
             productPreviewImpressionTrackingEventLiveData
 
     fun getSearchShopFirstPagePerformanceMonitoringEventLiveData(): LiveData<Event<Boolean>> =
             searchShopFirstPagePerformanceMonitoringEventLiveData
 
-    fun getShopRecommendationItemImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> =
+    fun getShopRecommendationItemImpressionTrackingEventLiveData(): LiveData<Event<ArrayList<Any>>> =
             shopRecommendationItemImpressionTrackingEventLiveData
 
-    fun getShopRecommendationProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> =
+    fun getShopRecommendationProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<ArrayList<Any>>> =
             shopRecommendationProductPreviewImpressionTrackingEventLiveData
 
     fun getClickShopItemTrackingEventLiveData(): LiveData<Event<ShopDataView.ShopItem>> = clickShopItemTrackingEventLiveData

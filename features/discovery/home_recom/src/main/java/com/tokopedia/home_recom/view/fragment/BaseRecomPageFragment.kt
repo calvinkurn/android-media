@@ -35,6 +35,7 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -92,6 +93,8 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
 
     protected abstract fun setMiniCartPageName(): MiniCartAnalytics.Page
 
+    protected abstract fun setMiniCartSource(): MiniCartSource
+
     companion object {
         private const val ERROR_COBA_LAGI = "Coba Lagi"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
@@ -106,7 +109,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
         setHasOptionsMenu(true)
         productAdapter = createAdapterInstance()
@@ -269,6 +272,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
             if (miniCartSimplifiedData.miniCartItems.isEmpty()) {
                 it.gone()
             } else {
+                initMiniCartWidget()
                 it.updateData(miniCartSimplifiedData)
                 it.show()
             }
@@ -389,7 +393,8 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
                     fragment = setImplementingFragment(),
                     listener = setMiniCartWidgetListener(),
                     autoInitializeData = false,
-                    pageName = setMiniCartPageName()
+                    pageName = setMiniCartPageName(),
+                    source = setMiniCartSource()
             )
         }
     }

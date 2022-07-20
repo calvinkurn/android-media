@@ -7,7 +7,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class TextComponentViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class TextComponentViewModel(application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
 
     private var textComponentLiveData: MutableLiveData<DataItem> = MutableLiveData()
 

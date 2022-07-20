@@ -1,15 +1,15 @@
 package com.tokopedia.profilecompletion.addpin.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -20,7 +20,6 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.StatusPinData
 import com.tokopedia.profilecompletion.addpin.view.activity.PinOnboardingActivity
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
-import com.tokopedia.profilecompletion.changepin.view.activity.ChangePinActivity
 import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
@@ -43,10 +42,13 @@ class PinOnboardingFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var loadingDialog: LoadingDialog
 
@@ -60,8 +62,10 @@ class PinOnboardingFragment : BaseDaggerFragment() {
         ColorUtils.setBackgroundColor(context, activity)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_onboard_pin, container, false)
     }
 
@@ -118,7 +122,9 @@ class PinOnboardingFragment : BaseDaggerFragment() {
             goToChangePin()
         } else {
             if (activity is PinOnboardingActivity) {
-                (activity as PinOnboardingActivity).supportActionBar?.setDisplayShowTitleEnabled(true)
+                (activity as PinOnboardingActivity).supportActionBar?.setDisplayShowTitleEnabled(
+                    true
+                )
             }
             hideLoading()
         }
@@ -192,7 +198,8 @@ class PinOnboardingFragment : BaseDaggerFragment() {
 
         const val REQUEST_CODE_ADD_PHONE = 100
 
-        const val ONBOARD_PICT_URL = "https://ecs7.tokopedia.net/android/user/high_onboard_create_pin.png"
+        const val ONBOARD_PICT_URL =
+            "https://ecs7.tokopedia.net/android/user/high_onboard_create_pin.png"
 
         fun createInstance(bundle: Bundle): PinOnboardingFragment {
             val fragment = PinOnboardingFragment()

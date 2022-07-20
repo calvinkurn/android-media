@@ -42,25 +42,43 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation projectOrAar(rootProject.ext.libraries.webview)
+
+    //test
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.rxKotlin
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation rootProject.ext.miscDependencies.viewModelKtx
+
+    //test
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+
+    implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
 }
 
 project.ext {
@@ -71,3 +89,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

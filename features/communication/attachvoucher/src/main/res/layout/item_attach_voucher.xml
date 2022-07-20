@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_lvl4">
+
+    <RadioButton
+        android:id="@+id/rbSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@color/attach_voucher_transparent"
+        android:clickable="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:buttonTint="@color/Unify_N700_68"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_attachvoucher_13"
+        android:layout_marginLeft="@dimen/dp_attachvoucher_13"
+        app:layout_constraintBottom_toBottomOf="@+id/rbSelect"
+        app:layout_constraintStart_toEndOf="@+id/rbSelect"
+        app:layout_constraintTop_toTopOf="@+id/rbSelect"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Cashback 20rb" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/voucher_publicity_status"
+        app:layout_constraintTop_toTopOf="@id/title"
+        app:layout_constraintLeft_toRightOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        app:labelType="highlight_light_grey"
+        tools:text="Khusus"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/validStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toStartOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_NN600"
+        tools:text="Berlaku hingga: 20 Nov 2019  |  Tersisa: 8" />
+
+    <com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
+        android:id="@+id/voucher"
+        android:layout_width="@dimen/dp_attachvoucher_270"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:clipToPadding="false"
+        android:padding="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toEndOf="@id/rbSelect"
+        app:layout_constraintTop_toBottomOf="@+id/validStatus"
+        app:vchElevation="@dimen/spacing_lvl3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,6 +18,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_ERROR_COUN
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
+import com.tokopedia.home.ui.HomeMockValueHelper.setupRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
@@ -46,12 +47,14 @@ class HomeFragmentDynamicChannelErrorUiTest {
         InstrumentationHomeRevampTestActivity::class.java
     ) {
         override fun beforeActivityLaunched() {
+            InstrumentationRegistry.getInstrumentation().context.deleteHomeDatabase()
             InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
             setupGraphqlMockResponse(HomeDynamicChannelErrorResponseConfig())
             disableCoachMark(context)
             setupAbTestRemoteConfig()
+            setupRemoteConfig()
             super.beforeActivityLaunched()
         }
     }
@@ -65,7 +68,6 @@ class HomeFragmentDynamicChannelErrorUiTest {
             limitCountToIdle = totalData
         )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
-        activityRule.deleteHomeDatabase()
     }
 
     @After

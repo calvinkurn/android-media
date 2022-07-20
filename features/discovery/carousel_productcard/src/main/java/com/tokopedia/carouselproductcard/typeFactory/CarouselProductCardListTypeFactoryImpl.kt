@@ -8,7 +8,9 @@ import com.tokopedia.carouselproductcard.CarouselProductCardModel
 import com.tokopedia.carouselproductcard.CarouselSeeMoreCardGridViewHolder
 import com.tokopedia.carouselproductcard.CarouselSeeMoreCardModel
 
-internal class CarouselProductCardListTypeFactoryImpl : CarouselProductCardTypeFactory{
+internal class CarouselProductCardListTypeFactoryImpl(
+    private val internalListener: CarouselProductCardInternalListener,
+) : CarouselProductCardTypeFactory{
     override fun type(carouselProductCardModel: CarouselProductCardModel) : Int{
         return CarouselProductCardListViewHolder.LAYOUT
     }
@@ -17,12 +19,19 @@ internal class CarouselProductCardListTypeFactoryImpl : CarouselProductCardTypeF
         return CarouselSeeMoreCardGridViewHolder.LAYOUT
     }
 
+    override fun type(carouselViewAllCardModel: CarouselViewAllCardModel): Int {
+        return CarouselViewAllCardViewHolder.LAYOUT
+    }
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseProductCardViewHolder<BaseCarouselCardModel> {
         val view = LayoutInflater
                 .from(viewGroup.context)
                 .inflate(viewType, viewGroup, false)
         return when(viewType){
-            CarouselProductCardListViewHolder.LAYOUT -> CarouselProductCardListViewHolder(view)
+            CarouselProductCardListViewHolder.LAYOUT ->
+                CarouselProductCardListViewHolder(view, internalListener)
+            CarouselViewAllCardViewHolder.LAYOUT ->
+                CarouselViewAllCardViewHolder(view)
             else -> CarouselSeeMoreCardGridViewHolder(view)
         } as BaseProductCardViewHolder<BaseCarouselCardModel>
     }

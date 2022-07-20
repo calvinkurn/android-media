@@ -8,7 +8,8 @@
             android:name=".list.presentation.activities.SomListActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/SomListTheme">
+            android:theme="@style/SomListTheme"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -19,87 +20,71 @@
                     android:host="@string/host_seller"
                     android:path="@string/path_new_order"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_ready_to_ship"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_shipped"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_delivered"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_history"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_cancelled"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_waiting_pickup"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_waiting_awb"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_awb_invalid"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_awb_change"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_retur"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_complaint"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_finished"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_cancellation_request"
                     android:scheme="@string/internal_scheme" />
-
             </intent-filter>
         </activity>
-
         <activity
             android:name=".filter.presentation.activity.SomSubFilterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity"
             android:label="@string/title_som_detail"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -110,59 +95,47 @@
                     android:host="@string/host_seller"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
             </intent-filter>
-
         </activity>
-
         <activity
             android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name=".requestpickup.presentation.activity.SomConfirmReqPickupActivity"
             android:label="@string/title_som_confirm_req_pickup"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name=".confirmshipping.presentation.activity.SomConfirmShippingActivity"
             android:label="@string/title_som_confirm_shipping"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name=".confirmshipping.presentation.activity.SomScanResiActivity"
             android:label="@string/title_som_scan_barcode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity"
             android:label="@string/title_som_booking_code"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity"
             android:label="@string/title_logistic_info"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name=".waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity"
             android:label="@string/title_som_waiting_payment"
             android:screenOrientation="portrait"
             android:theme="@style/WaitingPaymentOrderTheme" />
-
         <activity
             android:name=".common.presenter.activities.SomPrintAwbActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
     </application>
 </manifest>
-

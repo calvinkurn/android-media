@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
@@ -15,12 +16,15 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.YouTubeViewComponent
@@ -29,14 +33,15 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.dpToPx
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
  * Created by jegul on 28/04/20
  */
 class PlayYouTubeFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val analytic: PlayAnalytic
+        private val analytic: PlayAnalytic,
+        private val playLog: PlayLog
 ): TkpdBaseV4Fragment(), PlayFragmentContract, YouTubeViewComponent.Listener, YouTubeViewComponent.DataSource {
 
     private lateinit var containerYouTube: RoundedConstraintLayout
@@ -55,7 +60,7 @@ class PlayYouTubeFragment @Inject constructor(
         get() = requireActivity() as PlayOrientationListener
 
     private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
 
     private val isYouTube: Boolean
         get() = playViewModel.videoPlayer.isYouTube
@@ -68,7 +73,9 @@ class PlayYouTubeFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(
+            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
+        ).get(PlayViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -137,7 +144,7 @@ class PlayYouTubeFragment @Inject constructor(
      * Private methods
      */
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic, playLog)
     }
 
     private fun initView(view: View) {
@@ -147,12 +154,12 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun enterFullscreen() {
-        if (!orientation.isLandscape)
+        if (isAdded && !orientation.isLandscape)
             orientationListener.onOrientationChanged(ScreenOrientation.Landscape, isTilting = false)
     }
 
     private fun exitFullscreen() {
-        if (!orientation.isPortrait)
+        if (isAdded && !orientation.isPortrait)
             orientationListener.onOrientationChanged(ScreenOrientation.Portrait, isTilting = false)
     }
 
@@ -163,8 +170,9 @@ class PlayYouTubeFragment @Inject constructor(
     private fun setupObserve() {
         observeVideoMeta()
         observeBottomInsetsState()
-        observeEventUserInfo()
         observePiPEvent()
+
+        observeUiState()
     }
 
     //region observe
@@ -174,6 +182,8 @@ class PlayYouTubeFragment @Inject constructor(
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner) {
             youtubeViewOnStateChanged(videoPlayer = it.videoPlayer)
+
+            videoAnalyticHelper.setVideoData(playViewModel.channelId, it.videoPlayer)
         }
     }
 
@@ -186,15 +196,24 @@ class PlayYouTubeFragment @Inject constructor(
         })
     }
 
-    private fun observeEventUserInfo() {
-        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            youtubeViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
-        })
+    private fun handleStatus(status: PlayStatusUiModel) {
+        youtubeViewOnStateChanged(
+            isFreezeOrBanned = status.channelStatus.statusType.isFreeze ||
+                    status.channelStatus.statusType.isBanned
+        )
     }
 
     private fun observePiPEvent() {
         playViewModel.observableEventPiPState.observe(viewLifecycleOwner) {
             if (it.peekContent() == PiPState.Stop) removePiP()
+        }
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiState.withCache().collectLatest { (_, state) ->
+                handleStatus(state.status)
+            }
         }
     }
 

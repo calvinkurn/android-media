@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/analyticsDebuggerFragment"
-        android:name="com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerFragment"
+        android:name="com.tokopedia.analyticsdebugger.cassava.ui.debugger.AnalyticsDebuggerFragment"
         android:label="Logs" >
         <action
             android:id="@+id/action_analyticsDebuggerFragment_to_analyticsDebuggerDetailFragment"
@@ -13,7 +13,7 @@
     </fragment>
     <fragment
         android:id="@+id/analyticsDebuggerDetailFragment"
-        android:name="com.tokopedia.analyticsdebugger.cassava.debugger.DebuggerListDetailFragment"
+        android:name="com.tokopedia.analyticsdebugger.cassava.ui.debugger.DebuggerListDetailFragment"
         android:label="Log Detail" >
         <argument
             android:name="name"

@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
@@ -50,7 +50,10 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.util.logger.PlayLog
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.uimodel.PlayCastState
+import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.isCasting
 import com.tokopedia.play_common.view.RoundedConstraintLayout
@@ -61,6 +64,7 @@ import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -68,11 +72,11 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayVideoFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
         private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic,
-        private val pipSessionStorage: PiPSessionStorage
+        private val pipSessionStorage: PiPSessionStorage,
+        private val playLog: PlayLog
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
@@ -198,7 +202,7 @@ class PlayVideoFragment @Inject constructor(
     private lateinit var containerVideo: RoundedConstraintLayout
 
     private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
 
     private val isYouTube: Boolean
         get() = playViewModel.videoPlayer.isYouTube
@@ -210,11 +214,16 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(
+            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
+        ).get(PlayViewModel::class.java)
 
         val theActivity = requireActivity()
         if (theActivity is PlayActivity) {
-            playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+            playParentViewModel =
+                ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(
+                    PlayParentViewModel::class.java
+                )
         }
     }
 
@@ -234,9 +243,9 @@ class PlayVideoFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAnalytic()
         initView(view)
         setupView()
+        initAnalytic()
         setupObserve()
     }
 
@@ -303,7 +312,7 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic, playLog)
     }
 
     private fun initView(view: View) {
@@ -320,10 +329,11 @@ class PlayVideoFragment @Inject constructor(
         observeVideoMeta()
         observeVideoProperty()
         observeBottomInsetsState()
-        observeStatusInfo()
         observePiPEvent()
         observeOnboarding()
         observeCastState()
+
+        observeUiState()
     }
 
     private fun showVideoThumbnail() {
@@ -351,6 +361,8 @@ class PlayVideoFragment @Inject constructor(
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
             videoLoadingViewOnStateChanged(videoPlayer = meta.videoPlayer)
+
+            videoAnalyticHelper.setVideoData(playViewModel.channelId, meta.videoPlayer)
         }
     }
 
@@ -373,13 +385,11 @@ class PlayVideoFragment @Inject constructor(
         })
     }
 
-    private fun observeStatusInfo() {
-        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
-            val isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned
+    private fun handleStatus(status: PlayStatusUiModel) {
+        val isFreezeOrBanned = status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned
 
-            videoViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
-            videoLoadingViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
-        })
+        videoViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
+        videoLoadingViewOnStateChanged(isFreezeOrBanned = isFreezeOrBanned)
     }
 
     private fun observePiPEvent() {
@@ -409,6 +419,14 @@ class PlayVideoFragment @Inject constructor(
                 }
             }
         })
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiState.withCache().collectLatest { (_, state) ->
+                handleStatus(state.status)
+            }
+        }
     }
     //endregion
 
@@ -489,7 +507,6 @@ class PlayVideoFragment @Inject constructor(
             videoLoadingView.showCasting()
             return
         }
-
         when (state) {
             PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()
             is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = state.bufferSource)

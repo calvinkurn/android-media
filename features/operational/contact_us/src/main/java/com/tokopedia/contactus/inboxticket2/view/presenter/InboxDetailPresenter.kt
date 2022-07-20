@@ -36,8 +36,10 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -567,7 +569,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
 
     private fun getMultiPartObject(pathFile: String): MultipartBody.Part {
         val file = File(pathFile)
-        val reqFile = RequestBody.create(MediaType.parse(MEDIA_TYPE), file)
+        val reqFile = file.asRequestBody(MEDIA_TYPE.toMediaTypeOrNull())
         return MultipartBody.Part.createFormData(FORM_DATA_KEY, file.name, reqFile)
     }
 

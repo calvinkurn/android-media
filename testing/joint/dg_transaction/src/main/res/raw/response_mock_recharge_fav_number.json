@@ -1,21 +1,55 @@
 [
   {
     "data": {
-      "recharge_favorite_number": {
-        "list": [
+      "digiPersoGetPersonalizedItems": {
+        "trackingData": {
+          "userType": "new user"
+        },
+        "items": [
           {
-            "client_number": "6032984072952405",
-            "label": "",
-            "product_id": 2069,
-            "operator_id": 578,
-            "category_id": 34
+            "id": 1,
+            "title": "6032984011276619",
+            "subtitle": "",
+            "mediaURL": "https://ecs7.tokopedia.net/img/recharge/operator/e-money.png",
+            "trackingData": {
+              "clientNumber": "6032984011276619",
+              "lastOrderDate": "20220302092818",
+              "totalTransaction": "23",
+              "productID": "2069",
+              "operatorID": "578",
+              "categoryID": "34",
+              "operatorName": "Mandiri E-Money"
+            }
           },
           {
-            "client_number": "6013502000675709",
-            "label": "",
-            "product_id": 3235,
-            "operator_id": 1015,
-            "category_id": 34
+            "id": 2,
+            "title": "6032984072952405",
+            "subtitle": "",
+            "mediaURL": "https://ecs7.tokopedia.net/img/recharge/operator/e-money.png",
+            "trackingData": {
+              "clientNumber": "6032984072952405",
+              "lastOrderDate": "20200205122848",
+              "totalTransaction": "6",
+              "productID": "2069",
+              "operatorID": "578",
+              "categoryID": "34",
+              "operatorName": "Mandiri E-Money"
+            }
+          },
+          {
+            "id": 3,
+            "title": "6013502000675709",
+            "subtitle": "",
+            "mediaURL": "https://ecs7.tokopedia.net/img/recharge/operator/brizzi.png",
+            "trackingData": {
+              "clientNumber": "6013502000675709",
+              "lastOrderDate": "20200204174816",
+              "totalTransaction": "1",
+              "productID": "3235",
+              "operatorID": "1015",
+              "categoryID": "34",
+              "operatorName": "BRI BRIZZI"
+            }
           }
         ]
       }

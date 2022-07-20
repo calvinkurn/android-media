@@ -124,6 +124,7 @@ object FingerprintModelGenerator {
         val fp = FingerPrint(
                 unique_id = DeviceInfo.getAdsId(context),
                 device_name = deviceName,
+                user_dname = DeviceInfo.getUserDeviceName(context),
                 device_manufacturer = deviceFabrik,
                 device_model = deviceName,
                 device_system = deviceSystem,

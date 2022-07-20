@@ -1,0 +1,85 @@
+[
+  {
+    "data": {
+      "getInstallmentInfo": {
+        "success": true,
+        "data": {
+          "installment_options": [
+            {
+              "installment_term": 2,
+              "option_id": "test2",
+              "installment_period": "months",
+              "first_installment_time": "",
+              "est_installment_end": "",
+              "first_due_message": "",
+              "principal_amount": 2020100,
+              "interest_amount": 0,
+              "fee_amount": 0,
+              "total_amount": 0,
+              "installment_amount_per_period": 0,
+              "label_type": "",
+              "label_message": "",
+              "is_active": false,
+              "description": "",
+              "is_recommended": false
+            },
+            {
+              "installment_term": 3,
+              "option_id": "test3",
+              "installment_period": "months",
+              "first_installment_time": "",
+              "est_installment_end": "",
+              "first_due_message": "",
+              "principal_amount": 2020100,
+              "interest_amount": 0,
+              "fee_amount": 0,
+              "total_amount": 0,
+              "installment_amount_per_period": 0,
+              "label_type": "",
+              "label_message": "",
+              "is_active": false,
+              "description": "",
+              "is_recommended": false
+            },
+            {
+              "installment_term": 6,
+              "option_id": "test6",
+              "installment_period": "months",
+              "first_installment_time": "",
+              "est_installment_end": "",
+              "first_due_message": "",
+              "principal_amount": 2020100,
+              "interest_amount": 0,
+              "fee_amount": 0,
+              "total_amount": 0,
+              "installment_amount_per_period": 0,
+              "label_type": "",
+              "label_message": "",
+              "is_active": false,
+              "description": "",
+              "is_recommended": false
+            },
+            {
+              "installment_term": 12,
+              "option_id": "test12",
+              "installment_period": "months",
+              "first_installment_time": "",
+              "est_installment_end": "",
+              "first_due_message": "",
+              "principal_amount": 2020100,
+              "interest_amount": 0,
+              "fee_amount": 0,
+              "total_amount": 0,
+              "installment_amount_per_period": 0,
+              "label_type": "",
+              "label_message": "",
+              "is_active": false,
+              "description": "",
+              "is_recommended": false
+            }
+          ]
+        }
+      }
+    }
+  }
+]

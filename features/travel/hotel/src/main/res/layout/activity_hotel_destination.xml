@@ -3,12 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <include layout="@layout/partial_base_toolbar" />
+    <com.tokopedia.header.HeaderUnify
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/toolbar_hotel_destination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="true" />
 
     <com.tokopedia.hotel.destination.view.widget.HotelSearchInputView
         android:id="@+id/search_input_view"

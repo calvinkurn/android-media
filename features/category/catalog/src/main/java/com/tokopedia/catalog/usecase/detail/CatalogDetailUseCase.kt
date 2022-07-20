@@ -12,19 +12,19 @@ import javax.inject.Inject
 
 class CatalogDetailUseCase @Inject constructor(private val catalogDetailRepository: CatalogDetailRepository) {
 
-    suspend fun getCatalogDetail(catalogId : String , userId : String, device : String,
+    suspend fun  getCatalogDetail(catalogId : String ,comparedCatalogId : String, userId : String, device : String,
                                  catalogDetailDataModel: MutableLiveData<Result<CatalogDetailDataModel>>)  {
-        val gqlResponse = catalogDetailRepository.getCatalogDetail(catalogId, userId, device)
+        val gqlResponse = catalogDetailRepository.getCatalogDetail(catalogId,comparedCatalogId, userId, device)
         val data = gqlResponse?.getData<CatalogResponseData>(CatalogResponseData::class.java)
         if(data?.catalogGetDetailModular != null)
-            catalogDetailDataModel.value = Success(mapIntoModel(data.catalogGetDetailModular))
+            catalogDetailDataModel.value = Success(mapIntoModel(comparedCatalogId,data.catalogGetDetailModular))
         else{
             catalogDetailDataModel.value = Fail(Throwable("No data found"))
         }
     }
 
-    private fun mapIntoModel(catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular) : CatalogDetailDataModel{
-        val components = CatalogDetailMapper.mapIntoVisitable(catalogGetDetailModular)
+    private fun mapIntoModel(comparedCatalogId : String,catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular) : CatalogDetailDataModel{
+        val components = CatalogDetailMapper.mapIntoVisitable(comparedCatalogId, catalogGetDetailModular)
         val fullSpecificationDataModel = CatalogDetailMapper.getFullSpecificationsModel(catalogGetDetailModular)
         return CatalogDetailDataModel(fullSpecificationDataModel,components)
     }

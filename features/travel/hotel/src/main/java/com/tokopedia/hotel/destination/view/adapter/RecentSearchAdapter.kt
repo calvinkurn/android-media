@@ -17,17 +17,18 @@ class RecentSearchAdapter(val listener: RecentSearchListener) : RecyclerView.Ada
     var recentSearchList: MutableList<RecentSearch> = arrayListOf()
 
     fun setData(list: MutableList<RecentSearch>) {
+        recentSearchList.clear()
         recentSearchList = list
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_recent_search, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_recent_search, parent, false)
         return ViewHolder(itemView, listener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(recentSearchList.get(position), position)
+        holder.bind(recentSearchList[position], position)
     }
 
     override fun getItemCount(): Int {
@@ -49,10 +50,7 @@ class RecentSearchAdapter(val listener: RecentSearchListener) : RecyclerView.Ada
             textView.setItemName(data.property.value)
             textView.setOnDeleteListener(object : HotelDeletableItemView.OnDeleteListener {
                 override fun onDelete() {
-                    recentSearchList.removeAt(position)
-                    notifyItemRemoved(position)
-                    notifyItemRangeChanged(position, itemCount)
-                    listener.onDeleteRecentSearchItem(data.uuid)
+                    removeItemFromView(position, data.uuid)
                 }
             })
             textView.setOnTextClickListener(object : HotelDeletableItemView.OnTextClickListener {
@@ -60,6 +58,15 @@ class RecentSearchAdapter(val listener: RecentSearchListener) : RecyclerView.Ada
                     listener.onItemClicked(data)
                 }
             })
+        }
+
+        fun removeItemFromView(position: Int, uuid: String){
+            if(position in 0 until itemCount) {
+                recentSearchList.removeAt(position)
+                notifyItemRemoved(position)
+                notifyItemRangeChanged(position, itemCount)
+                listener.onDeleteRecentSearchItem(uuid)
+            }
         }
     }
 }

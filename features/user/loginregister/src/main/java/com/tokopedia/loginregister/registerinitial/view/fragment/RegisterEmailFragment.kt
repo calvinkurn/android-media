@@ -60,7 +60,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/25/18.
  */
-open class RegisterEmailFragment : BaseDaggerFragment() {
+class RegisterEmailFragment : BaseDaggerFragment() {
     var NAME = "NAME"
     var PASSWORD = "PASSWORD"
     var EMAIL = "EMAIL"
@@ -81,7 +81,6 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
     @Inject
     lateinit var registerAnalytics: RegisterAnalytics
 
-    @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -159,7 +158,9 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
             } else if (registerRequestDataResult is Fail) {
                 val throwable = registerRequestDataResult.throwable
                 dismissLoadingProgress()
-                val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                val errorMessage = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().apply {
+                    className = RegisterEmailFragment::class.java.name
+                }.build())
                 if(throwable is MessageErrorException){
                     throwable.message?.run {
                         if(this.contains(ALREADY_REGISTERED)){

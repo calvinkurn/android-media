@@ -18,6 +18,7 @@ import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardSourceType.Companion.DAILY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.image.ImageUtils
 
@@ -92,11 +93,7 @@ class OvoVh(itemView: View) : CouponListVHDaily(itemView) {
                      null))
 
             if(!data.imageUrl.isNullOrEmpty()){
-                Glide.with(imageView)
-                        .load(data.imageUrl)
-                        .dontAnimate()
-                        .dontTransform()
-                        .into(imageView)
+                imageView.loadImage(data.imageUrl)
             }
         }
     }

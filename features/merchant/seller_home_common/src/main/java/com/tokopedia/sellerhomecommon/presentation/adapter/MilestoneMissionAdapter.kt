@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.databinding.ShcItemMissionMilestoneWidgetBinding
@@ -13,6 +14,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiM
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -61,6 +63,10 @@ class MilestoneMissionAdapter(
                 tvShcMissionPosition.isVisible = shouldShowNumber
                 tvShcMissionPosition.text = adapterPosition.plus(PLUS_ONE).toString()
 
+                if (mission is MilestoneMissionUiModel) {
+                    setupProgress(mission)
+                }
+
                 imgShcMission.loadImage(mission.imageUrl)
 
                 setupCtaButton(mission) {
@@ -68,6 +74,22 @@ class MilestoneMissionAdapter(
                 }
                 root.addOnImpressionListener(mission.impressHolder) {
                     listener.onMissionImpressionListener(mission, adapterPosition.plus(PLUS_ONE))
+                }
+            }
+        }
+
+        private fun setupProgress(mission: MilestoneMissionUiModel) {
+            with(binding) {
+                progressBarShcMilestoneCard.isVisible = mission.isProgressAvailable()
+                tvShcMilestoneCardDescription.isVisible = progressBarShcMilestoneCard.isVisible
+
+                if (mission.isProgressAvailable()) {
+                    progressBarShcMilestoneCard.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
+                    progressBarShcMilestoneCard.setValue(mission.missionProgress.percentage)
+                    val progress = mission.missionProgress
+                    val description =
+                        "<b>${progress.completed}</b> / ${progress.target} ${progress.description}"
+                    tvShcMilestoneCardDescription.text = description.parseAsHtml()
                 }
             }
         }

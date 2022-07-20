@@ -7,22 +7,14 @@ import android.graphics.LightingColorFilter
 import android.graphics.drawable.Drawable
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.gm.common.constant.PATTERN_DATE_SHOP_INFO
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
-import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
-import java.io.IOException
 import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.math.abs
+
 
 
 object ShopScoreUtils {

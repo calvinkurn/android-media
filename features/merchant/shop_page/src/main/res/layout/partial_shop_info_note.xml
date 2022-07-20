@@ -8,7 +8,7 @@
     android:paddingRight="16dp"
     android:paddingTop="16dp">
 
-    <com.tokopedia.shop.common.view.ShopPageLabelView
+    <com.tokopedia.shop_widget.common.customview.ShopPageLabelView
         android:id="@+id/noteLabelView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_32"

@@ -17,6 +17,7 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10
         const val TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324
+        private const val MAX_ALLOWED_PRODUCT = 5
 
         fun createInstance(bundle: Bundle): ContentCreatePostFragment {
             val fragment = ContentCreatePostFragment()
@@ -49,7 +50,7 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, true)
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, "")
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, "")
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED, viewModel.maxProduct - viewModel.productIdList.size)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED, MAX_ALLOWED_PRODUCT - viewModel.productIdList.size)
         intent.putStringArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_HIDDEN, ArrayList(viewModel.productIdList))
 
         startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <ScrollView
         android:id="@+id/scrollViewHowToPay"
@@ -158,7 +158,8 @@
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:visibility="gone"
                 app:closeButtonVisibility="gone"
-                app:descriptionText="@string/pms_hwp_transfer_3_digit_info"
+                app:titleText="@string/pms_htp_pending"
+                app:descriptionText="@string/pms_manual_transfer_instruction"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTotalPaymentAmount"

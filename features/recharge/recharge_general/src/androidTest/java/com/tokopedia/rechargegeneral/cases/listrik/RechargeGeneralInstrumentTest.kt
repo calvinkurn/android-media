@@ -154,6 +154,7 @@ class RechargeGeneralInstrumentTest {
 
     fun select_operator_tagihan() {
         onView(withId(R.id.operator_select)).perform(click())
+        Thread.sleep(1000)
         onView(withText("Token Listrik")).check(matches(isDisplayed()))
         onView(withText("Tagihan Listrik")).check(matches(isDisplayed()))
         onView(withText("PLN Non-Taglis")).check(matches(isDisplayed()))

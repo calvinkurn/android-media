@@ -9,13 +9,13 @@ import com.tokopedia.profilecompletion.addbod.data.AddBodData
 import com.tokopedia.profilecompletion.addbod.data.UserProfileCompletionUpdateBodData
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
@@ -36,8 +36,6 @@ class AddBodViewModelTest {
     val bodGraphqlUseCase = mockk<GraphqlUseCase<UserProfileCompletionUpdateBodData>>(relaxed = true)
     val context = mockk<Context>(relaxed = true)
 
-    private val testDispatcher = TestCoroutineDispatcher()
-
     private var observer = mockk<Observer<Result<AddBodData>>>(relaxed = true)
     lateinit var viewModel: AddBodViewModel
 
@@ -51,7 +49,7 @@ class AddBodViewModelTest {
     fun setUp() {
         viewModel = AddBodViewModel(
                 bodGraphqlUseCase,
-                testDispatcher
+                CoroutineTestDispatchersProvider
         )
         viewModel.editBodUserProfileResponse.observeForever(observer)
     }
@@ -64,7 +62,7 @@ class AddBodViewModelTest {
 
         /* Then */
         verify {
-            bodGraphqlUseCase.setGraphqlQuery(any())
+            bodGraphqlUseCase.setGraphqlQuery(any<String>())
             bodGraphqlUseCase.setTypeClass(any())
             bodGraphqlUseCase.setRequestParams(mockParam)
             bodGraphqlUseCase.execute(any(), any())

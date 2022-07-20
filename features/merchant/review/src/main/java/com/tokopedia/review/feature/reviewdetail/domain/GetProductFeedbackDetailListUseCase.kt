@@ -33,12 +33,18 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
                     replyText
                     replyTime
                     attachments {
-                        thumbnailURL
-                        fullsizeURL
+                      attachmentID
+                      thumbnailURL
+                      fullsizeURL
+                    }
+                    videoAttachments {
+                      attachmentID
+                      videoUrl
                     }
                     variantName
                     reviewerName
                     isKejarUlasan
+                    badRatingReasonFmt
                 }
                 topics {
                     title

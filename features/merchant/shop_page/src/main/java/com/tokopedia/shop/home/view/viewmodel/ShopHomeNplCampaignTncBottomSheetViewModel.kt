@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.UserNotLoginException
-import com.tokopedia.shop.home.domain.GetShopHomeCampaignNplTncUseCase
+import com.tokopedia.shop.home.domain.GetShopHomeMerchantCampaignTncUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
@@ -21,11 +21,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val userSession: UserSessionInterface,
-        private val getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase,
-        private val updateFollowStatusUseCase: UpdateFollowStatusUseCase,
-        private val getFollowStatusUseCase: GetFollowStatusUseCase,
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
+    private val getMerchantCampaignTncUseCase: GetShopHomeMerchantCampaignTncUseCase,
+    private val updateFollowStatusUseCase: UpdateFollowStatusUseCase,
+    private val getFollowStatusUseCase: GetFollowStatusUseCase,
 ) : BaseViewModel(dispatcherProvider.main) {
 
     val userSessionShopId: String
@@ -84,9 +84,9 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
     }
 
     private suspend fun getTncResponse(campaignId: String): ShopHomeCampaignNplTncUiModel {
-        getCampaignNplTncUseCase.params = GetShopHomeCampaignNplTncUseCase.createParams(campaignId)
+        getMerchantCampaignTncUseCase.params = GetShopHomeMerchantCampaignTncUseCase.createParams(campaignId)
         return ShopPageHomeMapper.mapToShopHomeCampaignNplTncUiModel(
-                getCampaignNplTncUseCase.executeOnBackground()
+                getMerchantCampaignTncUseCase.executeOnBackground()
         )
     }
 

@@ -3,12 +3,9 @@ package com.tokopedia.home_recom.view.viewholder
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.R
-import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.model.datamodel.TitleDataModel
 import com.tokopedia.home_recom.model.datamodel.TitleListener
-import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 /**
  * Created by lukas on 21/05/2019

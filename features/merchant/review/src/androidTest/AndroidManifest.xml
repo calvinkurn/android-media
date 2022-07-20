@@ -6,5 +6,49 @@
 
     <application
         android:label="Review Test"
-        tools:replace="android:label" />
+        tools:replace="android:label">
+        <activity
+            android:name=".stub.reviewdetail.view.activity.SellerReviewDetailActivityStub"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_seller_review_detail_page"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".stub.inbox.presentation.activity.InboxReputationActivityStub"
+            android:exported="false"
+            android:label="@string/title_activity_reputation_review"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_review_inbox"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".stub.reviewreply.view.activity.SellerReviewReplyActivityStub"
+            android:label="@string/title_review_reply"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize" />
+    </application>
 </manifest>

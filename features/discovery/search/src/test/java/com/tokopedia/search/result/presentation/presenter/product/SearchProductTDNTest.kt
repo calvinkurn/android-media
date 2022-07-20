@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
@@ -140,6 +140,7 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
         val searchProductModelWithCPM = tdnWithHeadlineAdsPosition14JSON.jsonToObject<SearchProductModel>()
         searchProductModelWithCPM.setTopAdsImageViewModelList(listOf(tdn1, tdn14))
 
+        `Given top ads headline helper will process headline ads`(searchProductModelWithCPM)
         `Given Search Product API will return SearchProductModel`(searchProductModelWithCPM)
         `Given product list will be captured`()
 
@@ -153,7 +154,7 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0) {
-                visitable.shouldBeInstanceOf<SearchProductCountDataView>()
+                visitable.shouldBeInstanceOf<ChooseAddressDataView>()
             }
             else if (index == 1 || index == 17) {
                 visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
@@ -170,13 +171,14 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
         }
     }
 
-//    @Test
+    @Test
     fun `TDN should be above headline ads in the same position after load more`() {
         val searchProductModelWithCPM = tdnWithHeadlineAdsPosition28JSON.jsonToObject<SearchProductModel>()
         searchProductModelWithCPM.setTopAdsImageViewModelList(listOf(tdn1, tdn14, tdn28))
 
         val searchProductWithTopAds = "searchproduct/with-topads.json".jsonToObject<SearchProductModel>()
 
+        `Given top ads headline helper will process headline ads`(searchProductModelWithCPM)
         `Given Search Product API will return SearchProductModel`(searchProductModelWithCPM)
         `Given Search Product Load More API will return SearchProductModel`(searchProductWithTopAds)
         `Given product list will be captured`()
@@ -188,19 +190,19 @@ internal class SearchProductTDNTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list with TDN above headline ads after load more`() {
-        visitableList.size shouldBe 37
+        visitableList.size shouldBe 41
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0) {
-                visitable.shouldBeInstanceOf<SearchProductCountDataView>()
+                visitable.shouldBeInstanceOf<ChooseAddressDataView>()
             }
-            else if (index == 1 || index == 15 || index == 29) {
+            else if (index == 1 || index == 17 || index == 35) {
                 visitable.shouldBeInstanceOf<SearchProductTopAdsImageDataView>()
             }
-            else if (index == 29 || index == 31) {
+            else if (index == 18 || index == 20 || index == 37 || index == 39) {
                 visitable.shouldBeInstanceOf<SeparatorDataView>()
             }
-            else if (index == 2 || index == 30) {
+            else if (index == 2 || index == 19 || index == 38 || index == 40) {
                 visitable.shouldBeInstanceOf<CpmDataView>()
             }
             else {

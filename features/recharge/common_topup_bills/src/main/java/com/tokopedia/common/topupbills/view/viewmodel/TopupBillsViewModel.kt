@@ -8,8 +8,11 @@ import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
+import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.favoritepage.util.FavoriteNumberDataMapper
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.*
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -18,7 +21,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
@@ -31,7 +33,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
 import rx.Subscriber
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -40,6 +41,7 @@ import javax.inject.Inject
 class TopupBillsViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
+    private val rechargeFavoriteNumberUseCase: RechargeFavoriteNumberUseCase,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
@@ -55,8 +57,8 @@ class TopupBillsViewModel @Inject constructor(
     val catalogPluginData: LiveData<Result<RechargeCatalogPlugin>>
         get() = _catalogPluginData
 
-    private val _favNumberData = MutableLiveData<Result<TopupBillsFavNumber>>()
-    val favNumberData: LiveData<Result<TopupBillsFavNumber>>
+    private val _favNumberData = MutableLiveData<Result<List<TopupBillsSearchNumberDataModel>>>()
+    val favNumberData: LiveData<Result<List<TopupBillsSearchNumberDataModel>>>
         get() = _favNumberData
 
     private val _seamlessFavNumberData = MutableLiveData<Result<Pair<TopupBillsSeamlessFavNumber, Boolean>>>()
@@ -153,23 +155,16 @@ class TopupBillsViewModel @Inject constructor(
     }
 
     fun getFavoriteNumbers(
-        rawQuery: String,
-        mapParam: Map<String, Any>,
-        isLoadFromCloud: Boolean = false
+        categoryIds: List<Int>
     ) {
         launchCatchError(block = {
-            val data = withContext(dispatcher.io) {
-                val graphqlRequest =
-                    GraphqlRequest(rawQuery, TopupBillsFavNumberData::class.java, mapParam)
-                val graphqlCacheStrategy =
-                    GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * FIVE_MINS_CACHE_DURATION).build()
-                graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
-            }.getSuccessData<TopupBillsFavNumberData>()
-
-            _favNumberData.postValue(Success(data.favNumber))
+            val favoriteNumber = rechargeFavoriteNumberUseCase.apply {
+                setRequestParams(categoryIds, emptyList(), CHANNEL_FAVORITE_NUMBER_LIST)
+            }.executeOnBackground()
+            _favNumberData.postValue(Success(FavoriteNumberDataMapper
+                .mapPersoFavNumberItemToSearchDataView(favoriteNumber.persoFavoriteNumber.items)))
         }) {
-            _favNumberData.postValue(Fail(it))
+            _favNumberData.postValue(Fail(Throwable(it.message)))
         }
     }
 
@@ -177,7 +172,7 @@ class TopupBillsViewModel @Inject constructor(
         rawQuery: String,
         mapParam: Map<String, Any>,
         shouldRefreshInputNumber: Boolean = true,
-        prevActionType: TopupBillsFavoriteNumberFragment.FavoriteNumberActionType? = null
+        prevActionType: FavoriteNumberActionType? = null
     ) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
@@ -201,7 +196,7 @@ class TopupBillsViewModel @Inject constructor(
     fun modifySeamlessFavoriteNumber(
         rawQuery: String,
         mapParam: Map<String, Any>,
-        actionType: TopupBillsFavoriteNumberFragment.FavoriteNumberActionType,
+        actionType: FavoriteNumberActionType,
         onModifyCallback: (() -> Unit)? = null
     ) {
         launchCatchError(block = {
@@ -341,10 +336,6 @@ class TopupBillsViewModel @Inject constructor(
         return mapOf(PLUGIN_PARAM_KEY to key, PLUGIN_PARAM_ID to value)
     }
 
-    fun createFavoriteNumbersParams(categoryId: Int): Map<String, Any> {
-        return mapOf(PARAM_CATEGORY_ID to categoryId)
-    }
-
     fun createSeamlessFavoriteNumberParams(categoryIds: List<String>): Map<String, Any> {
         var paramSource = if (categoryIds.contains(CATEGORY_ID_PASCABAYAR.toString()))
             FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
@@ -420,6 +411,8 @@ class TopupBillsViewModel @Inject constructor(
     }
 
     companion object {
+        const val CHANNEL_FAVORITE_NUMBER_LIST = "favorite_number_list"
+
         const val PARAM_FIELDS = "fields"
         const val PARAM_FILTERS = "filters"
         const val PARAM_CART = "cart"

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="green_ticker">#cde4c3</color>
-    <color name="yellow_ticker">#ecdb77</color>
-    <color name="sellerapp_background_splash_screen">#04AC10</color>
+    <color name="sa_dms_black_70">#b3000000</color>
+    <color name="sa_dms_black_54">#8a000000</color>
 </resources>

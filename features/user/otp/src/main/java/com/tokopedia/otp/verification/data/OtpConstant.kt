@@ -1,9 +1,14 @@
-package com.tokopedia.otp.verification.domain.data
+package com.tokopedia.otp.verification.data
+
+import com.tokopedia.config.GlobalConfig
 
 /**
  * @author rival
  * @created on 9/12/2019
  */
+
+const val ROLLANCE_KEY_MISCALL_OTP = "otp_miscall_new_ui"
+const val TAG_AUTO_READ = "autoread"
 
 object OtpConstant {
 
@@ -14,12 +19,15 @@ object OtpConstant {
     const val OTP_WA_NOT_REGISTERED_SUBTITLE = "otp-wa-not-registered-subtitle"
     const val OTP_WA_NOT_REGISTERED_IMG_LINK = "otp-wa-not-registered-img-link"
 
+    val PIN_V2_SALT = if(GlobalConfig.DEBUG) "c456bbc2c9c746ffaf67787d7c59945d" else "b9f14c8ed04a41c7a5361b648a088b69"
+
     object OtpMode {
         const val SMS = "sms"
         const val WA = "whatsapp"
         const val EMAIL = "email"
         const val MISCALL = "misscall"
         const val PIN = "PIN"
+        const val SILENT_VERIFICATION = "silent_verif"
         const val GOOGLE_AUTH = "google_authenticator"
     }
 
@@ -30,5 +38,9 @@ object OtpConstant {
         const val VERIFY_USER_CHANGE_PHONE_NUMBER = 200
         const val AFTER_LOGIN_PHONE = 148
         const val RESET_PIN = 149
+
+        const val INACTIVE_PHONE_VERIFY_EMAIL = 160
+        const val INACTIVE_PHONE_VERIFY_PIN = 161
+        const val INACTIVE_PHONE_VERIFY_NEW_PHONE = 162
     }
 }

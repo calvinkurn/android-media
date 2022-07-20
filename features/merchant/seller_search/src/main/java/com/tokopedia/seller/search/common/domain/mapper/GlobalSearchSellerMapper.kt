@@ -12,11 +12,23 @@ import com.tokopedia.seller.search.common.domain.model.SellerSearchResponse
 import com.tokopedia.seller.search.feature.initialsearch.domain.model.DeleteHistoryResponse
 import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialSearchSeller
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.*
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightInitialSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemHighlightInitialSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemInitialSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleHighlightInitialSearchUiModel
+import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleInitialSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.domain.model.SuccessSearchResponse
 import com.tokopedia.seller.search.feature.suggestion.view.model.BaseSuggestionSearchSeller
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
-import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.*
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ArticleSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.DividerSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.FaqSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.NavigationSellerSearchSubItemUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.NavigationSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.OrderSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ProductSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.TitleHasMoreSellerSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.TitleHeaderSellerSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.HighlightSuggestionSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemHighlightSuggestionSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemTitleHighlightSuggestionSearchUiModel
@@ -229,7 +241,7 @@ object GlobalSearchSellerMapper {
         title: String
     ): Pair<List<NavigationSellerSearchUiModel>, Int> {
         val navigationSellerSearchList = mutableListOf<NavigationSellerSearchUiModel>()
-        navigationSellerSearchList.apply {
+        navigationSellerSearchList.run {
             sellerSearch.map { navigationItem ->
                 add(
                     NavigationSellerSearchUiModel(
@@ -240,7 +252,13 @@ object GlobalSearchSellerMapper {
                         url = navigationItem.url,
                         appUrl = navigationItem.app_url,
                         keyword = keyword,
-                        section = title
+                        section = title,
+                        subItems = navigationItem.subItems.map { subItem ->
+                            NavigationSellerSearchSubItemUiModel(
+                                title = subItem.title.orEmpty(),
+                                appLink = subItem.appUrl.orEmpty()
+                            )
+                        }
                     )
                 )
             }

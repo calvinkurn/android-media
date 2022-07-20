@@ -6,7 +6,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEFAULT_STOCK_VALUE
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.math.BigInteger
 
 /**
@@ -19,7 +19,6 @@ data class DetailInputModel(
         var currentProductName: String = "", // product name, before do editing
         var categoryName: String = "",
         var categoryId: String = "",
-        var catalogId: String = "",
         var price: BigInteger = 0.toBigInteger(),
         var stock: Int = DEFAULT_STOCK_VALUE,
         var minOrder: Int = DEFAULT_MIN_ORDER_VALUE,

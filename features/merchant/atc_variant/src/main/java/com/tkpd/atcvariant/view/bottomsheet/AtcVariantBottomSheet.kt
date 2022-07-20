@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tkpd.atcvariant.BuildConfig
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.data.uidata.PartialButtonDataModel
 import com.tkpd.atcvariant.data.uidata.VariantErrorDataModel
@@ -22,7 +23,8 @@ import com.tkpd.atcvariant.di.DaggerAtcVariantComponent
 import com.tkpd.atcvariant.util.ATC_LOGIN_REQUEST_CODE
 import com.tkpd.atcvariant.util.AtcCommonMapper
 import com.tkpd.atcvariant.util.BS_SHIPMENT_ERROR_ATC_VARIANT
-import com.tkpd.atcvariant.view.*
+import com.tkpd.atcvariant.view.PartialAtcButtonListener
+import com.tkpd.atcvariant.view.PartialAtcButtonView
 import com.tkpd.atcvariant.view.activity.AtcVariantActivity
 import com.tkpd.atcvariant.view.adapter.AtcVariantAdapter
 import com.tkpd.atcvariant.view.adapter.AtcVariantAdapterTypeFactoryImpl
@@ -31,9 +33,10 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
@@ -45,27 +48,40 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.detail.common.*
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.ProductCartHelper
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
-import com.tokopedia.product.detail.common.bottomsheet.TokoNowEducationalInformationBottomSheet
+import com.tokopedia.product.detail.common.ProductTrackingCommon
+import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.showToasterError
+import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
+import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
+import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -94,6 +110,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private val sharedViewModel by lazy {
         ViewModelProvider(requireActivity()).get(AtcVariantSharedViewModel::class.java)
+    }
+
+    private val localizationChooseAddressData by lazy(LazyThreadSafetyMode.NONE) {
+        context?.let {
+            ChooseAddressUtils.getLocalizingAddressData(it)
+        }
     }
 
     private var loadingProgressDialog: ProgressDialog? = null
@@ -145,6 +167,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     override fun onDestroyView() {
         compositeSubscription.clear()
         super.onDestroyView()
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     private fun initLayout() {
@@ -161,6 +184,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 override fun onStateChanged(p0: View, p1: Int) {
                     if (p1 == BottomSheetBehavior.STATE_HIDDEN) {
                         dismiss()
+                    }
+                    if (p1 == BottomSheetBehavior.STATE_EXPANDED) {
+                        bottomSheetWrapper.invalidate()
+                        bottomSheetWrapper.requestLayout()
                     }
                 }
             })
@@ -183,13 +210,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 aggregatorData?.simpleBasicInfo?.shopID ?: "")
 
         val productId = adapter.getHeaderDataModel()?.productId ?: ""
-        val boImageUrl = aggregatorData?.getIsFreeOngkirImageUrl(productId) ?: ""
 
-        AtcCommonMapper.putChatProductInfoTo(intent,
-                productId,
-                aggregatorData?.variantData?.getChildByProductId(productId),
-                aggregatorData?.variantData,
-                boImageUrl)
+        AtcCommonMapper.putChatProductInfoTo(intent, productId)
         startActivity(intent)
     }
 
@@ -214,6 +236,18 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         observeRestrictionData()
         observeToggleFavorite()
         observeStockCopy()
+        observeVariantImagesGallery()
+    }
+
+    private fun observeVariantImagesGallery(){
+        viewModel.variantImagesData.observe(viewLifecycleOwner) {data ->
+            context?.let{
+                val intent = ProductDetailGalleryActivity.createIntent(
+                    it, data
+                )
+                startActivity(intent)
+            }
+        }
     }
 
     private fun observeStockCopy() {
@@ -243,12 +277,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun setupButtonAbility(data: ProductVariantBottomSheetParams) {
-        val cartRedirCartType = data.variantAggregator.cardRedirection.values.toList()
-                .firstOrNull()?.availableButtons?.firstOrNull()?.cartType ?: ""
-        shouldSetActivityResult = when (cartRedirCartType) {
-            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
-            ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> false
-            else -> true
+        shouldSetActivityResult = data.saveAfterClose
+    }
+
+    private fun dismissAfterAtc() {
+        val shouldDismiss = sharedViewModel.aggregatorParams.value?.dismissAfterTransaction ?: false
+        if (shouldDismiss) {
+            dismiss()
         }
     }
 
@@ -310,47 +345,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun renderRestrictionBottomSheet(reData: RestrictionData) {
-        when {
-            reData.restrictionExclusiveType() -> {
-                renderExclusiveBottomSheet(reData)
-            }
-            reData.restrictionShopFollowersType() -> {
-                updateNplButtonFollowers(reData)
-            }
-            else -> {
-                nplFollowersButton?.setupVisibility = false
-            }
-        }
-    }
-
-    private fun renderExclusiveBottomSheet(reData: RestrictionData) {
-        if (reData.action.isNotEmpty()) {
-            val title = reData.action.firstOrNull()?.title ?: ""
-            val desc = reData.action.firstOrNull()?.description ?: ""
-            val badgeUrl = reData.action.firstOrNull()?.badgeURL ?: ""
-            nplFollowersButton?.renderView(title = title,
-                    alreadyFollowShop = false,
-                    desc = desc,
-                    iconUrl = badgeUrl,
-                    hideButton = true,
-                    maxLine = 2,
-                    centerImage = true)
-        }
-        nplFollowersButton?.setupVisibility = reData.isNotEligibleExclusive()
-    }
-
-    private fun updateNplButtonFollowers(reData: RestrictionData) {
-        val shouldShowReShopFollowers = !reData.isEligible && !viewModel.getActivityResultData().isFollowShop
-        if (shouldShowReShopFollowers) {
-            if (nplFollowersButton?.view?.isShown == false) {
-                nplFollowersButton?.view?.translationY = 100.toPx().toFloat()
-            }
-
-            val title = reData.action.firstOrNull()?.title ?: ""
-            val desc = reData.action.firstOrNull()?.description ?: ""
-            nplFollowersButton?.renderView(title, desc, reData.isEligible)
-        }
-        nplFollowersButton?.setupVisibility = shouldShowReShopFollowers
+        ProductDetailRestrictionHelper.renderRestrictionUi(
+                reData = reData,
+                isFavoriteShop = viewModel.getActivityResultData().isFollowShop,
+                isShopOwner = sharedViewModel.aggregatorParams.value?.isShopOwner ?: false,
+                reView = nplFollowersButton
+        )
     }
 
     private fun showToasterSuccess(message: String, ctaText: String = "", ctaListener: () -> Unit = {}) {
@@ -422,17 +422,22 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun observeWishlist() {
-        viewModel.addWishlistResult.observe(viewLifecycleOwner, {
+        viewModel.addWishlistResult.observe(viewLifecycleOwner) {
             if (it is Success) {
                 if (it.data) {
                     //success add wishlist
-                    showToasterSuccess(getString(com.tokopedia.product.detail.common.R.string.toaster_success_add_wishlist_from_button))
+
+                    showToasterSuccess(
+                        message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+                        ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+                        ctaListener = { goToWishlist() }
+                    )
                 }
             } else if (it is Fail) {
                 showToasterError(getErrorMessage(it.throwable))
                 logException(it.throwable)
             }
-        })
+        }
     }
 
     private fun showToasterError(message: String, ctaBtn: String = "", ctaListener: () -> Unit = {}) {
@@ -446,6 +451,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             loadingProgressDialog?.dismiss()
             if (it is Success) {
                 onSuccessTransaction(it.data)
+                dismissAfterAtc()
             } else if (it is Fail) {
                 it.throwable.run {
                     trackAtcError(message ?: "")
@@ -528,7 +534,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 ?: ""
 
         val ratesEstimateData = variantAggregatorData?.getP2RatesEstimateByProductId(productId)?.p2RatesData
-        val buyerDistrictId = context?.let { ChooseAddressUtils.getLocalizingAddressData(it)?.district_id ?: "" } ?: ""
+        val buyerDistrictId = context?.let {
+            ChooseAddressUtils.getLocalizingAddressData(it)?.district_id ?: ""
+        } ?: ""
         val sellerDistrictId = viewModel.getSelectedWarehouse(productId)?.districtId ?: ""
 
         ProductTrackingCommon.eventEcommerceAddToCart(
@@ -555,7 +563,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 isCod = variantAggregatorData?.isCod ?: false,
                 ratesEstimateData = ratesEstimateData,
                 buyerDistrictId = buyerDistrictId,
-                sellerDistrictId = sellerDistrictId
+                sellerDistrictId = sellerDistrictId,
+                lcaWarehouseId = localizationChooseAddressData?.warehouse_id ?: ""
         )
     }
 
@@ -675,7 +684,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         val parentId = viewModel.getVariantAggregatorData()?.variantData?.parentId ?: ""
 
         when (cartType) {
-            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> {
+            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON,
+            ProductDetailCommonConstant.KEY_DEFAULT_CHOOSE_VARIANT -> {
                 ProductTrackingCommon.eventClickPilihVariant(adapter.getHeaderDataModel()?.productId
                         ?: "", pageSource, cartType, parentId, productIdPreviousPage)
                 onSaveButtonClicked()
@@ -695,6 +705,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     override fun hideVariantName(): Boolean = true
+
+    override fun shouldHideTextHabis(): Boolean {
+        return sharedViewModel.aggregatorParams.value?.pageSource ==
+                VariantPageSource.SHOP_COUPON_PAGESOURCE.source
+    }
 
     private fun onSaveButtonClicked() {
         val productId = adapter.getHeaderDataModel()?.productId ?: ""
@@ -717,9 +732,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     override fun onVariantImageClicked(url: String) {
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-        ProductTrackingCommon.onVariantImageBottomSheetClicked(adapter.getHeaderDataModel()?.productId
-                ?: "", pageSource)
-        goToImagePreview(arrayListOf(url))
+        val productId = adapter.getHeaderDataModel()?.productId ?: ""
+        ProductTrackingCommon.onVariantImageBottomSheetClicked(productId, pageSource)
+        viewModel.onVariantImageClicked(url, productId, userSessionInterface.userId, getString(R.string.atc_variant_tag_main_image))
     }
 
     override fun onQuantityUpdate(quantity: Int, productId: String, oldValue: Int) {
@@ -752,7 +767,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
                 ProductTrackingCommon.onRemindMeClicked(productId, pageSource)
                 //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
-                viewModel.addWishlist(productId, userSessionInterface.userId)
+                context?.let {
+                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) doAddWishlistV2(productId)
+                    else viewModel.addWishlist(productId, userSessionInterface.userId)
+                }
                 return@let
             }
 
@@ -784,6 +802,32 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                     sharedData?.isTokoNow ?: false
             )
         }
+    }
+
+    private fun doAddWishlistV2(productId: String) {
+        viewModel.addWishlistV2(productId, userSessionInterface.userId, object : WishlistV2ActionListener{
+            override fun onErrorAddWishList(
+                throwable: Throwable,
+                productId: String
+            ) {
+                val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it) }
+            }
+
+            override fun onSuccessAddWishlist(
+                result: AddToWishlistV2Response.Data.WishlistAddV2,
+                productId: String
+            ) {
+                context?.let { context ->
+                    view?.let { v ->
+                        AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                    }
+                }
+            }
+
+            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+            override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
+        })
     }
 
     private fun openShipmentBottomSheetWhenError(): Boolean {
@@ -846,7 +890,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun checkLogin(): Boolean {
@@ -909,7 +953,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         }
     }
 
-    override fun onButtonFollowNplClick() {
+    private fun favoriteShop() {
         if (nplFollowersButton?.getButtonLoadingStatus() == false) {
             val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
             val productId = adapter.getHeaderDataModel()?.productId ?: ""
@@ -920,22 +964,40 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         }
     }
 
+    override fun onButtonFollowNplClick() {
+        val reData = (viewModel.restrictionData.value as? Success)?.data ?: return
+
+        if (reData.restrictionShopFollowersType()) {
+            favoriteShop()
+        } else if (reData.restrictionCategoriesType()) {
+            reData.action.firstOrNull()?.buttonLink?.let {
+                if (it.isEmpty()) {
+                    activity?.finish()
+                } else {
+                    RouteManager.route(context, it)
+                }
+            }
+        } else if (reData.restrictionGamificationType()) {
+            reData.action.firstOrNull()?.buttonLink?.let {
+                RouteManager.route(context, it)
+            }
+        }
+    }
+
     override fun onTokoCabangClicked(uspImageUrl: String) {
         context?.let {
             val isTokoNow = sharedViewModel.aggregatorParams.value?.isTokoNow == true
             val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
             val productId = adapter.getHeaderDataModel()?.productId ?: ""
-            val boImageUrl = viewModel.getVariantAggregatorData()?.getIsFreeOngkirImageUrl(productId)
-                    ?: ""
 
-            val bottomSheet = if (isTokoNow) {
-                TokoNowEducationalInformationBottomSheet()
+            if (isTokoNow) {
+                RouteManager.route(context, EDUCATIONAL_INFO)
             } else {
-                ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, boImageUrl, uspImageUrl)
+                val bottomSheet = ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, uspImageUrl)
+                bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
             }
 
             ProductTrackingCommon.onTokoCabangClicked(productId, pageSource)
-            bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
         }
     }
 }

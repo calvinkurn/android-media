@@ -1,6 +1,7 @@
 package com.tokopedia.oms.domain;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
@@ -31,11 +32,12 @@ public class OmsInterceptor extends TkpdAuthInterceptor {
 
     @Override
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
-        if (response != null && response.body() != null) {
-            String bodyResponse = response.body().string();
-            Log.d("OkHttp", bodyResponse);
-            response.body().close();
-            throw new ResponseErrorException(getErrorMessage(bodyResponse));
+        if (response != null) {
+            String bodyResponse = response.peekBody(BYTE_COUNT).string();
+            if (!TextUtils.isEmpty(bodyResponse)) {
+                Log.d("OkHttp", bodyResponse);
+                throw new ResponseErrorException(getErrorMessage(bodyResponse));
+            }
         } else {
             throw new ResponseErrorException();
         }

@@ -3,22 +3,38 @@ package com.tokopedia.play.broadcaster.view.adapter.delegate
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.broadcaster.databinding.ItemTagBinding
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TagViewHolder
+import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by jegul on 18/02/21
  */
-class TagAdapterDelegate(
-        private val listener: TagViewHolder.Listener
-) : TypedAdapterDelegate<PlayTagUiModel, PlayTagUiModel, TagViewHolder>(TagViewHolder.LAYOUT) {
+internal class TagAdapterDelegate private constructor() {
 
-    override fun onBindViewHolder(item: PlayTagUiModel, holder: TagViewHolder) {
-        holder.bind(item)
+    class Tag(
+        private val listener: TagViewHolder.Tag.Listener
+    ) : TypedAdapterDelegate<PlayTagUiModel, Any, TagViewHolder.Tag>(commonR.layout.view_play_empty) {
+        override fun onBindViewHolder(
+            item: PlayTagUiModel,
+            holder: TagViewHolder.Tag
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, basicView: View): TagViewHolder.Tag {
+            return TagViewHolder.Tag.create(parent, listener)
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, basicView: View): TagViewHolder {
-        return TagViewHolder(ItemTagBinding.bind(basicView), listener)
+    class Placeholder : TypedAdapterDelegate<Unit, Any, TagViewHolder.Placeholder>(commonR.layout.view_play_empty) {
+        override fun onBindViewHolder(item: Unit, holder: TagViewHolder.Placeholder) { }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): TagViewHolder.Placeholder {
+            return TagViewHolder.Placeholder.create(parent)
+        }
     }
 }

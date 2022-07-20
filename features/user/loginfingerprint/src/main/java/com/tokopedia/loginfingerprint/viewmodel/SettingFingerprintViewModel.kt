@@ -14,21 +14,22 @@ import com.tokopedia.loginfingerprint.di.LoginFingerprintQueryConstant
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RemoveFingerprintUsecase
-import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
+import com.tokopedia.loginfingerprint.utils.crypto.RsaSignatureUtils
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import dagger.Lazy
 import javax.inject.Inject
 
 class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                                       private val userSession: UserSessionInterface,
                                                       private val registerFingerprintUseCase: RegisterFingerprintUseCase,
                                                       private val removeFingerprintUseCase: RemoveFingerprintUsecase,
-                                                      private val cryptographyUtils: Cryptography?,
+                                                      private val rsaSignatureUtils: Lazy<RsaSignatureUtils?>,
                                                       private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
                                                       private val fingerprintPreference: FingerprintPreference)
     : BaseViewModel(dispatcher.main) {
@@ -44,6 +45,12 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
     private val mutableRemoveFingerprintResult = MutableLiveData<Result<RemoveFingerprintData>>()
     val removeFingerprintResult: LiveData<Result<RemoveFingerprintData>>
         get() = mutableRemoveFingerprintResult
+
+    private val mutableNavigateSuccessRegister = SingleLiveEvent<Void>()
+    val navigateSuccessRegister: LiveData<Void> = mutableNavigateSuccessRegister
+
+    private val mutableErrorMessageRegister = SingleLiveEvent<String>()
+    val errorMessageRegister: LiveData<String> = mutableErrorMessageRegister
 
     fun getFingerprintStatus() {
         launchCatchError(block = {
@@ -61,24 +68,22 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
 
     fun registerFingerprint(){
         launchCatchError(block = {
-            val signatureModel = cryptographyUtils?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
-            if(signatureModel != null) {
-                val publicKey = cryptographyUtils?.getPublicKey() ?: ""
-                if(publicKey.isNotEmpty() && signatureModel.signature.isNotEmpty()) {
-                    val params = mapOf(
-                        LoginFingerprintQueryConstant.PARAM_PUBLIC_KEY to publicKey,
-                        LoginFingerprintQueryConstant.PARAM_SIGNATURE to signatureModel.signature,
-                        LoginFingerprintQueryConstant.PARAM_DATETIME to signatureModel.datetime,
-                        BiometricConstant.PARAM_BIOMETRIC_ID to fingerprintPreference.getOrCreateUniqueId()
-                    )
-                    val result = registerFingerprintUseCase(params)
-                    onSuccessRegisterFP(result)
-                } else {
-                    mutableRegisterFingerprintResult.value = Fail(MessageErrorException())
-                }
+            val signatureModel = rsaSignatureUtils.get()?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
+            val publicKey = rsaSignatureUtils.get()?.getPublicKey() ?: ""
+            if(publicKey.isNotEmpty() && signatureModel != null) {
+                val params = mapOf(
+                    LoginFingerprintQueryConstant.PARAM_PUBLIC_KEY to publicKey,
+                    LoginFingerprintQueryConstant.PARAM_SIGNATURE to signatureModel.signature,
+                    LoginFingerprintQueryConstant.PARAM_DATETIME to signatureModel.datetime,
+                    BiometricConstant.PARAM_BIOMETRIC_ID to fingerprintPreference.getOrCreateUniqueId()
+                )
+                val result = registerFingerprintUseCase(params)
+                onSuccessRegisterFP(result)
+            } else {
+                mutableErrorMessageRegister.value = "Terjadi Kesalahan, Silahkan coba lagi"
             }
         }, onError = {
-            mutableRegisterFingerprintResult.value = Fail(it)
+            mutableErrorMessageRegister.value = it.message
         })
     }
 
@@ -99,12 +104,11 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
     private fun onSuccessRegisterFP(registerFingerprintPojo: RegisterFingerprintPojo) {
         val response = registerFingerprintPojo.data
         if (response.errorMessage.isBlank() && response.success) {
-            mutableRegisterFingerprintResult.value = Success(registerFingerprintPojo.data)
+            mutableNavigateSuccessRegister.call()
         } else if (response.errorMessage.isNotBlank()) {
-            mutableRegisterFingerprintResult.value = Fail(MessageErrorException(response.errorMessage,
-                ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+            mutableErrorMessageRegister.value = response.errorMessage
         } else {
-            mutableRegisterFingerprintResult.value = Fail(MessageErrorException())
+            mutableErrorMessageRegister.value = response.errorMessage
         }
     }
 

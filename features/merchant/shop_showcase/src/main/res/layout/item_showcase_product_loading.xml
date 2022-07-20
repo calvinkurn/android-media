@@ -4,10 +4,10 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal">
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading_progress_product_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:visibility="visible" />
 
 </LinearLayout>

@@ -92,7 +92,6 @@ data class DynamicHomeChannelCommon(
             const val LAYOUT_BANNER_GIF: String = "banner_image"
             const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
-            const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_BU_WIDGET: String = "bu_widget"
             const val LAYOUT_TOPADS: String = "topads"
             const val LAYOUT_SPOTLIGHT: String = "spotlight"
@@ -151,6 +150,7 @@ data class DynamicHomeChannelCommon(
             @Expose
             @SerializedName("shop")
             val shop: Shop = Shop(),
+            @SuppressLint("Invalid Data Type")
             @Expose
             @SerializedName("price")
             val price: String = "0",

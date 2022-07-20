@@ -21,7 +21,7 @@
         app:typographyType="heading_3"
         tools:text="@string/header_description" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_brand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,6 +30,8 @@
         android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_12"
+        app:typographyType="body_3"
+        tools:text="20 Brand"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"

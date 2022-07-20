@@ -17,6 +17,7 @@ data class MultiLineGraphWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
+        override val gridSize: Int,
         override val isShowEmpty: Boolean,
         override var data: MultiLineGraphDataUiModel?,
         override var impressHolder: ImpressHolder = ImpressHolder(),
@@ -24,6 +25,7 @@ data class MultiLineGraphWidgetUiModel(
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
         override var isNeedToBeRemoved: Boolean = false,
+        override var showLoadingState: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel,
         val isComparePeriodeOnly: Boolean
 ) : BaseWidgetUiModel<MultiLineGraphDataUiModel> {
@@ -32,8 +34,8 @@ data class MultiLineGraphWidgetUiModel(
         return typeFactory.type(this)
     }
 
-    override fun copy(): BaseWidgetUiModel<MultiLineGraphDataUiModel> {
-        return MultiLineGraphWidgetUiModel(id, widgetType, title, subtitle, tooltip, tag, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState, isComparePeriodeOnly)
+    override fun copyWidget(): BaseWidgetUiModel<MultiLineGraphDataUiModel> {
+        return this.copy()
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<MultiLineGraphDataUiModel>): Boolean {

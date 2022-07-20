@@ -3,7 +3,7 @@
 package com.tokopedia.logisticCommon.data.entity.address
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by fwidjaja on 2019-05-28.
@@ -31,4 +31,6 @@ data class SaveAddressDataModel (
         var setAsPrimaryAddresss: Boolean = false,
         var isAnaPositive: String = "",
         var shopId: Long = 0,
-        var warehouseId: Long = 0) : Parcelable
+        var warehouseId: Long = 0,
+        var warehouses: List<WarehouseDataModel> = listOf(),
+        var serviceType: String = "") : Parcelable

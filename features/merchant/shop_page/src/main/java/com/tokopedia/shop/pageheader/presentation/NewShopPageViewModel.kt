@@ -2,21 +2,20 @@ package com.tokopedia.shop.pageheader.presentation
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.loadImageWithEmptyTarget
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
@@ -41,14 +40,18 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase.Companion.SOURCE_SHOP_PAGE
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
+import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderData
+import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageTickerData
 import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -75,13 +78,14 @@ class NewShopPageViewModel @Inject constructor(
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
         private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
+        private val newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>,
         private val getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>,
         private val shopModerateRequestStatusUseCase: Lazy<ShopModerateRequestStatusUseCase>,
         private val shopRequestUnmoderateUseCase: Lazy<ShopRequestUnmoderateUseCase>,
         private val getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>,
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
-        private val gqlGetShopOperationalHoursListUseCase: Lazy<GqlGetShopOperationalHoursListUseCase>,
+        private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
 
@@ -106,7 +110,7 @@ class NewShopPageViewModel @Inject constructor(
     val shopPageP1Data = MutableLiveData<Result<NewShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
-    var homeWidgetLayoutData: ShopPageGetHomeType.HomeLayoutData = ShopPageGetHomeType.HomeLayoutData()
+    var homeWidgetLayoutData: HomeLayoutData = HomeLayoutData()
     val shopImagePath = MutableLiveData<String>()
 
     private val _shopUnmoderateData = MutableLiveData<Result<ShopRequestUnmoderateSuccessResponse>>()
@@ -129,20 +133,16 @@ class NewShopPageViewModel @Inject constructor(
     val shopSellerPLayWidgetData : LiveData<Result<Broadcaster.Config>>
         get() = _shopSellerPLayWidgetData
 
-    private val _shopPageTickerData = MutableLiveData<Result<ShopInfo.StatusInfo>>()
-    val shopPageTickerData : LiveData<Result<ShopInfo.StatusInfo>>
+    private val _shopPageTickerData = MutableLiveData<Result<ShopPageTickerData>>()
+    val shopPageTickerData : LiveData<Result<ShopPageTickerData>>
         get() = _shopPageTickerData
 
     private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
 
-    private val _shopOperationalHoursListData = MutableLiveData<Result<ShopOperationalHoursListResponse>>()
-    val shopOperationalHoursListData: LiveData<Result<ShopOperationalHoursListResponse>>
-        get() = _shopOperationalHoursListData
-
     fun getShopPageTabData(
-            shopId: Int,
+            shopId: String,
             shopDomain: String,
             page: Int,
             itemPerPage: Int,
@@ -150,7 +150,8 @@ class NewShopPageViewModel @Inject constructor(
             keyword: String,
             etalaseId: String,
             isRefresh: Boolean,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            extParam: String
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -159,11 +160,15 @@ class NewShopPageViewModel @Inject constructor(
                         getShopP1Data(
                                 shopId,
                                 shopDomain,
-                                isRefresh
+                                isRefresh,
+                                extParam
                         )
                     },
                     onError = {
-                        shopPageP1Data.postValue(Fail(it))
+                        shopPageP1Data.postValue(Fail(ShopAsyncErrorException(
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_P1,
+                            it
+                        )))
                         null
                     })
 
@@ -176,7 +181,10 @@ class NewShopPageViewModel @Inject constructor(
                         )
                     },
                     onError = {
-                        shopPageP1Data.postValue(Fail(it))
+                        shopPageP1Data.postValue(Fail(ShopAsyncErrorException(
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_HEADER_WIDGET,
+                            it
+                        )))
                         null
                     })
 
@@ -194,7 +202,10 @@ class NewShopPageViewModel @Inject constructor(
                         )
                     },
                     onError = {
-                        shopPageP1Data.postValue(Fail(it))
+                        shopPageP1Data.postValue(Fail(ShopAsyncErrorException(
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_INITIAL_PRODUCT_LIST,
+                            it
+                        )))
                         null
                     }
             )
@@ -218,9 +229,96 @@ class NewShopPageViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getShopPageHeaderData(shopId: Int, isRefresh: Boolean): ShopPageHeaderLayoutResponse {
+    fun getNewShopPageTabData(
+        shopId: String,
+        shopDomain: String,
+        page: Int,
+        itemPerPage: Int,
+        shopProductFilterParameter: ShopProductFilterParameter,
+        keyword: String,
+        etalaseId: String,
+        isRefresh: Boolean,
+        widgetUserAddressLocalData: LocalCacheModel,
+        extParam: String
+    ) {
+        launchCatchError(block = {
+            val shopP1DataAsync = asyncCatchError(
+                dispatcherProvider.io,
+                block = {
+                    getNewShopP1Data(
+                        shopId,
+                        shopDomain,
+                        isRefresh,
+                        extParam
+                    )
+                },
+                onError = {
+                    shopPageP1Data.postValue(Fail(ShopAsyncErrorException(
+                        ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_P1,
+                        it
+                    )))
+                    null
+                })
+
+            val shopHeaderWidgetDataAsync = asyncCatchError(
+                dispatcherProvider.io,
+                block = {
+                    getShopPageHeaderData(
+                        shopId,
+                        isRefresh
+                    )
+                },
+                onError = {
+                    shopPageP1Data.postValue(Fail(ShopAsyncErrorException(
+                        ShopAsyncErrorException.AsyncQueryType.SHOP_HEADER_WIDGET,
+                        it
+                    )))
+                    null
+                })
+
+            val productListDataAsync = asyncCatchError(
+                dispatcherProvider.io,
+                block = {
+                    getProductListData(
+                        shopId.toString(),
+                        page,
+                        itemPerPage,
+                        shopProductFilterParameter,
+                        keyword,
+                        etalaseId,
+                        widgetUserAddressLocalData
+                    )
+                },
+                onError = {
+                    shopPageP1Data.postValue(Fail(ShopAsyncErrorException(
+                        ShopAsyncErrorException.AsyncQueryType.SHOP_INITIAL_PRODUCT_LIST,
+                        it
+                    )))
+                    null
+                }
+            )
+            shopP1DataAsync.await()?.let { shopPageHeaderP1Data ->
+                productListDataAsync.await()?.let { shopProductData ->
+                    productListData = shopProductData
+                }
+                shopHeaderWidgetDataAsync.await()?.let{ shopPageHeaderWidgetData ->
+                    shopPageP1Data.postValue(Success(NewShopPageHeaderMapper.mapToNewShopPageP1HeaderData(
+                        shopPageHeaderP1Data.isShopOfficialStore,
+                        shopPageHeaderP1Data.isShopPowerMerchant,
+                        shopPageHeaderP1Data.shopPageGetDynamicTabResponse,
+                        shopPageHeaderP1Data.feedWhitelist,
+                        shopPageHeaderWidgetData
+                    )))
+                }
+            }
+        }) { exception ->
+            shopPageP1Data.postValue(Fail(exception))
+        }
+    }
+
+    private suspend fun getShopPageHeaderData(shopId: String, isRefresh: Boolean): ShopPageHeaderLayoutResponse {
         val useCase = getShopPageHeaderLayoutUseCase.get()
-        useCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId.toString())
+        useCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId)
         useCase.isFromCloud = isRefresh
         return useCase.executeOnBackground()
     }
@@ -257,13 +355,26 @@ class NewShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopP1Data(
-            shopId: Int,
+            shopId: String,
             shopDomain: String,
-            isRefresh: Boolean
+            isRefresh: Boolean,
+            extParam: String
     ): ShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain)
+        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain, extParam)
+        return useCase.executeOnBackground()
+    }
+
+    private suspend fun getNewShopP1Data(
+        shopId: String,
+        shopDomain: String,
+        isRefresh: Boolean,
+        extParam: String
+    ): NewShopPageHeaderP1 {
+        val useCase = newGetShopPageP1DataUseCase.get()
+        useCase.isFromCacheFirst = !isRefresh
+        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain, extParam)
         return useCase.executeOnBackground()
     }
 
@@ -292,20 +403,22 @@ class NewShopPageViewModel @Inject constructor(
 
     fun saveShopImageToPhoneStorage(context: Context?, shopSnippetUrl: String) {
         launchCatchError(dispatcherProvider.io, {
-            ImageHandler.loadImageWithTarget(context, shopSnippetUrl, object : CustomTarget<Bitmap>(){
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                            resource,
+            context?.let {
+                ShopUtil.loadImageWithEmptyTarget(it, shopSnippetUrl, {
+                    fitCenter()
+                }, MediaBitmapEmptyTarget(
+                    onReady = { bitmap ->
+                        val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                            bitmap,
                             Bitmap.CompressFormat.PNG
-                    )
-                    if (savedFile!= null) {
-                        shopImagePath.postValue(savedFile.absolutePath)
+                        )
+
+                        if (savedFile != null) {
+                            shopImagePath.postValue(savedFile.absolutePath)
+                        }
                     }
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // no op
-                }
-            })
+                ))
+            }
         }, onError = {
             it.printStackTrace()
         })
@@ -363,15 +476,36 @@ class NewShopPageViewModel @Inject constructor(
         })
     }
 
-    fun getShopInfoData(shopId: String, shopDomain: String, isRefresh: Boolean){
+    fun getShopShareAndOperationalHourStatusData(shopId: String, shopDomain: String, isRefresh: Boolean){
         launchCatchError(dispatcherProvider.io ,block = {
-            val shopInfoForHeaderResponse = getShopInfoHeader(
-                    shopId.toIntOrZero(),
-                    shopDomain,
-                    isRefresh
+            val shopInfoData = asyncCatchError(
+                    dispatcherProvider.io,
+                    block = {
+                        getShopInfoHeader(
+                                shopId.toIntOrZero(),
+                                shopDomain,
+                                isRefresh
+                        )
+                    },
+                    onError = {
+                        null
+                    }
             )
-            _shopPageTickerData.postValue(Success(shopInfoForHeaderResponse.statusInfo))
-            _shopPageShopShareData.postValue(Success(shopInfoForHeaderResponse))
+            val shopOperationalHourStatusData = asyncCatchError(
+                    dispatcherProvider.io,
+                    block = {
+                        getShopOperationalHourStatus(shopId.toIntOrZero())
+                    },
+                    onError = {
+                        null
+                    }
+            )
+            shopInfoData.await()?.let { shopInfo ->
+                _shopPageShopShareData.postValue(Success(shopInfo))
+                shopOperationalHourStatusData.await()?.let{ shopOperationalHourStatus ->
+                    _shopPageTickerData.postValue(Success(ShopPageTickerData(shopInfo, shopOperationalHourStatus)))
+                }
+            }
         }) {}
     }
 
@@ -436,17 +570,9 @@ class NewShopPageViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
-    fun getShopOperationalHoursList(shopId: String) {
-        launchCatchError(dispatcherProvider.io, block =  {
-
-            val useCase = gqlGetShopOperationalHoursListUseCase.get().apply {
-                params = GqlGetShopOperationalHoursListUseCase.createRequestParams(shopId)
-            }
-            val response = useCase.executeOnBackground()
-            _shopOperationalHoursListData.postValue(Success(response))
-
-        }) {
-            _shopOperationalHoursListData.postValue(Fail(it))
-        }
+    private suspend fun getShopOperationalHourStatus(shopId: Int): ShopOperationalHourStatus {
+        val useCase = gqlGetShopOperationalHourStatusUseCase.get()
+        useCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopId.toString())
+        return useCase.executeOnBackground()
     }
 }

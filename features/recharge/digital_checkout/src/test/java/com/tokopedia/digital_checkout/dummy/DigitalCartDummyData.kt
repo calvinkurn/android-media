@@ -4,7 +4,6 @@ import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.response.AttributesCheckout
 import com.tokopedia.common_digital.cart.data.entity.response.Parameter
 import com.tokopedia.digital_checkout.data.response.getcart.AutoApplyVoucher
-import com.tokopedia.digital_checkout.data.response.getcart.CrossSellingConfig
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 
 /**
@@ -29,16 +28,18 @@ object DigitalCartDummyData {
                 discountPrice = "Rp 12.500"
         )
 
-        val crossSellingConfig = CrossSellingConfig(
-                canBeSkipped = true,
-                isChecked = false,
-                wording = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording",
-                        checkoutButtonText = "Bayar"
-                ),
-                wordingIsSubscribe = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording subscribed",
-                        checkoutButtonText = "Bayar"
+        val subscriptionProduct = FintechProduct(
+                transactionType = "Aktivasi Langganan",
+                tierId = "68",
+                optIn = false,
+                checkBoxDisabled = true,
+                allowOVOPoints = false,
+                fintechAmount = 0.0,
+                fintechPartnerAmount = 0.0,
+                info = FintechProduct.FintechProductInfo(
+                        title = "Aktifkan Langganan untuk bayar otomatis",
+                        subtitle = "Bayar tagihan ini secara otomatis, lebih mudah dan hemat waktu. Yuk mulai berlangganan.",
+                        checkedSubtitle = "Tagihan ini akan otomatis dibayar tiap bulan mulai 24 Dec 2021 menggunakan OVO."
                 )
         )
 
@@ -79,9 +80,7 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                crossSellingType = 3,
-                crossSellingConfig = crossSellingConfig,
-                fintechProduct = listOf(fintechProduct),
+                fintechProduct = listOf(subscriptionProduct, fintechProduct),
                 adminFee = 3000.0
         )
     }
@@ -104,17 +103,19 @@ object DigitalCartDummyData {
                 discountAmountLabel = "PROMOO"
         )
 
-        val crossSellingConfig = CrossSellingConfig(
-                canBeSkipped = true,
-                isChecked = false,
-                wording = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording",
-                        checkoutButtonText = "Bayar"
-                ),
-                wordingIsSubscribe = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording subscribed",
-                        checkoutButtonText = "Bayar"
-                )
+        val subscriptionProduct = FintechProduct(
+            transactionType = "Aktivasi Langganan",
+            tierId = "68",
+            optIn = false,
+            checkBoxDisabled = true,
+            allowOVOPoints = false,
+            fintechAmount = 0.0,
+            fintechPartnerAmount = 0.0,
+            info = FintechProduct.FintechProductInfo(
+                title = "Aktifkan Langganan untuk bayar otomatis",
+                subtitle = "Bayar tagihan ini secara otomatis, lebih mudah dan hemat waktu. Yuk mulai berlangganan.",
+                checkedSubtitle = "Tagihan ini akan otomatis dibayar tiap bulan mulai 24 Dec 2021 menggunakan OVO."
+            )
         )
 
         val fintechProduct = FintechProduct(
@@ -154,9 +155,7 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                crossSellingType = 3,
-                crossSellingConfig = crossSellingConfig,
-                fintechProduct = listOf(fintechProduct),
+                fintechProduct = listOf(subscriptionProduct, fintechProduct),
                 adminFee = 3000.0
         )
     }
@@ -199,17 +198,19 @@ object DigitalCartDummyData {
                 discountPrice = "Rp 12.500"
         )
 
-        val crossSellingConfig = CrossSellingConfig(
-                canBeSkipped = true,
-                isChecked = false,
-                wording = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording",
-                        checkoutButtonText = "Bayar"
-                ),
-                wordingIsSubscribe = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording subscribed",
-                        checkoutButtonText = "Bayar"
-                )
+        val subscriptionProduct = FintechProduct(
+            transactionType = "Aktivasi Langganan",
+            tierId = "68",
+            optIn = false,
+            checkBoxDisabled = true,
+            allowOVOPoints = false,
+            fintechAmount = 0.0,
+            fintechPartnerAmount = 0.0,
+            info = FintechProduct.FintechProductInfo(
+                title = "Aktifkan Langganan untuk bayar otomatis",
+                subtitle = "Bayar tagihan ini secara otomatis, lebih mudah dan hemat waktu. Yuk mulai berlangganan.",
+                checkedSubtitle = "Tagihan ini akan otomatis dibayar tiap bulan mulai 24 Dec 2021 menggunakan OVO."
+            )
         )
 
         val fintechProduct = FintechProduct(
@@ -249,9 +250,7 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                crossSellingType = 3,
-                crossSellingConfig = crossSellingConfig,
-                fintechProduct = listOf(fintechProduct)
+                fintechProduct = listOf(subscriptionProduct, fintechProduct)
         )
     }
 
@@ -280,19 +279,6 @@ object DigitalCartDummyData {
                 discountPrice = "Rp 12.500"
         )
 
-        val crossSellingConfig = CrossSellingConfig(
-                canBeSkipped = true,
-                isChecked = false,
-                wording = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording",
-                        checkoutButtonText = "Bayar"
-                ),
-                wordingIsSubscribe = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording subscribed",
-                        checkoutButtonText = "Bayar"
-                )
-        )
-
         val fintechProduct = FintechProduct(
                 transactionType = "egold",
                 tierId = "1",
@@ -330,8 +316,6 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                crossSellingType = 0,
-                crossSellingConfig = crossSellingConfig,
                 fintechProduct = listOf(fintechProduct),
                 adminFee = 5000.0
         )
@@ -360,19 +344,6 @@ object DigitalCartDummyData {
                 discountedPrice = "Rp 1.000",
                 discountedAmount = 1000.0,
                 discountPrice = "Rp 1.000"
-        )
-
-        val crossSellingConfig = CrossSellingConfig(
-                canBeSkipped = true,
-                isChecked = false,
-                wording = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording",
-                        checkoutButtonText = "Bayar"
-                ),
-                wordingIsSubscribe = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording subscribed",
-                        checkoutButtonText = "Bayar"
-                )
         )
 
         val fintechProduct = FintechProduct(
@@ -412,8 +383,6 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                crossSellingType = 0,
-                crossSellingConfig = crossSellingConfig,
                 fintechProduct = listOf(fintechProduct)
         )
     }

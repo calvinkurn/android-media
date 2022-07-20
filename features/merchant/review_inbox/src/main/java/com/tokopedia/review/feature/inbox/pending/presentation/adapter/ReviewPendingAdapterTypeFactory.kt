@@ -5,11 +5,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityCarouselUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
-import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.*
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.ReviewPendingCredibilityCarouselViewHolder
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.ReviewPendingEmptyViewHolder
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.ReviewPendingLoadingViewHolder
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.ReviewPendingOvoIncentiveViewHolder
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewholder.ReviewPendingViewHolder
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 
 class ReviewPendingAdapterTypeFactory(private val reviewPendingItemListener: ReviewPendingItemListener) : ReviewPendingTypeFactory, BaseAdapterTypeFactory() {
@@ -26,12 +30,12 @@ class ReviewPendingAdapterTypeFactory(private val reviewPendingItemListener: Rev
         return ReviewPendingLoadingViewHolder.LAYOUT
     }
 
-    override fun type(reviewPendingCredibilityUiModel: ReviewPendingCredibilityUiModel): Int {
-        return ReviewPendingCredibilityViewHolder.LAYOUT
-    }
-
     override fun type(reviewPendingEmptyUiModel: ReviewPendingEmptyUiModel): Int {
         return ReviewPendingEmptyViewHolder.LAYOUT
+    }
+
+    override fun type(reviewPendingCredibilityCarouselUiModel: ReviewPendingCredibilityCarouselUiModel): Int {
+        return ReviewPendingCredibilityCarouselViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -39,8 +43,8 @@ class ReviewPendingAdapterTypeFactory(private val reviewPendingItemListener: Rev
             ReviewPendingViewHolder.LAYOUT -> ReviewPendingViewHolder(parent, reviewPendingItemListener)
             ReviewPendingLoadingViewHolder.LAYOUT -> ReviewPendingLoadingViewHolder(parent)
             ReviewPendingOvoIncentiveViewHolder.LAYOUT -> ReviewPendingOvoIncentiveViewHolder(parent, reviewPendingItemListener)
-            ReviewPendingCredibilityViewHolder.LAYOUT -> ReviewPendingCredibilityViewHolder(parent, reviewPendingItemListener)
             ReviewPendingEmptyViewHolder.LAYOUT -> ReviewPendingEmptyViewHolder(parent)
+            ReviewPendingCredibilityCarouselViewHolder.LAYOUT -> ReviewPendingCredibilityCarouselViewHolder(parent, reviewPendingItemListener)
             else -> return super.createViewHolder(parent, type)
         }
     }

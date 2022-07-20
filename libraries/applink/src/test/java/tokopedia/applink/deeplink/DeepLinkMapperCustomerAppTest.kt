@@ -2,27 +2,40 @@ package tokopedia.applink.deeplink
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
-import io.mockk.*
+import io.mockk.clearStaticMockk
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
+
+    companion object {
+        const val SIZE_MAPPER = 198
+    }
 
     override fun setup() {
         super.setup()
@@ -37,27 +50,17 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `size deeplinkPatternTokopediaSchemeList`() {
+        // This test is a reminder for developer.
+        // If there is any mapping changed/added/deleted, developer should change the SIZE_MAPPER
+        // also there developer should also add the corresponding unit test for the deeplink.
+        assert(DeeplinkMapper.getTokopediaSchemeList().size == SIZE_MAPPER)
+    }
+
+    @Test
     fun `check home appLink then should return tokopedia internal home navigation in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation"
         assertEqualsDeepLinkMapper(ApplinkConst.HOME, expectedDeepLink)
-    }
-
-    @Test
-    fun `check inbox appLink and new navigation then should return tokopedia internal home navigation in customerapp`() {
-        every {
-            DeeplinkMapperHome.useNewInbox()
-        } returns true
-        val expectedDeepLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/inbox?a=2"
-        assertEqualsDeepLinkMapper(ApplinkConst.INBOX + "?a=2", expectedDeepLink)
-    }
-
-    @Test
-    fun `check inbox appLink and old navigation then should return tokopedia internal home navigation in customerapp`() {
-        every {
-            DeeplinkMapperHome.useNewInbox()
-        } returns false
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
-        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
     }
 
     @Test
@@ -101,14 +104,15 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check topchat path then should return tokopedia internal topchat`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/topchat/test/123?a=1"
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/topchat/test/123?a=1"
         assertEqualsDeepLinkMapper(ApplinkConst.TOP_CHAT + "/test/123?a=1", expectedDeepLink)
     }
 
     @Test
-    fun `check account old then should return tokopedia internal account`() {
+    fun `check account old then should return new account`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/old-home-account/abc/def/123"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/new-home-account/abc/def/123"
         every {
             DeeplinkMapperAccount.usingOldAccount(any())
         } returns true
@@ -116,9 +120,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check account new then should return tokopedia internal account`() {
+    fun `check account new then should return tokopedia internal new account`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/new-home-account/abc/def/123"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/new-home-account/abc/def/123"
         every {
             DeeplinkMapperAccount.usingOldAccount(any())
         } returns false
@@ -185,16 +189,16 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check home account appLink then should return tokopedia internal home navigation tab account in customerapp`() {
+    fun `check home account appLink then should return tokopedia internal new home account`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=4"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/new-home-account"
         assertEqualsDeepLinkMapper(ApplinkConst.HOME_ACCOUNT, expectedDeepLink)
     }
 
     @Test
-    fun `check home account seller appLink then should return tokopedia internal home navigation tab seller in customerapp`() {
+    fun `check home account seller appLink then should return tokopedia internal new home account`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=4&ACCOUNT_TAB=ACCOUNT_TAB_SELLER"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://user/new-home-account"
         assertEqualsDeepLinkMapper(ApplinkConst.HOME_ACCOUNT_SELLER, expectedDeepLink)
     }
 
@@ -218,15 +222,49 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check amp find appLink then should return tokopedia internal home find in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result"
+        assertEqualsDeepLinkMapper(ApplinkConst.AMP_FIND, expectedDeepLink)
+    }
+
+    @Test
     fun `check find appLink then should return tokopedia internal home find in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://find"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result"
         assertEqualsDeepLinkMapper(ApplinkConst.FIND, expectedDeepLink)
     }
 
     @Test
-    fun `check amp find appLink then should return tokopedia internal home find in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://find"
-        assertEqualsDeepLinkMapper(ApplinkConst.AMP_FIND, expectedDeepLink)
+    fun `check find appLink with search query then should return tokopedia internal home find in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker&navsource=find"
+        assertEqualsDeepLinkMapper(ApplinkConst.FIND + "/3-ply-masker", expectedDeepLink)
+    }
+
+    @Test
+    fun `check find appLink with search and city query then should return tokopedia internal home find in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker%20di%20dki%20jakarta&navsource=find"
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.FIND + "/3-ply-masker-di-dki-jakarta",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check amp find appLink with search query then should return tokopedia internal home find in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker&navsource=find"
+        assertEqualsDeepLinkMapper(ApplinkConst.AMP_FIND + "/3-ply-masker", expectedDeepLink)
+    }
+
+    @Test
+    fun `check amp find appLink with search and city query then should return tokopedia internal home find in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker%20di%20dki%20jakarta&navsource=find"
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.AMP_FIND + "/3-ply-masker-di-dki-jakarta",
+            expectedDeepLink
+        )
     }
 
     @Test
@@ -282,28 +320,18 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check shop old review appLink then should return tokopedia internal shop old review in customerapp`() {
+    fun `check shop review appLink with empty source then should return tokopedia internal shop review tab in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-page/1479278/review"
-        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, "1479278")
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.AB_TEST_SHOP_REVIEW, RollenceKey.OLD_REVIEW_SHOP
-            )
-        } returns RollenceKey.OLD_REVIEW_SHOP
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-page/1479278/review?review-source="
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, "1479278", "")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     @Test
-    fun `check shop new review appLink then should return tokopedia internal shop review in customerapp`() {
+    fun `check shop review appLink with source header then should return tokopedia internal shop review fullpage in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/1479278/review"
-        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, "1479278")
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.AB_TEST_SHOP_REVIEW, RollenceKey.OLD_REVIEW_SHOP
-            )
-        } returns RollenceKey.NEW_REVIEW_SHOP
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/1479278/review?review-source=header"
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, "1479278", "header")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
@@ -369,6 +397,29 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check shop operational hour appLink then should return tokopedia internal shop operational hour in customerapp`() {
+        val mockShopId = "12345"
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/widget/operational-hour/$mockShopId/"
+        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_OPERATIONAL_HOUR, mockShopId)
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop mvc locked to product shop id then should return tokopedia internal mvc locked to product shop id in customerapp`() {
+        val mockShopId = "12345"
+        val mockVoucherId = "6789"
+        val expectedDeepLink = UriUtil.buildUri(
+            ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT,
+            mockShopId,
+            mockVoucherId
+        )
+        val appLink =
+            UriUtil.buildUri(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT, mockShopId, mockVoucherId)
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check shop settings address then should return tokopedia internal shop settings address`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-settings-address"
@@ -380,6 +431,18 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-settings-info"
         assertEqualsDeepLinkMapper(ApplinkConst.SHOP_SETTINGS_INFO, expectedDeepLink)
+    }
+
+    @Test
+    fun `check product educational appLink internal product educational`() {
+        val type = "3"
+
+        val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_EDUCATIONAL, type)
+        val expectedDeepLink =
+                "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-edu/${type}/"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeeplinkParameters(appLink, type to null)
     }
 
     @Test
@@ -415,16 +478,17 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check product info applink with extParam then should return expected applink`() {
+    fun `check product info applink with extParam (encoded format) then should return expected applink`() {
         val productId = "890495024"
-        val extParam = "fcity%3D174%2C175%2C176%2C177%2C178%2C179%26shipping%3D10%2C13%2313%26ivf%3D1TRUE"
+        val extParam =
+            "fcity%3D174%2C175%2C176%2C177%2C178%2C179%26shipping%3D10%2C13%2313%26ivf%3D1TRUE"
         val applink = Uri.parse(UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, productId))
-                .buildUpon()
-                .appendQueryParameter("extParam", extParam)
-                .build()
-                .toString()
-
-        val expectedDeeplink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-detail/${productId}/?extParam=$extParam"
+            .buildUpon()
+            .appendQueryParameter("extParam", extParam.decodeToUtf8())
+            .build()
+            .toString()
+        val expectedDeeplink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-detail/${productId}/?extParam=$extParam"
 
         assertEqualsDeepLinkMapper(applink, expectedDeeplink)
         assertEqualsDeeplinkParameters(applink, "extParam" to extParam.decodeToUtf8())
@@ -498,26 +562,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check reputation appLink then should return tokopedia internal reputation in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/review"
-        every {
-            DeeplinkMapperMerchant.goToInboxUnified()
-        } returns false
-        assertEqualsDeepLinkMapper(ApplinkConst.REPUTATION, expectedDeepLink)
-    }
-
-    @Test
-    fun `check reputation appLink and ab test then should route to inbox unified in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/inbox?page=review&role=buyer"
-        every {
-            DeeplinkMapperMerchant.goToInboxUnified()
-        } returns true
         assertEqualsDeepLinkMapper(ApplinkConst.REPUTATION, expectedDeepLink)
     }
 
     @Test
     fun `check product review appLink then should return tokopedia internal product review in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product/890495024/review-old"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product/890495024/review"
         val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_REPUTATION, "890495024")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
@@ -708,13 +759,41 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check wishlist appLink then should return tokopedia internal wish list in customerapp`() {
+        every {
+            DeeplinkMapperPurchasePlatform.isWishlistV2(context)
+        } returns false
+
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/wishlist"
         assertEqualsDeepLinkMapper(ApplinkConst.WISHLIST, expectedDeepLink)
     }
 
     @Test
     fun `check new wishlist appLink then should return tokopedia internal new wish list in customerapp`() {
+        every {
+            DeeplinkMapperPurchasePlatform.isWishlistV2(context)
+        } returns false
+
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/wishlist"
+        assertEqualsDeepLinkMapper(ApplinkConst.NEW_WISHLIST, expectedDeepLink)
+    }
+
+    @Test
+    fun `check wishlist appLink then should return tokopedia internal wishlist_v2 in customerapp`() {
+        every {
+            DeeplinkMapperPurchasePlatform.isWishlistV2(context)
+        } returns true
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist"
+        assertEqualsDeepLinkMapper(ApplinkConst.WISHLIST, expectedDeepLink)
+    }
+
+    @Test
+    fun `check new wishlist appLink then should return tokopedia internal wishlist_v2 in customerapp`() {
+        every {
+            DeeplinkMapperPurchasePlatform.isWishlistV2(context)
+        } returns true
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist"
         assertEqualsDeepLinkMapper(ApplinkConst.NEW_WISHLIST, expectedDeepLink)
     }
 
@@ -807,14 +886,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check topchat with id appLink then should return tokopedia internal topchat in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/topchat/12345"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/topchat/12345"
         val appLink = UriUtil.buildUri(ApplinkConst.TOPCHAT, "12345")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     @Test
     fun `check topchat appLink then should return tokopedia internal topchat in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/topchat"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/topchat"
         assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, ApplinkConst.TOP_CHAT, expectedDeepLink)
     }
 
@@ -826,7 +905,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check topchat old appLink then should return tokopedia internal topchat old in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/topchat"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/topchat"
         assertEqualsDeepLinkMapper(ApplinkConst.TOPCHAT_OLD, expectedDeepLink)
     }
 
@@ -970,20 +1049,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check ovo upgrade then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://ovo/upgrade"
-        assertEqualsDeepLinkMapper(ApplinkConst.OVOUPGRADE, expectedDeepLink)
-    }
-
-    @Test
-    fun `check ovo upgrade status then should return tokopedia internal`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://ovo/upgradestatus?status=successful&message=Ovo success"
-        val appLink = UriUtil.buildUri(ApplinkConst.OVOUPGRADE_STATUS, "successful", "Ovo success")
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
     fun `check register init then should return tokopedia internal`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/init-register"
         assertEqualsDeepLinkMapper(ApplinkConst.REGISTER_INIT, expectedDeepLink)
@@ -1005,6 +1070,42 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check shop score detail appLink then should return tokopedia internal shop score detail in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/performance"
         assertEqualsDeepLinkMapper(ApplinkConst.SHOP_SCORE_DETAIL, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop score detail appLink with coachmark param then should return tokopedia internal shop score performance with coachmark param in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/performance?coachmark=disabled"
+        val coachMarkParam = mapOf("coachmark" to "disabled")
+        val actualDeeplink =
+            UriUtil.buildUriAppendParam(ApplinkConst.SHOP_SCORE_DETAIL, coachMarkParam)
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop admin invitation appLink then should return tokopedia internal shop admin invitation in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-admin/invitation-page"
+        assertEqualsDeepLinkMapper(ApplinkConst.ADMIN_INVITATION, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop admin redirection appLink then should return tokopedia internal shop admin redirection in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-admin/redirection-page"
+        assertEqualsDeepLinkMapper(ApplinkConst.ADMIN_REDIRECTION, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop admin accepted appLink with shop name param then should return tokopedia internal shop admin accepted with shop name param in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-admin/accepted-page?shop_name=toko"
+        val shopNameParam = mapOf("shop_name" to "toko")
+        val actualDeeplink = UriUtil.buildUriAppendParam(ApplinkConst.ADMIN_ACCEPTED, shopNameParam)
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shop admin accepted appLink then should return tokopedia internal shop admin accepted in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-admin/accepted-page"
+        assertEqualsDeepLinkMapper(ApplinkConst.ADMIN_ACCEPTED, expectedDeepLink)
     }
 
     @Test
@@ -1174,6 +1275,20 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check address list appLink then should return tokopedia internal manage address in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/manageaddress/"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_ADDRESS, expectedDeepLink)
+    }
+
+    @Test
+    fun `check pod appLink then should return tokopedia internal proof of delivery in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/shipping/pod/123456?image_id=22222"
+        val appLink = UriUtil.buildUri(ApplinkConst.ORDER_POD, "123456?image_id=22222")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check flight appLink then should return tokopedia internal ticket detail in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://pesawat/dashboard"
         assertEqualsDeepLinkMapper(ApplinkConst.FLIGHT, expectedDeepLink)
@@ -1249,19 +1364,19 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check tokopoints appLink then should return tokopedia internal tokopoints in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://tokopoints/home"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://rewards/home"
         assertEqualsDeepLinkMapper(ApplinkConst.TOKOPOINTS, expectedDeepLink)
     }
 
     @Test
     fun `check rewards appLink then should return tokopedia internal rewards in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://tokopoints/home"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://rewards/home"
         assertEqualsDeepLinkMapper(ApplinkConst.TOKOPEDIA_REWARD, expectedDeepLink)
     }
 
     @Test
     fun `check coupon listing appLink then should return tokopedia internal coupon listing in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://tokopoints/kupon-saya"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://rewards/kupon-saya"
         assertEqualsDeepLinkMapper(ApplinkConst.COUPON_LISTING, expectedDeepLink)
     }
 
@@ -1272,8 +1387,30 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check setting profile appLink then should return tokopedia internal setting profile in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/setting-profile"
-        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_PROFILE, expectedDeepLink)
+        val settingProfileApplink = ApplinkConst.SETTING_PROFILE
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/setting-profile"
+        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP)
+        } returns ""
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO, true)
+        } returns true
+        assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check setting profile applink then should return tokopedia internal new revamp setting profile in customerapp`() {
+        val settingProfileApplink = ApplinkConst.SETTING_PROFILE
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/profile-info"
+        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP)
+        } returns RollenceKey.VARIANT_NEW_PROFILE_REVAMP
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO, true)
+        } returns true
+        assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
     }
 
     @Test
@@ -1438,27 +1575,17 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check reschedule pickup applink then should return tokopedia internal reschedule pickup in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/reschedulepickup?order_id=1234567890"
+        val appLink = "${ApplinkConst.LOGISTIC_SELLER_RESCHEDULE}?order_id=1234567890"
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check saldo appLink then should return tokopedia internal saldo in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/saldo"
         assertEqualsDeepLinkMapper(ApplinkConst.SALDO, expectedDeepLink)
-    }
-
-    @Test
-    fun `check instant debit bca appLink then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/instantdebitbca"
-        assertEqualsDeepLinkMapper(
-            ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_APPLINK,
-            expectedDeepLink
-        )
-    }
-
-    @Test
-    fun `check instant debit bca edit limit appLink then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/editbcaoneklik"
-        assertEqualsDeepLinkMapper(
-            ApplinkConst.DigitalInstantDebit.INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK,
-            expectedDeepLink
-        )
     }
 
     @Test
@@ -1620,22 +1747,16 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check change inactive phone appLink then should return tokopedia internal phone change inactive phone in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/change-inactive-phone"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/change-inactive-phone"
         assertEqualsDeepLinkMapper(ApplinkConst.CHANGE_INACTIVE_PHONE, expectedDeepLink)
     }
 
     @Test
     fun `check add pin onboarding appLink then should return tokopedia internal add pin onboarding in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/add-pin-onboarding"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/add-pin-onboarding"
         assertEqualsDeepLinkMapper(ApplinkConst.ADD_PIN_ONBOARD, expectedDeepLink)
     }
 
-    @Test
-    fun `check add fingerprint onboarding appLink then should return tokopedia internal add fingerprint onboarding in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/add-fingerprint-onboarding"
-        assertEqualsDeepLinkMapper(ApplinkConst.ADD_FINGERPRINT_ONBOARDING, expectedDeepLink)
-    }
 
     @Test
     fun `check kyc no param appLink then should return tokopedia internal kyc in customerapp`() {
@@ -1689,7 +1810,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check pm benefit packagee appLink then should return tokopedia internal pm benefit package in customerapp`() {
+    fun `check pm benefit package appLink then should return tokopedia internal pm benefit package in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/pm-benefit-package"
         assertEqualsDeepLinkMapper(ApplinkConst.PM_BENEFIT_PACKAGE, expectedDeepLink)
@@ -1828,26 +1949,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check tokopoints homepage appLink then should return tokopedia internal tokopoints home page in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://tokopoints/home"
-        assertEqualsDeepLinkMapper(ApplinkConst.TokoPoints.HOMEPAGE, expectedDeepLink)
-    }
-
-    @Test
-    fun `check tokopoints homepage slash appLink then should return tokopedia internal tokopoints home page in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://tokopoints/home"
-        assertEqualsDeepLinkMapper(ApplinkConst.TokoPoints.HOMEPAGE2, expectedDeepLink)
-    }
-
-    @Test
-    fun `check tokopoints homepage reward1 appLink then should return tokopedia internal tokopoints homepage rewards1 in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://tokopoints/home"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://rewards/home"
         assertEqualsDeepLinkMapper(ApplinkConst.TokoPoints.HOMEPAGE_REWARD1, expectedDeepLink)
     }
 
     @Test
-    fun `check tokopoints homepage reward2 appLink then should return tokopedia internal tokopoints homepage rewards2 in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://tokopoints/home"
-        assertEqualsDeepLinkMapper(ApplinkConst.TokoPoints.HOMEPAGE_REWARD2, expectedDeepLink)
+    fun `check tokopoints homepage reward1 appLink then should return tokopedia internal tokopoints homepage rewards1 in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://rewards/home"
+        assertEqualsDeepLinkMapper(ApplinkConst.TokoPoints.HOMEPAGE_REWARD1, expectedDeepLink)
     }
 
     @Test
@@ -1890,12 +1999,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check catalog list value appLink then should return tukar point in customerapp`() {
         val expectedDeepLink = "tukar-point"
         assertEqualsDeepLinkMapper(ApplinkConst.TokoPoints.CATALOG_LIST_VALUE, expectedDeepLink)
-    }
-
-    @Test
-    fun `check history tokopoints appLink then should return tokopedia internal history tokopoint in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://tokopoints/home"
-        assertEqualsDeepLinkMapper(ApplinkConst.TokoPoints.HISTORY, expectedDeepLink)
     }
 
     @Test
@@ -1953,6 +2056,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-order-detail?order_id=$orderId"
         assertEqualsDeepLinkMapper("${ApplinkConst.MARKETPLACE_ORDER}/$orderId", expectedDeepLink)
+    }
+
+    @Test
+    fun `check marketplace buyer order extension appLink then should return tokopedia internal marketplace buyer order extension in customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-order-extension"
+        assertEqualsDeepLinkMapper(ApplinkConst.BUYER_ORDER_EXTENSION, expectedDeepLink)
     }
 
     @Test
@@ -2028,6 +2138,49 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check tokofood home appLink then should return tokopedia internal tokofood home in customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalTokoFood.HOME
+        val appLink = ApplinkConst.TokoFood.HOME
+        foodRollenceEnabler()
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokofood merchant appLink then should return tokopedia internal tokofood merchant in customerapp`() {
+        val merchantId = "cbdb87be-acca-439e-ae0f-4829a608b811"
+        val productId = "1111"
+        val expectedDeepLink =
+            "${ApplinkConstInternalTokoFood.MERCHANT}?merchantId=${merchantId}&product_id=${productId}"
+        val appLink = UriUtil.buildUri(ApplinkConst.TokoFood.MERCHANT, merchantId, productId)
+        foodRollenceEnabler()
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokofood category appLink then should return tokopedia internal tokofood category in customerapp`() {
+        val pageTitle = "Terlaris"
+        val cuisine = "Coffee"
+        val option = "1"
+        val sortBy = "2"
+        val brandUId = "226ea0d5-c763-40dc-aad3-9a233ed04f86"
+        val expectedDeepLink =
+            "${ApplinkConstInternalTokoFood.CATEGORY}?pageTitle=${pageTitle}&option=${option}&cuisine=${cuisine}&sortBy=$sortBy&brand_uid=${brandUId}"
+        val appLink = "${ApplinkConst.TokoFood.CATEGORY}?pageTitle=${pageTitle}&option=${option}&cuisine=${cuisine}&sortBy=$sortBy&brand_uid=${brandUId}"
+        foodRollenceEnabler()
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokofood post purchase appLink then should return tokopedia internal tokofood post purchase in customerapp`() {
+        val orderId = "123"
+        val expectedDeepLink =
+            "${ApplinkConstInternalTokoFood.POST_PURCHASE}?orderId=${orderId}"
+        val appLink = UriUtil.buildUri(ApplinkConst.TokoFood.POST_PURCHASE, orderId)
+        foodRollenceEnabler()
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check webview mapping`() {
         val queryParam =
             "?titlebar=false&allow_override=false&need_login=false&title=abc&pull_to_refresh=false&url=https://www.tokopedia.com/help"
@@ -2050,5 +2203,240 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val appLink =
             "${ApplinkConst.QRSCAN}?redirect=https://tokopedia.com/peduli-lindungi/callback?hash=yourhash"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check feeds video tab detail page applink customerapp`() {
+        val queryParam = "?widgetType=live&source_type=abc&source_id=1&filter_category=Untukmu"
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://feedplaylivedetail" + queryParam
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.FEED_PlAY_LIVE_DETAIL + queryParam,
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check feeds user profile page applink customerapp`() {
+        val queryParam = "kumamoto"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people/" + queryParam
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.PROFILE.replace(
+                ApplinkConst.Profile.PARAM_USER_ID,
+                queryParam
+            ), expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check inbox host customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/inbox"
+        assertEqualsDeepLinkMapper(ApplinkConst.INBOX, expectedDeepLink)
+    }
+
+    @Test
+    fun `check affiliate toko customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE, expectedDeepLink)
+
+        val expectedDeepLink2 = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/help"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_HELP, expectedDeepLink2)
+    }
+
+    @Test
+    fun `check shop penalty detail customerapp`() {
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.SHOP_PENALTY_DETAIL,
+            ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL
+        )
+    }
+
+    @Test
+    fun `check power merchant pro interrupt customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-menu?state="
+        assertEqualsDeepLinkMapperApp(
+            AppType.MAIN_APP,
+            ApplinkConst.POWER_MERCHANT_PRO_INTERRUPT,
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check marketplace onboarding customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/onboarding"
+        assertEqualsDeepLinkMapper("tokopedia://marketplace/onboarding", expectedDeepLink)
+    }
+
+    @Test
+    fun `check SELLER_CUSTOM_PRODUCT_LOGISTIC customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/customproductlogistic"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_CUSTOM_PRODUCT_LOGISTIC, expectedDeepLink)
+    }
+
+    @Test
+    fun `check SETTING_PAYMENT customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/payment-setting"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_PAYMENT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check SETTING_ACCOUNT customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/account-setting"
+        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_ACCOUNT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check GOPAY_KYC customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://payment/gopayKyc"
+        assertEqualsDeepLinkMapper(ApplinkConst.GOPAY_KYC, expectedDeepLink)
+    }
+
+    @Test
+    fun `check KYC_FORM_ONLY_NO_PARAM customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://global/user-identification-only/abc/def"
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.KYC_FORM_ONLY_NO_PARAM + "/abc/def",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check NOTIFICATION customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/inbox?page=notification&show_bottom_nav=false"
+        assertEqualsDeepLinkMapperApp(AppType.MAIN_APP, ApplinkConst.NOTIFICATION, expectedDeepLink)
+    }
+
+    @Test
+    fun `check ACTIVATION_GOPAY customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/activate_gopay"
+        assertEqualsDeepLinkMapper(ApplinkConst.ACTIVATION_GOPAY + "/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check OPTIMIZED_CHECKOUT customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/opt-checkout"
+        assertEqualsDeepLinkMapper(ApplinkConst.OPTIMIZED_CHECKOUT + "/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check SHARING_HOST customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/sharing/abc/def"
+        assertEqualsDeepLinkMapper("tokopedia://sharing/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check LINK_ACCOUNT customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/link-account-webview"
+        assertEqualsDeepLinkMapper(ApplinkConst.LINK_ACCOUNT, expectedDeepLink)
+    }
+
+    @Test
+    fun `check EXPLICIT_PROFILE customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/explicit-profile"
+        assertEqualsDeepLinkMapper(ApplinkConst.EXPLICIT_PROFILE, expectedDeepLink)
+    }
+
+    @Test
+    fun `check TELEPHONY_MASKING customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/telephony-masking"
+        assertEqualsDeepLinkMapper(ApplinkConst.TELEPHONY_MASKING + "/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check PRODUCT_BUNDLE customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/product-bundle/123/"
+        assertEqualsDeepLinkMapper("tokopedia://product-bundle/123", expectedDeepLink)
+    }
+
+    @Test
+    fun `check GIFTING customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/gifting/213/"
+        assertEqualsDeepLinkMapper("tokopedia://gifting/213", expectedDeepLink)
+    }
+
+    @Test
+    fun `check TOPADS_CREATE_MANUAL_ADS customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://topads/create-manual-ads"
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS + "/abc/def",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check WEBVIEW_DOWNLOAD_HOST customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/webviewdownload"
+        assertEqualsDeepLinkMapper("tokopedia://webviewdownload/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check AFFILIATE_DEFAULT_CREATE_POST_V2 customerapp`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/create_post_v2/abc/def"
+        assertEqualsDeepLinkMapper(
+            ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2 + "/abc/def",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check REVIEW_REMINDER_PREVIOUS customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/review-reminder"
+        assertEqualsDeepLinkMapper(ApplinkConst.REVIEW_REMINDER_PREVIOUS, expectedDeepLink)
+    }
+
+    @Test
+    fun `check IMAGE_PICKER_V2 customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/image-picker/v2/"
+        assertEqualsDeepLinkMapper("tokopedia://image-picker/v2", expectedDeepLink)
+    }
+
+    @Test
+    fun `check MEDIA_PICKER customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/media-picker"
+        assertEqualsDeepLinkMapper(ApplinkConst.MediaPicker.MEDIA_PICKER, expectedDeepLink)
+    }
+
+    @Test
+    fun `check MEDIA_PICKER_PREVIEW customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/media-picker-preview"
+        assertEqualsDeepLinkMapper(ApplinkConst.MediaPicker.MEDIA_PICKER_PREVIEW, expectedDeepLink)
+    }
+
+    @Test
+    fun `check WEB_HOST customerapp`() {
+        val expectedDeepLink = "https://www.tokopedia.com/abc/def"
+        assertEqualsDeepLinkMapper("tokopedia://www.tokopedia.com/abc/def", expectedDeepLink)
+    }
+
+    @Test
+    fun `check INPUT_INACTIVE_NUMBER customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/input-old-phone-number"
+        assertEqualsDeepLinkMapper(ApplinkConst.INPUT_INACTIVE_NUMBER, expectedDeepLink)
+    }
+
+    @Test
+    fun `check add phone page applink customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalGlobal.ADD_PHONE
+        assertEqualsDeepLinkMapper(ApplinkConst.ADD_PHONE, expectedDeepLink)
+    }
+
+    @Test
+    fun `check feed creation product search applink customerapp`() {
+        val applink = ApplinkConst.FEED_CREATION_PRODUCT_SEARCH
+        val internalApplink = ApplinkConstInternalContent.INTERNAL_FEED_CREATION_PRODUCT_SEARCH
+
+        assertEqualsDeepLinkMapper(applink, internalApplink)
+    }
+
+    @Test
+    fun `check feed creation shop search applink customerapp`() {
+        val applink = ApplinkConst.FEED_CREATION_SHOP_SEARCH
+        val internalApplink = ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
+
+        assertEqualsDeepLinkMapper(applink, internalApplink)
     }
 }

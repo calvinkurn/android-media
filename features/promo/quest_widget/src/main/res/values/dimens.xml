@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="quest_widget_dim_0dp">0dp</dimen>
+    <dimen name="quest_widget_dim_1dp">1dp</dimen>
+    <dimen name="quest_widget_dim_2dp">2dp</dimen>
+    <dimen name="quest_widget_dim_3dp">3dp</dimen>
+    <dimen name="quest_widget_dim_5dp">5dp</dimen>
+    <dimen name="quest_widget_dim_12dp">12dp</dimen>
+    <dimen name="quest_widget_dim_14dp">14dp</dimen>
+    <dimen name="quest_widget_dim_48dp">48dp</dimen>
+    <dimen name="quest_widget_dim_50dp">50dp</dimen>
+    <dimen name="quest_widget_dim_56dp">56dp</dimen>
+    <dimen name="quest_widget_dim_84dp">84dp</dimen>
+    <dimen name="quest_widget_dim_100dp">100dp</dimen>
+    <dimen name="quest_widget_dim_168dp">168dp</dimen>
+    <dimen name="quest_widget_dim_264dp">264dp</dimen>
+</resources>

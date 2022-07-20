@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/home_nav_revamp_switcher"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/new_navigation_btn"
+            android:text="@string/always_new_nav"
+            app:unifyButtonType="alternate"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/os_exp_btn"
+            android:text="@string/always_os_experiment"
+            app:unifyButtonType="alternate"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/old_balance_widget_btn"
+            android:text="@string/always_old_balance_widget"
+            app:unifyButtonType="alternate"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/new_balance_widget_btn"
+            android:text="@string/always_new_balance_widget"
+            app:unifyButtonType="alternate"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/old_inbox_btn"
+            android:text="@string/always_old_inbox"
+            app:unifyButtonType="alternate"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/new_inbox_btn"
+            android:text="@string/always_new_inbox"
+            app:unifyButtonType="alternate"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="ghost"/>
+    </LinearLayout>
+
+</LinearLayout>

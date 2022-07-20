@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.model
 
 import com.tokopedia.play.broadcaster.data.model.ProductData
+import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
@@ -17,6 +18,7 @@ data class ProductContentUiModel(
         val imageUrl: String,
         val originalImageUrl: String,
         val stock: ProductStock,
+        val price: ProductPrice,
         val isSelectedHandler: (String) -> Boolean,
         val isSelectable: (Boolean) -> SelectableState,
         val transitionName: String? = null
@@ -30,7 +32,8 @@ data class ProductContentUiModel(
             name = name,
             imageUrl = imageUrl,
             originalImageUrl = originalImageUrl,
-            stock = stock
+            stock = stock,
+            price = price
     )
 
     companion object {
@@ -49,7 +52,8 @@ data class ProductContentUiModel(
                     stock = data.stock,
                     isSelectedHandler = isSelectedHandler,
                     isSelectable = isSelectable,
-                    transitionName = transitionName
+                    transitionName = transitionName,
+                    price = data.price
             )
         }
     }

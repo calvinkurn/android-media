@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
@@ -75,10 +76,15 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
 
         fun bind(data: ItemFaqUiModel) {
             binding?.run {
-                tvTitleFaqShopScore.text = data.title
+                tvTitleFaqShopScore.text =
+                    data.title?.let { root.context.getString(it) }.orEmpty()
                 tvDescFaqShopScore.showWithCondition(data.isShow)
-                tvDescFaqShopScore.text = MethodChecker.fromHtml(data.desc_first)
-                tvDescParameterPerformanceFaq.text = data.desc_second
+                tvDescFaqShopScore.text = MethodChecker.fromHtml(
+                    data.desc_first?.let { root.context.getString(it) }.orEmpty()
+                )
+                tvDescParameterPerformanceFaq.text = data.desc_second?.let {
+                    root.context.getString(it)
+                }.orEmpty()
 
                 initAdapterCardLevel(data)
                 initAdapterParameterFaq(data)
@@ -144,14 +150,21 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
         }
 
         private fun initAdapterParameterFaq(data: ItemFaqUiModel) {
-            binding?.run {
-                itemParameterFaqAdapter = ItemParameterFaqAdapter()
-                rvShopScoreParameterFaq.run {
-                    layoutManager = LinearLayoutManager(context)
-                    adapter = itemParameterFaqAdapter
-                    isNestedScrollingEnabled = false
+            if (data.parameterFaqList.isNotEmpty()) {
+                binding?.run {
+                    itemParameterFaqAdapter = ItemParameterFaqAdapter()
+                    rvShopScoreParameterFaq.run {
+                        layoutManager =
+                            if (DeviceScreenInfo.isTablet(context)) {
+                                GridLayoutManager(context, data.parameterFaqList.size)
+                            } else {
+                                LinearLayoutManager(context)
+                            }
+                        adapter = itemParameterFaqAdapter
+                        isNestedScrollingEnabled = false
+                    }
+                    itemParameterFaqAdapter?.setParameterFaqList(data.parameterFaqList)
                 }
-                itemParameterFaqAdapter?.setParameterFaqList(data.parameterFaqList)
             }
         }
     }

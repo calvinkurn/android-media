@@ -73,6 +73,7 @@ object FlightBookingQuery {
                       priceNumeric
                   }
                   mandatoryDOB
+                  mandatoryIdentificationNumber
                   amenityOptions {
                     id
                     journeyID

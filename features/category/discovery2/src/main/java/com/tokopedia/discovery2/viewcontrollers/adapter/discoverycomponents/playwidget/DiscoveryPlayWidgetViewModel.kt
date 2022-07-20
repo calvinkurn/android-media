@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.switch
@@ -24,14 +25,14 @@ import kotlin.coroutines.CoroutineContext
 
 class DiscoveryPlayWidgetViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
-    private val playWidgetUIMutableLiveData: MutableLiveData<PlayWidgetUiModel?> = MutableLiveData(PlayWidgetUiModel.Placeholder)
+    private val playWidgetUIMutableLiveData: MutableLiveData<PlayWidgetState?> = MutableLiveData(PlayWidgetState(isLoading = true))
     private val _reminderLoginEvent = SingleLiveEvent<Boolean>()
     private val _reminderObservable = MutableLiveData<Result<PlayWidgetReminderType>>()
 
     private var dataPresent: Boolean = false
     private var reminderData: Pair<String, PlayWidgetReminderType>? = null
 
-    fun getPlayWidgetUILiveData(): LiveData<PlayWidgetUiModel?> = playWidgetUIMutableLiveData
+    fun getPlayWidgetUILiveData(): LiveData<PlayWidgetState?> = playWidgetUIMutableLiveData
 
     val reminderLoginEvent: LiveData<Boolean>
         get() = _reminderLoginEvent
@@ -67,11 +68,9 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
     }
 
 
-    private suspend fun processPlayWidget(widgetID: String): PlayWidgetUiModel {
-
+    private suspend fun processPlayWidget(widgetID: String): PlayWidgetState {
         val response = playWidgetTools.getWidgetFromNetwork(widgetType = PlayWidgetUseCase.WidgetType.DiscoveryPage(widgetID))
-        val uiModel = playWidgetTools.mapWidgetToModel(response)
-        return uiModel
+        return playWidgetTools.mapWidgetToModel(response)
     }
 
     fun updatePlayWidgetTotalView(channelId: String, totalView: String) {
@@ -133,7 +132,7 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
     }
 
 
-    private fun updateWidget(onUpdate: (oldVal: PlayWidgetUiModel) -> PlayWidgetUiModel) {
+    private fun updateWidget(onUpdate: (oldVal: PlayWidgetState) -> PlayWidgetState) {
         playWidgetUIMutableLiveData.value?.let { currentValue ->
             playWidgetUIMutableLiveData.postValue(onUpdate(currentValue))
         }

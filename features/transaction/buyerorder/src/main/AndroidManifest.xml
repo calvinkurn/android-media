@@ -8,7 +8,8 @@
             android:name=".detail.view.activity.SeeInvoiceActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -31,7 +32,14 @@
             android:label="@string/title_order_detail"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".recharge.presentation.activity.RechargeOrderDetailActivity"
+            android:label="@string/title_order_detail"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -49,23 +57,5 @@
                     tools:ignore="AppLinkUrlError" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".detail.view.activity.BuyerRequestCancelActivity"
-            android:label="@string/title_buyer_request_cancel"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_buyer"
-                    android:path="@string/path_order_buyer_cancellation_request_page"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
     </application>
-
 </manifest>

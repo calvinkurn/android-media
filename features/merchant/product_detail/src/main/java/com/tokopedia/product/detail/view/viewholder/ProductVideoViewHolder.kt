@@ -16,14 +16,13 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOW_VALUE
 import com.tokopedia.product.detail.databinding.PdpVideoViewHolderBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.ProductExoPlayer
-import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.detail.view.widget.VideoStateListener
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 
 /**
  * Created by Yehezkiel on 23/11/20
  */
-class ProductVideoViewHolder(val view: View, private val productVideoCoordinator: ProductVideoCoordinator?,
+class ProductVideoViewHolder(val view: View,
                              private val listener: DynamicProductDetailListener?)
 
     : AbstractViewHolder<MediaDataModel>(view), ProductVideoReceiver {
@@ -31,8 +30,8 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
     private var mPlayer: ProductExoPlayer? = null
     private var mVideoId: String = ""
     private var thumbnail: String = ""
-    private var video_volume: ImageView? = null
-    private var video_full_screen: ImageView? = null
+    private var videoVolume: ImageView? = null
+    private var videoFullScreen: ImageView? = null
 
     companion object {
         const val VIDEO_TYPE = "video"
@@ -42,20 +41,20 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
     private val binding = PdpVideoViewHolderBinding.bind(view)
 
     init {
-        video_volume = binding.pdpMainVideo.findViewById(R.id.pdp_volume_control)
-        video_full_screen = binding.pdpMainVideo.findViewById(R.id.pdp_maximize_control)
+        videoVolume = binding.pdpMainVideo.findViewById(R.id.pdp_volume_control)
+        videoFullScreen = binding.pdpMainVideo.findViewById(R.id.pdp_maximize_control)
     }
 
     override fun bind(data: MediaDataModel) {
         mVideoId = data.id
         thumbnail = data.urlOriginal
-        productVideoCoordinator?.configureVideoCoordinator(view.context, data.id, data.videoUrl)
+        listener?.getProductVideoCoordinator()?.configureVideoCoordinator(view.context, data.id, data.videoUrl)
         setThumbnail()
-        video_volume?.setOnClickListener {
+        videoVolume?.setOnClickListener {
             listener?.onVideoVolumeCLicked(mPlayer?.isMute() != true)
-            productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.id)
+            listener?.getProductVideoCoordinator()?.configureVolume(mPlayer?.isMute() != true, data.id)
         }
-        video_full_screen?.setOnClickListener {
+        videoFullScreen?.setOnClickListener {
             listener?.onVideoFullScreenClicked()
         }
     }
@@ -94,7 +93,7 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
     }
 
     private fun setupVolume(isMute: Boolean) {
-        video_volume?.setImageResource(if (!isMute) R.drawable.ic_pdp_volume_up else R.drawable.ic_pdp_volume_mute)
+        videoVolume?.setImageResource(if (!isMute) R.drawable.ic_pdp_volume_up else R.drawable.ic_pdp_volume_mute)
     }
 
     override fun setPlayer(player: ProductExoPlayer?) = with(binding) {

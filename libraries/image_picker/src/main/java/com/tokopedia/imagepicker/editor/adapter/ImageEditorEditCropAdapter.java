@@ -32,7 +32,7 @@ public class ImageEditorEditCropAdapter implements View.OnClickListener {
     public void onClick(View v) {
         if (listener != null) {
             int position = v.getId();
-            if (tempSelectedView != v) {
+            if (tempSelectedView != null && tempSelectedView != v) {
                 tempSelectedView.setSelected(false);
                 tempSelectedView = v;
                 tempSelectedView.setSelected(true);

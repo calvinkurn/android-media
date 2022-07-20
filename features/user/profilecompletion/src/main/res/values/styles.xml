@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="MyEditTextStyle" parent="Widget.AppCompat.EditText">
-        <item name="colorControlActivated">@color/Unify_Y500</item>
-    </style>
-
-    <style name="CustomUnifyDialog" parent="android:Theme.Dialog">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
 
     <style name="Theme.TextInputLayout" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="android:textColorHint">@color/Unify_N100</item>

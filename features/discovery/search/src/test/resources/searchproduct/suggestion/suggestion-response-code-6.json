@@ -1,0 +1,465 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 259,
+      "totalDataText": "259",
+      "defaultView": 1,
+      "responseCode": 6,
+      "errorMessage": "",
+      "additionalParams": "rf=true&nuq=bra din",
+      "keywordProcess": "5"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home&q=braxidin",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0,
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "banner": {
+        "position": 0,
+        "text": "",
+        "applink": "",
+        "imageUrl": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "bra din",
+        "query": "q=bra%20din&rf=true&srp_component_id=03.08.01.00",
+        "text": "Tidak dapat menemukan hasil untuk <strong>\"braxidin\"</strong>. Menampilkan hasil untuk <strong><font color=\"#42b549\">\"bra din\"</font></strong>",
+        "componentId": "03.08.01.00",
+        "trackingOption": 3
+      },
+      "products": [
+        {
+          "id": 2322292306,
+          "name": "bra xi din,,,, new link",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 8787642,
+            "name": "Online Store89",
+            "city": "Jakarta Utara",
+            "url": "https://www.tokopedia.com/ostore89",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/11/4/37c7dd13-d4b6-4876-91ca-fadd8d692967.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/11/4/37c7dd13-d4b6-4876-91ca-fadd8d692967.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/11/4/37c7dd13-d4b6-4876-91ca-fadd8d692967.jpg",
+          "price": "Rp83.000",
+          "priceInt": 83000,
+          "priceRange": "",
+          "categoryId": 57,
+          "categoryName": "Film & Musik",
+          "categoryBreadcrumb": "film-musik/alat-musik-tradisional/gong",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/ostore89/bra-xi-din-new-link?refined=true&whid=0",
+          "labelGroups": [
+            {
+              "title": "Terjual 133",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Badge",
+              "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2322292306?extParam=whid%3D0"
+        },
+        {
+          "id": 2356554753,
+          "name": "bra xi din strip",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 12613007,
+            "name": "utamakan_selamat",
+            "city": "Jakarta Timur",
+            "url": "https://www.tokopedia.com/utamakanselamat",
+            "isOfficial": false,
+            "isPowerBadge": false
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/10/31/4d6af088-0e22-45a0-8a8e-8e8161c309c9.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/31/4d6af088-0e22-45a0-8a8e-8e8161c309c9.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/10/31/4d6af088-0e22-45a0-8a8e-8e8161c309c9.jpg",
+          "price": "Rp90.000",
+          "priceInt": 90000,
+          "priceRange": "",
+          "categoryId": 715,
+          "categoryName": "Kesehatan",
+          "categoryBreadcrumb": "kesehatan/obat-obatan/obat-lainnya",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/utamakanselamat/bra-xi-din-strip?refined=true&whid=0",
+          "labelGroups": [
+            {
+              "title": "Terjual 12",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [],
+          "wishlist": false,
+          "applink": "tokopedia://product/2356554753?extParam=whid%3D0"
+        },
+        {
+          "id": 2321475260,
+          "name": "bra xi din",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 12584448,
+            "name": "menujuzehat",
+            "city": "Jakarta Utara",
+            "url": "https://www.tokopedia.com/menujuzehat",
+            "isOfficial": false,
+            "isPowerBadge": false
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/10/22/85dba2ce-8654-489b-9699-5b5b2182a336.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/22/85dba2ce-8654-489b-9699-5b5b2182a336.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/10/22/85dba2ce-8654-489b-9699-5b5b2182a336.jpg",
+          "price": "Rp83.000",
+          "priceInt": 83000,
+          "priceRange": "",
+          "categoryId": 715,
+          "categoryName": "Kesehatan",
+          "categoryBreadcrumb": "kesehatan/lainnya",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/menujuzehat/bra-xi-din?refined=true&whid=0",
+          "labelGroups": [
+            {
+              "title": "Terjual 33",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [],
+          "wishlist": false,
+          "applink": "tokopedia://product/2321475260?extParam=whid%3D0"
+        },
+        {
+          "id": 2357465103,
+          "name": "vit braxi ORI bra xi Din strip",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 11996002,
+            "name": "Tiabintang2",
+            "city": "Jakarta Utara",
+            "url": "https://www.tokopedia.com/tiabintang2",
+            "isOfficial": false,
+            "isPowerBadge": false
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/11/1/1d1873c8-1aeb-40d1-9da4-6280dfa2e4b5.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/11/1/1d1873c8-1aeb-40d1-9da4-6280dfa2e4b5.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/11/1/1d1873c8-1aeb-40d1-9da4-6280dfa2e4b5.jpg",
+          "price": "Rp84.000",
+          "priceInt": 84000,
+          "priceRange": "",
+          "categoryId": 715,
+          "categoryName": "Kesehatan",
+          "categoryBreadcrumb": "kesehatan/lainnya",
+          "ratingAverage": "5.0",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/tiabintang2/vit-braxi-ori-bra-xi-din-strip?refined=true&whid=0",
+          "labelGroups": [
+            {
+              "title": "Terjual 2",
+              "position": "integrity",
+              "type": "textDarkGrey",
+              "url": ""
+            }
+          ],
+          "labelGroupVariant": [],
+          "badges": [],
+          "wishlist": false,
+          "applink": "tokopedia://product/2357465103?extParam=whid%3D0"
+        },
+        {
+          "id": 2219062695,
+          "name": "VZ856 BPC019 bra pierre din tanpa kawat 32B 34B",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 10921935,
+            "name": "galleri kita",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/galleri-kita",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/9/27/5dabbe58-6472-4e03-b8fb-aef3d12c823c.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/9/27/5dabbe58-6472-4e03-b8fb-aef3d12c823c.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/9/27/5dabbe58-6472-4e03-b8fb-aef3d12c823c.jpg",
+          "price": "Rp77.000",
+          "priceInt": 77000,
+          "priceRange": "",
+          "categoryId": 62,
+          "categoryName": "Olahraga",
+          "categoryBreadcrumb": "olahraga/pakaian-olahraga-wanita/sport-bra",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/galleri-kita/vz856-bpc019-bra-pierre-din-tanpa-kawat-32b-34b?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2219062695?extParam=whid%3D0"
+        },
+        {
+          "id": 2219062247,
+          "name": "KC145 BPC902 bra pierre din 32B",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 10921935,
+            "name": "galleri kita",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/galleri-kita",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/9/27/6eed9f46-19fa-44ec-854b-f50064fa5a22.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/9/27/6eed9f46-19fa-44ec-854b-f50064fa5a22.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/9/27/6eed9f46-19fa-44ec-854b-f50064fa5a22.jpg",
+          "price": "Rp72.000",
+          "priceInt": 72000,
+          "priceRange": "",
+          "categoryId": 62,
+          "categoryName": "Olahraga",
+          "categoryBreadcrumb": "olahraga/pakaian-olahraga-wanita/sport-bra",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/galleri-kita/kc145-bpc902-bra-pierre-din-32b?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2219062247?extParam=whid%3D0"
+        },
+        {
+          "id": 2219064226,
+          "name": "RG973 BPC027 bra pierre din 34B",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 10921935,
+            "name": "galleri kita",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/galleri-kita",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/9/27/b3b96de2-1893-4b5c-8de6-9d34da6ab54d.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/9/27/b3b96de2-1893-4b5c-8de6-9d34da6ab54d.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/9/27/b3b96de2-1893-4b5c-8de6-9d34da6ab54d.jpg",
+          "price": "Rp91.000",
+          "priceInt": 91000,
+          "priceRange": "",
+          "categoryId": 62,
+          "categoryName": "Olahraga",
+          "categoryBreadcrumb": "olahraga/pakaian-olahraga-wanita/sport-bra",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/galleri-kita/rg973-bpc027-bra-pierre-din-34b?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2219064226?extParam=whid%3D0"
+        },
+        {
+          "id": 2219062978,
+          "name": "DO220 BPC976 push up bra pierre din 32B 34B",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 10921935,
+            "name": "galleri kita",
+            "city": "Bekasi",
+            "url": "https://www.tokopedia.com/galleri-kita",
+            "isOfficial": false,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/9/27/2b849560-727a-4d54-8db3-a3adbabb919d.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/9/27/2b849560-727a-4d54-8db3-a3adbabb919d.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/9/27/2b849560-727a-4d54-8db3-a3adbabb919d.jpg",
+          "price": "Rp91.000",
+          "priceInt": 91000,
+          "priceRange": "",
+          "categoryId": 62,
+          "categoryName": "Olahraga",
+          "categoryBreadcrumb": "olahraga/pakaian-olahraga-wanita/sport-bra",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/galleri-kita/do220-bpc976-push-up-bra-pierre-din-32b-34b?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [
+            {
+              "title": "Power Merchant Pro Badge",
+              "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "applink": "tokopedia://product/2219062978?extParam=whid%3D0"
+        }
+      ]
+    }
+  }
+}

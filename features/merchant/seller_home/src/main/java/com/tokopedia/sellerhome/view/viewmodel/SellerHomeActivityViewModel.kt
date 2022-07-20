@@ -82,7 +82,7 @@ class SellerHomeActivityViewModel @Inject constructor(
     }
 
     fun getAdminInfo() = executeCall(_isRoleEligible) {
-        getEligiblityOnlyWhenAdminShouldCheckRole {
+        getEligibilityOnlyWhenAdminShouldCheckRole {
             sellerAdminUseCase.requestParams = SellerAdminUseCase.createRequestParams(SOURCE)
             sellerAdminUseCase.executeOnBackground().let { adminDataResponse ->
                 adminDataResponse.data.detail.roleType.also { roleType ->
@@ -95,7 +95,7 @@ class SellerHomeActivityViewModel @Inject constructor(
     }
 
     private suspend fun getIsRoleChatAdmin(): Boolean {
-        return getEligiblityOnlyWhenAdminShouldCheckRole {
+        return getEligibilityOnlyWhenAdminShouldCheckRole {
             try {
                 val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toLongOrZero(), AccessId.CHAT)
                 authorizeChatAccessUseCase.execute(requestParams)
@@ -106,7 +106,7 @@ class SellerHomeActivityViewModel @Inject constructor(
     }
 
     private suspend fun getIsRoleOrderAdmin(): Boolean {
-        return getEligiblityOnlyWhenAdminShouldCheckRole {
+        return getEligibilityOnlyWhenAdminShouldCheckRole {
             try {
                 val requestParams = AuthorizeAccessUseCase.createRequestParams(userSession.shopId.toLongOrZero(), AccessId.SOM_LIST)
                 authorizeOrderAccessUseCase.execute(requestParams)
@@ -116,7 +116,7 @@ class SellerHomeActivityViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getEligiblityOnlyWhenAdminShouldCheckRole(action: suspend () -> Boolean): Boolean {
+    private suspend fun getEligibilityOnlyWhenAdminShouldCheckRole(action: suspend () -> Boolean): Boolean {
         return if (userSession.isShopOwner) {
             true
         } else {

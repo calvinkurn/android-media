@@ -41,7 +41,7 @@ class DateUtilHelper {
             DatePickerConstant.EXTRA_SELECTION_TYPE,
             DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE
         )
-        intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, fragment.getString(R.string.set_date))
+        intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, fragment.getString(R.string.reputation_history_set_date))
         fragment.startActivityForResult(intent, MOVE_TO_SET_DATE)
     }
 

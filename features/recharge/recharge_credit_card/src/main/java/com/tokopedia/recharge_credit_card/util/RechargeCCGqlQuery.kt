@@ -36,6 +36,10 @@ object RechargeCCGqlQuery {
               Content
               Type
             }
+            user_perso {
+                user_type
+                loyalty_status
+            }
             onboarding_descriptions
           }
         }
@@ -48,6 +52,11 @@ object RechargeCCGqlQuery {
             name
             paramName
             text
+            validations {
+              title
+              message
+              rule
+            }
             prefixes {
               key
               value

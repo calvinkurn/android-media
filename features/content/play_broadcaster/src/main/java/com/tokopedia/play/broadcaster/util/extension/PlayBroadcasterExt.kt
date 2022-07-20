@@ -3,6 +3,9 @@ package com.tokopedia.play.broadcaster.util.extension
 import android.content.Context
 import com.tokopedia.dialog.DialogUnify
 import com.wmspanel.libstream.Streamer
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 /**
  * Created by jegul on 26/05/20
@@ -41,3 +44,8 @@ internal fun DialogUnify.setLoading(isLoading: Boolean) {
 internal fun <T> Streamer.safeExecute(fn: Streamer.() -> T): T? {
     return try { fn() } catch(e: Throwable) { null }
 }
+
+internal val Throwable.isNetworkError: Boolean
+    get() = this is ConnectException ||
+            this is SocketTimeoutException ||
+            this is UnknownHostException

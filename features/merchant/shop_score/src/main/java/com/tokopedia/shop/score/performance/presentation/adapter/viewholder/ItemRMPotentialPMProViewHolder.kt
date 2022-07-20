@@ -1,8 +1,10 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.databinding.ItemPotentialRmToPmProBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPMProBenefitAdapter
@@ -37,16 +39,18 @@ class ItemRMPotentialPMProViewHolder(
     }
 
     private fun setPotentialPMProBenefitAdapter(element: SectionRMPotentialPMProUiModel?) {
-        binding?.run {
-            rvShopPmProPotentialBenefit.run {
-                layoutManager = LinearLayoutManager(context)
-                adapter = itemPMProBenefitAdapter
-            }
-        }
         element?.potentialPMProPMBenefitList?.let {
-            itemPMProBenefitAdapter?.setPotentialPMProBenefit(
-                it
-            )
+            binding?.run {
+                rvShopPmProPotentialBenefit.run {
+                    layoutManager = if (DeviceScreenInfo.isTablet(context)) {
+                        GridLayoutManager(context, it.size)
+                    } else {
+                        LinearLayoutManager(context)
+                    }
+                    adapter = itemPMProBenefitAdapter
+                }
+                itemPMProBenefitAdapter?.setPotentialPMProBenefit(it)
+            }
         }
     }
 }

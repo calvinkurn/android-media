@@ -17,6 +17,7 @@ data class LineGraphWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
+        override val gridSize: Int,
         override val isShowEmpty: Boolean,
         override var data: LineGraphDataUiModel?,
         override var impressHolder: ImpressHolder = ImpressHolder(),
@@ -24,6 +25,7 @@ data class LineGraphWidgetUiModel(
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
         override var isNeedToBeRemoved: Boolean = false,
+        override var showLoadingState: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<LineGraphDataUiModel> {
 
@@ -31,8 +33,8 @@ data class LineGraphWidgetUiModel(
         return typeFactory.type(this)
     }
 
-    override fun copy(): BaseWidgetUiModel<LineGraphDataUiModel> {
-        return LineGraphWidgetUiModel(id, widgetType, title, subtitle, tooltip, tag, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    override fun copyWidget(): BaseWidgetUiModel<LineGraphDataUiModel> {
+        return this.copy()
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<LineGraphDataUiModel>): Boolean {

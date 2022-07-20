@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.product.addedit.R
-import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
 import com.tokopedia.unifycomponents.UnifyButton
 
-class ShipmentInsuranceBottomSheet: BottomSheetUnify() {
+class ShipmentInsuranceBottomSheet: TabletAdaptiveBottomSheet() {
 
     companion object {
         const val TAG = "Tag New Shipment Insurance Bottom Sheet"

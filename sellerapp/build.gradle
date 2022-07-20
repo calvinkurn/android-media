@@ -6,6 +6,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'robust'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'newrelic'
+apply plugin: 'embrace-swazzler'
 
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
@@ -39,6 +40,7 @@ buildscript {
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.embraceSwazzler
         classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
@@ -75,6 +77,7 @@ android {
     }
 
     lintOptions {
+        checkDependencies false
         checkReleaseBuilds false
         abortOnError false
     }
@@ -125,6 +128,9 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig true
+    }
 
     dexOptions {
         javaMaxHeapSize "8g"
@@ -139,7 +145,7 @@ android {
     configurations.all {
         resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
-        resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
+        resolutionStrategy.force 'com.squareup.okio:okio:2.6.0'
     }
 
     // Specifies 4 flavor dimensions.
@@ -175,6 +181,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation platform(rootProject.ext.firebase.bom)
+    implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
     implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
 
@@ -209,7 +216,9 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.features.developerOptionsNoop)
     }
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation projectOrAar(rootProject.ext.libraries.videoplayer)
+    implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
+    implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.features.sellerorder)
     implementation projectOrAar(rootProject.ext.features.sellerAppWidget)
@@ -231,20 +240,22 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
-    implementation projectOrAar(rootProject.ext.features.profile)
     implementation projectOrAar(rootProject.ext.features.contactUs)
     implementation projectOrAar(rootProject.ext.features.otp)
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.features.userIdentificationCommon)
     implementation projectOrAar(rootProject.ext.features.saldodetails)
+    implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.homecredit)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.weaver)
+    implementation projectOrAar(rootProject.ext.libraries.interceptors)
     implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.logisticorder)
+    implementation projectOrAar(rootProject.ext.features.logisticseller)
     implementation projectOrAar(rootProject.ext.features.editshipping)
     implementation projectOrAar(rootProject.ext.features.topchat)
     implementation projectOrAar(rootProject.ext.features.chatbot)
@@ -261,11 +272,14 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.settingbank)
     implementation projectOrAar(rootProject.ext.features.managepassword)
     implementation projectOrAar(rootProject.ext.features.voucherCreation)
+    implementation projectOrAar(rootProject.ext.features.campaignList)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.shopOpen)
     implementation projectOrAar(rootProject.ext.features.withdraw)
     implementation projectOrAar(rootProject.ext.features.mediaCommon)
+    implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
+    implementation projectOrAar(rootProject.ext.features.topAdsOnBoarding)
 
     implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
     implementation projectOrAar(rootProject.ext.features.loginregister)
@@ -283,6 +297,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.filter)
 
     implementation projectOrAar(rootProject.ext.features.additional_check)
+    implementation projectOrAar(rootProject.ext.features.reviewCommon)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
@@ -295,15 +310,20 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.miscDependencies.newRelic
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
+
+    implementation projectOrAar(rootProject.ext.features.tokomemberSellerDashboard)
+    implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
 
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
@@ -317,6 +337,7 @@ dependencies {
     }
 
     implementation projectOrAar(rootProject.ext.libraries.pageInfoPusher)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspector)
@@ -355,22 +376,20 @@ dependencies {
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.robust
     implementation rootProject.ext.miscDependencies.autopatchbase
     implementation projectOrAar(rootProject.ext.libraries.keys)
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
 
+    implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.startupRuntime
+
     implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation projectOrAar(rootProject.ext.libraries.tokopatch)
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation rootProject.ext.supportLibDependencies.exifinterface
-    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
-        exclude group: 'com.android.support'
-    }
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
@@ -400,6 +419,10 @@ dependencies {
 
     //Adding this to df_base_sellerapp/build.gradle was giving error - https://github.com/Meituan-Dianping/Robust/issues/444
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
+
+    debugImplementation rootProject.ext.testDependencies.fragmentTest
+
+    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
 }
 
 apply plugin: 'com.google.gms.google-services'

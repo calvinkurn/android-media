@@ -87,4 +87,11 @@
     <string name="title_activity_cpl">Pengiriman Per Produk</string>
     <string name="toaster_cpl_error">Harap pilih min. 1 layanan pengiriman untuk produk ini.</string>
     <string name="antar_ke_agen">Antar ke Kantor Agen</string>
+
+    <!--    Gocar Integration-->
+    <string name="description_gocar_instan"><![CDATA[Dengan kurir instan, kamu bisa pakai GoSend Car* dan GoSend Bike (pengiriman maks. 3 jam & berat maks. 150kg). Setelah aktif, GoSend Car dan GoSend Bike otomatis masuk pilihan kurir, tidak ditampilkan di menu ini.\n\n*GoSend Car hanya tersedia di Surabaya.]]></string>
+    <string name="button_info_gocar">Mengerti</string>
+    <string name="gocar_info_bottomsheet_title"><![CDATA[GoSend Car & GoSend Bike]]></string>
+    <string name="gocar_instan_title_coachmark">Sekarang, kamu bisa pakai motor atau mobil untuk kurir instan GoSend!</string>
+    <string name="gocar_instan_description_coachmark">Aktifkan layanan ini untuk mengaktifkan kurir motor / mobil instan GoSend (maks. 150kg).</string>
 </resources>

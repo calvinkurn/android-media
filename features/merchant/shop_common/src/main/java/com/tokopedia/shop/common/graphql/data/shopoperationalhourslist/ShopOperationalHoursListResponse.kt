@@ -21,11 +21,11 @@ data class ShopOperationalHour(
         @SerializedName("day")
         val day: Int = 0,
         @SerializedName("startTime")
-        val startTime: String = "",
+        var startTime: String = "",
         @SerializedName("endTime")
-        val endTime: String = "",
+        var endTime: String = "",
         @SerializedName("status")
-        val status: Int = 0
+        var status: Int = 1
 )
 
 data class ShopOperationalHoursError(

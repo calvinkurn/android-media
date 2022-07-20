@@ -10,35 +10,32 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
-import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
-import java.util.*
 
 interface ProductListSectionContract {
     interface View : CustomerView {
         fun addProductList(list: List<Visitable<*>>)
         fun setProductList(list: List<Visitable<*>>)
         fun addRecommendationList(list: List<Visitable<*>>)
-        fun showNetworkError(startRow: Int, throwable: Throwable?)
-        val filterParamString: String
+        fun showNetworkError(throwable: Throwable?)
         val queryKey: String
-        fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView)
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
-        fun trackEventImpressionTicker(typeId: Int)
         fun backToTop()
         fun addLoading()
         fun removeLoading()
-        fun stopTracePerformanceMonitoring()
         fun setAutocompleteApplink(autocompleteApplink: String?)
         fun sendTrackingEventAppsFlyerViewListingSearch(afProdIds: JSONArray?, query: String?, prodIdArray: ArrayList<String?>?, allProdIdArray: ArrayList<String?>? = null)
         fun sendTrackingEventMoEngageSearchAttempt(query: String?, hasProductList: Boolean, category: HashMap<String?, String?>?)
         fun sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel)
-        fun sendImpressionGlobalNav(globalNavDataView: GlobalNavDataView)
         val isAnySortActive: Boolean
         fun clearLastProductItemPositionFromCache()
         fun saveLastProductItemPositionToCache(lastProductItemPositionToCache: Int)
@@ -60,8 +57,9 @@ interface ProductListSectionContract {
         fun trackWishlistRecommendationProductNonLoginUser()
         fun trackWishlistProduct(wishlistTrackingModel: WishlistTrackingModel)
         fun updateWishlistStatus(productId: String?, isWishlisted: Boolean)
-        fun showMessageSuccessWishlistAction(isWishlisted: Boolean)
-        fun showMessageFailedWishlistAction(isWishlisted: Boolean)
+        fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel)
+        fun showMessageSuccessWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
+        fun showMessageFailedWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
         val previousKeyword: String
         val isLandingPage: Boolean
         fun logWarning(message: String?, throwable: Throwable?)
@@ -69,18 +67,15 @@ interface ProductListSectionContract {
         fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView)
         fun sendGTMTrackingProductClick(item: ProductItemDataView, userId: String, suggestedRelatedKeyword: String)
         fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int)
-        fun stopPreparePagePerformanceMonitoring()
-        fun startNetworkRequestPerformanceMonitoring()
-        fun stopNetworkRequestPerformanceMonitoring()
-        fun startRenderPerformanceMonitoring()
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
-        fun trackBroadMatchImpression(broadMatchItemDataView: BroadMatchItemDataView)
+        fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView)
+        fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView)
         fun onQuickFilterSelected(filter: Filter, option: Option)
-        fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>)
+        fun initFilterController(quickFilterList: List<Filter>)
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
         fun showOnBoarding(firstProductPosition: Int)
-        fun isQuickFilterSelected(option: Option?): Boolean
+        fun isFilterSelected(option: Option?): Boolean
         fun setProductCount(productCountText: String?)
         val className: String
         fun sendTrackingOpenFilterPage()
@@ -90,46 +85,57 @@ interface ProductListSectionContract {
         fun redirectionStartActivity(applink: String?, url: String?)
         fun trackEventLongPress(productID: String)
         fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel)
-        fun trackSuccessAddToCartEvent(isAds: Boolean, addToCartDataLayer: Any)
-        fun showAddToCartSuccessMessage()
-        fun showAddToCartFailedMessage(errorMessage: String)
-        fun routeToShopPage(shopId: String?)
-        fun trackEventGoToShopPage(dataLayer: Any)
         fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>)
         fun trackEventSearchResultChangeView(viewType: String)
         fun switchSearchNavigationLayoutTypeToListView(position: Int)
         fun switchSearchNavigationLayoutTypeToBigGridView(position: Int)
         fun switchSearchNavigationLayoutTypeToSmallGridView(position: Int)
-        val isChooseAddressWidgetEnabled: Boolean
-        val chooseAddressData: LocalCacheModel?
-        fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
-        fun trackDynamicProductCarouselImpression(dynamicProductCarousel: BroadMatchItemDataView, type: String)
-        fun trackDynamicProductCarouselClick(dynamicProductCarousel: BroadMatchItemDataView, type: String)
-        fun trackEventClickSeeMoreBroadMatch(broadMatchItemDataView: BroadMatchDataView)
-        fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String)
+        fun trackDynamicProductCarouselImpression(
+            dynamicProductCarousel: BroadMatchItemDataView,
+            type: String,
+            inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
+        )
+        fun trackDynamicProductCarouselClick(
+            dynamicProductCarousel: BroadMatchItemDataView,
+            type: String,
+            inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
+        )
+        fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView)
+        fun trackEventClickSeeMoreDynamicProductCarousel(
+            dynamicProductCarousel: BroadMatchDataView,
+            type: String,
+            inspirationCarouselOption: InspirationCarouselDataView.Option,
+        )
         fun modifyApplinkToSearchResult(applink: String): String
+        fun trackEventImpressionInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+        fun openBottomsheetMultipleOptionsQuickFilter(filter: Filter)
+        fun applyDropdownQuickFilter(optionList: List<Option>?)
+        fun trackEventClickDropdownQuickFilter(filterTitle: String)
+        fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 
-    interface Presenter : CustomerPresenter<View> {
+    interface Presenter : CustomerPresenter<View>, Pagination {
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
+        val pageComponentId: String
         val userId: String
         val isUserLoggedIn: Boolean
-        val deviceId: String
         val dynamicFilterModel: DynamicFilterModel?
         fun onPriceFilterTickerDismissed()
         val isTickerHasDismissed: Boolean
-        fun hasNextPage(): Boolean
-        fun clearData()
-        val startFrom: Int
         fun onViewCreated()
         fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean)
         fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?)
         fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
-        val quickFilterOptionList: List<Option>
+        val quickFilterList: List<Filter>
         fun getProductCount(mapParameter: Map<String, String>?)
         fun openFilterPage(searchParameter: Map<String, Any>?)
         val isBottomSheetFilterEnabled: Boolean
@@ -137,10 +143,12 @@ interface ProductListSectionContract {
         fun onApplySortFilter(mapParameter: Map<String, Any>)
         fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
+        fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
+        fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView)
+        fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
+        fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
-        fun handleAddToCartAction(productCardOptionModel: ProductCardOptionsModel)
-        fun handleVisitShopAction()
         fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType)
         fun onViewResumed()
         fun onLocalizingAddressSelected()
@@ -155,5 +163,7 @@ interface ProductListSectionContract {
             savedOptionList: List<SavedOption>,
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
+        fun shopAdsImpressionCount(impressionCount: Int)
+        fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }

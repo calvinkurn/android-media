@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticcart.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.showcase.*
@@ -69,14 +70,14 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
         }
 
         if (!TextUtils.isEmpty(shippingDurationUiModel.errorMessage)) {
-            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.context, R.color.Unify_N700_44))
+            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.context, RUnify.color.Unify_N700_44))
             tvPriceOrDuration.visibility = View.GONE
             tvTextDesc.visibility = View.GONE
             tvOrderPrioritas.visibility = View.GONE
             tvError.text = shippingDurationUiModel.errorMessage
             tvError.visibility = View.VISIBLE
         } else {
-            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.context, R.color.Unify_N700_96))
+            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.context, RUnify.color.Unify_N700_96))
             tvError.visibility = View.GONE
             tvPriceOrDuration.visibility = View.VISIBLE
             if (shippingDurationUiModel.serviceData.texts.textServiceDesc.isNotEmpty()) {
@@ -187,7 +188,7 @@ class ShippingDurationViewHolder(itemView: View, private val cartPosition: Int) 
                 .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
                 .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                 .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .circleIndicatorBackgroundDrawableRes(com.tokopedia.showcase.R.drawable.selector_circle_green)
                 .textSizeRes(R.dimen.sp_12)
                 .finishStringRes(R.string.label_shipping_show_case_finish)
                 .useCircleIndicator(true)

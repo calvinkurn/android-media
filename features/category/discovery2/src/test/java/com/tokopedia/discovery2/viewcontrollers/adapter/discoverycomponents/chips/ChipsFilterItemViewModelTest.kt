@@ -19,7 +19,7 @@ class ChipsFilterItemViewModelTest {
     private val application: Application = mockk()
 
     private val viewModel: ChipsFilterItemViewModel by lazy {
-        spyk(ChipsFilterItemViewModel(application, componentsItem, 0))
+        spyk(ChipsFilterItemViewModel(application, componentsItem, 99))
     }
 
     @Before
@@ -30,5 +30,10 @@ class ChipsFilterItemViewModelTest {
     @Test
     fun `component value is present in live data`() {
         assert(viewModel.getComponentLiveData().value == componentsItem)
+    }
+
+    @Test
+    fun `test for position passed`(){
+        assert(viewModel.position == 99)
     }
 }

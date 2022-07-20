@@ -1,10 +1,8 @@
 package com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSpId
 
-@Generated("com.robohorse.robopojogenerator")
 data class AdditionalInfo(
 
         @field:SerializedName("sp_ids")
@@ -23,6 +21,9 @@ data class AdditionalInfo(
         val usageSummaries: List<UsageSummaries> = emptyList(),
 
         @field:SerializedName("promo_sp_ids")
-        val promoSpIds: List<PromoSpId> = emptyList()
+        val promoSpIds: List<PromoSpId> = emptyList(),
+
+        @field:SerializedName("poml_auto_applied")
+        val pomlAutoApplied: Boolean = false,
 
 )

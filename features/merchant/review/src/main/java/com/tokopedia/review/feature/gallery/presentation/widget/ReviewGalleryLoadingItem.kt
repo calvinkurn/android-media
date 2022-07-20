@@ -3,12 +3,12 @@ package com.tokopedia.review.feature.gallery.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 
 class ReviewGalleryLoadingItem : BaseCustomView {
 
@@ -24,7 +24,7 @@ class ReviewGalleryLoadingItem : BaseCustomView {
         init()
     }
 
-    private var loading: LoaderImageView? = null
+    private var loading: LoaderUnify? = null
     private var errorImage: ImageUnify? = null
 
     private fun init() {

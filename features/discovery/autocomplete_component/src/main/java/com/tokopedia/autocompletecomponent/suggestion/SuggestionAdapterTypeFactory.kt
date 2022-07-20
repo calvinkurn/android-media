@@ -3,6 +3,7 @@ package com.tokopedia.autocompletecomponent.suggestion
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.autocompletecomponent.suggestion.chips.SuggestionChipListener
 import com.tokopedia.autocompletecomponent.suggestion.chips.SuggestionChipWidgetDataView
 import com.tokopedia.autocompletecomponent.suggestion.chips.SuggestionChipWidgetViewHolder
 import com.tokopedia.autocompletecomponent.suggestion.productline.SuggestionProductLineViewHolder
@@ -23,7 +24,8 @@ import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopW
 
 class SuggestionAdapterTypeFactory(
     private val suggestionListener: SuggestionListener,
-    private val suggestionTopShopListener: SuggestionTopShopListener
+    private val suggestionTopShopListener: SuggestionTopShopListener,
+    private val suggestionChipListener: SuggestionChipListener,
 ) : BaseAdapterTypeFactory(), SuggestionTypeFactory {
 
     override fun type(suggestionTitleDataView: SuggestionTitleDataView): Int {
@@ -67,7 +69,8 @@ class SuggestionAdapterTypeFactory(
             SuggestionDoubleLineWithoutImageViewHolder.LAYOUT -> SuggestionDoubleLineWithoutImageViewHolder(parent, suggestionListener)
             SuggestionSeparatorViewHolder.LAYOUT -> SuggestionSeparatorViewHolder(parent)
             SuggestionProductLineViewHolder.LAYOUT -> SuggestionProductLineViewHolder(parent, suggestionListener)
-            SuggestionChipWidgetViewHolder.LAYOUT -> SuggestionChipWidgetViewHolder(parent, suggestionListener)
+            SuggestionChipWidgetViewHolder.LAYOUT ->
+                SuggestionChipWidgetViewHolder(parent, suggestionChipListener)
             else -> super.createViewHolder(parent, type)
         }
     }

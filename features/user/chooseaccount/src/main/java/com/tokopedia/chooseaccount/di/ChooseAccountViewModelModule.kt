@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.chooseaccount.viewmodel.ChooseAccountFingerprintViewModel
 import com.tokopedia.chooseaccount.viewmodel.ChooseAccountViewModel
 import dagger.Binds
@@ -19,7 +20,7 @@ import dagger.multibindings.IntoMap
 abstract class ChooseAccountViewModelModule{
 
     @Binds
-    @ChooseAccountScope
+    @ActivityScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds

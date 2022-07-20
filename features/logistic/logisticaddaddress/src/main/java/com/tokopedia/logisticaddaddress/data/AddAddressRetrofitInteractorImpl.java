@@ -2,9 +2,11 @@ package com.tokopedia.logisticaddaddress.data;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.logisticCommon.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticCommon.data.module.qualifier.AddressScope;
+import com.tokopedia.logisticaddaddress.data.entity.OldEditAddressResponseData;
 
 import org.json.JSONException;
 
@@ -88,7 +90,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
     }
 
     @Override
-    public void editAddress(@NonNull Map<String, String> params, @NonNull final AddAddressListener listener) {
+    public void editAddress(@NonNull Map<String, String> params, @NonNull final EditAddressListener listener) {
         Observable<Response<TokopediaWsV4Response>> observable = peopleActService
                 .editAddAddress(params);
 
@@ -114,9 +116,9 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         try {
-                            listener.onSuccess(response.body().getJsonData().getString("address_id"));
-                        } catch (JSONException e) {
-                            listener.onSuccess("");
+                            listener.onSuccess(response.body().convertDataObj(OldEditAddressResponseData.class));
+                        } catch (ClassCastException | JsonSyntaxException e) {
+                            listener.onSuccess(new OldEditAddressResponseData());
                         }
                     } else {
                         if (response.body().isNullData()) listener.onNullData();

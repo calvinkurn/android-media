@@ -72,7 +72,6 @@ class DigitalAddToCartUseCase @Inject constructor(@DigitalAddToCartQualifier val
         private const val KEY_IDEM_POTENCY_KEY = "Idempotency-Key"
         private const val KEY_CONTENT_TYPE = "Content-Type"
         private const val VALUE_CONTENT_TYPE = "application/json"
-        private const val VALUE_ANDROID_DEVICE_ID = 5
         private const val VALUE_INSTANT_CHECKOUT_ID = "1"
 
         fun getRequestBodyAtcDigital(digitalCheckoutPassData: DigitalCheckoutPassData,
@@ -101,7 +100,7 @@ class DigitalAddToCartUseCase @Inject constructor(@DigitalAddToCartQualifier val
             }
 
             val attributes = Attributes()
-            attributes.deviceId = VALUE_ANDROID_DEVICE_ID
+            attributes.deviceId = digitalCheckoutPassData.deviceId
             attributes.instantCheckout = digitalCheckoutPassData.instantCheckout == VALUE_INSTANT_CHECKOUT_ID
             attributes.ipAddress = DeviceUtil.localIpAddress
             attributes.userAgent = DeviceUtil.userAgentForApiCall

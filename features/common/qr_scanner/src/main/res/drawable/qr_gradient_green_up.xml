@@ -1,12 +1,3 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle" >
-
-    <gradient
-        android:angle="270"
-        android:centerColor="@color/qr_scanner_tkpd_main_green_70"
-        android:centerX="20%"
-        android:endColor="@android:color/transparent"
-        android:startColor="@color/qr_scanner_tkpd_main_green"
-        android:type="linear" />
-
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient android:angle="270" android:centerColor="@color/qr_scanner_tkpd_main_green_70" android:centerX="20%" android:endColor="@android:color/transparent" android:startColor="@color/qr_scanner_tkpd_main_green" android:type="linear"/>
 </shape>

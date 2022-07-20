@@ -18,7 +18,9 @@ data class ProductData(
         val PLACEHOLDER_LINK: String = "{{branchlink}}",
         val PLACEHOLDER_PRICE: String = "{{price}}",
         val PLACEHOLDER_SHOP_NAME: String = "{{shop_name}}",
-        val PLACEHOLDER_NEW_LINE: String = "\\n"
+        val PLACEHOLDER_NEW_LINE: String = "\\n",
+        var campaignId: String = "0",
+        var bundleId: String = "0",
 ) {
     val renderShareUri: String
         get() {

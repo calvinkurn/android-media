@@ -1,6 +1,9 @@
 package com.tokopedia.product.addedit.tracking
 
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.BUSINESS_UNIT
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.BUSINESS_UNIT_CAPITALIZED_WORD
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.CAT_EDIT_PRODUCT_PAGE
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.CURRENT_SITE
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.EVENT_CLICK_EDIT_PRODUCT
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.KEY_SHOP_ID
 import com.tokopedia.track.TrackApp
@@ -28,6 +31,7 @@ object ProductAddEditTracking {
     const val CAT_DRAFT_PRODUCT_PAGE = "draft product page"
     const val CURRENT_SITE = "tokopediaseller"
     const val BUSINESS_UNIT = "physical goods"
+    const val BUSINESS_UNIT_CAPITALIZED_WORD = "Physical Goods"
 
     fun getTracker(): ContextAnalytics {
         if (gtmTracker == null) {
@@ -140,17 +144,24 @@ object ProductAddEditTracking {
 object ProductVariantTracking {
     var gtmTracker: ContextAnalytics? = null
     const val KEY_SHOP_ID = "shopId"
+    const val KEY_TRACKER_ID = "trackerId"
     const val KEY_SCREEN_NAME = "screenName"
     const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     const val KEY_CURRENT_SITE = "currentSite"
     const val KEY_USER_ID = "userId"
+    const val EVENT_CLICK_PG = "clickPG"
     const val EVENT_OPEN_SCREEN = "openScreen"
     const val EVENT_CLICK_ADD_PRODUCT = "clickAddProduct"
     const val EVENT_CLICK_EDIT_PRODUCT = "clickEditProduct"
+    const val EVENT_CLICK_MANAGE_PRODUCT = "clickManageProduct"
     const val CAT_ADD_VARIANT_PAGE = "add variant page"
     const val CAT_ADD_VARIANT_DETAIL_PAGE = "add detail variant page"
     const val CAT_EDIT_VARIANT_PAGE = "edit variant page"
     const val CAT_EDIT_VARIANT_DETAIL_PAGE = "edit detail variant page"
+    const val CAT_ADD_VARIANT_MANAGE_PAGE = "product variant page - add"
+    const val CAT_EDIT_VARIANT_MANAGE_PAGE = "product variant page - edit"
+    const val CAT_VARIANT_MANAGE_PAGE = "product variant page"
+    const val CURRENT_SITE_MARKRTPLACE = "tokopediamarketplace"
 
     fun getTracker(): ContextAnalytics {
         if (gtmTracker == null) {
@@ -194,6 +205,20 @@ object ProductVariantTracking {
         getTracker().sendGeneralEvent(map)
     }
 
+    fun sendAddProductWeightPerVariant(action: String, label: String, shopId: String, trackerId: String) {
+        val map = mapOf(
+            KEY_EVENT to EVENT_CLICK_PG,
+            KEY_CATEGORY to CAT_VARIANT_MANAGE_PAGE,
+            KEY_ACTION to action,
+            KEY_LABEL to label,
+            KEY_SHOP_ID to shopId,
+            KEY_TRACKER_ID to trackerId,
+            KEY_CURRENT_SITE to CURRENT_SITE_MARKRTPLACE,
+            KEY_BUSINESS_UNIT to BUSINESS_UNIT_CAPITALIZED_WORD
+        )
+        getTracker().sendGeneralEvent(map)
+    }
+
     fun sendEditProductVariantClick(action: String, label: String, shopId: String, screenName: String) {
         val map = mapOf(
                 KEY_EVENT to EVENT_CLICK_EDIT_PRODUCT,
@@ -214,6 +239,19 @@ object ProductVariantTracking {
                 KEY_LABEL to label,
                 KEY_SHOP_ID to shopId,
                 KEY_SCREEN_NAME to screenName
+        )
+        getTracker().sendGeneralEvent(map)
+    }
+
+    fun sendCustomVariantTypeEventClick(eventAction: String, eventLabel: String, isEdit: Boolean, shopId: String) {
+        val map = mapOf(
+                KEY_EVENT to EVENT_CLICK_MANAGE_PRODUCT,
+                KEY_ACTION to eventAction,
+                KEY_CATEGORY to if (isEdit) CAT_EDIT_VARIANT_MANAGE_PAGE else CAT_ADD_VARIANT_MANAGE_PAGE,
+                KEY_LABEL to eventLabel,
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                KEY_CURRENT_SITE to CURRENT_SITE,
+                KEY_SHOP_ID to shopId
         )
         getTracker().sendGeneralEvent(map)
     }

@@ -1,0 +1,109 @@
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/paylater_home_widget_dp_11"
+    android:layout_marginEnd="@dimen/paylater_home_widget_dp_11"
+    app:card_type="shadow"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/gatewayIconBackground"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_0"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="@id/squiCircle"
+            app:srcCompat="@drawable/paylater_homewidget_icon" />
+
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/squiCircle"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_0"
+            app:layout_constraintBottom_toBottomOf="@+id/gatewayIcon"
+            app:layout_constraintEnd_toEndOf="@+id/gatewayIcon"
+            app:layout_constraintStart_toStartOf="@+id/gatewayIcon"
+            app:layout_constraintTop_toTopOf="@+id/gatewayIcon"
+            app:srcCompat="@drawable/paylater_homewidget_ic_squircle" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/gatewayIcon"
+            android:layout_width="@dimen/paylater_home_widget_dp_60"
+            android:layout_height="@dimen/paylater_home_widget_dp_60"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            android:padding="@dimen/paylater_home_widget_dp_9"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/userName"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/paylater_home_widget_dp_14"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toStartOf="@id/crossIcon"
+            app:layout_constraintStart_toEndOf="@+id/gatewayIconBackground"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Hi Rara sdjo;nfodjfng sadkjfnas adfngjdkfgnjdsfg dfknjgljkdfgv" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/proccedToGopay"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/paylater_home_widget_dp_14"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/gatewayIconBackground"
+            app:unifyButtonSize="small"
+            tools:text="Lanjut Daftar" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/gopayDetail"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:layout_marginBottom="@dimen/unify_space_8"
+            app:layout_constraintBottom_toTopOf="@+id/proccedToGopay"
+            app:layout_constraintEnd_toEndOf="@+id/proccedToGopay"
+            app:layout_constraintStart_toStartOf="@+id/proccedToGopay"
+            app:layout_constraintTop_toBottomOf="@id/crossIcon"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Data yang udah kamu isi masih tersimpan. Lanjut daftar GoPayLater Cicil, yuk sdfjnvkdfv." />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/crossIcon"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/paylater_home_widget_dp_10"
+            android:layout_marginEnd="@dimen/paylater_home_widget_dp_10"
+            app:icon_name="CLOSE"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>
+

@@ -6,6 +6,7 @@
     <dimen name="sah_status_bar_elevation">4dp</dimen>
     <dimen name="sah_keyboard_height_estimation">200dp</dimen>
     <dimen name="sah_dimen_1dp">1dp</dimen>
+    <dimen name="sah_dimen_2dp">2dp</dimen>
     <dimen name="sah_dimen_4dp">4dp</dimen>
     <dimen name="sah_dimen_5dp">5dp</dimen>
     <dimen name="sah_dimen_10dp">10dp</dimen>
@@ -14,8 +15,10 @@
     <dimen name="sah_dimen_17dp">17dp</dimen>
     <dimen name="sah_dimen_19dp">19dp</dimen>
     <dimen name="sah_dimen_20dp">20dp</dimen>
+    <dimen name="sah_dimen_25dp">25dp</dimen>
     <dimen name="sah_dimen_26dp">26dp</dimen>
     <dimen name="sah_dimen_28dp">28dp</dimen>
+    <dimen name="sah_dimen_32dp">32dp</dimen>
     <dimen name="sah_dimen_80dp">80dp</dimen>
     <dimen name="sah_dimen_110dp">110dp</dimen>
     <dimen name="sah_dimen_156dp">156dp</dimen>

@@ -1,6 +1,6 @@
 package com.tokopedia.profilecompletion.addphone.data
 
-import com.google.gson.annotations.Expose
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -9,16 +9,14 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class UserValidatePojo(
-        @SerializedName("userProfileValidate")
-        @Expose
-        var userProfileValidate: UserProfileValidate = UserProfileValidate()
+    @SerializedName("userProfileValidate")
+    var userProfileValidate: UserProfileValidate = UserProfileValidate()
 )
 
 data class UserProfileValidate(
-        @SerializedName("isValid")
-        @Expose
-        var isValid: Boolean = false,
-        @SerializedName("message")
-        @Expose
-        var message: String = ""
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("isValid")
+    var isValid: Boolean = false,
+    @SerializedName("message")
+    var message: String = ""
 )

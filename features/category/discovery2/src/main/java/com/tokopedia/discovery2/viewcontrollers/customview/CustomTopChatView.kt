@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
@@ -108,7 +109,7 @@ class CustomTopChatView @JvmOverloads constructor(context: Context, attrs: Attri
     private fun setTextColorIfAny(fontColor: String?) {
         try {
             if (fontColor.isNullOrEmpty()) {
-                topChatTextView.setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
+                topChatTextView.setTextColor(ContextCompat.getColor(context, RUnify.color.Unify_G500))
             } else {
                 topChatTextView.setTextColor((Color.parseColor(fontColor)))
             }

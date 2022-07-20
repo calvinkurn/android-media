@@ -30,6 +30,7 @@ object Tracker {
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val TOKOMEMBER_BUSINESSUNIT = "tokomember"
         const val PHYSICALGOODS_BUSINESSUNIT = "physical goods"
+        const val BUSINESSUNIT_PROMO = "promo"
         const val MERCHANT_COUPONLIST_SCREEN_NAME = "mvcwidget/multishopverticallist"
         const val CURRENT_SITE = "currentSite"
         const val ECOMMERCE = "ecommerce"
@@ -45,6 +46,9 @@ object Tracker {
         const val CLICK_SHOP_NAME = "click shop name"
         const val CLICK_COUPON_TITLE = "click coupon title"
         const val EVENT_VIEW_PROMO = "promoView"
+        const val EVENT_LOCK_TO_PRODUCT = "select_content"
+        const val EVENT_LOCK_TO_PRODUCT_VIEW = "view_item"
+        const val CLICK_MVC_PRODUCT_ID = "productId"
     }
 
     object Category {
@@ -79,6 +83,8 @@ object Tracker {
         const val VIEW_TOKOMEMBER = "view coupon tokomember"
         const val VIEW_MVC_COUPON = "impression-mvc"
         const val SEE_ENTRY_POINT = "see entry point"
+        const val CLICK_MVC_LOCK_TO_PRODUCT = "click entry point - MVC Lock to Product"
+        const val VIEW_MVC_LOCK_TO_PRODUCT = "view entry point - MVC Lock to Product"
     }
         object Label {
             const val PDP_VIEW = "pdp view"

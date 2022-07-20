@@ -4,6 +4,7 @@ package com.tokopedia.topads.common.data.internal
  * Author errysuprayogi on 25,October,2019
  */
 object ParamObject {
+    const val CONTENT_TYPE_JSON = "application/json"
     const val SHOP_Id = "shopId"
     const val CREDIT_DATA = "creditData"
     const val SHOP_DATA = "shopData"
@@ -72,6 +73,7 @@ object ParamObject {
     const val PARAM_DASH_SELECTION_ITEM = "selectionId"
     const val PARAM_TOGGLE_ON = "toggle_on"
     const val PARAM_TOGGLE_OFF = "toggle_off"
+    const val PARAM_GROUP_TYPE = "type"
 
 
     //for edit operation
@@ -94,6 +96,7 @@ object ParamObject {
     const val ADDED_PRODUCTS = "addedProducts"
     const val DELETED_PRODUCTS = "deletedProducts"
 
+    const val AUTO_BID_STATE = "auto_bid"
     const val ACTIVE = "active"
     const val KEYWORD_TYPE_PHRASE = 11
     const val KEYWORD_TYPE_EXACT = 21
@@ -107,10 +110,18 @@ object ParamObject {
     const val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
     const val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
     const val STRATEGIES = "strategies"
+    const val SUGGESTION_BID_SETTINGS = "suggestionBidSettings"
     const val DAILY_BUDGET = "daily_budget"
     const val BID_TYPE = "bidSettings"
     const val NAME_EDIT = "isNameEdit"
     const val BUDGET_LIMITED = "isBudgetLimited"
     const val PUBLISHED = "published"
-    const val ISWHITELISTEDUSER = "isWhiteListedUser"
+
+    const val PRODUCT_AUTO_SEARCH = "product_auto_search"
+    const val PRODUCT_SEARCH = "product_search"
+    const val PRODUCT_AUTO_BROWSE = "product_auto_browse"
+    const val PRODUCT_BROWSE = "product_browse"
+    const val AD_TYPE_PRODUCT_ADS = "1"
+    const val AD_TYPE_SHOP_ADS = "3"
+    const val KEY_AD_TYPE = "ad_type"
 }

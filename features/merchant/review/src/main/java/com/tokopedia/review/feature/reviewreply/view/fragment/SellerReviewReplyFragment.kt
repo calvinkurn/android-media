@@ -3,17 +3,25 @@ package com.tokopedia.review.feature.reviewreply.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -22,18 +30,20 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.databinding.FragmentSellerReviewReplyBinding
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewreply.analytics.SellerReviewReplyTracking
 import com.tokopedia.review.feature.reviewreply.di.component.ReviewReplyComponent
+import com.tokopedia.review.feature.reviewreply.di.qualifier.ReviewReplyGson
+import com.tokopedia.review.feature.reviewreply.insert.presentation.model.ReviewReplyInsertUiModel
+import com.tokopedia.review.feature.reviewreply.update.presenter.model.ReviewReplyUpdateUiModel
 import com.tokopedia.review.feature.reviewreply.util.mapper.SellerReviewReplyMapper
 import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewTemplateListAdapter
 import com.tokopedia.review.feature.reviewreply.view.bottomsheet.AddTemplateBottomSheet
-import com.tokopedia.review.feature.reviewreply.view.model.InsertReplyResponseUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.review.feature.reviewreply.view.model.ReplyTemplateUiModel
-import com.tokopedia.review.feature.reviewreply.view.model.UpdateReplyResponseUiModel
 import com.tokopedia.review.feature.reviewreply.view.viewholder.ReviewTemplateListViewHolder
 import com.tokopedia.review.feature.reviewreply.view.viewmodel.SellerReviewReplyViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -44,6 +54,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.reviewcommon.extension.get
 
 class SellerReviewReplyFragment : BaseDaggerFragment(),
     ReviewTemplateListViewHolder.ReviewTemplateListener,
@@ -57,9 +68,12 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         const val IS_EMPTY_REPLY_REVIEW = "IS_EMPTY_REPLY_REVIEW"
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         const val TEMPLATE_MAX = 6
-        const val IS_SUCCESS_REPLY = 1L
         const val POSITION_REPORT = 0
     }
+
+    @Inject
+    @ReviewReplyGson
+    lateinit var gson: Gson
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -76,8 +90,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
     private var feedbackUiModel: FeedbackUiModel? = null
     private var productReplyUiModel: ProductReplyUiModel? = null
-
-    private var cacheManager: SaveInstanceCacheManager? = null
 
     private var bottomSheetAddTemplate: AddTemplateBottomSheet? = null
 
@@ -101,13 +113,12 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initData(savedInstanceState)
         super.onCreate(savedInstanceState)
-        activity?.let {
-            cacheManager = SaveInstanceCacheManager(it, savedInstanceState)
-        }
-        viewModelReviewReply =
-            ViewModelProvider(this, viewModelFactory).get(SellerReviewReplyViewModel::class.java)
+        initData()
+        viewModelReviewReply = ViewModelProvider(
+            this,
+            viewModelFactory
+        ).get(SellerReviewReplyViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -125,7 +136,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
         initToolbar()
@@ -144,6 +155,15 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_option_review_product_detail, menu)
+
+        for (i in 0 until menu.size()) {
+            menu.getItem(i)?.let { menuItem ->
+                menuItem.actionView?.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
+        }
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -163,9 +183,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
     override fun onDestroy() {
         viewModelReviewReply?.reviewTemplate?.removeObservers(this)
-        viewModelReviewReply?.insertReviewReply?.removeObservers(this)
         viewModelReviewReply?.updateReviewReply?.removeObservers(this)
         viewModelReviewReply?.insertTemplateReply?.removeObservers(this)
+        viewModelReviewReply?.insertReviewReply?.removeObservers(this)
         super.onDestroy()
     }
 
@@ -222,8 +242,10 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                 is Fail -> {
                     view?.let { view ->
                         Toaster.build(view,
-                            context?.getString(R.string.error_message_load_more_review_product)
-                                .orEmpty(),
+                            it.throwable.getErrorMessage(
+                                context,
+                                getString(R.string.error_message_load_more_review_product)
+                            ),
                             type = Toaster.TYPE_ERROR,
                             actionText =
                             context?.getString(R.string.action_retry_toaster_review_product)
@@ -248,7 +270,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                     view?.let { view ->
                         Toaster.build(
                             view,
-                            it.throwable.message.orEmpty(),
+                            it.throwable.getErrorMessage(context),
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
@@ -267,7 +289,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                     view?.let { view ->
                         Toaster.build(
                             view,
-                            it.throwable.message.orEmpty(),
+                            it.throwable.getErrorMessage(context),
                             type = Toaster.TYPE_ERROR
                         ).show()
                     }
@@ -289,7 +311,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                     view?.let { view ->
                         Toaster.build(
                             view,
-                            it.throwable.message.orEmpty(),
+                            it.throwable.getErrorMessage(context),
                             type = Toaster.TYPE_ERROR,
                             duration = Toaster.LENGTH_LONG
                         ).show()
@@ -318,8 +340,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
                     if (isEmptyReply) {
                         viewModelReviewReply?.insertReviewReply(
                             feedbackUiModel?.feedbackID ?: "",
-                            productReplyUiModel?.productID ?: "",
-                            shopId,
                             getText()
                         )
                     } else {
@@ -333,8 +353,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun insertReviewReplySuccess(data: InsertReplyResponseUiModel) {
-        if (data.isSuccess == IS_SUCCESS_REPLY) {
+    private fun insertReviewReplySuccess(data: ReviewReplyInsertUiModel) {
+        if (data.success) {
             activity?.let { KeyboardHandler.showSoftKeyboard(it) }
             binding?.reviewReplyTextBoxWidget?.hide()
             binding?.feedbackItemReplyWidget?.apply {
@@ -349,11 +369,11 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         } else {
             activity?.setResult(Activity.RESULT_CANCELED)
         }
-        KeyboardHandler.hideSoftKeyboard(requireActivity())
+        KeyboardHandler.DropKeyboard(requireContext(), binding?.reviewReplyTextBoxWidget)
     }
 
-    private fun updateReviewReplySuccess(data: UpdateReplyResponseUiModel) {
-        if (data.isSuccess) {
+    private fun updateReviewReplySuccess(data: ReviewReplyUpdateUiModel) {
+        if (data.success) {
             activity?.let { KeyboardHandler.showSoftKeyboard(it) }
             binding?.reviewReplyTextBoxWidget?.hide()
             binding?.reviewReplyTextBoxWidget?.clearEditText()
@@ -367,7 +387,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         } else {
             activity?.setResult(Activity.RESULT_CANCELED)
         }
-        KeyboardHandler.hideSoftKeyboard(requireActivity())
+        KeyboardHandler.DropKeyboard(requireContext(), binding?.reviewReplyTextBoxWidget)
     }
 
     private fun showData() {
@@ -389,20 +409,33 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun initData(savedInstanceState: Bundle?) {
+    private fun initData() {
         context?.let {
             activity?.intent?.run {
-                shopId = getStringExtra(EXTRA_SHOP_ID) ?: ""
-                isEmptyReply = getBooleanExtra(IS_EMPTY_REPLY_REVIEW, false)
-                val objectId = getStringExtra(CACHE_OBJECT_ID)
-                val manager = if (savedInstanceState == null) {
-                    SaveInstanceCacheManager(it, objectId)
-                } else {
-                    cacheManager
-                }
-                feedbackUiModel = manager?.get(EXTRA_FEEDBACK_DATA, FeedbackUiModel::class.java)
-                productReplyUiModel =
-                    manager?.get(EXTRA_PRODUCT_DATA, ProductReplyUiModel::class.java)
+                val cacheManagerId = getStringExtra(CACHE_OBJECT_ID).orEmpty()
+                val cacheManager = SaveInstanceCacheManager(it, cacheManagerId)
+                shopId = cacheManager.get(
+                    customId = EXTRA_SHOP_ID,
+                    type = String::class.java,
+                    defaultValue = "",
+                    gson = gson
+                ).orEmpty()
+                isEmptyReply = cacheManager.get(
+                    customId = IS_EMPTY_REPLY_REVIEW,
+                    type = Boolean::class.java,
+                    defaultValue = false,
+                    gson = gson
+                ).orFalse()
+                feedbackUiModel = cacheManager.get<FeedbackUiModel>(
+                    customId = EXTRA_FEEDBACK_DATA,
+                    type = FeedbackUiModel::class.java,
+                    gson = gson
+                )
+                productReplyUiModel = cacheManager.get<ProductReplyUiModel>(
+                    customId = EXTRA_PRODUCT_DATA,
+                    type = ProductReplyUiModel::class.java,
+                    gson = gson
+                )
             }
         }
     }
@@ -538,7 +571,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     }
 
     private fun initViewBottomSheet() {
-        val viewMenu = View.inflate(context, R.layout.bottom_sheet_menu_option_review_reply, null)
+        val viewMenu = View.inflate(context, com.tokopedia.review.R.layout.bottom_sheet_menu_option_review_reply, null)
         bottomSheetReplyReview = BottomSheetUnify()
         optionMenuReplyReview = viewMenu.findViewById(R.id.optionMenuReply)
         bottomSheetReplyReview?.setChild(viewMenu)

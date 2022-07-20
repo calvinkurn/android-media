@@ -11,7 +11,7 @@ public class GlobalConfig {
     public static final int CONSUMER_PRO_APPLICATION = 3;
 
     public static final String PACKAGE_SELLER_APP = "com.tokopedia.sellerapp";
-    public static final String PACKAGE_CONSUMER_APP = "com.tokopedia.customerappp";
+    public static final String PACKAGE_CONSUMER_APP = "com.tokopedia.tkpd";
 
     public static String VERSION_NAME = "1.0";
     public static String VERSION_NAME_SUFFIX = "production";
@@ -29,6 +29,7 @@ public class GlobalConfig {
     public static String PREINSTALL_SITE = "";
     public static String APPLICATION_ID = "";
     public static String DEVICE_ID = "";
+    public static int LAUNCHER_ICON_RES_ID = 0;
 
     /**
      * This field is used to enable the debug trace to find the performance insights. Used by automation test for perforamnce

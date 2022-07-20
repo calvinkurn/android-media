@@ -60,10 +60,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation rootProject.ext.miscDependencies.chips
     implementation projectOrAar(rootProject.ext.features.wishlistCommon)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    
     implementation projectOrAar(rootProject.ext.features.basemvvm)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.features.discovery2)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
 
@@ -73,6 +73,7 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.features.productCard)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation projectOrAar(rootProject.ext.features.productCard)
 }
 
 project.ext {

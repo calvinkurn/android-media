@@ -10,7 +10,9 @@ import com.tokopedia.product.manage.databinding.ItemCampaignStockActiveProductSw
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ActiveProductSwitchViewHolder(itemView: View?,
-                                    private val onActiveStockChanged: (Boolean) -> Unit): AbstractViewHolder<ActiveProductSwitchUiModel>(itemView) {
+                                    private val onActiveStockChanged: (Boolean) -> Unit,
+                                    private val source: String,
+                                    private val shopId: String): AbstractViewHolder<ActiveProductSwitchUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -24,7 +26,12 @@ class ActiveProductSwitchViewHolder(itemView: View?,
             isChecked = element.isActive
             setOnCheckedChangeListener { _, isChecked ->
                 onActiveStockChanged(isChecked)
-                ProductManageTracking.eventClickAllocationProductStatus(isVariant = false, isOn = isChecked)
+                ProductManageTracking.eventClickAllocationProductStatus(
+                    isVariant = false,
+                    isOn = isChecked,
+                    source = source,
+                    productId = element.productId.orEmpty(),
+                    shopId = shopId)
             }
             isEnabled = element.access?.editProduct == true
         }

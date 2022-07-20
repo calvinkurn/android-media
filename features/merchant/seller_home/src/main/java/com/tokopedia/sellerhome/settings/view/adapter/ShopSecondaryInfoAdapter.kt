@@ -148,7 +148,8 @@ class ShopSecondaryInfoAdapter(
             visitables?.indexOfFirst { it is ShopStatusWidgetUiModel }?.let { index ->
                 if (index >= START_INDEX) {
                     visitables[index] = ShopStatusWidgetUiModel(
-                        SettingResponseState.SettingSuccess(shopType)
+                        SettingResponseState.SettingSuccess(shopType),
+                        shopStatus.userShopInfoWrapper.userShopInfoUiModel
                     )
                     notifyItemChanged(index)
 

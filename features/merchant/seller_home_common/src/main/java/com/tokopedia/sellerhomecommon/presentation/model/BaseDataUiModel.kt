@@ -10,5 +10,5 @@ interface BaseDataUiModel {
     var isFromCache: Boolean
     val showWidget: Boolean
 
-    fun shouldRemove(): Boolean
+    fun isWidgetEmpty(): Boolean
 }

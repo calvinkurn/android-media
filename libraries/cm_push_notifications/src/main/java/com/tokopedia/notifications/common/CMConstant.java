@@ -37,11 +37,14 @@ public interface CMConstant {
     String HTTP = "http";
     String WWW = "www";
 
+    interface CMPrefKeys{
+        String KEY_WIFI_MAC_ADDRESS = "key_wifi_mac_address";
+    }
+
 
     interface NotificationType {
         String GENERAL = "General";
         String GRID_NOTIFICATION = "Grid";
-        String BIG_IMAGE_BANNER = "Banner";
         String BIG_IMAGE = "Image";
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
@@ -113,6 +116,7 @@ public interface CMConstant {
         String USER_TRANSACTION_ID = "userTransId";
         String USER_ID = "userId";
         String SHOP_ID = "shopId";
+        String IS_BIG_IMAGE = "is_big_image";
         String BLAST_ID = "notifcenterBlastId";
 
         String ADD_TO_CART = "addToCart";
@@ -136,10 +140,27 @@ public interface CMConstant {
         String REVIEW_SCORE = "reviewScore";
         String REVIEW_NUMBER = "reviewNumber";
         String REVIEW_ICON = "reviewIcon";
+        String IS_REVIEW = "isReviewNotif";
+        String REPLY_TYPE = "replyType";
 
         String MAIN_APP_PRIORITY = "mainappPriority";
         String SELLER_APP_PRIORITY = "sellerappPriority";
         String ADVANCE_TARGET = "isAdvanceTarget";
+        String GROUP_ID = "groupId";
+        String GROUP_NAME = "groupName";
+
+        interface PayloadExtraDataKey {
+            String CAMPAIGN_NAME = "cmpgnName";
+            String JOURNEY_ID = "jrnId";
+            String JOURNEY_NAME = "jrnName";
+            String SESSION_ID = "sesnId";
+            String INTENT_ACTION = "intentAction";
+            String TOPCHAT = "topChat";
+        }
+
+
+        String NOTIFICATION_CHANNEL = "nfChnl";
+        String NOTIFICATION_SOUND = "nfSnd";
     }
 
     interface NotificationProductType {
@@ -198,6 +219,7 @@ public interface CMConstant {
 
         String ACTION_BANNER_CLICK ="com.tokopedia.notification.ACTION_BANNER_CLICK";
         String ACTION_NOTIFICATION_BLANK = "com.tokopedia.notification.action_notification_blank";
+        String ACTION_REVIEW_NOTIFICATION_STAR_CLICKED = "com.tokopedia.notification.STAR_CLICKED";
     }
 
     interface CouponCodeExtra {
@@ -223,6 +245,15 @@ public interface CMConstant {
         String SCREEN_NAME = "screenName";
         String SCREEN_NAME_VALUE = "CM Applink Handler";
         String UTM_GCLID = "gclid";
+    }
+
+    interface ReviewStarNumber {
+        String STAR_NUMBER = "starNumber";
+        String ONE_STAR = "1";
+        String TWO_STAR = "2";
+        String THREE_STAR = "3";
+        String FOUR_STAR = "4";
+        String FIVE_STAR = "5";
     }
 
 }

@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/mvc_dimen_12dp"
     android:layout_marginLeft="@dimen/mvc_dimen_12dp"
-    android:layout_marginTop="@dimen/spacing_lvl2"
     android:layout_marginEnd="@dimen/mvc_dimen_12dp"
     android:layout_marginRight="@dimen/mvc_dimen_12dp"
     android:layout_marginBottom="@dimen/spacing_lvl2"
@@ -95,6 +94,36 @@
             app:typographyType="body_3"
             tools:text="Cashback 10%" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_vps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mvc_vps"
+            android:visibility="visible"
+            app:labelType="general_light_blue"
+            app:layout_constraintStart_toStartOf="@+id/tvMvcVoucherName"
+            app:layout_constraintTop_toBottomOf="@+id/tvMvcVoucherDescription" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_package_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            app:layout_constraintBaseline_toBaselineOf="@id/label_vps"
+            app:layout_constraintLeft_toRightOf="@id/label_vps"
+            app:typographyType="small"
+            tools:text="Premium Ramadhan Extra" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_subsidy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mvc_subsidy"
+            android:visibility="gone"
+            app:labelType="general_light_blue"
+            app:layout_constraintStart_toStartOf="@+id/tvMvcVoucherName"
+            app:layout_constraintTop_toBottomOf="@+id/tvMvcVoucherDescription" />
+
         <View
             android:id="@+id/viewMvcVoucherCodeBg"
             android:layout_width="0dp"
@@ -102,6 +131,7 @@
             android:layout_marginTop="@dimen/voucher_creation_progressbar_padding_top"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvMvcVoucherName"
             app:layout_constraintTop_toBottomOf="@+id/tvMvcVoucherDescription" />
@@ -112,6 +142,7 @@
             android:layout_height="wrap_content"
             android:text="@string/mvc_lbl_promo_code"
             android:textColor="@color/light_N700_96"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/viewMvcVoucherCodeBg"
             app:layout_constraintEnd_toStartOf="@+id/tvVoucherCode"
             app:layout_constraintHorizontal_bias="0.5"
@@ -125,6 +156,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/light_N700_96"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/viewMvcVoucherCodeBg"
             app:layout_constraintEnd_toEndOf="@+id/viewMvcVoucherCodeBg"
             app:layout_constraintHorizontal_bias="0.5"
@@ -139,16 +171,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/layout_lvl1"
-            android:text="@string/mvc_used"
+            android:text="@string/mvc_remaining_quota"
             android:textColor="@color/light_N700_96"
-            app:layout_constraintBottom_toTopOf="@+id/tvMvcVoucherUsed"
+            app:layout_constraintBottom_toTopOf="@+id/tvMvcRemainingVoucher"
             app:layout_constraintEnd_toStartOf="@+id/btnMvcVoucherCta"
             app:layout_constraintStart_toStartOf="@+id/tvMvcVoucherName"
             app:layout_constraintTop_toTopOf="@+id/btnMvcVoucherCta"
             app:typographyType="small" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvMvcVoucherUsed"
+            android:id="@+id/tvMvcRemainingVoucher"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/layout_lvl1"
@@ -159,30 +191,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tvLblUsed"
             app:typographyType="body_3"
             tools:text="50/100" />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iu_bc_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            android:scaleType="centerInside"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/iu_share_button"
-            app:layout_constraintTop_toBottomOf="@+id/viewMvcVoucherCodeBg"
-            app:srcCompat="@drawable/ic_mvc_broadcast"
-            app:unify_image_corner_radius="0" />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iu_share_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            android:scaleType="centerInside"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/iu_more_button"
-            app:layout_constraintTop_toBottomOf="@+id/viewMvcVoucherCodeBg"
-            app:srcCompat="@drawable/ic_mvc_share"
-            app:unify_image_corner_radius="0" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_more_button"

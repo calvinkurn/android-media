@@ -21,7 +21,12 @@ import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiMo
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.adapter.ShopLocationOldTypeFactory
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.viewholder.ShopLocationViewHolder
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.listener.ShopLocationOldView
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.list.ListUnify
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, ShopLocationOldTypeFactory>(),
@@ -52,11 +57,6 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, Shop
     override fun onStart() {
         super.onStart()
         setHasOptionsMenu(true)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        context?.let { GraphqlClient.init(it) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -142,13 +142,20 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, Shop
     }
 
     override fun onIconClicked(item: ShopLocationOldUiModel, pos: Int) {
-        activity?.let {
-            Menus(it).apply {
-                setItemMenuList(resources.getStringArray(R.array.shop_address_menu_more))
-                setActionText(getString(com.tokopedia.abstraction.R.string.close))
-                setOnActionClickListener { dismiss() }
-                setOnItemMenuClickListener { _, pos ->
-                    when (pos) {
+        val bottomSheetUnify = BottomSheetUnify()
+        val view = View.inflate(context, R.layout.bottomsheet_shop_address_item_menu, null)
+        val data = resources.getStringArray(R.array.shop_address_menu_more)
+        val listWidgetData = ArrayList<ListItemUnify>().apply {
+            addAll(data.map { menu -> ListItemUnify(title = menu, description = "") })
+        }
+
+        bottomSheetUnify.apply {
+            setChild(view)
+            val listWidget = view.findViewById<ListUnify>(R.id.list_menu_shop_address_item)
+            listWidget.setData(listWidgetData)
+            listWidget.onLoadFinish {
+                listWidget.setOnItemClickListener { _, _, index, _ ->
+                    when (index) {
                         0 -> {
                             editShopAddress(item)
                             dismiss()
@@ -159,9 +166,8 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, Shop
                         }
                     }
                 }
-                show()
             }
-        }
+        }.show(childFragmentManager, "")
     }
 
     private fun deleteShopAddress(item: ShopLocationOldUiModel) {

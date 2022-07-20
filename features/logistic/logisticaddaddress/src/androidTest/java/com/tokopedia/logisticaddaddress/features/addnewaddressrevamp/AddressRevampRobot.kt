@@ -12,8 +12,7 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_REF
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.allOf
 
@@ -95,7 +94,7 @@ class AddressRevampRobot {
 
     fun fillAddressNegative(address: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat))))
-                .perform(click(), typeText(address), closeSoftKeyboard())
+                .perform(click(), replaceText(address), closeSoftKeyboard())
     }
 
     private fun waitForData() {
@@ -103,7 +102,7 @@ class AddressRevampRobot {
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
-        onView(withId(R.id.btn_save_address_new)).perform(click())
+        onView(withId(R.id.btn_save_address_new)).perform(scrollTo(), click())
         return ResultRobot().apply(func)
     }
 

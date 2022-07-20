@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -30,6 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="134dp"
             android:layout_margin="16dp"
+            android:contentDescription="@string/content_desc_image_home_error"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/default_home_title_copy"
             app:layout_constraintHorizontal_bias="0.5"
@@ -49,12 +49,12 @@
             app:layout_constraintTop_toTopOf="@+id/img_home_default_error"
             app:typographyType="heading_4" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/default_home_desc_copy"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/discovery_home_desc_error"
-            android:textSize="@dimen/sp_12"
+            app:typographyType="body_3"
             app:layout_constraintBottom_toBottomOf="@+id/img_home_default_error"
             app:layout_constraintEnd_toEndOf="@+id/default_home_title_copy"
             app:layout_constraintHorizontal_bias="0.0"

@@ -9,13 +9,6 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 class BuyerOrderDetailToolbarMenu @JvmOverloads constructor(
         context: Context,

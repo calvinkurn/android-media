@@ -6,6 +6,7 @@ import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateItem
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocompletecomponent.jsonToObject
 import com.tokopedia.autocompletecomponent.shouldBe
+import io.mockk.slot
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
@@ -14,6 +15,8 @@ private const val initialStateEmptyDataResponse = "autocomplete/initialstate/emp
 private const val initialStateWithShowMoreResponse = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 
 internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
+
+    private val slotRecentSearchBaseItemList = slot<List<BaseItemInitialStateSearch>>()
 
     @Test
     fun `Test get initial state impression`() {
@@ -25,10 +28,13 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
 
     private fun `Then verify initial state impression is called without see more recent search`() {
         verifyOrder {
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
-            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
-            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(
+                capture(slotRecentSearchBaseItemList),
+                capture(slotRecentSearchItemList)
+            )
+            initialStateView.onPopularSearchImpressed(any(), capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(any(), capture(slotDynamicSectionTrackingModel))
         }
     }
 
@@ -46,6 +52,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
 
         assert(recentViewItemList.containsAll(recentViewListResponse))
         assert(recentSearchItemList.containsAll(recentSearchListResponse))
+        assert(slotRecentSearchBaseItemList.captured.size == recentSearchListResponse.size)
         popularSearchTrackingModel.assertTrackerModel(popularSearchListResponse, initialStateDataList[2])
         dynamicSectionTrackingModel.assertTrackerModel(dynamicSectionResponse, initialStateDataList[3])
     }
@@ -98,14 +105,18 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
             initialStateView.onCuratedCampaignCardImpressed(
                 "0",
                 capture(slotCuratedCampaignLabel),
+                any(),
                 capture(slotCuratedCampaignType),
                 capture(slotCuratedCampaignCode)
             )
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
-            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(
+                capture(slotRecentSearchBaseItemList),
+                capture(slotRecentSearchItemList)
+            )
             initialStateView.onSeeMoreRecentSearchImpressed(any())
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
-            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
+            initialStateView.onPopularSearchImpressed(any(), capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(any(), capture(slotDynamicSectionTrackingModel))
         }
     }
 
@@ -119,12 +130,13 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         val curatedCampaignCode = slotCuratedCampaignCode.captured
 
         val recentViewListResponse = getDataLayerForRecentView(initialStateData[1].items)
-        val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items.take(3))
+        val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items.take(RECENT_SEARCH_SEE_MORE_LIMIT))
         val popularSearchListResponse = getDataLayerForPromo(initialStateData[3].items)
         val dynamicSectionResponse = getDataLayerForPromo(initialStateData[4].items)
 
         assert(recentViewItemList.containsAll(recentViewListResponse))
         assert(recentSearchItemList.containsAll(recentSearchListResponse))
+        assert(slotRecentSearchBaseItemList.captured.size == RECENT_SEARCH_SEE_MORE_LIMIT)
         popularSearchTrackingModel.assertTrackerModel(popularSearchListResponse, initialStateData[3])
         dynamicSectionTrackingModel.assertTrackerModel(dynamicSectionResponse, initialStateData[4])
 
@@ -147,7 +159,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
 
     private fun `Then verify recent search impression is called`() {
         verify {
-            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
+            initialStateView.onRecentSearchImpressed(any(), capture(slotRecentSearchItemList))
         }
     }
 

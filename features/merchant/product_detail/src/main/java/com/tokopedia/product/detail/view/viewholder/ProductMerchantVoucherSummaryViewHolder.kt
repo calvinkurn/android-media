@@ -30,7 +30,7 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
         view.layoutParams.height = view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7).toInt()
         initMerchantVoucher()
         element.let {
-            setMerchantVoucher(it.animatedInfos, it.shopId)
+            setMerchantVoucher(it.animatedInfos, it.shopId, element.productIdMVC)
         }
 
         merchantVoucher?.addOnImpressionListener(ImpressHolder()){
@@ -46,9 +46,9 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
         merchantVoucher = view.findViewById(R.id.productDetailMerchantVoucherWidget)
     }
 
-    private fun setMerchantVoucher(animatedInfos: List<AnimatedInfos>, shopId: String) {
+    private fun setMerchantVoucher(animatedInfos: List<AnimatedInfos>, shopId: String, productId: String) {
         merchantVoucher?.setData(MvcData(animatedInfos), shopId, MvcSource.PDP,{
-            listener.onMerchantVoucherSummaryClicked(shopId, MvcSource.PDP)
+            listener.onMerchantVoucherSummaryClicked(shopId, MvcSource.PDP, productId = productId)
         })
         merchantVoucher?.show()
     }

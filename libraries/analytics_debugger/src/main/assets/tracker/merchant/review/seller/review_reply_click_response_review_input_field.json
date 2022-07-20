@@ -1,0 +1,16 @@
+{
+  "readme": "Review Reply - click response review input field",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "review reply page",
+      "productId": "\\d+",
+      "shopId": "\\d+",
+      "screenName": "review reply page",
+      "event": "clickReview",
+      "eventAction": "click - response review text field",
+      "sessionIris": ".+",
+      "eventLabel": "feedbackId:\\d+"
+    }
+  ]
+}

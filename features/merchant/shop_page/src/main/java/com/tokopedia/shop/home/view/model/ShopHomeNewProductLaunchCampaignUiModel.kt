@@ -40,7 +40,7 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
     ) {
 
         data class BannerItem(
-                val imageId: Int = -1,
+                val imageId: String = "",
                 val imageUrl: String = "",
                 val bannerType: String = "",
                 val device: String = ""

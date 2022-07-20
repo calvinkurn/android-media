@@ -523,6 +523,10 @@ object HotelGqlQuery {
                 number
               }
             }
+            agent {
+              name
+              logo
+            }
           }
         }
     """.trimIndent()
@@ -710,7 +714,7 @@ object HotelGqlQuery {
         }
     """.trimIndent()
 
-    val GET_HOTEL_RECENT_SEARCH_QUERY = """
+    const val GET_HOTEL_RECENT_SEARCH_QUERY = """
         query propertyRecentSearch(${'$'}id: Int!){
          status
          travelRecentSearch(dataType:HOTEL, userID:${'$'}id){
@@ -738,5 +742,5 @@ object HotelGqlQuery {
            }
          }
         }
-    """.trimIndent()
+    """
 }

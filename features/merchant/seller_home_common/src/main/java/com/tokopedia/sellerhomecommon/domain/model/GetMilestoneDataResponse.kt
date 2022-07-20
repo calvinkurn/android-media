@@ -48,6 +48,9 @@ data class MilestoneData(
     @SerializedName("showNumber")
     val showNumber: Boolean? = false,
     @Expose
+    @SerializedName("timeDeadline")
+    val deadlineMillis: Long? = 0L,
+    @Expose
     @SerializedName("showWidget")
     val showWidget: Boolean? = false,
     @Expose
@@ -72,7 +75,10 @@ data class MilestoneData(
         val subtitle: String? = "",
         @Expose
         @SerializedName("title")
-        val title: String? = ""
+        val title: String? = "",
+        @Expose
+        @SerializedName("progress")
+        val progress: MissionProgressModel? = MissionProgressModel()
     )
 
     data class FinishMission(
@@ -152,4 +158,19 @@ data class ButtonFinish(
     @Expose
     @SerializedName("urlType")
     val urlType: Int = 0
+)
+
+data class MissionProgressModel(
+    @Expose
+    @SerializedName("appDescription")
+    val description: String = "",
+    @Expose
+    @SerializedName("percentage")
+    val percentage: Int = 0,
+    @Expose
+    @SerializedName("completed")
+    val completed: String = "",
+    @Expose
+    @SerializedName("target")
+    val target: String = ""
 )

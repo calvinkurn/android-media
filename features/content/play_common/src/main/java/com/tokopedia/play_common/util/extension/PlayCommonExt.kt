@@ -11,6 +11,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
+import android.text.SpannableStringBuilder
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -300,6 +301,21 @@ fun dismissToaster() {
     try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 }
 
+fun SpannableStringBuilder.append(
+    text: CharSequence,
+    flags: Int,
+    vararg spans: Any,
+): SpannableStringBuilder {
+    val start = length
+    append(text)
+
+    spans.forEach { span ->
+        setSpan(span, start, length, flags)
+    }
+
+    return this
+}
+
 fun Activity.hideKeyboard() {
     val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
@@ -312,6 +328,12 @@ fun Fragment.hideKeyboard() {
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+}
+
+fun EditText.showKeyboard(isShow: Boolean) {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    if (isShow) imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    else imm.hideSoftInputFromWindow(this.windowToken, 0)
 }
 
 data class CachedState<T>(val prevValue: T? = null, val value: T) {
@@ -341,6 +363,7 @@ fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
     }
 }
 
+@Deprecated("Use MutableStateFlow.update")
 fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
     value = value.fn()
 }

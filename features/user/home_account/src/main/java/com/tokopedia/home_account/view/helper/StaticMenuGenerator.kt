@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
@@ -29,7 +30,9 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                 CommonDataView(applink = ApplinkConstInternalGlobal.PAYMENT_SETTING, title = context?.getString(R.string.menu_account_title_instant_payment), body = context?.getString(R.string.menu_account_desc_instant_payment), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.CARD, id = AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT),
                 CommonDataView(applink = ApplinkConstInternalGlobal.ACCOUNT_SETTING, title = context?.getString(R.string.menu_account_title_security), body = context?.getString(R.string.menu_account_desc_security), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LOCK, id = AccountConstants.SettingCode.SETTING_SECURITY),
                 CommonDataView(applink = ApplinkConst.SETTING_NOTIFICATION, title = context?.getString(R.string.menu_account_title_notification), body = context?.getString(R.string.menu_account_desc_notification), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BELL_RING, id = AccountConstants.SettingCode.SETTING_NOTIFICATION),
-                CommonDataView(applink = ApplinkConstInternalGlobal.LINK_ACCOUNT, title = context?.getString(R.string.menu_account_title_account_link), body = context?.getString(R.string.menu_account_desc_account_link), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LINK, id = AccountConstants.SettingCode.SETTING_LINK_ACCOUNT, labelText = "BARU")
+                CommonDataView(applink = ApplinkConstInternalGlobal.LINK_ACCOUNT, title = context.getString(R.string.menu_account_title_account_link), body = context.getString(R.string.menu_account_desc_account_link), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LINK, id = AccountConstants.SettingCode.SETTING_LINK_ACCOUNT),
+                CommonDataView(applink = ApplinkConstInternalUserPlatform.PRIVACY_ACCOUNT, title = context.getString(R.string.menu_account_title_privacy_account), body = context.getString(R.string.menu_account_desc_privacy_account), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.GLOBE, id = AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT),
+                CommonDataView(applink = ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE, title = context?.getString(R.string.menu_account_title_explicit_profile), body = context?.getString(R.string.menu_account_desc_explicit_profile), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.SHOPPING_BAG, id = AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE)
         ), isExpanded = true)
     }
 
@@ -40,14 +43,18 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
             showScreenRecorder: Boolean
     ): SettingDataView {
         val listSetting = mutableListOf(
-        CommonDataView(id = AccountConstants.SettingCode.SETTING_SHAKE_ID, title = context?.getString(R.string.menu_account_title_shake), body = context?.getString(R.string.menu_account_desc_shake),
-                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.SHAKE,
-                isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SHAKE, true)),
-        CommonDataView(id = AccountConstants.SettingCode.SETTING_GEOLOCATION_ID, title = context?.getString(R.string.menu_account_title_geolocation), body = context?.getString(R.string.menu_account_desc_geolocation),
-                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.LOCATION,
-                isChecked = permissionChecker.hasLocationPermission()),
-        CommonDataView(id = AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID, title = context?.getString(R.string.menu_account_title_safe_mode), body = context?.getString(R.string.menu_account_desc_safe_mode), type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.PROTECTION,
-                isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, false)))
+            CommonDataView(id = AccountConstants.SettingCode.SETTING_SHAKE_ID, title = context?.getString(R.string.menu_account_title_shake), body = context?.getString(R.string.menu_account_desc_shake),
+                    type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.SHAKE,
+                    isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SHAKE, true)),
+            CommonDataView(id = AccountConstants.SettingCode.SETTING_GEOLOCATION_ID, title = context?.getString(R.string.menu_account_title_geolocation), body = context?.getString(R.string.menu_account_desc_geolocation),
+                    type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.LOCATION,
+                    isChecked = permissionChecker.hasLocationPermission()),
+            CommonDataView(id = AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID, title = context?.getString(R.string.menu_account_title_safe_mode), body = context?.getString(R.string.menu_account_desc_safe_mode), type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.PROTECTION,
+                    isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, false)),
+            CommonDataView(id = AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY, title = context?.getString(R.string.menu_account_title_play_widget_autoplay), body = context?.getString(R.string.menu_account_desc_play_widget_autoplay),
+                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.VIDEO,
+                isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, true)),
+        )
 
         if(showDarkModeToggle) {
             listSetting.add(CommonDataView(id = AccountConstants.SettingCode.SETTING_DARK_MODE,
@@ -86,10 +93,8 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
     fun generateDeveloperOptionsSettingMenu(): SettingDataView {
         return  SettingDataView(context.getString(R.string.menu_account_section_title_developer), mutableListOf(
                 CommonDataView(title = context.getString(R.string.menu_account_title_dev_options), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_DEV_OPTIONS),
-                CommonDataView(title = context.getString(R.string.menu_account_title_feedback_form), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_FEEDBACK_FORM),
-                CommonDataView(title = context.getString(R.string.menu_account_old_account), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_OLD_ACCOUNT))
-
-        , showArrowDown = true)
+                CommonDataView(title = context.getString(R.string.menu_account_title_feedback_form), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_FEEDBACK_FORM)
+        ), showArrowDown = true)
     }
 
     private fun getLabelText(id: Int): String {

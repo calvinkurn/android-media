@@ -2,7 +2,6 @@ package com.tokopedia.seller.menu.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.seller.menu.common.domain.usecase.AdminPermissionUseCase
 import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -32,6 +31,9 @@ open class AdminRoleAuthorizeViewModelTestFixture {
     @RelaxedMockK
     lateinit var isRoleAuthorizedObserver: Observer<in Result<Boolean>>
 
+    @RelaxedMockK
+    lateinit var isLoadingLiveDataObserver: Observer<in Boolean>
+
     protected lateinit var viewModel: AdminRoleAuthorizeViewModel
 
     @Before
@@ -44,11 +46,13 @@ open class AdminRoleAuthorizeViewModelTestFixture {
                 CoroutineTestDispatchersProvider
         )
         viewModel.isRoleAuthorizedLiveData.observeForever(isRoleAuthorizedObserver)
+        viewModel.isLoadingLiveData.observeForever(isLoadingLiveDataObserver)
     }
 
     @After
     fun cleanup() {
         viewModel.isRoleAuthorizedLiveData.removeObserver(isRoleAuthorizedObserver)
+        viewModel.isLoadingLiveData.removeObserver(isLoadingLiveDataObserver)
     }
 
     protected fun onGetUserSessionIsShopOwner_thenReturn(isShopOwner: Boolean) {

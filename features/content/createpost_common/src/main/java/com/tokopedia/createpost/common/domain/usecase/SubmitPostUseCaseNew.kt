@@ -110,9 +110,9 @@ open class SubmitPostUseCaseNew @Inject constructor(
         return Func1 { graphqlResponse -> graphqlResponse.getData(SubmitPostData::class.java) }
     }
 
-    private fun getInputType(type: String): String {
-        return if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
-    }
+    private fun getInputType(type: String) =
+        if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
+
 
     protected open fun getContentSubmitInput(requestParams: RequestParams,
                                              mediumList: List<SubmitPostMedium>): ContentSubmitInput {
@@ -124,6 +124,8 @@ open class SubmitPostUseCaseNew @Inject constructor(
         input.authorID = requestParams.getString(PARAM_AUTHOR_ID, "")
         input.authorType = requestParams.getString(PARAM_AUTHOR_TYPE, "")
         input.caption = requestParams.getString(PARAM_CAPTION, "")
+        input.mediaRatioW = requestParams.getInt(PARAM_MEDIA_WIDTH, 0)
+        input.mediaRatioH = requestParams.getInt(PARAM_MEDIA_HEIGHT, 0)
         input.media = mediumList
         input.activityId = requestParams.getString(PARAM_ID, null)
 
@@ -144,6 +146,8 @@ open class SubmitPostUseCaseNew @Inject constructor(
         private const val CONTENT_SHOP = "content-shop"
         private const val AUTHOR_TYPE_VALUE = "content"
         private const val PARAM_MEDIA = "media"
+        private const val PARAM_MEDIA_WIDTH = "media_width"
+        private const val PARAM_MEDIA_HEIGHT = "media_height"
 
 
 
@@ -169,16 +173,21 @@ open class SubmitPostUseCaseNew @Inject constructor(
             caption: String,
             media: List<Pair<String, String>>,
             relatedIdList: List<String>,
-            mediaList: List<MediaModel>
+            mediaList: List<MediaModel>,
+            mediaWidth:Int,
+            mediaHeight:Int
         ): RequestParams {
+            val authorType = if (type.isNotEmpty()) type else CONTENT_SHOP
 
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_TYPE, TYPE_CONTENT)
             requestParams.putString(PARAM_TOKEN, token)
             requestParams.putString(PARAM_AUTHOR_ID, authorId)
-            requestParams.putString(PARAM_AUTHOR_TYPE, CONTENT_SHOP)
+            requestParams.putString(PARAM_AUTHOR_TYPE, authorType)
             requestParams.putString(PARAM_CAPTION, caption)
             requestParams.putObject(PARAM_MEDIA_MODEL_LIST, mediaList)
+            requestParams.putInt(PARAM_MEDIA_WIDTH, mediaWidth)
+            requestParams.putInt(PARAM_MEDIA_HEIGHT, mediaHeight)
 
             if (!id.isNullOrEmpty()) {
                 requestParams.putString(PARAM_ID, id)

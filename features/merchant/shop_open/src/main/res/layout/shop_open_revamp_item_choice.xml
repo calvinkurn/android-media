@@ -16,13 +16,13 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="@dimen/dp_18"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginBottom="18dp"
+            android:layout_marginTop="18dp"
             android:layout_centerVertical="true"
             android:clickable="true"
             app:typographyType="body_2"
             android:textColor="@color/Unify_N700_96"
-            android:lineSpacingExtra="@dimen/sp_6"
+            android:lineSpacingExtra="6sp"
             android:text="@string/text_default_choice_item"
             android:focusable="true"
             app:typographyWeight="reguler"
@@ -41,7 +41,7 @@
     </RelativeLayout>
 
     <com.tokopedia.unifycomponents.DividerUnify
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_width="match_parent">
     </com.tokopedia.unifycomponents.DividerUnify>
 

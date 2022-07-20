@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
+import com.tokopedia.accordion.AccordionUnify.Companion.TYPE_OR
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.MAINTENANCE
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
@@ -160,6 +161,7 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
             layoutParams.height = iconSize
             layoutParams.width = iconSize
         }
+        accordionCategoryList?.type = TYPE_OR
         accordionCategoryList?.onItemClick = { position, isExpanded ->
             if (isExpanded) {
                 analytics.onExpandLeveOneCategory(categoryList[position].id)
