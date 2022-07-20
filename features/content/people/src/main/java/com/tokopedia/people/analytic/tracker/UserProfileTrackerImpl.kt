@@ -711,7 +711,8 @@ class UserProfileTrackerImpl @Inject constructor(
 
     override fun impressionProfileRecommendation(
         userId: String,
-        shops: List<Pair<ShopRecomUiModelItem, Int>>,
+        shops: ShopRecomUiModelItem,
+        postPosition: Int,
     ) {
         trackingQueue.putEETracking(
             EventModel(
@@ -723,14 +724,12 @@ class UserProfileTrackerImpl @Inject constructor(
             hashMapOf(
                 ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
-                        PROMOTIONS to shops.map {
-                            convertToPromotion(
-                                it.first.id.toString(),
-                                it.first.logoImageURL,
-                                it.second + 1,
+                        PROMOTIONS to convertToPromotion(
+                                shops.id.toString(),
+                                shops.logoImageURL,
+                                postPosition,
                                 FEED_USER_PROFILE_PROFILE_RECOMMENDATION_CAROUSEL
                             )
-                        }
                     )
                 )
             ),

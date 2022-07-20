@@ -86,7 +86,8 @@ interface UserProfileTracker {
 
     fun impressionProfileRecommendation(
         userId: String,
-        shops: List<Pair<ShopRecomUiModelItem, Int>>,
+        shops: ShopRecomUiModelItem,
+        postPosition: Int
     )
 
     fun clickProfileRecommendation(

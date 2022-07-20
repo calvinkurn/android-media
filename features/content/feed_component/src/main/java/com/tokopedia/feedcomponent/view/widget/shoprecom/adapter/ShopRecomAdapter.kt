@@ -21,6 +21,7 @@ class ShopRecomAdapter(
     }
 
     override fun onBindViewHolder(holder: ShopRecomViewHolder, position: Int) {
+        shopRecomCallback.onShopRecomItemImpress(shopRecomItem[position], position + 1)
         holder.bindData(shopRecomItem[position])
     }
 
@@ -36,8 +37,6 @@ class ShopRecomAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun getItems() = shopRecomItem
-
     override fun onShopRecomCloseClicked(itemID: Long) {
         shopRecomCallback.onShopRecomCloseClicked(itemID)
     }
@@ -48,6 +47,10 @@ class ShopRecomAdapter(
 
     override fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int) {
         shopRecomCallback.onShopRecomItemClicked(itemID, appLink, imageUrl, postPosition)
+    }
+
+    override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, position: Int) {
+        shopRecomCallback.onShopRecomItemImpress(item, position)
     }
 
 }

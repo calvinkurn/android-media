@@ -13,19 +13,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomAdapter
-import com.tokopedia.people.analytic.cordinator.ShopRecommendationImpressionCoordinator
 import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
-import com.tokopedia.feedcomponent.view.widget.shoprecom.utils.getVisibleItems
 import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
@@ -47,6 +46,7 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
+import com.tokopedia.people.analytic.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
@@ -87,7 +87,7 @@ class UserProfileFragment @Inject constructor(
     private var userProfileTracker: UserProfileTracker,
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
-    private val impressionCoordinator: ShopRecommendationImpressionCoordinator,
+    private val impressionCoordinator: ShopRecomImpressCoordinator,
 ) : TkpdBaseV4Fragment(),
     AdapterCallback,
     ShareBottomsheetListener,
@@ -97,7 +97,9 @@ class UserProfileFragment @Inject constructor(
     ShopRecommendationCallback,
     FeedPlusContainerListener {
 
-    private lateinit var linearLayoutManager: LinearLayoutManager
+    private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        LinearLayoutManager(activity, HORIZONTAL, false)
+    }
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(activity, 2)
@@ -301,18 +303,10 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun initShopRecommendation() {
-        linearLayoutManager = object : LinearLayoutManager(requireContext(), HORIZONTAL, false) {
-            override fun onLayoutCompleted(state: RecyclerView.State?) {
-                super.onLayoutCompleted(state)
-                impressShopRecom()
-            }
-        }
-        with(mainBinding.shopRecommendation.rvShopRecom) {
-            layoutManager = linearLayoutManager
-            adapter = mAdapterShopRecom
-            if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration(requireContext()))
-        }
+    private fun initShopRecommendation() = with(mainBinding.shopRecommendation.rvShopRecom) {
+        layoutManager = linearLayoutManager
+        adapter = mAdapterShopRecom
+        if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration(requireContext()))
     }
 
     private fun initUserPost(userId: String) {
@@ -761,16 +755,6 @@ class UserProfileFragment @Inject constructor(
         submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
     }
 
-    private fun impressShopRecom() {
-        if (this::linearLayoutManager.isInitialized) {
-            val visibleProducts = linearLayoutManager.getVisibleItems(mAdapterShopRecom)
-            viewModel.visibleShopRecom = visibleProducts.isNotEmpty()
-            if (viewModel.visibleShopRecom) impressionCoordinator.sendShopRecomImpress(
-                viewModel.profileUserID, visibleProducts
-            )
-        }
-    }
-
     override fun onShopRecomItemClicked(
         itemID: Long,
         appLink: String,
@@ -784,6 +768,10 @@ class UserProfileFragment @Inject constructor(
             postPosition
         )
         RouteManager.route(requireContext(), appLink)
+    }
+
+    override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
+        impressionCoordinator.sendShopRecomImpress(viewModel.profileUserID, item, postPosition)
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
