@@ -12,13 +12,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
+import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteProductListItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.layout_autocomplete_product_list_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
 class SuggestionProductLineViewHolder(
@@ -30,6 +31,7 @@ class SuggestionProductLineViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_product_list_item
     }
+    private var binding : LayoutAutocompleteProductListItemBinding? by viewBinding()
 
     private var searchQueryStartIndexInKeyword = -1
 
@@ -45,12 +47,13 @@ class SuggestionProductLineViewHolder(
     }
 
     private fun setComponentHeight(item: BaseSuggestionDataView) {
-        val layoutParams = itemView.autocompleteProductItem.layoutParams
+        val autocompleteProductItem = binding?.autocompleteProductItem ?: return
+        val layoutParams = autocompleteProductItem.layoutParams
 
         if (item.hasSlashedPrice()) layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_height)
         else layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_suggestion_product_double_line_height)
 
-        itemView.autocompleteProductItem.layoutParams = layoutParams
+        autocompleteProductItem.layoutParams = layoutParams
     }
 
     private fun setImage(item: BaseSuggestionDataView) {
@@ -59,18 +62,19 @@ class SuggestionProductLineViewHolder(
     }
 
     private fun setImageHeight() {
-        val layoutParams = itemView.autocompleteProductImage.layoutParams
+        val autocompleteProductImage = binding?.autocompleteProductImage ?: return
+        val layoutParams = autocompleteProductImage.layoutParams
         val resources = itemView.context.resources
 
         layoutParams.height = resources.getDimensionPixelSize(R.dimen.autocomplete_product_suggestion_image_size)
         layoutParams.width = resources.getDimensionPixelSize(R.dimen.autocomplete_product_suggestion_image_size)
 
-        itemView.autocompleteProductImage.layoutParams = layoutParams
+        autocompleteProductImage.layoutParams = layoutParams
     }
 
     private fun bindImage(item: BaseSuggestionDataView) {
         val context = itemView.context
-        itemView.autocompleteProductImage?.let {
+        binding?.autocompleteProductImage?.let {
             ImageHandler.loadImageRounded(context, it, item.imageUrl, context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
         }
     }
@@ -85,11 +89,12 @@ class SuggestionProductLineViewHolder(
     }
 
     private fun setTitle(item: BaseSuggestionDataView) {
-        itemView.autocompleteProductTitle?.setType(Typography.BODY_2)
-        itemView.autocompleteProductTitle?.setWeight(Typography.REGULAR)
+        val autocompleteProductTitle = binding?.autocompleteProductTitle ?: return
+        autocompleteProductTitle.setType(Typography.BODY_2)
+        autocompleteProductTitle.setWeight(Typography.REGULAR)
 
-        if (searchQueryStartIndexInKeyword == -1) itemView.autocompleteProductTitle?.text = MethodChecker.fromHtml(item.title)
-        else itemView.autocompleteProductTitle?.text = getHighlightedTitle(item)
+        if (searchQueryStartIndexInKeyword == -1) autocompleteProductTitle.text = MethodChecker.fromHtml(item.title)
+        else autocompleteProductTitle.text = getHighlightedTitle(item)
     }
 
     private fun getHighlightedTitle(item: BaseSuggestionDataView): SpannableString {
@@ -127,27 +132,29 @@ class SuggestionProductLineViewHolder(
     }
 
     private fun setLabelDiscountPercentage(item: BaseSuggestionDataView) {
-        itemView.autocompleteProductLabelDiscountPercentage?.shouldShowWithAction(item.hasSlashedPrice()) {
-            itemView.autocompleteProductLabelDiscountPercentage?.text = item.discountPercentage
+        binding?.autocompleteProductLabelDiscountPercentage?.shouldShowWithAction(item.hasSlashedPrice()) {
+            binding?.autocompleteProductLabelDiscountPercentage?.text = item.discountPercentage
         }
     }
 
     private fun setOriginalPrice(item: BaseSuggestionDataView) {
-        itemView.autocompleteProductOriginalPrice?.shouldShowWithAction(item.hasSlashedPrice()) {
-            itemView.autocompleteProductOriginalPrice?.setTextAndCheckShow(item.originalPrice)
-            itemView.autocompleteProductOriginalPrice?.paintFlags = itemView.autocompleteProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        val autocompleteProductOriginalPrice = binding?.autocompleteProductOriginalPrice ?: return
+        autocompleteProductOriginalPrice.shouldShowWithAction(item.hasSlashedPrice()) {
+            autocompleteProductOriginalPrice.setTextAndCheckShow(item.originalPrice)
+            autocompleteProductOriginalPrice.paintFlags = autocompleteProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
     }
 
     private fun setPrice(item: BaseSuggestionDataView) {
-        itemView.autocompleteProductPrice?.setType(Typography.BODY_3)
-        itemView.autocompleteProductPrice?.setWeight(Typography.BOLD)
+        val autocompleteProductPrice = binding?.autocompleteProductPrice ?: return
+        autocompleteProductPrice.setType(Typography.BODY_3)
+        autocompleteProductPrice.setWeight(Typography.BOLD)
 
-        itemView.autocompleteProductPrice?.setTextAndCheckShow(item.subtitle)
+        autocompleteProductPrice.setTextAndCheckShow(item.subtitle)
     }
 
     private fun setListener(item: BaseSuggestionDataView) {
-        itemView.autocompleteProductItem?.setOnClickListener {
+        binding?.autocompleteProductItem?.setOnClickListener {
             listener.onItemClicked(item)
         }
     }

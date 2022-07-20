@@ -2,8 +2,15 @@ package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.cart.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.network.exception.ResponseErrorException
-import io.mockk.every
-import io.mockk.verify
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcommon.data.WishlistV2Params
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import io.mockk.*
 import org.junit.Test
 import rx.Observable
 
@@ -19,7 +26,8 @@ class AddCartToWishlistTest : BaseCartTest() {
         val forceExpandCollapsedUnavailableItems = false
 
         val addToCartWishlistData = AddCartToWishlistData().apply {
-            isSuccess = true
+            status = "OK"
+            success = 1
             message = "success"
         }
 
@@ -45,7 +53,8 @@ class AddCartToWishlistTest : BaseCartTest() {
         val forceExpandCollapsedUnavailableItems = false
 
         val addToCartWishlistData = AddCartToWishlistData().apply {
-            isSuccess = false
+            status = "ERROR"
+            success = 0
             message = "failed"
         }
 
@@ -103,4 +112,169 @@ class AddCartToWishlistTest : BaseCartTest() {
         }
     }
 
+    @Test
+    fun `verify add to wishlistv2 returns success` () {
+        val productId = "123"
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishListV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishListV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+        every { userSessionInterface.userId } returns "1"
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        cartListPresenter.processAddToWishlistV2(productId, "1", mockListener)
+
+        verify { addToWishListV2UseCase.setParams(productId, "1") }
+        coVerify { addToWishListV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns fail` () {
+        val productId = "123"
+        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishListV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishListV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+        every { userSessionInterface.userId } returns "1"
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        cartListPresenter.processAddToWishlistV2(productId, "1", mockListener)
+
+        verify { addToWishListV2UseCase.setParams(recommendationItem.productId.toString(), "1") }
+        coVerify { addToWishListV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns success`(){
+        val productId = "123"
+        val resultWishlistRemoveV2 = DeleteWishlistV2Response.Data.WishlistRemoveV2(success = true)
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistRemoveV2)
+        every { userSessionInterface.userId } returns "1"
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        cartListPresenter.processRemoveFromWishlistV2(productId, "1", mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, "1") }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify remove wishlistV2 returns fail`(){
+        val productId = "123"
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { deleteWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { deleteWishlistV2UseCase.executeOnBackground() }returns Fail(mockThrowable)
+        every { userSessionInterface.userId } returns "1"
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        cartListPresenter.processRemoveFromWishlistV2(productId, "1", mockListener)
+
+        verify { deleteWishlistV2UseCase.setParams(productId, "1") }
+        coVerify { deleteWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify get wishlistV2 returns success`(){
+        val wishlistParam = WishlistV2Params(source = "cart")
+        val wishlistV2 = GetWishlistV2Response.Data.WishlistV2(totalData = 10)
+
+        every { getWishlistV2UseCase.setParams(any()) } just Runs
+        coEvery { getWishlistV2UseCase.executeOnBackground() } returns Success(wishlistV2)
+
+        cartListPresenter.processGetWishlistV2Data()
+
+        verify { getWishlistV2UseCase.setParams(wishlistParam) }
+        coVerify { getWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify get wishlistV2 returns fail`(){
+        val wishlistParam = WishlistV2Params(source = "cart")
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { getWishlistV2UseCase.setParams(any()) } just Runs
+        coEvery { getWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        cartListPresenter.processGetWishlistV2Data()
+
+        verify { getWishlistV2UseCase.setParams(wishlistParam) }
+        coVerify { getWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify get wishlistV2 returns not empty items`(){
+        val wishlistParam = WishlistV2Params(source = "cart")
+        val listItem = arrayListOf<GetWishlistV2Response.Data.WishlistV2.Item>()
+        listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "1"))
+        listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "2"))
+        listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "3"))
+        listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "4"))
+        listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "5"))
+        val wishlistV2 = GetWishlistV2Response.Data.WishlistV2(totalData = 5, items = listItem)
+
+        every { getWishlistV2UseCase.setParams(any()) } just Runs
+        coEvery { getWishlistV2UseCase.executeOnBackground() } returns Success(wishlistV2)
+
+        cartListPresenter.processGetWishlistV2Data()
+
+        verify { getWishlistV2UseCase.setParams(wishlistParam) }
+        coVerify { getWishlistV2UseCase.executeOnBackground() }
+        verifyOrder {
+            view.renderWishlistV2(listItem, true)
+            view.setHasTriedToLoadWishList()
+            view.stopAllCartPerformanceTrace()
+        }
+    }
+
+    @Test
+    fun `verify get wishlistV2 returns fail and verify view`(){
+        val wishlistParam = WishlistV2Params(source = "cart")
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { getWishlistV2UseCase.setParams(any()) } just Runs
+        coEvery { getWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        cartListPresenter.processGetWishlistV2Data()
+
+        verify { getWishlistV2UseCase.setParams(wishlistParam) }
+        coVerify { getWishlistV2UseCase.executeOnBackground() }
+        verifyOrder {
+            view.setHasTriedToLoadWishList()
+            view.stopAllCartPerformanceTrace()
+        }
+    }
+
+    @Test
+    fun `verify get wishlistV2 returns fail when view is null`(){
+        val wishlistParam = WishlistV2Params(source = "cart")
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { getWishlistV2UseCase.setParams(any()) } just Runs
+        coEvery { getWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        cartListPresenter.processGetWishlistV2Data()
+        cartListPresenter.detachView()
+
+        verify { getWishlistV2UseCase.setParams(wishlistParam) }
+        coVerify { getWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify get wishlistV2 returns success when view is null`(){
+        val wishlistParam = WishlistV2Params(source = "cart")
+        val wishlistV2 = GetWishlistV2Response.Data.WishlistV2(totalData = 10)
+
+        every { getWishlistV2UseCase.setParams(any()) } just Runs
+        coEvery { getWishlistV2UseCase.executeOnBackground() } returns Success(wishlistV2)
+
+        cartListPresenter.processGetWishlistV2Data()
+        cartListPresenter.detachView()
+
+        verify { getWishlistV2UseCase.setParams(wishlistParam) }
+        coVerify { getWishlistV2UseCase.executeOnBackground() }
+    }
 }

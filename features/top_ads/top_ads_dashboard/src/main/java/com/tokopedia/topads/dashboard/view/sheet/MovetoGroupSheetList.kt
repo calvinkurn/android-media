@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.getResDrawable
@@ -18,8 +19,11 @@ import com.tokopedia.topads.dashboard.view.adapter.movetogroup.MovetoGroupAdapte
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.MovetoGroupAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemModel
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupModel
-import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
-import kotlinx.android.synthetic.main.topads_dash_moveto_group_bottom_sheet.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.UnifyImageButton
+import com.tokopedia.unifyprinciples.Typography
 
 class MovetoGroupSheetList {
 
@@ -27,26 +31,33 @@ class MovetoGroupSheetList {
     private var adapter: MovetoGroupAdapter? = null
     var onItemClick: (() -> Unit)? = null
     var onItemSearch: ((search: String) -> Unit)? = null
-    var groupId = 0
+    private var groupId = 0
     private var searchTextField: EditText? = null
 
     private fun setupView(context: Context) {
         dialog?.let {
             adapter = MovetoGroupAdapter(MovetoGroupAdapterTypeFactoryImpl(::itemSelected))
-            it.recyclerView.layoutManager = LinearLayoutManager(context)
-            it.recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-            it.recyclerView.adapter = adapter
+            it.findViewById<RecyclerView>(R.id.recyclerView)?.apply {
+                layoutManager = LinearLayoutManager(context)
+                addItemDecoration(DividerItemDecoration(context,
+                    DividerItemDecoration.VERTICAL))
+                this.adapter = this@MovetoGroupSheetList.adapter
+            }
+
             it.setOnShowListener { dialogInterface ->
                 val dialog = dialogInterface as BottomSheetDialog
-                val frameLayout = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+                val frameLayout =
+                    dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
                 if (frameLayout != null) {
                     val behavior = BottomSheetBehavior.from(frameLayout)
                     behavior.isHideable = false
                 }
             }
-            it.btn_close.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_group_close))
-            it.btn_close.setOnClickListener { dismissDialog() }
-            it.submit_butt.setOnClickListener {
+            it.findViewById<ImageUnify>(R.id.btn_close)?.apply {
+                setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_group_close))
+                setOnClickListener { dismissDialog() }
+            }
+            it.findViewById<UnifyButton>(R.id.submit_butt)?.setOnClickListener {
                 if (groupId.toString() == "0") {
                     adapter?.items?.firstOrNull()?.let { model ->
                         groupId = (model as MovetoGroupItemModel).result.groupId.toInt()
@@ -55,9 +66,9 @@ class MovetoGroupSheetList {
                 onItemClick?.invoke()
                 dismissDialog()
             }
-            it.btnFilter.visibility = View.GONE
-            it.filterCount.visibility = View.GONE
-            dialog?.submit_butt?.isEnabled = true
+            it.findViewById<UnifyImageButton>(R.id.btnFilter)?.visibility = View.GONE
+            it.findViewById<Typography>(R.id.filterCount)?.visibility = View.GONE
+            it.findViewById<UnifyButton>(R.id.submit_butt)?.isEnabled = true
             setSearchListener(it)
         }
     }
@@ -68,12 +79,18 @@ class MovetoGroupSheetList {
     }
 
     private fun setSearchListener(it: BottomSheetDialog) {
-        searchTextField = it.searchBar?.searchBarTextField
-        val searchClearButton = it.searchBar?.searchBarIcon
+        val searchBar = it.findViewById<SearchBarUnify>(R.id.searchBar)
+
+        searchTextField = searchBar?.searchBarTextField
+        val searchClearButton = searchBar?.searchBarIcon
         searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
         searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
 
-            override fun onEditorAction(textView: TextView?, actionId: Int, even: KeyEvent?): Boolean {
+            override fun onEditorAction(
+                textView: TextView?,
+                actionId: Int,
+                even: KeyEvent?,
+            ): Boolean {
 
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     onItemSearch?.invoke(textView?.text.toString())
@@ -85,7 +102,7 @@ class MovetoGroupSheetList {
         searchClearButton?.setOnClickListener {
             searchTextField?.text?.clear()
             onItemSearch?.invoke("")
-            dialog?.submit_butt?.isEnabled = true
+            it.findViewById<UnifyButton>(R.id.submit_butt)?.isEnabled = true
         }
     }
 
@@ -111,14 +128,15 @@ class MovetoGroupSheetList {
     }
 
     fun setButtonDisable() {
-        dialog?.submit_butt?.isEnabled = false
+        dialog?.findViewById<UnifyButton>(R.id.submit_butt)?.isEnabled = false
     }
 
     companion object {
 
         fun newInstance(context: Context): MovetoGroupSheetList {
             val fragment = MovetoGroupSheetList()
-            fragment.dialog = BottomSheetDialog(context, com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
+            fragment.dialog = BottomSheetDialog(context,
+                com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog?.setContentView(R.layout.topads_dash_moveto_group_bottom_sheet)
             fragment.setupView(context)
             return fragment

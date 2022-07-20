@@ -5,6 +5,9 @@ import android.content.Context
 import android.os.Build
 import android.provider.Settings
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
+import com.google.android.gms.tasks.Task
+import com.google.firebase.installations.FirebaseInstallations
+import com.google.firebase.installations.FirebaseInstallationsException
 import com.tokopedia.device.info.cache.DeviceInfoCache
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -15,6 +18,7 @@ import java.io.InputStreamReader
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 object DeviceInfo {
 
@@ -128,6 +132,54 @@ object DeviceInfo {
     }
 
     @JvmStatic
+    fun logIdentifier(context: Context, source: String) {
+        GlobalScope.launch {
+            try {
+                val hasFID = !getFirebaseId().isNullOrBlank()
+                ServerLogger.log(
+                    Priority.P2,
+                    "DEVICE_UNIQUE_ID",
+                    mapOf(
+                        "type" to "ads_id_empty",
+                        "source" to source,
+                        "hasUUID" to hasUuid(context).toString(),
+                        "hasFID" to hasFID.toString()
+                    )
+                )
+            } catch (ignored: Exception) {}
+        }
+    }
+
+    @JvmStatic
+    fun hasUuid(context: Context): Boolean {
+        return try {
+            val uuid = getUUID(context)
+            uuid.isNotEmpty()
+        }catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun <T> Task<T>.await(): T? = suspendCoroutine { continuation ->
+        addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                continuation.resume(task.result)
+            } else {
+                continuation.resume(null)
+            }
+        }
+    }
+
+    suspend fun getFirebaseId(): String? {
+        return try {
+            FirebaseInstallations.getInstance().id.await()
+        } catch (e: FirebaseInstallationsException) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
+    @JvmStatic
     fun getAdsId(context: Context): String {
         val appContext = context.applicationContext
         val adsIdCache: String = getCacheAdsId(appContext)
@@ -136,7 +188,11 @@ object DeviceInfo {
         } else {
             // try catch to get error Fatal Exception: java.lang.NoClassDefFoundError in android 5 Samsung
             try {
-                runBlocking { getlatestAdId(context, 3000L) }
+                val result = runBlocking { getlatestAdId(context, 3000L) }
+                if(result.isEmpty()) {
+                    logIdentifier(context, "DeviceInfo")
+                }
+                result
             } catch (e: Exception) {
                 ""
             }
@@ -213,17 +269,15 @@ object DeviceInfo {
         timeOutInMillis: Long = 3000L
     ) {
         GlobalScope.launch(Dispatchers.IO) {
-            val adsIdCache: String = getCacheAdsId(context)
-            if (adsIdCache.isNotBlank()) {
-                withContext(Dispatchers.Main) {
+            try {
+                val adsIdCache: String = getCacheAdsId(context)
+                if (adsIdCache.isNotBlank()) {
                     onSuccessGetAdsId?.invoke(adsIdCache)
-                }
-            } else {
-                val adId = getlatestAdId(context, timeOutInMillis)
-                withContext(Dispatchers.Main) {
+                } else {
+                    val adId = getlatestAdId(context, timeOutInMillis)
                     onSuccessGetAdsId?.invoke(adId)
                 }
-            }
+            } catch (ignored:Exception) { }
         }
     }
 

@@ -318,6 +318,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         subTitle
         text
         appLink
+        appLinkProductList
+        webLinkProductList
+        maximumDiscountPercentage
+        maximumDiscountPercentageFmt
         totalProducts
         products {
           id

@@ -6,9 +6,13 @@ import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.carousel.*
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowPageNameListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecomCarouselBinding
@@ -36,6 +40,7 @@ class TokoNowRecommendationCarouselViewHolder(
         uiModel = element ?: return
         val scrollToPosition =
             recommendationCarouselListener?.onGetCarouselScrollPosition(adapterPosition)
+        binding?.tokoNowSearchCategoryRecomCarousel?.show()
         if (element.isBindWithPageName) {
             binding?.tokoNowSearchCategoryRecomCarousel?.let {
                 recommendationCarouselWidgetBindPageNameListener?.setViewToLifecycleOwner(it)
@@ -48,7 +53,8 @@ class TokoNowRecommendationCarouselViewHolder(
                     isForceRefresh = element.isFirstLoad,
                     isTokonow = true,
                     categoryIds = element.categoryId,
-                    keyword = element.keywords
+                    keyword = element.keywords,
+                    miniCartSource = element.miniCartSource
                 )
                 element.isFirstLoad = false
             }

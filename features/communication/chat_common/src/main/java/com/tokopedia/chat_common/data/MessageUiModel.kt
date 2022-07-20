@@ -27,7 +27,7 @@ open class MessageUiModel protected constructor(
     }
 
     fun isFromBroadCast(): Boolean {
-        return blastId > 0
+        return blastId.isNotEmpty() && blastId != "0"
     }
 
     fun isBanned(): Boolean {

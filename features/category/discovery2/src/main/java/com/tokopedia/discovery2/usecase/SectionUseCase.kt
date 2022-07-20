@@ -101,7 +101,7 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
 
                 }
             }
-            it.setComponentsItem(components)
+            it.setComponentsItem(components,component.tabName)
             it.noOfPagesLoaded = 1
             it.verticalProductFailState = false
             return true

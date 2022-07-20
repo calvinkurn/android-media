@@ -9,13 +9,15 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_text"
         android:layout_width="100dp"
         android:layout_height="16dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

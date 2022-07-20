@@ -1,5 +1,9 @@
 package com.tokopedia.user.session;
 
+import java.util.HashSet;
+
+import kotlin.collections.SetsKt;
+
 /**
  * this will be private soon
  */
@@ -45,15 +49,15 @@ public class Constants {
     public static final String IS_SHOP_OFFICIAL_STORE = "IS_SHOP_OFFICIAL_STORE";
     public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
 
-    public static final String  ANDROID_ID = "ANDROID_ID";
-    public static final String  KEY_ANDROID_ID = "KEY_ANDROID_ID";
-    public static final String  ADVERTISINGID = "ADVERTISINGID";
-    public static final String  KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
+    public static final String ANDROID_ID = "ANDROID_ID";
+    public static final String KEY_ANDROID_ID = "KEY_ANDROID_ID";
+    public static final String ADVERTISINGID = "ADVERTISINGID";
+    public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
 
-    public static final String  IS_SHOP_OWNER = "IS_SHOP_OWNER";
-    public static final String  IS_SHOP_ADMIN = "IS_SHOP_ADMIN";
-    public static final String  IS_LOCATION_ADMIN = "IS_LOCATION_ADMIN";
-    public static final String  IS_MULTI_LOCATION_SHOP = "IS_MULTI_LOCATION_SHOP";
+    public static final String IS_SHOP_OWNER = "IS_SHOP_OWNER";
+    public static final String IS_SHOP_ADMIN = "IS_SHOP_ADMIN";
+    public static final String IS_LOCATION_ADMIN = "IS_LOCATION_ADMIN";
+    public static final String IS_MULTI_LOCATION_SHOP = "IS_MULTI_LOCATION_SHOP";
 
     /**
      * Twitter Prefs
@@ -61,4 +65,17 @@ public class Constants {
     public static final String TWITTER_ACCESS_TOKEN = "TWITTER_ACCESS_TOKEN";
     public static final String TWITTER_ACCESS_TOKEN_SECRET = "TWITTER_ACCESS_TOKEN_SECRET";
     public static final String TWITTER_SHOULD_POST = "TWITTER_SHOULD_POST";
+
+    public static final String IS_PII_MIGRATED = "_PII_MIGRATED";
+    public static final String PII_BACKUP = "_PII_BACKUP";
+
+    public static HashSet<String> PII_DATA_SET = SetsKt.hashSetOf(
+            "FULL_NAME_v2",
+            "EMAIL_v2",
+            "PHONE_NUMBER_v2",
+            "PROFILE_PICTURE_v2",
+            "TEMP_NAME_v2",
+            "TEMP_PHONE_NUMBER_v2",
+            "TEMP_EMAIL_v2"
+    );
 }

@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
@@ -55,11 +54,11 @@ class SellerOnboardingActivity : BaseActivity() {
     private val sobAdapter by lazy { SobAdapter() }
     private val slideItems: List<BaseSliderUiModel> by lazy {
         listOf(
-            SobSliderHomeUiModel(Int.ZERO),
-            SobSliderMessageUiModel(Int.ZERO),
-            SobSliderManageUiModel(Int.ZERO),
-            SobSliderPromoUiModel(Int.ZERO),
-            SobSliderStatisticsUiModel(Int.ZERO)
+            SobSliderHomeUiModel(R.drawable.bg_sob_slide_header_home),
+            SobSliderMessageUiModel(R.drawable.bg_sob_slide_header_message),
+            SobSliderManageUiModel(R.drawable.bg_sob_slide_header_manage),
+            SobSliderPromoUiModel(R.drawable.bg_sob_slide_header_promo),
+            SobSliderStatisticsUiModel(R.drawable.bg_sob_slide_header_statistics)
         )
     }
     private var binding: ActivitySobOnboardingBinding? = null
@@ -94,8 +93,6 @@ class SellerOnboardingActivity : BaseActivity() {
     private fun setPageBackground() {
         try {
             binding?.backgroundSob?.setBackgroundResource(R.drawable.bg_sob_full)
-            binding?.bgSobRamadhan?.setImageResource(R.drawable.bg_sob_ramadhan)
-            binding?.bgSobRamadhanPattern?.setImageResource(R.drawable.bg_sob_ramadhan_pattern)
         } catch (e: Resources.NotFoundException) {
             Timber.e(e)
         }
@@ -114,8 +111,18 @@ class SellerOnboardingActivity : BaseActivity() {
                     setSlideIndicator(position)
                     setPreviousButtonVisibility(position)
                     updateNextButtonState(position)
+                    updateHeaderBackground(position)
                 }
             })
+        }
+    }
+
+    private fun updateHeaderBackground(position: Int) {
+        try {
+            val slideItem = slideItems[position]
+            binding?.imgSobHeader?.loadImage(slideItem.headerResBg)
+        } catch (e: Exception) {
+            //do nothing
         }
     }
 

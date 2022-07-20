@@ -43,6 +43,7 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.telemetry.ITelemetryActivity
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -54,7 +55,8 @@ class SearchActivity : BaseActivity(),
     RedirectionListener,
     SearchNavigationListener,
     PageLoadTimePerformanceInterface by searchProductPerformanceMonitoring(),
-    HasComponent<BaseAppComponent> {
+    HasComponent<BaseAppComponent>,
+    ITelemetryActivity{
 
     private var searchNavigationToolbar: NavToolbar? = null
     private var container: MotionLayout? = null
@@ -494,4 +496,6 @@ class SearchActivity : BaseActivity(),
     private fun updateKeyword() {
         setToolbarTitle()
     }
+
+    override fun getTelemetrySectionName() = "search"
 }

@@ -40,6 +40,7 @@ object TrackingConstant {
         const val SHOP_ID = "shopId"
         const val SHOP_TYPE = "shopType"
         const val USER_ID = "userId"
+        const val TRACKER_ID = "trackerId"
 
     }
 
@@ -77,8 +78,11 @@ object TrackingConstant {
      */
     object Value{
         const val PROMO_VIEW = "promoView"
+        const val SELECT_CONTENT = "select_content"
         const val PRODUCT_DETAIL_PAGE = "product detail page"
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+        const val VIEW_PG = "viewPGIris"
+        const val CLICK_PG = "clickPG"
     }
 
 }

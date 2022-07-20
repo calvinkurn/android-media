@@ -1139,14 +1139,14 @@ class AddEditProductDetailViewModelTest {
                 AnnotationCategoryData(
                         variant = "Merek",
                         data = listOf(
-                                Values(1, "Indomie", true, ""),
-                                Values(1, "Seedap", false, ""))
+                                Values("1", "Indomie", true, ""),
+                                Values("1", "Seedap", false, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa",
                         data = listOf(
-                                Values(1, "Soto", false, ""),
-                                Values(1, "Bawang", true, ""))
+                                Values("1", "Soto", false, ""),
+                                Values("1", "Bawang", true, ""))
                 )
         )
 
@@ -1181,38 +1181,38 @@ class AddEditProductDetailViewModelTest {
                 AnnotationCategoryData(
                         variant = "Merek",
                         data = listOf(
-                                Values(1, "Indomie", true, ""),
-                                Values(1, "Seedap", false, ""))
+                                Values("1", "Indomie", true, ""),
+                                Values("1", "Seedap", false, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa1",
                         data = listOf(
-                                Values(1, "Soto1", false, ""),
-                                Values(1, "Bawang1", true, ""))
+                                Values("1", "Soto1", false, ""),
+                                Values("1", "Bawang1", true, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa2",
                         data = listOf(
-                                Values(1, "Soto2", false, ""),
-                                Values(1, "Bawang2", true, ""))
+                                Values("1", "Soto2", false, ""),
+                                Values("1", "Bawang2", true, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa3",
                         data = listOf(
-                                Values(1, "Soto3", false, ""),
-                                Values(1, "Bawang3", true, ""))
+                                Values("1", "Soto3", false, ""),
+                                Values("1", "Bawang3", true, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa4",
                         data = listOf(
-                                Values(1, "Soto4", false, ""),
-                                Values(1, "Bawang4", true, ""))
+                                Values("1", "Soto4", false, ""),
+                                Values("1", "Bawang4", true, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa5",
                         data = listOf(
-                                Values(1, "Soto5", false, ""),
-                                Values(1, "Bawang5", true, ""))
+                                Values("1", "Soto5", false, ""),
+                                Values("1", "Bawang5", true, ""))
                 )
         )
 
@@ -1263,8 +1263,8 @@ class AddEditProductDetailViewModelTest {
                 AnnotationCategoryData(
                         variant = "Merek",
                         data = listOf(
-                                Values(1, "Indomie", false, ""),
-                                Values(1, "Seedap", false, ""))
+                                Values("1", "Indomie", false, ""),
+                                Values("1", "Seedap", false, ""))
                 )
         )
         viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
@@ -1507,17 +1507,13 @@ class AddEditProductDetailViewModelTest {
         isValid = viewModel.callPrivateFunc("isInputValid") as Boolean
         Assert.assertTrue(isValid)
 
-        viewModel.shouldUpdateVariant = true
         viewModel.isDrafting = true
         viewModel.isReloadingShowCase = true
-        assert(viewModel.shouldUpdateVariant)
         assert(viewModel.isDrafting)
         assert(viewModel.isReloadingShowCase)
 
-        viewModel.shouldUpdateVariant = false
         viewModel.isDrafting = false
         viewModel.isReloadingShowCase = false
-        assertFalse(viewModel.shouldUpdateVariant)
         assertFalse(viewModel.isDrafting)
         assertFalse(viewModel.isReloadingShowCase)
 

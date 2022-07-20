@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.text.Editable
-import android.text.Html
 import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -230,7 +229,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
 
                 delayChangeCheckboxState?.cancel()
                 delayChangeCheckboxState = GlobalScope.launch(Dispatchers.Main) {
-                    delay(500L)
+                    delay(DEBOUNCE_TIME)
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (!data.isError) {
                             if (adapterPosition != RecyclerView.NO_POSITION) {
@@ -361,7 +360,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     }
 
     private fun renderProductName(data: CartItemHolderData) {
-        binding.textProductName.text = Html.fromHtml(data.productName)
+        binding.textProductName.text = Utils.getHtmlFormat(data.productName)
         binding.textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, data))
         val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
         if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
@@ -571,6 +570,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             textFieldNotes.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             textFieldNotes.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             textFieldNotes.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            textFieldNotes.setPlaceholder(Utils.getHtmlFormat(element.placeholderNote))
             textFieldNotes.context?.let {
                 textFieldNotes.editText.setOnEditorActionListener { v, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -898,7 +898,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         const val ALPHA_FULL = 1.0f
 
         private const val IMAGE_PRODUCT_MARGIN_START = 12
-        private const val TEXT_NOTES_CHANGE_WIDTH = 32
+        private const val TEXT_NOTES_CHANGE_WIDTH = 40
         private const val BUNDLING_SEPARATOR_MARGIN_START = 32
         private const val BUNDLING_SEPARATOR_WIDTH = 48
     }

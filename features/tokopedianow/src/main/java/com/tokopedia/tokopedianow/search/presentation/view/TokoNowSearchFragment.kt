@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
@@ -16,9 +17,11 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ATC_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_PRODUCT_TOKONOW
@@ -44,6 +47,7 @@ import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFact
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
+import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
@@ -59,6 +63,8 @@ class TokoNowSearchFragment :
     SwitcherWidgetListener{
 
     companion object {
+        private const val AR_ORIGIN_TOKONOW_SEARCH_RESULT = 6
+
         @JvmStatic
         fun create(): TokoNowSearchFragment {
             return TokoNowSearchFragment()
@@ -96,6 +102,8 @@ class TokoNowSearchFragment :
     override fun initInjector() {
         getComponent(SearchComponent::class.java).inject(this)
     }
+
+    override fun trackingEventLabel(): String = ""
 
     override fun observeViewModel() {
         super.observeViewModel()
@@ -155,6 +163,9 @@ class TokoNowSearchFragment :
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
         get() = MiniCartAnalytics.Page.SEARCH_PAGE
+
+    override val miniCartWidgetSource: MiniCartSource
+        get() = MiniCartSource.TokonowSRP
 
     override fun getViewModel() = tokoNowSearchViewModel
 
@@ -422,5 +433,11 @@ class TokoNowSearchFragment :
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
         SearchTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)
+    }
+
+    override fun showDialogAgeRestriction(querySafeModel: QuerySafeModel) {
+        if (!querySafeModel.isQuerySafe) {
+            AdultManager.showAdultPopUp(this, AR_ORIGIN_TOKONOW_SEARCH_RESULT, "${querySafeModel.warehouseId} - ${tokoNowSearchViewModel.query}")
+        }
     }
 }

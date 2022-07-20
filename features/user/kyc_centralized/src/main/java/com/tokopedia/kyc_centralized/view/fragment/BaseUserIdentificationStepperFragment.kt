@@ -6,11 +6,9 @@ import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.BulletSpan
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
@@ -22,7 +20,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.KycUrl.KYC_TYPE_KTP_WITH_SELFIE
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
@@ -35,7 +32,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
-import kotlin.math.roundToInt
 
 /**
  * @author by alvinatin on 12/11/18.
@@ -119,8 +115,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_liveness_image_cant_be_accessed))
         } else if (resultCode == KYCConstant.NOT_SUPPORT_LIVENESS && requestCode == KYCConstant.REQUEST_CODE_CAMERA_FACE) {
             UserIdentificationFormActivity.isSupportedLiveness = false
-            val intent = createIntent(context, UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+            val intent = createIntent(requireContext(), UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE, projectId)
             startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
         }
         super.onActivityResult(requestCode, resultCode, data)

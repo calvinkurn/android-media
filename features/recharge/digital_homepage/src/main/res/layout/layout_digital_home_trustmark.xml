@@ -26,11 +26,12 @@
 
     </androidx.cardview.widget.CardView>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/view_digital_homepage_trust_mark_shimmering"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl4"
         android:visibility="gone"
-        app:corners="16" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"/>
 
 </LinearLayout>

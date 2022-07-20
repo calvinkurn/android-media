@@ -14,6 +14,7 @@ import com.tokopedia.wishlist.common.subscriber.AddWishListSubscriber;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated /*this use case will be deleted, use AddToWishlistV2UseCase from new depencendy : implementation projectOrAar(rootProject.ext.features.wishlistCommonV2) */
 public class AddWishListUseCase {
 
     private static final String PARAM_USER_ID = "userID";

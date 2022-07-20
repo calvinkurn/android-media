@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.data.mapper.NotificationRequestMapper
@@ -11,6 +13,7 @@ import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
 import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter
+import com.tokopedia.officialstore.official.di.OfficialStoreHomeScope
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -20,6 +23,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -59,6 +64,15 @@ class GlobalNavModule {
 
     @Provides
     fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
+
+    @Provides
+    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @Provides
+    fun provideAddToWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase = AddToWishlistV2UseCase(graphqlRepository)
+
+    @Provides
+    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase = DeleteWishlistV2UseCase(graphqlRepository)
 
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {

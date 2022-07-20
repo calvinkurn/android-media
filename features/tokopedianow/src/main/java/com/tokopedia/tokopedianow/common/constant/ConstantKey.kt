@@ -16,6 +16,6 @@ object ConstantKey {
     const val AB_TEST_AUTO_TRANSITION_KEY = "auto_transition"
 
     //default value
-    const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
+    const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&placeholder={placeholder}&first_install={first_install}"
     const val DEFAULT_QUANTITY = 0
 }

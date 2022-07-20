@@ -50,8 +50,9 @@ import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
-import com.tokopedia.shop.pageheader.domain.interactor.GqlShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -1315,10 +1316,10 @@ class ShopHomeViewModelTest {
             )
             viewModel.getWidgetContentData(
                     listOf(
-                            ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                            ShopPageWidgetLayoutUiModel(
                                     widgetId = "1"
                             ),
-                            ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                            ShopPageWidgetLayoutUiModel(
                                     widgetId = "2"
                             )
                     ),
@@ -1368,7 +1369,7 @@ class ShopHomeViewModelTest {
 
             viewModel.getWidgetContentData(
                 listOf(
-                    ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                    ShopPageWidgetLayoutUiModel(
                         widgetId = widgetId,
                         widgetType = widgetType,
                         widgetName = widgetName
@@ -1399,7 +1400,7 @@ class ShopHomeViewModelTest {
 
             viewModel.getWidgetContentData(
                 listOf(
-                    ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                    ShopPageWidgetLayoutUiModel(
                         widgetId = "2",
                         widgetType = WidgetType.CAMPAIGN,
                         widgetName = WidgetName.BIG_CAMPAIGN_THEMATIC
@@ -1426,9 +1427,7 @@ class ShopHomeViewModelTest {
                 getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
             } throws Exception()
             viewModel.getWidgetContentData(
-                    listOf(
-                            ShopPageHomeWidgetLayoutUiModel.WidgetLayout()
-                    ),
+                    listOf(ShopPageWidgetLayoutUiModel()),
                     mockShopId,
                     addressWidgetData,
                     false

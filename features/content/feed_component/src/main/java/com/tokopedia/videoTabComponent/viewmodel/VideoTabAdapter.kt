@@ -20,7 +20,9 @@ import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVid
  * Created by meyta.taliti on 28/01/22.
  */
 class VideoTabAdapter(
-    coordinator: PlayWidgetCoordinatorVideoTab, listener: PlaySlotTabCallback, activity: Activity
+    coordinator: PlayWidgetCoordinatorVideoTab,
+    listener: PlaySlotTabCallback,
+    activity: Activity,
 ) : BaseDiffUtilAdapter<PlayFeedUiModel>(isFlexibleType = true) {
 
     private var mCurrentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
@@ -42,19 +44,17 @@ class VideoTabAdapter(
         return oldItem == newItem
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        super.onBindViewHolder(holder, position)
-    }
-
     fun setCurrentHeader(currentHeader: Pair<Int, RecyclerView.ViewHolder>?) {
         mCurrentHeader = currentHeader
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return super.getItemViewType(position)
-    }
-
     fun getCurrentHeader() = mCurrentHeader
+    fun updateSlotPosition() {
+        itemList.forEachIndexed { index, playFeedUiModel ->
+            if (playFeedUiModel is PlaySlotTabMenuUiModel)
+                slotPosition = index
+        }
+    }
 
     fun updateList(mappedData: List<PlayFeedUiModel>, sourceId: String, sourceType: String, filterCategory: String) {
         val feedPlayLehatSemuaApplink = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=$WIDGET_UPCOMING&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_ID}=$sourceId&${ApplinkConstInternalFeed.PLAY_UPCOMING_SOURCE_TYPE}=$sourceType&${ApplinkConstInternalFeed.PLAY_UPCOMING_FILTER_CATEGORY}=$filterCategory"
@@ -78,8 +78,7 @@ class VideoTabAdapter(
             }
 
         }
-        setItems(newList)
-        notifyDataSetChanged()
+        setItemsAndAnimateChanges(newList)
 
     }
 
@@ -89,6 +88,8 @@ class VideoTabAdapter(
 
 
     fun getPositionInList(channelId: String, positionOfItem: Int): Int {
+        if(positionOfItem == -1) return -1
+
         itemList.forEachIndexed { index, playFeedUiModel ->
             if (playFeedUiModel is PlayWidgetMediumUiModel && playFeedUiModel.model.items.size > positionOfItem) {
                 val item = playFeedUiModel.model.items[positionOfItem]
@@ -116,38 +117,63 @@ class VideoTabAdapter(
         return -1
     }
 
-    fun updateItemInList(position: Int, channelId: String, reminderType: PlayWidgetReminderType) {
-        val list = mutableListOf<PlayFeedUiModel>()
-        //update adapter list item at a particular position
-        itemList.forEachIndexed { index, playFeedUiModel ->
-            if (playFeedUiModel is PlayWidgetMediumUiModel && index == position) {
-                val model = (itemList[position] as PlayWidgetMediumUiModel)
-                val updatedItem = model.copy( model = updateWidgetActionReminder(model.model, channelId, reminderType) )
-                list.add(updatedItem)
-            } else if (playFeedUiModel is PlayWidgetJumboUiModel && index == position){
-                val model = (itemList[position] as PlayWidgetJumboUiModel)
-                val updatedItem = model.copy( model = updateWidgetActionReminder(model.model, channelId, reminderType) )
-                list.add(updatedItem)
-            } else if (playFeedUiModel is PlayWidgetLargeUiModel && index == position) {
-                val model = (itemList[position] as PlayWidgetLargeUiModel)
-                val updatedItem = model.copy(model = updateWidgetActionReminder(model.model, channelId, reminderType))
-                list.add(updatedItem)
-            } else {
-                list.add(playFeedUiModel)
+    fun updatePlayWidgetInfo(
+        position: Int,
+        channelId: String,
+        totalView: String?,
+        isReminderSet: Boolean?,
+    ) {
+        if(position == -1) return
+
+        setItems(
+            itemList.mapIndexed { index, playFeedUiModel ->
+                if (playFeedUiModel is PlayWidgetMediumUiModel && index == position) {
+                    playFeedUiModel.copy(model = updateChannelInfo(playFeedUiModel.model, channelId, totalView, isReminderSet))
+                } else if (playFeedUiModel is PlayWidgetJumboUiModel && index == position){
+                    playFeedUiModel.copy(model = updateChannelInfo(playFeedUiModel.model, channelId, totalView, isReminderSet) )
+                } else if (playFeedUiModel is PlayWidgetLargeUiModel && index == position) {
+                    playFeedUiModel.copy(model = updateChannelInfo(playFeedUiModel.model, channelId, totalView, isReminderSet))
+                } else {
+                    playFeedUiModel
+                }
             }
-        }
-        setItems(list)
+        )
         notifyItemChanged(position)
     }
 
-    private fun updateWidgetActionReminder(model: PlayWidgetUiModel, channelId: String, reminderType: PlayWidgetReminderType): PlayWidgetUiModel {
+    private fun updateChannelInfo(
+        model: PlayWidgetUiModel,
+        channelId: String,
+        totalView: String?,
+        isReminderSet: Boolean?
+    ): PlayWidgetUiModel {
         return model.copy(
-                items = model.items.map { mediumWidget ->
-                    if (mediumWidget is PlayWidgetChannelUiModel && mediumWidget.channelId == channelId) mediumWidget.copy(reminderType = reminderType)
-                    else mediumWidget
+            items = model.items.map { widget ->
+                if (widget is PlayWidgetChannelUiModel && widget.channelId == channelId) {
+                    val finalTotalView = totalView ?: widget.totalView.totalViewFmt
+                    val finalReminderType = when(isReminderSet) {
+                        true -> PlayWidgetReminderType.Reminded
+                        false -> PlayWidgetReminderType.NotReminded
+                        null -> widget.reminderType
+                    }
+
+                    widget.copy(
+                        reminderType = finalReminderType,
+                        totalView = widget.totalView.copy(totalViewFmt = finalTotalView)
+                    )
                 }
+                else widget
+            }
         )
     }
+
+    fun updateSlotTabViewHolderState() {
+        slotPosition?.let {
+            if (itemList[it] is PlaySlotTabMenuUiModel)
+                notifyItemChanged(it)
+        }
+    }
+
     private fun isUpcomingChannel(playFeedUiModel: PlayWidgetMediumUiModel): Boolean {
         val channelList = playFeedUiModel.model.items
         if (channelList.isNotEmpty()){
@@ -156,6 +182,5 @@ class VideoTabAdapter(
         }
 
         return false
-
     }
 }

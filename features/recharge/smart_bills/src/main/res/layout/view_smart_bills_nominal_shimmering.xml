@@ -5,28 +5,31 @@
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_width="@dimen/unify_space_128"
         android:layout_height="@dimen/layout_lvl2"
-        app:corners="8" />
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl2"
-        app:corners="8" />
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_width="@dimen/unify_space_128"
         android:layout_height="@dimen/layout_lvl2"
-        app:corners="8" />
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect" />
 
 </LinearLayout>

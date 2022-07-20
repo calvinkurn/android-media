@@ -5,17 +5,19 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocompletecomponent.R
+import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteProductListItemBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.layout_autocomplete_product_list_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class InitialStateProductLineViewHolder(
     itemView: View,
     private val clickListener: ProductLineListener
 ) : RecyclerView.ViewHolder(itemView) {
+    private var binding: LayoutAutocompleteProductListItemBinding? by viewBinding()
 
     fun bind(item: BaseItemInitialStateSearch) {
         setComponentHeight(item)
@@ -30,12 +32,13 @@ class InitialStateProductLineViewHolder(
     }
 
     private fun setComponentHeight(item: BaseItemInitialStateSearch) {
-        val layoutParams = itemView.autocompleteProductItem.layoutParams
+        val autocompleteProductItem = binding?.autocompleteProductItem ?: return
+        val layoutParams = autocompleteProductItem.layoutParams
 
         if (item.hasSlashedPrice()) layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_height)
         else layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.autocomplete_initial_state_product_double_line_height)
 
-        itemView.autocompleteProductItem.layoutParams = layoutParams
+        autocompleteProductItem.layoutParams = layoutParams
     }
 
     private fun setImage(item: BaseItemInitialStateSearch) {
@@ -44,27 +47,29 @@ class InitialStateProductLineViewHolder(
     }
 
     private fun setImageHeight() {
-        val layoutParams = itemView.autocompleteProductImage.layoutParams
+        val autocompleteProductImage = binding?.autocompleteProductImage ?: return
+        val layoutParams = autocompleteProductImage.layoutParams
         val resources = itemView.context.resources
 
         layoutParams.height = resources.getDimensionPixelSize(R.dimen.autocomplete_product_initial_state_image_size)
         layoutParams.width = resources.getDimensionPixelSize(R.dimen.autocomplete_product_initial_state_image_size)
 
-        itemView.autocompleteProductImage.layoutParams = layoutParams
+        autocompleteProductImage.layoutParams = layoutParams
     }
 
     private fun bindImage(item: BaseItemInitialStateSearch) {
         val context = itemView.context
-        itemView.autocompleteProductImage?.let {
+        binding?.autocompleteProductImage?.let {
             ImageHandler.loadImageRounded(context, it, item.imageUrl, context.resources.getDimension(R.dimen.autocomplete_product_initial_state_image_radius))
         }
     }
 
     private fun setTitle(item: BaseItemInitialStateSearch) {
-        itemView.autocompleteProductTitle?.setType(Typography.BODY_3)
-        itemView.autocompleteProductTitle?.setWeight(Typography.REGULAR)
+        val autocompleteProductTitle = binding?.autocompleteProductTitle ?: return
+        autocompleteProductTitle.setType(Typography.BODY_3)
+        autocompleteProductTitle.setWeight(Typography.REGULAR)
 
-        itemView.autocompleteProductTitle?.setTextAndCheckShow(item.title)
+        autocompleteProductTitle.setTextAndCheckShow(item.title)
     }
 
     private fun setTitleMargin(item: BaseItemInitialStateSearch) {
@@ -73,7 +78,7 @@ class InitialStateProductLineViewHolder(
         val topMargin = if (item.hasSlashedPrice()) resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_title_margin_top)
         else resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_title_margin_top)
 
-        itemView.autocompleteProductTitle?.setMargin(
+        binding?.autocompleteProductTitle?.setMargin(
                 resources.getDimensionPixelSize(R.dimen.autocomplete_product_line_title_margin_left),
                 topMargin,
                 resources.getDimensionPixelSize(R.dimen.autocomplete_product_line_title_margin_right),
@@ -82,23 +87,25 @@ class InitialStateProductLineViewHolder(
     }
 
     private fun setLabelDiscountPercentage(item: BaseItemInitialStateSearch) {
-        itemView.autocompleteProductLabelDiscountPercentage?.shouldShowWithAction(item.hasSlashedPrice()) {
-            itemView.autocompleteProductLabelDiscountPercentage?.text = item.discountPercentage
+        binding?.autocompleteProductLabelDiscountPercentage?.shouldShowWithAction(item.hasSlashedPrice()) {
+            binding?.autocompleteProductLabelDiscountPercentage?.text = item.discountPercentage
         }
     }
 
     private fun setOriginalPrice(item: BaseItemInitialStateSearch) {
-        itemView.autocompleteProductOriginalPrice?.shouldShowWithAction(item.hasSlashedPrice()) {
-            itemView.autocompleteProductOriginalPrice?.setTextAndCheckShow(item.originalPrice)
-            itemView.autocompleteProductOriginalPrice?.paintFlags = itemView.autocompleteProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        val autocompleteProductOriginalPrice = binding?.autocompleteProductOriginalPrice ?: return
+        autocompleteProductOriginalPrice.shouldShowWithAction(item.hasSlashedPrice()) {
+            autocompleteProductOriginalPrice.setTextAndCheckShow(item.originalPrice)
+            autocompleteProductOriginalPrice.paintFlags = autocompleteProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
     }
 
     private fun setPrice(item: BaseItemInitialStateSearch) {
-        itemView.autocompleteProductPrice?.setType(Typography.BODY_2)
-        itemView.autocompleteProductPrice?.setWeight(Typography.BOLD)
+        val autocompleteProductPrice = binding?.autocompleteProductPrice ?: return
+        autocompleteProductPrice.setType(Typography.BODY_2)
+        autocompleteProductPrice.setWeight(Typography.BOLD)
 
-        itemView.autocompleteProductPrice?.setTextAndCheckShow(item.subtitle)
+        autocompleteProductPrice.setTextAndCheckShow(item.subtitle)
     }
 
     private fun setPriceMargin(item: BaseItemInitialStateSearch) {
@@ -107,7 +114,7 @@ class InitialStateProductLineViewHolder(
         val bottomMargin = if (item.hasSlashedPrice()) resources.getDimensionPixelSize(R.dimen.autocomplete_product_triple_line_price_margin_bottom)
         else resources.getDimensionPixelSize(R.dimen.autocomplete_product_double_line_price_margin_bottom)
 
-        itemView.autocompleteProductPrice?.setMargin(
+        binding?.autocompleteProductPrice?.setMargin(
                 resources.getDimensionPixelSize(R.dimen.autocomplete_product_line_price_margin_left),
                 resources.getDimensionPixelSize(R.dimen.autocomplete_product_line_price_margin_top),
                 resources.getDimensionPixelSize(R.dimen.autocomplete_product_line_price_margin_right),
@@ -116,7 +123,7 @@ class InitialStateProductLineViewHolder(
     }
 
     private fun setListener(item: BaseItemInitialStateSearch) {
-        itemView.autocompleteProductItem?.setOnClickListener {
+        binding?.autocompleteProductItem?.setOnClickListener {
             clickListener.onProductLineClicked(item)
         }
     }

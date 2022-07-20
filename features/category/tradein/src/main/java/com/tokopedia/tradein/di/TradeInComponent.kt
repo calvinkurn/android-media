@@ -1,10 +1,11 @@
 package com.tokopedia.tradein.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.tradein.view.viewcontrollers.activity.*
-import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInAddressFragment
-import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInFinalPriceFragment
-import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInInitialPriceFragment
+import com.tokopedia.tradein.view.activity.TradeInHomePageActivity
+import com.tokopedia.tradein.view.activity.TradeInInfoActivity
+import com.tokopedia.tradein.view.bottomsheet.TradeInImeiBS
+import com.tokopedia.tradein.view.fragment.TradeInHomePageFragment
+import com.tokopedia.tradein.view.fragment.TradeInPromoDetailPageFragment
 import dagger.Component
 
 @TradeInScope
@@ -12,9 +13,9 @@ import dagger.Component
     TradeInViewModelModule::class],
         dependencies = [BaseAppComponent::class])
 interface TradeInComponent {
-    fun inject(tradeInHomeActivity: TradeInHomeActivity)
-    fun inject(tradeInAddressFragment: TradeInAddressFragment)
-    fun inject(tradeInInitialPriceFragment: TradeInInitialPriceFragment)
-    fun inject(tradeInFinalPriceFragment: TradeInFinalPriceFragment)
     fun inject(tradeInInfoActivity: TradeInInfoActivity)
+    fun inject(tradeInHomePageActivity: TradeInHomePageActivity)
+    fun inject(tradeInHomePageFragment: TradeInHomePageFragment)
+    fun inject(tradeInPromoDetailPageFragment: TradeInPromoDetailPageFragment)
+    fun inject(tradeInImeiBS: TradeInImeiBS)
 }

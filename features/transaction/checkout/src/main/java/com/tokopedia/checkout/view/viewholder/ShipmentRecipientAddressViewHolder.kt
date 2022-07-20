@@ -75,9 +75,9 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
 
     private fun renderTradeInAddressWithTabs(recipientAddress: RecipientAddressModel) {
         tvShipmentAddress.setText(R.string.lebal_trade_in_address_mode)
-        layoutTradeInOption.visibility = View.VISIBLE
+        layoutTradeInOption.visibility = View.GONE
         tvShipmentAddress.setType(HEADING_5)
-        imgButtonTradeInInfo.visibility = View.VISIBLE
+        imgButtonTradeInInfo.visibility = View.GONE
         separator.visibility = View.GONE
         imgButtonTradeInInfo.setOnClickListener {
             shipmentAdapterActionListener.onClickTradeInInfo()
@@ -247,11 +247,13 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
         space.visibility = View.VISIBLE
         if (recipientAddress.selectedTabIndex == 0) {
             tvChangeAddressTop.visibility = View.VISIBLE
+            tvShipmentAddress.visibility = View.VISIBLE
             tvChangeAddressTop.setOnClickListener {
                 shipmentAdapterActionListener.onChangeAddress()
             }
         } else {
             tvChangeAddressTop.visibility = View.GONE
+            tvShipmentAddress.visibility = View.GONE
         }
     }
 

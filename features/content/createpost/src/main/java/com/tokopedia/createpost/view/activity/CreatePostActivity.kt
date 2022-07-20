@@ -26,6 +26,7 @@ const val PARAM_PRODUCT_ID = "product_id"
 const val PARAM_AD_ID = "ad_id"
 const val PARAM_POST_ID = "post_id"
 const val PARAM_TYPE = "author_type"
+const val POST_ID_INDEX_VALUE = 3
 
 class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
 
@@ -39,12 +40,12 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
         val bundle = Bundle()
         intent.data?.let { uri ->
             val segmentUri = uri.pathSegments
-            if (uri.lastPathSegment == TYPE_EDIT && segmentUri.size == 3) {
+            if (uri.lastPathSegment == TYPE_EDIT && segmentUri.size == POST_ID_INDEX_VALUE) {
                 intent.putExtra(PARAM_POST_ID, segmentUri[segmentUri.size - 2])
                 intent.putExtra(PARAM_TYPE, segmentUri[0])
             }
 
-            if (segmentUri[0] == TYPE_CREATE_POST && segmentUri.size == 3) {
+            if (segmentUri[0] == TYPE_CREATE_POST && segmentUri.size == POST_ID_INDEX_VALUE) {
                 intent.putExtra(PARAM_PRODUCT_ID, segmentUri[1])
                 intent.putExtra(PARAM_AD_ID, segmentUri[2])
                 uri.getQueryParameter(TOKEN)?.let {
@@ -117,9 +118,9 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
 
     override fun invalidatePostMenu(isPostEnabled: Boolean) {
         if (isPostEnabled) {
-            action_post.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.green_500))
+            action_post.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G600))
         } else {
-            action_post.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_500))
+            action_post.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N200))
         }
     }
 

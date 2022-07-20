@@ -17,10 +17,8 @@
     <string name="empty_stock">Stok Habis</string>
     <string name="percentage_template"></string>
     <string name="home_recom_filter">Filter</string>
-    <string name="home_recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="recom_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="recom_msg_empty_next_page">Produk telah berhasil tampil keseluruhan</string>
-    <string name="recom_msg_success_add_wishlist">Sukses menambah wishlist</string>
     <string name="recom_msg_success_add_to_cart">Sukses menambah barang ke kerajang</string>
     <string name="recom_filter_sort_apply">Terapkan</string>
     <string name="recom_empty_filter_title">Oops, barangnya nggak ketemu</string>

@@ -19,6 +19,8 @@
         android:layout_height="32dp"
         android:layout_margin="4dp"
         android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
         app:srcCompat="@drawable/ic_beli"
         tools:ignore="VectorDrawableCompat" />
 </FrameLayout>

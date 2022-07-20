@@ -32,12 +32,13 @@
 
     </LinearLayout>
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/digital_homepage_spotlight_shimmering"
         android:layout_width="@dimen/spotlight_item_width"
         android:layout_height="@dimen/layout_lvl6"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:corners="16" />
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"/>
 
 </LinearLayout>

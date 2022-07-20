@@ -173,11 +173,11 @@ class CreatePostMediaPreviewFragment : BaseDaggerFragment() {
     private fun updateMainImageText() {
         if (tabLayout.selectedTabPosition == 0) {
             mainImageText.setText(R.string.cp_main_image)
-            mainImageText.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.black_38))
+            mainImageText.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             mainImageIcon.show()
         } else {
             mainImageText.setText(R.string.cp_set_main_image)
-            mainImageText.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.medium_green))
+            mainImageText.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
             mainImageIcon.hide()
         }
     }

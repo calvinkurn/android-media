@@ -14,7 +14,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_PENDING_CASHBACK
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
@@ -39,7 +38,6 @@ data class HomeBalanceModel(
         // State 4: Non login, will not rendered
         const val TYPE_STATE_4 = 4
 
-        const val OVO_WALLET_TYPE = "OVO"
         const val OVO_TITLE = "OVO"
         const val OVO_TOP_UP = "Top-up OVO"
         const val OVO_POINTS_BALANCE = "%s Points"
@@ -123,12 +121,10 @@ data class HomeBalanceModel(
     fun mapErrorWallet(isWalletApp: Boolean) {
         when (balanceType) {
             TYPE_STATE_1 -> {
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] =
-                    if (isWalletApp) getDefaultGopayErrorState() else getDefaultOvoErrorState()
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = getDefaultGopayErrorState()
             }
             TYPE_STATE_2 -> {
-                balanceDrawerItemModels[BALANCE_POSITION_FIRST] =
-                    if (isWalletApp) getDefaultGopayErrorState() else getDefaultOvoErrorState()
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = getDefaultGopayErrorState()
             }
         }
     }
@@ -137,16 +133,6 @@ data class HomeBalanceModel(
         return BalanceDrawerItemModel(
             drawerItemType = TYPE_WALLET_APP_LINKED,
             defaultIconRes = R.drawable.ic_gopay_default,
-            balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
-            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
-            state = STATE_ERROR
-        )
-    }
-
-    private fun getDefaultOvoErrorState(): BalanceDrawerItemModel {
-        return BalanceDrawerItemModel(
-            drawerItemType = TYPE_WALLET_OVO,
-            defaultIconRes = R.drawable.wallet_ic_ovo_home,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
             balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
             state = STATE_ERROR
@@ -187,7 +173,7 @@ data class HomeBalanceModel(
         return BalanceTextAttribute(
             text = ERROR_TITLE,
             isBold = true,
-            colourRef = R.color.Unify_N700
+            colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700
         )
     }
 
@@ -195,24 +181,8 @@ data class HomeBalanceModel(
         return BalanceTextAttribute(
             text = ERROR_SUBTITLE,
             isBold = true,
-            colourRef = R.color.Unify_G500
+            colourRef = com.tokopedia.unifyprinciples.R.color.Unify_G500
         )
-    }
-
-    fun setWalletBalanceState(state: Int): HomeBalanceModel {
-        setBalanceState(TYPE_WALLET_OVO, state)
-        setBalanceState(TYPE_WALLET_WITH_TOPUP, state)
-        setBalanceState(TYPE_WALLET_PENDING_CASHBACK, state)
-        setBalanceState(TYPE_WALLET_OTHER, state)
-        return this
-    }
-
-    fun setTokopointBalanceState(state: Int): HomeBalanceModel {
-        setBalanceState(TYPE_TOKOPOINT, state)
-        setBalanceState(TYPE_COUPON, state)
-        setBalanceState(TYPE_REWARDS, state)
-        setBalanceState(TYPE_FREE_ONGKIR, state)
-        return this
     }
 
     fun containsNewGopayAndTokopoints(): Boolean {
@@ -266,29 +236,7 @@ data class HomeBalanceModel(
             flagStateCondition(
                 itemType = type,
                 action = {
-                    if (pendingCashBackData.walletType == OVO_WALLET_TYPE) {
-                        balanceDrawerItemModels[it] =
-                            BalanceDrawerItemModel(
-                                applinkActionText = homeHeaderWalletAction?.appLinkActionButton
-                                    ?: "",
-                                iconImageUrl = "",
-                                defaultIconRes = R.drawable.wallet_ic_ovo_home,
-                                balanceTitleTextAttribute = BalanceTextAttribute(
-                                    text = "(+ ${pendingCashBackData.pendingCashback.amountText} )",
-                                    isBold = true,
-                                    colourRef = R.color.Unify_N700
-                                ),
-                                balanceSubTitleTextAttribute = BalanceTextAttribute(
-                                    text = pendingCashBackData.labelActionButton,
-                                    isBold = true,
-                                    colourRef = R.color.Unify_G500
-                                ),
-                                balanceTitleTagAttribute = null,
-                                balanceSubTitleTagAttribute = null,
-                                drawerItemType = type,
-                                state = STATE_SUCCESS
-                            )
-                    }
+
                 }
             )
         }
@@ -297,13 +245,6 @@ data class HomeBalanceModel(
     private fun mapWallet(homeHeaderWalletAction: HomeHeaderWalletAction?) {
         homeHeaderWalletAction?.let { homeHeaderWalletAction ->
             val type = when (homeHeaderWalletAction.walletType) {
-                OVO_WALLET_TYPE -> {
-                    if (homeHeaderWalletAction.isShowTopup) {
-                        TYPE_WALLET_WITH_TOPUP
-                    } else {
-                        TYPE_WALLET_OVO
-                    }
-                }
                 else -> TYPE_WALLET_OTHER
             }
 
@@ -440,7 +381,6 @@ data class HomeBalanceModel(
     ) {
         when (type) {
             TYPE_TOKOPOINT -> typeTokopointCondition.invoke()
-            TYPE_WALLET_OVO,
             TYPE_WALLET_OTHER,
             TYPE_WALLET_WITH_TOPUP,
             TYPE_WALLET_PENDING_CASHBACK,

@@ -14,6 +14,7 @@ import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductAddRuleResponse
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryResponse
 import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotationCategoryV2
@@ -22,6 +23,7 @@ import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.util.getPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
@@ -732,14 +734,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
                 AnnotationCategoryData(
                         variant = "Merek",
                         data = listOf(
-                                Values(1, "Indomie", true, ""),
-                                Values(1, "Seedap", false, ""))
+                                Values("1", "Indomie", true, ""),
+                                Values("1", "Seedap", false, ""))
                 ),
                 AnnotationCategoryData(
                         variant = "Rasa",
                         data = listOf(
-                                Values(1, "Soto", false, ""),
-                                Values(1, "Bawang", true, ""))
+                                Values("1", "Soto", false, ""),
+                                Values("1", "Bawang", true, ""))
                 )
         )
 
@@ -783,8 +785,8 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
                 AnnotationCategoryData(
                         variant = "Merek",
                         data = listOf(
-                                Values(1, "Indomie", false, ""),
-                                Values(1, "Seedap", false, ""))
+                                Values("1", "Indomie", false, ""),
+                                Values("1", "Seedap", false, ""))
                 )
         )
 
@@ -818,6 +820,66 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         coVerify { productLimitationUseCase.executeOnBackground() }
 
         assert(viewModel.productLimitationData.value is Fail)
+    }
+
+    @Test
+    fun `When get isVariantEmpty value, Should return correct value`() {
+        viewModel.productInputModel.value = ProductInputModel()
+        viewModel.isVariantEmpty.getOrAwaitValue()
+
+        viewModel.productInputModel.value = ProductInputModel(
+            variantInputModel = VariantInputModel(products = listOf(ProductVariantInputModel()))
+        )
+        viewModel.isVariantEmpty.getOrAwaitValue()
+    }
+
+    @Test
+    fun `When get priceRangeFormatted value, Should return correct value`() {
+        viewModel.productInputModel.value = ProductInputModel(
+            variantInputModel = VariantInputModel(products = listOf(ProductVariantInputModel())),
+            shipmentInputModel = ShipmentInputModel(isUsingParentWeight = true)
+        )
+        viewModel.priceRangeFormatted.getOrAwaitValue()
+
+        viewModel.productInputModel.value = ProductInputModel(
+            variantInputModel = VariantInputModel(products = listOf(
+                ProductVariantInputModel(price = 10000.toBigInteger()),
+                ProductVariantInputModel(price = 1000.toBigInteger())
+            )),
+            shipmentInputModel = ShipmentInputModel(isUsingParentWeight = true)
+        )
+        viewModel.priceRangeFormatted.getOrAwaitValue()
+    }
+
+    @Test
+    fun `When get stockFormatted value, Should return correct value`() {
+        viewModel.productInputModel.value = ProductInputModel()
+        viewModel.stockFormatted.getOrAwaitValue()
+
+        viewModel.productInputModel.value = ProductInputModel(
+            variantInputModel = VariantInputModel(products = listOf(ProductVariantInputModel()))
+        )
+        viewModel.stockFormatted.getOrAwaitValue()
+    }
+
+    @Test
+    fun `When get mustFillParentWeight value, Should return correct value`() {
+        viewModel.productInputModel.value = ProductInputModel(
+            variantInputModel = VariantInputModel(products = listOf(ProductVariantInputModel())),
+            shipmentInputModel = ShipmentInputModel(isUsingParentWeight = true)
+        )
+        viewModel.mustFillParentWeight.getOrAwaitValue()
+
+        viewModel.productInputModel.value = ProductInputModel(
+            variantInputModel = VariantInputModel(products = listOf(ProductVariantInputModel())),
+            shipmentInputModel = ShipmentInputModel(isUsingParentWeight = false)
+        )
+        viewModel.mustFillParentWeight.getOrAwaitValue()
+
+        viewModel.productInputModel.value = ProductInputModel(
+            shipmentInputModel = ShipmentInputModel(isUsingParentWeight = false)
+        )
+        viewModel.mustFillParentWeight.getOrAwaitValue()
     }
 
     private fun onGetProductLimitation_thenReturn(successResponse: ProductAddRuleResponse) {
@@ -942,9 +1004,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         val actualResult = viewModel.getProductResult.value as Success<Product>
         assertEquals(expectedResult, actualResult)
 
-        viewModel.isVariantEmpty.getOrAwaitValue()
         viewModel.isLoading.getOrAwaitValue()
-        assertEquals(true, viewModel.isVariantEmpty.value)
         assertEquals(false, viewModel.isLoading.value)
     }
 
@@ -966,9 +1026,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     private fun verifyGetProductFailed() {
         val result = viewModel.getProductResult.value
         assertTrue(result is Fail)
-
-        viewModel.isVariantEmpty.getOrAwaitValue()
-        assertEquals(true, viewModel.isVariantEmpty.value)
     }
 
     private fun verifyGetShopInfoLocation() {

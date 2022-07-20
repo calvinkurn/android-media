@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.createreputation.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class BadRatingCategoriesResponse(
     @SerializedName("productrevGetBadRatingCategory")
@@ -24,5 +25,8 @@ data class BadRatingCategory(
     val description: String = "",
     @SerializedName("isTextFocused")
     @Expose
-    val shouldRequestFocus: Boolean = false
-)
+    val shouldRequestFocus: Boolean = false,
+    @SerializedName("selected")
+    @Expose
+    var selected: Boolean = false
+) : Serializable

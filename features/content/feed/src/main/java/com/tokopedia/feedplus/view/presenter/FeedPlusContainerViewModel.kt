@@ -13,6 +13,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedplus.domain.usecase.GetContentFormForFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -31,6 +32,12 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
     val tabResp = MutableLiveData<Result<FeedTabs>>()
     val whitelistResp = MutableLiveData<Result<WhitelistDomain>>()
     var feedContentForm = FeedContentForm()
+
+    val isShowPostButton: Boolean
+        get() = when(val whitelist = whitelistResp.value) {
+            is Success -> whitelist.data.isShopAccountExists || whitelist.data.isUserAccountPostEligible
+            else -> false
+        }
 
     init {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
@@ -74,7 +81,7 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
         getWhitelistUseCase.clearRequest()
         getWhitelistUseCase.setCacheStrategy(authorListEmpty)
         getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
-                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_ENTRY_POINT))
+                GetWhitelistUseCase.createRequestParams(WHITELIST_ENTRY_POINT))
         )
         getWhitelistUseCase.execute(RequestParams.EMPTY, object: Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse) {
@@ -94,20 +101,19 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
 
     private fun getWhitelistDomain(query: WhitelistQuery?): WhitelistDomain {
         return if (query == null) {
-            WhitelistDomain()
+            WhitelistDomain.Empty
         } else {
-            WhitelistDomain().apply {
-                error = query.whitelist.error
-                url = query.whitelist.url
-                isWhitelist = query.whitelist.isWhitelist
-                title = query.whitelist.title
-                desc = query.whitelist.description
-                titleIdentifier = query.whitelist.titleIdentifier
-                postSuccessMessage = query.whitelist.postSuccessMessage
-                image = query.whitelist.imageUrl
-                authors = ArrayList(query.whitelist.authors)
-            }
+            WhitelistDomain(
+                error = query.whitelist.error,
+                url = query.whitelist.url,
+                isWhitelist = query.whitelist.isWhitelist,
+                title = query.whitelist.title,
+                desc = query.whitelist.description,
+                titleIdentifier = query.whitelist.titleIdentifier,
+                postSuccessMessage = query.whitelist.postSuccessMessage,
+                image = query.whitelist.imageUrl,
+                authors = query.whitelist.authors
+            )
         }
     }
-
 }

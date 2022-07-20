@@ -19,10 +19,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.globalerror.showUnifyError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
@@ -164,7 +170,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         categoryIds: List<String> = listOf(),
         keyword: String = "",
         productIds: List<String> = listOf(),
-        isTokonow: Boolean = false
+        isTokonow: Boolean = false,
+        miniCartSource: MiniCartSource = MiniCartSource.PDPRecommendationWidget
     ) {
         try {
             widgetMetadata = widgetMetadata.copy(
@@ -175,7 +182,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 isRecomBindWithPageName = true,
                 productIds = productIds,
                 categoryIds = categoryIds,
-                keyword = keyword
+                keyword = keyword,
+                miniCartSource = miniCartSource
             )
             this.basicListener = basicListener
             this.tokonowPageNameListener = tokonowPageNameListener
@@ -702,7 +710,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
-    private fun updateUiQuantity(miniCart: MutableMap<String, MiniCartItem>) {
+    private fun updateUiQuantity(miniCart: MutableMap<MiniCartItemKey, MiniCartItem>) {
         carouselData?.let {
             TokonowQuantityUpdater.updateRecomWithMinicartData(it, miniCart)
             setData(it)
@@ -713,7 +721,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         userSession?.let {
             if (it.isLoggedIn) {
                 val localAddress = ChooseAddressUtils.getLocalizingAddressData(itemContext)
-                viewModel?.getMiniCart(localAddress?.shop_id ?: "", widgetMetadata.pageName)
+                viewModel?.getMiniCart(localAddress?.shop_id ?: "", widgetMetadata.pageName, widgetMetadata.miniCartSource)
             }
         }
     }
@@ -735,7 +743,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         val categoryIds: List<String> = listOf(),
         val keyword: String = "",
         val isTokonow: Boolean = false,
-        val queryParam: String = ""
+        val queryParam: String = "",
+        val miniCartSource: MiniCartSource = MiniCartSource.PDPRecommendationWidget
     ) {
     }
 }

@@ -75,4 +75,20 @@ class ExplicitProfileSharedViewModelTest {
 
         assert(viewModel?.isAnswersSameWithDefault() == false)
     }
+
+    @Test
+    fun `isAnswersSameWithDefault - user answer changed id not found`() {
+        viewModel?.userAnswers
+        val templateDataModel = TemplateDataModel(id = 1, sections = mutableListOf(
+            SectionsDataModel(questions = mutableListOf(
+                QuestionDataModel(questionId = 11, answerValue = "yes")
+            ))
+        ))
+
+        viewModel?.setDefaultTemplatesData(TemplateDataModel(id = 2))
+        viewModel?.onAnswerChange(templateDataModel)
+
+        assert(viewModel?.isAnswersSameWithDefault() == false)
+    }
+
 }

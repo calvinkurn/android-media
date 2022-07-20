@@ -1,10 +1,5 @@
 package com.tokopedia.graphql.domain
 
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import java.lang.IllegalArgumentException
-
 /**
  * This is the base class for the domain layer by using the GraphQL service.
  * This class is the result of an improvement from the existing GraphqlUseCase (or related).
@@ -21,7 +16,7 @@ import java.lang.IllegalArgumentException
  *   This function is to determine the target request that will be managed to get data
  *   from certain sources, both network and local sources.
  *
-*/
+ */
 abstract class GqlUseCase<Input, Output> {
 
     /*

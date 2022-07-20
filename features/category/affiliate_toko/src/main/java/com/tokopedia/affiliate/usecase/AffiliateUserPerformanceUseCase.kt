@@ -1,8 +1,10 @@
 package com.tokopedia.affiliate.usecase
 
-import com.google.gson.Gson
+
+import com.tokopedia.affiliate.model.GQL_Affiliate_Date_FILTER
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_USER_PERFORMANCE
+import com.tokopedia.affiliate.model.response.AffiliateDateFilterResponse
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import javax.inject.Inject
 
@@ -22,6 +24,14 @@ class AffiliateUserPerformanceUseCase @Inject constructor(
                 createRequestParams(dayRange)
         )
 
+    }
+
+    suspend fun getAffiliateFilter(): AffiliateDateFilterResponse {
+        return repository.getGQLData(
+            GQL_Affiliate_Date_FILTER,
+            AffiliateDateFilterResponse::class.java,
+            HashMap<String, Any>()
+        )
     }
 
     companion object {

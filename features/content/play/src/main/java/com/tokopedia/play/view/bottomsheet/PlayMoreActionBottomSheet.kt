@@ -6,7 +6,6 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
@@ -17,12 +16,12 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.type.BottomInsetsState
-import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
 import com.tokopedia.play.view.uimodel.action.OpenUserReport
-import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.event.OpenUserReportEvent
+import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.state.KebabMenuType
 import com.tokopedia.play.view.viewcomponent.KebabMenuSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
@@ -32,7 +31,6 @@ import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collect
@@ -183,13 +181,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiEvent.collect { event ->
                 when (event) {
-                    OpenUserReportEvent -> doActionUserReport()
-                    is OpenPageEvent -> openPageByApplink(
-                        applink = event.applink,
-                        params = event.params.toTypedArray(),
-                        requestCode = event.requestCode,
-                        pipMode = event.pipMode
-                    )
+                    OpenUserReportEvent -> {
+                        doActionUserReport()
+                    }
                 }
             }
         }
@@ -217,18 +211,23 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private fun onSubmitUserReport(reasonId: Int, description: String) {
         analytic.clickUserReportSubmissionDialogSubmit()
         val channelData = playViewModel.latestCompleteChannelData
-
         playViewModel.submitUserReport(
             channelId = channelData.id.toLongOrZero(),
             shopId = channelData.partnerInfo.id,
-            mediaUrl = getMediaUrl(channelData.id),
+            mediaUrl = getMediaUrl(channelData.videoMetaInfo),
             timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
             reportDesc = description,
             reasonId = reasonId
         )
     }
 
-    private fun getMediaUrl(channelId: String) : String = "${TokopediaUrl.getInstance().WEB}play/channel/$channelId"
+    private fun getMediaUrl(mediaInfo: PlayVideoMetaInfoUiModel) : String {
+        return when (mediaInfo.videoPlayer) {
+            is PlayVideoPlayerUiModel.YouTube -> "https://youtu.be/${mediaInfo.videoPlayer.youtubeId}"
+            is PlayVideoPlayerUiModel.General -> mediaInfo.videoPlayer.params.videoUrl
+            else -> ""
+        }
+    }
 
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
@@ -244,31 +243,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
         }else{
             TimeUnit.MILLISECONDS.toSeconds(playViewModel.getVideoTimestamp())
         }
-    }
-
-    /****
-     * Common Methods can do better - move to parent
-     */
-    private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
-        if (pipMode && playViewModel.isPiPAllowed && !playViewModel.isFreezeOrBanned) {
-            playViewModel.requestPiPBrowsingPage(
-                OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
-            )
-        } else {
-            openApplink(applink, *params, requestCode = requestCode, shouldFinish = shouldFinish)
-        }
-    }
-
-    private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
-        if (requestCode == null) {
-            RouteManager.route(requireContext(), applink, *params)
-        } else {
-            val intent = RouteManager.getIntent(requireContext(), applink, *params)
-            startActivityForResult(intent, requestCode)
-        }
-        requireActivity().overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
-
-        if (shouldFinish) requireActivity().finish()
     }
 
     private fun showDialog(title: String, description: String, primaryCTAText: String, secondaryCTAText: String, primaryAction: () -> Unit, secondaryAction: () -> Unit = {}){

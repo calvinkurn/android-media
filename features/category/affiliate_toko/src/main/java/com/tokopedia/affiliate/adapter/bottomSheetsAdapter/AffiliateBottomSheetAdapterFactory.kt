@@ -4,8 +4,16 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerInterface
-import com.tokopedia.affiliate.ui.viewholder.*
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
+import com.tokopedia.affiliate.ui.viewholder.AffiliateBottomSheetDivderItemVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateDatePickerItemVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateDatePickerShimmerItemVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateTrafficAttributionItemVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateWithdrawalInfoItemVH
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateBottomDividerItemModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerViewModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTrafficAttributionModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithrawalInfoAttributionModel
 
 class AffiliateBottomSheetAdapterFactory(
     private var dateClickedInterface: AffiliateDatePickerInterface? = null,
@@ -17,6 +25,7 @@ class AffiliateBottomSheetAdapterFactory(
             AffiliateTrafficAttributionItemVH.LAYOUT -> AffiliateTrafficAttributionItemVH(parent)
             AffiliateWithdrawalInfoItemVH.LAYOUT -> AffiliateWithdrawalInfoItemVH(parent)
             AffiliateBottomSheetDivderItemVH.LAYOUT -> AffiliateBottomSheetDivderItemVH(parent)
+            AffiliateDatePickerShimmerItemVH.LAYOUT -> AffiliateDatePickerShimmerItemVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -35,5 +44,9 @@ class AffiliateBottomSheetAdapterFactory(
 
     override fun type(viewModel: AffiliateBottomDividerItemModel): Int {
         return AffiliateBottomSheetDivderItemVH.LAYOUT
+    }
+
+    override fun type(viewModelShared: AffiliateShimmerViewModel): Int {
+        return AffiliateDatePickerShimmerItemVH.LAYOUT
     }
 }

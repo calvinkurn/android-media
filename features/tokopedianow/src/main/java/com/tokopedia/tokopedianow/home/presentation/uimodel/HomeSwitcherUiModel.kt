@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.home.presentation.uimodel
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokopedianow.R
@@ -10,20 +9,18 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 sealed class HomeSwitcherUiModel(
     @StringRes val title: Int,
     @StringRes val subtitle: Int,
-    @DrawableRes val icon: Int
 ): HomeLayoutUiModel(HomeStaticLayoutId.SWITCH_SERVICE_WIDGET) {
 
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
     }
 
-    class Home15mSwitcher: HomeSwitcherUiModel(
-        R.string.tokopedianow_15m_switcher_title,
-        R.string.tokopedianow_15m_switcher_subtitle,
-        R.drawable.tokopedianow_ic_15m
+    class Home20mSwitcher: HomeSwitcherUiModel(
+        R.string.tokopedianow_20m_switcher_title,
+        R.string.tokopedianow_20m_switcher_subtitle
     ) {
         override fun equals(other: Any?): Boolean {
-            return (other as? Home15mSwitcher)?.visitableId == visitableId
+            return (other as? Home20mSwitcher)?.visitableId == visitableId
         }
 
         override fun hashCode(): Int {
@@ -33,8 +30,7 @@ sealed class HomeSwitcherUiModel(
 
     class Home2hSwitcher: HomeSwitcherUiModel(
         R.string.tokopedianow_2h_switcher_title,
-        R.string.tokopedianow_2h_switcher_subtitle,
-        R.drawable.tokopedianow_ic_2h
+        R.string.tokopedianow_2h_switcher_subtitle
     ) {
         override fun equals(other: Any?): Boolean {
             return (other as? Home2hSwitcher)?.visitableId == visitableId

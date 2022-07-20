@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.productcard.options.databinding.ProductCardOptionsFragmentLayoutBinding
 import com.tokopedia.productcard.options.tracking.ProductCardOptionsTracking
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 
 
@@ -153,5 +154,10 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
         productCardOptionsViewModel?.getIsLoadingEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             showLoading()
         })
+    }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
     }
 }

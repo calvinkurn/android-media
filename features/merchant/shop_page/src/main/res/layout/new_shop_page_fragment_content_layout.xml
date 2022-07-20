@@ -63,7 +63,7 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:can_swipe="false"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -85,7 +85,7 @@
             app:fbColor="green"
             app:fbType="basic" />
 
-        <com.tokopedia.stickylogin.view.StickyLoginView
+        <com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
             android:id="@+id/sticky_login_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

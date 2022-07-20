@@ -15,6 +15,11 @@ import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.P
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Header
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
+import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.entity.UploadStatusEntity
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.util.UploadStatusMapper.convertToModel
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.data.createDefaultAccess
@@ -32,6 +37,8 @@ import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrappe
 import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
 import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.feature.list.data.model.Header
+import com.tokopedia.product.manage.feature.list.data.repository.MockedUploadStatusRepository
+import com.tokopedia.product.manage.feature.list.data.repository.MockedUploadStatusRepositoryException
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel.Active
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
@@ -84,6 +91,7 @@ import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocatio
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -97,7 +105,9 @@ import io.mockk.mockk
 import io.mockk.verifyAll
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import java.util.concurrent.TimeUnit
@@ -110,8 +120,9 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productId = "0"
             val price = "10000"
             val productName = "Amazing Product"
-            val productUpdateV3Response = ProductUpdateV3Response(productUpdateV3Data =
-            ProductUpdateV3Data(isSuccess = true)
+            val productUpdateV3Response = ProductUpdateV3Response(
+                productUpdateV3Data =
+                ProductUpdateV3Data(isSuccess = true)
             )
 
             onEditPrice_thenReturn(productUpdateV3Response)
@@ -133,7 +144,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productName = "Amazing Product"
             val status = ProductStatus.ACTIVE
             val productUpdateV3Response = ProductUpdateV3Response(
-                productUpdateV3Data = ProductUpdateV3Data(isSuccess = true))
+                productUpdateV3Data = ProductUpdateV3Data(isSuccess = true)
+            )
             val locationList = listOf(
                 ShopLocationResponse("1", MAIN_LOCATION),
                 ShopLocationResponse("2", OTHER_LOCATION)
@@ -145,7 +157,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
             viewModel.editStock(productId, productName, stock, status)
 
-            val expectedEditStockResult = Success(EditStockResult(productName, productId, stock, status))
+            val expectedEditStockResult =
+                Success(EditStockResult(productName, productId, stock, status))
 
             verifyEditStockUseCaseCalled()
             verifyEditStatusUseCaseCalled()
@@ -170,7 +183,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
             viewModel.editStock(productId, productName, stock)
 
-            val expectedEditStockResult = Success(EditStockResult(productName, productId, stock, status))
+            val expectedEditStockResult =
+                Success(EditStockResult(productName, productId, stock, status))
 
             verifyEditStockUseCaseCalled()
             verifyEditStatusUseCaseNotCalled()
@@ -188,13 +202,15 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productName = "Amazing Product"
             val status = ProductStatus.INACTIVE
             val productUpdateV3Response = ProductUpdateV3Response(
-                productUpdateV3Data = ProductUpdateV3Data(isSuccess = true))
+                productUpdateV3Data = ProductUpdateV3Data(isSuccess = true)
+            )
 
             onEditStatus_thenReturn(productUpdateV3Response)
 
             viewModel.editStock(productId, productName, status = status)
 
-            val expectedEditStockResult = Success(EditStockResult(productName, productId, stock, status))
+            val expectedEditStockResult =
+                Success(EditStockResult(productName, productId, stock, status))
 
             verifyEditStatusUseCaseCalled()
             verifyEditStockUseCaseNotCalled()
@@ -209,8 +225,9 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         runBlocking {
             val productId = "0"
             val productName = "Amazing Product"
-            val productUpdateV3Response = ProductUpdateV3Response(productUpdateV3Data =
-            ProductUpdateV3Data(isSuccess = true)
+            val productUpdateV3Response = ProductUpdateV3Response(
+                productUpdateV3Data =
+                ProductUpdateV3Data(isSuccess = true)
             )
 
             onDeleteProduct_thenReturn(productUpdateV3Response)
@@ -230,8 +247,9 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val productId = "0"
             val price = "10000"
             val productName = "Amazing Product"
-            val productUpdateV3Response = ProductUpdateV3Response(productUpdateV3Data =
-            ProductUpdateV3Data(isSuccess = false)
+            val productUpdateV3Response = ProductUpdateV3Response(
+                productUpdateV3Data =
+                ProductUpdateV3Data(isSuccess = false)
             )
 
             onEditPrice_thenReturn(productUpdateV3Response)
@@ -239,7 +257,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.editPrice(productId, price, productName)
 
             val error = NetworkErrorException()
-            val expectedEditPriceResult = Fail(EditPriceResult(productName, productId, price, error))
+            val expectedEditPriceResult =
+                Fail(EditPriceResult(productName, productId, price, error))
 
             verifyEditPriceUseCaseCalled()
             viewModel.editPriceResult.verifyErrorEquals(expectedEditPriceResult)
@@ -267,7 +286,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
             verifyEditPriceUseCaseCalled()
             val expectedThrowable = Throwable(message = errorMessage)
-            val expectedEditPriceResult = Fail(EditPriceResult(productName, productId, price, expectedThrowable))
+            val expectedEditPriceResult =
+                Fail(EditPriceResult(productName, productId, price, expectedThrowable))
             viewModel.editPriceResult.verifyErrorEquals(expectedEditPriceResult)
         }
     }
@@ -285,7 +305,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
             verifyEditPriceUseCaseCalled()
             val expectedError = NetworkErrorException()
-            val expectedEditPriceResult = Fail(EditPriceResult(productName, productId, price, expectedError))
+            val expectedEditPriceResult =
+                Fail(EditPriceResult(productName, productId, price, expectedError))
             viewModel.editPriceResult.verifyErrorEquals(expectedEditPriceResult)
         }
     }
@@ -304,7 +325,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
             viewModel.editStock(productId, productName, stock, status)
 
-            val expectedEditStockResult = Fail(EditStockResult(productName, productId, stock, status, error))
+            val expectedEditStockResult =
+                Fail(EditStockResult(productName, productId, stock, status, error))
 
             verifyEditStatusUseCaseCalled()
 
@@ -336,7 +358,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.editStock(productId, productName, stock, status)
 
             val expectedThrowable = Throwable(message = errorMessage)
-            val expectedEditStockResult = Fail(EditStockResult(productName, productId, stock, status, expectedThrowable))
+            val expectedEditStockResult =
+                Fail(EditStockResult(productName, productId, stock, status, expectedThrowable))
             verifyEditStatusUseCaseCalled()
             viewModel.editStockResult
                 .verifyErrorEquals(expectedEditStockResult)
@@ -362,7 +385,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.editStock(productId, productName, stock, status)
 
             val expectedThrowable = NetworkErrorException()
-            val expectedEditStockResult = Fail(EditStockResult(productName, productId, stock, status, expectedThrowable))
+            val expectedEditStockResult =
+                Fail(EditStockResult(productName, productId, stock, status, expectedThrowable))
             verifyEditStatusUseCaseCalled()
             viewModel.editStockResult
                 .verifyErrorEquals(expectedEditStockResult)
@@ -429,7 +453,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                     isSuccess = false,
                     header = ProductUpdateV3Header(
                         errorMessage = arrayListOf(errorMessage)
-                    ))
+                    )
+                )
             )
 
             onDeleteProduct_thenReturn(productUpdateV3Response)
@@ -437,7 +462,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.deleteSingleProduct(productName, productId)
 
             val error = NetworkErrorException()
-            val expectedDeleteProductResult = Fail(DeleteProductResult(productName, productId, error))
+            val expectedDeleteProductResult =
+                Fail(DeleteProductResult(productName, productId, error))
 
             verifyDeleteProductUseCaseCalled()
             viewModel.deleteProductResult.verifyErrorEquals(expectedDeleteProductResult)
@@ -449,8 +475,9 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         runBlocking {
             val productId = "0"
             val productName = "Amazing Product"
-            val productUpdateV3Response = ProductUpdateV3Response(productUpdateV3Data =
-            ProductUpdateV3Data(isSuccess = false)
+            val productUpdateV3Response = ProductUpdateV3Response(
+                productUpdateV3Data =
+                ProductUpdateV3Data(isSuccess = false)
             )
 
             onDeleteProduct_thenReturn(productUpdateV3Response)
@@ -458,7 +485,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.deleteSingleProduct(productName, productId)
 
             val error = NetworkErrorException()
-            val expectedDeleteProductResult = Fail(DeleteProductResult(productName, productId, error))
+            val expectedDeleteProductResult =
+                Fail(DeleteProductResult(productName, productId, error))
 
             verifyDeleteProductUseCaseCalled()
             viewModel.deleteProductResult.verifyErrorEquals(expectedDeleteProductResult)
@@ -475,7 +503,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
             viewModel.deleteSingleProduct(productName, productId)
 
-            val expectedDeleteProductResult = Fail(DeleteProductResult(productName, productId, error))
+            val expectedDeleteProductResult =
+                Fail(DeleteProductResult(productName, productId, error))
             verifyDeleteProductUseCaseCalled()
             viewModel.deleteProductResult.verifyErrorEquals(expectedDeleteProductResult)
         }
@@ -539,7 +568,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         val filterOptionWrapper = FilterOptionWrapper(
             SortByName(ASC),
             listOf(CashBackOnly, NewOnly),
-            listOf(true, true, false, true))
+            listOf(true, true, false, true)
+        )
         val selectedFilter = listOf(CashBackOnly, NewOnly)
 
         viewModel.setFilterOptionWrapper(filterOptionWrapper)
@@ -553,7 +583,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         val filterOptionWrapper = FilterOptionWrapper(
             SortByName(ASC),
             listOf(CashBackOnly, NewOnly),
-            listOf(true, true, false, true))
+            listOf(true, true, false, true)
+        )
 
         viewModel.setFilterOptionWrapper(filterOptionWrapper)
 
@@ -570,7 +601,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val message = listOf("test", "test")
             val header = Header(errorCode, message)
             val goldManageFeaturedProductV2 = GoldManageFeaturedProductV2(header)
-            val featuredProductResponseModel = FeaturedProductResponseModel(goldManageFeaturedProductV2)
+            val featuredProductResponseModel =
+                FeaturedProductResponseModel(goldManageFeaturedProductV2)
 
             onSetFeaturedProduct_thenReturn(featuredProductResponseModel)
 
@@ -607,7 +639,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val maxPrice = PriceUiModel("100000", "Rp100.000")
             val pictures = listOf(Picture("imageUrl"))
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures,
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
@@ -621,8 +659,15 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
             val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
-            val productViewModelList = listOf(createProductUiModel(
-                name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice, topAds = topAdsInfo, access = createDefaultAccess()))
+            val productViewModelList = listOf(
+                createProductUiModel(
+                    name = "Tolak Angin Madu",
+                    minPrice = minPrice,
+                    maxPrice = maxPrice,
+                    topAds = topAdsInfo,
+                    access = createDefaultAccess()
+                )
+            )
             val expectedProductList = Success(productViewModelList)
 
             verifyGetWarehouseIdCalled()
@@ -675,7 +720,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val maxPrice = PriceUiModel("100000", "Rp100.000")
             val pictures = listOf(Picture("imageUrl"))
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
@@ -689,8 +740,15 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.getProductList(shopId, filterOptions = paramsProductList, withDelay = true)
 
             val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
-            val productViewModelList = listOf(createProductUiModel(
-                name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice, topAds = topAdsInfo, access = createDefaultAccess()))
+            val productViewModelList = listOf(
+                createProductUiModel(
+                    name = "Tolak Angin Madu",
+                    minPrice = minPrice,
+                    maxPrice = maxPrice,
+                    topAds = topAdsInfo,
+                    access = createDefaultAccess()
+                )
+            )
             val expectedProductList = Success(productViewModelList)
 
             viewModel.productListResult.getOrAwaitValue(1500L, TimeUnit.MILLISECONDS).let {
@@ -705,7 +763,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val shopId = "1500"
             val pictures = listOf(Picture("imageUrl"))
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
@@ -731,7 +795,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val maxPrice = PriceUiModel("100000", "Rp100.000")
             val pictures = listOf(Picture("imageUrl"))
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
             val paramsProductList = createFilterOptions(1)
 
@@ -744,8 +814,15 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
             val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
-            val productViewModelList = listOf(createProductUiModel(
-                name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice, topAds = topAdsInfo, access = createDefaultAccess()))
+            val productViewModelList = listOf(
+                createProductUiModel(
+                    name = "Tolak Angin Madu",
+                    minPrice = minPrice,
+                    maxPrice = maxPrice,
+                    topAds = topAdsInfo,
+                    access = createDefaultAccess()
+                )
+            )
             val expectedProductList = Success(productViewModelList)
 
             verifyGetWarehouseIdCalled()
@@ -770,7 +847,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
             val paramsProductList = createFilterOptions(1)
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
@@ -798,7 +881,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val shopId = "1500"
             val pictures = listOf(Picture("imageUrl"))
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
@@ -830,7 +919,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
             val paramsProductList = createFilterOptions(1)
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
@@ -858,7 +953,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val shopId = "1500"
             val pictures = listOf(Picture("imageUrl"))
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
@@ -901,7 +1002,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val pictures = listOf(Picture("imageUrl"))
             val paramsProductList = createFilterOptions(1)
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
@@ -930,7 +1037,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val shopId = "1500"
             val pictures = listOf(Picture("imageUrl"))
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
@@ -957,7 +1070,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val maxPrice = PriceUiModel("100000", "Rp100.000")
             val pictures = listOf(Picture("imageUrl"))
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
@@ -973,13 +1092,15 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.getProductList(shopId)
 
             val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
-            val productViewModelList = listOf(createProductUiModel(
-                name = "Tolak Angin Madu",
-                minPrice = minPrice,
-                maxPrice = maxPrice,
-                topAds = topAdsInfo,
-                access = createShopOwnerAccess()
-            ))
+            val productViewModelList = listOf(
+                createProductUiModel(
+                    name = "Tolak Angin Madu",
+                    minPrice = minPrice,
+                    maxPrice = maxPrice,
+                    topAds = topAdsInfo,
+                    access = createShopOwnerAccess()
+                )
+            )
             val expectedProductList = Success(productViewModelList)
 
             viewModel.productListResult
@@ -1036,7 +1157,11 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         val productListMetaResponse = ProductListMetaResponse(productListMeta)
 
         val filterList = listOf(CashBackOnly, FeaturedOnly)
-        val filterOptions = FilterOptionWrapper(filterOptions = filterList, sortOption = SortByName(ASC), selectedFilterCount = 3)
+        val filterOptions = FilterOptionWrapper(
+            filterOptions = filterList,
+            sortOption = SortByName(ASC),
+            selectedFilterCount = 3
+        )
 
         onGetFiltersTab_thenReturn(productListMetaResponse)
         viewModel.getFiltersTab()
@@ -1059,7 +1184,11 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetFiltersTab_thenReturn(productListMetaResponse)
 
             val filterList = listOf(CashBackOnly, FeaturedOnly)
-            val filterOptions = FilterOptionWrapper(filterOptions = filterList, sortOption = SortByName(ASC), selectedFilterCount = 3)
+            val filterOptions = FilterOptionWrapper(
+                filterOptions = filterList,
+                sortOption = SortByName(ASC),
+                selectedFilterCount = 3
+            )
             viewModel.setFilterOptionWrapper(filterOptions)
             viewModel.getFiltersTab(true)
 
@@ -1080,7 +1209,11 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         val productListMetaResponse = ProductListMetaResponse(productListMeta)
 
         val filterList = listOf(CashBackOnly, FeaturedOnly)
-        val filterOptions = FilterOptionWrapper(filterOptions = filterList, sortOption = SortByName(ASC), selectedFilterCount = 3)
+        val filterOptions = FilterOptionWrapper(
+            filterOptions = filterList,
+            sortOption = SortByName(ASC),
+            selectedFilterCount = 3
+        )
 
         onGetFiltersTab_thenReturn(productListMetaResponse)
 
@@ -1195,15 +1328,18 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     @Test
     fun `edit multiple products by status should return success and failed response`() {
         val status = ProductStatus.ACTIVE
-        val successResponse = MultiEditProductResult(productID = "1", result = Result(isSuccess = true))
-        val failedResponse = MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
+        val successResponse =
+            MultiEditProductResult(productID = "1", result = Result(isSuccess = true))
+        val failedResponse =
+            MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
         val response = MultiEditProduct(listOf(successResponse, failedResponse))
 
         onMultiEditProducts_thenReturn(response)
 
         viewModel.editProductsByStatus(listOf("1", "2"), status)
 
-        val expectedResult = Success(EditByStatus(status, listOf(successResponse), listOf(failedResponse)))
+        val expectedResult =
+            Success(EditByStatus(status, listOf(successResponse), listOf(failedResponse)))
 
         viewModel.multiEditProductResult
             .verifySuccessEquals(expectedResult)
@@ -1243,15 +1379,18 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     fun `edit multiple products by etalase should return success and failed response`() {
         val menuId = "1"
         val menuName = "Etalase Toko"
-        val successResponse = MultiEditProductResult(productID = "1", result = Result(isSuccess = true))
-        val failedResponse = MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
+        val successResponse =
+            MultiEditProductResult(productID = "1", result = Result(isSuccess = true))
+        val failedResponse =
+            MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
         val response = MultiEditProduct(listOf(successResponse, failedResponse))
 
         onMultiEditProducts_thenReturn(response)
 
         viewModel.editProductsEtalase(listOf("1", "2"), menuId, menuName)
 
-        val expectedResult = Success(EditByMenu(menuId, menuName, listOf(successResponse), listOf(failedResponse)))
+        val expectedResult =
+            Success(EditByMenu(menuId, menuName, listOf(successResponse), listOf(failedResponse)))
 
         viewModel.multiEditProductResult
             .verifySuccessEquals(expectedResult)
@@ -1290,68 +1429,85 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `get total product count should return total product count from product list`() = runBlocking {
-        val shopId = "1500"
-        val pictures = listOf(Picture("imageUrl"))
+    fun `get total product count should return total product count from product list`() =
+        runBlocking {
+            val shopId = "1500"
+            val pictures = listOf(Picture("imageUrl"))
 
-        val expectedTotalProductCount = 10
-        val productMeta = Meta(expectedTotalProductCount)
+            val expectedTotalProductCount = 10
+            val productMeta = Meta(expectedTotalProductCount)
 
-        val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
-        val productListData = ProductListData(ProductList(header = null, meta = productMeta, data = productList))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
+            val productListData =
+                ProductListData(ProductList(header = null, meta = productMeta, data = productList))
 
-        val locationList = listOf(
-            ShopLocationResponse("1", MAIN_LOCATION),
-            ShopLocationResponse("2", OTHER_LOCATION)
-        )
-        val paramsProductList = createFilterOptions(1)
-        onGetWarehouseId_thenReturn(locationList)
-        onGetProductList_thenReturn(productListData)
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
+            val paramsProductList = createFilterOptions(1)
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
 
-        viewModel.getProductList(shopId, filterOptions = paramsProductList)
+            viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
-        val actualProductCount = viewModel.getTotalProductCount()
+            val actualProductCount = viewModel.getTotalProductCount()
 
-        assertEquals(expectedTotalProductCount, actualProductCount)
-    }
-
-    @Test
-    fun `given get product list is error when get total product count should return zero`() = runBlocking {
-        onGetProductList_thenError(NullPointerException())
-
-        viewModel.getProductList("10000")
-        viewModel.getTotalProductCount()
-
-        val expectedProductCount = 0
-        val actualProductCount = viewModel.getTotalProductCount()
-
-        assertEquals(expectedProductCount, actualProductCount)
-    }
+            assertEquals(expectedTotalProductCount, actualProductCount)
+        }
 
     @Test
-    fun `given product list response meta null when get total product count should return zero`() = runBlocking {
-        val shopId = "1500"
-        val pictures = listOf(Picture("imageUrl"))
+    fun `given get product list is error when get total product count should return zero`() =
+        runBlocking {
+            onGetProductList_thenError(NullPointerException())
 
-        val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
-        val productListData = ProductListData(ProductList(header = null, meta = null, data = productList))
+            viewModel.getProductList("10000")
+            viewModel.getTotalProductCount()
 
-        val locationList = listOf(
-            ShopLocationResponse("1", MAIN_LOCATION),
-            ShopLocationResponse("2", OTHER_LOCATION)
-        )
-        val paramsProductList = createFilterOptions(1)
-        onGetWarehouseId_thenReturn(locationList)
-        onGetProductList_thenReturn(productListData)
+            val expectedProductCount = 0
+            val actualProductCount = viewModel.getTotalProductCount()
 
-        viewModel.getProductList(shopId, filterOptions = paramsProductList)
-        viewModel.getTotalProductCount()
+            assertEquals(expectedProductCount, actualProductCount)
+        }
 
-        val expectedProductCount = 0
-        val actualProductCount = viewModel.getTotalProductCount()
+    @Test
+    fun `given product list response meta null when get total product count should return zero`() =
+        runBlocking {
+            val shopId = "1500"
+            val pictures = listOf(Picture("imageUrl"))
 
-        assertEquals(expectedProductCount, actualProductCount)
-    }
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000, 100000),
+                    pictures = pictures
+                )
+            )
+            val productListData =
+                ProductListData(ProductList(header = null, meta = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
+            val paramsProductList = createFilterOptions(1)
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+
+            viewModel.getProductList(shopId, filterOptions = paramsProductList)
+            viewModel.getTotalProductCount()
+
+            val expectedProductCount = 0
+            val actualProductCount = viewModel.getTotalProductCount()
+
+            assertEquals(expectedProductCount, actualProductCount)
+        }
 
     @Test
     fun `toggle multi select should switch multi select enabled state`() {
@@ -1372,7 +1528,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val shopId = "1500"
             val pictures = listOf(Picture("imageUrl"))
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000), pictures = pictures))
+            val productList = listOf(
+                createProduct(
+                    name = "Tolak Angin Madu",
+                    price = Price(10000),
+                    pictures = pictures
+                )
+            )
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             val locationList = listOf(
@@ -1465,7 +1627,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         viewModel.resetSelectedFilter()
 
         val expectedFilter = FilterOptionWrapper(
-            filterShownState = listOf(true, true, false, false))
+            filterShownState = listOf(true, true, false, false)
+        )
 
         viewModel.selectedFilterAndSort
             .verifyValueEquals(expectedFilter)
@@ -1726,19 +1889,20 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when get popups info success but false should set live data value success`() = runBlocking {
-        val productId = "1"
-        val showPopup = false
+    fun `when get popups info success but false should set live data value success`() =
+        runBlocking {
+            val productId = "1"
+            val showPopup = false
 
-        onGetPopupsInfo_thenReturn(showPopup)
+            onGetPopupsInfo_thenReturn(showPopup)
 
-        viewModel.getPopupsInfo(productId)
+            viewModel.getPopupsInfo(productId)
 
-        val expectedResult = Success(GetPopUpResult(productId, showPopup))
+            val expectedResult = Success(GetPopUpResult(productId, showPopup))
 
-        viewModel.getPopUpResult
-            .verifySuccessEquals(expectedResult)
-    }
+            viewModel.getPopUpResult
+                .verifySuccessEquals(expectedResult)
+        }
 
     @Test
     fun `when get variants success should set live data value success`() {
@@ -1761,7 +1925,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 createSelectionResponse(options = secondOption)
             )
             val response = createGetVariantResponse(
-                productName,
+                productName = productName,
                 products = variantList,
                 selections = selections
             )
@@ -1778,10 +1942,19 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.getProductVariants(productId)
 
             val productVariants = listOf(
-                createProductVariant(name = "Biru | M", combination = listOf(0, 1), access = createDefaultAccess()),
-                createProductVariant(name = "Hijau | S", combination = listOf(1, 0), access = createDefaultAccess())
+                createProductVariant(
+                    name = "Biru | M",
+                    combination = listOf(0, 1),
+                    access = createDefaultAccess()
+                ),
+                createProductVariant(
+                    name = "Hijau | S",
+                    combination = listOf(1, 0),
+                    access = createDefaultAccess()
+                )
             )
-            val expectedResult = GetVariantResult(productName, productVariants, selections, emptyList())
+            val expectedResult =
+                GetVariantResult(productName, productVariants, selections, emptyList())
             val expectedSuccessResult = Success(expectedResult)
 
             verifyGetVariantsCalled()
@@ -1970,7 +2143,10 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
         testGetProductManageAccess(
             accessList = listOf(Access(EDIT_PRODUCT)),
-            expectedProductManageAccess = createProductManageAccess(editProduct = true, editPrice = true)
+            expectedProductManageAccess = createProductManageAccess(
+                editProduct = true,
+                editPrice = true
+            )
         )
 
         testGetProductManageAccess(
@@ -1990,7 +2166,10 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
         testGetProductManageAccess(
             accessList = listOf(Access(EDIT_PRICE)),
-            expectedProductManageAccess = createProductManageAccess(editProduct = true, editPrice = true)
+            expectedProductManageAccess = createProductManageAccess(
+                editProduct = true,
+                editPrice = true
+            )
         )
 
         testGetProductManageAccess(
@@ -2094,7 +2273,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
         viewModel.onDeleteMultipleProducts()
 
-        val expectedDeleteProductDialog = DeleteProductDialogType.MultipleProduct(isMultiLocationShop)
+        val expectedDeleteProductDialog =
+            DeleteProductDialogType.MultipleProduct(isMultiLocationShop)
 
         viewModel.deleteProductDialog
             .verifyValueEquals(expectedDeleteProductDialog)
@@ -2150,6 +2330,131 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         viewModel.getTickerData()
 
         verifyTickerDataEquals(tickerData)
+    }
+
+    @Test
+    fun `when getUploadStatusUseCase is called should return model data`() {
+        val entity = UploadStatusEntity(
+            id = 12,
+            status = UploadStatusType.STATUS_DONE.name,
+            productId = "12333"
+        )
+
+        val mockedRepository = MockedUploadStatusRepository(
+            uploadStatusEntity = entity
+        )
+
+        getUploadStatusUseCase = GetUploadStatusUseCase(mockedRepository)
+
+        // the getUploadStatusUseCase will be called after viewModel is initiated
+        viewModel = ProductManageViewModel(
+            editPriceUseCase,
+            gqlGetShopInfoUseCase,
+            getShopInfoTopAdsUseCase,
+            userSessionInterface,
+            getShopManagerPopupsUseCase,
+            getProductListUseCase,
+            setFeaturedProductUseCase,
+            editStatusUseCase,
+            editStockUseCase,
+            deleteProductUseCase,
+            multiEditProductUseCase,
+            getProductListMetaUseCase,
+            getProductManageAccessUseCase,
+            editProductVariantUseCase,
+            getProductVariantUseCase,
+            getAdminInfoShopLocationUseCase,
+            getUploadStatusUseCase,
+            clearUploadStatusUseCase,
+            tickerStaticDataProvider,
+            CoroutineTestDispatchersProvider
+        )
+
+        val model = entity.convertToModel()
+
+        viewModel.uploadStatus
+            .verifyValueEquals(model)
+    }
+
+
+    @Test
+    fun `when clearUploadStatusUseCase is called should return null data`() {
+        val entity = UploadStatusEntity(
+            id = 12,
+            status = UploadStatusType.STATUS_DONE.name,
+            productId = "12333"
+        )
+
+        val mockedRepository = MockedUploadStatusRepository(
+            uploadStatusEntity = entity
+        )
+
+        clearUploadStatusUseCase = ClearUploadStatusUseCase(mockedRepository)
+
+        // the clearUploadStatusUseCase will be called after viewModel is initiated
+        viewModel = ProductManageViewModel(
+            editPriceUseCase,
+            gqlGetShopInfoUseCase,
+            getShopInfoTopAdsUseCase,
+            userSessionInterface,
+            getShopManagerPopupsUseCase,
+            getProductListUseCase,
+            setFeaturedProductUseCase,
+            editStatusUseCase,
+            editStockUseCase,
+            deleteProductUseCase,
+            multiEditProductUseCase,
+            getProductListMetaUseCase,
+            getProductManageAccessUseCase,
+            editProductVariantUseCase,
+            getProductVariantUseCase,
+            getAdminInfoShopLocationUseCase,
+            getUploadStatusUseCase,
+            clearUploadStatusUseCase,
+            tickerStaticDataProvider,
+            CoroutineTestDispatchersProvider
+        )
+
+        viewModel.clearUploadStatus()
+
+        runBlocking {
+            mockedRepository.flowEntity.collect {
+                Assert.assertTrue(it == null)
+            }
+        }
+    }
+
+    @Test
+    fun `when clearUploadStatusUseCase is called but get an error should do nothing`() {
+        val mockedRepository = MockedUploadStatusRepositoryException()
+
+        clearUploadStatusUseCase = ClearUploadStatusUseCase(mockedRepository)
+
+        // the clearUploadStatusUseCase will be called after viewModel is initiated
+        viewModel = ProductManageViewModel(
+            editPriceUseCase,
+            gqlGetShopInfoUseCase,
+            getShopInfoTopAdsUseCase,
+            userSessionInterface,
+            getShopManagerPopupsUseCase,
+            getProductListUseCase,
+            setFeaturedProductUseCase,
+            editStatusUseCase,
+            editStockUseCase,
+            deleteProductUseCase,
+            multiEditProductUseCase,
+            getProductListMetaUseCase,
+            getProductManageAccessUseCase,
+            editProductVariantUseCase,
+            getProductVariantUseCase,
+            getAdminInfoShopLocationUseCase,
+            getUploadStatusUseCase,
+            clearUploadStatusUseCase,
+            tickerStaticDataProvider,
+            CoroutineTestDispatchersProvider
+        )
+
+        viewModel.clearUploadStatus()
     }
 
     private fun testGetProductManageAccess(
@@ -2406,7 +2711,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     private fun verifySetFeaturedProductResponseEquals(expectedResponse: Success<SetFeaturedProductResult>) {
-        val actualSetFeaturedProductResult = viewModel.setFeaturedProductResult.value as Success<SetFeaturedProductResult>
+        val actualSetFeaturedProductResult =
+            viewModel.setFeaturedProductResult.value as Success<SetFeaturedProductResult>
         assertEquals(expectedResponse, actualSetFeaturedProductResult)
     }
 

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icOrderTrackingEstimation"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="center"
+        app:icon_name="CLOCK"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintBottom_toBottomOf="@id/tvOrderTrackingEstimation"
+        app:layout_constraintEnd_toStartOf="@id/tvOrderTrackingEstimation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvOrderTrackingEstimation" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvOrderTrackingEstimation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginStart="4dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icOrderTrackingEstimation"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        tools:text="@string/order_tracking_estimation_time" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/thinDividerFull"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvOrderTrackingEstimation" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -78,7 +78,6 @@
     <string name="buyer_label">Untuk Pembeli</string>
 
     <string name="filter">Filter</string>
-    <string name="recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="notifcenter_title_view">Lihat</string>
     <string name="notifcenter_btn_title_ok">OK</string>
 
@@ -130,5 +129,4 @@
     <string name="cta_widget_notifcenter_close_previous">Tutup</string>
     <string name="title_notifcenter_see_cart">Lihat Keranjang</string>
     <string name="desc_notifcenter_empty_state_illustration">Empty State Illustration</string>
-    <string name="notification_center_recommendation_for_you">Rekomendasi untukmu</string>
 </resources>

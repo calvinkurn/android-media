@@ -20,7 +20,7 @@
             android:textColor="@color/Unify_N700"
             android:layout_weight="1" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivCategoryParent"
             android:layout_width="16dp"
             android:layout_height="16dp"

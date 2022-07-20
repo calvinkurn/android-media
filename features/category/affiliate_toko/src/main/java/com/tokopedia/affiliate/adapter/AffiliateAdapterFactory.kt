@@ -30,6 +30,7 @@ class AffiliateAdapterFactory(
             AffiliateProductShimmerCardItemVH.LAYOUT -> AffiliateProductShimmerCardItemVH(parent)
             AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface,addSocialInterface)
             AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent,promotionClickInterface)
+            AffiliatePromotionShopItemVH.LAYOUT -> AffiliatePromotionShopItemVH(parent,promotionClickInterface)
             AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent,promotionClickInterface)
             AffiliatePortfolioItemVH.LAYOUT -> AffiliatePortfolioItemVH(parent,onFocusChangeInterface)
             AffiliateHeaderItemVH.LAYOUT -> AffiliateHeaderItemVH(parent)
@@ -47,6 +48,7 @@ class AffiliateAdapterFactory(
             AffiliateCommisionThickDivderItemVH.LAYOUT -> AffiliateCommisionThickDivderItemVH(parent)
             AffiliateWithdrawalTitleItemVH.LAYOUT -> AffiliateWithdrawalTitleItemVH(parent)
             AffiliateTrafficProductItemVH.LAYOUT -> AffiliateTrafficProductItemVH(parent)
+            AffiliateProductMetricVH.LAYOUT -> AffiliateProductMetricVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -140,5 +142,12 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateTrafficCardModel): Int {
        return AffiliateTrafficProductItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateProductCardMetricsModel): Int {
+       return AffiliateProductMetricVH.LAYOUT
+    }
+    override fun type(viewModel: AffiliatePromotionShopModel): Int {
+        return  AffiliatePromotionShopItemVH.LAYOUT
     }
 }

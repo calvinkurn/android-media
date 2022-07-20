@@ -60,7 +60,7 @@ object MediaPicker {
      */
     fun intent(
         context: Context,
-        appLink: String,
+        appLink: String = INTERNAL_MEDIA_PICKER,
         param: PickerParam.() -> Unit = {}
     ): Intent {
         val pickerParam = PickerParam().apply(param)
@@ -68,6 +68,17 @@ object MediaPicker {
         return RouteManager.getIntent(context, appLink).apply {
             putExtra(EXTRA_PICKER_PARAM, pickerParam)
         }
+    }
+
+    fun intentWithGalleryFirst(
+        context: Context,
+        param: PickerParam.() -> Unit = {}
+    ): Intent {
+        return intent(
+            context = context,
+            appLink = "${INTERNAL_MEDIA_PICKER}?start=1",
+            param = param
+        )
     }
 
     /**

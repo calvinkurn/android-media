@@ -16,7 +16,7 @@ public final class PostKolData {
 
   @SerializedName("id")
   @Expose
-  public Integer id;
+  public String id;
 
   @SerializedName("commentCount")
   @Expose
@@ -64,5 +64,5 @@ public final class PostKolData {
 
   @SerializedName("userId")
   @Expose
-  public Integer userId;
+  public String userId;
 }

@@ -1,8 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate
 
+import android.content.Context
+import android.content.Intent
+import android.graphics.drawable.Drawable
+import android.provider.Settings
 import android.view.View
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -33,11 +39,65 @@ class ErrorLoadViewHolder(itemView: View, private val fragment: Fragment) :
     private fun init() {
         errorReLoadState.visibility = View.VISIBLE
         progressLoader.visibility = View.GONE
+        when (errorLoadViewModel.components.name) {
+            ComponentNames.ProductListNetworkErrorLoad.componentName ->
+                setupNetworkErrorView()
+            else ->
+                setupDefaultErrorView()
+        }
+    }
 
+    private fun setupNetworkErrorView() {
+        errorReLoadState.run {
+            setTitle(context?.getString(R.string.discovery_product_network_state_title).orEmpty())
+            setDescription(
+                context?.getString(R.string.discovery_product_network_state_description).orEmpty()
+            )
+            getAppCompatDrawable(
+                context,
+                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+            )?.let {
+                setImageDrawable(it)
+
+            }
+            setPrimaryCTAText(context?.getString(R.string.discovery_error_500_action).orEmpty())
+            setPrimaryCTAClickListener {
+                errorLoadViewModel.reloadComponentData()
+            }
+            setSecondaryCTAText(context?.getString(R.string.discovery_open_network_setting).orEmpty())
+            setSecondaryCTAClickListener {
+                openNetworkSettings()
+            }
+        }
+    }
+
+    private fun openNetworkSettings() {
+        val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+        try {
+            fragment.startActivity(intent)
+        }
+        catch(e: Exception) {
+
+        }
+    }
+
+    private fun setupDefaultErrorView(){
         errorReLoadState.run {
             setTitle(context?.getString(R.string.discovery_product_empty_state_title).orEmpty())
-            setDescription(context?.getString(R.string.discovery_product_empty_state_description).orEmpty())
-            setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500, null))
+            if (errorLoadViewModel.components.parentComponentName == ComponentNames.MerchantVoucherList.componentName)
+                setDescription(
+                    context?.getString(R.string.discovery_mvc_list_empty_state_description).orEmpty()
+                )
+            else
+                setDescription(
+                    context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
+                )
+            getAppCompatDrawable(
+                context,
+                com.tokopedia.globalerror.R.drawable.unify_globalerrors_500
+            )?.let {
+                setImageDrawable(it)
+            }
             setPrimaryCTAText(context?.getString(R.string.discovery_error_500_action).orEmpty())
             setPrimaryCTAClickListener {
                 errorLoadViewModel.reloadComponentData()
@@ -70,6 +130,19 @@ class ErrorLoadViewHolder(itemView: View, private val fragment: Fragment) :
         lifecycleOwner?.let {
             errorLoadViewModel.getSyncPageLiveData().removeObservers(it)
             errorLoadViewModel.getShowLoaderStatus().removeObservers(it)
+        }
+    }
+
+    private fun getAppCompatDrawable(context: Context?, resID: Int): Drawable? {
+        return try {
+            context?.let {
+                AppCompatResources.getDrawable(
+                    context,
+                    resID
+                )
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 }

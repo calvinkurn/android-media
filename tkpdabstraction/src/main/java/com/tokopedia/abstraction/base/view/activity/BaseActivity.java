@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdat
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
+import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
@@ -34,6 +35,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +60,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private boolean pauseFlag;
 
     private final ArrayList<DebugVolumeListener> debugVolumeListeners = new ArrayList<>();
+    private final ArrayList<DispatchTouchListener> dispatchTouchListeners = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +87,20 @@ public abstract class BaseActivity extends AppCompatActivity implements
         debugVolumeListeners.add(debugVolumeListener);
     }
 
+    public void addListener(DispatchTouchListener dispatchTouchListener) {
+        dispatchTouchListeners.add(dispatchTouchListener);
+    }
+
     public void removeDebugVolumeListener() {
         debugVolumeListeners.clear();
+    }
+
+    public void removeDispatchTouchListener() {
+        dispatchTouchListeners.clear();
+    }
+
+    public void removeDispatchTouchListener(DispatchTouchListener dispatchTouchListener) {
+        dispatchTouchListeners.remove(dispatchTouchListener);
     }
 
     @Override
@@ -205,6 +220,11 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         try {
+            try {
+                for (int i = 0, size = dispatchTouchListeners.size(); i < size; i++) {
+                    dispatchTouchListeners.get(i).onDispatchTouch(ev);
+                }
+            } catch (Exception ignored) { }
             return super.dispatchTouchEvent(ev);
         } catch (Exception e){
             e.printStackTrace();
@@ -219,8 +239,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void setLogCrash() {
-        if (!GlobalConfig.DEBUG) {
-            FirebaseCrashlytics.getInstance().log(this.getClass().getCanonicalName());
+        try {
+            if (!GlobalConfig.DEBUG) {
+                FirebaseCrashlytics.getInstance().log(this.getClass().getCanonicalName());
+            }
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 
@@ -250,7 +274,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public void onBackPressed() {
         List<Fragment> list = getSupportFragmentManager().getFragments();
         for(Fragment fragment : list) {
-            if(fragment instanceof TkpdBaseV4Fragment) {
+            if(fragment instanceof TkpdBaseV4Fragment && fragment.isVisible()) {
                 boolean handled = ((TkpdBaseV4Fragment)fragment).onFragmentBackPressed();
                 if (handled) {
                     return;
@@ -261,49 +285,54 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void checkAppUpdateAndInApp() {
+        WeakReference<BaseActivity> activityReference = new WeakReference<>(this);
         AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
             if (!isOnProgress) {
-                checkAppUpdateRemoteConfig();
+                checkAppUpdateRemoteConfig(activityReference);
             }
             return null;
         });
     }
 
-    private void checkAppUpdateRemoteConfig() {
-        ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(this);
-        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
-            @Override
-            public void onNeedUpdate(DetailUpdate detail) {
-                if (!isFinishing()) {
-                    AppUpdateDialogBuilder appUpdateDialogBuilder =
-                            new AppUpdateDialogBuilder(
-                                    BaseActivity.this,
-                                    detail,
-                                    new AppUpdateDialogBuilder.Listener() {
-                                        @Override
-                                        public void onPositiveButtonClicked(DetailUpdate detail) {
-                                            /* no op */
-                                        }
+    private void checkAppUpdateRemoteConfig(WeakReference<BaseActivity> activityReference) {
+        BaseActivity context = activityReference.get();
+        if (context != null) {
+            ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(context);
+            appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+                @Override
+                public void onNeedUpdate(DetailUpdate detail) {
+                    BaseActivity activity = activityReference.get();
+                    if (!isFinishing() && activity != null) {
+                        AppUpdateDialogBuilder appUpdateDialogBuilder =
+                                new AppUpdateDialogBuilder(
+                                        activity,
+                                        detail,
+                                        new AppUpdateDialogBuilder.Listener() {
+                                            @Override
+                                            public void onPositiveButtonClicked(DetailUpdate detail) {
+                                                /* no op */
+                                            }
 
-                                        @Override
-                                        public void onNegativeButtonClicked(DetailUpdate detail) {
-                                            /* no op */
+                                            @Override
+                                            public void onNegativeButtonClicked(DetailUpdate detail) {
+                                                /* no op */
+                                            }
                                         }
-                                    }
-                            );
-                    appUpdateDialogBuilder.getAlertDialog().show();
+                                );
+                        appUpdateDialogBuilder.getAlertDialog().show();
+                    }
                 }
-            }
 
-            @Override
-            public void onError(Exception e) {
-                Timber.d(e);
-            }
+                @Override
+                public void onError(Exception e) {
+                    Timber.d(e);
+                }
 
-            @Override
-            public void onNotNeedUpdate() {
-                /* no op */
-            }
-        });
+                @Override
+                public void onNotNeedUpdate() {
+                    /* no op */
+                }
+            });
+        }
     }
 }

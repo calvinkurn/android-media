@@ -13,7 +13,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class QuestionnaireMultipleViewHolder(
-        itemView: View
+        itemView: View,
+        private val onAnswerSelected: () -> Unit
 ) : BaseViewHolder<QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel>(itemView) {
 
     companion object {
@@ -33,7 +34,7 @@ class QuestionnaireMultipleViewHolder(
     }
 
     private fun ItemPmQuestionnaireMultipleOptionBinding.setupMultipleOptionsList(element: QuestionnaireUiModel.QuestionnaireMultipleOptionUiModel) {
-        optionAdapter = QuestionnaireOptionAdapter(element.options)
+        optionAdapter = QuestionnaireOptionAdapter(element.options, onAnswerSelected)
         rvPmQuestionnaireOptions.layoutManager = object : LinearLayoutManager(itemView.context) {
             override fun canScrollHorizontally(): Boolean = false
         }

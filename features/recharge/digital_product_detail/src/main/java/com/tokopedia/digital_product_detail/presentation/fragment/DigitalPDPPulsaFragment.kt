@@ -1,7 +1,6 @@
 package com.tokopedia.digital_product_detail.presentation.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -9,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -23,9 +22,9 @@ import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
-import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity
-import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
-import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
@@ -50,15 +49,15 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.R
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
-import com.tokopedia.digital_product_detail.domain.model.AutoCompleteModel
-import com.tokopedia.digital_product_detail.domain.model.FavoriteChipModel
-import com.tokopedia.digital_product_detail.domain.model.PrefillModel
-import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
+import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPPulsaViewModel
@@ -82,7 +81,9 @@ import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
-import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -183,7 +184,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 }
 
                 override fun onKeyboardHidden() {
-                    binding?.rechargePdpPulsaClientNumberWidget?.setClearable()
+                    // do nothing
                 }
             })
         }
@@ -365,7 +366,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.selectedGridProduct.denomData.title,
-                        atcData.data.priceProduct
+                        atcData.data.priceProduct,
+                        atcData.data.channelId,
                     )
                     navigateToCart(atcData.data.categoryId)
                 }
@@ -384,11 +386,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpPulsaClientNumberWidget?.run {
                 setLoading(false)
+                showClearIcon()
                 if (msg.isEmpty()) {
-                    showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideIndicatorIcon(shouldShowClearIcon = true)
                     setErrorInputField(msg)
                     onHideBuyWidget()
                 }
@@ -467,14 +468,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetPrefill(prefill: PrefillModel) {
-        inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             } else {
                 if (isInputFieldEmpty()) {
                     setContactName(prefill.clientName)
-                    setInputNumber(prefill.clientNumber, true)
+                    setInputNumber(prefill.clientNumber)
+                    inputNumberActionType = InputNumberActionType.NOTHING
                 }
             }
         }
@@ -679,10 +680,15 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 selectedInitialPosition = null
             }
             if (denomGrid.listDenomData.isNotEmpty()) {
+                val colorHexInt = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                val colorHexString = "#${Integer.toHexString(colorHexInt)}"
+
                 it.rechargePdpPulsaPromoWidget.show()
                 it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
-                    this, denomGrid,
-                    getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
+                    this,
+                    denomGrid,
+                    colorHexString,
+                    selectedInitialPosition
                 )
             } else {
                 it.rechargePdpPulsaPromoWidget.hide()
@@ -833,7 +839,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setContactName(clientName)
-            setInputNumber(clientNumber, true)
+            setInputNumber(clientNumber)
         }
     }
 
@@ -901,7 +907,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpPulsaClientNumberWidget?.run {
                 inputNumberActionType = InputNumberActionType.NOTHING
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             }
         }
 
@@ -941,8 +947,10 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 override fun onGlobalLayout() {
                     binding?.rechargePdpPulsaClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     binding?.run {
-                        val dynamicPadding = rechargePdpPulsaClientNumberWidget.height.pxToDp(
-                            resources.displayMetrics) + extraPadding
+                        val defaultPadding: Int = context?.resources?.displayMetrics?.let {
+                            rechargePdpPulsaClientNumberWidget.height.pxToDp(it)
+                        } ?: 0
+                        val dynamicPadding = defaultPadding + extraPadding
                         rechargePdpPulsaSvContainer.setPadding(0, dynamicPadding, 0, 0)
                     }
                 }
@@ -992,12 +1000,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     override fun isKeyboardShown(): Boolean {
-        context?.let {
-            val inputMethodManager =
-                it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            return inputMethodManager.isAcceptingText
-        }
-        return false
+        return keyboardWatcher.isKeyboardOpened
     }
     //endregion
 
@@ -1018,7 +1021,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
+    override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             onHideBuyWidget()
@@ -1061,9 +1064,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     //endregion
 
     //region ClientNumberAutoCompleteListener
-    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
+    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-        if (isFavoriteContact) {
+        if (favorite.name.isNotEmpty()) {
             digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,

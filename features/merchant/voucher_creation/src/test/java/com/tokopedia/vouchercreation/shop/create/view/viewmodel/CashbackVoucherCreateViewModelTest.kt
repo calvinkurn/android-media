@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.shop.create.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -54,6 +55,9 @@ class CashbackVoucherCreateViewModelTest {
 
     @RelaxedMockK
     lateinit var expenseEstimationObserver: Observer<in Int>
+
+    @RelaxedMockK
+    lateinit var voucherImageValueObserver: Observer<in VoucherImageType>
 
     @RelaxedMockK
     lateinit var cashbackPercentageInfoUiModelObserver: Observer<in CashbackPercentageInfoUiModel>
@@ -143,6 +147,16 @@ class CashbackVoucherCreateViewModelTest {
         getPrivateField(mViewModel, "mVoucherRecommendationStatus") as MutableLiveData<Int>
     }
 
+    @Suppress("UNCHECKED_CAST")
+    private val mCashbackTypeLiveData: MutableLiveData<CashbackType> by lazy {
+        getPrivateField(mViewModel, "mCashbackTypeLiveData") as MutableLiveData<CashbackType>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private val mIsFirstTimeDrawLiveData: MutableLiveData<Boolean> by lazy {
+        getPrivateField(mViewModel, "mIsFirstTimeDrawLiveData") as MutableLiveData<Boolean>
+    }
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -154,12 +168,14 @@ class CashbackVoucherCreateViewModelTest {
         mViewModel = CashbackVoucherCreateViewModel(CoroutineTestDispatchersProvider, cashbackRupiahValidationUseCase, cashbackPercentageValidationUseCase, getVoucherRecommendationUseCase)
 
         mViewModel.expenseEstimationLiveData.observeForever(expenseEstimationObserver)
+        mViewModel.voucherImageValueLiveData.observeForever(voucherImageValueObserver)
         mViewModel.cashbackPercentageInfoUiModelLiveData.observeForever(cashbackPercentageInfoUiModelObserver)
     }
 
     @After
     fun cleanup() {
         mViewModel.expenseEstimationLiveData.removeObserver(expenseEstimationObserver)
+        mViewModel.voucherImageValueLiveData.removeObserver(voucherImageValueObserver)
         mViewModel.cashbackPercentageInfoUiModelLiveData.removeObserver(cashbackPercentageInfoUiModelObserver)
     }
 
@@ -733,6 +749,109 @@ class CashbackVoucherCreateViewModelTest {
         val currentValue = mViewModel.isPercentageInputError
         mViewModel.isPercentageInputError = true
         assert(mViewModel.isPercentageInputError != currentValue)
+    }
+
+    @Test
+    fun `check whether getMinimumPurchase is returning Rupiah minimum purchase value`() {
+        with(mViewModel) {
+            val promotionType = PromotionType.Cashback.Rupiah.MinimumPurchase
+            val minimumPurchase = getMinimumPurchase(promotionType)
+            assert(minimumPurchase == mRupiahMinimumPurchaseLiveData.value.orZero())
+        }
+    }
+
+    @Test
+    fun `check whether getMinimumPurchase is returning Percentage minimum purchase value`() {
+        with(mViewModel) {
+            val promotionType = PromotionType.Cashback.Percentage.MinimumPurchase
+            val minimumPurchase = getMinimumPurchase(promotionType)
+            assert(minimumPurchase == mPercentageMinimumPurchaseLiveData.value.orZero())
+        }
+    }
+
+    @Test
+    fun `check whether getVoucherQuota is returning Rupiah voucher quota value`() {
+        with(mViewModel) {
+            val promotionType = PromotionType.Cashback.Rupiah.VoucherQuota
+            val voucherQuota = getVoucherQuota(promotionType)
+            assert(voucherQuota == mRupiahVoucherQuotaLiveData.value.orZero())
+        }
+    }
+
+    @Test
+    fun `check whether getVoucherQuota is returning Percentage voucher quota value`() {
+        with(mViewModel) {
+            val promotionType = PromotionType.Cashback.Percentage.VoucherQuota
+            val voucherQuota = getVoucherQuota(promotionType)
+            assert(voucherQuota == mPercentageVoucherQuotaLiveData.value.orZero())
+        }
+    }
+
+    @Test
+    fun `adding rupiah maximum discount text field value & set cashback type to rupiah will change voucher image value to rupiah`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
+            changeCashbackType(CashbackType.Rupiah)
+
+            assert((voucherImageValueLiveData.value as? VoucherImageType.Rupiah)?.value == DUMMY_MAX_VALUE)
+        }
+    }
+
+    @Test
+    fun `adding percentage discount amount text field value & set cashback type to percentage will change voucher image value to percentage`() {
+        with(mViewModel) {
+            changeCashbackType(CashbackType.Percentage)
+            addTextFieldValueToCalculation(DUMMY_PERCENTAGE, PromotionType.Cashback.Percentage.Amount)
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
+
+            val isSuccess = (voucherImageValueLiveData.value as? VoucherImageType.Percentage)?.run {
+                value == DUMMY_MAX_VALUE && percentage == DUMMY_PERCENTAGE
+            }
+
+            assert(isSuccess ?: false)
+        }
+    }
+
+    @Test
+    fun `adding percentage maximum discount text field value & set cashback type to percentage will change voucher image value to percentage`() {
+        with(mViewModel) {
+            changeCashbackType(CashbackType.Percentage)
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
+            addTextFieldValueToCalculation(DUMMY_PERCENTAGE, PromotionType.Cashback.Percentage.Amount)
+
+            val isSuccess = (voucherImageValueLiveData.value as? VoucherImageType.Percentage)?.run {
+                value == DUMMY_MAX_VALUE && percentage == DUMMY_PERCENTAGE
+            }
+
+            assert(isSuccess ?: false)
+        }
+    }
+
+    @Test
+    fun `check whether voucher image value change to rupiah after set cashback type & live data is not first drawn`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
+            refreshValue()
+            changeCashbackType(CashbackType.Rupiah)
+
+            assert((voucherImageValueLiveData.value as? VoucherImageType.Rupiah)?.value == DUMMY_MAX_VALUE)
+        }
+    }
+
+    @Test
+    fun `check whether voucher image value change to percentage after set cashback type & live data is not first drawn`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
+            addTextFieldValueToCalculation(DUMMY_PERCENTAGE, PromotionType.Cashback.Percentage.Amount)
+            refreshValue()
+            changeCashbackType(CashbackType.Percentage)
+
+            val isSuccess = (voucherImageValueLiveData.value as? VoucherImageType.Percentage)?.run {
+                value == DUMMY_MAX_VALUE && percentage == DUMMY_PERCENTAGE
+            }
+
+            assert(isSuccess ?: false)
+        }
     }
 
     // helper functions

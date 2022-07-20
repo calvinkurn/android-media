@@ -30,6 +30,7 @@ class CardMapper @Inject constructor(
             CardDataUiModel(
                 dataKey = it.dataKey.orEmpty(),
                 description = it.description.orEmpty(),
+                secondaryDescription = it.secondaryDescription.orEmpty(),
                 error = it.errorMsg.orEmpty(),
                 state = when (it.state) {
                     STATE_WARNING -> CardDataUiModel.State.WARNING

@@ -41,7 +41,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.rxJavaComputation
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.multiDex

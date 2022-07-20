@@ -59,6 +59,10 @@ class PreviewPagerComponent(
         return viewPager.currentItem
     }
 
+    fun pauseVideoPlayer() {
+        adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.pause()
+    }
+
     override fun release() {} //no-op
 
     private fun viewPagerListener() = object : ViewPager.OnPageChangeListener {
@@ -74,7 +78,7 @@ class PreviewPagerComponent(
 
             if (previousViewPagerIndex in 0 until adapter.count) {
                 val previousItem = medias[previousViewPagerIndex]
-                if (previousItem.data.isVideo()) {
+                if (previousItem.data.file?.isVideo() == true) {
                     previousItem.mVideoPlayer?.stop()
                 }
             }

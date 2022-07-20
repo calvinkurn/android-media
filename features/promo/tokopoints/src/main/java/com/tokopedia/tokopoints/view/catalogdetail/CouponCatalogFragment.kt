@@ -529,10 +529,10 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private fun handleQuotaColor(){
         if (context.isDarkMode()){
             quota?.background?.setColorFilter(
-                ContextCompat.getColor(activityContext,com.tokopedia.unifyprinciples.R.color.dark_R700),
+                ContextCompat.getColor(activityContext,com.tokopedia.unifyprinciples.R.color.Unify_RN100),
                 PorterDuff.Mode.SRC_IN
             )
-            quota?.setTextColor(ContextCompat.getColor(activityContext,com.tokopedia.unifyprinciples.R.color.dark_N100))
+            quota?.setTextColor(ContextCompat.getColor(activityContext,com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         }
     }
 

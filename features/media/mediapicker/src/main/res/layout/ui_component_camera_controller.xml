@@ -6,7 +6,7 @@
     android:id="@+id/uc_camera_controller"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="@color/black">
+    tools:background="@color/Unify_Static_Black">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lst_camera_mode"
@@ -96,8 +96,9 @@
             android:layout_height="@dimen/unify_space_40"
             android:layout_marginEnd="@dimen/unify_space_8"
             android:visibility="invisible"
-            tools:visibility="visible"
-            android:src="@drawable/picker_ic_camera_flash_off"/>
+            android:src="@drawable/picker_ic_camera_flash_off"
+            android:contentDescription="@string/picker_cd_flash"
+            tools:visibility="visible"/>
 
         <ImageView
             android:id="@+id/btn_flip"
@@ -105,8 +106,9 @@
             android:layout_height="@dimen/unify_space_40"
             android:layout_marginStart="@dimen/unify_space_8"
             android:visibility="invisible"
-            tools:visibility="visible"
-            android:src="@drawable/picker_ic_camera_flip_mode" />
+            android:src="@drawable/picker_ic_camera_flip_mode"
+            android:contentDescription="@string/picker_cd_flip"
+            tools:visibility="visible"/>
 
     </LinearLayout>
 

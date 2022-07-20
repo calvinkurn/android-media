@@ -17,7 +17,7 @@ class ValidateReferralUserUseCase @Inject constructor(
 
     init {
         setTypeClass(ValidateReferralUserResponse::class.java)
-        setGraphqlQuery(ValidateReferralUser.QUERY)
+        setGraphqlQuery(ValidateReferralUser)
     }
 
     suspend fun execute(slug: String): ValidateReferralUserResponse {

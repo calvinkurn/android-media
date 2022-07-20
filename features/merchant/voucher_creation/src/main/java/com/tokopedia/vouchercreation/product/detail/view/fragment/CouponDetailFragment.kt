@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
 import com.tokopedia.linker.LinkerManager
@@ -753,12 +754,13 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun displayShareBottomSheet(coupon: CouponUiModel, productImageUrls : List<String>, shop: ShopBasicDataResult) {
-        val title = String.format(getString(R.string.placeholder_share_component_outgoing_title), shop.shopName)
+        val formattedShopName = MethodChecker.fromHtml(shop.shopName).toString()
+        val title = String.format(getString(R.string.placeholder_share_component_outgoing_title), formattedShopName)
         val endDate = coupon.finishTime.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
             .parseTo(DateTimeUtils.DATE_FORMAT)
         val endHour = coupon.finishTime.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
             .parseTo(DateTimeUtils.HOUR_FORMAT)
-        val description = String.format(getString(R.string.placeholder_share_component_text_description), shop.shopName, endDate, endHour)
+        val description = String.format(getString(R.string.placeholder_share_component_text_description), formattedShopName, endDate, endHour)
 
 
         shareComponentBottomSheet = shareComponentInstanceBuilder.build(

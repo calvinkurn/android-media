@@ -5,7 +5,8 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
-import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
+import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -92,29 +93,35 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when getting favoriteNumber should run and give success result`() {
-        val response = dataFactory.getFavoriteNumberData(false)
+        val response = dataFactory.getFavoriteNumberData(true)
         val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        val favoriteNumberTypes = listOf(
+            FavoriteNumberType.CHIP,
+            FavoriteNumberType.LIST,
+            FavoriteNumberType.PREFILL
+        )
         onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumbers(listOf(), listOf())
+        viewModel.getFavoriteNumbers(listOf(), favoriteNumberTypes)
         verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
         verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
         verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
+        verifyGetFavoriteNumberPrefillEmpty()
     }
 
     @Test
     fun `when getting favoriteNumber without prefill should run and give success result`() {
         val response = dataFactory.getFavoriteNumberData(false)
         val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        val favoriteNumberTypes = listOf(FavoriteNumberType.CHIP, FavoriteNumberType.LIST)
         onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumbers(listOf(), listOf())
+        viewModel.getFavoriteNumbers(listOf(), favoriteNumberTypes)
         verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
         verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
-        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
-        verifyGetFavoriteNumberPrefillEmpty()
+        verifyGetFavoriteNumberPrefillNull()
     }
 
     @Test

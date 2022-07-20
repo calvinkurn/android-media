@@ -60,10 +60,10 @@ data class RechargeHomepageSections(
         val mediaUrl: String = "",
         @SerializedName("label_1")
         @Expose
-        val label1: String = "#FFFFFF",
+        val label1: String = "",
         @SerializedName("label_2")
         @Expose
-        val label2: String = "#FFFFFF",
+        val label2: String = "",
         @SerializedName("items")
         @Expose
         val items: List<Item> = listOf()
@@ -597,7 +597,7 @@ class RechargeHomepageRecommendationBannerModel(section: RechargeHomepageSection
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is RechargeHomepageThreeIconsModel) {
+        return if (b is RechargeHomepageRecommendationBannerModel) {
             section == b.section
         } else false
     }
@@ -612,7 +612,7 @@ class RechargeHomepageProductCardCustomLastItemModel(section: RechargeHomepageSe
     RechargeProductCardUnifyModel(section) {
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is RechargeHomepageProductCardCustomBannerV2Model) {
+        return if (b is RechargeHomepageProductCardCustomLastItemModel) {
             section == b.section
         } else false
     }
@@ -625,4 +625,20 @@ class RechargeHomepageProductCardCustomLastItemModel(section: RechargeHomepageSe
         override fun type(typeFactory: RechargeHomepageCustomLastItemAdapterTypeFactory): Int =
             typeFactory.type(this)
     }
+}
+
+class RechargeHomepageOfferingWidgetModel(val section: RechargeHomepageSections.Section) :
+    RechargeHomepageSectionModel {
+
+    override fun visitableId(): String=section.id
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageOfferingWidgetModel) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int =
+        typeFactory.type(this)
+
 }

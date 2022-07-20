@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/container"
+        android:id="@+id/container_user_profile_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/Unify_Background"
@@ -45,14 +45,14 @@
                     android:layout_marginTop="@dimen/unify_space_48"
                     android:background="@color/Unify_Background"
                     android:measureAllChildren="false"
-                    android:paddingTop="@dimen/unify_space_8"
+                    android:paddingTop="@dimen/user_profile_margin_8"
                     android:paddingBottom="@dimen/unify_space_16"
                     android:visibility="visible">
 
                     <View
                         android:id="@+id/view_profile_outer_ring"
-                        android:layout_width="@dimen/up_live_circle_size"
-                        android:layout_height="@dimen/up_live_circle_size"
+                        android:layout_width="@dimen/user_profile_live_circle_size"
+                        android:layout_height="@dimen/user_profile_live_circle_size"
                         android:background="@drawable/up_live_ring_bg"
                         android:visibility="invisible"
                         android:layout_marginStart="@dimen/unify_space_16"
@@ -61,10 +61,10 @@
 
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/img_profile_image"
-                        android:layout_width="@dimen/unify_space_64"
-                        android:layout_height="@dimen/unify_space_64"
-                        android:layout_marginTop="@dimen/unify_space_6"
-                        android:layout_marginBottom="@dimen/unify_space_6"
+                        android:layout_width="@dimen/user_profile_margin_64"
+                        android:layout_height="@dimen/user_profile_margin_64"
+                        android:layout_marginTop="@dimen/user_profile_space_6"
+                        android:layout_marginBottom="@dimen/user_profile_space_6"
                         app:layout_constraintBottom_toBottomOf="@+id/view_profile_outer_ring"
                         app:layout_constraintEnd_toEndOf="@+id/view_profile_outer_ring"
                         app:layout_constraintLeft_toLeftOf="@+id/view_profile_outer_ring"
@@ -77,7 +77,7 @@
                         android:id="@+id/text_live"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/unify_space_64"
+                        android:layout_marginTop="@dimen/user_profile_margin_64"
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:background="@drawable/bg_up_live"
                         android:gravity="center"
@@ -219,7 +219,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/unify_space_16"
-                        android:layout_marginTop="@dimen/cp_dp_2"
+                        android:layout_marginTop="@dimen/user_profile_dp_2"
                         android:textColor="@color/Unify_NN600"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/text_display_name"
@@ -313,7 +313,7 @@
                     android:layout_marginStart="@dimen/unify_space_12"
                     android:layout_marginEnd="@dimen/unify_space_12"
                     android:clipToPadding="false"
-                    android:paddingBottom="@dimen/unify_space_8"
+                    android:paddingBottom="@dimen/user_profile_margin_8"
                     tools:listitem="@layout/up_item_user_post" />
 
             <include layout="@layout/up_shimmer_user_post" />

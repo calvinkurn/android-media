@@ -80,6 +80,12 @@ object GqlQueryConstant {
             "                fax\n" +
             "            }\n" +
             "            shopHomeType\n" +
+            "            isGoApotik\n" +
+            "            epharmacyInfo{\n" +
+            "                siaNumber\n" +
+            "                sipaNumber\n" +
+            "                apj\n" +
+            "            }\n" +
             "        }"
 
     const val SHOP_INFO_FOR_OS_REQUEST_QUERY_STRING = "result {\n" +

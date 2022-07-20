@@ -29,6 +29,8 @@ data class MyCoupon(
         val imageURL: String? = "",
         @SerializedName("imageURLMobile")
         val imageURLMobile: String? = "",
+        @SerializedName("imageHalfURLMobile")
+        val imageHalfURLMobile: String? = "",
         @SerializedName("redirectURL")
         val redirectURL: String? = "",
         @SerializedName("redirectAppLink")

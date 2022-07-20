@@ -1,7 +1,10 @@
 package com.tokopedia.createpost.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -21,11 +24,17 @@ import com.tokopedia.createpost.common.view.type.ShareType
 import com.tokopedia.createpost.view.viewmodel.CreateContentPostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
+import com.tokopedia.createpost.view.util.ConnectionLiveData
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
+import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
+import com.tokopedia.feedcomponent.bottomsheets.FeedNetworkErrorBottomSheet
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.twitter_share.TwitterAuthenticator
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
@@ -42,6 +51,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var createContentPostViewModel: CreateContentPostViewModel
+    private lateinit var sheet :FeedNetworkErrorBottomSheet
 
 
     @Inject
@@ -73,9 +83,28 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setUpConnectionListener()
+
         presenter.attachView(this)
         initVar(savedInstanceState)
         fetchContentForm()
+    }
+    private fun setUpConnectionListener(){
+        val connectionLiveData = context?.let { ConnectionLiveData(it) }
+        if (!(::sheet.isInitialized)) {
+            sheet = FeedNetworkErrorBottomSheet.newInstance(true)
+        }
+        connectionLiveData?.observe(context as AppCompatActivity) {
+            if (!it) {
+                sheet.onRetry = {
+                    fetchContentForm()
+                }
+                sheet.show(childFragmentManager, "")
+            } else {
+                if (sheet.isVisible)
+                    sheet.dismiss()
+            }
+        }
     }
 
     protected open fun initVar(savedInstanceState: Bundle?) {
@@ -117,14 +146,26 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         feedContentForm: FeedContentForm,
         isFromTemplateToken: Boolean,
     ) {
-        updateHeader(feedContentForm.authors)
+        val feedAccountList = feedContentForm.authors.map {
+            FeedAccountUiModel(
+                id = it.id,
+                name = it.name,
+                iconUrl = it.thumbnail,
+                badge = it.badge,
+                type = it.type,
+                hasUsername = feedContentForm.hasUsername,
+                hasAcceptTnc = feedContentForm.hasAcceptTnc,
+            )
+        }
 
-        createPostModel.shopName = feedContentForm.authors.first().name
+        activityListener?.setFeedAccountList(feedAccountList)
+        createPostModel.shopName = feedAccountList.firstOrNull { it.isShop }?.name ?: ""
+        createPostModel.shopBadge = feedAccountList.firstOrNull { it.isShop }?.badge ?: ""
         createPostModel.token = feedContentForm.token
         createPostModel.maxImage = feedContentForm.media.maxMedia
         createPostModel.allowImage = feedContentForm.media.allowImage
         createPostModel.allowVideo = feedContentForm.media.allowVideo
-        createPostModel.maxProduct = 5
+        createPostModel.maxProduct = feedContentForm.maxTag
         createPostModel.defaultPlaceholder = feedContentForm.defaultPlaceholder
         if (createPostModel.caption.isEmpty()) createPostModel.caption = feedContentForm.caption
 
@@ -135,24 +176,33 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
                     it.type)
             })
         }
+        createPostModel.productTagSources = feedContentForm.productTagSources
         createContentPostViewModel.setNewContentData(createPostModel)
-
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(VIEW_MODEL, createPostModel)
     }
-    private fun updateHeader(authors: List<Author>) {
-            activityListener?.updateHeader(HeaderViewModel(
-                authors.first().name,
-                authors.first().thumbnail,
-                authors.first().badge
-            ))
+
+    override fun onErrorGetContentForm(message: String, throwable: Throwable?) {
+        throwable?.let {
+            if (it is UnknownHostException || it is ConnectException || it is SocketTimeoutException){
+                context?.let { it1 -> showNoConnectionBottomSheet(it1) }
+
+            }
+        }
 
     }
 
+    private fun showNoConnectionBottomSheet(context: Context) {
+        sheet = FeedNetworkErrorBottomSheet.newInstance(true)
+        sheet.onRetry = {
+            fetchContentForm()
+        }
+        sheet.show((context as FragmentActivity).supportFragmentManager, "")
 
-    override fun onErrorGetContentForm(message: String) {}
+    }
 
     override fun onErrorNoQuota() {
         //DO nothing

@@ -1,7 +1,4 @@
 <resources>
     <string name="title_recent_view">Terakhir Dilihat</string>
     <string name="title_badge_authorized">Authorized</string>
-
-    <string name="recent_view_msg_success_add_wishlist">Sukses menambah wishlist</string>
-    <string name="recent_view_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
 </resources>

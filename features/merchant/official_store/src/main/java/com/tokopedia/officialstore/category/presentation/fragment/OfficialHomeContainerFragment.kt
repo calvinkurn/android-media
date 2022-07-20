@@ -41,6 +41,7 @@ import com.tokopedia.officialstore.category.presentation.widget.OfficialCategori
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.databinding.FragmentOfficialHomeBinding
 import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.isRunningTest
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -362,6 +363,10 @@ class OfficialHomeContainerFragment
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingCategoryLayout = view.findViewById(R.id.view_category_tab_loading)
+        if (!isRunningTest()) {
+            loadingCategoryLayout?.visible()
+            binding?.viewContentLoading?.containerLoadingContent?.visible()
+        }
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)

@@ -22,6 +22,7 @@ public class LogisticConstant {
     public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_MARKETPLACE_CART";
     public static final String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
+    public static final String EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED = "EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED";
 
     public static final String INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT = "11";
     public static final String INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS = "13";

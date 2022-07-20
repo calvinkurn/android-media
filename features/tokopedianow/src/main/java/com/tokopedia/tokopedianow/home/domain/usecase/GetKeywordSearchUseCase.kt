@@ -5,7 +5,7 @@ import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
-import com.tokopedia.tokopedianow.home.domain.query.GetKeywordSearch.QUERY
+import com.tokopedia.tokopedianow.home.domain.query.GetKeywordSearch
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class GetKeywordSearchUseCase @Inject constructor(
     }
 
     init {
-        setGraphqlQuery(QUERY)
+        setGraphqlQuery(GetKeywordSearch)
         setTypeClass(KeywordSearchData::class.java)
     }
 

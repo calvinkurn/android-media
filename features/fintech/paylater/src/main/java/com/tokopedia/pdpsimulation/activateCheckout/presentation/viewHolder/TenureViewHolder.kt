@@ -24,11 +24,12 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
         tenureSelectedModel?.let {
             itemView.visible()
             itemView.apply {
-                changeViewColor(tenureSelectListener.isDisable())
+                changeViewColor(tenureDetail.tenureDisable)
                 updateData(tenureDetail)
-                if (!tenureSelectListener.isDisable()) {
+                if (!tenureDetail.tenureDisable) {
                     setTenureEnableLogic(tenureDetail, it, currentPosition)
-                } else {
+                }
+                else {
                     radioSelector.isChecked = false
                     individualTenureItemContainer.isClickable = false
                     radioSelector.isClickable = false
@@ -45,7 +46,7 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
         tenureSelectedModel: TenureSelectedModel,
         currentPosition: Int
     ) {
-        if (tenureDetail.isSelectedTenure) {
+        if (tenureDetail.isSelectedTenure && !tenureDetail.tenureDisable) {
             containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN100)
             individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
             radioSelector.isChecked = true
@@ -69,7 +70,7 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
             paymentDetailHeader.text = tenureDetail.chip_title.orEmpty()
             paymentDetailSubHeader.text = tenureDetail.description.orEmpty()
 
-            if (!tenureDetail.lable.isNullOrBlank() && !tenureSelectListener.isDisable()) {
+            if (!tenureDetail.lable.isNullOrBlank() && !tenureDetail.tenureDisable) {
                 tenureRecommendation.visibility = View.VISIBLE
                 tenureRecommendation.text = tenureDetail.lable
             } else
@@ -95,6 +96,8 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
             paymentDetailHeader.isEnabled = false
             paymentDetailSubHeader.isEnabled = false
             radioSelector.isEnabled = false
+            containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER
 
         }
     }

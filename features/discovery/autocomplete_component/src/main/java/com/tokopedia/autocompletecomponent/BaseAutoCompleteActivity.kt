@@ -36,6 +36,7 @@ import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
 import com.tokopedia.autocompletecomponent.util.removeKeys
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SRP_APPLINK
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HINT
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PLACEHOLDER
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.utils.Dimension90Utils
@@ -246,7 +247,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         val modifiedParameter = parameter.toMutableMap().apply {
             addComponentId()
             addQueryIfEmpty()
-            removeKeys(BASE_SRP_APPLINK, HINT)
+            removeKeys(BASE_SRP_APPLINK, HINT, PLACEHOLDER)
         }
 
         return "$searchResultApplink?${UrlParamHelper.generateUrlParamString(modifiedParameter)}"

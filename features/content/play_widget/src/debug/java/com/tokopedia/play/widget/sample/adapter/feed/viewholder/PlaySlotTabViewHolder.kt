@@ -18,7 +18,7 @@ class PlaySlotTabViewHolder private constructor() {
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
 
-        private val rvSlotTab: RecyclerView = itemView.findViewById(R.id.rv_labels)
+        private val rvSlotTab: RecyclerView = itemView.findViewById(R.id.rv_play_slot_tab_sample)
         private val adapter = SlotTabViewAdapter()
 
         fun bind(item: PlayWidgetSlotTabUiModel) {
@@ -40,7 +40,7 @@ class PlaySlotTabViewHolder private constructor() {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlotTabViewHolder {
                 return SlotTabViewHolder(
                     LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_play_slot_tab_card, parent, false)
+                        .inflate(R.layout.item_play_slot_tab_card_sample, parent, false)
                 )
             }
 
@@ -54,7 +54,7 @@ class PlaySlotTabViewHolder private constructor() {
 
         class SlotTabViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-            private val chip = itemView.findViewById<ChipsUnify>(R.id.cu_label)
+            private val chip = itemView.findViewById<ChipsUnify>(R.id.cu_play_label_sample)
 
             fun bind(label: Pair<String, Boolean>) {
                 chip.chipType = if (label.second) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL

@@ -7,10 +7,11 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherUrl
+import com.tokopedia.vouchercreation.databinding.ItemMvcVoucherListEmptyStateBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.EmptyStateUiModel
-import kotlinx.android.synthetic.main.item_mvc_voucher_list_empty_state.view.*
 
 /**
  * Created By @ilhamsuaib on 17/04/20
@@ -28,26 +29,28 @@ class EmptyStateViewHolder(
         val RES_LAYOUT = R.layout.item_mvc_voucher_list_empty_state
     }
 
+    private var binding: ItemMvcVoucherListEmptyStateBinding? by viewBinding()
+
     override fun bind(element: EmptyStateUiModel) {
-        with(itemView) {
+        binding?.apply {
             imgMvcEmptyState.loadImage(EMPTY_IMAGE_URL)
-            addOnImpressionListener(element.impressHolder) {
+            root.addOnImpressionListener(element.impressHolder) {
                 onImpressionListener(EmptyStateUiModel.DATA_KEY)
             }
             val title = if (element.isActiveVoucher) {
-                context.getString(R.string.mvc_no_active_voucher)
+                root.context.getString(R.string.mvc_no_active_voucher)
             } else {
-                context.getString(R.string.mvc_no_voucher_history_yet)
+                root.context.getString(R.string.mvc_no_voucher_history_yet)
             }
             imgMvcEmptyState.loadImage(VoucherUrl.NO_VOUCHER_RESULT_URL)
             tvMvcEmptyStateTitle.text = title
             tvMvcEmptyStateViewHistory.isVisible = element.isActiveVoucher
 
             if (!element.isEligible) btnMvcEmptyStateAction?.hide()
-            btnMvcEmptyStateAction?.setOnClickListener {
+            btnMvcEmptyStateAction.setOnClickListener {
                 element.onCreateVoucherClicked()
             }
-            tvMvcEmptyStateViewHistory?.setOnClickListener {
+            tvMvcEmptyStateViewHistory.setOnClickListener {
                 element.onSeeHistoryClicked()
             }
         }

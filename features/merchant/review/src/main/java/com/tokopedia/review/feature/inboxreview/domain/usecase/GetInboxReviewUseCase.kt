@@ -40,8 +40,13 @@ class GetInboxReviewUseCase @Inject constructor(
                         productPageURL
                     }
                     attachments {
+                      attachmentID
                       thumbnailURL
                       fullsizeURL
+                    }
+                    videoAttachments {
+                      attachmentID
+                      videoUrl
                     }
                     invoiceID
                     reviewText

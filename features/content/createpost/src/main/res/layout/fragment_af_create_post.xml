@@ -33,8 +33,8 @@
                 android:singleLine="false"
                 android:maxLength="2000"
                 android:scrollbars="vertical"
-                android:textColor="@color/black_54"
-                android:textCursorDrawable="@color/black"
+                android:textColor="@color/Unify_N700_44"
+                android:textCursorDrawable="@color/Unify_N700"
                 android:textSize="14sp"
                 android:layout_marginTop="16dp"
                 android:paddingBottom="16dp"
@@ -145,7 +145,7 @@
             android:ellipsize="end"
             android:lines="1"
             android:text="@string/cp_product_suggestion_title"
-            android:textColor="@color/clr_f531353b"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
 
@@ -195,7 +195,7 @@
             android:layout_marginLeft="4dp"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
-            android:textColor="@color/ae000000"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             android:text="@string/cp_label_add_product"/>
@@ -224,7 +224,7 @@
             android:layout_marginStart="16dp"
             app:typographyType="heading_4"
             android:text="@string/cp_label_add_sticker"
-            android:textColor="@color/c45000000"
+            android:textColor="@color/Unify_N700_32"
             android:visibility="gone"
             tools:visibility="visible"/>
 

@@ -17,14 +17,17 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: [self-hosted, Linux, X64, auto-scale, aws, cluster2]
+    runs-on: [self-hosted, env=staging, owner=it-security, runnerset=code-scanning-runners]
+    env: 
+      CODEQL_RAM: 4092
+      GOPRIVATE: github.com/tokopedia/*
 
     strategy:
       fail-fast: false
       matrix:
         # Override automatic language detection by changing the below list
         # Supported options are ['csharp', 'cpp', 'go', 'java', 'javascript', 'python']
-        language: ['python', 'javascript', 'java']
+        language: ['java', 'python', 'javascript']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
@@ -32,7 +35,22 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
     - run: git config --global --add url."git@github.com:".insteadOf "https://github.com/"
-
+    - name: Set Up Go
+      if: matrix.language == 'go'
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.14
+    - name: Set Up Node
+      if: matrix.language == 'javascript'
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+    - name: Set Up Python
+      if: matrix.language == 'python'
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+        architecture: 'x64'
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1

@@ -368,12 +368,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     private fun setupToolbar() {
         headerOpsHour?.apply {
-            val rightIconDrawableColor = if (context.isDarkMode()) {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N700)
-            } else {
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
-            }
-            addRightIcon(R.drawable.ic_ops_hour_header_help_circle).setColorFilter(rightIconDrawableColor)
+            val rightIconDrawableColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_help).setColorFilter(rightIconDrawableColor)
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }

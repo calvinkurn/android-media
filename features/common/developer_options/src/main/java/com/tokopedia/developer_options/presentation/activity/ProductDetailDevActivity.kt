@@ -94,5 +94,11 @@ class ProductDetailDevActivity : BaseActivity() {
                     }
             )
         }
+
+        val educationalType = findViewById<TextFieldUnify>(R.id.pdp_educational_type)
+        findViewById<UnifyButton>(R.id.pdp_educational_btn).setOnClickListener {
+            val typeData = educationalType.textFieldInput.text.toString()
+            RouteManager.route(this, ApplinkConst.PRODUCT_EDUCATIONAL, typeData)
+        }
     }
 }

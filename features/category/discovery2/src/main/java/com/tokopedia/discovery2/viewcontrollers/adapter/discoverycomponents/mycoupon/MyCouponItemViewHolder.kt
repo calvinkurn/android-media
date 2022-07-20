@@ -14,13 +14,18 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.ImageUnify
 
-private const val DEFAULT_DESIGN = 2.1
+private const val DESIGN_1 = 1.0
+private const val DESIGN_2 = 2.1
+private const val ASPECT_RATIO_3_TO_1 = 3
+private const val ASPECT_RATIO_2_TO_1 = 2
 
 class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView,fragment.viewLifecycleOwner) {
 
     private lateinit var myCouponItemViewModel: MyCouponItemViewModel
     private val myCouponImage: ImageUnify = itemView.findViewById(R.id.image_my_coupon)
     private val displayMetrics = Utils.getDisplayMetric(fragment.context)
+
+    private var defaultDesign = DESIGN_2
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         myCouponItemViewModel = discoveryBaseViewModel as MyCouponItemViewModel
@@ -47,15 +52,27 @@ class MyCouponItemViewHolder(itemView: View, private val fragment: Fragment) : A
         }
     }
 
-    private fun setupImage(couponItem: MyCoupon?){
+    private fun setupImage(couponItem: MyCoupon?) {
         try {
             val layoutParams: ViewGroup.LayoutParams = myCouponImage.layoutParams
+            val aspectRatio: Int
+            if (myCouponItemViewModel.getCouponListSize() == 1) {
+                defaultDesign = DESIGN_1
+                aspectRatio = ASPECT_RATIO_3_TO_1
+                myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageURLMobile)
+            } else {
+                defaultDesign = DESIGN_2
+                aspectRatio = ASPECT_RATIO_2_TO_1
+                if (!couponItem?.imageHalfURLMobile.isNullOrEmpty()) {
+                    myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageHalfURLMobile)
+                } else {
+                    myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageURLMobile)
+                }
+            }
             layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.my_coupon_gap))
-                    / DEFAULT_DESIGN).toInt()
-                val aspectRatio = 2 / 1
-                layoutParams.height = (layoutParams.width / aspectRatio)
+                    / defaultDesign).toInt()
+            layoutParams.height = (layoutParams.width / aspectRatio)
             myCouponImage.layoutParams = layoutParams
-            myCouponImage.loadImageWithoutPlaceholder(couponItem?.imageURLMobile)
         } catch (exception: NumberFormatException) {
             exception.printStackTrace()
         }

@@ -36,7 +36,7 @@ public interface ApplinkConst {
     String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String PRODUCT_BUNDLE = "tokopedia://product-bundle/{product_id}";
     String GIFTING = "tokopedia://gifting/{addon_id}";
-    String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
+    String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review?review-source={source}";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
     String SHOP_HOME = "tokopedia://shop/{shop_id}/home";
@@ -55,6 +55,7 @@ public interface ApplinkConst {
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
+    String PRODUCT_EDUCATIONAL = "tokopedia://product-edu/{type}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String ADD_PATH = "add";
@@ -119,6 +120,7 @@ public interface ApplinkConst {
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
+    String ADD_PHONE = "tokopedia://add-phone";
     String OTP = "tokopedia://otp";
     String QR_LOGIN = "tokopedia://login/qr";
     String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
@@ -183,6 +185,9 @@ public interface ApplinkConst {
     String HOWTOPAY = "tokopedia://howtopay";
     String GOLD_MERCHANT_STATISTIC_DASHBOARD = "tokopedia://gold-merchant-statistic-dashboard";
     String SHOP_SCORE_DETAIL = "tokopedia://shop-score-detail";
+    String ADMIN_INVITATION = "tokopedia://shop-admin/invitation-page";
+    String ADMIN_ACCEPTED = "tokopedia://shop-admin/accepted-page";
+    String ADMIN_REDIRECTION = "tokopedia://shop-admin/redirection-page";
     String SHOP_SCORE_DETAIL_ACKNOWLEDGE_INTERRUPT = "tokopedia://shop-score-detail/acknowledge-interrupt";
 
     String EVENTS = "tokopedia://events";
@@ -239,11 +244,10 @@ public interface ApplinkConst {
 
     String OVO_REGISTER_INIT = "tokopedia://ovo-reg-init";
     String OVO_FINAL_PAGE = "tokopedia://ovo-final";
-    String HOST_OVOUPGRADE = "ovoupgrade";
-    String OVOUPGRADE = "tokopedia://ovoupgrade";
-    String OVOUPGRADE_STATUS = "tokopedia://ovoupgradestatus/{status}/{message}";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
+    String LOGISTIC_SELLER_RESCHEDULE = "tokopedia://seller/reschedulepickup";
+    String ORDER_POD = "tokopedia://shipping/pod/{order_id}";
 
     String LINK_ACCOUNT = "tokopedia://gojek-account-link";
     String EXPLICIT_PROFILE = "tokopedia://explicit-profile";
@@ -262,6 +266,7 @@ public interface ApplinkConst {
     String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
     String CONTACT_US = "tokopedia://contact-us";
     String CONTACT_US_NATIVE = "tokopedia://contactus";
+    String TOKOPEDIA_CARE_HELP = "tokopedia://webview?url=https://www.tokopedia.com/help/seller";
 
     String ORDER_LIST = "tokopedia://order";
     String ORDER_LIST_WEBVIEW = "tokopedia://order_list";
@@ -334,6 +339,8 @@ public interface ApplinkConst {
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
     String AFFILIATE = "tokopedia://affiliate";
+    String FEED_CREATION_PRODUCT_SEARCH = "tokopedia://feed/creation-product-search";
+    String FEED_CREATION_SHOP_SEARCH = "tokopedia://feed/creation-shop-search";
 
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
     String PLAY_BROADCASTER = "tokopedia://play-broadcaster";
@@ -344,6 +351,7 @@ public interface ApplinkConst {
     String RESET_PASSWORD = "tokopedia://resetpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
+    String INPUT_INACTIVE_NUMBER = "tokopedia://inputinactivenumber";
     String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
     String ADD_FINGERPRINT_ONBOARDING = "tokopedia://add-fingerprint-onboarding";
 
@@ -354,7 +362,7 @@ public interface ApplinkConst {
     String KYC_FORM_NO_PARAM = "tokopedia://kyc-form";
     String KYC_FORM = "tokopedia://kyc-form?projectId={projectId}";
     String KYC_FORM_ONLY_NO_PARAM = "tokopedia://user-identification-only";
-    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}";
+    String KYC_FORM_ONLY = "tokopedia://user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}&type={type}";
 
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
@@ -376,7 +384,7 @@ public interface ApplinkConst {
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
-    
+
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
     String PM_BENEFIT_PACKAGE = "tokopedia://power_merchant/benefit_package";
     String POWER_MERCHANT_PRO_INTERRUPT = "tokopedia://power_merchant/interrupt";
@@ -428,6 +436,8 @@ public interface ApplinkConst {
     String SHARING_HOST = "sharing";
     String GLOBAL_SHARING = "tokopedia://sharing?text={text}&image={image}&type={type}";
 
+    String WEB_HOST = "www.tokopedia.com";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
@@ -469,8 +479,6 @@ public interface ApplinkConst {
 
     String MONEYIN = "tokopedia://money_in/device_validation";
     String IMAGE_PICKER_V2 = "tokopedia://image-picker/v2";
-    String USER_PROFILE_LANDING = "tokopedia://people";
-    String USER_PROFILE_FOLLOWERS = "tokopedia://people/followers";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
@@ -524,6 +532,11 @@ public interface ApplinkConst {
         String TOPADS_CREATE_MANUAL_ADS = "tokopedia://topads/create-manual-ads";
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
+        String SHOP_DISCOUNT = "sellerapp://shop-discount";
+        String TOKOMEMBER = "sellerapp://tokomember";
+        String ADMIN_INVITATION = "sellerapp://shop-admin/invitation-page";
+        String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
+        String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
     }
 
     interface TokopediaNow {
@@ -534,6 +547,15 @@ public interface ApplinkConst {
         String SEARCH = "tokopedia://now/search";
         String CATEGORY = "tokopedia://now/category";
         String REPURCHASE = "tokopedia://now/repurchase-page";
+    }
+
+    interface TokoFood {
+        String MAIN_PATH = "tokopedia://food";
+        String HOME = "tokopedia://food/home";
+        String CATEGORY = "tokopedia://food/category";
+        String MERCHANT = "tokopedia://food/merchant/{merchantId}?product_id={product_id}";
+        String POST_PURCHASE = "tokopedia://food/postpurchase/{orderId}";
+        String TOKOFOOD_ORDER = "tokopedia://food/order";
     }
 
     interface TokoMart {

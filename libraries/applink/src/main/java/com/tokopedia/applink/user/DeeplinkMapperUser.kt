@@ -14,30 +14,41 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 object DeeplinkMapperUser {
 
     fun getRegisteredNavigationUser(context: Context, deeplink: String): String {
-	val uri = Uri.parse(deeplink)
-	return when {
-	    deeplink.startsWith(ApplinkConst.CHANGE_INACTIVE_PHONE) -> deeplink.replace(ApplinkConst.CHANGE_INACTIVE_PHONE, ApplinkConstInternalUserPlatform.CHANGE_INACTIVE_PHONE)
-	    deeplink == ApplinkConst.ADD_PIN_ONBOARD -> ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING
-	    deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
-	    deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
-	    deeplink == ApplinkConst.SETTING_PROFILE -> getSettingProfileApplink(context)
-		deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getSettingProfileApplink(context)
-	    else -> deeplink
-	}
+        val uri = Uri.parse(deeplink)
+        return when {
+            deeplink.startsWith(ApplinkConst.CHANGE_INACTIVE_PHONE) -> deeplink.replace(
+                ApplinkConst.CHANGE_INACTIVE_PHONE,
+                ApplinkConstInternalUserPlatform.CHANGE_INACTIVE_PHONE
+            )
+            deeplink == ApplinkConst.ADD_PIN_ONBOARD -> ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING
+            deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
+            deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
+            deeplink == ApplinkConst.SETTING_PROFILE -> getSettingProfileApplink(context)
+            deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getSettingProfileApplink(
+                context
+            )
+            deeplink == ApplinkConst.INPUT_INACTIVE_NUMBER -> ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER
+            deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalGlobal.ADD_PHONE
+            else -> deeplink
+        }
     }
 
     private fun getSettingProfileApplink(context: Context): String {
-        return if(isUseNewProfile(context)) {
+        return if (isUseNewProfile(context)) {
             ApplinkConstInternalUserPlatform.NEW_PROFILE_INFO
-	} else ApplinkConstInternalUserPlatform.SETTING_PROFILE
+        } else ApplinkConstInternalUserPlatform.SETTING_PROFILE
     }
 
     private fun isUseNewProfile(context: Context): Boolean {
-	val remoteConfig = FirebaseRemoteConfigInstance.get(context)
-	val remoteConfigValue = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO , true)
-	return (remoteConfigValue && getAbTestPlatform().getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP).isNotEmpty())
+        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
+        val remoteConfigValue =
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO, true)
+        return (remoteConfigValue && getAbTestPlatform().getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP)
+            .isNotEmpty())
     }
 
-	private fun getAbTestPlatform(): AbTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+    private fun getAbTestPlatform(): AbTestPlatform =
+        RemoteConfigInstance.getInstance().abTestPlatform
+
 
 }

@@ -43,6 +43,6 @@ class CpmViewHolder(
         }
     }
     override fun bind(element: CpmDataView) {
-        binding?.adsBanner?.displayAds(element.cpmModel)
+        binding?.adsBanner?.displayHeadlineAds(element.cpmModel)
     }
 }

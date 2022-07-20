@@ -7,4 +7,6 @@ interface ChooseAddressListener {
     fun onLocalizingAddressSelected()
 
     fun getFragment(): Fragment
+
+    fun trackingEventLabel(): String
 }

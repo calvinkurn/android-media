@@ -32,13 +32,13 @@ class TopAdsImageViewUseCase constructor(
         queryMap[ADS_TYPE] = "banner"
         queryMap[DEVICE_TYPE] = "android"
         queryMap[SOURCE] = source
-        queryMap[PAGE_TOKEN] = pageToken
         queryMap[ADS_COUNT] = adsCount
         queryMap[DIMEN_ID] = dimenId
         if (page.isNotEmpty()) queryMap[PAGE] = page
         if (query.isNotEmpty()) queryMap[QUERY] = query
         if (depId.isNotEmpty()) queryMap[DEP_ID] = depId
         if (productID.isNotEmpty()) queryMap[PRODUCT_ID] = productID
+        if (pageToken.isNotEmpty()) queryMap[PAGE_TOKEN] = pageToken
 
         return queryMap
     }

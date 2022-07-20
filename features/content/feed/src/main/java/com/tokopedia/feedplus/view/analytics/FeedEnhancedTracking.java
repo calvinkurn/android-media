@@ -89,17 +89,17 @@ public class FeedEnhancedTracking {
         public static final String TRACKING_NONE = "none";
         public static final String TRACKING_EMPTY = "-";
 
-        int id;
+        String id;
         String name;
         String creative;
         String creativeUrl = "";
         int position;
         String category;
-        int promoId;
+        String promoId;
         String promoCode;
 
-        public Promotion(int id, String name, String creative, int position,
-                         String category, int promoId, String promoCode) {
+        public Promotion(String id, String name, String creative, int position,
+                         String category, String promoId, String promoCode) {
             this.id = id;
             this.name = name;
             this.creative = creative;
@@ -109,8 +109,8 @@ public class FeedEnhancedTracking {
             this.promoCode = promoCode;
         }
 
-        public Promotion(int id, String name, String creative, String creativeUrl, int position,
-                         String category, int promoId, String promoCode) {
+        public Promotion(String id, String name, String creative, String creativeUrl, int position,
+                         String category, String promoId, String promoCode) {
             this.id = id;
             this.name = name;
             this.creative = creative;
@@ -121,7 +121,7 @@ public class FeedEnhancedTracking {
             this.promoCode = promoCode;
         }
 
-        public int getId() {
+        public String getId() {
             return id;
         }
 
@@ -145,7 +145,7 @@ public class FeedEnhancedTracking {
             return category;
         }
 
-        public int getPromoId() {
+        public String getPromoId() {
             return promoId;
         }
 

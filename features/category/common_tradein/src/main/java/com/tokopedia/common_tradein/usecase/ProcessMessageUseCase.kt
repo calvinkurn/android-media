@@ -22,7 +22,7 @@ class ProcessMessageUseCase @Inject constructor(
     ): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
         try {
-            val imei = ArrayList<String>()
+            val imei = ArrayList<String?>()
             imei.add(diagnostics.imei)
             val deviceAttr = DeviceAttr()
             deviceAttr.brand = diagnostics.brand

@@ -11,7 +11,7 @@
         android:id="@+id/navigation_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/green_50"
+        android:background="@color/Unify_GN50"
         android:minHeight="?actionBarSize"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"

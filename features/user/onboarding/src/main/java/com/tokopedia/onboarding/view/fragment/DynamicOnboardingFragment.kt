@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.logger.utils.globalScopeLaunch
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
@@ -30,8 +31,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import javax.inject.Inject
@@ -118,10 +118,13 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     @NotNull
     private fun executeViewCreateFlow(): Boolean {
-        GlobalScope.launch(Dispatchers.Main) {
+        globalScopeLaunch({
+            withContext(Dispatchers.Main) {
+                initView()
+            }
+        }, onFinish = {
             trackPreInstall()
-            initView()
-        }
+        })
         return true
     }
 

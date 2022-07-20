@@ -25,7 +25,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBinding
-import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.unifycomponents.TimerUnify
 import com.tokopedia.unifycomponents.toPx
@@ -121,7 +121,7 @@ class ShopHomeNplCampaignViewHolder(
             if (productList.isNotEmpty()) {
                 layoutParams?.width = clickableBannerAreaWidth
                 setOnClickListener {
-                    shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(model)
+                    shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(model, adapterPosition)
                 }
                 show()
             } else {

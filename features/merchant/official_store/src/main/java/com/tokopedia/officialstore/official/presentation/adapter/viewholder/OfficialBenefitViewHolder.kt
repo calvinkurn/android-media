@@ -10,6 +10,7 @@ import com.tokopedia.officialstore.databinding.ViewmodelOfficialBenefitBinding
 import com.tokopedia.officialstore.official.data.model.Benefit
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
 import com.tokopedia.officialstore.official.presentation.widget.BenefitAdapter
+import com.tokopedia.officialstore.official.presentation.widget.OfficialBenefitItemDecoration
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OfficialBenefitViewHolder(view: View) : AbstractViewHolder<OfficialBenefitDataModel>(view) {
@@ -21,6 +22,7 @@ class OfficialBenefitViewHolder(view: View) : AbstractViewHolder<OfficialBenefit
         if(adapter == null){
             adapter = BenefitAdapter(itemView.context)
             binding?.recyclerviewOfficialBenefit?.adapter = adapter
+            binding?.recyclerviewOfficialBenefit?.addItemDecoration(OfficialBenefitItemDecoration())
         }
         element.benefit.let {
             adapter?.benefitList = it

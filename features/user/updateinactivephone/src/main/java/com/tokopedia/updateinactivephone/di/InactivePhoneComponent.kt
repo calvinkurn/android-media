@@ -6,6 +6,8 @@ import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneViewModelModule
 import com.tokopedia.updateinactivephone.features.InactivePhoneActivity
 import com.tokopedia.updateinactivephone.features.accountlist.InactivePhoneAccountListActivity
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.activity.InputOldPhoneNumberActivity
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.fragment.InputOldPhoneNumberFragment
 import com.tokopedia.updateinactivephone.features.onboarding.BaseInactivePhoneOnboardingFragment
 import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneOnboardingFragment
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseInactivePhoneSubmitDataFragment
@@ -27,4 +29,7 @@ interface InactivePhoneComponent {
     fun inject(fragment: BaseInactivePhoneSubmitDataFragment)
     fun inject(fragment: InactivePhoneOnboardingFragment)
     fun inject(fragment: InactivePhoneDataUploadFragment)
+
+    fun inject(activity: InputOldPhoneNumberActivity)
+    fun inject(fragment: InputOldPhoneNumberFragment)
 }
