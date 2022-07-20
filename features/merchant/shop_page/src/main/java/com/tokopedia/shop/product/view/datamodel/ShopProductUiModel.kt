@@ -46,7 +46,7 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     var productInCart: Int = 0
     var isVariant: Boolean = false
     var isNewData: Boolean = false
-    var stock: Int = 0
+    var stock: Long = 0
     var minimumOrder: Int = 0
     var maximumOrder: Int = 0
     var parentId: String = ""

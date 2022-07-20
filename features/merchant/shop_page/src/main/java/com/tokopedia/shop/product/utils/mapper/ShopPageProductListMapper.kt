@@ -81,7 +81,7 @@ object ShopPageProductListMapper {
                     it.etalaseId = etalaseId
                     it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                     it.etalaseType = etalaseType
-                    it.stock = stock
+                    it.stock = stock.toLong()
                     when (it.etalaseType) {
                         ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
                             it.isUpcoming  = campaign.isUpcoming
@@ -132,7 +132,7 @@ object ShopPageProductListMapper {
         shopProductUiModel: ShopProductUiModel,
         shopProduct: ShopProduct
     ) {
-        shopProductUiModel.stock = shopProduct.campaign.customStock.takeIf {!it.isZero()} ?: shopProduct.stock
+        shopProductUiModel.stock = shopProduct.campaign.customStock.toLongOrZero().takeIf {!it.isZero()} ?: shopProduct.stock.toLong()
         shopProductUiModel.isSoldOut = shopProductUiModel.stock.isZero()
         shopProductUiModel.maximumOrder = shopProduct.campaign.maxOrder
     }
@@ -298,7 +298,7 @@ object ShopPageProductListMapper {
             nonVariant = ProductCardModel.NonVariant(
                 quantity = shopProductUiModel.productInCart,
                 minQuantity = shopProductUiModel.minimumOrder,
-                maxQuantity = shopProductUiModel.stock
+                maxQuantity = shopProductUiModel.maximumOrder
             )
         )
     }
