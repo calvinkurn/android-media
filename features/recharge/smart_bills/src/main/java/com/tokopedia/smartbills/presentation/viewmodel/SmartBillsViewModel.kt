@@ -2,7 +2,6 @@ package com.tokopedia.smartbills.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
@@ -18,7 +17,21 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.smartbills.data.*
+import com.tokopedia.smartbills.data.DataRechargeMultiCheckoutResponse
+import com.tokopedia.smartbills.data.MultiCheckoutRequest
+import com.tokopedia.smartbills.data.RechargeBills
+import com.tokopedia.smartbills.data.RechargeCatalogMenuAddBills
+import com.tokopedia.smartbills.data.RechargeCloseParams
+import com.tokopedia.smartbills.data.RechargeCloseResponse
+import com.tokopedia.smartbills.data.RechargeDeleteSBM
+import com.tokopedia.smartbills.data.RechargeListSmartBills
+import com.tokopedia.smartbills.data.RechargeMultiCheckoutResponse
+import com.tokopedia.smartbills.data.RechargeMultipleSBMBill
+import com.tokopedia.smartbills.data.RechargeRecommendationData
+import com.tokopedia.smartbills.data.RechargeRecommendationResponse
+import com.tokopedia.smartbills.data.RechargeSBMDeleteBillRequest
+import com.tokopedia.smartbills.data.RechargeStatementMonths
+import com.tokopedia.smartbills.data.SmartBillsCatalogMenu
 import com.tokopedia.smartbills.data.uimodel.HighlightCategoryUiModel
 import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.mapActiontoStatement

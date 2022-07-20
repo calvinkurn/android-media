@@ -39,7 +39,13 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
-import com.tokopedia.smartbills.data.*
+import com.tokopedia.smartbills.data.RechargeBills
+import com.tokopedia.smartbills.data.RechargeBillsModel
+import com.tokopedia.smartbills.data.RechargeListSmartBills
+import com.tokopedia.smartbills.data.RechargeSBMDeleteBillRequest
+import com.tokopedia.smartbills.data.RechargeStatementMonths
+import com.tokopedia.smartbills.data.Section
+import com.tokopedia.smartbills.data.SmartBillsCatalogMenu
 import com.tokopedia.smartbills.data.uimodel.HighlightCategoryUiModel
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.activity.SmartBillsActivity
@@ -692,7 +698,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 setPrimaryCTAClickListener{
                     smartBillsAnalytics.clickConfirmHapusTagihan()
                     dismiss()
-                    viewModel.deleteProductSBM(viewModel.createParamDeleteSBM(RechargeSBMDeleteBillRequest(bill.uuid, SOURCE)))
+                    viewModel.deleteProductSBM(viewModel.createParamDeleteSBM(
+                        RechargeSBMDeleteBillRequest(bill.uuid, SOURCE)
+                    ))
                 }
 
                 setSecondaryCTAClickListener{
