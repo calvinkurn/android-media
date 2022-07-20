@@ -59,7 +59,7 @@ object PromoCreationStaticData {
                 } else {
                     ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
                 }
-            ),
+            )
         )
 
         if (isSlashPriceEnabled) {
@@ -154,7 +154,6 @@ object PromoCreationStaticData {
                 )
             )
         }
-
         return PromoCreationListUiModel(
             items = promoItems,
             errorMessage = ""

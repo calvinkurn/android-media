@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -23,14 +25,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
-import com.tokopedia.shop.flashsale.common.extension.disable
-import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
-import com.tokopedia.shop.flashsale.common.extension.enable
-import com.tokopedia.shop.flashsale.common.extension.setFragmentToUnifyBgColor
-import com.tokopedia.shop.flashsale.common.extension.showError
-import com.tokopedia.shop.flashsale.common.extension.showToaster
-import com.tokopedia.shop.flashsale.common.extension.slideDown
-import com.tokopedia.shop.flashsale.common.extension.slideUp
+import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
@@ -46,26 +41,28 @@ import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ShopClos
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.showSuccessSaveCampaignDraft
 import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
-import com.tokopedia.shop.flashsale.presentation.list.list.listener.RecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.MainScope
 import javax.inject.Inject
 
 class ManageProductFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val SECOND_STEP = 2
         private const val PAGE_SIZE = 50
         private const val LIST_TYPE = 0
         private const val RECYCLERVIEW_ITEM_FIRST_INDEX = 0
-        private const val DELAY = 1000L
+        private const val DELAY = 500L
         private const val REQUEST_CODE = 123
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
         private const val INCOMPLETE_PRODUCT_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/product_incomplete.png"
         private const val SCROLL_ANIMATION_DELAY = 500L
+
+        private const val GUIDELINE_MARGIN_FOOTER_MIN = 0
+        private const val GUIDELINE_MARGIN_HEADER_MIN = 0
 
         @JvmStatic
         fun newInstance(campaignId: Long, pageMode: PageMode): ManageProductFragment {
@@ -86,8 +83,12 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductViewModel::class.java) }
-    private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orZero() }
-    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE }
+    private val campaignId by lazy {
+        arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orZero()
+    }
+    private val pageMode by lazy {
+        arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
+    }
 
     private val manageProductListAdapter by lazy {
         ManageProductListAdapter(
@@ -96,6 +97,17 @@ class ManageProductFragment : BaseDaggerFragment() {
         )
     }
     private var binding by autoClearedNullable<SsfsFragmentManageProductBinding>()
+
+    private var guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
+    private var guidelineMarginFooterMax = GUIDELINE_MARGIN_FOOTER_MIN
+    private var guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+    private var guidelineMarginHeaderMax = GUIDELINE_MARGIN_HEADER_MIN
+
+    private val animateScrollDebounce: (Int) -> Unit by lazy {
+        debounce(SCROLL_ANIMATION_DELAY, lifecycleScope) {
+            view?.post { animateScroll(it) }
+        }
+    }
 
     override fun getScreenName(): String = ManageProductFragment::class.java.canonicalName.orEmpty()
 
@@ -130,13 +142,6 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun setupView() {
         binding?.apply {
-            header.headerSubTitle = String.format(
-                getString(R.string.sfs_placeholder_step_counter),
-                SECOND_STEP
-            )
-            header.setNavigationOnClickListener {
-                activity?.finish()
-            }
             tpgAddProduct.setOnClickListener {
                 if (manageProductListAdapter.itemCount < PAGE_SIZE) {
                     showChooseProductPage()
@@ -173,7 +178,8 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun handleCoachMark() {
         val shouldShowCoachMark = !sharedPreference.isManageProductCoachMarkDismissed()
-        if (shouldShowCoachMark && manageProductListAdapter.itemCount.isMoreThanZero()) {
+        val hasProduct = manageProductListAdapter.itemCount.isMoreThanZero()
+        if (shouldShowCoachMark && !viewModel.getIsCoachMarkShown() && hasProduct) {
             showCoachMark()
         }
     }
@@ -290,21 +296,46 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun setupScrollListener() {
         binding?.apply {
-            recyclerViewProduct.addOnScrollListener(
-                RecyclerViewScrollListener(
-                    onScrollDown = {
-                        doOnDelayFinished(SCROLL_ANIMATION_DELAY) {
-                            handleScrollDownEvent()
-                        }
-                    },
-                    onScrollUp = {
-                        doOnDelayFinished(SCROLL_ANIMATION_DELAY) {
-                            handleScrollUpEvent()
-                        }
-                    }
-                )
-            )
+            guidelineMarginHeaderMax = guidelineHeader.getGuidelineBegin().orZero()
+            guidelineMarginFooterMax = guidelineFooter.getGuidelineEnd().orZero()
+            guidelineMarginHeader = guidelineMarginHeaderMax
+            guidelineMarginFooter = guidelineMarginFooterMax
+
+            recyclerViewProduct.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    guidelineMarginHeader -= dy
+                    guidelineMarginFooter -= dy
+                    setGuidelineMinAndMax()
+                    setGuidelineHeader()
+                    setGuidelineFooter()
+                    animateScrollDebounce.invoke(dy)
+                }
+            })
         }
+    }
+
+    private fun setGuidelineMinAndMax() {
+        if (guidelineMarginHeader < GUIDELINE_MARGIN_HEADER_MIN)
+            guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+        if (guidelineMarginHeader > guidelineMarginHeaderMax)
+            guidelineMarginHeader = guidelineMarginHeaderMax
+        if (guidelineMarginFooter < GUIDELINE_MARGIN_FOOTER_MIN)
+            guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
+        if (guidelineMarginFooter > guidelineMarginFooterMax)
+            guidelineMarginFooter = guidelineMarginFooterMax
+    }
+
+    private fun setGuidelineHeader() {
+        if (viewModel.bannerType.value == HIDE_BANNER) {
+            binding?.guidelineHeader?.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
+        } else {
+            binding?.guidelineHeader?.setGuidelineBegin(guidelineMarginHeader)
+        }
+    }
+
+    private fun setGuidelineFooter() {
+        binding?.guidelineFooter?.setGuidelineEnd(guidelineMarginFooter)
     }
 
     private fun showEmptyState() {
@@ -393,6 +424,7 @@ class ManageProductFragment : BaseDaggerFragment() {
 
                     val coachMark = activity?.let { it -> CoachMark2(it) }
                     coachMark?.showCoachMark(coachMarkItems)
+                    viewModel.setIsCoachMarkShown(true)
                     coachMark?.onFinishListener = {
                         sharedPreference.markManageProductCoachMarkComplete()
                     }
@@ -462,42 +494,6 @@ class ManageProductFragment : BaseDaggerFragment() {
         CampaignListActivity.start(context, isSaveDraft = true, previousPageMode = pageMode)
     }
 
-    private fun handleScrollDownEvent() {
-        binding?.apply {
-            when (viewModel.bannerType.value) {
-                EMPTY_BANNER -> {
-                    cardIncompleteProductInfo.slideDown()
-                }
-                ERROR_BANNER -> {
-                    tickerErrorProductInfo.slideDown()
-                }
-                else -> {
-                    cardIncompleteProductInfo.gone()
-                    tickerErrorProductInfo.gone()
-                }
-            }
-            cardBottomButtonGroup.slideDown()
-        }
-    }
-
-    private fun handleScrollUpEvent() {
-        binding?.apply {
-            when (viewModel.bannerType.value) {
-                EMPTY_BANNER -> {
-                    cardIncompleteProductInfo.slideUp()
-                }
-                ERROR_BANNER -> {
-                    tickerErrorProductInfo.slideUp()
-                }
-                else -> {
-                    cardIncompleteProductInfo.gone()
-                    tickerErrorProductInfo.gone()
-                }
-            }
-            cardBottomButtonGroup.slideUp()
-        }
-    }
-
     private fun showShopClosedDialog() {
         val dialog = ShopClosedDialog(primaryCTAAction = ::goToShopSettings)
         dialog.setOnDismissListener {
@@ -519,6 +515,53 @@ class ManageProductFragment : BaseDaggerFragment() {
                 doOnDelayFinished(DELAY) {
                     viewModel.getProducts(campaignId, LIST_TYPE)
                 }
+            }
+        }
+    }
+
+    private fun animateScroll(scrollingAmount: Int) {
+        if (scrollingAmount.isMoreThanZero()) {
+            handleScrollDown()
+        } else {
+            handleScrollUp()
+        }
+    }
+
+    private fun handleScrollDown() {
+        binding?.apply {
+            guidelineHeader.animateSlide(
+                guidelineMarginHeader,
+                GUIDELINE_MARGIN_HEADER_MIN,
+                true
+            )
+            guidelineFooter.animateSlide(
+                guidelineMarginFooter,
+                GUIDELINE_MARGIN_FOOTER_MIN,
+                false
+            )
+            guidelineMarginFooter = GUIDELINE_MARGIN_FOOTER_MIN
+            guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+        }
+    }
+
+    private fun handleScrollUp() {
+        binding?.apply {
+            if (viewModel.bannerType.value == HIDE_BANNER) {
+                guidelineHeader.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
+                guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+            } else {
+                guidelineHeader.animateSlide(
+                    guidelineMarginHeader,
+                    guidelineMarginHeaderMax,
+                    true
+                )
+                guidelineFooter.animateSlide(
+                    guidelineMarginFooter,
+                    guidelineMarginFooterMax,
+                    false
+                )
+                guidelineMarginFooter = guidelineMarginFooterMax
+                guidelineMarginHeader = guidelineMarginHeaderMax
             }
         }
     }

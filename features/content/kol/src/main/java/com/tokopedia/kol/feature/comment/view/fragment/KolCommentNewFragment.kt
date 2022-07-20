@@ -290,11 +290,10 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             kolComment?.append(userToMention)
         } else {
             val mentionFormatBuilder = StringBuilder()
-            if (kolComment?.text?.isNotEmpty() == true && kolComment?.text?.get(
-                    kolComment?.length()
-                        ?: 1 - 1
-                ) != ' '
-            ) mentionFormatBuilder.append(" ")
+            val isCommentNotEmpty = kolComment?.text?.isNotEmpty() == true
+            val isLastCharNotBlank = if (isCommentNotEmpty) kolComment?.text?.last() != ' ' else false
+            if (isLastCharNotBlank) mentionFormatBuilder.append(" ")
+
             mentionFormatBuilder
                 .append("@")
                 .append(MethodChecker.fromHtml(user?.fullName))
