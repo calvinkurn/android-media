@@ -38,6 +38,7 @@ import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
+import com.yalantis.ucrop.callback.BitmapCropCallback
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.lang.Exception
@@ -111,6 +112,7 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onRotateValueChanged(value: Float) {
         rotateFilterRepositoryImpl.rotate(rotateComponent.ucropView.cropImageView, value)
+        data.rotateValue = value
     }
 
     override fun initObserver() {
@@ -272,7 +274,7 @@ class DetailEditorFragment @Inject constructor(
 
         viewBinding?.btnSave?.setOnClickListener {
             saveImage()
-            editingSave()
+            if(data.editorToolType != EditorToolType.ROTATE) editingSave()
         }
     }
 
@@ -286,10 +288,38 @@ class DetailEditorFragment @Inject constructor(
         activity?.finish()
     }
 
+    private fun crop(){
+        rotateComponent.ucropView.cropImageView.viewBitmap
+        rotateComponent.ucropView.cropImageView.cropAndSaveImage(
+            Bitmap.CompressFormat.PNG,
+            100,
+            object: BitmapCropCallback {
+                override fun onBitmapCropped(
+                    resultUri: Uri,
+                    offsetX: Int,
+                    offsetY: Int,
+                    imageWidth: Int,
+                    imageHeight: Int
+                ) {
+                    data.resultUrl = resultUri.path
+                    editingSave()
+                }
+
+                override fun onCropFailure(t: Throwable) {
+                    val x = 0
+                }
+            }
+        )
+    }
+
     private fun saveImage() {
         viewBinding?.let {
             try {
-                val bitmap = it.imgPreview.drawToBitmap()
+                val bitmap = if (data.editorToolType == EditorToolType.ROTATE) {
+                    crop()
+                    return@let
+                } else
+                    it.imgPreview.drawToBitmap()
 
                 val file = getDestinationUri(requireContext()).toFile()
                 file.createNewFile()
