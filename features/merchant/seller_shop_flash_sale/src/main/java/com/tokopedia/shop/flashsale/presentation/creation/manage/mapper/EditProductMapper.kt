@@ -18,7 +18,7 @@ object EditProductMapper {
     ): DoSellerCampaignProductSubmissionRequest.ProductData {
         val finalPrice = price.orZero()
         val finalStock = stock.orDefaultStock(this)
-        val finalMaxOrder = maxOrder.orDefaultMaxOrder(this)
+        val finalMaxOrder = maxOrder.orDefaultMaxOrder(finalStock)
 
         return DoSellerCampaignProductSubmissionRequest.ProductData(
             productId = productId,
@@ -40,8 +40,8 @@ object EditProductMapper {
         return this ?: input.originalStock
     }
 
-    private fun Int?.orDefaultMaxOrder(input: EditProductInputModel): Int {
-        return this ?: input.originalStock.toInt()
+    private fun Int?.orDefaultMaxOrder(finalStock: Long): Int {
+        return this ?: finalStock.toInt()
     }
 
     fun map(productInput: EditProductInputModel?) = productInput?.let {

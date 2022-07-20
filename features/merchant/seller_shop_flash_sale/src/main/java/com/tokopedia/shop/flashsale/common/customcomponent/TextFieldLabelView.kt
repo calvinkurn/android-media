@@ -92,8 +92,9 @@ class TextFieldLabelView : BaseCustomView {
 
     private fun setupTextListener() {
         textField?.editText?.doOnTextChanged {
-            val text = "$prependText $it$appendText"
-            tfText?.text = text
+            val text = if (it.isEmpty()) "-" else it
+            val textPlaceholder = "$prependText $text$appendText"
+            tfText?.text = textPlaceholder
         }
     }
 
