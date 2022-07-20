@@ -113,7 +113,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
                         setUiComponent(data.status, data.dailyUsage)
                 }
                 is Fail -> it.throwable.message?.let { errorMessage ->
-                    context?.showErrorAutoAds(errorMessage)
+                    showErrorAutoAds(errorMessage)
                 }
             }
         })

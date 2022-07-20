@@ -125,7 +125,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
                     }
                 }
                 is Fail -> it.throwable.message?.let { errorMessage ->
-                    context?.showErrorAutoAds(errorMessage)
+                    view?.showErrorAutoAds(errorMessage)
                 }
             }
         })

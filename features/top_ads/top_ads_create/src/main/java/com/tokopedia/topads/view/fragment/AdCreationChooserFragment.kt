@@ -144,7 +144,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> viewModel.getAutoAdsStatus(this::onSuccessAutoAds)
                 is Fail -> it.throwable.message?.let { errorMessage ->
-                    context?.showErrorAutoAds(errorMessage)
+                    view.showErrorAutoAds(errorMessage)
                 }
             }
         })
