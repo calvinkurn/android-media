@@ -249,11 +249,12 @@
                     android:id="@+id/checkbox_tnc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="2dp"
                     android:layout_marginEnd="16dp"
                     android:text="@string/tnc_desc"
                     app:typographyType="body_3"
-                    android:layout_toEndOf="@id/cb_tnc"/>
+                    android:layout_toEndOf="@id/cb_tnc"
+                    android:layout_centerVertical="true"/>
 
             </RelativeLayout>
 
