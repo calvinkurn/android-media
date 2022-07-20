@@ -107,7 +107,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
                 is Success -> {
                     val data = it.data
                     currentBudget = data.dailyBudget
-                    if (it.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
+                    if (data.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
                         widgetViewModel.getNotDeliveredReason(userSession.shopId)
                     } else
                         setUiComponent(data.status, data.dailyUsage)
