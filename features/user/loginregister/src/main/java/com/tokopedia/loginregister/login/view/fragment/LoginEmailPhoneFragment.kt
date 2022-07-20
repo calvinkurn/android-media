@@ -87,6 +87,8 @@ import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginFragment
 import com.tokopedia.loginregister.goto_seamless.worker.TemporaryTokenWorker
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_GOTO_SEAMLESS
+import com.tokopedia.loginregister.login.const.LoginConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY
+import com.tokopedia.loginregister.login.const.LoginConstants.TopAdsClickUrlTrackerConstant.TOP_ADS_SHARED_PREF_KEY
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
@@ -1099,6 +1101,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewModel.getUserInfo()
     }
 
+    private fun clearTopAdsHeader() {
+        val sp = context?.getSharedPreferences(TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE)
+        val editor = sp?.edit()
+        editor?.remove(RESPONSE_HEADER_KEY)
+        editor?.apply()
+    }
+
     override fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo) {
         refreshRolloutVariant()
         viewModel.getUserInfo()
@@ -1145,6 +1154,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             DataVisorWorker.scheduleWorker(it, true)
             AppAuthWorker.scheduleWorker(it, true)
             TwoFactorMluHelper.clear2FaInterval(it)
+            clearTopAdsHeader()
         }
 
         refreshRolloutVariant()
