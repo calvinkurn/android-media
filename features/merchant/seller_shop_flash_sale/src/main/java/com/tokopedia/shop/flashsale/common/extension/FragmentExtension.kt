@@ -15,11 +15,13 @@ fun Fragment.setFragmentToUnifyBgColor() {
     }
 }
 
-fun Fragment.doOnDelayFinished(delay : Long, block: () -> Unit) {
-    if (isAdded && context != null) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            delay(delay)
-            block()
+fun Fragment.doOnDelayFinished(delay: Long, operation: () -> Unit) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        delay(delay)
+
+        if (isAdded && context != null) {
+            operation()
         }
+
     }
 }
