@@ -56,6 +56,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -193,6 +195,7 @@ class DiscoveryFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
+    var currentTabPosition: Int? = null
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
@@ -220,6 +223,8 @@ class DiscoveryFragment :
                 bundle.putString(CATEGORY_ID, queryParameterMap[CATEGORY_ID])
                 bundle.putString(EMBED_CATEGORY, queryParameterMap[EMBED_CATEGORY])
                 bundle.putString(RECOM_PRODUCT_ID, queryParameterMap[RECOM_PRODUCT_ID])
+                bundle.putString(DYNAMIC_SUBTITLE, queryParameterMap[DYNAMIC_SUBTITLE])
+                bundle.putString(TARGET_TITLE_ID, queryParameterMap[TARGET_TITLE_ID])
             }
         }
     }
@@ -1145,9 +1150,16 @@ class DiscoveryFragment :
         getDiscoveryAnalytics().clearProductViewIds(true)
         miniCartData = null
         resetAnchorTabs()
+        checkTabPositionBeforeRefresh()
         discoveryViewModel.resetScroll()
         discoveryViewModel.clearPageData()
         fetchDiscoveryPageData()
+    }
+
+    private fun checkTabPositionBeforeRefresh(){
+        if((activity as? DiscoveryActivity)?.isFromCategory() != true && currentTabPosition != null){
+            this.arguments?.putString(ACTIVE_TAB,(currentTabPosition).toString())
+        }
     }
 
     private fun resetAnchorTabs(){

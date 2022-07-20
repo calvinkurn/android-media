@@ -3,7 +3,6 @@ package com.tokopedia.deals.search.ui.adapter.viewholder
 import android.graphics.Paint
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -12,15 +11,18 @@ import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.search.listener.DealsSearchListener
 import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifyprinciples.Typography
 
-class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchListener): AbstractViewHolder<VoucherModel>(itemView) {
+class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchListener) :
+    AbstractViewHolder<VoucherModel>(itemView) {
 
-    private var tvDealTitle = itemView.findViewById<TextView>(R.id.tv_simple_item)
-    private var tvBrandName = itemView.findViewById<TextView>(R.id.tv_brand_name)
+    private var tvDealTitle = itemView.findViewById<Typography>(R.id.tv_simple_item)
+    private var tvBrandName = itemView.findViewById<Typography>(R.id.tv_brand_name)
     private var brandImage = itemView.findViewById<ImageView>(R.id.iv_brand)
-    private var salesPrice = itemView.findViewById<TextView>(R.id.tv_sales_price)
-    private var mrpPrice = itemView.findViewById<TextView>(R.id.mrp)
-    private var discount = itemView.findViewById<TextView>(R.id.tv_off)
+    private var salesPrice = itemView.findViewById<Typography>(R.id.tv_sales_price)
+    private var mrpPrice = itemView.findViewById<Typography>(R.id.mrp)
+    private var discount = itemView.findViewById<Label>(R.id.tv_off)
 
     private var price = 0
     private var mrp = 0
@@ -42,13 +44,14 @@ class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchL
         if (element.discountText.isNotEmpty() && !element.discountText.startsWith(ZERO_PERCENT)) {
             discount.visibility = View.VISIBLE
             discount.text = element.discountText
-            discount.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_deals_softpink_box)
+            discount.background =
+                ContextCompat.getDrawable(itemView.context, R.drawable.bg_deals_softpink_box)
         } else {
             discount.visibility = View.GONE
             discount.background = null
         }
         var realPrice = 0L
-        if(element.realPrice.isNotEmpty()) {
+        if (element.realPrice.isNotEmpty()) {
             realPrice = element.realPrice.toLong()
         }
         salesPrice.text = DealsUtils.convertToCurrencyString(realPrice)
@@ -56,10 +59,10 @@ class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchL
     }
 
     private fun checkAndConvertPrice(element: VoucherModel) {
-        if(element.realPrice.isNotEmpty()) {
+        if (element.realPrice.isNotEmpty()) {
             price = element.realPrice.toInt()
         }
-        if(element.mrp.isNotEmpty()) {
+        if (element.mrp.isNotEmpty()) {
             mrp = element.mrp.toInt()
         }
     }

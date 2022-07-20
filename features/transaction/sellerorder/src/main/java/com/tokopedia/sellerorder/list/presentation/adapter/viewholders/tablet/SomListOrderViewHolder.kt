@@ -14,6 +14,7 @@ class SomListOrderViewHolder(
 
     companion object {
         const val TOGGLE_OPEN = "toggle_open"
+        const val ANIMATION_DURATION = 300L
     }
 
     private var fadeOutAnimation: ValueAnimator? = null
@@ -43,7 +44,7 @@ class SomListOrderViewHolder(
 
     override fun setupOrderCard(element: SomListOrderUiModel) {
         binding?.run {
-            if ((listener.isMultiSelectEnabled() && element.cancelRequest != 0 && element.cancelRequestStatus != 0)) {
+            if ((element.multiSelectEnabled && element.cancelRequest != 0 && element.cancelRequestStatus != 0)) {
                 cardSomOrder.animateFadeOut()
             } else {
                 cardSomOrder.animateFadeIn()
@@ -54,7 +55,7 @@ class SomListOrderViewHolder(
                 somOrderListOpenIndicator?.gone()
             }
             root.setOnClickListener {
-                if (listener.isMultiSelectEnabled()) touchCheckBox(element)
+                if (element.multiSelectEnabled) touchCheckBox(element)
                 else listener.onOrderClicked(element)
             }
         }
@@ -70,7 +71,7 @@ class SomListOrderViewHolder(
 
     private fun View?.animateFade(start: Float, end: Float): ValueAnimator {
         return ValueAnimator.ofFloat(start, end).apply {
-            duration = 300L
+            duration = ANIMATION_DURATION
             addUpdateListener { value ->
                 this@animateFade?.alpha = value.animatedValue as Float
             }
@@ -81,12 +82,12 @@ class SomListOrderViewHolder(
     private fun View.animateFadeOut() {
         if (fadeOutAnimation?.isRunning == true) return
         fadeInAnimation?.cancel()
-        fadeOutAnimation = animateFade(alpha, 0.5f)
+        fadeOutAnimation = animateFade(alpha, CARD_ALPHA_DISABLED)
     }
 
     private fun View.animateFadeIn() {
         if (fadeInAnimation?.isRunning == true) return
         fadeOutAnimation?.cancel()
-        fadeInAnimation = animateFade(alpha, 1f)
+        fadeInAnimation = animateFade(alpha, CARD_ALPHA_ENABLED)
     }
 }

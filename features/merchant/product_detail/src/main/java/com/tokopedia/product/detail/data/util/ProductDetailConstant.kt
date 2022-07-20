@@ -170,4 +170,9 @@ object ProductDetailConstant {
     const val REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING = true
 
     const val BUYER_IMAGE_TEXT = "Foto Pembeli"
+
+    const val WISHLIST_ERROR_TYPE = "error_wishlist"
+    const val WISHLIST_STATUS_KEY = "wishlist_status"
+    const val ADD_WISHLIST = "true"
+    const val REMOVE_WISHLIST = "false"
 }

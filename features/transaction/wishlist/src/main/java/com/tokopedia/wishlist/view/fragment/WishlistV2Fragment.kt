@@ -132,6 +132,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var hitCountDeletion = false
     private val handler = Handler(Looper.getMainLooper())
     private var userAddressData: LocalCacheModel? = null
+    private var isOnProgressDeleteWishlist = false
     private val progressDeletionRunnable = Runnable {
         getCountDeletionProgress()
     }
@@ -264,6 +265,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         if (wishlistV2.showDeleteProgress) {
                             if (!hitCountDeletion) {
                                 hitCountDeletion = true
+                                isOnProgressDeleteWishlist = true
                                 getCountDeletionProgress()
                             }
                             hideTotalLabel()
@@ -721,7 +723,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     override fun onResume() {
         super.onResume()
-        setRefreshing()
+        checkProgressDeletion()
+    }
+
+    private fun checkProgressDeletion() {
+        if (isOnProgressDeleteWishlist) {
+            getCountDeletionProgress()
+        }
     }
 
     private fun stopProgressDeletionHandler() {
@@ -767,6 +775,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun finishDeletionWidget(data: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+        isOnProgressDeleteWishlist = false
         stopProgressDeletionHandler()
         wishlistViewModel.countDeletionWishlistV2.removeObservers(this)
         if (data.totalItems > 0 && data.toasterMessage.isNotEmpty()) {
@@ -1225,25 +1234,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     override fun onProductItemClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int) {
         WishlistV2Analytics.clickProductCard(wishlistItem, userSession.userId, position)
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
-            startActivity(intent)
-        }
-    }
-
-    override fun onProductRecommItemClicked(recommendationItem: RecommendationItem) {
-        if(recommendationItem.isTopAds) {
-            TopAdsUrlHitter(context).hitClickUrl(
-                this::class.java.simpleName,
-                recommendationItem.clickUrl,
-                recommendationItem.productId.toString(),
-                recommendationItem.name,
-                recommendationItem.imageUrl
-            )
-        }
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                recommendationItem.productId.toString())
-            startActivity(intent)
+            if (wishlistItem.url.isNotEmpty()) {
+                RouteManager.route(it, wishlistItem.url)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
+                startActivity(intent)
+            }
         }
     }
 
@@ -1290,7 +1286,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int) {
-        WishlistV2Analytics.clickRecommendationItem(recommendationItem, position)
+        WishlistV2Analytics.clickRecommendationItem(recommendationItem, position, userSession.userId)
         if(recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitClickUrl(
                     this::class.java.simpleName,
@@ -1299,6 +1295,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     recommendationItem.name,
                     recommendationItem.imageUrl
             )
+        }
+        activity?.let {
+            if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.route(it, recommendationItem.appUrl)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    recommendationItem.productId.toString())
+                startActivity(intent)
+            }
         }
     }
 
@@ -1316,7 +1321,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onRecommendationCarouselItemClick(recommendationItem: RecommendationItem, position: Int) {
-        WishlistV2Analytics.clickCarouselRecommendationItem(recommendationItem, position)
+        WishlistV2Analytics.clickCarouselRecommendationItem(recommendationItem, position, userSession.userId)
         if(recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitClickUrl(
                     this::class.java.simpleName,
@@ -1327,8 +1332,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             )
         }
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommendationItem.productId.toString())
-            startActivity(intent)
+            if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.route(it, recommendationItem.appUrl)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    recommendationItem.productId.toString())
+                startActivity(intent)
+            }
         }
     }
 

@@ -1,20 +1,34 @@
 package com.tokopedia.product.manage.feature.stockreminder.domain.usecase
 
+import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
+import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.ProductWarehouseParam
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class StockReminderDataUseCase @Inject constructor(private val getStockReminderDataUseCase: GetStockReminderDataUseCase,
-                                                   private val createStockReminderDataUseCase: CreateStockReminderDataUseCase,
-                                                   private val updateStockReminderDataUseCase: UpdateStockReminderDataUseCase) {
+class StockReminderDataUseCase @Inject constructor(
+    private val getProductUseCase: GetProductStockReminderUseCase,
+    private val getStockReminderDataUseCase: GetStockReminderDataUseCase,
+    private val createStockReminderDataUseCase: CreateStockReminderDataUseCase
+) {
 
     fun setGetStockParams(productId: String) = getStockReminderDataUseCase.setParams(productId)
 
-    fun setCreateStockParams(shopId: String, productId: String, warehouseId: String, threshold: String) = createStockReminderDataUseCase.setParams(shopId, productId, warehouseId, threshold)
-
-    fun setUpdateStockParams(shopId: String, productId: String, warehouseId: String, threshold: String) = updateStockReminderDataUseCase.setParams(shopId, productId, warehouseId, threshold)
+    fun setCreateStockParams(
+        shopId: String,
+        listProductWarehouseParam: ArrayList<ProductWarehouseParam>
+    ) = createStockReminderDataUseCase.setParams(shopId, listProductWarehouseParam)
 
     suspend fun executeGetStockReminder() = getStockReminderDataUseCase.executeOnBackground()
 
     suspend fun executeCreateStockReminder() = createStockReminderDataUseCase.executeOnBackground()
 
-    suspend fun executeUpdateStockReminder() = updateStockReminderDataUseCase.executeOnBackground()
+    suspend fun executeGetProductStockReminder(
+        productId: String,
+        warehouseId: String
+    ): GetProductVariantResponse {
+        val requestParams =
+            GetProductStockReminderUseCase.createRequestParams(productId, false, warehouseId)
+        return getProductUseCase.execute(requestParams)
+    }
+
 }
