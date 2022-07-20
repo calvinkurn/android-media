@@ -43,7 +43,7 @@
             app:layout_constraintStart_toEndOf="@+id/custom_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginStart="0dp"
-            app:typographyType="paragraph_1"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="Bangga Buatan Indonesia"
             tools:visibility="visible" />
