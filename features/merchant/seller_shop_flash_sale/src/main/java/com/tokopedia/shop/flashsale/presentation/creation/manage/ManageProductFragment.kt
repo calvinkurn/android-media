@@ -49,7 +49,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         private const val PAGE_SIZE = 50
         private const val LIST_TYPE = 0
         private const val RECYCLERVIEW_ITEM_FIRST_INDEX = 0
-        private const val DELAY = 500L
+        private const val DELAY = 1000L
         private const val REQUEST_CODE = 123
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/ic_no_active_campaign.png"
