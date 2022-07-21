@@ -6,7 +6,6 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUs
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeSearchUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_SUBSCRIPTION
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
@@ -17,7 +16,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -44,7 +42,6 @@ class HomeViewModelBalanceWidgetUnitTest{
             homeBalanceModel = HomeBalanceModel(
                 balanceDrawerItemModels = mutableListOf(
                     BalanceDrawerItemModel(drawerItemType = TYPE_WALLET_APP_LINKED),
-                    BalanceDrawerItemModel(drawerItemType = TYPE_COUPON),
                     BalanceDrawerItemModel(drawerItemType = TYPE_SUBSCRIPTION)
                 )
             )
@@ -242,6 +239,25 @@ class HomeViewModelBalanceWidgetUnitTest{
         //On refresh
         homeViewModel.onRefreshWalletApp(0, "Gopay")
 
+        val homeBalanceModel = getHomeBalanceModel()
+        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
+    }
+
+    @Test
+    fun `given user not login when get balance widget data then balance widget data not changed`() {
+        every { userSessionInterface.isLoggedIn } returns false
+
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel), flowCompleted = true)
+        )
+        getHomeBalanceWidgetUseCase.givenGetBalanceWidgetDataReturn(
+            homeHeaderDataModel = mockSuccessHomeHeaderDataModel
+        )
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSessionInterface,
+            getHomeUseCase = getHomeUseCase,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+        )
         val homeBalanceModel = getHomeBalanceModel()
         Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
     }
