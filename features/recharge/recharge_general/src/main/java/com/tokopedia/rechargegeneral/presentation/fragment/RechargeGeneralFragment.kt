@@ -637,7 +637,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         context?.let { context ->
             val dropdownBottomSheet = BottomSheetUnify()
             dropdownBottomSheet.setTitle(title)
-            dropdownBottomSheet.setFullPage(true)
+            dropdownBottomSheet.isFullpage = false
             dropdownBottomSheet.clearAction()
             dropdownBottomSheet.setCloseClickListener {
                 dropdownBottomSheet.dismiss()
