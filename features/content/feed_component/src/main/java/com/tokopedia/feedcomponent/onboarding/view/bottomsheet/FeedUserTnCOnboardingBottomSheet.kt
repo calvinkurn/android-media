@@ -11,20 +11,26 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.databinding.BottomsheetFeedUserTncOnboardingBinding
 import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.base.BaseFeedUserOnboardingBottomSheet
+import com.tokopedia.feedcomponent.onboarding.view.strategy.factory.FeedUGCOnboardingStrategyFactory
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
 import com.tokopedia.feedcomponent.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
+import com.tokopedia.feedcomponent.onboarding.view.viewmodel.factory.FeedUGCOnboardingViewModelFactory
 import com.tokopedia.feedcomponent.util.withCache
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */
-class FeedUserTnCOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
+class FeedUserTnCOnboardingBottomSheet @Inject constructor(
+    private val viewModelFactoryCreator: FeedUGCOnboardingViewModelFactory.Creator,
+    private val strategyFactory: FeedUGCOnboardingStrategyFactory,
+): BaseFeedUserOnboardingBottomSheet() {
 
     private var _binding: BottomsheetFeedUserTncOnboardingBinding? = null
     private val binding: BottomsheetFeedUserTncOnboardingBinding
@@ -35,7 +41,12 @@ class FeedUserTnCOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(
-            requireParentFragment()
+            requireParentFragment(),
+            viewModelFactoryCreator.create(
+                requireParentFragment(),
+                usernameArg,
+                strategyFactory.create(usernameArg),
+            )
         )[FeedUGCOnboardingViewModel::class.java]
     }
 

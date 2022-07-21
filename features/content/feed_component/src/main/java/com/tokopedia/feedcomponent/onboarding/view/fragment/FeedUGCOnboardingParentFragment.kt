@@ -5,24 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.feedcomponent.databinding.FragmentFeedUgcOnboardingParentBinding
 import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserCompleteOnboardingBottomSheet
 import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserTnCOnboardingBottomSheet
 import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.base.BaseFeedUserOnboardingBottomSheet
-import com.tokopedia.feedcomponent.onboarding.view.strategy.factory.FeedUGCOnboardingStrategyFactory
-import com.tokopedia.feedcomponent.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
-import com.tokopedia.feedcomponent.onboarding.view.viewmodel.factory.FeedUGCOnboardingViewModelFactory
-import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on July 04, 2022
  */
-class FeedUGCOnboardingParentFragment @Inject constructor(
-    private val viewModelFactoryCreator: FeedUGCOnboardingViewModelFactory.Creator,
-    private val strategyFactory: FeedUGCOnboardingStrategyFactory,
-): TkpdBaseV4Fragment() {
+class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     private var mListener: Listener? = null
 
@@ -33,18 +25,6 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
 
     private val usernameArg: String
         get() = arguments?.getString(KEY_USERNAME) ?: ""
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        ViewModelProvider(
-            this,
-            viewModelFactoryCreator.create(
-                this,
-                usernameArg,
-                strategyFactory.create(usernameArg),
-            )
-        )[FeedUGCOnboardingViewModel::class.java]
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,13 +66,21 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
             FeedUserCompleteOnboardingBottomSheet.getFragment(
                 childFragmentManager,
                 requireContext().classLoader
-            ).showNow(childFragmentManager)
+            ).apply {
+                arguments = Bundle().apply {
+                    putString(KEY_USERNAME, usernameArg)
+                }
+            }.showNow(childFragmentManager)
         }
         else {
             FeedUserTnCOnboardingBottomSheet.getFragment(
                 childFragmentManager,
                 requireContext().classLoader
-            ).showNow(childFragmentManager)
+            ).apply {
+                arguments = Bundle().apply {
+                    putString(KEY_USERNAME, usernameArg)
+                }
+            }.showNow(childFragmentManager)
         }
     }
 
