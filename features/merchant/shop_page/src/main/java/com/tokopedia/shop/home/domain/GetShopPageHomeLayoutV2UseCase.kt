@@ -118,6 +118,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         url
                       }
                       minimumOrder
+                      maximumOrder
                       stock
                       childIDs
                       parentID
@@ -203,6 +204,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           url
                         }
                         minimumOrder
+                        maximumOrder
                         childIDs
                         parentID
                       }

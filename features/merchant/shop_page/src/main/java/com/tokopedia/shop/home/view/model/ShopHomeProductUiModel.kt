@@ -45,6 +45,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var recommendationType: String? = null
     var categoryBreadcrumbs: String? = null
     var minimumOrder: Int = 1
+    var maximumOrder: Int = 0
     var isProductPlaceHolder: Boolean = false
     var totalProduct: Int = 0
     var totalProductWording: String = ""

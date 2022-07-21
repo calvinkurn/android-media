@@ -92,6 +92,7 @@ object ShopPageHomeMapper {
                 it.labelGroupList =
                     labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 it.minimumOrder = minimumOrder
+                it.maximumOrder = stock
                 it.stock = stock
                 it.isEnableDirectPurchase = isEnableDirectPurchase
                 it.isVariant = hasVariant
@@ -278,7 +279,7 @@ object ShopPageHomeMapper {
             nonVariant = ProductCardModel.NonVariant(
                 quantity = shopHomeProductViewModel.productInCart,
                 minQuantity = shopHomeProductViewModel.minimumOrder,
-                maxQuantity = shopHomeProductViewModel.stock
+                maxQuantity = shopHomeProductViewModel.maximumOrder
             ),
             variant = null,
             hasAddToCartButton = false
@@ -675,6 +676,7 @@ object ShopPageHomeMapper {
                 labelGroupList =
                     it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 minimumOrder = it.minimumOrder
+                maximumOrder = getMaximumOrder(it.stock, it.maximumOrder)
                 this.stock = it.stock
                 this.isEnableDirectPurchase = isEnableDirectPurchase
                 this.isVariant = it.listChildId.isNotEmpty()
@@ -832,6 +834,7 @@ object ShopPageHomeMapper {
                 categoryBreadcrumbs = it.categoryBreadcrumbs
                 labelGroupList = it.labelGroups.map { mapToLabelGroupViewModel(it) }
                 minimumOrder = it.minimumOrder
+                maximumOrder = getMaximumOrder(it.stock, it.maximumOrder)
                 this.stock = it.stock
                 this.isEnableDirectPurchase = isEnableDirectPurchase
                 this.isVariant = !it.parentId.toLongOrZero().isZero()
@@ -902,6 +905,7 @@ object ShopPageHomeMapper {
             labelGroupList =
                 response.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
             this.minimumOrder = response.minimumOrder
+            maximumOrder = getMaximumOrder(response.stock, response.maximumOrder)
             this.stock = response.stock
             this.isEnableDirectPurchase = isEnableDirectPurchase
             this.isVariant = response.listChildId.isNotEmpty()
@@ -1003,4 +1007,7 @@ object ShopPageHomeMapper {
         }
     }
 
+    private fun getMaximumOrder(stock: Int, maximumOrder: Int): Int {
+        return maximumOrder.takeIf { !it.isZero() } ?: stock
+    }
 }

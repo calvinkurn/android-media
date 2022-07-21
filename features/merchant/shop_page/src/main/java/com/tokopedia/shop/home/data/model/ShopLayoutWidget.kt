@@ -148,6 +148,8 @@ data class ShopLayoutWidget(
                 val categoryBreadcrumbs: String = "",
                 @SerializedName("minimumOrder")
                 val minimumOrder: Int = 0,
+                @SerializedName("maximumOrder")
+                val maximumOrder: Int = 0,
                 @SerializedName("stock")
                 val stock: Int = 0,
                 @SuppressLint("Invalid Data Type")
@@ -248,6 +250,8 @@ data class ShopLayoutWidget(
                     val labelGroups: List<LabelGroup> = listOf(),
                     @SerializedName("minimumOrder")
                     val minimumOrder: Int = 0,
+                    @SerializedName("maximumOrder")
+                    val maximumOrder: Int = 0,
                     @SuppressLint("Invalid Data Type")
                     @SerializedName("childIDs")
                     val listChildId: List<String> = listOf(),
