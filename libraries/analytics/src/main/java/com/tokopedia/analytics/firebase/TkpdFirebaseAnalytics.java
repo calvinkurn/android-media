@@ -1,5 +1,6 @@
 package com.tokopedia.analytics.firebase;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -18,6 +19,7 @@ public class TkpdFirebaseAnalytics {
 
     private static final Object lock = new Object();
 
+    @SuppressLint("StaticFieldLeak")
     private static TkpdFirebaseAnalytics analytics;
 
     @ApplicationContext
@@ -33,7 +35,6 @@ public class TkpdFirebaseAnalytics {
                 if (analytics == null) {
                     analytics = new TkpdFirebaseAnalytics();
                     analytics.context = context.getApplicationContext();
-                    FirebaseAnalytics.getInstance(analytics.context);
                 }
             }
         }
@@ -43,6 +44,14 @@ public class TkpdFirebaseAnalytics {
     public void logEvent(String eventName, Bundle bundle) {
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void setUserId(@Nullable String userId) {
+        try {
+            FirebaseAnalytics.getInstance(context).setUserId(userId);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

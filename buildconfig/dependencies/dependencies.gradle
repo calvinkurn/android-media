@@ -69,7 +69,7 @@ ext {
     playServiceTagManager = '17.0.0'
     playServiceSafetyNet = '16.0.0'
     playServiceMeasurementBase = '18.0.0'
-    playServiceMeasurementApi = '16.0.4'
+    playServiceMeasurementApi = '18.0.0'
     bomVersion = '26.2.0'
 
     JunitVersion = '4.12'
