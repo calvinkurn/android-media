@@ -29,7 +29,6 @@ class OnGoingPromoViewHolder(private val onProductCouponOngoingPromoClicked: (St
             tvOnGoingPromoTitle.text = element.title
             tvOnGoingPromoStatus.text = element.status.text
             tvOnGoingPromoCount.text = element.status.count.toString()
-            tvSeePastPromotion.text = element.footer.text
         }
 
         initListeners(element)
@@ -60,9 +59,6 @@ class OnGoingPromoViewHolder(private val onProductCouponOngoingPromoClicked: (St
                     element.status.count,
                     element.status.text
                 )
-            }
-            tvSeePastPromotion.setOnClickListener {
-                onFooterClicked(element.footer.url, element.title, element.footer.text)
             }
             ivCaret.setOnClickListener {
                 onFooterClicked(element.footer.url, element.title, element.footer.text)
