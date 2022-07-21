@@ -128,6 +128,9 @@
     <!-- TERM & CONDITION | PRIVACY-->
     <string name="title_activity_term_and_privacy">Kebijakan Privasi</string>
 
+    <!-- GOTO SEAMLESS -->
+    <string name="goto_seamless_title">Masuk ke Tokopedia</string>
+
     <!--  CONTENT DESCRIPTION  -->
     <string name="content_desc_input_email_phone">input email phone</string>
     <string name="content_desc_register_btn">button submit</string>
@@ -187,4 +190,12 @@
     <string name="loginregister_title_phone_number_inactive">Nomor HP Tidak Aktif</string>
     <string name="loginregister_what_help_do_you_need">Butuh bantuan apa?</string>
     <string name="loginregister_need_another_help">Butuh bantuan lain? Hubungi Tokopedia Care</string>
+
+
+    <string name="goto_seamless_description_text">Akunmu udah kesambung ke Gojek. Kamu bisa masuk ke Tokopedia lebih cepat, deh!</string>
+    <string name="goto_seamless_primary_title">Sekali klik, langsung masuk!</string>
+    <string name="goto_seamless_secondary_btn_text">Masuk ke Akun Lain</string>
+
+    <string name="goto_seamless_general_error">Oops, lagi ada gangguan. Coba cek koneksi kamu atau masuk beberapa saat lagi, ya.</string>
+
 </resources>

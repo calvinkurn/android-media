@@ -31,7 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/title_other_product"
-            app:typographyType="paragraph_1"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

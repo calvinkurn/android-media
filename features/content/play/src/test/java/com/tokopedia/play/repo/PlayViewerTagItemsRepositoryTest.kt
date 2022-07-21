@@ -87,7 +87,7 @@ class PlayViewerTagItemsRepositoryTest {
             coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
 
             val response = tagItemRepo.getTagItem(
-                "12669"
+                "12669", ""
             )
 
             coVerify { mockGetProductTagUseCase.executeOnBackground() }
@@ -103,7 +103,7 @@ class PlayViewerTagItemsRepositoryTest {
             coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
 
             val response = tagItemRepo.getTagItem(
-                "12669"
+                "12669", "0"
             )
 
             coVerify { mockGetProductTagUseCase.executeOnBackground() }

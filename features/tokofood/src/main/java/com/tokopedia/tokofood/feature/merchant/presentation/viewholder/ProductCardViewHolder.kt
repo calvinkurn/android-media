@@ -11,6 +11,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.unifycomponents.CardUnify
 
 class ProductCardViewHolder(
     private val binding: TokofoodProductCardLayoutBinding,
@@ -137,11 +138,9 @@ class ProductCardViewHolder(
             }
             // product is already added to cart
             if (productUiModel.isAtc) {
-                val greenColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
-                binding.productCell.setCardBackgroundColor(greenColor)
+                binding.productCell.cardType = CardUnify.TYPE_SHADOW_ACTIVE
             } else {
-                val whiteColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-                binding.productCell.setCardBackgroundColor(whiteColor)
+                binding.productCell.cardType = CardUnify.TYPE_SHADOW
             }
         }
         // product card attributes

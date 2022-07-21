@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop_widget.R
@@ -37,6 +39,11 @@ class ThematicWidgetViewHolder (
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_thematic_widget
+
+        private const val IMG_PARALLAX_ALPHA_VALUE = 1f
+        private const val IMG_PARALLAX_TRANSLATE_X_VALUE = 0f
+        private const val IMG_PARALLAX_TRANSLATE_X_MULTIPLIER = 0.2f
+        private const val IMG_PARALLAX_ALPHA_MULTIPLIER = 0.80f
     }
 
     private var binding: ItemThematicWidgetBinding? by viewBinding()
@@ -137,20 +144,20 @@ class ThematicWidgetViewHolder (
     private fun calculateParallaxImage(dx: Int) {
         launch {
             layoutManager?.apply {
-                if (findFirstVisibleItemPosition() == 0 && dx != 0) {
+                if (findFirstVisibleItemPosition() == Int.ZERO && dx != Int.ZERO) {
                     findViewByPosition(findFirstVisibleItemPosition())?.apply {
                         val distanceFromLeft = left
-                        val translateX = distanceFromLeft * 0.2f
-                        if (translateX <= 0) {
+                        val translateX = distanceFromLeft * IMG_PARALLAX_TRANSLATE_X_MULTIPLIER
+                        if (translateX <= Int.ZERO) {
                             ivParallaxImage?.translationX = translateX
-                            if (distanceFromLeft <= 0) {
+                            if (distanceFromLeft <= Int.ZERO) {
                                 val itemSize = width.toFloat()
-                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
-                                ivParallaxImage?.alpha = 1 - alpha
+                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * IMG_PARALLAX_ALPHA_MULTIPLIER)
+                                ivParallaxImage?.alpha = Int.ONE - alpha
                             }
                         } else {
-                            ivParallaxImage?.translationX = 0f
-                            ivParallaxImage?.alpha = 1f
+                            ivParallaxImage?.translationX = IMG_PARALLAX_TRANSLATE_X_VALUE
+                            ivParallaxImage?.alpha = IMG_PARALLAX_ALPHA_VALUE
                         }
                     }
                 }
@@ -183,9 +190,9 @@ class ThematicWidgetViewHolder (
 
     private fun setupImage(imageBanner: String) {
         ivParallaxImage?.show()
-        ivParallaxImage?.layout(0,0,0,0)
-        ivParallaxImage?.translationX = 0f
-        ivParallaxImage?.alpha = 1f
+        ivParallaxImage?.layout(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+        ivParallaxImage?.translationX = IMG_PARALLAX_TRANSLATE_X_VALUE
+        ivParallaxImage?.alpha = IMG_PARALLAX_ALPHA_VALUE
         ivParallaxImage?.loadImage(imageBanner)
     }
 
@@ -226,8 +233,8 @@ class ThematicWidgetViewHolder (
 
     interface ThematicWidgetListener {
         fun onThematicWidgetImpressListener(model: ThematicWidgetUiModel, position: Int)
-        fun onProductCardThematicWidgetImpressListener(products: List<ProductCardUiModel>, position: Int, campaignId: String, campaignName: String)
-        fun onProductCardThematicWidgetClickListener(product: ProductCardUiModel, campaignId: String, campaignName: String, position: Int)
+        fun onProductCardThematicWidgetImpressListener(products: List<ProductCardUiModel>, position: Int, campaignId: String, campaignName: String, campaignTitle: String = "")
+        fun onProductCardThematicWidgetClickListener(product: ProductCardUiModel, campaignId: String, campaignName: String, position: Int, campaignTitle: String = "")
         fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
         fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String)
         fun onThematicWidgetTimerFinishListener(model: ThematicWidgetUiModel?)

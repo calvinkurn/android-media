@@ -375,7 +375,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 )
             }
 
-        }
+        },
+            null
         )
     }
 
