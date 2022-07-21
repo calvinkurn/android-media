@@ -48,7 +48,7 @@ class HomeDynamicChannelsRepository @Inject constructor(
         const val NUM_OF_CHANNEL = "numOfChannel"
         const val PARAMS = "param"
         const val LOCATION = "location"
-        const val PAGE = "page"
+        const val CHANNEL_IDS = "channelIDs"
 
         fun buildParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0, queryParams: String = "", locationParams: String = "", doQueryHash: Boolean = false)
         :RequestParams{
@@ -62,14 +62,13 @@ class HomeDynamicChannelsRepository @Inject constructor(
             return params
         }
 
-        fun buildParamsV2(groupIds: String = "", page: String = "1", numOfChannel: String = "0", queryParams: String = "", locationParams: String = "", doQueryHash: Boolean = false)
+        fun buildParamsV2(groupIds: String = "", channelIds: String = "0", queryParams: String = "", locationParams: String = "", doQueryHash: Boolean = false)
                 :RequestParams{
             val params = RequestParams.create()
             params.parameters.clear()
             params.putString(PARAMS, queryParams)
             params.putString(GROUP_IDS, groupIds)
-            params.putString(PAGE, page)
-            params.putString(NUM_OF_CHANNEL, numOfChannel)
+            params.putString(CHANNEL_IDS, channelIds)
             params.putString(LOCATION, locationParams)
             return params
         }
@@ -81,13 +80,12 @@ class HomeDynamicChannelsRepository @Inject constructor(
         val numOfChannel = bundle.getInt(NUM_OF_CHANNEL, 0)
         val params = bundle.getString(PARAMS, "")
         val location = bundle.getString(LOCATION, "")
-        val page = bundle.getString(PAGE, "")
+        val channelIds = bundle.getString(CHANNEL_IDS, "")
 
         val requestParams = if(isUsingV2){
             buildParamsV2(
                 groupIds = groupId,
-                page = page,
-                numOfChannel = numOfChannel.toString(),
+                channelIds = channelIds.toString(),
                 queryParams = params,
                 locationParams = location
             )
