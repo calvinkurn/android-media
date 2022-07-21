@@ -1594,7 +1594,7 @@ class PlayViewModel @AssistedInject constructor(
                         product = mappedData.product,
                         bottomSheetTitle = mappedData.bottomSheetTitle,
                         maxFeatured = mappedData.maxFeatured,
-                        resultState = mappedData.resultState
+                        resultState = mappedData.resultState,
                     )
                 }
             }
