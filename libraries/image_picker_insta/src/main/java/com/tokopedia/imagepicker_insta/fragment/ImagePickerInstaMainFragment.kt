@@ -822,11 +822,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         if (!uris.isNullOrEmpty()) {
 
-            val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
+            val mActivity = (activity as? ImagePickerInstaActivity)
+            val applink = mActivity?.applinkForGalleryProceed
             if (!applink.isNullOrEmpty()) {
 
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
                 val intent = RouteManager.getIntent(activity, finalApplink)
+                intent.putExtra(BundleData.KEY_IS_OPEN_FROM, mActivity.isOpenFrom)
                 intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, viewModel.selectedFeedAccountId)
                 startActivityForResult(intent, CREATE_POST_REQUEST_CODE)
             } else {
