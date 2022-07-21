@@ -24,7 +24,7 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
         @JvmStatic
         val ITEM_VIEW_UPLOAD = R.layout.item_upload_prescription
         const val EPharmacyAppLink = "tokopedia://epharmacy/"
-        const val EPharmacyCountImageUrl = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_uploaded_images_count.png"
+        const val EPharmacyCountImageUrl = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_sucess_image_uploaded_count.png"
     }
 
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel){

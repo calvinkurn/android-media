@@ -112,7 +112,11 @@ class UploadPrescriptionViewModel @Inject constructor(
                 onFailEPharmacyDetail(IllegalStateException("Data invalid"))
             else {
                 _productDetailLiveData.postValue(Success(mapCheckoutResponseInDataModel(data)))
-                _buttonLiveData.postValue(EPharmacyButtonKey.CHECK.key)
+                if(ePharmacyDetailResponse.detailData?.formData?.prescriptionImages.isNullOrEmpty()){
+                    _buttonLiveData.postValue(EPharmacyButtonKey.RE_UPLOAD.key)
+                }else {
+                    _buttonLiveData.postValue(EPharmacyButtonKey.DONE.key)
+                }
             }
         }
     }
