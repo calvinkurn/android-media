@@ -147,7 +147,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     private suspend fun collectMoreRecipeBookmarks() {
         viewModel.moreRecipeBookmarks.collect { state ->
             when(state) {
-                is UiState.Fail -> { /* nothing to do */ }
+                is UiState.Fail -> hideLoadMoreLoading()
                 is UiState.Success -> showMoreWidgets(state.data)
                 is UiState.Loading -> showLoadMoreLoading()
             }
@@ -311,8 +311,12 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         }
     }
 
-    private fun showMoreWidgets(data: List<Visitable<*>>?) {
+    private fun hideLoadMoreLoading() {
         adapter?.hideLoading()
+    }
+
+    private fun showMoreWidgets(data: List<Visitable<*>>?) {
+        hideLoadMoreLoading()
         showPage(data)
     }
 

@@ -72,6 +72,10 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         )
     }
 
+    /**
+     * @see toaster - failed toaster will be shown with capability to retry the event
+     * @see loadRecipeBookmarks - layout will be updated with latest layout
+     */
     private fun onResponseAddRemoveRecipeBE(isRemoving: Boolean, position: Int, recipeId: String, errorMessage: String, isSuccess: Boolean,  onSuccess: () -> Unit) {
         if (isSuccess) {
             onSuccess.invoke()
@@ -116,7 +120,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
 
     /**
      * @see tempRecipeRemoved - restore recipe back to layout
-     * @see layout - layout will be updated by restoring recipe back
+     * @see layout - will be updated by restoring recipe back
      */
     private fun onSuccessAddRecipe() {
         tempRecipeRemoved?.apply {
@@ -147,7 +151,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
 
     /**
      * @see newWidgetCounter - set latest count of new widgets shown
-     * @see loadRecipeBookmarks - layout will be updated with latest layout
+     * @see loadRecipeBookmarks - layout will be updated with latest layout or show global error
      */
     private fun onResponseLoadFirstPageBE(recipeBookmarks: List<RecipeUiModel>, errorCode: String, errorMessage: String) {
         newWidgetCounter = recipeBookmarks.size
@@ -175,19 +179,25 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
 
     /**
      * @see newWidgetCounter - set latest count of new widgets shown
-     * @see loadRecipeBookmarks - layout will be updated with latest layout
+     * @see loadRecipeBookmarks - layout will be updated with latest layout or just hide load more loading
      */
-    private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>) {
+    private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>, errorCode: String, errorMessage: String) {
         newWidgetCounter = recipeBookmarks.size
         layout.addAll(recipeBookmarks)
 
-        _moreRecipeBookmarks.value = UiState.Success(
-            data = layout
-        )
+        if (errorMessage.isBlank()) {
+            _moreRecipeBookmarks.value = UiState.Success(
+                data = layout
+            )
+        } else {
+            _moreRecipeBookmarks.value = UiState.Fail(
+                errorCode = errorCode
+            )
+        }
     }
 
     /**
-     * @see loadRecipeBookmarks - nothing to do
+     * @see loadRecipeBookmarks - will hide load more loading
      */
     private fun onFailLoadMoreFE(throwable: Throwable) {
         _moreRecipeBookmarks.value = UiState.Fail(
@@ -294,8 +304,8 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
 
                 delay(3000)
 
-                val recipeBookmarks = getRecipeBookmarks(pageCounter++).first
-                onResponseLoadMoreBE(recipeBookmarks)
+                val (recipeBookmarks, errorCode, errorMessage) = getRecipeBookmarks(pageCounter++)
+                onResponseLoadMoreBE(recipeBookmarks, errorCode, errorMessage)
             }
         }) { throwable ->
             onFailLoadMoreFE(throwable)
