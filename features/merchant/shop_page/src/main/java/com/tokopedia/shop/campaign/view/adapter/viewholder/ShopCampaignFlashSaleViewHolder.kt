@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.DateHelper
@@ -211,6 +213,7 @@ class ShopCampaignFlashSaleViewHolder(
         // set text wording ingatkan into number of users after 3 seconds
         handler.postDelayed({
             reminderCountView?.text = reminderWording
+            reminderCountView?.showWithCondition(reminderWording.isNotEmpty())
         }, DELAY_IN_THREE_SECONDS)
     }
 
@@ -218,7 +221,7 @@ class ShopCampaignFlashSaleViewHolder(
         return if (totalNotify > VALUE_INT_HUNDREDS) {
             totalNotify.thousandFormatted(1, RoundingMode.DOWN)
         } else {
-            itemView.context.getString(R.string.shop_page_label_remind_me)
+            String.EMPTY
         }
     }
 
