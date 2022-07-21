@@ -24,7 +24,7 @@ class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
     override fun getScreenName() = TAG
 
     private val usernameArg: String
-        get() = arguments?.getString(KEY_USERNAME) ?: ""
+        get() = arguments?.getString(KEY_USERNAME).orEmpty()
 
     override fun onCreateView(
         inflater: LayoutInflater,

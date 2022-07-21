@@ -28,7 +28,7 @@ abstract class BaseFeedUserOnboardingBottomSheet : BottomSheetUnify() {
     protected var mListener: Listener? = null
 
     protected val usernameArg: String
-        get() = arguments?.getString(FeedUGCOnboardingParentFragment.KEY_USERNAME) ?: ""
+        get() = arguments?.getString(FeedUGCOnboardingParentFragment.KEY_USERNAME).orEmpty()
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {
