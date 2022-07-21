@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
-import com.tokopedia.design.R
 
 /**
  * Created by Yehezkiel on 11/03/20
@@ -68,7 +67,7 @@ class ProductAccessRequestDialogFragment : DialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         if (!fromClickButtons) {
-            if (activity != null) activity!!.finish()
+            requireActivity().finish()
         }
     }
 
