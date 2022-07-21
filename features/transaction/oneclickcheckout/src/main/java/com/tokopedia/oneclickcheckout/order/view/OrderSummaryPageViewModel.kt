@@ -26,6 +26,7 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequ
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
+import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
@@ -52,7 +53,6 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogis
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
-import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
@@ -313,7 +313,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             updateOrderProducts.value = updatedProductIndex
             logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderCost, orderShop.value.shopShipment)
         }
-        if (result.clearOldPromoCode.isNotEmpty()) {
+        val hasOldPromoCode = result.clearOldPromoCode.isNotEmpty()
+        if (hasOldPromoCode) {
             clearOldLogisticPromo(result.clearOldPromoCode)
         }
         if (result.autoApplyPromo != null) {
@@ -333,8 +334,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderProfile.value = orderProfile.value.copy(enable = true)
             orderPromo.value = orderPromo.value.copy(isDisabled = result.orderShipment.isDisabled)
             if (result.orderShipment.serviceErrorMessage.isNullOrEmpty()) {
-                validateUsePromo()
+                validateUsePromo(hasOldPromoCode)
             } else {
+                if (hasOldPromoCode) {
+                    validateUsePromo(hasOldPromoCode)
+                }
                 sendViewShippingErrorMessage(result.shippingErrorId)
                 calculateTotal()
             }
@@ -373,11 +377,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderShop.value = orderShop.value.copy(overweight = 0.0)
             orderProfile.value = orderProfile.value.copy(enable = true)
             if (isApplied && resultValidateUse != null) {
-                val (newShipment, _) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
+                val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel, newGlobalEvent)
                 if (newShipment != null) {
                     orderShipment.value = newShipment
                     validateUsePromoRevampUiModel = resultValidateUse
-                    globalEvent.value = OccGlobalEvent.Normal
+                    globalEvent.value = newEvent
                     updatePromoState(resultValidateUse.promoUiModel)
                     updateCart()
                     sendViewOspEe()
@@ -411,11 +415,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun clearBboIfExist() {
+    fun clearBboIfExist(): Boolean {
         val logisticPromoViewModel = orderShipment.value.logisticPromoViewModel
         if (logisticPromoViewModel != null && orderShipment.value.isApplyLogisticPromo && orderShipment.value.logisticPromoShipping != null) {
             clearOldLogisticPromo(logisticPromoViewModel.promoCode)
+            return true
         }
+        return false
     }
 
     private fun resetBbo() {
@@ -425,11 +431,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
         val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, orderShipment.value)
         newOrderShipment?.let {
-            clearBboIfExist()
+            val isBoExist = clearBboIfExist()
             orderShipment.value = it
             sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
             if (it.serviceErrorMessage.isNullOrEmpty()) {
-                validateUsePromo()
+                validateUsePromo(isBoExist)
             } else {
                 calculateTotal()
             }
@@ -462,9 +468,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel) {
         val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, orderShipment.value)
         newOrderShipment?.let {
-            clearBboIfExist()
+            val isBoExist = clearBboIfExist()
             orderShipment.value = it
-            validateUsePromo()
+            validateUsePromo(isBoExist)
         }
     }
 
@@ -484,7 +490,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Loading
                 val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, shipping.logisticPromoViewModel?.promoCode), logisticPromoUiModel.promoCode)
                 if (isApplied && resultValidateUse != null) {
-                    val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
+                    val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel, newGlobalEvent)
                     if (newShipment != null) {
                         orderShipment.value = newShipment
                     }
@@ -670,27 +676,30 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return promoProcessor.generateBboPromoCodes(orderShipment.value)
     }
 
-    fun validateUsePromo() {
+    fun validateUsePromo(forceValidateUse: Boolean = false) {
         launch(executorDispatchers.immediate) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
             cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
-            val (error, resultValidateUse, isAkamaiError) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel)
+            val (resultValidateUse, newGlobalEvent, isAkamaiError) = promoProcessor.validateUsePromo(generateValidateUsePromoRequest(), validateUsePromoRevampUiModel, forceValidateUse)
             when {
-                error != null && isAkamaiError -> {
+                newGlobalEvent != null && isAkamaiError -> {
                     resetBbo()
                     clearAllPromoFromLastRequest()
                     calculateTotal()
-                    globalEvent.value = OccGlobalEvent.Error(error)
+                    globalEvent.value = newGlobalEvent
                 }
-                error != null && !isAkamaiError -> {
+                newGlobalEvent != null && !isAkamaiError -> {
                     orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-                    globalEvent.value = OccGlobalEvent.Error(error)
+                    globalEvent.value = newGlobalEvent
                 }
                 resultValidateUse != null -> {
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoState(resultValidateUse.promoUiModel)
+                    if (newGlobalEvent != null) {
+                        globalEvent.value = newGlobalEvent
+                    }
                 }
                 else -> {
                     validateUsePromoRevampUiModel = null

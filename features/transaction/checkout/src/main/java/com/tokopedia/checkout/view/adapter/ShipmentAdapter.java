@@ -10,17 +10,16 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.checkout.view.uimodel.CrossSellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
-import com.tokopedia.checkout.view.viewholder.ShipmentCrossSellViewHolder;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
+import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
@@ -28,6 +27,7 @@ import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel;
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentCostViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentCrossSellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
@@ -37,14 +37,14 @@ import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHold
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel;
@@ -453,7 +453,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private int getIndexCrossSell() {
         int existingIndex = counterCrossSell;
-        if (existingIndex < shipmentCrossSellModelList.size()-1) {
+        if (existingIndex < shipmentCrossSellModelList.size() - 1) {
             counterCrossSell += 1;
         }
         return existingIndex;
@@ -589,7 +589,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void checkDropshipperValidation() {
-        boolean hasSelectAllCourier = checkHasSelectAllCourier(true, -1, "");
+        boolean hasSelectAllCourier = checkHasSelectAllCourier(true, -1, "", false);
         if (hasSelectAllCourier) {
             boolean availableCheckout = true;
             int errorPosition = DEFAULT_ERROR_POSITION;
@@ -654,7 +654,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (index > 0) {
             notifyItemChanged(getShipmentCostPosition());
             notifyItemChanged(index);
-            checkHasSelectAllCourier(false, index, shipmentCartItemModel.getCartString());
+            checkHasSelectAllCourier(false, index, shipmentCartItemModel.getCartString(), false);
             if (shipmentCartItemModel.isEligibleNewShippingExperience()) {
                 updateShippingCompletionTickerVisibility();
             }
@@ -697,7 +697,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(position);
         int tmpPosition = isForceReload ? position : -1;
         if (shipmentCartItemModel != null && shipmentCartItemModel.isEligibleNewShippingExperience()) {
-            checkHasSelectAllCourier(false, tmpPosition, shipmentCartItemModel.getCartString());
+            checkHasSelectAllCourier(false, tmpPosition, shipmentCartItemModel.getCartString(), false);
             updateShippingCompletionTickerVisibility();
         }
 
@@ -779,7 +779,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public boolean checkHasSelectAllCourier(boolean passCheckShipmentFromPaymentClick,
                                             int lastSelectedCourierOrderIndex,
-                                            String lastSelectedCourierOrdercartString) {
+                                            String lastSelectedCourierOrdercartString,
+                                            boolean forceHitValidateUse) {
         int cartItemCounter = 0;
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
@@ -795,7 +796,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (cartItemCounter == shipmentCartItemModelList.size()) {
                 RequestData requestData = getRequestData(null, null, false);
                 if (!passCheckShipmentFromPaymentClick) {
-                    shipmentAdapterActionListener.onFinishChoosingShipment(lastSelectedCourierOrderIndex, lastSelectedCourierOrdercartString);
+                    shipmentAdapterActionListener.onFinishChoosingShipment(lastSelectedCourierOrderIndex, lastSelectedCourierOrdercartString, forceHitValidateUse);
                 }
                 shipmentAdapterActionListener.updateCheckoutRequest(requestData.getCheckoutRequestData());
                 return true;

@@ -1,5 +1,10 @@
 package com.tokopedia.checkout.view;
 
+import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_REGULAR_PRODUCT;
+import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_TOKONOW_PRODUCT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -9,16 +14,12 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
-import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel;
-import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
-import com.tokopedia.checkout.view.uimodel.CrossSellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest;
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestMapper;
+import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel;
+import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.EgoldData;
@@ -54,10 +55,12 @@ import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterCl
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber;
 import com.tokopedia.checkout.view.subscriber.SaveShipmentStateSubscriber;
+import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
@@ -85,6 +88,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.TKPDMapParam;
@@ -110,6 +114,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOn
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnNote;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ProductResult;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem;
@@ -150,11 +155,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-
-import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_REGULAR_PRODUCT;
-import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_TOKONOW_PRODUCT;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
 /**
  * @author Irfan Khoirul on 24/04/18.
@@ -684,6 +684,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (cartShipmentAddressFormData.getTickerData() != null) {
             setTickerAnnouncementHolderData(
                     new TickerAnnouncementHolderData(cartShipmentAddressFormData.getTickerData().getId(),
+                            cartShipmentAddressFormData.getTickerData().getTitle(),
                             cartShipmentAddressFormData.getTickerData().getMessage())
             );
             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
@@ -954,7 +955,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                                validateBBO(validateUsePromoRevampUiModel);
                                                updateTickerAnnouncementData(validateUsePromoRevampUiModel);
-                                               if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase("ERROR")) {
+                                               if (!validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) || !validateUsePromoRevampUiModel.getErrorCode().equals(statusCode200)) {
                                                    String message = "";
                                                    if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
                                                        message = validateUsePromoRevampUiModel.getMessage().get(0);
@@ -1023,10 +1024,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 setTickerAnnouncementHolderData(
                         new TickerAnnouncementHolderData(
                                 String.valueOf(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getStatusCode()),
+                                "",
                                 validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())
                 );
             } else {
                 tickerAnnouncementHolderData.setId(String.valueOf(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getStatusCode()));
+                tickerAnnouncementHolderData.setTitle("");
                 tickerAnnouncementHolderData.setMessage(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage());
             }
             getView().updateTickerAnnouncementMessage();
@@ -1274,7 +1277,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                     showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                     validateBBOWithSpecificOrder(validateUsePromoRevampUiModel, cartString, promoCode);
-                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK);
+                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getErrorCode().equals(statusCode200);
                                     if (isValidatePromoRevampSuccess) {
                                         getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), true);
                                     } else {
@@ -1318,7 +1321,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
         if (messageInfo.length() > 0) {
-            getView().showToastError(messageInfo);
+            getView().showToastNormal(messageInfo);
         }
     }
 
@@ -1408,7 +1411,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                     showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                     validateBBO(validateUsePromoRevampUiModel);
-                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK);
+                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getErrorCode().equals(statusCode200);
                                     if (isValidatePromoRevampSuccess) {
                                         getView().renderPromoCheckoutFromCourierSuccess(validateUsePromoRevampUiModel, itemPosition, noToast);
                                     } else {
@@ -1873,6 +1876,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     public void onNext(ClearPromoUiModel responseData) {
                         if (getView() != null) {
                             if (!UtilsKt.isNullOrEmpty(responseData.getSuccessDataModel().getTickerMessage())) {
+                                tickerAnnouncementHolderData.setTitle("");
                                 tickerAnnouncementHolderData.setMessage(responseData.getSuccessDataModel().getTickerMessage());
                                 getView().updateTickerAnnouncementMessage();
                             }
@@ -2266,7 +2270,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (AddOnResult addOnResult : saveAddOnStateResult.getAddOns()) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 List<CartItemModel> cartItemModelList = shipmentCartItemModel.getCartItemModels();
-                for (int i=0; i<cartItemModelList.size(); i++) {
+                for (int i = 0; i < cartItemModelList.size(); i++) {
                     CartItemModel cartItemModel = cartItemModelList.get(i);
                     String keyProductLevel = cartItemModel.getCartString() + "-" + cartItemModel.getCartId();
                     if (keyProductLevel.equalsIgnoreCase(addOnResult.getAddOnKey())) {
@@ -2282,7 +2286,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult) {
         for (AddOnResult addOnResult : saveAddOnStateResult.getAddOns()) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                if ((shipmentCartItemModel.getCartString()+"-0").equalsIgnoreCase(addOnResult.getAddOnKey()) && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+                if ((shipmentCartItemModel.getCartString() + "-0").equalsIgnoreCase(addOnResult.getAddOnKey()) && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
                     AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
                     setAddOnsData(addOnsDataModel, addOnResult, 1);
                 }

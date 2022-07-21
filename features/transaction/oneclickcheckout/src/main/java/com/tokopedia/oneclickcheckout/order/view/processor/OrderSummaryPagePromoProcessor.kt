@@ -3,7 +3,9 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
+import com.tokopedia.oneclickcheckout.common.STATUS_CODE_200
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
@@ -32,12 +34,14 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                                          private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                          private val executorDispatchers: CoroutineDispatchers) {
 
-    suspend fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest, lastValidateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Triple<Throwable?, ValidateUsePromoRevampUiModel?, Boolean> {
-        if (!hasPromo(validateUsePromoRequest)) return Triple(null, null, false)
+    suspend fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest, lastValidateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, forceValidateUse: Boolean): Triple<ValidateUsePromoRevampUiModel?, OccGlobalEvent?, Boolean> {
+        if (!forceValidateUse && !hasPromo(validateUsePromoRequest)) return Triple(null, null, false)
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
                 val result = validateUsePromoRevampUseCase.get().setParam(validateUsePromoRequest).executeOnBackground()
+                var newGlobalEvent: OccGlobalEvent? = null
+                if (result.status.equals(STATUS_OK, true) && result.errorCode == STATUS_CODE_200) {
                 var isPromoReleased = false
                 if (!lastValidateUsePromoRevampUiModel?.promoUiModel?.codes.isNullOrEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
                     isPromoReleased = true
@@ -51,10 +55,17 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 } else if (lastValidateUsePromoRevampUiModel != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastValidateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
                     orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
                 }
-                return@withContext Triple(null, result, false)
+                    if (result.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message.isNotEmpty()) {
+                        newGlobalEvent = OccGlobalEvent.ToasterInfo(result.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message)
+                    }
+                    return@withContext Triple(result, newGlobalEvent, false)
+                } else {
+                    val errorMessage = result.message.firstOrNull() ?: DEFAULT_ERROR_MESSAGE
+                    return@withContext Triple(null, OccGlobalEvent.Error(errorMessage = errorMessage), false)
+                }
             } catch (t: Throwable) {
                 val throwable = t.cause ?: t
-                return@withContext Triple(throwable, null, handlePromoThrowable(throwable, validateUsePromoRequest))
+                return@withContext Triple(null, OccGlobalEvent.Error(throwable), handlePromoThrowable(throwable, validateUsePromoRequest))
             }
         }
         OccIdlingResource.decrement()
@@ -93,10 +104,14 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
                 val response = validateUsePromoRevampUseCase.get().setParam(validateUsePromoRequest).executeOnBackground()
-                if (response.status.equals(STATUS_OK, true)) {
+                if (response.status.equals(STATUS_OK, true) && response.errorCode == STATUS_CODE_200) {
                     val voucherOrderUiModel = response.promoUiModel.voucherOrderUiModels.firstOrNull { it.code == logisticPromoCode }
                     if (voucherOrderUiModel != null && voucherOrderUiModel.messageUiModel.state != "red") {
-                        return@withContext Triple(true, response, OccGlobalEvent.Normal)
+                        var globalEvent: OccGlobalEvent = OccGlobalEvent.Normal
+                        if (response.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message.isNotEmpty()) {
+                            globalEvent = OccGlobalEvent.ToasterInfo(response.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message)
+                        }
+                        return@withContext Triple(true, response, globalEvent)
                     } else if (voucherOrderUiModel != null && voucherOrderUiModel.messageUiModel.text.isNotEmpty()) {
                         return@withContext Triple(false, response, OccGlobalEvent.Error(errorMessage = voucherOrderUiModel.messageUiModel.text))
                     }
@@ -117,7 +132,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
                 val response = validateUsePromoRevampUseCase.get().setParam(validateUsePromoRequest).executeOnBackground()
-                if (response.status.equals(STATUS_OK, true)) {
+                if (response.status.equals(STATUS_OK, true) && response.errorCode == STATUS_CODE_200) {
                     val (isSuccess, newGlobalEvent) = checkIneligiblePromo(response, orderCart)
                     return@withContext Triple(response, isSuccess, newGlobalEvent)
                 }
@@ -270,13 +285,21 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         return validateUsePromoRequest.codes.isNotEmpty() || validateUsePromoRequest.orders.first().codes.isNotEmpty()
     }
 
-    private fun checkIneligiblePromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, orderCart: OrderCart): Pair<Boolean, OccGlobalEvent> {
+    private fun shouldShowIneligibleBottomSheet(): Boolean {
+        return false
+    }
+
+    private suspend fun checkIneligiblePromo(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel, orderCart: OrderCart): Pair<Boolean, OccGlobalEvent> {
         var notEligiblePromoHolderdataList = ArrayList<NotEligiblePromoHolderdata>()
         notEligiblePromoHolderdataList = addIneligibleGlobalPromo(validateUsePromoRevampUiModel, notEligiblePromoHolderdataList)
         notEligiblePromoHolderdataList = addIneligibleVoucherPromo(validateUsePromoRevampUiModel, notEligiblePromoHolderdataList, orderCart)
 
         if (notEligiblePromoHolderdataList.size > 0) {
-            return false to OccGlobalEvent.PromoClashing(notEligiblePromoHolderdataList)
+            return if (shouldShowIneligibleBottomSheet()) {
+                false to OccGlobalEvent.PromoClashing(notEligiblePromoHolderdataList)
+            } else {
+                return cancelIneligiblePromoCheckout(ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
+            }
         }
         return true to OccGlobalEvent.Loading
     }

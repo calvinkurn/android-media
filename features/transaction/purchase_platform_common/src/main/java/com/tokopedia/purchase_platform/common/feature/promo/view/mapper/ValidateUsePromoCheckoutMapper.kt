@@ -36,6 +36,7 @@ class ValidateUsePromoCheckoutMapper {
             return ValidateUsePromoRevampUiModel(
                     status = validateUsePromoRevamp.status,
                     message = validateUsePromoRevamp.message,
+                    errorCode = validateUsePromoRevamp.errorCode,
                     promoUiModel = mapToPromoUiModel(validateUsePromoRevamp.promo)
             )
         }

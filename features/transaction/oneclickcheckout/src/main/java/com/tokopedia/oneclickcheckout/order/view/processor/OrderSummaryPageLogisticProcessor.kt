@@ -613,7 +613,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return null
     }
 
-    fun onApplyBbo(shipping: OrderShipment, logisticPromoUiModel: LogisticPromoUiModel): Pair<OrderShipment?, OccGlobalEvent> {
+    fun onApplyBbo(shipping: OrderShipment, logisticPromoUiModel: LogisticPromoUiModel, newGlobalEvent: OccGlobalEvent): Pair<OrderShipment?, OccGlobalEvent> {
         val shippingRecommendationData = shipping.shippingRecommendationData
         if (shippingRecommendationData != null) {
             var logisticPromoShipping: ShippingCourierUiModel? = null
@@ -643,7 +643,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                                 logisticPromoTickerMessage = null,
                                 isApplyLogisticPromo = true,
                                 logisticPromoShipping = logisticPromoShipping),
-                        OccGlobalEvent.Normal)
+                        newGlobalEvent)
             }
         }
         return Pair(null, OccGlobalEvent.Error(errorMessage = OrderSummaryPageViewModel.FAIL_APPLY_BBO_ERROR_MESSAGE))

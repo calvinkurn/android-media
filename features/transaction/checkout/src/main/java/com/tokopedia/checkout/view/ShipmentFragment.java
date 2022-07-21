@@ -1,5 +1,31 @@
 package com.tokopedia.checkout.view;
 
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_LABEL_TRADE_IN_CHECKOUT_EE;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_BUSINESS_UNIT;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_SCREEN_NAME;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER_ID;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
+import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
+import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CHOSEN_ADDRESS;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_ERROR;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -41,18 +67,14 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
-import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
-import com.tokopedia.checkout.domain.model.checkout.Prompt;
-import com.tokopedia.checkout.view.uimodel.CrossSellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
+import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.domain.model.checkout.TrackerData;
-import com.tokopedia.checkout.webview.CheckoutWebViewActivity;
 import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.di.CheckoutModule;
@@ -60,11 +82,14 @@ import com.tokopedia.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener;
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog;
 import com.tokopedia.checkout.view.helper.CartProtectionInfoBottomSheetHelper;
+import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
+import com.tokopedia.checkout.webview.CheckoutWebViewActivity;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
@@ -115,6 +140,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWo
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.UnavailableBottomSheetData;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
@@ -161,32 +187,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_LABEL_TRADE_IN_CHECKOUT_EE;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_BUSINESS_UNIT;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_SCREEN_NAME;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER_ID;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
-import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CHOSEN_ADDRESS;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_ERROR;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -1291,13 +1291,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
                     TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
                     if (tickerAnnouncementHolderData != null && !TextUtils.isEmpty(clearPromoUiModel.getSuccessDataModel().getTickerMessage())) {
+                        tickerAnnouncementHolderData.setTitle("");
                         tickerAnnouncementHolderData.setMessage(clearPromoUiModel.getSuccessDataModel().getTickerMessage());
                         updateTickerAnnouncementMessage();
                     }
 
                     doUpdateButtonPromoCheckout(promoUiModel);
                     shipmentPresenter.setValidateUsePromoRevampUiModel(null);
-                    shipmentAdapter.checkHasSelectAllCourier(false, -1, "");
+                    shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false);
                 }
 
                 boolean requiredToReloadRatesForMvcCourier = data.getBooleanExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false);
@@ -1573,45 +1574,33 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrderCartString) {
-        ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = shipmentPresenter.getValidateUsePromoRevampUiModel();
+    public void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrderCartString, boolean forceHitValidateUse) {
+        // TODO: 04/07/22 CHECK IF BO GETS RED STATE, THEN HOW? -> last validate use request should remove BO code
+        // TODO: 04/07/22 CHECK IF PROMO GETS RED STATE, THEN should keep hit -> by last validate use request
         boolean stillHasPromo = false;
-        if (validateUsePromoRevampUiModel != null) {
-            PromoUiModel promoUiModel = validateUsePromoRevampUiModel.getPromoUiModel();
-            if (promoUiModel.getCodes().size() > 0 && !promoUiModel.getMessageUiModel().getState().equals("red")) {
+        ValidateUsePromoRequest lastValidateUseRequest = shipmentPresenter.getLastValidateUseRequest();
+        if (lastValidateUseRequest != null) {
+            if (lastValidateUseRequest.getCodes().size() > 0) {
                 stillHasPromo = true;
-            }
-            for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-                if (voucherOrdersItemUiModel != null && !TextUtils.isEmpty(voucherOrdersItemUiModel.getCode()) && !voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
-                    stillHasPromo = true;
-                    break;
+            } else {
+                for (OrdersItem ordersItem : lastValidateUseRequest.getOrders()) {
+                    if (ordersItem.getCodes().size() > 0) {
+                        stillHasPromo = true;
+                        break;
+                    }
                 }
             }
         } else {
-            ValidateUsePromoRequest lastValidateUseRequest = shipmentPresenter.getLastValidateUseRequest();
-            if (lastValidateUseRequest != null) {
-                if (lastValidateUseRequest.getCodes().size() > 0) {
+            LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
+            if (lastApplyUiModel != null) {
+                if (lastApplyUiModel.getCodes().size() > 0) {
                     stillHasPromo = true;
                 } else {
-                    for (OrdersItem ordersItem : lastValidateUseRequest.getOrders()) {
-                        if (ordersItem.getCodes().size() > 0) {
-                            stillHasPromo = true;
-                            break;
-                        }
-                    }
-                }
-            } else {
-                LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
-                if (lastApplyUiModel != null) {
-                    if (lastApplyUiModel.getCodes().size() > 0) {
-                        stillHasPromo = true;
-                    } else {
-                        if (lastApplyUiModel.getVoucherOrders().size() > 0) {
-                            for (LastApplyVoucherOrdersItemUiModel voucherOrder : lastApplyUiModel.getVoucherOrders()) {
-                                if (voucherOrder.getCode().length() > 0) {
-                                    stillHasPromo = true;
-                                    break;
-                                }
+                    if (lastApplyUiModel.getVoucherOrders().size() > 0) {
+                        for (LastApplyVoucherOrdersItemUiModel voucherOrder : lastApplyUiModel.getVoucherOrders()) {
+                            if (voucherOrder.getCode().length() > 0) {
+                                stillHasPromo = true;
+                                break;
                             }
                         }
                     }
@@ -1623,7 +1612,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
         } else {
             clearPromoTrackingData();
-            sendEEStep3();
+            if (forceHitValidateUse) {
+                shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
+            } else {
+                sendEEStep3();
+            }
         }
     }
 
@@ -1874,7 +1867,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onNeedUpdateRequestData() {
-        shipmentAdapter.checkHasSelectAllCourier(true, -1, "");
+        shipmentAdapter.checkHasSelectAllCourier(true, -1, "", false);
     }
 
     @Override
@@ -1978,7 +1971,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (promoCode != null && promoCode.length() > 0) {
                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
                     if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && !ordersItem.getCodes().contains(promoCode)) {
-                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel()!= null) {
+                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                             // remove previous logistic promo code
                             ordersItem.getCodes().remove(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                         }
@@ -2645,9 +2638,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (isLastAppliedPromo) {
             doResetButtonPromoCheckout();
-        } else {
-            shipmentAdapter.checkHasSelectAllCourier(false, -1, "");
         }
+        shipmentAdapter.checkHasSelectAllCourier(false, -1, "", true);
     }
 
     @Override
@@ -3046,7 +3038,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             // Check if need to hit validate final, if so then hit validate final by checking is all courier have been selected
             if (isNeedToHitValidateFinal) {
-                shipmentAdapter.checkHasSelectAllCourier(false, -1, "");
+                shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false);
             }
         }
     }

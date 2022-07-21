@@ -378,6 +378,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
               }
               tickers {
                 id
+                title
                 message
                 page
               }

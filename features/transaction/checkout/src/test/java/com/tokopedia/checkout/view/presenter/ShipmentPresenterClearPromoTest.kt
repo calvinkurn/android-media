@@ -2,7 +2,11 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -24,8 +28,13 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
+import io.mockk.verify
+import io.mockk.verifySequence
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -135,7 +144,7 @@ class ShipmentPresenterClearPromoTest {
     @Test
     fun `WHEN clear BBO promo success with ticker data THEN should render success and update ticker`() {
         // Given
-        presenter.tickerAnnouncementHolderData = TickerAnnouncementHolderData("0", "message")
+        presenter.tickerAnnouncementHolderData = TickerAnnouncementHolderData("0", "", "message")
 
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
                 ClearPromoUiModel(
@@ -309,7 +318,7 @@ class ShipmentPresenterClearPromoTest {
     @Test
     fun `WHEN clear non eligible promo success with ticker data THEN should render success and update ticker`() {
         // Given
-        presenter.tickerAnnouncementHolderData = TickerAnnouncementHolderData("0", "message")
+        presenter.tickerAnnouncementHolderData = TickerAnnouncementHolderData("0", "", "message")
 
         val notEligilePromoList = ArrayList<NotEligiblePromoHolderdata>().apply {
             add(NotEligiblePromoHolderdata(promoCode = "code"))
