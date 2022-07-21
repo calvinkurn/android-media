@@ -327,6 +327,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var globalErrorShopPage: GlobalError? = null
     var listWidgetLayout = mutableListOf<ShopPageWidgetLayoutUiModel>()
+    var initialLayoutData = mutableListOf<ShopPageWidgetLayoutUiModel>()
     var isNeedScrollToTopAfterGetData = true
     val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
 
@@ -604,8 +605,27 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         stopMonitoringPltCustomMetric(ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_V2_PREPARE)
         startMonitoringPltCustomMetric(ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_V2_MIDDLE)
         shopPageHomeLayoutUiModel?.let {
+            shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
+                it.masterLayoutId,
+                shopId
+            )
             shopHomeAdapter.hideLoading()
             setShopHomeWidgetLayoutData(it)
+            setWidgetLayoutPlaceholder()
+        }
+    }
+
+    open fun setWidgetLayoutPlaceholder() {
+        val shopHomeWidgetContentData = ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(
+            listWidgetLayout,
+            isOwner,
+            isLogin,
+            isThematicWidgetShown
+        )
+        if (shopHomeWidgetContentData.isNotEmpty()) {
+            shopHomeAdapter.setHomeLayoutData(shopHomeWidgetContentData)
+        } else {
+            shopHomeAdapter.addProductGridListPlaceHolder()
         }
     }
 
@@ -1130,22 +1150,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     open fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
-        shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
-            data.masterLayoutId,
-            shopId
-        )
-        listWidgetLayout = data.listWidgetLayout.toMutableList()
-        val shopHomeWidgetContentData = ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(
-            data.listWidgetLayout,
-            isOwner,
-            isLogin,
-            isThematicWidgetShown
-        )
-        if (shopHomeWidgetContentData.isNotEmpty()) {
-            shopHomeAdapter.setHomeLayoutData(shopHomeWidgetContentData)
-        } else {
-            shopHomeAdapter.addProductGridListPlaceHolder()
-        }
+        initialLayoutData = data.listWidgetLayout.toMutableList()
+        listWidgetLayout = initialLayoutData.toMutableList()
     }
 
     private fun checkCampaignNplWidgetRemindMeStatus(listWidgetContentData: List<Visitable<*>?>) {
@@ -3204,8 +3210,9 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         endlessRecyclerViewScrollListener.resetState()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
         scrollToTop()
+        listWidgetLayout = initialLayoutData.toMutableList()
+        setWidgetLayoutPlaceholder()
     }
 
     // flash sale widget
@@ -3214,8 +3221,9 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         endlessRecyclerViewScrollListener.resetState()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
         scrollToTop()
+        listWidgetLayout = initialLayoutData.toMutableList()
+        setWidgetLayoutPlaceholder()
     }
 
     private fun setNplRemindMeClickedCampaignId(campaignId: String) {

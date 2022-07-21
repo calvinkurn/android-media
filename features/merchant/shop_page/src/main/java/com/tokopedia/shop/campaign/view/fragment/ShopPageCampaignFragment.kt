@@ -150,7 +150,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         setWidgetLayoutPlaceholder()
     }
 
-    private fun setWidgetLayoutPlaceholder() {
+    override fun setWidgetLayoutPlaceholder() {
         if (listWidgetLayout.isNotEmpty()) {
             shopCampaignTabAdapter.hideLoading()
             val shopHomeWidgetContentData =
@@ -583,10 +583,6 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         } catch (e: Throwable) {
             0
         }
-    }
-
-    override fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
-        listWidgetLayout = data.listWidgetLayout.toMutableList()
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, AdapterTypeFactory> {
