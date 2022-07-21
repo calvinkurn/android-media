@@ -1032,6 +1032,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onProductCardClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
         if (viewModel.isProductDetailBottomSheetVisible) return
         val productUiModel = productListItem.productUiModel
+        // update product id - card positions map
+        viewModel.productMap[productUiModel.id] = cardPositions
         // track click product card event
         merchantPageAnalytics.clickProductCard(
             getProductItemList(),
