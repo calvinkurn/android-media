@@ -14,6 +14,7 @@ import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Action.Com
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Action.Companion.CLICK_X_ON_HIGHLIGHT_CATEGORY
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.Action.Companion.VIEW_ON_HIGHLIGHT_CATEGORY
 import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralDigitalClick
 import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralDigitalView
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.track.TrackApp
@@ -486,7 +487,7 @@ class SmartBillsAnalytics {
             putString(TRACKER_ID, TRACKER_ID_CLICK_HIGHLIGHT_PRODUCT)
         }
 
-        eventDataLayer.addGeneralDigitalView()
+        eventDataLayer.addGeneralDigitalClick()
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CommonSmartBillsConstant.CLICK_DIGITAl, eventDataLayer)
     }
 
@@ -498,7 +499,7 @@ class SmartBillsAnalytics {
             putString(TRACKER_ID, TRACKER_ID_CLOSE_HIGHLIGHT_PRODUCT)
         }
 
-        eventDataLayer.addGeneralDigitalView()
+        eventDataLayer.addGeneralDigitalClick()
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CommonSmartBillsConstant.CLICK_DIGITAl, eventDataLayer)
     }
 
