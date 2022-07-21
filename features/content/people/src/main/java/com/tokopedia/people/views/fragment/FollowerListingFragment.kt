@@ -24,8 +24,8 @@ import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
+import com.tokopedia.people.listener.FollowUnFollowListenerTracker
 import com.tokopedia.people.listener.FollowerFollowingListener
-import com.tokopedia.people.listener.FollowerListenerTracker
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.adapter.ProfileFollowersAdapter
 import com.tokopedia.unifycomponents.LocalLoad
@@ -34,11 +34,10 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-
 class FollowerListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val userProfileTracker: UserProfileTracker,
-): TkpdBaseV4Fragment(), AdapterCallback, FollowerFollowingListener, FollowerListenerTracker {
+): TkpdBaseV4Fragment(), AdapterCallback, FollowerFollowingListener, FollowUnFollowListenerTracker {
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null
@@ -294,15 +293,15 @@ class FollowerListingFragment @Inject constructor(
         startActivityForResult(RouteManager.getIntent(context, applink), requestCode)
     }
 
-    override fun clickUserFollowers(userId: String, self: Boolean) {
+    override fun clickUser(userId: String, self: Boolean) {
         userProfileTracker.clickUserFollowers(userId, self)
     }
 
-    override fun clickUnfollowFromFollowers(userId: String, self: Boolean) {
+    override fun clickUnfollow(userId: String, self: Boolean) {
         userProfileTracker.clickUnfollowFromFollowers(userId, self)
     }
 
-    override fun clickFollowFromFollowers(userId: String, self: Boolean) {
+    override fun clickFollow(userId: String, self: Boolean) {
         userProfileTracker.clickFollowFromFollowers(userId, self)
     }
 
