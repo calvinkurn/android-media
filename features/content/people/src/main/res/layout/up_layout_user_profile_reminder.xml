@@ -8,6 +8,7 @@
     android:layout_marginTop="@dimen/unify_space_8"
     android:layout_marginBottom="@dimen/unify_space_8"
     app:cardCornerRadius="@dimen/unify_space_12"
+    app:cardElevation="@dimen/unify_space_0"
     app:layout_constraintCircleRadius="@dimen/unify_space_12">
 
     <androidx.constraintlayout.widget.ConstraintLayout
