@@ -31,7 +31,6 @@ import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.TelcoTabViewModel
 import com.tokopedia.topupbills.telco.common.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidListener
-import com.tokopedia.topupbills.telco.postpaid.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.postpaid.widget.DigitalSignalClientNumberWidget
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -46,7 +45,6 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
 
     private lateinit var signalClientNumberWidget: DigitalSignalClientNumberWidget
     private lateinit var mainContainer: CoordinatorLayout
-    private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var telcoTabViewModel: TelcoTabViewModel
     private lateinit var loadingShimmering: ConstraintLayout
     private lateinit var viewPager: ViewPager2
@@ -71,7 +69,6 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
         super.onCreate(savedInstanceState)
         activity?.let {
             val viewModelProvider = ViewModelProvider(it, viewModelFactory)
-            enquiryViewModel = viewModelProvider.get(DigitalTelcoEnquiryViewModel::class.java)
             telcoTabViewModel = viewModelProvider.get(TelcoTabViewModel::class.java)
         }
     }
@@ -373,15 +370,6 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
                 TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL -> {
                     topupAnalytics.eventInputNumberManual(categoryId, operatorName)
                 }
-                TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT -> {
-                    topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
-                }
-                TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE -> {
-                    topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
-                }
-                TopupBillsSearchNumberFragment.InputNumberActionType.CONTACT_HOMEPAGE -> {
-                    topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
-                }
             }
         }
     }
@@ -491,11 +479,11 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
         private const val INPUT_ACTION_TYPE_TRACKING_DELAY = 1000L
 
         fun newInstance(
-            telcoExtraParam: TopupBillsExtraParam
+            extraParam: TopupBillsExtraParam
         ): Fragment {
             val fragment = DigitalSignalFragment()
             val bundle = Bundle()
-            bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)
+            bundle.putParcelable(EXTRA_PARAM, extraParam)
             fragment.arguments = bundle
             return fragment
         }
