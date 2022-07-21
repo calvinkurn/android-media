@@ -41,9 +41,9 @@ class FeedUserTnCOnboardingBottomSheet @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(
-            requireParentFragment(),
+            this,
             viewModelFactoryCreator.create(
-                requireParentFragment(),
+                this,
                 usernameArg,
                 strategyFactory.create(usernameArg),
             )
