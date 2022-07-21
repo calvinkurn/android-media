@@ -690,10 +690,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     private fun showDeleteDialog(bill: RechargeBills){
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(resources.getString(R.string.smart_bills_delete_dialog_title))
-                setDescription(resources.getString(R.string.smart_bills_delete_dialog_desc))
-                setPrimaryCTAText(resources.getString(R.string.smart_bills_delete_dialog_yes))
-                setSecondaryCTAText(resources.getString(R.string.smart_bills_delete_dialog_no))
+                setTitle(it.resources.getString(R.string.smart_bills_delete_dialog_title))
+                setDescription(it.resources.getString(R.string.smart_bills_delete_dialog_desc))
+                setPrimaryCTAText(it.resources.getString(R.string.smart_bills_delete_dialog_yes))
+                setSecondaryCTAText(it.resources.getString(R.string.smart_bills_delete_dialog_no))
 
                 setPrimaryCTAClickListener{
                     smartBillsAnalytics.clickConfirmHapusTagihan()
