@@ -94,6 +94,7 @@ object AtcVariantHelper {
                 shopId = productInfoP1.basic.shopID,
                 miniCartData = miniCart,
                 minimumShippingPrice = productInfoP1.basic.getDefaultOngkirDouble(),
+                showQtyEditor = isTokoNow
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
