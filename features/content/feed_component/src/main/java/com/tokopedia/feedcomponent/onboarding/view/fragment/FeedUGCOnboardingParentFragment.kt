@@ -70,21 +70,30 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
-        when(childFragment) {
-            is BaseFeedUserOnboardingBottomSheet -> {
-                childFragment.setListener(object : BaseFeedUserOnboardingBottomSheet.Listener {
+        when (childFragment) {
+            is FeedUserCompleteOnboardingBottomSheet -> {
+                childFragment.setListener(object : FeedUserCompleteOnboardingBottomSheet.Listener,
+                    BaseFeedUserOnboardingBottomSheet.Listener {
+                    override fun clickNextOnCompleteOnboarding() {
+                        mListener?.clickNextOnCompleteOnboarding()
+                    }
+
                     override fun onSuccess() {
                         mListener?.onSuccess()
                     }
-
-                    override fun clickNextOnTncOnboarding() {
-                        mListener?.clickNextOnTncOnboarding()
-                    }
-
-                    override fun clickNextOnComplateOnboarding() {
-                        mListener?.clickNextOnCompleteOnboarding()
-                    }
                 })
+            }
+            is FeedUserTnCOnboardingBottomSheet -> {
+                childFragment.setListener(object : FeedUserTnCOnboardingBottomSheet.Listener,
+                        BaseFeedUserOnboardingBottomSheet.Listener {
+                        override fun clickNextOnTncOnboarding() {
+                            mListener?.clickNextOnTncOnboarding()
+                        }
+
+                        override fun onSuccess() {
+                            mListener?.onSuccess()
+                        }
+                    })
             }
         }
     }

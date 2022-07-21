@@ -34,6 +34,9 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
 
     private lateinit var viewModel: FeedUGCOnboardingViewModel
 
+    private val _listener: Listener?
+        get() = mListener as? Listener
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(
@@ -88,7 +91,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
         }
 
         binding.btnContinue.setOnClickListener {
-            mListener?.clickNextOnComplateOnboarding()
+            _listener?.clickNextOnCompleteOnboarding()
             viewModel.submitAction(FeedUGCOnboardingAction.ClickNext)
         }
     }
@@ -169,4 +172,9 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
             ) as FeedUserCompleteOnboardingBottomSheet
         }
     }
+
+    interface Listener : BaseFeedUserOnboardingBottomSheet.Listener {
+        fun clickNextOnCompleteOnboarding()
+    }
+
 }
