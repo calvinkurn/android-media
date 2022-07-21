@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
@@ -70,10 +71,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             renderUndoText(it)
             renderRedoText(it)
 
-            editorToolComponent.setupActiveTools(it.editList, it.backValue)
-            viewModel.updatedIndexItem.value?.let { updatedIndex ->
-                thumbnailDrawerComponent.refreshItem(updatedIndex, viewModel.editStateList.values.toList())
-            }
+            renderToolsIconActiveState(it)
+            updateDrawerSelectionItemIcon()
         }
     }
 
@@ -90,10 +89,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             renderUndoText(it)
             renderRedoText(it)
 
-            editorToolComponent.setupActiveTools(it.editList, it.backValue)
-            viewModel.updatedIndexItem.value?.let { updatedIndex ->
-                thumbnailDrawerComponent.refreshItem(updatedIndex, viewModel.editStateList.values.toList())
-            }
+            renderToolsIconActiveState(it)
+            updateDrawerSelectionItemIcon()
         }
     }
 
@@ -104,6 +101,16 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
     private fun renderRedoText(editList: EditorUiModel) {
         viewBinding?.btnRedo?.showWithCondition(editList.backValue != 0)
+    }
+
+    private fun renderToolsIconActiveState(editorUiModel: EditorUiModel){
+        editorToolComponent.setupActiveTools(editorUiModel.editList, editorUiModel.backValue)
+    }
+
+    private fun updateDrawerSelectionItemIcon(){
+        viewModel.updatedIndexItem.value?.let { updatedIndex ->
+            thumbnailDrawerComponent.refreshItem(updatedIndex, viewModel.editStateList.values.toList())
+        }
     }
 
     override fun initObserver() {
@@ -162,10 +169,18 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         activeImageUrl = originalUrl
 
         val editList = viewModel.getEditState(originalUrl)
-        renderUndoText(editList!!)
 
-        viewBinding?.imgMainPreview?.loadImage(editList.getImageUrl()) {
+        viewBinding?.imgMainPreview?.loadImage(editList?.getImageUrl()) {
             centerCrop()
+        }
+
+        viewBinding?.imgMainPreview?.post {
+            editList?.let {
+                renderUndoText(it)
+                renderRedoText(it)
+
+                renderToolsIconActiveState(it)
+            }
         }
     }
 
@@ -186,7 +201,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 renderUndoText(editorUiModel)
                 renderRedoText(editorUiModel)
 
-                editorToolComponent.setupActiveTools(editorUiModel.editList)
+                renderToolsIconActiveState(editorUiModel)
             }
         }
     }
