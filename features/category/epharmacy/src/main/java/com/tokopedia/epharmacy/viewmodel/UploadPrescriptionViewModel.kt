@@ -115,7 +115,7 @@ class UploadPrescriptionViewModel @Inject constructor(
                 if(ePharmacyDetailResponse.detailData?.formData?.prescriptionImages.isNullOrEmpty()){
                     _buttonLiveData.postValue(EPharmacyButtonKey.RE_UPLOAD.key)
                 }else {
-                    _buttonLiveData.postValue(EPharmacyButtonKey.DONE.key)
+                    _buttonLiveData.postValue(EPharmacyButtonKey.CHECK.key)
                 }
             }
         }
