@@ -23,22 +23,53 @@ class RecipeViewHolder(
 
     override fun bind(element: RecipeUiModel) {
         binding?.apply {
+            setTitleSubtitle(
+                binding = this,
+                element = element
+            )
+
+            iuRecipePicture.setImageUrl(
+                url = element.picture
+            )
+
+            setBookmarkIcon(
+                binding = this,
+                element = element
+            )
+
+            setTagList(
+                binding = this,
+                element = element
+            )
+        }
+    }
+
+    private fun setTitleSubtitle(binding: ItemTokopedianowRecipeBookmarkBinding, element: RecipeUiModel) {
+        binding.apply {
             tpTitle.text = element.title
-            tpSubtitle.text = root.resources.getString(R.string.tokopedianow_recipe_bookmark_item_subtitle, element.duration, element.portion)
-            iuRecipePicture.loadImage(element.picture)
 
-            icuBookmark.setOnClickListener {
-                listener.onRemoveBookmark(
-                    title = element.title,
-                    position = layoutPosition,
-                    recipeId = element.id
-                )
+            if (element.duration == null) {
+                tpSubtitle.text = root.resources.getString(R.string.tokopedianow_recipe_bookmark_item_subtitle_without_duration, element.portion)
+            } else {
+                tpSubtitle.text = root.resources.getString(R.string.tokopedianow_recipe_bookmark_item_subtitle, element.duration, element.portion)
             }
+        }
+    }
 
-            rvTags.run {
-                adapter = TagAdapter(element.tags)
-                layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, true)
-            }
+    private fun setTagList(binding: ItemTokopedianowRecipeBookmarkBinding, element: RecipeUiModel) {
+        binding.rvTags.run {
+            adapter = TagAdapter(element.tags.orEmpty())
+            layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, true)
+        }
+    }
+
+    private fun setBookmarkIcon(binding: ItemTokopedianowRecipeBookmarkBinding, element: RecipeUiModel) {
+        binding.icuBookmark.setOnClickListener {
+            listener.onRemoveBookmark(
+                title = element.title,
+                position = layoutPosition,
+                recipeId = element.id
+            )
         }
     }
 

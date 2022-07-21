@@ -47,8 +47,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         private const val NO_DATA_IMAGE = "https://images.tokopedia.net/img/android/tokonow/no_data_recipe_bookmarks.png"
 
         const val DEFAULT_PAGE = 1
-        const val DEFAULT_LIMIT = 10
-        const val DEFAULT_WIDGET_COUNTER = 0
+        const val DEFAULT_PER_PAGE = 10
         const val REMAINING_RECIPES_SIZE = 1
         const val SCROLL_DOWN_DIRECTION = 1
         const val ERROR_PAGE_NOT_FOUND = "404"

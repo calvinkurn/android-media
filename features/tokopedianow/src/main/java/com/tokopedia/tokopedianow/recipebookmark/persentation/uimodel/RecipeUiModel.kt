@@ -6,9 +6,9 @@ import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.RecipeBook
 data class RecipeUiModel(
     val id: String,
     val title: String,
-    val duration: Int,
+    val duration: Int?,
     val portion: Int,
-    val tags: List<String>,
+    val tags: List<String>?,
     val picture: String
 ): Visitable<RecipeBookmarkTypeFactory> {
     override fun type(typeFactory: RecipeBookmarkTypeFactory): Int = typeFactory.type(this)

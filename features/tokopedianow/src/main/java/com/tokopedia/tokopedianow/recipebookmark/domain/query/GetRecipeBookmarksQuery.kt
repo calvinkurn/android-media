@@ -7,7 +7,7 @@ internal object GetRecipeBookmarksQuery: GqlQueryInterface {
     const val PARAM_USER_ID = "userID"
     const val PARAM_WAREHOUSE_ID = "warehouseID"
     const val PARAM_PAGE = "page"
-    const val PARAM_LIMIT = "limit"
+    const val PARAM_PER_PAGE = "perPage"
 
     private const val OPERATION_NAME = "TokonowGetRecipeBookmarks"
 
@@ -21,55 +21,96 @@ internal object GetRecipeBookmarksQuery: GqlQueryInterface {
                ${'$'}$PARAM_USER_ID : String!,
                ${'$'}$PARAM_WAREHOUSE_ID : String!,
                ${'$'}$PARAM_PAGE : Int!,
-               ${'$'}$PARAM_LIMIT : Int!
+               ${'$'}$PARAM_PER_PAGE : Int!
             ) {
                $OPERATION_NAME(input: 
                {
                  $PARAM_USER_ID: ${'$'}$PARAM_USER_ID,
                  $PARAM_WAREHOUSE_ID: ${'$'}$PARAM_WAREHOUSE_ID,
                  $PARAM_PAGE: ${'$'}$PARAM_PAGE,
-                 $PARAM_LIMIT: ${'$'}$PARAM_LIMIT
+                 $PARAM_PER_PAGE: ${'$'}$PARAM_PER_PAGE
                }) {
                 	header {
-                    process_time
-                    reason
-                    status_code
-                  }
-                	metadata {
-                    hasNext
-                    total
-                  }
-                	data {
-                    userId
-                    recipes {
-                    	title
-                      status
-                      recipeDetailURL
-                      instruction
-                      portion
-                      durationMinute
-                      healthyScore
-                      category {
+                      success
+                      processTime
+                      message
+                      statusCode
+                    }
+                    metadata {
+                      hasNext
+                      total
+                    }
+                    data {
+                      userId
+                      recipes {
                         id
-                        name
-                      }
-                      tags {
-                        id
-                        name
-                      }
-                      products {
-                        id
-                        quantity
-                        price
-                        stock
-                      }
-                      ingredients {
-                        id
-                        name
-                        quantity
-                        unit
-                        image {
+                        title
+                        status
+                        instruction
+                        portion
+                        duration
+                        createdTime
+                        updatedTime
+                        publishedTime
+                        category {
                           id
+                          name
+                        }
+                        tags {
+                          id
+                          name
+                        }
+                        products {
+                          id
+                          quantity
+                          detail {
+                            name
+                            url
+                            imageUrl
+                            fmtPrice
+                            appUrl
+                            slashedPrice
+                            discountPercentage
+                            parentProductID
+                            minOrder
+                            stock
+                            categoryName
+                            countReview
+                            rating
+                            ratingAverage
+                            shopID
+                            maxOrder
+                            categoryID
+                            redirectLink
+                            labelGroup {
+                              title
+                              type
+                              typeVariant
+                              hexColor
+                            }
+                            labelGroupVariant {
+                              title
+                              type
+                              typeVariant
+                              hexColor
+                            }
+                          }
+                        }
+                        ingredients {
+                          id
+                          name
+                          quantity
+                          unit
+                          image {
+                            urlOriginal
+                            urlThumbnail
+                            fileName
+                            filePath
+                            width
+                            height
+                          }
+                        }
+                        images {
                           urlOriginal
                           urlThumbnail
                           fileName
@@ -77,25 +118,15 @@ internal object GetRecipeBookmarksQuery: GqlQueryInterface {
                           width
                           height
                         }
-                      }
-                      images {
-                        id
-                        urlOriginal
-                        urlThumbnail
-                        fileName
-                        filePath
-                        width
-                        height
-                      }
-                      customVideos {
-                        url
-                        fileName
-                      }
-                      videos {
-                        url
-                        type
-                      }
-                    }
+                        videos {
+                          url
+                          type
+                        }
+                        medias {
+                          url
+                          type
+                        }
+                     }
                   }
                }
             }

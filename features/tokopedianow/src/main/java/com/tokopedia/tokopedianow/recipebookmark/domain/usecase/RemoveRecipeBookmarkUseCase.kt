@@ -2,9 +2,8 @@ package com.tokopedia.tokopedianow.recipebookmark.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokopedianow.home.domain.query.GetHomeLayoutData
-import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarksResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
+import com.tokopedia.tokopedianow.recipebookmark.domain.query.RemoveRecipeBookmarkQuery
 import com.tokopedia.tokopedianow.recipebookmark.domain.query.RemoveRecipeBookmarkQuery.PARAM_RECIPE_ID
 import com.tokopedia.tokopedianow.recipebookmark.domain.query.RemoveRecipeBookmarkQuery.PARAM_USER_ID
 import com.tokopedia.usecase.RequestParams
@@ -20,7 +19,7 @@ class RemoveRecipeBookmarkUseCase @Inject constructor(
 ): GraphqlUseCase<RemoveRecipeBookmarkResponse>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(GetHomeLayoutData)
+        setGraphqlQuery(RemoveRecipeBookmarkQuery)
         setTypeClass(RemoveRecipeBookmarkResponse::class.java)
     }
 

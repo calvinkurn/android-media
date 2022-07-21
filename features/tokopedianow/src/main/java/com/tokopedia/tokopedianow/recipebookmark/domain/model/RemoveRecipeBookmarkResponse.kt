@@ -12,19 +12,17 @@ data class RemoveRecipeBookmarkResponse(
     ) {
         data class TokonowRemoveRecipeBookmark(
             @SerializedName("header")
-            val header: Header,
-            @SerializedName("success")
-            val success: Boolean
+            val header: Header
         ) {
             data class Header(
-                @SerializedName("error_code")
-                val errorCode: String,
                 @SerializedName("message")
                 val message: String,
-                @SerializedName("process_time")
+                @SerializedName("processTime")
                 val processTime: Double,
-                @SerializedName("reason")
-                val reason: String
+                @SerializedName("statusCode")
+                val statusCode: String,
+                @SerializedName("success")
+                val success: Boolean
             )
         }
     }

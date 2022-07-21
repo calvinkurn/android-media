@@ -25,11 +25,11 @@ internal object AddRecipeBookmarkQuery: GqlQueryInterface {
                  $PARAM_RECIPE_ID: ${'$'}$PARAM_RECIPE_ID
                }) {
                    header {
-                     status_code
-                     reason
-                     process_time
+                      success
+                      statusCode
+                      message
+                      processTime
                    }
-                   success
                }
             }
         """.trimIndent()

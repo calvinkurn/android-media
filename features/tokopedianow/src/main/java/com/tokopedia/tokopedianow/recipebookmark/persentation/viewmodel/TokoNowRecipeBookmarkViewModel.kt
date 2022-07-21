@@ -7,21 +7,19 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.recipebookmark.domain.mapper.GetRecipeBookmarksMapper.mapResponseToUiModelList
+import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarksResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.GetRecipeBookmarksUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
-import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_LIMIT
 import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_PAGE
-import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_WIDGET_COUNTER
+import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_PER_PAGE
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.recipebookmark.util.UiState
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class TokoNowRecipeBookmarkViewModel @Inject constructor(
@@ -35,7 +33,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
 
     private val layout: MutableList<RecipeUiModel> = mutableListOf()
     private var pageCounter: Int = DEFAULT_PAGE
-    private var newWidgetCounter: Int = DEFAULT_WIDGET_COUNTER
+    private var noNeedLoadMore: Boolean = true
     private var tempRecipeRemoved: Pair<Int, RecipeUiModel>? = null
 
     private val _loadRecipeBookmarks: MutableStateFlow<UiState<List<RecipeUiModel>>?> = MutableStateFlow(null)
@@ -57,18 +55,18 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     val isOnScrollNotNeeded: StateFlow<Boolean>
         get() = _isOnScrollNotNeeded
 
-    private suspend fun getRecipeBookmarks(page: Int): Triple<List<RecipeUiModel>, String, String> {
+    private suspend fun getRecipeBookmarks(page: Int): Triple<List<RecipeUiModel>, GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, Boolean> {
         val response = getRecipeBookmarksUseCase.execute(
             userId = userId,
             warehouseId = warehouseId,
             page = page,
-            limit = DEFAULT_LIMIT
+            limit = DEFAULT_PER_PAGE
         ).data.tokonowGetRecipeBookmarks
 
         return Triple(
             response.data.recipes.mapResponseToUiModelList(),
-            response.header.errorCode,
-            response.header.message
+            response.header,
+            response.metadata.hasNext
         )
     }
 
@@ -150,20 +148,20 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     }
 
     /**
-     * @see newWidgetCounter - set latest count of new widgets shown
+     * @see noNeedLoadMore - if true no need to load widgets more
      * @see loadRecipeBookmarks - layout will be updated with latest layout or show global error
      */
-    private fun onResponseLoadFirstPageBE(recipeBookmarks: List<RecipeUiModel>, errorCode: String, errorMessage: String) {
-        newWidgetCounter = recipeBookmarks.size
+    private fun onResponseLoadFirstPageBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
+        noNeedLoadMore = !hasNext || recipeBookmarks.size < DEFAULT_PER_PAGE
         layout.addAll(recipeBookmarks)
 
-        if (errorMessage.isBlank()) {
+        if (header.success) {
             _loadRecipeBookmarks.value = UiState.Success(
                 data = layout
             )
         } else {
             _loadRecipeBookmarks.value = UiState.Fail(
-                errorCode = errorCode
+                errorCode = header.statusCode
             )
         }
     }
@@ -178,20 +176,20 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     }
 
     /**
-     * @see newWidgetCounter - set latest count of new widgets shown
+     * @see noNeedLoadMore - if true no need to load widgets more
      * @see loadRecipeBookmarks - layout will be updated with latest layout or just hide load more loading
      */
-    private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>, errorCode: String, errorMessage: String) {
-        newWidgetCounter = recipeBookmarks.size
+    private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
+        noNeedLoadMore = !hasNext || recipeBookmarks.size < DEFAULT_PER_PAGE
         layout.addAll(recipeBookmarks)
 
-        if (errorMessage.isBlank()) {
+        if (header.success) {
             _moreRecipeBookmarks.value = UiState.Success(
                 data = layout
             )
         } else {
             _moreRecipeBookmarks.value = UiState.Fail(
-                errorCode = errorCode
+                errorCode = header.statusCode
             )
         }
     }
@@ -208,8 +206,8 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     fun loadFirstPage() {
         launchCatchError(block =  {
             _loadRecipeBookmarks.value = UiState.Loading()
-            val (recipeBookmarks, errorCode, errorMessage) = getRecipeBookmarks(pageCounter)
-            onResponseLoadFirstPageBE(recipeBookmarks, errorCode, errorMessage)
+            val (recipeBookmarks, header, hasNext) = getRecipeBookmarks(pageCounter)
+            onResponseLoadFirstPageBE(recipeBookmarks, header, hasNext)
         }, onError = { throwable ->
             onFailLoadFirstPageFE(throwable)
         })
@@ -217,7 +215,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
 
     fun removeRecipeBookmark(title: String, position: Int, recipeId: String) {
         val isRemoving = true
-
         launchCatchError(block = {
             _toaster.value = UiState.Loading(
                 ToasterUiModel(
@@ -236,13 +233,13 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
                 position = position,
                 recipeId = recipeId,
                 errorMessage = response.header.message,
-                isSuccess = response.success
+                isSuccess = response.header.success
             ) {
                 onSuccessRemoveRecipe(
                     position = position,
                     recipeId = recipeId,
                     title = title,
-                    isSuccess = response.success
+                    isSuccess = response.header.success
                 )
             }
         }, onError = { throwable ->
@@ -257,7 +254,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
 
     fun addRecipeBookmark(recipeId: String) {
         val isRemoving = false
-
         launchCatchError(block = {
             _toaster.value = UiState.Loading(
                 ToasterUiModel(
@@ -275,7 +271,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
                 position = tempRecipeRemoved?.first.orZero(),
                 recipeId = recipeId,
                 errorMessage = response.header.message,
-                isSuccess = response.success
+                isSuccess = response.header.success
             ) {
                 onSuccessAddRecipe()
             }
@@ -294,12 +290,12 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         isLoadMoreLoading: Boolean,
     ) {
         launchCatchError(block = {
-            if (newWidgetCounter < DEFAULT_LIMIT) {
+            if (noNeedLoadMore) {
                 _isOnScrollNotNeeded.value = true
             } else if (isAtTheBottomOfThePage && !isLoadMoreLoading) {
                 _moreRecipeBookmarks.value = UiState.Loading()
-                val (recipeBookmarks, errorCode, errorMessage) = getRecipeBookmarks(pageCounter++)
-                onResponseLoadMoreBE(recipeBookmarks, errorCode, errorMessage)
+                val (recipeBookmarks, header, hasNext) = getRecipeBookmarks(pageCounter++)
+                onResponseLoadMoreBE(recipeBookmarks, header, hasNext)
             }
         }) { throwable ->
             onFailLoadMoreFE(throwable)
