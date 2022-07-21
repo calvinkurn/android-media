@@ -15,6 +15,7 @@ import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent
 import com.tokopedia.kol.feature.post.di.KolProfileModule
+import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
 import com.tokopedia.kol.feature.postdetail.view.adapter.CDPRevampAdapter
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.CDPPostViewHolder
 import com.tokopedia.kol.feature.postdetail.view.datamodel.CDPRevampDataUiModel
@@ -31,11 +32,12 @@ import javax.inject.Inject
 class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener{
 
     private var cdpRecyclerView: RecyclerView? = null
+    private var postId = "0"
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
     private val adapter = CDPRevampAdapter(
         dataSource = object : CDPRevampAdapter.DataSource {
-            override fun getData(): CDPRevampDataUiModel {
+            override fun getData(): FeedXCard {
                 TODO("Not yet implemented")
             }
 
@@ -75,7 +77,7 @@ class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener
     }
 
     private fun initVar() {
-
+        postId = arguments?.getString(KolPostDetailActivity.PARAM_POST_ID) ?: "0"
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -120,7 +122,7 @@ class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener
 
         cdpRecyclerView = view.findViewById(R.id.cdp_recycler_view)
         setupView(view)
-        cdpViewModel.getCDPPostDetailFirstData("148176392")
+        cdpViewModel.getCDPPostDetailFirstData(postId)
 
     }
     private fun setupView(view: View) {
@@ -134,7 +136,7 @@ class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(cdpRecyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                //TODO
+                cdpViewModel.getCDPRecomData(postId)
             }
 
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
@@ -148,10 +150,12 @@ class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(cdpViewModel.currentCursor.isNotEmpty())
         adapter.setItemsAndAnimateChanges(cdpRevampDataUiModel.postList)
-        cdpViewModel.getCDPRecomData(id = "148176392")
+        cdpViewModel.getCDPRecomData(postId)
 
     }
     private fun onSuccessGetCDPRecomData(cdpRevampDataUiModel: CDPRevampDataUiModel){
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(cdpViewModel.currentCursor.isNotEmpty())
         adapter.addItemsAndAnimateChanges(cdpRevampDataUiModel.postList)
 
     }

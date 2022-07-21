@@ -4,7 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.view.adapter.CDPRevampAdapter
+import com.tokopedia.user.session.UserSession
 
 
 class CDPPostViewHolder(
@@ -12,6 +15,10 @@ class CDPPostViewHolder(
     private val dataSource: CDPRevampAdapter.DataSource,
     private val cdpListener: CDPListener
 ) : BaseViewHolder(itemView) {
+
+    private val cdpView =
+        itemView.findViewById<CDPPostContentTypeViewHolder>(R.id.item_cdp_revamp_view_item)
+
 
     companion object {
 
@@ -22,7 +29,7 @@ class CDPPostViewHolder(
         ) = CDPPostViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(
-                    com.tokopedia.feedcomponent.R.layout.item_dynamic_post_new,
+                    R.layout.item_cdp_revamp_view,
                     parent,
                     false,
                 ),
@@ -30,8 +37,8 @@ class CDPPostViewHolder(
             cdpListener
         )
     }
-    fun bind() {
-        val card = dataSource.getData()
+    fun bind(feedXCard: FeedXCard) {
+        cdpView.bindData(cdpListener, adapterPosition, feedXCard, UserSession(itemView.context))
     }
     interface CDPListener {
 

@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.postdetail.view.activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.kol.feature.postdetail.view.fragment.CDPRevampedFragment
 import com.tokopedia.kol.feature.postdetail.view.fragment.KolPostDetailFragment
 
 class KolPostDetailActivity : BaseSimpleActivity() {
@@ -11,7 +12,7 @@ class KolPostDetailActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         bundle.putString(PARAM_POST_ID, postId)
-        return KolPostDetailFragment.getInstance(bundle)
+        return CDPRevampedFragment.newInstance(bundle)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

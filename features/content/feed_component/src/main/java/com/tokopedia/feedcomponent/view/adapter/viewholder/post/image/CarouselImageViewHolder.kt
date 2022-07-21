@@ -36,7 +36,7 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by kenny.hadisaputra on 29/06/22
  */
 @SuppressLint("ClickableViewAccessibility")
-internal class CarouselImageViewHolder(
+class CarouselImageViewHolder(
     itemView: View,
     private val dataSource: FeedPostCarouselAdapter.DataSource,
     private val listener: Listener,

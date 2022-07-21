@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.CDPPostViewHolder
-import com.tokopedia.kol.feature.postdetail.view.datamodel.CDPRevampDataUiModel
 
 class CDPRevampAdapter(
     dataSource: DataSource,
@@ -30,10 +30,9 @@ class CDPRevampAdapter(
         private val dataSource: DataSource,
         private val cdpListener: CDPPostViewHolder.CDPListener
     ) : BaseAdapterDelegate<FeedXCard,FeedXCard, CDPPostViewHolder>(
-        com.tokopedia.feedcomponent.R.layout.item_dynamic_post_new
-    ) {
+        R.layout.item_cdp_revamp_view) {
         override fun onBindViewHolder(item: FeedXCard, holder: CDPPostViewHolder) {
-            holder.bind()
+            holder.bind(feedXCard = item)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): CDPPostViewHolder {
@@ -45,12 +44,12 @@ class CDPRevampAdapter(
             position: Int,
             isFlexibleType: Boolean
         ): Boolean {
-            TODO("Not yet implemented")
+            return true
         }
     }
 
     interface DataSource {
-        fun getData(): CDPRevampDataUiModel
+        fun getData(): FeedXCard
         fun getPositionInFeed(): Int
     }
 }

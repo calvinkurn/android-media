@@ -15,7 +15,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVi
 /**
  * Created by kenny.hadisaputra on 24/06/22
  */
-internal class FeedPostCarouselAdapter(
+class FeedPostCarouselAdapter(
     dataSource: DataSource,
     imageListener: CarouselImageViewHolder.Listener,
     videoListener: CarouselVideoViewHolder.Listener,

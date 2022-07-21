@@ -30,7 +30,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by kenny.hadisaputra on 29/06/22
  */
-internal class CarouselVideoViewHolder(
+class CarouselVideoViewHolder(
     itemView: View,
     private val dataSource: FeedPostCarouselAdapter.DataSource,
     private val listener: Listener,
