@@ -200,7 +200,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxWidth="@dimen/play_widget_small_width"
-        android:lines="1"
+        android:maxLines="1"
         android:paddingStart="@dimen/spacing_lvl2"
         android:paddingTop="@dimen/spacing_lvl1"
         android:paddingEnd="@dimen/spacing_lvl2"
