@@ -15,7 +15,7 @@ import com.tokopedia.usercomponents.userconsent.domain.ConsentCollectionParam
 import com.tokopedia.usercomponents.userconsent.ui.UserConsentActionClickListener
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class UserConsentDebugFragment: BaseDaggerFragment() {
+open class UserConsentDebugFragment: BaseDaggerFragment() {
 
     var viewBinding by autoClearedNullable<FragmentDebugUserConsentBinding>()
 

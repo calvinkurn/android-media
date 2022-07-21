@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/padding_small">
+    android:paddingBottom="@dimen/sdk_dp_10"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/rec_shop_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/margin_small"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -18,7 +19,7 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/padding_vs"
@@ -32,8 +33,11 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/recShopRecyclerViewContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:background="@color/Unify_N0">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -42,6 +46,18 @@
                 android:layout_height="wrap_content"
                 android:scrollbars="horizontal" />
         </RelativeLayout>
+
+        <com.tokopedia.topads.sdk.widget.ShopAdsWithOneProductView
+            android:id="@+id/shopAdsProductView"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/sdk_dp_10"
+            android:layout_marginEnd="@dimen/sdk_dp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible"/>
     </LinearLayout>
 
 </LinearLayout>

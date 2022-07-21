@@ -99,7 +99,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolde
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
-import com.tokopedia.feedplus.view.analytics.widget.FeedPlayWidgetAnalyticListener
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_CURSOR
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_LAST_CURSOR
@@ -129,7 +128,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
-import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
+import com.tokopedia.play.widget.analytic.global.model.PlayWidgetFeedsAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -146,7 +145,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import kotlinx.coroutines.*
@@ -158,6 +156,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
+import com.tokopedia.feedplus.view.util.CustomUiMessageThrowable
 
 /**
  * @author by nisie on 5/15/17.
@@ -237,9 +236,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     @Inject
     internal lateinit var feedAnalytics: FeedAnalyticTracker
-
-    @Inject
-    lateinit var feedPlayWidgetAnalytic: FeedPlayWidgetAnalyticListener
 
     @Inject
     lateinit var playWidgetImpressionValidator: DefaultImpressionValidator
@@ -591,7 +587,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     is Success -> {
                         val data = it.data
                         if (data.isSuccess) {
-                            onSuccessToggleFavoriteShop(data.rowNumber, data.adapterPosition)
+                            onSuccessToggleFavoriteShop(data)
                         } else {
                             data.errorMessage =
                                 ErrorHandler.getErrorMessage(context, RuntimeException())
@@ -606,9 +602,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 }
                             }
                             else -> {
-                                val message = it.throwable.message
-                                    ?: getString(R.string.default_request_error_unknown)
-                                showToast(message, Toaster.TYPE_ERROR)
+                                it.throwable.let { throwable ->
+                                    val message = if (throwable is CustomUiMessageThrowable) {
+                                        context?.getString(throwable.errorMessageId)
+                                    } else {
+                                        it.throwable.message
+                                            ?: getString(R.string.default_request_error_unknown)
+                                    }
+                                    message?.let { errormessage ->
+                                        showToast(errormessage, Toaster.TYPE_ERROR)
+                                    }
+                                }
                             }
                         }
 
@@ -677,9 +681,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun initVar() {
-        playWidgetCoordinator = PlayWidgetCoordinator().apply {
+        playWidgetCoordinator = PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
             setListener(this@FeedPlusFragment)
-            setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(feedPlayWidgetAnalytic))
+            setAnalyticModel(PlayWidgetFeedsAnalyticModel())
             setImpressionHelper(ImpressionHelper(validator = playWidgetImpressionValidator))
         }
         val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this, playWidgetCoordinator)
@@ -817,7 +821,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             }
         })
-        feedFloatingButtonManager.setInitialData(requireParentFragment())
+
+        feedFloatingButtonManager.setInitialData(parentFragment)
     }
 
     private fun sendNewFeedClickEvent() {
@@ -1073,6 +1078,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     fun updateFeedVisibilityVariable(isFeedShown: Boolean) {
         this.isFeedPageShown = isFeedShown
+        resetVODWhenFeedTabChanged()
     }
 
     override fun onPause() {
@@ -1106,6 +1112,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
         }
     }
+    private fun resetVODWhenFeedTabChanged() {
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
+        for (i in firstPosition..lastPosition) {
+            val item = getCardViewModel(adapter.getList(), i)
+            if (isVOD(adapter.getList(), i)) {
+                if (item != null) {
+                  val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
+                    if (viewHolder is DynamicPostNewViewHolder)
+                        (viewHolder as DynamicPostNewViewHolder).setPostDynamicView(if (!isFeedPageShown) BROADCAST_VISIBLITY else "")
+                }
+            }
+        }
+    }
 
     private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
@@ -1123,6 +1144,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
             return (item.typename == TYPE_FEED_X_CARD_POST
                     && (item.media.isNotEmpty()
                     && (item.media.find { it.type == TYPE_IMAGE } != null)))
+        }
+        return false
+    }
+    private fun isVOD(list: List<Visitable<*>>, position: Int): Boolean {
+        if (position >= 0 && list.size > position && list[position] is DynamicPostUiModel) {
+            val item = (list[position] as DynamicPostUiModel).feedXCard
+            return (item.typename == TYPE_FEED_X_CARD_PLAY)
         }
         return false
     }
@@ -1638,8 +1666,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onHeaderActionClick(
-        positionInFeed: Int, id: String, type: String,
-        isFollow: Boolean, postType: String, isVideo: Boolean
+        positionInFeed: Int,
+        id: String,
+        type: String,
+        isFollow: Boolean,
+        postType: String,
+        isVideo: Boolean,
+        isBottomSheetMenuOnFeed: Boolean
     ) {
         if (userSession.isLoggedIn) {
             if (type == FollowCta.AUTHOR_USER) {
@@ -1651,7 +1684,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
 
             } else if (type == FollowCta.AUTHOR_SHOP) {
-                feedViewModel.doToggleFavoriteShop(positionInFeed, 0, id, isFollow)
+                feedViewModel.doToggleFavoriteShop(positionInFeed, 0, id, isFollow, isBottomSheetMenuOnFeed)
             }
 
             if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
@@ -1739,7 +1772,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         authorId,
                         authorType,
                         isFollowed,
-                        isVideo = mediaType == MediaType.VIDEO
+                        isVideo = mediaType == MediaType.VIDEO,
+                        isBottomSheetMenuOnFeed = true
                     ) else onGoToLogin()
             }
             sheet.onDelete = {
@@ -2286,7 +2320,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 activityId,
                 postTagItem.id,
                 postTagItem.name,
-                postTagItem.price.toString(),
+                if (postTagItem.isDiscount) postTagItem.priceDiscount.toString() else postTagItem.price.toString(),
                 1,
                 shopId,
                 shopName,
@@ -3055,12 +3089,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(pdpAppLink)
     }
 
-    private fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int) {
+    private fun onSuccessToggleFavoriteShop(data: FavoriteShopViewModel) {
+        val rowNumber = data.rowNumber
+        val adapterPosition = data.adapterPosition
         if (rowNumber < adapter.getlist().size) {
 
             if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
                 val item = (adapter.getlist()[rowNumber] as DynamicPostUiModel)
-                item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
+                val feedXCardData = item.feedXCard
+                feedXCardData.followers.isFollowed = !feedXCardData.followers.isFollowed
+                if (!feedXCardData.followers.isFollowed && data.isUnfollowFromShopsMenu) {
+                    showToast(
+                        getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
+                        Toaster.TYPE_NORMAL
+                    )
+                }
 
                 feedAnalytics.eventClickFollowitem(
                     if (item.feedXCard.typename == TYPE_FEED_X_CARD_PLAY) item.feedXCard.playChannelID else item.feedXCard.id,

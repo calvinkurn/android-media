@@ -1,18 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Tabs.Secondary.Bold">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="TelcoTextInputLayout">
-        <item name="android:theme">@style/TelcoTextInputLayoutColorLine</item>
-    </style>
-
-    <style name="TelcoTextInputLayoutColorLine" parent="Theme.Design.Light"> <!-- stackoverflow.com/questions/35767158/ -->
-        <item name="colorControlNormal">@color/Unify_N100</item>
-        <item name="colorControlActivated">@color/Unify_G500</item>
-        <item name="colorControlHighlight">@color/Unify_G500</item>
-        <item name="android:textColorHint">@color/Unify_N100</item>
-    </style>
 </resources>

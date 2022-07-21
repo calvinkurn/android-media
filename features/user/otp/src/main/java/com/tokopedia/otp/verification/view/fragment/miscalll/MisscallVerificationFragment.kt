@@ -21,9 +21,9 @@ import com.tokopedia.otp.R
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.util.PhoneCallBroadcastReceiver
 import com.tokopedia.otp.verification.data.OtpConstant
+import com.tokopedia.otp.verification.data.ROLLANCE_KEY_MISCALL_OTP
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
-import com.tokopedia.otp.verification.data.ROLLANCE_KEY_MISCALL_OTP
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -75,7 +75,7 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
         val height = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             FLOAT_270,
-            resources.displayMetrics
+            context?.resources?.displayMetrics
         )
         viewBound.methodIcon?.apply {
             setMargin(0, 0, 0, 0)
