@@ -26,6 +26,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.math.RoundingMode
@@ -65,6 +66,7 @@ class ShopCampaignFlashSaleViewHolder(
         private const val FORMAT_PREFIX_HEX_COLOR = "#"
         private const val VALUE_INT_HUNDREDS = 100
         private const val DELAY_IN_THREE_SECONDS = 3000L
+        private const val NOTIFY_ME_WRAPPER_BORDER_RADIUS = 16f
     }
 
     init {
@@ -240,8 +242,11 @@ class ShopCampaignFlashSaleViewHolder(
         if (isOngoing) {
             flashSaleReminderView?.hide()
         } else {
-            flashSaleReminderView?.setCardUnifyBackgroundColor(MethodChecker.getColor(itemView.context, R.color.clr_dms_icon_white))
-            flashSaleReminderView?.show()
+            flashSaleReminderView?.apply {
+                setCardUnifyBackgroundColor(MethodChecker.getColor(itemView.context, R.color.clr_dms_icon_white))
+                radius = NOTIFY_ME_WRAPPER_BORDER_RADIUS.dpToPx()
+                show()
+            }
         }
     }
 
