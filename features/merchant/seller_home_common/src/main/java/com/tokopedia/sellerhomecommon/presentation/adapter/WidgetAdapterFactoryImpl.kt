@@ -102,7 +102,7 @@ class WidgetAdapterFactoryImpl(
             RecommendationViewHolder.RES_LAYOUT -> RecommendationViewHolder(parent, listener)
             MilestoneViewHolder.RES_LAYOUT -> MilestoneViewHolder(parent, listener)
             CalendarViewHolder.RES_LAYOUT -> CalendarViewHolder(parent, listener)
-            UnificationViewHolder.RES_LAYOUT -> UnificationViewHolder(parent)
+            UnificationViewHolder.RES_LAYOUT -> UnificationViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

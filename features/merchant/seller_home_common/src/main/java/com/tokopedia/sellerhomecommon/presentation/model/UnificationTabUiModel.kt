@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 /**
  * Created by @ilhamsuaib on 16/07/22.
@@ -10,9 +11,11 @@ data class UnificationTabUiModel(
     var data: BaseDataUiModel? = null,
     val title: String = String.EMPTY,
     val isNew: Boolean = false,
-    val widgetType: String = "",
-    val dataKey: String = "",
-    val metricParam: String = "",
+    val itemCount: Int = Int.ZERO,
+    val tooltip: String = String.EMPTY,
+    val widgetType: String = String.EMPTY,
+    val dataKey: String = String.EMPTY,
+    val metricParam: String = String.EMPTY,
     var isSelected: Boolean = false,
     val config: WidgetConfigUiModel = WidgetConfigUiModel(),
 )

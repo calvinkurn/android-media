@@ -34,6 +34,8 @@ data class UnificationTabModel(
     val isNew: Boolean = false,
     @SerializedName("itemCount")
     val itemCount: Int = 0,
+    @SerializedName("tooltip")
+    val tooltip: String = "",
     @SerializedName("content")
     val content: UnificationTabContentModel = UnificationTabContentModel(),
 )

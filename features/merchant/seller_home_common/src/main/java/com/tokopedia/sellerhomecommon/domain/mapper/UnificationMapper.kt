@@ -48,6 +48,8 @@ class UnificationMapper @Inject constructor(
             data = null,
             title = tab.title,
             isNew = tab.isNew,
+            itemCount = tab.itemCount,
+            tooltip = tab.tooltip,
             widgetType = tab.content.widgetType,
             dataKey = tab.content.dataKey,
             metricParam = tab.content.metricsParam,

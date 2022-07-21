@@ -82,6 +82,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryI
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.UnificationTabBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
@@ -457,7 +458,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         showErrorToaster(error)
     }
 
-    override fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {
+    override fun showPostFilter(element: PostListWidgetUiModel) {
         if (!isAdded || context == null) return
 
         val postFilterBottomSheet =
@@ -746,6 +747,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         event: CalendarEventUiModel
     ) {
         SellerHomeTracking.sendCalendarItemClickEvent(element, event)
+    }
+
+    override fun showUnificationTabBottomSheets(element: UnificationWidgetUiModel) {
+        val tabs = element.data?.tabs.orEmpty()
+        UnificationTabBottomSheet.createInstance()
+            .setItems(tabs)
+            .setOnTabSelected {
+
+            }
+            .show(childFragmentManager)
     }
 
     fun setNavigationOtherMenuView(view: View?) {

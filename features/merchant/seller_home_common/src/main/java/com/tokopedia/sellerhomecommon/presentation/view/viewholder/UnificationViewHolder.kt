@@ -17,11 +17,13 @@ import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiMode
  */
 
 class UnificationViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: Listener
 ) : AbstractViewHolder<UnificationWidgetUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.shc_unification_widget
+        private const val DROP_DOWN_FORMAT = "%s (%s)"
     }
 
     private val binding by lazy { ShcUnificationWidgetBinding.bind(itemView) }
@@ -71,8 +73,34 @@ class UnificationViewHolder(
     }
 
     private fun showSuccessState(element: UnificationWidgetUiModel) {
-        successStateBinding.containerShcUnificationSuccess.visible()
         loadingStateBinding.containerShcRecommendationLoading.gone()
+        with(successStateBinding) {
+            containerShcUnificationSuccess.visible()
 
+            val data = element.data ?: return@with
+            val tab = data.tabs.firstOrNull { it.isSelected }
+                ?: data.tabs.firstOrNull() ?: return@with
+
+            setupDropDownView(element)
+        }
+    }
+
+    private fun setupDropDownView(element: UnificationWidgetUiModel) {
+        with(successStateBinding) {
+            val data = element.data ?: return@with
+            val tab = data.tabs.firstOrNull { it.isSelected }
+                ?: data.tabs.firstOrNull() ?: return@with
+
+            tvShcUnificationTab.text = String.format(
+                DROP_DOWN_FORMAT, tab.title, tab.itemCount.toString()
+            )
+            tvShcUnificationTab.setOnClickListener {
+                listener.showUnificationTabBottomSheets(element)
+            }
+        }
+    }
+
+    interface Listener : BaseViewHolderListener {
+        fun showUnificationTabBottomSheets(element: UnificationWidgetUiModel) {}
     }
 }
