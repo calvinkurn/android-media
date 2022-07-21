@@ -1,5 +1,7 @@
 package com.tokopedia.wishlistcollection.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,6 +44,8 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_NEED_REFRESH
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollectionItem
@@ -330,7 +334,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         val detailCollection =
             "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$id"
         val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
-        startActivity(intentCollectionDetail)
+        startActivityForResult(intentCollectionDetail, REQUEST_CODE_COLLECTION_DETAIL)
     }
 
     override fun onChangeCollectionName(collectionId: String, collectionName: String) {
@@ -431,5 +435,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     override fun onSuccessUpdateCollectionName(message: String) {
         showToaster(message, "", Toaster.TYPE_NORMAL)
         getWishlistCollections()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_COLLECTION_DETAIL && resultCode == Activity.RESULT_OK) {
+            val isNeedRefresh = data?.getBooleanExtra(EXTRA_NEED_REFRESH, false)
+            if (isNeedRefresh == true) getWishlistCollections()
+        }
     }
 }

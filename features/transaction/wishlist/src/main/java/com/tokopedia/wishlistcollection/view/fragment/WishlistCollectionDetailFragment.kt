@@ -102,6 +102,7 @@ import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsPa
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionDetailComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionDetailModule
+import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
@@ -292,6 +293,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         if (deleteCollectionItems.data.success && deleteCollectionItems.status == OK) {
                             showToaster(deleteCollectionItems.data.message, "", Toaster.TYPE_NORMAL)
                             setRefreshing()
+                            (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
                         } else {
                             var errorMessage = context?.getString(Rv2.string.wishlist_v2_common_error_msg)
                             if (deleteCollectionItems.data.message.isNotEmpty()) errorMessage = deleteCollectionItems.data.message
@@ -328,6 +330,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
                                 showToaster(msg, btnText, Toaster.TYPE_NORMAL)
                                 setRefreshing()
+                                (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
                             } else {
                                 // bulkDeleteMode == 1 (manual choose via cleaner bottomsheet)
                                 // bulkDeleteMode == 2 (choose automatic deletion)
@@ -530,6 +533,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             view?.let { v ->
                                 AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistRemoveV2, context, v)
                             }
+                            (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
                             setRefreshing()
                         }
                     }
@@ -1766,6 +1770,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     showToaster(messageToaster, "", Toaster.TYPE_ERROR)
                 }
             }
+            (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
         }
     }
 

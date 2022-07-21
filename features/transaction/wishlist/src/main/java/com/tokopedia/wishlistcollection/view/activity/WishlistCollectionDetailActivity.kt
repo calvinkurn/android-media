@@ -1,5 +1,6 @@
 package com.tokopedia.wishlistcollection.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,9 +9,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_NEED_REFRESH
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 
 class WishlistCollectionDetailActivity: BaseSimpleActivity() {
+    private var isNeedRefresh = false
     override fun getLayoutRes() = R.layout.activity_wishlist_collection_detail
 
     override fun getParentViewResourceID() = R.id.parent_view
@@ -38,5 +41,17 @@ class WishlistCollectionDetailActivity: BaseSimpleActivity() {
             val src = it.getQueryParameter(ApplinkConstInternalPurchasePlatform.PATH_SRC).toEmptyStringIfNull()
             intent.putExtra(ApplinkConstInternalPurchasePlatform.PATH_SRC, src)
         }
+    }
+
+    fun isNeedRefresh(isNeed: Boolean) {
+        this.isNeedRefresh = isNeed
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent()
+        intent.putExtra(EXTRA_NEED_REFRESH, isNeedRefresh)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+        super.onBackPressed()
     }
 }
