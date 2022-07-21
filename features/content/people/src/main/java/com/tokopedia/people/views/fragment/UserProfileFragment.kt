@@ -174,6 +174,7 @@ class UserProfileFragment @Inject constructor(
 
         refreshLandingPageData(true)
         binding.viewFlipper.displayedChild = PAGE_LOADING
+        mainBinding.userPostContainer.displayedChild = PAGE_LOADING
 
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             shouldRefreshRecyclerView = verticalOffset == 0
@@ -423,8 +424,6 @@ class UserProfileFragment @Inject constructor(
     ) {
         if(prev == curr || curr == ProfileUiModel.Empty) return
 
-        binding.viewFlipper.displayedChild = PAGE_CONTENT
-
         userProfileTracker.openUserProfile(
             viewModel.profileUserID,
             live = curr.liveInfo.isLive
@@ -463,6 +462,8 @@ class UserProfileFragment @Inject constructor(
         }
         binding.headerProfile.title = curr.name
         binding.headerProfile.alpha = 1F
+
+        binding.viewFlipper.displayedChild = PAGE_CONTENT
     }
 
     private fun renderButtonAction(
