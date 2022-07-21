@@ -241,7 +241,7 @@
 
     <string name="campaign_rule_create_campaign_confirmation_dialog_title">Buat campaign?</string>
     <string name="campaign_rule_create_campaign_confirmation_dialog_message">Kamu masih dapat mengubah info campaign paling lambat 1 jam sebelum periode mendatang.</string>
-    <string name="campaign_rule_create_campaign_confirmation_dialog_primary_cta">Ya, Buat campaign</string>
+    <string name="campaign_rule_create_campaign_confirmation_dialog_primary_cta">Ya, Buat Campaign</string>
     <string name="campaign_rule_create_campaign_confirmation_dialog_secondary_cta">Cek Ulang</string>
 
     <!--Product List Page-->
