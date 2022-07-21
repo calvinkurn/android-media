@@ -21,9 +21,9 @@ class UserProfileAnalytics {
     }
 
     object Function {
-        fun Boolean.isLiveOrNotLive() = if (this) LIVE else NOT_LIVE
-        fun Boolean.isSelfOrVisitor() = if (this) SELF else VISITOR
-        fun Boolean.isLiveOrVod() = if (this) LIVE else VOD
+        fun isLiveOrNotLive(isLive: Boolean) = if (isLive) LIVE else NOT_LIVE
+        fun isSelfOrVisitor(isSelf: Boolean) = if (isSelf) SELF else VISITOR
+        fun isLiveOrVod(isLive: Boolean) = if (isLive) LIVE else VOD
     }
 
     object Constants {
