@@ -431,7 +431,15 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
     }
 
     override fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
-        // do nothing
+        signalClientNumberWidget.setInputNumber(topupBillsRecommendation.clientNumber)
+        inputNumberActionType = TopupBillsSearchNumberFragment.InputNumberActionType.LATEST_TRANSACTION
+
+        if (operatorName.isNotEmpty()) {
+            topupAnalytics.clickEnhanceCommerceRecentTransaction(
+                topupBillsRecommendation,
+                operatorName, topupBillsRecommendation.position
+            )
+        }
     }
 
     override fun setFavNumbers(data: TopupBillsFavNumber) {
