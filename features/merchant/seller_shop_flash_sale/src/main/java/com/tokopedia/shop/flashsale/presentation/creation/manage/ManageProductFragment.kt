@@ -172,7 +172,7 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun handlePageMode() {
         if (pageMode == PageMode.UPDATE) {
-            binding?.btnSaveDraft?.text = getString(R.string.sfs_save)
+            binding?.btnSaveDraft?.gone()
         }
     }
 
