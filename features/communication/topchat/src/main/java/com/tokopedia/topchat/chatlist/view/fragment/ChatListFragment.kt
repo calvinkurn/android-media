@@ -64,6 +64,7 @@ import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
+import com.tokopedia.topchat.chatlist.view.widget.OperationalInsightBottomSheet
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
@@ -107,6 +108,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
     private var filterMenu = FilterMenu()
+    private var operationalInsightBottomSheet = OperationalInsightBottomSheet()
     private var chatBannedSellerTicker: Ticker? = null
     private var chatPerformanceSellerTicker: ConstraintLayout? = null
     private var rv: RecyclerView? = null
@@ -286,6 +288,14 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
         chatPerformanceSellerTicker = view.findViewById(R.id.layout_ticker_chat_performance)
         rv = view.findViewById(R.id.recycler_view)
+
+        initViewListener()
+    }
+
+    private fun initViewListener() {
+        chatPerformanceSellerTicker?.setOnClickListener {
+            onChatPerformanceSellerTickerClicked()
+        }
     }
 
     private fun setUpRecyclerView(view: View) {
@@ -356,6 +366,13 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                     chatPerformanceSellerTicker?.hide()
                 }
             }
+        }
+    }
+
+    fun onChatPerformanceSellerTickerClicked() {
+        activity?.let {
+            if (operationalInsightBottomSheet.isAdded) return@let
+            operationalInsightBottomSheet.show(childFragmentManager, FilterMenu.TAG)
         }
     }
 
