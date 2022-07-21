@@ -287,9 +287,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         createPostAnalytics.eventClickPostOnPreviewPage()
         KeyboardHandler.hideSoftKeyboard(this)
         val cacheManager = SaveInstanceCacheManager(this, true)
-        val createPostViewModel =
-            (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData()
-        createPostViewModel.authorType = selectedFeedAccount.type
+        val createPostViewModel = (fragment as? BaseCreatePostFragmentNew)?.getLatestCreatePostData()
+        createPostViewModel?.authorType = selectedFeedAccount.type
         cacheManager.put(
             CreatePostViewModel.TAG,
             createPostViewModel,
@@ -299,7 +298,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
         when (intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0) ?: 0) {
             BundleData.VALUE_IS_OPEN_FROM_USER_PROFILE -> goToUserProfile()
-            else -> goToFeed(createPostViewModel)
+            else -> createPostViewModel?.let { goToFeed(it) }
         }
     }
 
