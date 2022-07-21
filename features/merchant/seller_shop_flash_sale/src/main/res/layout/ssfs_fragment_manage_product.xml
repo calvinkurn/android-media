@@ -31,6 +31,28 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView_product"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:paddingTop="90dp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineFooter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="3"
+        tools:listitem="@layout/ssfs_item_manage_product" />
+
+    <View
+        android:id="@+id/headerBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/Unify_Background"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_add_product"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/card_incomplete_product_info"
         android:layout_width="match_parent"
@@ -115,18 +137,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/tpg_product_count"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tpg_product_count" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_product"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/unify_space_8"
-        app:layout_constraintBottom_toTopOf="@+id/guidelineFooter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tpg_product_count"
-        tools:itemCount="3"
-        tools:listitem="@layout/ssfs_item_manage_product" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_bottom_button_group"

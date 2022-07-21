@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -26,6 +27,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.manage.model.Warehouse
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.EditProductInfoViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
@@ -41,6 +43,8 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         private const val MAX_LENGTH_NUMBER_INPUT = 11
         private const val MAX_LENGTH_PERCENT_INPUT = 2
         private const val EMPTY_INITIAL_VALUE = ""
+        private const val BUTTON_SAVE_WIDTH_PERCENT = 0.38F
+        private const val BUTTON_SAVE_WIDTH_WIDE_PERCENT = 0.99F
 
         fun newInstance(productList: List<SellerCampaignProductList.Product>): EditProductInfoBottomSheet {
             val fragment = EditProductInfoBottomSheet()
@@ -152,6 +156,7 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
                 typographyProductName.text = it.productName
                 typographyOriginalPrice.text = it.formattedPrice
                 updateProductEditCounter()
+                updateProductNextButtonVisibility()
                 isDataFirstLoaded = true
             }
         }
@@ -440,6 +445,14 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
         }
     }
 
+    private fun updateProductNextButtonVisibility() {
+        val productCount = productList?.size.orZero()
+        val counter = productCount - productIndex
+        binding?.btnSaveNext?.apply {
+            setNextButtonVisibility(counter > PRODUCT_REMAINING_VISIBILITY_THRESHOLD)
+        }
+    }
+
     private fun Long.toStringOrInitialValue(initialValue: String): String {
         return if (isMoreThanZero()) {
             toString()
@@ -491,6 +504,18 @@ class EditProductInfoBottomSheet: BottomSheetUnify() {
                 CoachMark2.POSITION_TOP
             )
         )
+    }
+
+    private fun setNextButtonVisibility(isVisible: Boolean) {
+        val widthPercent = if (isVisible) BUTTON_SAVE_WIDTH_PERCENT else BUTTON_SAVE_WIDTH_WIDE_PERCENT
+        val buttonVariant = if (isVisible) UnifyButton.Variant.GHOST else UnifyButton.Variant.FILLED
+        binding?.run {
+            (btnSave.layoutParams as? ConstraintLayout.LayoutParams)
+                ?.matchConstraintPercentWidth = widthPercent
+            btnSave.requestLayout()
+            btnSave.buttonVariant = buttonVariant
+            btnSaveNext.isVisible = isVisible
+        }
     }
 
     fun show(fragmentManager: FragmentManager) {
