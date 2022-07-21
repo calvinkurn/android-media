@@ -728,7 +728,8 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
+        mainBinding.userPostContainer.displayedChild = if (viewModel.isSelfProfile) PAGE_EMPTY_SELF
+        else PAGE_EMPTY_VISITOR
     }
 
     override fun onStartFirstPageLoad() {
@@ -818,7 +819,8 @@ class UserProfileFragment @Inject constructor(
         const val PAGE_CONTENT = 0
         const val PAGE_ERROR = 2
         const val PAGE_LOADING = 1
-        const val PAGE_EMPTY = 3
+        const val PAGE_EMPTY_SELF = 3
+        const val PAGE_EMPTY_VISITOR = 4
         const val SEE_ALL_LINE = 3
         const val MAX_LINE = 20
         const val SUCCESS_STATUS = 200
