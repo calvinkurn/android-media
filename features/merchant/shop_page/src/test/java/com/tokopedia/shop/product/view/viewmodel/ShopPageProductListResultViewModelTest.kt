@@ -5,6 +5,7 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.shop.common.data.model.RestrictionEngineRequestParams
+import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.response.Actions
 import com.tokopedia.shop.common.data.response.RestrictValidateRestriction
 import com.tokopedia.shop.common.data.response.RestrictionEngineDataResponse
@@ -59,6 +60,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     fun `check whether response get shop info success with force refresh`() {
         runBlocking {
             coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
+            coEvery { gqlShopPageGetDynamicTabUseCase.executeOnBackground() } returns ShopPageGetDynamicTabResponse()
             shopPageProductListResultViewModel.getShop(
                     shopId = "123",
                     shopDomain = "domain",
@@ -74,6 +76,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     fun `check whether response get shop info success without force refresh and empty domain`() {
         runBlocking {
             coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
+            coEvery { gqlShopPageGetDynamicTabUseCase.executeOnBackground() } returns ShopPageGetDynamicTabResponse()
             shopPageProductListResultViewModel.getShop(
                     shopId = "123",
                     shopDomain = ""
@@ -88,6 +91,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     fun `check whether response get shop info success with shopId 0`() {
         runBlocking {
             coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
+            coEvery { gqlShopPageGetDynamicTabUseCase.executeOnBackground() } returns ShopPageGetDynamicTabResponse()
             shopPageProductListResultViewModel.getShop(
                     shopId = "0",
                     shopDomain = "domain"
@@ -102,6 +106,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     fun `check whether response get shop info success with only shopId`() {
         runBlocking {
             coEvery { getShopInfoUseCase.executeOnBackground() } returns ShopInfo()
+            coEvery { gqlShopPageGetDynamicTabUseCase.executeOnBackground() } returns ShopPageGetDynamicTabResponse()
             shopPageProductListResultViewModel.getShop(
                     shopId = "123"
             )
