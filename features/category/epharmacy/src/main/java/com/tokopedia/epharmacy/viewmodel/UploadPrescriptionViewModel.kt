@@ -317,10 +317,10 @@ class UploadPrescriptionViewModel @Inject constructor(
     }
 
     private fun onUploadPrescriptionIdSuccess(data : EPharmacyUploadPrescriptionIdsResponse) {
-        if(data.data?.success == true){
+        if(data.confirmPrescriptionIDs?.success == true){
             _uploadPrescriptionIdsData.postValue(Success(true))
         }else {
-            _uploadPrescriptionIdsData.postValue(Fail(Throwable(data.error)))
+            _uploadPrescriptionIdsData.postValue(Fail(Throwable(data.confirmPrescriptionIDs?.header?.errorMessage)))
         }
     }
 
