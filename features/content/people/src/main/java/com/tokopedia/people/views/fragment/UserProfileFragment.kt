@@ -771,7 +771,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
-        impressionCoordinator.initiateShopImpress(viewModel.profileUserID, item, postPosition)
+        impressionCoordinator.initiateShopImpress(viewModel.profileUserID, item, postPosition + 1)
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
