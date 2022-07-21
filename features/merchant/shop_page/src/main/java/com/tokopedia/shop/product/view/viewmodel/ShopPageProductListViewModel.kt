@@ -40,6 +40,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
@@ -237,7 +238,7 @@ class ShopPageProductListViewModel @Inject constructor(
         return try {
             val response =  mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
             val code = response.data?.resultStatus?.code
-            if (code != ShopHomeViewModel.CODE_STATUS_SUCCESS) {
+            if (code != CODE_STATUS_SUCCESS) {
                 val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(response.data?.resultStatus?.message.toString()))
                 ShopPageExceptionHandler.logExceptionToCrashlytics(
                         ShopPageExceptionHandler.ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA,
