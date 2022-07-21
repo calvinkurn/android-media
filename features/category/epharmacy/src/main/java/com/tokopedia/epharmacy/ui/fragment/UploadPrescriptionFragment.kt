@@ -248,7 +248,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     private fun setNewPrescriptionData() {
         ePharmacyUiUpdater.updateModel(EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
             PRESCRIPTION_COMPONENT,(uploadPrescriptionViewModel.prescriptionImages.value),
-            ePharmacyUiUpdater.prescriptionInfoMap?.showCamera ?: true))
+            ePharmacyUiUpdater.prescriptionInfoMap?.isReUpload ?: true))
         reloadPrescriptionUI()
     }
 
@@ -399,7 +399,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 }
                 EPharmacyButtonKey.CHECK.key -> {
                     hideAllButtons()
-                    ePharmacyUiUpdater.prescriptionInfoMap?.showCamera = false
+                    ePharmacyUiUpdater.prescriptionInfoMap?.isReUpload = false
                     reloadPrescriptionUI()
                 }
             }

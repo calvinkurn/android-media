@@ -81,13 +81,13 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
     }
 
     private fun renderCancelUi(model: PrescriptionImage) {
-        if(model.status == EPharmacyPrescriptionStatus.APPROVED.status){
-            cancelButton.hide()
-        }else {
+        if(model.isDeletable){
             cancelButton.show()
             cancelButton.setOnClickListener {
                 actionListener?.onPrescriptionCrossImageClick(adapterPosition)
             }
+        }else {
+            cancelButton.hide()
         }
     }
 

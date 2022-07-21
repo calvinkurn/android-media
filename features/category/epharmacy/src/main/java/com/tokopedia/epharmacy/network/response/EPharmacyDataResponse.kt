@@ -75,7 +75,7 @@ data class PrescriptionImage(
     @SerializedName("reject_reason")
     val rejectReason: String?,
     @SerializedName("status")
-    val status: String?,
+    var status: String?,
     @SerializedName("is_uploading")
     var isUploading: Boolean = false,
     @SerializedName("is_upload_success")

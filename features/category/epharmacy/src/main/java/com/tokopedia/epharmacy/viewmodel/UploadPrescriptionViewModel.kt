@@ -112,11 +112,7 @@ class UploadPrescriptionViewModel @Inject constructor(
                 onFailEPharmacyDetail(IllegalStateException("Data invalid"))
             else {
                 _productDetailLiveData.postValue(Success(mapCheckoutResponseInDataModel(data)))
-                if(ePharmacyDetailResponse.detailData?.formData?.prescriptionImages.isNullOrEmpty()){
-                    _buttonLiveData.postValue(EPharmacyButtonKey.RE_UPLOAD.key)
-                }else {
-                    _buttonLiveData.postValue(EPharmacyButtonKey.DONE.key)
-                }
+                _buttonLiveData.postValue(EPharmacyButtonKey.CHECK.key)
             }
         }
     }
@@ -133,9 +129,6 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     private fun mapCheckoutResponseInDataModel(data: EPharmacyDataResponse) : EPharmacyDataModel{
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
-        if(data.detailData?.formData?.isReUploadEnabled == true){
-            data.detailData.formData.prescriptionImages?.removeAll(getRejectedPrescriptions(data))
-        }
         val prescriptionDataModel = EPharmacyPrescriptionDataModel(PRESCRIPTION_COMPONENT,
             PRESCRIPTION_COMPONENT, data.detailData?.formData?.prescriptionImages, data.detailData?.formData?.isReUploadEnabled ?: false)
         listOfComponents.add(prescriptionDataModel)

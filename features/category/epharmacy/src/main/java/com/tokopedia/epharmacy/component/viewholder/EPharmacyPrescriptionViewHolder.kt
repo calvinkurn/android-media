@@ -41,7 +41,7 @@ class EPharmacyPrescriptionViewHolder(private val view: View,
                 if(galleryRV.itemDecorationCount == 0)
                     galleryRV.addItemDecoration(EPharmacyImagesDecoration())
                 galleryRV.adapter =  EPharmacyGalleryAdapter(safePrescriptionArray,
-                    ePharmacyListener, hasCameraButton(dataModel.showCamera,
+                    ePharmacyListener,dataModel.isReUpload ,hasCameraButton(dataModel.isReUpload,
                         (safePrescriptionArray.size < (MAX_MEDIA_ITEM))))
             }
         }

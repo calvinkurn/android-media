@@ -10,6 +10,7 @@ import com.tokopedia.epharmacy.network.response.PrescriptionImage
 class EPharmacyGalleryAdapter (
     private val list : ArrayList<PrescriptionImage?>,
     private val ePharmacyListener: EPharmacyListener?,
+    private val isReUpload : Boolean = false,
     private val hasCameraButton : Boolean = false)
     : RecyclerView.Adapter<EPharmacyPrescriptionGalleryItemViewHolder>() {
 
@@ -25,6 +26,7 @@ class EPharmacyGalleryAdapter (
         if(hasCameraButton && position == (list.size)){
             holderEPharmacyPrescription.bind(null,ePharmacyListener)
         }else {
+            list[position]?.isDeletable = isReUpload
             holderEPharmacyPrescription.bind(list[position],ePharmacyListener)
         }
     }
