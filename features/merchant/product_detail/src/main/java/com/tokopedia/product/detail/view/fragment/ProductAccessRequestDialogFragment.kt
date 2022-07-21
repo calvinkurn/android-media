@@ -50,12 +50,12 @@ class ProductAccessRequestDialogFragment : DialogFragment() {
         buttonAccept.setOnClickListener {
             accessListener?.onAccept()
             fromClickButtons = true
-            dismiss()
+            dismissAllowingStateLoss()
         }
         buttonDeny.setOnClickListener {
             accessListener?.onDecline()
             fromClickButtons = true
-            dismiss()
+            dismissAllowingStateLoss()
         }
         return dialog
     }

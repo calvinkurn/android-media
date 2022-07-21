@@ -119,6 +119,7 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -2915,8 +2916,10 @@ open class DynamicProductDetailFragment :
     }
 
     private fun goToTradein() {
-        if (tradeinDialog?.isAdded == false) {
-            tradeinDialog?.show(childFragmentManager, "ACCESS REQUEST")
+        tradeinDialog?.let { dialog ->
+            showImmediately(childFragmentManager, "ACCESS REQUEST") {
+                dialog
+            }
         }
     }
 
