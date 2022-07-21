@@ -173,7 +173,7 @@ public interface ShipmentContract {
 
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
 
-        void updatePrescriptionIds(List<GetPrescriptionIdsResponse.Prescription> prescriptions);
+        void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions);
     }
 
     interface AnalyticsActionListener {

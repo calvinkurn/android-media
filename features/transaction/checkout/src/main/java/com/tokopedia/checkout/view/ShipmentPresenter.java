@@ -2242,8 +2242,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         @Override
                         public void onNext(GetPrescriptionIdsResponse getPrescriptionIdsResponse) {
                             if(getPrescriptionIdsResponse.getDetailData() != null &&
-                                    getPrescriptionIdsResponse.getDetailData().getPrescriptions() != null){
-                                getView().updatePrescriptionIds(getPrescriptionIdsResponse.getDetailData().getPrescriptions());
+                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData() != null &&
+                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions() != null){
+                                getView().updatePrescriptionIds(getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions());
                             }
                         }
                     }));

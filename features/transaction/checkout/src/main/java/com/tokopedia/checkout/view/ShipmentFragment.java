@@ -3514,7 +3514,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void updatePrescriptionIds(List<GetPrescriptionIdsResponse.Prescription> prescriptions) {
+    public void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions) {
         ArrayList<String> prescriptionsIds = new ArrayList<>();
         for(int i = 0 ; i < prescriptions.size() ; i++){
             if(prescriptions.get(i).getPrescriptionId() != null){

@@ -5,20 +5,26 @@ import com.google.gson.annotations.SerializedName
 
 data class GetPrescriptionIdsResponse(
     @SerializedName("getEpharmacyCheckoutData")
-    val detailData : EPharmacyPrescriptionDetailData?
+    val detailData : EPharmacyCheckoutData?
 ) {
 
-    data class EPharmacyPrescriptionDetailData(
-        @SerializedName("checkoutId")
-        val checkoutId: String?,
-        @SerializedName("prescription_images")
-        val prescriptions: List<Prescription?>?
-    )
+    data class EPharmacyCheckoutData(
+        @SerializedName("data")
+        val prescriptionData: EPharmacyPrescriptionDetailData?
+    ) {
+        data class EPharmacyPrescriptionDetailData(
+            @SerializedName("checkoutId")
+            val checkoutId: String?,
+            @SerializedName("prescription_images")
+            val prescriptions: List<Prescription?>?
+        )
 
-    data class Prescription(
-        @SerializedName("prescription_id")
-        val prescriptionId: String?,
-        @SerializedName("status")
-        val status: String?,
-    )
+        data class Prescription(
+            @SerializedName("prescription_id")
+            val prescriptionId: String?,
+            @SerializedName("status")
+            val status: String?,
+        )
+    }
+
 }
