@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/unify_space_4"
     app:cardCornerRadius="@dimen/unify_space_8"
-    app:cardElevation="@dimen/unify_space_0"
+    app:cardElevation="0dp"
     app:layout_constraintCircleRadius="@dimen/unify_space_8">
 
     <androidx.constraintlayout.widget.ConstraintLayout
