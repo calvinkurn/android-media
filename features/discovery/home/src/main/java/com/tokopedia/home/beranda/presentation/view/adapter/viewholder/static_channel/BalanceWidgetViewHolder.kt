@@ -8,7 +8,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDividerModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BalanceWidgetItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceDividerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaGridLayoutManager
@@ -27,7 +26,6 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
 
     companion object {
         var LAYOUT = R.layout.layout_balance_widget
-        private const val FIRST_ITEM_DECORATION = 0
         private const val THRESHOLD_MAX_BALANCE_WIDGET_ITEM = 3
     }
 
@@ -59,20 +57,6 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
                         })
                 binding?.rvBalanceWidgetData?.adapter = balanceAdapter
             }
-//            if (binding?.rvBalanceWidgetData?.itemDecorationCount == FIRST_ITEM_DECORATION) {
-//                binding?.rvBalanceWidgetData?.addItemDecoration(
-//                    BalanceWidgetItemDecoration(
-//                        totalData
-//                    )
-//                )
-//            } else {
-//                binding?.rvBalanceWidgetData?.removeItemDecorationAt(FIRST_ITEM_DECORATION)
-//                binding?.rvBalanceWidgetData?.addItemDecoration(
-//                    BalanceWidgetItemDecoration(
-//                        totalData
-//                    )
-//                )
-//            }
             val layoutManager = binding?.rvBalanceWidgetData?.layoutManager
             if (layoutManager != null && layoutManager is NpaGridLayoutManager && layoutManager.spanCount != totalData) {
                 binding?.rvBalanceWidgetData?.layoutManager = getLayoutManager(totalData)

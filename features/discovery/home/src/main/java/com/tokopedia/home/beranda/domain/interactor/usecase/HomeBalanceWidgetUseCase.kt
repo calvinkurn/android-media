@@ -139,7 +139,8 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         if (!userSession.isLoggedIn) return currentHeaderDataModel
         return currentHeaderDataModel.copy(
             headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                isUserLogin = userSession.isLoggedIn
+                isUserLogin = userSession.isLoggedIn,
+                homeBalanceModel = HomeBalanceModel()
             )
         )
     }
