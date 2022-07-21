@@ -328,9 +328,9 @@
             app:unify_local_load_description="@string/up_common_failed_desc"
             app:unify_local_load_title="@string/up_common_failed_title" />
 
-        <include layout="@layout/up_layout_error_empty_user_self_post" />
-
-        <include layout="@layout/up_layout_error_empty_user_visitor_post" />
+        <include
+            android:id="@+id/empty_post"
+            layout="@layout/up_layout_error_empty_user_post" />
 
     </ViewFlipper>
 

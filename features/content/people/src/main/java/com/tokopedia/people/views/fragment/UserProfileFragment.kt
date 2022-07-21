@@ -167,6 +167,7 @@ class UserProfileFragment @Inject constructor(
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
+            mainBinding.userPostContainer.displayedChild = PAGE_LOADING
             if (viewModel.isShopRecomShow) showLoadingShopRecom()
             refreshLandingPageData(true)
         }
@@ -712,6 +713,19 @@ class UserProfileFragment @Inject constructor(
         return bundle
     }
 
+    private fun emptyPostSelf() {
+        mainBinding.emptyPost.textErrorEmptyTitle.text = getString(R.string.up_empty_page_title)
+        mainBinding.emptyPost.textErrorEmptyDesc.apply {
+            text = getString(R.string.up_empty_page_desc)
+            show()
+        }
+    }
+
+    private fun emptyPostVisitor() {
+        mainBinding.emptyPost.textErrorEmptyTitle.text = getString(R.string.up_empty_page_title2)
+        mainBinding.emptyPost.textErrorEmptyDesc.hide()
+    }
+
     override fun onShopRecomCloseClicked(itemID: Long) {
         submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
     }
@@ -729,8 +743,9 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        mainBinding.userPostContainer.displayedChild = if (viewModel.isSelfProfile) PAGE_EMPTY_SELF
-        else PAGE_EMPTY_VISITOR
+        if (viewModel.isSelfProfile) emptyPostSelf()
+        else emptyPostVisitor()
+        mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
     }
 
     override fun onStartFirstPageLoad() {
@@ -825,8 +840,7 @@ class UserProfileFragment @Inject constructor(
         const val PAGE_CONTENT = 0
         const val PAGE_ERROR = 2
         const val PAGE_LOADING = 1
-        const val PAGE_EMPTY_SELF = 3
-        const val PAGE_EMPTY_VISITOR = 4
+        const val PAGE_EMPTY = 3
         const val SEE_ALL_LINE = 3
         const val MAX_LINE = 20
         const val SUCCESS_STATUS = 200
