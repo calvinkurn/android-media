@@ -2917,7 +2917,7 @@ open class DynamicProductDetailFragment :
 
     private fun goToTradein() {
         tradeinDialog?.let { dialog ->
-            showImmediately(childFragmentManager, "ACCESS REQUEST") {
+            showImmediately(getProductFragmentManager(), "ACCESS REQUEST") {
                 dialog
             }
         }
@@ -2967,7 +2967,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
-        SingleClick.doSomethingBeforeTime {
+        SingleClick.doSomethingBeforeTime(interval = 750) {
             context?.let { ctx ->
                 viewModel.getDynamicProductInfoP1?.let { p1 ->
                     DynamicProductDetailTracking.Click.onSingleVariantClicked(
