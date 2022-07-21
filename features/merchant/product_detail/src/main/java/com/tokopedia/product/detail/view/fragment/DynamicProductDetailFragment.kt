@@ -280,6 +280,9 @@ open class DynamicProductDetailFragment :
     ScreenShotListener, PlayWidgetListener {
 
     companion object {
+
+        private const val DEBOUNCE_CLICK = 750
+
         fun newInstance(
             productId: String? = null,
             warehouseId: String? = null,
@@ -2967,7 +2970,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
-        SingleClick.doSomethingBeforeTime(interval = 750) {
+        SingleClick.doSomethingBeforeTime(interval = DEBOUNCE_CLICK) {
             context?.let { ctx ->
                 viewModel.getDynamicProductInfoP1?.let { p1 ->
                     DynamicProductDetailTracking.Click.onSingleVariantClicked(
