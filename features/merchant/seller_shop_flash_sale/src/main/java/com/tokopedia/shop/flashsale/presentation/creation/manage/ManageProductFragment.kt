@@ -17,11 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.observeOnce
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
@@ -374,6 +370,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         binding?.apply {
             tickerErrorProductInfo.gone()
             cardIncompleteProductInfo.visible()
+            showHeaderPadding(true)
             btnContinue.disable()
         }
     }
@@ -382,6 +379,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         binding?.apply {
             tickerErrorProductInfo.visible()
             cardIncompleteProductInfo.gone()
+            showHeaderPadding(true)
             btnContinue.disable()
         }
     }
@@ -390,7 +388,17 @@ class ManageProductFragment : BaseDaggerFragment() {
         binding?.apply {
             tickerErrorProductInfo.gone()
             cardIncompleteProductInfo.gone()
+            showHeaderPadding(false)
             btnContinue.enable()
+        }
+    }
+
+    private fun showHeaderPadding(isVisible: Boolean) {
+        binding?.apply {
+            val specSize = View.MeasureSpec.makeMeasureSpec(Int.ZERO, View.MeasureSpec.UNSPECIFIED)
+            headerBackground.measure(specSize, specSize)
+            val headerHeight = if (isVisible) headerBackground.measuredHeight else Int.ZERO
+            recyclerViewProduct.setPadding(Int.ZERO, headerHeight, Int.ZERO, Int.ZERO)
         }
     }
 
@@ -447,6 +455,7 @@ class ManageProductFragment : BaseDaggerFragment() {
             emptyState.gone()
             recyclerViewProduct.gone()
             cardBottomButtonGroup.gone()
+            showHeaderPadding(false)
         }
     }
 
