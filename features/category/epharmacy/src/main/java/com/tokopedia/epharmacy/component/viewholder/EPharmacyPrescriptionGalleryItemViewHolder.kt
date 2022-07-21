@@ -33,7 +33,7 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
     fun bind(model: PrescriptionImage?, ePharmacyListener: EPharmacyListener?) {
         actionListener = ePharmacyListener
         model?.let {
-            renderData(model,ePharmacyListener)
+            renderData(model)
         } ?: kotlin.run {
             cardView.cardType = CardUnify2.TYPE_BORDER
             cardView.setOnClickListener {
@@ -49,7 +49,7 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
         }
     }
 
-    private fun renderData(model: PrescriptionImage, ePharmacyListener: EPharmacyListener?) {
+    private fun renderData(model: PrescriptionImage) {
         cardView.cardType = CardUnify2.TYPE_CLEAR
         cardView.setOnClickListener(null)
         cameraIcon.hide()

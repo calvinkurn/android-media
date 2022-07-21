@@ -7,7 +7,7 @@
     android:paddingBottom="@dimen/spacing_lvl3"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.iconunify.IconUnify
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shop_icon"
         android:layout_width="@dimen/unify_space_12"
         android:layout_height="@dimen/unify_space_12"

@@ -73,9 +73,9 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
 
     private fun extractEntryPoint() {
         entryPoint = if(orderId == DEFAULT_ZERO_VALUE){
-            "Checkout"
+            ENTRY_POINT_CHECKOUT
         }else {
-            "Order"
+            ENTRY_POINT_ORDER
         }
     }
 

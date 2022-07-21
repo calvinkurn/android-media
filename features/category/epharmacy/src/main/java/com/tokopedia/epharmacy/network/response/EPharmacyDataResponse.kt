@@ -4,11 +4,11 @@ package com.tokopedia.epharmacy.network.response
 import com.google.gson.annotations.SerializedName
 
 data class EPharmacyDataResponse(
-    @SerializedName("getEpharmacyOrderDetails")
+    @SerializedName("getEpharmacyOrderDetails", alternate = ["getEpharmacyCheckoutData"])
     val detailData : EPharmacyOrderDetailData?
 ){
     data class EPharmacyOrderDetailData(
-        @SerializedName("form")
+        @SerializedName("form", alternate = ["data"])
         val formData: EPharmacyDataForm?
     ){
         data class EPharmacyDataForm(
@@ -26,12 +26,14 @@ data class EPharmacyDataResponse(
             val paymentDate: String?,
             @SerializedName(value = "prescription_images", alternate = ["prescriptions"])
             val prescriptionImages: ArrayList<PrescriptionImage?>?,
-            @SerializedName(value = "products", alternate = ["productsInfo"])
+            @SerializedName(value = "products", alternate = ["products_info"])
             val ePharmacyProducts: List<EPharmacyProduct?>?,
             @SerializedName("shop_id")
             val shopId: Long?,
             @SerializedName("shop_type")
             val shopType: String?,
+            @SerializedName(value = "shop_logo_url")
+            var shopLogoUrl: String?,
             @SerializedName("shop_name")
             val shopName: String?,
             @SerializedName("shop_location")
@@ -96,26 +98,28 @@ data class PrescriptionImage(
 }
 
 data class EPharmacyProduct(
-    @SerializedName(value = "is_ethical_drug", alternate = ["isEthicalDrug"])
+    @SerializedName(value = "is_ethical_drug")
     val isEthicalDrug: Boolean?,
     @SerializedName("name")
     val name: String?,
-    @SerializedName(value = "product_id", alternate = ["productId"])
+    @SerializedName(value = "product_id")
     val productId: String?,
-    @SerializedName(value = "product_image", alternate = ["productImage"])
+    @SerializedName(value = "product_image")
     val productImage: String?,
     @SerializedName("quantity")
     val quantity: Int?,
     @SerializedName("item_weight")
     val itemWeight: Int?,
-    @SerializedName(value = "shop_id", alternate = ["shopId"])
+    @SerializedName(value = "shop_id")
     var shopId: Long?,
-    @SerializedName(value = "store_name", alternate = ["shopName"])
+    @SerializedName(value = "shop_name")
     var shopName: String?,
-    @SerializedName(value = "store_location", alternate = ["shopLocation"])
+    @SerializedName(value = "shop_location")
     var shopLocation: String?,
-    @SerializedName(value = "store_type", alternate = ["shopType"])
+    @SerializedName(value = "shop_type")
     var shopType: String?,
+    @SerializedName(value = "shop_logo_url")
+    var shopLogoUrl: String?,
     @SerializedName(value = "products")
     val ePharmacyProducts: List<EPharmacyProduct?>?,
     @SerializedName(value = "divider")

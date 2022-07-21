@@ -38,12 +38,14 @@ class GetPrescriptionIdsUseCase @Inject constructor(private val gql: GraphqlUseC
 }
 
 private val query = """
-    query GetPrescriptionsByCheckoutId(${'$'}checkout_id: String!) {
-    getPrescriptionsByCheckoutId(order_id: ${'$'}checkout_id) {
-      checkoutId: checkout_id
-      prescriptions {
-        prescriptionId: prescription_id
-        status
+    query GetEpharmacyCheckoutData(${'$'}checkout_id: String!) {
+    getEpharmacyCheckoutData(checkout_id: ${'$'}checkout_id) {
+      data {
+        checkout_id
+        prescription_images {
+          prescription_id
+          status
+        }
       }
     }
 }

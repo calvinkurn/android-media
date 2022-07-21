@@ -8,6 +8,7 @@ const val GQL_FETCH_ORDER_DETAILS_QUERY = """
           shop_name
           shop_type
           shop_location
+          shop_logo_url
           products {
             product_id
             name
@@ -41,29 +42,31 @@ const val GQL_POST_PRESCRIPTION_IDS_QUERY: String = """mutation confirmPrescript
 """
 
 const val GQL_FETCH_CHECKOUT_DETAILS_QUERY = """
-    query GetPrescriptionsByCheckoutId(${'$'}checkout_id: String!) {
-      getPrescriptionsByCheckoutId(checkout_id: ${'$'}checkout_id) {
-        checkoutId: checkout_id
-        prescriptions {
-          prescriptionId: prescription_id
-          prescriptionData: prescription_data {
-            format
-            value
+    query GetEpharmacyCheckoutData(${'$'}checkout_id: String!) {
+      getEpharmacyCheckoutData(checkout_id: ${'$'}checkout_id) {
+        data {
+          checkout_id
+          prescription_images {
+            status
+            prescription_data {
+              format
+              value
+            }
           }
-          status
-          createdAt: created_at
-        }
-        productsInfo: products_info {
-          shopId: shop_id
-          shopName: shop_name
-          shopType: shop_type
-          shopLocation: shop_location
-          products {
-              productId: product_id
+          products_info {
+            shop_id
+            shop_name
+            shop_type
+            shop_location
+            shop_logo_url
+            products {
+              product_id
               name
               quantity
-              productImage: product_image
-              itemWeight: item_weight
+              is_ethical_drug
+              product_image
+              item_weight
+            }
           }
         }
       }

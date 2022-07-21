@@ -31,7 +31,7 @@ class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListen
         return when (type){
             EPharmacyStaticInfoViewHolder.LAYOUT -> EPharmacyStaticInfoViewHolder(view)
             EPharmacyPrescriptionViewHolder.LAYOUT -> EPharmacyPrescriptionViewHolder(view, ePharmacyListener)
-            EPharmacyProductViewHolder.LAYOUT -> EPharmacyProductViewHolder(view, ePharmacyListener)
+            EPharmacyProductViewHolder.LAYOUT -> EPharmacyProductViewHolder(view)
             else -> super.createViewHolder(view,type)
         }
     }

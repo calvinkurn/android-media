@@ -85,6 +85,7 @@ class UploadPrescriptionViewModel @Inject constructor(
                 eProduct?.shopName = data.detailData.formData.shopName
                 eProduct?.shopLocation = data.detailData.formData.shopLocation
                 eProduct?.shopType = data.detailData.formData.shopType
+                eProduct?.shopLogoUrl = data.detailData.formData.shopLogoUrl
             }
             listOfComponents.add(EPharmacyProductDataModel(PRODUCT_COMPONENT, eProduct?.productId ?: eProduct.hashCode().toString(),
                 eProduct))
@@ -112,9 +113,9 @@ class UploadPrescriptionViewModel @Inject constructor(
             else {
                 _productDetailLiveData.postValue(Success(mapCheckoutResponseInDataModel(data)))
                 if(ePharmacyDetailResponse.detailData?.formData?.prescriptionImages.isNullOrEmpty()){
-                    _buttonLiveData.postValue(EPharmacyButtonKey.CHECK.key)
-                }else {
                     _buttonLiveData.postValue(EPharmacyButtonKey.RE_UPLOAD.key)
+                }else {
+                    _buttonLiveData.postValue(EPharmacyButtonKey.DONE.key)
                 }
             }
         }
@@ -145,6 +146,7 @@ class UploadPrescriptionViewModel @Inject constructor(
                     ePharmacyProduct?.shopName = eProduct.shopName
                     ePharmacyProduct?.shopLocation = eProduct.shopLocation
                     ePharmacyProduct?.shopType = eProduct.shopType
+                    ePharmacyProduct?.shopLogoUrl = eProduct.shopLogoUrl
                 }
                 if(indexProduct == (eProduct.ePharmacyProducts.size - 1) && index != (data.detailData.formData.ePharmacyProducts.size - 1)){
                     ePharmacyProduct?.divider = true

@@ -13,15 +13,15 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class EPharmacyProductViewHolder(private val view: View,
-                                 private val ePharmacyListener: EPharmacyListener?) : AbstractViewHolder<EPharmacyProductDataModel>(view) {
+class EPharmacyProductViewHolder(view: View) : AbstractViewHolder<EPharmacyProductDataModel>(view) {
 
     private val productText = view.findViewById<Typography>(R.id.product_name)
     private val shopNameText = view.findViewById<Typography>(R.id.shop_name)
     private val shopLocationText = view.findViewById<Typography>(R.id.shop_location)
-    private val shopIcon = view.findViewById<IconUnify>(R.id.shop_icon)
+    private val shopIcon = view.findViewById<ImageUnify>(R.id.shop_icon)
     private val productQuantity = view.findViewById<Typography>(R.id.product_quantity)
     private val productImageUnify = view.findViewById<ImageView>(R.id.product_image)
     private val productCard = view.findViewById<CardUnify2>(R.id.product_image_card)
@@ -43,22 +43,17 @@ class EPharmacyProductViewHolder(private val view: View,
             productImageUnify.loadImage(productImage)
             shopNameText.displayTextOrHide(shopName ?: "")
             shopLocationText.displayTextOrHide(shopLocation ?: "")
-            renderShopIcon(shopType)
+            renderShopIcon(shopLogoUrl)
             renderDivider(divider)
         }
     }
 
-    private fun renderShopIcon(shopType : String?) {
-        if(shopType.isNullOrBlank()){
+    private fun renderShopIcon(shopLogoUrl : String?) {
+        if(shopLogoUrl.isNullOrBlank()){
             shopIcon.hide()
         }else{
             shopIcon.show()
-            when(shopType){
-                "Regular Merchant" -> shopIcon.setImage(IconUnify.BADGE_OS)
-                "Power Merchant" -> shopIcon.setImage(IconUnify.BADGE_PM_FILLED)
-                "Official Store" -> shopIcon.setImage(IconUnify.BADGE_OS_FILLED)
-                "Power Merchant Pro" -> shopIcon.setImage(IconUnify.BADGE_OS_FILLED)
-            }
+            shopIcon.loadImage(shopLogoUrl)
         }
     }
 

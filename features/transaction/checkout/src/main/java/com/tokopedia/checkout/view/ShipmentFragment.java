@@ -217,7 +217,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static final String ARG_CHECKOUT_PAGE_SOURCE = "ARG_CHECKOUT_PAGE_SOURCE";
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
     private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
-    public static String EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id";
+    public static String EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string";
 
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
@@ -3516,8 +3516,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void updatePrescriptionIds(List<GetPrescriptionIdsResponse.Prescription> prescriptions) {
         ArrayList<String> prescriptionsIds = new ArrayList<>();
-        for(int i = 0 ; i<prescriptions.size() ; i++){
-            prescriptionsIds.add(prescriptions.get(i).getPrescriptionId());
+        for(int i = 0 ; i < prescriptions.size() ; i++){
+            if(prescriptions.get(i).getPrescriptionId() != null){
+                prescriptionsIds.add(prescriptions.get(i).getPrescriptionId());
+            }
         }
         Intent intent = new Intent();
         intent.putStringArrayListExtra(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA,prescriptionsIds);
