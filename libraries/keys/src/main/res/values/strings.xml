@@ -35,5 +35,8 @@
 
     <string name="gojek_sso_client_id" translatable="false">tokopedia:consumer:app</string>
     <string name="gojek_sso_client_secret" translatable="false">qmcpRpZPBC7DTRNQiI7dIkuGoxrqsu</string>
+
+    <string name="tkpd_identifier_val_ma" translatable="false">tokopedia.tkpd.ma</string>
+    <string name="tkpd_identifier_val_sa" translatable="false">tokopedia.tkpd.sa</string>
 </resources>
 
