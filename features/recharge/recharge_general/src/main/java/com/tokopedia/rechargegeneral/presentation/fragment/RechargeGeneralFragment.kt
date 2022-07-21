@@ -638,6 +638,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             val dropdownBottomSheet = BottomSheetUnify()
             dropdownBottomSheet.setTitle(title)
             dropdownBottomSheet.isFullpage = false
+            dropdownBottomSheet.clearContentPadding = true
             dropdownBottomSheet.clearAction()
             dropdownBottomSheet.setCloseClickListener {
                 dropdownBottomSheet.dismiss()
