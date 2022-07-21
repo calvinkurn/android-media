@@ -8,9 +8,7 @@ import android.widget.TextView
 import androidx.annotation.AttrRes
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.common.widget.DigitalClientNumberWidget
@@ -89,15 +87,6 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         }
         btnEnquiry.gone()
         titleEnquiryResult.show()
-        enquiryResult.show()
-    }
-
-    fun showPrefixAsEnquiryResult(text: Pair<String, String>) {
-        enquiryResult.removeAllViews()
-        val billsResultWidget = DigitalTelcoBillsResultWidget(context)
-        billsResultWidget.setLabel(text.first)
-        billsResultWidget.setValue(text.second)
-        enquiryResult.addView(billsResultWidget)
         enquiryResult.show()
     }
 

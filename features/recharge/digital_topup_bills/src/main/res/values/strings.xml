@@ -11,4 +11,5 @@
     <string name="digital_client_label_signal">Kode Bayar</string>
     <string name="telco_number_error_prefix_not_found">Hmm, nggak ketemu provider-nya. Cek lagi, ya.</string>
     <string name="signal_number_error_prefix_not_found">Hmm, pastikan nomornya benar. Cek lagi, ya.</string>
+    <string name="signal_operator_result_label">Wilayah</string>
 </resources>
