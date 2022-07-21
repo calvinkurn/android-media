@@ -208,7 +208,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     fun loadFirstPage() {
         launchCatchError(block =  {
             _loadRecipeBookmarks.value = UiState.Loading()
-            delay(3000)
             val (recipeBookmarks, errorCode, errorMessage) = getRecipeBookmarks(pageCounter)
             onResponseLoadFirstPageBE(recipeBookmarks, errorCode, errorMessage)
         }, onError = { throwable ->
@@ -227,7 +226,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
                 )
             )
 
-            delay(1000)
             val response = removeRecipeBookmarkUseCase.execute(
                 userId = userId,
                 recipeId = recipeId
@@ -267,7 +265,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
                 )
             )
 
-            delay(300)
             val response = addRecipeBookmarkUseCase.execute(
                 userId = userId,
                 recipeId = recipeId
@@ -301,9 +298,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
                 _isOnScrollNotNeeded.value = true
             } else if (isAtTheBottomOfThePage && !isLoadMoreLoading) {
                 _moreRecipeBookmarks.value = UiState.Loading()
-
-                delay(3000)
-
                 val (recipeBookmarks, errorCode, errorMessage) = getRecipeBookmarks(pageCounter++)
                 onResponseLoadMoreBE(recipeBookmarks, errorCode, errorMessage)
             }

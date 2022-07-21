@@ -49,6 +49,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         const val DEFAULT_PAGE = 1
         const val DEFAULT_LIMIT = 10
         const val DEFAULT_WIDGET_COUNTER = 0
+        const val REMAINING_RECIPES_SIZE = 1
         const val SCROLL_DOWN_DIRECTION = 1
         const val ERROR_PAGE_NOT_FOUND = "404"
         const val ERROR_SERVER = "500"
@@ -200,7 +201,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
 
     private fun showRecipeItemLoading(data: ToasterUiModel?) {
         data?.apply {
-            if (adapter?.data?.size == 1) {
+            if (adapter?.data?.size == REMAINING_RECIPES_SIZE) {
                 showRecipesList()
                 adapter?.showItemLoading(
                     position = position.orZero(),
