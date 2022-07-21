@@ -161,3 +161,5 @@ const val PAGE_LIMIT = 20
 const val NO_UI_METRICS = 0
 
 const val TOTAL_ITEMS_METRIC_TYPE = "totalItems"
+
+const val AFFILIATE_SHOP_ADP = "aff_shop_adp"
