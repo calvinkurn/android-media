@@ -27,7 +27,7 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
 
     fun trackCarouselImpression(
         trackingQueue: TrackingQueue,
-        data: Data
+        data: Data,
     ) {
             SearchTracking.trackEventImpressionInspirationCarouselUnification(
                 trackingQueue,
@@ -47,7 +47,7 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
 
     fun trackCarouselClickSeeAll(
         keyword: String,
-        option: Option
+        option: Option,
     ) {
         val searchComponentTracking = option.asSearchComponentTracking(keyword)
 

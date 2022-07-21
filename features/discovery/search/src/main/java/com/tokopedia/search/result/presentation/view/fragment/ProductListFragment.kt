@@ -1361,7 +1361,8 @@ class ProductListFragment: BaseDaggerFragment(),
 
         inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(
             queryKey,
-            inspirationCarouselDataViewOption)
+            inspirationCarouselDataViewOption,
+        )
     }
 
     override fun onInspirationCarouselGridBannerClicked(option: InspirationCarouselDataView.Option) {
@@ -1481,7 +1482,8 @@ class ProductListFragment: BaseDaggerFragment(),
 
         inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(
             queryKey,
-            inspirationCarouselDataViewOption)
+            inspirationCarouselDataViewOption,
+        )
     }
 
     override fun onInspirationCarouselChipsClicked(
@@ -1529,7 +1531,7 @@ class ProductListFragment: BaseDaggerFragment(),
     ) {
         inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(
             queryKey,
-            inspirationCarouselOption
+            inspirationCarouselOption,
         )
     }
     //endregion
