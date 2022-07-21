@@ -82,6 +82,7 @@ object ShopPageProductListMapper {
                     it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                     it.etalaseType = etalaseType
                     it.stock = stock.toLong()
+                    it.maximumOrder = stock
                     when (it.etalaseType) {
                         ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
                             it.isUpcoming  = campaign.isUpcoming
