@@ -19,7 +19,6 @@ class DrawerUiComponent constructor(
 
     private lateinit var drawerAdapter: ThumbnailDrawerAdapter
 
-    @SuppressLint("NotifyDataSetChanged")
     fun refreshItem(updateIndex: Int, newData: List<EditorUiModel>) {
         if (::drawerAdapter.isInitialized) {
             drawerAdapter.updateData(updateIndex, newData)
