@@ -17,11 +17,9 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
-import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
-import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -371,18 +369,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
     private fun showServiceBottomsheet(shipperProductId: String) {
         if (profile.enable) {
-            val shippingRecommendationData = shipment.shippingRecommendationData
-            if (shippingRecommendationData != null) {
-                val logisticPromoList = shippingRecommendationData.listLogisticPromo
-                if (logisticPromoList.isNotEmpty()) {
-                    logisticPromoList.forEach { promo ->
-                        if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
-                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
-                        }
-                    }
-                }
-                listener.chooseDuration(shipperProductId.isEmpty(), shipperProductId, shippingRecommendationData)
-            }
+            listener.chooseDuration(shipperProductId.isEmpty(), shipperProductId)
         }
     }
 
@@ -897,7 +884,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         fun chooseCourier(shipment: OrderShipment, list: ArrayList<RatesViewModelType>)
 
-        fun chooseDuration(isDurationError: Boolean, currentSpId: String, shippingRecommendationData: ShippingRecommendationData)
+        fun chooseDuration(isDurationError: Boolean, currentSpId: String)
 
         fun choosePinpoint(address: OrderProfileAddress)
 
