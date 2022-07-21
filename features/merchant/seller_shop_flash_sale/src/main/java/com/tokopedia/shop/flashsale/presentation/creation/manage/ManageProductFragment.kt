@@ -230,7 +230,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         viewModel.removeProductsStatus.observe(viewLifecycleOwner) {
             doOnDelayFinished(DELAY) {
                 if (it is Success) {
-                    viewModel.getProducts(campaignId, LIST_TYPE)
+                    loadProductsData()
                     showSuccessDeleteProductToaster()
                 } else if (it is Fail) {
                     binding?.cardBottomButtonGroup?.showError(it.throwable)
