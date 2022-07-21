@@ -39,6 +39,8 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.ALL_SHOWCASE_ID
+import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
@@ -112,11 +114,6 @@ class ShopHomeViewModel @Inject constructor(
     private val gqlShopPageGetHomeType: GqlShopPageGetHomeType,
     private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>
     ) : BaseViewModel(dispatcherProvider.main) {
-
-    companion object {
-        const val ALL_SHOWCASE_ID = "etalase"
-        const val CODE_STATUS_SUCCESS = "200"
-    }
 
     val productListData: LiveData<Result<GetShopHomeProductUiModel>>
         get() = _productListData

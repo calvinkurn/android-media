@@ -17,6 +17,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.product.view.datamodel.ShopPageProductResultPageData
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
@@ -64,8 +65,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     isRefresh = true
             )
             verifyGetShopInfoUseCaseCalled()
-            assertTrue(shopPageProductListResultViewModel.shopInfoResp.value is Success<ShopInfo>)
-            assertNotNull(shopPageProductListResultViewModel.shopInfoResp.value)
+            assertTrue(shopPageProductListResultViewModel.shopData.value is Success<ShopPageProductResultPageData>)
+            assertNotNull(shopPageProductListResultViewModel.shopData.value)
         }
     }
 
@@ -78,8 +79,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopDomain = ""
             )
             verifyGetShopInfoUseCaseCalled()
-            assertTrue(shopPageProductListResultViewModel.shopInfoResp.value is Success<ShopInfo>)
-            assertNotNull(shopPageProductListResultViewModel.shopInfoResp.value)
+            assertTrue(shopPageProductListResultViewModel.shopData.value is Success<ShopPageProductResultPageData>)
+            assertNotNull(shopPageProductListResultViewModel.shopData.value)
         }
     }
 
@@ -92,8 +93,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopDomain = "domain"
             )
             verifyGetShopInfoUseCaseCalled()
-            assertTrue(shopPageProductListResultViewModel.shopInfoResp.value is Success<ShopInfo>)
-            assertNotNull(shopPageProductListResultViewModel.shopInfoResp.value)
+            assertTrue(shopPageProductListResultViewModel.shopData.value is Success<ShopPageProductResultPageData>)
+            assertNotNull(shopPageProductListResultViewModel.shopData.value)
         }
     }
 
@@ -105,8 +106,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123"
             )
             verifyGetShopInfoUseCaseCalled()
-            assertTrue(shopPageProductListResultViewModel.shopInfoResp.value is Success<ShopInfo>)
-            assertNotNull(shopPageProductListResultViewModel.shopInfoResp.value)
+            assertTrue(shopPageProductListResultViewModel.shopData.value is Success<ShopPageProductResultPageData>)
+            assertNotNull(shopPageProductListResultViewModel.shopData.value)
         }
     }
 
@@ -128,7 +129,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     isRefresh = true
             )
             verifyGetShopInfoUseCaseCalled()
-            assertTrue(shopPageProductListResultViewModel.shopInfoResp.value is Fail)
+            assertTrue(shopPageProductListResultViewModel.shopData.value is Fail)
         }
     }
 
@@ -290,7 +291,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    isEnableDirectPurchase = mockIsDirectPurchase
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -306,7 +308,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    isEnableDirectPurchase = mockIsDirectPurchase
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -324,7 +327,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    isEnableDirectPurchase = mockIsDirectPurchase
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -345,7 +349,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    isEnableDirectPurchase = mockIsDirectPurchase
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -366,7 +371,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    isEnableDirectPurchase = mockIsDirectPurchase
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -389,7 +395,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     search = "search",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    isEnableDirectPurchase = mockIsDirectPurchase
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Success)
@@ -405,7 +412,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     shopId = "123",
                     etalaseType = 2,
                     shopProductFilterParameter = ShopProductFilterParameter(),
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    isEnableDirectPurchase = mockIsDirectPurchase
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(shopPageProductListResultViewModel.productData.value is Fail)
@@ -423,7 +431,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
 
             shopPageProductListResultViewModel.getShopProductEmptyState(
                     shopId = "123",
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    isEnableDirectPurchase = mockIsDirectPurchase
             )
 
             verifyGetShopProductUseCaseCalled()
@@ -442,7 +451,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
 
             shopPageProductListResultViewModel.getShopProductEmptyState(
                     shopId = "123",
-                    widgetUserAddressLocalData = addressWidgetData
+                    widgetUserAddressLocalData = addressWidgetData,
+                    isEnableDirectPurchase = mockIsDirectPurchase
             )
 
             verifyGetShopProductUseCaseCalled()
