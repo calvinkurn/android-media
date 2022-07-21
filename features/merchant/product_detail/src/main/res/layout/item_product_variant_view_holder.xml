@@ -9,7 +9,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/variant_parent_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="@dimen/spacing_lvl1"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView

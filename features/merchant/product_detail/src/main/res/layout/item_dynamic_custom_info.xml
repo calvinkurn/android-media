@@ -9,7 +9,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/top_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="@dimen/spacing_lvl1"
         android:visibility="gone"
         tools:visibility="visible" />
 
@@ -96,7 +96,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/bottom_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="@dimen/spacing_lvl1"
         android:visibility="gone"
         tools:visibility="visible" />
 </LinearLayout>
