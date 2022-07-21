@@ -67,9 +67,7 @@ class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
                 childFragmentManager,
                 requireContext().classLoader
             ).apply {
-                arguments = Bundle().apply {
-                    putString(KEY_USERNAME, usernameArg)
-                }
+                arguments = createArgument()
             }.showNow(childFragmentManager)
         }
         else {
@@ -77,11 +75,13 @@ class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
                 childFragmentManager,
                 requireContext().classLoader
             ).apply {
-                arguments = Bundle().apply {
-                    putString(KEY_USERNAME, usernameArg)
-                }
+                arguments = createArgument()
             }.showNow(childFragmentManager)
         }
+    }
+
+    private fun createArgument() = Bundle().apply {
+        putString(KEY_USERNAME, usernameArg)
     }
 
     fun setListener(listener: Listener?) {
