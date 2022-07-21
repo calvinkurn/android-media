@@ -403,16 +403,18 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun getHomeLayout() {
         localCacheModel?.let {
-            viewModel.getHomeLayout(it)
+            viewModel.setHomeLayout(it)
         }
     }
 
     private fun getLayoutComponentData() {
-        viewModel.getLayoutComponentData(localCacheModel)
+        viewModel.setLayoutComponentData(localCacheModel)
+        //viewModel.getLayoutComponentData(localCacheModel)
     }
 
     private fun loadLayout() {
-        viewModel.showLoadingState()
+        //viewModel.showLoadingState()
+        viewModel.setLoadingState()
     }
 
     private fun showNoPinPoin() {
@@ -487,27 +489,50 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-        viewLifecycleOwner.observe(viewModel.layoutList) {
-            removeAllScrollListener()
-            when (it) {
-                is Success -> {
-                    onSuccessGetHomeLayout(it.data)
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowLayoutList.collect {
+                removeAllScrollListener()
+                when (it) {
+                    is Success -> {
+                        onSuccessGetHomeLayout(it.data)
+                    }
+                    is Fail -> {
+                        logExceptionTokoFoodHome(
+                            it.throwable,
+                            TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                            TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                        )
+                        onErrorGetHomeLayout(it.throwable)
+                    }
                 }
-                is Fail -> {
-                    logExceptionTokoFoodHome(
-                        it.throwable,
-                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
-                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
-                    )
-                    onErrorGetHomeLayout(it.throwable)
-                }
-            }
 
-            rvHome?.post {
-                addScrollListener()
-                resetSwipeLayout()
+                rvHome?.post {
+                    addScrollListener()
+                    resetSwipeLayout()
+                }
             }
         }
+//        viewLifecycleOwner.observe(viewModel.layoutList) {
+//            removeAllScrollListener()
+//            when (it) {
+//                is Success -> {
+//                    onSuccessGetHomeLayout(it.data)
+//                }
+//                is Fail -> {
+//                    logExceptionTokoFoodHome(
+//                        it.throwable,
+//                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+//                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+//                    )
+//                    onErrorGetHomeLayout(it.throwable)
+//                }
+//            }
+//
+//            rvHome?.post {
+//                addScrollListener()
+//                resetSwipeLayout()
+//            }
+//        }
 
         viewLifecycleOwner.observe(viewModel.updatePinPointState) { isSuccess ->
             if (isSuccess) {

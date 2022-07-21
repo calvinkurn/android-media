@@ -45,9 +45,15 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeIcon
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeTickerUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUiState
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_COMPONENT_DATA
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_DYNAMIC_CHANNEL_DATA
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_LOAD_MORE
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_LOADING
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_PROGRESS_BAR
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -55,7 +61,20 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.shareIn
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class TokoFoodHomeViewModel @Inject constructor(
     private val tokoFoodDynamicChanelUseCase: TokoFoodHomeDynamicChannelUseCase,
     private val tokoFoodHomeUSPUseCase: TokoFoodHomeUSPUseCase,
@@ -66,13 +85,45 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+) : BaseViewModel(dispatchers.main) {
+
+    private val _uiState = MutableStateFlow(TokoFoodHomeUiState())
+
+    val flowLayoutList: SharedFlow<Result<TokoFoodListUiModel>> =
+        _uiState.flatMapLatest { uiState ->
+            flow {
+                when (uiState.uiState) {
+                    STATE_LOADING -> emit(getLoadingState())
+                    STATE_FETCH_DYNAMIC_CHANNEL_DATA -> emit(getHomeLayout(uiState.localCacheModel))
+                    STATE_FETCH_COMPONENT_DATA -> {
+                        homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }
+                            .forEach {
+                                emit(getLayoutComponentData(it, uiState.localCacheModel))
+                            }
+                    }
+                    STATE_PROGRESS_BAR -> emit(getProgressBar())
+                    STATE_FETCH_LOAD_MORE -> emit(getMerchantList(uiState.localCacheModel))
+                }
+            }.catch {
+                when (uiState.uiState) {
+                    STATE_FETCH_DYNAMIC_CHANNEL_DATA -> emit(Fail(it))
+                    STATE_FETCH_LOAD_MORE -> {
+                        removeMerchantMainTitle()
+                        emit(removeProgressBar())
+                    }
+                }
+            }
+        }.shareIn(
+            scope = this,
+            started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
+            replay = Int.ONE
+        )
 
     val layoutList: LiveData<Result<TokoFoodListUiModel>>
         get() = _homeLayoutList
     val updatePinPointState: LiveData<Boolean>
         get() = _updatePinPointState
-    val errorMessage:LiveData<String>
+    val errorMessage: LiveData<String>
         get() = _errorMessage
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
@@ -92,6 +143,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     companion object {
         private const val INITIAL_PAGE_KEY_MERCHANT = "0"
+        private const val STATE_FLOW_STOP_TIMEOUT_MILLIS = 5000L
     }
 
     fun updatePinPoin(addressId: String, latitude: String, longitude: String) {
@@ -100,7 +152,7 @@ class TokoFoodHomeViewModel @Inject constructor(
                 keroEditAddressUseCase.execute(addressId, latitude, longitude)
             }
             _updatePinPointState.postValue(isSuccess)
-        }){
+        }) {
             _errorMessage.postValue(it.message)
         }
     }
@@ -117,24 +169,30 @@ class TokoFoodHomeViewModel @Inject constructor(
         )
     }
 
-    fun getChooseAddress(source: String){
+    fun getChooseAddress(source: String) {
         isAddressManuallyUpdated = true
-        getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
+        getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
             _chooseAddress.postValue(Success(it))
-        },{
+        }, {
             _chooseAddress.postValue(Fail(it))
         }, source)
     }
 
-    fun showLoadingState() {
+    fun setLoadingState() {
+        _uiState.tryEmit(TokoFoodHomeUiState(uiState = STATE_LOADING))
+    }
+
+    fun getLoadingState(): Result<TokoFoodListUiModel> {
         setPageKey(INITIAL_PAGE_KEY_MERCHANT)
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.LOADING
+        val data = Success(
+            TokoFoodListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoFoodLayoutState.LOADING
+            )
         )
-        _homeLayoutList.postValue(Success(data))
+        return data
     }
 
     fun showNoPinPointState() {
@@ -167,13 +225,17 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    fun showProgressBar() {
+    fun setProgressBar() {
+        _uiState.tryEmit(TokoFoodHomeUiState(uiState = STATE_PROGRESS_BAR))
+    }
+
+    fun getProgressBar(): Result<TokoFoodListUiModel> {
         homeLayoutItemList.addProgressBar()
         val data = TokoFoodListUiModel(
             getHomeVisitableList(),
             TokoFoodLayoutState.UPDATE
         )
-        _homeLayoutList.postValue(Success(data))
+        return Success(data)
     }
 
     fun removeTickerWidget(id: String) {
@@ -190,89 +252,133 @@ class TokoFoodHomeViewModel @Inject constructor(
         })
     }
 
-    fun getHomeLayout(localCacheModel: LocalCacheModel) {
-        launchCatchError(block = {
-            homeLayoutItemList.clear()
-
-            val homeLayoutResponse = withContext(dispatchers.io) {
-                tokoFoodDynamicChanelUseCase.execute(localCacheModel)
-            }
-
-            homeLayoutItemList.mapHomeLayoutList(
-                homeLayoutResponse.response.data,
-                hasTickerBeenRemoved
+    fun setHomeLayout(localCacheModel: LocalCacheModel) {
+        _uiState.tryEmit(
+            TokoFoodHomeUiState(
+                uiState = STATE_FETCH_DYNAMIC_CHANNEL_DATA,
+                localCacheModel = localCacheModel
             )
-
-            val data = TokoFoodListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoFoodLayoutState.SHOW
-            )
-
-            _homeLayoutList.postValue(Success(data))
-            }){
-            _homeLayoutList.postValue(Fail(it))
-        }
+        )
     }
 
-    fun getLayoutComponentData(localCacheModel: LocalCacheModel?){
-        launch {
-            homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }.forEach {
-                homeLayoutItemList.setStateToLoading(it)
+    suspend fun getHomeLayout(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
+        homeLayoutItemList.clear()
 
-                if (it.layout is TokoFoodHomeLayoutUiModel) {
-                    getTokoFoodHomeComponent(it.layout, localCacheModel)
-                }
+        val homeLayoutResponse = withContext(dispatchers.io) {
+            tokoFoodDynamicChanelUseCase.execute(localCacheModel)
+        }
 
-                val data = TokoFoodListUiModel(
-                    items = getHomeVisitableList(),
-                    state = TokoFoodLayoutState.UPDATE
+        homeLayoutItemList.mapHomeLayoutList(
+            homeLayoutResponse.response.data,
+            hasTickerBeenRemoved
+        )
+
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.SHOW
+        )
+        return Success(data)
+    }
+
+    fun setLayoutComponentData(localCacheModel: LocalCacheModel?) {
+        localCacheModel?.let {
+            _uiState.tryEmit(
+                TokoFoodHomeUiState(
+                    uiState = STATE_FETCH_COMPONENT_DATA,
+                    localCacheModel = it
                 )
-
-                _homeLayoutList.postValue(Success(data))
-            }
+            )
         }
     }
 
-    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel) {
-        if(shouldLoadMore(containsLastItemIndex, itemCount)) {
-            showProgressBar()
-            getMerchantList(localCacheModel = localCacheModel)
+    suspend fun getLayoutComponentData(
+        uiModel: TokoFoodItemUiModel,
+        localCacheModel: LocalCacheModel?
+    ): Result<TokoFoodListUiModel> {
+
+        homeLayoutItemList.setStateToLoading(uiModel)
+
+        if (uiModel.layout is TokoFoodHomeLayoutUiModel) {
+            getTokoFoodHomeComponent(uiModel.layout, localCacheModel)
+        }
+
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.UPDATE
+        )
+
+        return Success(data)
+    }
+
+    fun onScrollProductList(
+        containsLastItemIndex: Int,
+        itemCount: Int,
+        localCacheModel: LocalCacheModel
+    ) {
+        if (shouldLoadMore(containsLastItemIndex, itemCount)) {
+            setProgressBar()
+            setMerchantList(localCacheModel = localCacheModel)
         }
     }
 
     fun isShownEmptyState(): Boolean {
         val layoutList = homeLayoutItemList.toMutableList()
         val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
-        val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
+        val isEmptyStateShown =
+            layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
         return isEmptyStateShown || isError
     }
 
-    fun setPageKey(pageNew:String) {
+    fun setPageKey(pageNew: String) {
         pageKey = pageNew
     }
 
-    private fun getMerchantList(localCacheModel: LocalCacheModel) {
-        launchCatchError(block = {
-            val categoryResponse = withContext(dispatchers.io) {
-                tokoFoodMerchantListUseCase.execute(
-                    localCacheModel = localCacheModel,
-                    pageKey = pageKey)
-            }
-
-            if (isInitialPageKey()){
-                homeLayoutItemList.addMerchantTitle()
-            }
-
-            setPageKey(categoryResponse.data.nextPageKey)
-            homeLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
-            merchantListUpdate()
-        }){
-            removeMerchantMainTitle()
-            merchantListUpdate()
+    private fun setMerchantList(localCacheModel: LocalCacheModel?) {
+        localCacheModel?.let {
+            _uiState.tryEmit(
+                TokoFoodHomeUiState(
+                    uiState = STATE_FETCH_LOAD_MORE,
+                    localCacheModel = it
+                )
+            )
         }
     }
+    private suspend fun getMerchantList(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
 
-    private suspend fun getTokoFoodHomeComponent(item: TokoFoodHomeLayoutUiModel, localCacheModel: LocalCacheModel?) {
+        val categoryResponse = withContext(dispatchers.io) {
+            tokoFoodMerchantListUseCase.execute(
+                localCacheModel = localCacheModel,
+                pageKey = pageKey
+            )
+        }
+
+        if (isInitialPageKey()) {
+            homeLayoutItemList.addMerchantTitle()
+        }
+
+        setPageKey(categoryResponse.data.nextPageKey)
+        homeLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+        homeLayoutItemList.removeProgressBar()
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.LOAD_MORE
+        )
+        return Success(data)
+    }
+
+    private fun removeProgressBar(): Result<TokoFoodListUiModel> {
+        homeLayoutItemList.removeProgressBar()
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.LOAD_MORE
+        )
+        return Success(data)
+    }
+
+    private suspend fun getTokoFoodHomeComponent(
+        item: TokoFoodHomeLayoutUiModel,
+        localCacheModel: LocalCacheModel?
+    ) {
         when (item) {
             is TokoFoodHomeTickerUiModel -> getTickerDataAsync(item, localCacheModel).await()
             is TokoFoodHomeUSPUiModel -> getUSPDataAsync(item).await()
@@ -281,11 +387,14 @@ class TokoFoodHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTickerDataAsync(item: TokoFoodHomeTickerUiModel, localCacheModel: LocalCacheModel?): Deferred<Unit?> {
+    private suspend fun getTickerDataAsync(
+        item: TokoFoodHomeTickerUiModel,
+        localCacheModel: LocalCacheModel?
+    ): Deferred<Unit?> {
         return asyncCatchError(block = {
             val tickerData = tokoFoodHomeTickerUseCase.execute(localCacheModel)
             homeLayoutItemList.mapTickerData(item, tickerData)
-        }){
+        }) {
             homeLayoutItemList.removeItem(item.id)
         }
     }
@@ -294,7 +403,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val uspData = tokoFoodHomeUSPUseCase.execute()
             homeLayoutItemList.mapUSPData(item, uspData)
-        }){
+        }) {
             homeLayoutItemList.removeItem(item.id)
         }
     }
@@ -303,7 +412,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val dynamicIcons = tokoFoodHomeDynamicIconsUseCase.execute(item.widgetParam)
             homeLayoutItemList.mapDynamicIcons(item, dynamicIcons)
-        }){
+        }) {
             homeLayoutItemList.removeItem(item.id)
         }
     }
@@ -320,8 +429,8 @@ class TokoFoodHomeViewModel @Inject constructor(
         return pageKey.equals(INITIAL_PAGE_KEY_MERCHANT)
     }
 
-    private fun removeMerchantMainTitle(){
-        if (isInitialPageKey()){
+    private fun removeMerchantMainTitle() {
+        if (isInitialPageKey()) {
             homeLayoutItemList.removeItem(MERCHANT_TITLE)
         }
     }
@@ -343,7 +452,8 @@ class TokoFoodHomeViewModel @Inject constructor(
         val hasNextPage = pageKey.isNotEmpty()
         val layoutList = homeLayoutItemList.toMutableList()
         val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
-        val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
+        val isEmptyStateShown =
+            layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
         val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
 
         return scrolledToLastItem && hasNextPage && !isLoading && !isEmptyStateShown && !isError
