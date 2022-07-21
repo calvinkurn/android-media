@@ -26,23 +26,24 @@ class CampaignListContainerViewModel @Inject constructor(
         private const val HISTORY_CAMPAIGN_ID = 2
     }
 
-    private var autoFocusTabPosition = 0
     private var storedTabsMetadata : List<TabMeta> = emptyList()
 
     private val _isEligible = MutableLiveData<Result<Boolean>>()
     val isEligible: LiveData<Result<Boolean>>
         get() = _isEligible
 
-    private val _tabsMeta = MutableLiveData<Result<List<TabMeta>>>()
-    val tabsMeta: LiveData<Result<List<TabMeta>>>
+    private val _tabsMeta = MutableLiveData<Result<TabMetaDataResult>>()
+    val tabsMeta: LiveData<Result<TabMetaDataResult>>
         get() = _tabsMeta
+
+    data class TabMetaDataResult(val targetTabPosition: Int, val tabMeta: List<TabMeta>)
 
     data class PrerequisiteData(
         val isEligible: Boolean,
         val tabsMetadata: List<TabMeta>
     )
 
-    fun getPrerequisiteData() {
+    fun getPrerequisiteData(targetTabPosition: Int) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -56,7 +57,8 @@ class CampaignListContainerViewModel @Inject constructor(
 
                 val isEligible = !isIneligibleAccess(prerequisiteData)
                 if (isEligible) {
-                    _tabsMeta.postValue(Success(prerequisiteData.tabsMetadata))
+                    val tabsMetaResult = TabMetaDataResult(targetTabPosition, prerequisiteData.tabsMetadata)
+                    _tabsMeta.postValue(Success(tabsMetaResult))
                 }
 
                 _isEligible.postValue(Success(isEligible))
@@ -68,12 +70,12 @@ class CampaignListContainerViewModel @Inject constructor(
 
     }
 
-    fun getTabsMeta() {
+    fun getTabsMeta(targetTabPosition: Int) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val tabs = getSellerCampaignListMetaUseCase.execute()
-                _tabsMeta.postValue(Success(tabs))
+                val tabsMetaData = getSellerCampaignListMetaUseCase.execute()
+                _tabsMeta.postValue(Success(TabMetaDataResult(targetTabPosition, tabsMetaData)))
             },
             onError = { error ->
                 _tabsMeta.postValue(Fail(error))
@@ -84,18 +86,6 @@ class CampaignListContainerViewModel @Inject constructor(
 
     fun storeTabsMetadata(tabsMetadata : List<TabMeta>) {
         this.storedTabsMetadata = tabsMetadata
-    }
-
-    fun getStoredTabsMetadata(): List<TabMeta> {
-        return storedTabsMetadata
-    }
-
-    fun setAutoFocusTabPosition(selectedTabPosition: Int) {
-        this.autoFocusTabPosition = selectedTabPosition
-    }
-
-    fun getAutoFocusTabPosition(): Int {
-        return autoFocusTabPosition
     }
 
     private fun isIneligibleAccess(prerequisiteData: PrerequisiteData) : Boolean {

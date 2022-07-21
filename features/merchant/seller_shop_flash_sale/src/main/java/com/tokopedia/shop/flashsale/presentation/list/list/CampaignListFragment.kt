@@ -71,7 +71,6 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     CampaignListContainerFragment.ActiveCampaignListListener {
 
     companion object {
-        private const val BUNDLE_KEY_TAB_POSITION = "tab_position"
         private const val BUNDLE_KEY_CAMPAIGN_STATUS_ID = "status_id"
         private const val BUNDLE_KEY_CAMPAIGN_COUNT = "product_count"
         private const val PAGE_SIZE = 10
@@ -92,7 +91,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         ): CampaignListFragment {
             val fragment = CampaignListFragment()
             fragment.arguments = Bundle().apply {
-                putInt(BUNDLE_KEY_TAB_POSITION, tabPosition)
+                putInt(BundleConstant.BUNDLE_KEY_TARGET_TAB_POSITION, tabPosition)
                 putIntArray(BUNDLE_KEY_CAMPAIGN_STATUS_ID, campaignStatusIds)
                 putInt(BUNDLE_KEY_CAMPAIGN_COUNT, totalCampaign)
             }
@@ -102,7 +101,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private val tabPosition by lazy {
-        arguments?.getInt(BUNDLE_KEY_TAB_POSITION).orZero()
+        arguments?.getInt(BundleConstant.BUNDLE_KEY_TARGET_TAB_POSITION).orZero()
     }
 
     private val campaignStatusIds by lazy {

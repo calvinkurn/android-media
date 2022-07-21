@@ -27,6 +27,7 @@ import com.tokopedia.shop.flashsale.common.extension.slideUp
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.TabMeta
+import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignListTab
 import com.tokopedia.shop.flashsale.presentation.list.container.adapter.TabPagerAdapter
 import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListFragment
 import com.tokopedia.unifycomponents.TabsUnifyMediator
@@ -39,20 +40,13 @@ import javax.inject.Inject
 class CampaignListContainerFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val FIRST_TAB = 0
-        private const val SECOND_TAB = 1
-        private const val BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION = "auto_focus_tab_position"
         private const val REDIRECTION_DELAY : Long = 500
         private const val EMPTY_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/flash-sale-toko/shop_outdoor.png"
         private const val FEATURE_INTRODUCTION_URL = "https://seller.tokopedia.com/edu/flash-sale-toko/"
 
         @JvmStatic
-        fun newInstance(autoFocusTabPosition: Int = FIRST_TAB): CampaignListContainerFragment {
-            return CampaignListContainerFragment().apply {
-                val bundle = Bundle()
-                bundle.putInt(BUNDLE_KEY_AUTO_FOCUS_TAB_POSITION, autoFocusTabPosition)
-                arguments = bundle
-            }
+        fun newInstance(): CampaignListContainerFragment {
+            return CampaignListContainerFragment()
         }
 
     }
@@ -95,7 +89,8 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         setupTabs()
         observeTabsMeta()
         observeSellerEligibility()
-        viewModel.getPrerequisiteData()
+        val targetTabPosition = findTargetTabDestination()?.position ?: return
+        viewModel.getPrerequisiteData(targetTabPosition)
     }
 
     private fun observeSellerEligibility() {
@@ -121,8 +116,8 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             when (result) {
                 is Success -> {
                     binding?.groupContent?.visible()
-                    viewModel.storeTabsMetadata(result.data)
-                    displayTabs(result.data)
+                    viewModel.storeTabsMetadata(result.data.tabMeta)
+                    displayTabs(result.data.tabMeta, result.data.targetTabPosition)
                 }
                 is Fail -> {
                     binding?.groupContent?.gone()
@@ -167,7 +162,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         binding?.loader?.visible()
         binding?.groupContent?.gone()
         binding?.globalError?.gone()
-        viewModel.getPrerequisiteData()
+        viewModel.getPrerequisiteData(CampaignListTab.ACTIVE_CAMPAIGN.position)
     }
 
     private val onRecyclerViewScrollDown: () -> Unit = {
@@ -184,7 +179,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun displayTabs(tabs: List<TabMeta>) {
+    private fun displayTabs(tabs: List<TabMeta>, targetTabPosition: Int) {
         val fragments = createFragments(tabs)
         val pagerAdapter =
             TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
@@ -195,14 +190,13 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, currentPosition ->
                 tab.setCustomText(fragments[currentPosition].first)
-                handleAutoRedirectionToSpecificTab(currentPosition)
+                handleAutoRedirectionToSpecificTab(currentPosition, targetTabPosition)
             }
         }
     }
 
     private fun createFragments(tabs: List<TabMeta>): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
-
 
         tabs.forEachIndexed { index, tab ->
             val fragment = CampaignListFragment.newInstance(
@@ -212,7 +206,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
             )
             fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
             fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
-            fragment.setOnNavigateToActiveCampaignListener { focusTo(tabPosition = FIRST_TAB) }
+            fragment.setOnNavigateToActiveCampaignListener { focusTo(tabPosition = CampaignListTab.ACTIVE_CAMPAIGN.position) }
             fragment.setOnCancelCampaignSuccess { handleCancelCampaignSuccess() }
 
             val tabName = "${tab.name} (${tab.totalCampaign})"
@@ -251,9 +245,8 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
 
 
     private fun handleCancelCampaignSuccess() {
-        viewModel.setAutoFocusTabPosition(SECOND_TAB)
         binding?.loader?.visible()
-        viewModel.getTabsMeta()
+        viewModel.getTabsMeta(CampaignListTab.HISTORY_CAMPAIGN.position)
     }
 
     private fun focusTo(delay: Long = 0, tabPosition : Int) {
@@ -270,8 +263,7 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         alignRecyclerViewToTabsBottom()
     }
 
-    private fun handleAutoRedirectionToSpecificTab(currentPosition: Int) {
-        val targetTabPosition = viewModel.getAutoFocusTabPosition()
+    private fun handleAutoRedirectionToSpecificTab(currentPosition: Int, targetTabPosition: Int) {
         if (currentPosition == targetTabPosition) {
             focusTo(REDIRECTION_DELAY, targetTabPosition)
         }
@@ -315,4 +307,19 @@ class CampaignListContainerFragment : BaseDaggerFragment() {
         val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
         RouteManager.route(activity ?: return, route)
     }
+
+    private fun findTargetTabDestination(): CampaignListTab? {
+        if (activity == null) return null
+
+        val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
+        val lastPathSegment = appLinkData?.lastPathSegment.orEmpty()
+
+        return if (lastPathSegment == "history") {
+            CampaignListTab.HISTORY_CAMPAIGN
+        } else {
+            CampaignListTab.ACTIVE_CAMPAIGN
+        }
+    }
+
+
 }
