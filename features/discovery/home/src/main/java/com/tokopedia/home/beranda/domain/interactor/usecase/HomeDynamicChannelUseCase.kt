@@ -103,12 +103,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
+    var currentHeaderDataModel: HomeHeaderDataModel? = null
+
     @FlowPreview
     @ExperimentalCoroutinesApi
     fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
         var isCache = true
         var isCacheDc = true
-        var currentHeaderDataModel: HomeHeaderDataModel? = null
         val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
             flow<HomeDynamicChannelModel> {
                 if (isCache) {
@@ -168,7 +169,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     /**
                      * Get header data
                      */
-                    if(isCacheDc){
+                    if(currentHeaderDataModel==null){
                         currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
                     }
                     currentHeaderDataModel?.let {
@@ -679,7 +680,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
      */
     fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
-
             /**
              * Remote config to disable pagination by request with param 0
              */
@@ -691,6 +691,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
             var isAtfSuccess = true
+            currentHeaderDataModel = null
 
             /**
              * 1. Provide initial HomeData
