@@ -201,7 +201,6 @@
         app:typographyType="display_3"
         app:layout_constraintTop_toBottomOf="@+id/div_pdp_shipping_bo"
         app:layout_constraintStart_toEndOf="@+id/img_pdp_shipping_bo"
-        app:layout_constraintBottom_toBottomOf="@id/img_pdp_shipping_bo"
         tools:text="NOW! 2 jam tiba"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -212,7 +211,6 @@
         android:layout_marginEnd="4dp"
         app:layout_constraintEnd_toStartOf="@id/txt_pdp_shipping_bo_price_original"
         app:layout_constraintTop_toBottomOf="@id/div_pdp_shipping_bo"
-        app:layout_constraintBottom_toBottomOf="@id/img_pdp_shipping_bo"
         app:layout_goneMarginEnd="16dp"
         app:typographyType="display_3"
         tools:text="Rp0" />
@@ -224,9 +222,8 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintVertical_bias="1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/txt_pdp_shipping_bo_price"
+        app:layout_constraintTop_toBottomOf="@id/div_pdp_shipping_bo"
         app:typographyType="display_3"
         tools:text="Rp30.000" />
 
