@@ -136,11 +136,13 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 
         const val USER_SESSION_LOGGER_TAG = "USER_SESSION_DATA_STORE"
 
+        private const val WORKER_INTERVAL = 5L
+
         @JvmStatic
         fun scheduleWorker(context: Context) {
             try {
                 val periodicWorker = PeriodicWorkRequest
-                    .Builder(DataStoreMigrationWorker::class.java, 5, TimeUnit.DAYS)
+                    .Builder(DataStoreMigrationWorker::class.java, WORKER_INTERVAL, TimeUnit.DAYS)
                     .setConstraints(Constraints.NONE)
                     .build()
 
