@@ -29,10 +29,11 @@
         app:layout_constraintTop_toBottomOf="@+id/hu_recipe_bookmark"
         tools:listitem="@layout/item_tokopedianow_recipe_bookmark" />
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+    <include
+        android:id="@+id/loading_state"
+        layout="@layout/layout_tokopedianow_recipe_bookmark_shimmering"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,11 +44,24 @@
     <include
         android:id="@+id/empty_state"
         android:visibility="gone"
-        layout="@layout/layout_tokopedianow_empty_state_recipe_bookmark"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/rv_recipe_bookmark"
         app:layout_constraintEnd_toEndOf="@+id/rv_recipe_bookmark"
         app:layout_constraintStart_toStartOf="@+id/rv_recipe_bookmark"
+        app:layout_constraintTop_toBottomOf="@+id/hu_recipe_bookmark"
+        layout="@layout/layout_tokopedianow_empty_state_recipe_bookmark" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/error_state"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/Unify_N0"
+        android:visibility="visible"
+        android:gravity="center"
+        app:globalerrors_type="SERVER_ERROR"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/hu_recipe_bookmark" />
 </androidx.constraintlayout.widget.ConstraintLayout>

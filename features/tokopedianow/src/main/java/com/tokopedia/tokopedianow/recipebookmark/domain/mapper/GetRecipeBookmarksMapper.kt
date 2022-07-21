@@ -24,8 +24,8 @@ object GetRecipeBookmarksMapper {
         return newTags
     }
 
-    fun GetRecipeBookmarksResponse.mapResponseToRecipeBookmarkUiModelList(): List<RecipeUiModel> {
-        return data.tokonowGetRecipeBookmarks.data.recipes.map { response ->
+    fun List<GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.DataX.Recipe>.mapResponseToUiModelList(): List<RecipeUiModel> {
+        return map { response ->
             RecipeUiModel(
                 id = response.id,
                 title = response.title,

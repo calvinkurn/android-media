@@ -13,10 +13,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeBookmarkBinding
 import com.tokopedia.tokopedianow.recipebookmark.di.component.DaggerRecipeBookmarkComponent
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.RecipeBookmarkAdapter
@@ -34,6 +38,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener {
@@ -45,6 +50,10 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         const val DEFAULT_LIMIT = 10
         const val DEFAULT_WIDGET_COUNTER = 0
         const val SCROLL_DOWN_DIRECTION = 1
+        const val ERROR_PAGE_NOT_FOUND = "404"
+        const val ERROR_SERVER = "500"
+        const val ERROR_PAGE_FULL = "501"
+        const val ERROR_MAINTENANCE = "502"
 
         fun newInstance(): TokoNowRecipeBookmarkFragment {
             return TokoNowRecipeBookmarkFragment()
@@ -118,9 +127,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     private suspend fun collectRecipeBookmarks() {
         viewModel.loadRecipeBookmarks.collect { state ->
             when(state) {
-                is UiState.Fail -> {}
+                is UiState.Fail -> showGlobalError(state.throwable, state.errorCode)
                 is UiState.Success -> showPage(state.data)
-                is UiState.Loading -> showLoadPageLoading()
+                is UiState.Loading -> showLoadingState()
             }
         }
     }
@@ -128,9 +137,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     private suspend fun collectToaster() {
         viewModel.toaster.collect { state ->
             when(state) {
-                is UiState.Fail -> {}
-                is UiState.Success -> showToaster(state.data)
-                is UiState.Loading -> {}
+                is UiState.Fail -> showFailToaster(state.throwable, state.data)
+                is UiState.Success -> showSuccessToaster(state.data)
+                is UiState.Loading -> showRecipeItemLoading(state.data)
             }
         }
     }
@@ -138,7 +147,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     private suspend fun collectMoreRecipeBookmarks() {
         viewModel.moreRecipeBookmarks.collect { state ->
             when(state) {
-                is UiState.Fail -> {}
+                is UiState.Fail -> { /* nothing to do */ }
                 is UiState.Success -> showMoreWidgets(state.data)
                 is UiState.Loading -> showLoadMoreLoading()
             }
@@ -163,18 +172,74 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         }
     }
 
+    private fun showGlobalError(throwable: Throwable?, errorCode: String?){
+        binding?.apply {
+            showErrorState()
+            val typeError = when{
+                throwable is UnknownHostException -> GlobalError.NO_CONNECTION
+                errorCode == ERROR_PAGE_FULL -> GlobalError.PAGE_FULL
+                errorCode == ERROR_SERVER -> GlobalError.SERVER_ERROR
+                errorCode == ERROR_MAINTENANCE -> GlobalError.MAINTENANCE
+                errorCode == ERROR_PAGE_NOT_FOUND -> GlobalError.PAGE_NOT_FOUND
+                else -> GlobalError.SERVER_ERROR
+            }
+            errorState.setType(typeError)
+            errorState.setActionClickListener {
+                if (errorCode == ERROR_PAGE_NOT_FOUND || errorCode == ERROR_MAINTENANCE) {
+                    activity?.onBackPressed()
+                } else {
+                    viewModel.loadFirstPage()
+                }
+            }
+        }
+    }
+
     private fun loadMore(isAtTheBottomOfThePage: Boolean) {
         viewModel.loadMore(isAtTheBottomOfThePage, isLoadMoreLoading)
     }
 
-    private fun showToaster(data: ToasterUiModel?) {
+    private fun showRecipeItemLoading(data: ToasterUiModel?) {
         data?.apply {
+            if (adapter?.data?.size == 1) {
+                showRecipesList()
+                adapter?.showItemLoading(
+                    position = position.orZero(),
+                    isRemoving = true
+                )
+            } else {
+                adapter?.showItemLoading(
+                    position = position.orZero(),
+                    isRemoving = isRemoving.orFalse()
+                )
+            }
+        }
+    }
+
+    private fun showSuccessToaster(data: ToasterUiModel?) {
+        data?.model?.apply {
             setupToaster(
-                message = message,
+                message = getString(R.string.tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe, title),
                 isSuccess = isSuccess,
-                cta = cta.orEmpty(),
+                cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel),
                 clickListener = {
                     viewModel.addRecipeBookmark(recipeId)
+                }
+            )
+        }
+    }
+
+    private fun showFailToaster(throwable: Throwable?, data: ToasterUiModel?) {
+        data?.model?.apply {
+            setupToaster(
+                message = if (throwable == null) message else ErrorHandler.getErrorMessage(context, throwable),
+                isSuccess = isSuccess,
+                cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
+                clickListener = {
+                    if (data.isRemoving) {
+                        viewModel.removeRecipeBookmark(title, data.position.orZero(), recipeId)
+                    } else {
+                        viewModel.addRecipeBookmark(recipeId)
+                    }
                 }
             )
         }
@@ -211,7 +276,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
 
     private fun showRecipesList() {
         binding?.apply {
-            loader.hide()
+            loadingState.root.hide()
             rvRecipeBookmark.show()
             emptyState.root.hide()
         }
@@ -219,21 +284,30 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
 
     private fun showEmptyState() {
         binding?.apply {
-            loader.hide()
+            loadingState.root.hide()
+            errorState.hide()
             rvRecipeBookmark.hide()
             emptyState.root.show()
-            emptyState.iuRecipePicture.setImageUrl(NO_DATA_IMAGE)
-            emptyState.ubSeeRecipes.setOnClickListener {
-
-            }
+            emptyState.iuRecipePicture.loadImage(NO_DATA_IMAGE)
+            emptyState.ubSeeRecipes.setOnClickListener { /* don't know the direction page */ }
         }
     }
 
-    private fun showLoadPageLoading() {
+    private fun showErrorState() {
         binding?.apply {
-            loader.show()
+            loadingState.root.hide()
             rvRecipeBookmark.hide()
             emptyState.root.hide()
+            errorState.show()
+        }
+    }
+
+    private fun showLoadingState() {
+        binding?.apply {
+            rvRecipeBookmark.hide()
+            emptyState.root.hide()
+            errorState.hide()
+            loadingState.root.show()
         }
     }
 
