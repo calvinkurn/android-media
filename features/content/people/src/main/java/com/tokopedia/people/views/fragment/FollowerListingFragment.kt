@@ -24,7 +24,7 @@ import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
-import com.tokopedia.people.listener.FollowUnFollowListenerTracker
+import com.tokopedia.people.listener.FollowingFollowerListener
 import com.tokopedia.people.listener.FollowerFollowingListener
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.adapter.ProfileFollowersAdapter
@@ -37,7 +37,7 @@ import javax.inject.Inject
 class FollowerListingFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val userProfileTracker: UserProfileTracker,
-): TkpdBaseV4Fragment(), AdapterCallback, FollowerFollowingListener, FollowUnFollowListenerTracker {
+): TkpdBaseV4Fragment(), AdapterCallback, FollowerFollowingListener, FollowingFollowerListener {
 
     private var followersContainer: ViewFlipper? = null
     private var globalError: LocalLoad? = null

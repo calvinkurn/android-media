@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.people.R
-import com.tokopedia.people.listener.FollowUnFollowListenerTracker
+import com.tokopedia.people.listener.FollowingFollowerListener
 import com.tokopedia.people.listener.FollowerFollowingListener
 import com.tokopedia.people.model.ProfileFollowerV2
 import com.tokopedia.people.model.ProfileFollowingListBase
@@ -30,7 +30,7 @@ open class ProfileFollowingAdapter(
     val callback: AdapterCallback,
     val userSession: UserSessionInterface,
     val listener: FollowerFollowingListener,
-    private val followingListenerTracker: FollowUnFollowListenerTracker
+    private val followingListener: FollowingFollowerListener
 ) : BaseAdapter<ProfileFollowerV2>(callback) {
 
     var cursor: String = ""
@@ -137,7 +137,7 @@ open class ProfileFollowingAdapter(
                             FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
                         )
                     } else {
-                        followingListenerTracker.clickUnfollow(userSession.userId, item.profile.userID == userSession.userId)
+                        followingListener.clickUnfollow(userSession.userId, item.profile.userID == userSession.userId)
                         viewModel.doUnFollow(item.profile.encryptedUserID)
                         item.isFollow = false
                         notifyItemChanged(position)
@@ -170,7 +170,7 @@ open class ProfileFollowingAdapter(
                             FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
                         )
                     } else {
-                        followingListenerTracker.clickFollow(userSession.userId, item.profile.userID == userSession.userId)
+                        followingListener.clickFollow(userSession.userId, item.profile.userID == userSession.userId)
                         viewModel.doFollow(item.profile.encryptedUserID)
                         item.isFollow = true
                         notifyItemChanged(position)
@@ -180,7 +180,7 @@ open class ProfileFollowingAdapter(
         }
 
         holder.itemView.setOnClickListener { v ->
-            followingListenerTracker.clickUser(userSession.userId, item.profile.userID == userSession.userId)
+            followingListener.clickUser(userSession.userId, item.profile.userID == userSession.userId)
             val intent = RouteManager.getIntent(
                 itemContext,
                 item.profile.sharelink.applink
