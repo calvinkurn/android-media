@@ -83,6 +83,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
+    private var currentHeaderDataModel: HomeHeaderDataModel? = null
     companion object{
         private const val TYPE_ATF_1 = "atf-1"
         private const val MINIMUM_BANNER_TO_SHOW = 1
@@ -108,7 +109,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
     fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
         var isCache = true
         var isCacheDc = true
-        var currentHeaderDataModel: HomeHeaderDataModel? = null
         val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
             flow<HomeDynamicChannelModel> {
                 if (isCache) {
@@ -168,7 +168,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     /**
                      * Get header data
                      */
-                    if(isCacheDc){
+                    if(currentHeaderDataModel==null){
                         currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
                     }
                     currentHeaderDataModel?.let {
@@ -679,7 +679,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
      */
     fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
-
             /**
              * Remote config to disable pagination by request with param 0
              */
@@ -691,6 +690,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
             var isAtfSuccess = true
+            currentHeaderDataModel = null
 
             /**
              * 1. Provide initial HomeData
