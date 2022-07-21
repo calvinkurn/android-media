@@ -5,13 +5,14 @@
     android:layout_height="match_parent"
     android:layout_marginRight="16dp"
     android:layout_marginLeft="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     android:layout_gravity="center">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_image"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_28"
-        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
         android:adjustViewBounds="true"
         tools:visibility="visible" />
 </FrameLayout>
