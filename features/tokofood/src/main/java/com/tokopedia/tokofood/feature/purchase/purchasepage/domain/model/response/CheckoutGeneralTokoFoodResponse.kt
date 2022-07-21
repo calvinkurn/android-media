@@ -43,6 +43,13 @@ data class CheckoutGeneralTokoFoodData(
         }
     }
 
+    fun getErrorMessage(): String {
+        return getErrorMetadataObject()?.popupErrorMessage?.text?.takeIf { it.isNotBlank() }
+            ?: getErrorMetadataObject()?.popupMessage?.text?.takeIf { it.isNotBlank() }
+            ?: error.takeIf { it.isNotBlank() }
+            ?: message
+    }
+
 }
 
 data class CheckoutGeneralTokoFoodMainData(
