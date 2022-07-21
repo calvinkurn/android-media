@@ -751,6 +751,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     cartShipmentAddressFormData.getPrescriptionCheckoutId(),
                     new ArrayList<>(),0,""
                     ));
+            fetchPrescriptionIds(cartShipmentAddressFormData.getPrescriptionCheckoutId());
         }
     }
 
@@ -2228,7 +2229,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void prescriptionIds(String checkoutId) {
+    public void fetchPrescriptionIds(String checkoutId) {
         if(!checkoutId.isEmpty()){
             compositeSubscription.add(prescriptionIdsUseCase
                     .execute(checkoutId)

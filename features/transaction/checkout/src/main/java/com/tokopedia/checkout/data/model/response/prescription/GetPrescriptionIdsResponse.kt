@@ -13,7 +13,7 @@ data class GetPrescriptionIdsResponse(
         val prescriptionData: EPharmacyPrescriptionDetailData?
     ) {
         data class EPharmacyPrescriptionDetailData(
-            @SerializedName("checkoutId")
+            @SerializedName("checkout_id")
             val checkoutId: String?,
             @SerializedName("prescription_images")
             val prescriptions: List<Prescription?>?
@@ -21,9 +21,7 @@ data class GetPrescriptionIdsResponse(
 
         data class Prescription(
             @SerializedName("prescription_id")
-            val prescriptionId: String?,
-            @SerializedName("status")
-            val status: String?,
+            val prescriptionId: String?
         )
     }
 

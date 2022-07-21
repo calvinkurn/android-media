@@ -44,7 +44,6 @@ private val query = """
         checkout_id
         prescription_images {
           prescription_id
-          status
         }
       }
     }

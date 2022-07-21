@@ -3422,20 +3422,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         startActivityForResult(uploadPrescriptionIntent,REQUEST_CODE_UPLOAD_PRESCRIPTION);
     }
 
-    @Override
-    public void fetchPrescriptionIds(String checkoutId) {
-        shipmentPresenter.prescriptionIds(checkoutId);
-    }
-
     private void onUploadPrescriptionResult(Intent data, boolean isApi){
         if(data != null && data.getExtras() != null &&
                 data.getExtras().containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) && getActivity() != null){
             UploadPrescriptionUiModel uploadModel = shipmentPresenter.getUploadPrescriptionUiModel();
-            if(!isApi){
+            ArrayList<String> prescriptions = data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA);
+            if(!isApi || (prescriptions != null && !prescriptions.isEmpty())){
                 uploadModel.setUploadImageText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_title_text));
                 uploadModel.setLeftIconUrl(UploadPrescriptionViewHolder.EPharmacyCountImageUrl);
             }
-            ArrayList<String> prescriptions = data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA);
             if(prescriptions != null){
                 uploadModel.setPrescriptionIds(prescriptions);
                 uploadModel.setUploadedImageCount(prescriptions.size());

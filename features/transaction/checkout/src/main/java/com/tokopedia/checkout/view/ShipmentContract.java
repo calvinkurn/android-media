@@ -356,7 +356,7 @@ public interface ShipmentContract {
 
         void releaseBooking();
 
-        void prescriptionIds(String checkoutId);
+        void fetchPrescriptionIds(String checkoutId);
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 

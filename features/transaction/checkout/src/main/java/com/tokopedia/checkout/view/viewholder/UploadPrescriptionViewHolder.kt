@@ -39,9 +39,5 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
         uploadPrescriptionLayout.setOnClickListener {
             actionListener.uploadPrescriptionAction(uploadPrescriptionUiModel)
         }
-
-        if(uploadPrescriptionUiModel.prescriptionIds?.isEmpty() == true){
-            actionListener.fetchPrescriptionIds(uploadPrescriptionUiModel.checkoutId)
-        }
     }
 }
