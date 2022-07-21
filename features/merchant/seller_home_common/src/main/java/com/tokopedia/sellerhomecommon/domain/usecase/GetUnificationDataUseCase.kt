@@ -13,6 +13,7 @@ import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetUnificationDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.model.UnificationDataFetchModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.async
@@ -110,7 +111,20 @@ class GetUnificationDataUseCase(
                             listOf(dataKeyModel), dynamicParameter
                         )
                         getTableDataUseCase.setUseCache(isFromCache)
-                        tab.data = getTableDataUseCase.executeOnBackground().firstOrNull()
+                        val tableResult = try {
+                            val data = getTableDataUseCase.executeOnBackground()
+                            if (data.isNullOrEmpty()) {
+                                throw MessageErrorException(EMPTY_DATA_ERROR_MESSAGE)
+                            } else {
+                                data.first()
+                            }
+                        } catch (e: Exception) {
+                            TableDataUiModel(
+                                dataKey = tab.dataKey,
+                                error = e.localizedMessage.orEmpty()
+                            )
+                        }
+                        tab.data = tableResult
                         return@async model
                     }
                 }
@@ -127,6 +141,7 @@ class GetUnificationDataUseCase(
                     title
                     isNew
                     itemCount
+                    tooltip
                     content {
                       widget_type
                       datakey
@@ -145,5 +160,6 @@ class GetUnificationDataUseCase(
         private const val UNIFICATION_PARAMS = "{\"shop_id\":%s}"
         private const val PARAM_ERROR_MESSAGE =
             "the parameter still empty, please use the setParam(...) method to assign it"
+        private const val EMPTY_DATA_ERROR_MESSAGE = "ups, return empty data from backend"
     }
 }

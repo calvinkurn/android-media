@@ -4,7 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.databinding.ShcItemUnificationTabBinding
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 
@@ -57,8 +59,14 @@ class UnificationTabAdapter(
                     TITLE_FORMAT, item.title, item.itemCount.toString()
                 )
                 tvShcUnificationTabDescription.text = item.tooltip
-                dividerShcUnificationTab.isVisible = adapterPosition != itemCount.minus(Int.ONE)
                 icShcUnificationTabStatus.isVisible = item.isSelected
+
+                val isLastItem = adapterPosition == itemCount.minus(Int.ONE)
+                if (isLastItem) {
+                    dividerShcUnificationTab.invisible()
+                } else {
+                    dividerShcUnificationTab.visible()
+                }
 
                 root.setOnClickListener {
                     onItemClicked(item)

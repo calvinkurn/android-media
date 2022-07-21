@@ -12,20 +12,6 @@
     android:visibility="gone"
     tools:visibility="visible">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvShcUnificationTab"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shc_filter_view_background"
-        android:paddingStart="12dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_2"
-        tools:text="Terlaris (6)" />
-
     <com.tokopedia.sellerhomecommon.presentation.view.customview.tableview.TableView
         android:id="@+id/tableShcUnification"
         android:layout_width="0dp"
@@ -33,7 +19,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvShcUnificationTab" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_height="220dp" />
 
     <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
         android:id="@+id/luvShcUnification"

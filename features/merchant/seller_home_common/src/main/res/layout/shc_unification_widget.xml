@@ -6,10 +6,11 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="8dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/containerShcUnification"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcUnificationTitle"
@@ -25,25 +26,38 @@
             app:typographyWeight="bold"
             tools:text="Cek keadaan produkmu" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcUnificationTab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/shc_filter_view_background"
+            android:paddingStart="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_2"
+            tools:text="Terlaris (6)" />
+
         <ViewStub
             android:id="@+id/stubShcUnificationLoading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvShcUnificationTitle"
             android:layout="@layout/shc_unification_widget_loading" />
 
         <ViewStub
             android:id="@+id/stubShcUnificationSuccess"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvShcUnificationTitle"
             android:layout="@layout/shc_unification_widget_success" />
 
         <ViewStub
             android:id="@+id/stubShcUnificationError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvShcUnificationTitle"
             android:layout="@layout/shc_unification_widget_error" />
-    </RelativeLayout>
+    </LinearLayout>
 </com.tokopedia.unifycomponents.CardUnify>

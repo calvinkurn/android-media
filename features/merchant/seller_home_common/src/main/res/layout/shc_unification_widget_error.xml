@@ -8,23 +8,6 @@
     android:visibility="gone"
     tools:visibility="visible">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvShcUnificationErrorStateTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:drawablePadding="@dimen/layout_lvl1"
-        android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
-        app:typographyWeight="bold"
-        tools:text="Performa toko" />
-
     <include
         android:id="@+id/shcUnificationCommonErrorView"
         layout="@layout/shc_partial_common_widget_state_error"
@@ -36,4 +19,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnShcUnificationRetry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/shc_failed_to_retry"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shcUnificationCommonErrorView"
+        app:layout_constraintVertical_bias="0"
+        app:unifyButtonSize="medium" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
