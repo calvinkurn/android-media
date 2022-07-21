@@ -220,13 +220,13 @@ class UserProfileFragment @Inject constructor(
                         goToCreatePostPage()
                     }
 
-                    override fun impressOnboardingWithUsername() {
+                    override fun impressTncOnboarding() {
                         userProfileTracker.impressionOnBoardingBottomSheetWithUsername(
                             viewModel.profileUserID
                         )
                     }
 
-                    override fun impressOnboardingWithoutUsername() {
+                    override fun impressCompleteOnboarding() {
                         userProfileTracker.impressionOnBoardingBottomSheetWithoutUsername(
                             viewModel.profileUserID
                         )
@@ -238,7 +238,7 @@ class UserProfileFragment @Inject constructor(
                         )
                     }
 
-                    override fun clickNextOnComplateOnboarding() {
+                    override fun clickNextOnCompleteOnboarding() {
                         userProfileTracker.clickLanjutOnBoardingBottomSheetWithoutUsername(
                             viewModel.profileUserID
                         )
