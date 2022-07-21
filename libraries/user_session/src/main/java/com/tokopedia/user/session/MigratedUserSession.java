@@ -259,7 +259,6 @@ public class MigratedUserSession {
                 internalCleanKey(prefName, keyName);
                 internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
                 UserSessionMap.map.put(key, oldValue);
-                logUserSessionEvent("migrate_from_v1", null);
                 return oldValue;
             }
 
