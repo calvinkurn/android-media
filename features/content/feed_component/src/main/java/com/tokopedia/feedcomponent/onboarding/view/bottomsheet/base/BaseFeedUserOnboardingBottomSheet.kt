@@ -107,7 +107,7 @@ abstract class BaseFeedUserOnboardingBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun onSuccess()
-        fun clickNextWithUsername()
-        fun clickNextWithoutUsername()
+        fun clickNextOnTncOnboarding()
+        fun clickNextOnComplateOnboarding()
     }
 }

@@ -74,7 +74,7 @@ class FeedUserTnCOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
         }
 
         binding.btnContinue.setOnClickListener {
-            mListener?.clickNextWithUsername()
+            mListener?.clickNextOnTncOnboarding()
             viewModel.submitAction(FeedUGCOnboardingAction.ClickNext)
         }
     }

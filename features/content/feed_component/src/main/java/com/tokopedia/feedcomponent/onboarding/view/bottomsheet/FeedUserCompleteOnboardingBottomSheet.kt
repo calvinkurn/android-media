@@ -88,7 +88,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
         }
 
         binding.btnContinue.setOnClickListener {
-            mListener?.clickNextWithoutUsername()
+            mListener?.clickNextOnComplateOnboarding()
             viewModel.submitAction(FeedUGCOnboardingAction.ClickNext)
         }
     }

@@ -232,13 +232,13 @@ class UserProfileFragment @Inject constructor(
                         )
                     }
 
-                    override fun clickNextWithUsername() {
+                    override fun clickNextOnTncOnboarding() {
                         userProfileTracker.clickLanjutOnBoardingBottomSheetWithUsername(
                             viewModel.profileUserID
                         )
                     }
 
-                    override fun clickNextWithoutUsername() {
+                    override fun clickNextOnComplateOnboarding() {
                         userProfileTracker.clickLanjutOnBoardingBottomSheetWithoutUsername(
                             viewModel.profileUserID
                         )

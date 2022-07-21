@@ -77,12 +77,12 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
                         mListener?.onSuccess()
                     }
 
-                    override fun clickNextWithUsername() {
-                        mListener?.clickNextWithUsername()
+                    override fun clickNextOnTncOnboarding() {
+                        mListener?.clickNextOnTncOnboarding()
                     }
 
-                    override fun clickNextWithoutUsername() {
-                        mListener?.clickNextWithoutUsername()
+                    override fun clickNextOnComplateOnboarding() {
+                        mListener?.clickNextOnComplateOnboarding()
                     }
                 })
             }
@@ -114,8 +114,8 @@ class FeedUGCOnboardingParentFragment @Inject constructor(
         fun onSuccess()
         fun impressOnboardingWithUsername()
         fun impressOnboardingWithoutUsername()
-        fun clickNextWithUsername()
-        fun clickNextWithoutUsername()
+        fun clickNextOnTncOnboarding()
+        fun clickNextOnComplateOnboarding()
     }
 
     companion object {
