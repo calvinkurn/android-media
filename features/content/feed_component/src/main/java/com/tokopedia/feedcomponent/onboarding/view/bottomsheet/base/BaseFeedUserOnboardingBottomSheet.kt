@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.util.util.setSpanOnText
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -25,6 +26,9 @@ import com.tokopedia.unifyprinciples.R as unifyR
 abstract class BaseFeedUserOnboardingBottomSheet : BottomSheetUnify() {
 
     protected var mListener: Listener? = null
+
+    protected val usernameArg: String
+        get() = arguments?.getString(FeedUGCOnboardingParentFragment.KEY_USERNAME).orEmpty()
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {

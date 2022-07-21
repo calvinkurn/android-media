@@ -6,6 +6,8 @@ import com.tokopedia.feedcomponent.onboarding.data.FeedUGCOnboardingRepositoryIm
 import com.tokopedia.feedcomponent.onboarding.di.qualifier.CompleteStrategy
 import com.tokopedia.feedcomponent.onboarding.di.qualifier.TncStrategy
 import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
+import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserCompleteOnboardingBottomSheet
+import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserTnCOnboardingBottomSheet
 import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.onboarding.view.strategy.FeedUGCCompleteOnboardingStrategy
 import com.tokopedia.feedcomponent.onboarding.view.strategy.FeedUGCTncOnboardingStrategy
@@ -20,11 +22,16 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class FeedUGCOnboardingModule {
 
-    /** Fragment */
+    /** Bottom Sheet */
     @Binds
     @IntoMap
-    @FragmentKey(FeedUGCOnboardingParentFragment::class)
-    abstract fun bindFeedUGCOnboardingParentFragment(fragment: FeedUGCOnboardingParentFragment): Fragment
+    @FragmentKey(FeedUserCompleteOnboardingBottomSheet::class)
+    abstract fun bindFeedUserCompleteOnboardingBottomSheet(fragment: FeedUserCompleteOnboardingBottomSheet): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(FeedUserTnCOnboardingBottomSheet::class)
+    abstract fun bindFeedUserTnCOnboardingBottomSheet(fragment: FeedUserTnCOnboardingBottomSheet): Fragment
 
     /** Repository */
     @Binds
