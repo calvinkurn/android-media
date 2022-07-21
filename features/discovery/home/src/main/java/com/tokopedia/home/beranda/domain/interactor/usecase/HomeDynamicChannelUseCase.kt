@@ -108,6 +108,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
     fun getHomeDataFlow(): Flow<HomeDynamicChannelModel?> {
         var isCache = true
         var isCacheDc = true
+        var currentHeaderDataModel: HomeHeaderDataModel? = null
         val homeAtfCacheFlow = getHomeRoomDataSource.getCachedAtfData().flatMapConcat {
             flow<HomeDynamicChannelModel> {
                 if (isCache) {
@@ -167,10 +168,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     /**
                      * Get header data
                      */
-                    val currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
-                    updateHeaderData(currentHeaderDataModel, dynamicChannelPlainResponse)
-
-                    emit(dynamicChannelPlainResponse)
+                    if(isCacheDc){
+                        currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
+                    }
+                    currentHeaderDataModel?.let {
+                        updateHeaderData(it, dynamicChannelPlainResponse)
+                        emit(dynamicChannelPlainResponse)
+                    }
                 }
 
                 if (isCacheDc) {
