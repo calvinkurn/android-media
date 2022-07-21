@@ -6,6 +6,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.util.StringValidationUtil.filterDigit
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -48,7 +49,7 @@ class WholeSaleInputViewHolder(itemView: View,
 
         wholeSaleQuantityField?.textFieldInput?.doOnTextChanged { text, _, _, _ ->
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                val wholeSaleQuantityInput = text?.toString()?.replace(".", "")
+                val wholeSaleQuantityInput = text?.toString()?.filterDigit()
                 wholeSaleQuantityInput?.let {
                     textChangedListener.onWholeSaleQuantityItemTextChanged(adapterPosition, it)
                 }
@@ -58,7 +59,7 @@ class WholeSaleInputViewHolder(itemView: View,
         wholeSalePriceField?.textFieldInput?.doOnTextChanged { text, _, _, _ ->
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 // clean any kind of number formatting here
-                val wholeSalePriceInput = text?.toString()?.replace(".", "")
+                val wholeSalePriceInput = text?.toString()?.filterDigit()
                 wholeSalePriceInput?.let {
                     // do the validation first
                     textChangedListener.onWholeSalePriceItemTextChanged(adapterPosition, it)
