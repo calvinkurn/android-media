@@ -98,6 +98,8 @@ class UserSessionTinkRecoveryTest {
          * Hence, this case won't recover and always gets [InvalidProtocolBufferException].
          * Who: Every user who already gets AndroidKeystore prior to 3.178,
          *      then having backup name after 3.178 without recovery first
+         *
+         * This condition has been fixed at version 3.184
          * */
     }
 
