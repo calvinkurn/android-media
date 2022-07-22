@@ -2183,6 +2183,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (!(adapter as? SomListOrderAdapter)?.hasOrder().orFalse()) {
             (adapter as? SomListOrderAdapter)?.removeMultiSelectSection()
             toggleBulkAction(false)
+            toggleBulkAction(false)
             toggleBulkActionButtonVisibility()
             showEmptyState()
         }
@@ -2764,6 +2765,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (viewModel.isMultiSelectEnabled) onToggleMultiSelectClicked()
         isLoadingInitialData = true
         somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+        toggleBulkAction(false)
         loadTopAdsCategory()
         loadTickers()
         loadWaitingPaymentOrderCounter()

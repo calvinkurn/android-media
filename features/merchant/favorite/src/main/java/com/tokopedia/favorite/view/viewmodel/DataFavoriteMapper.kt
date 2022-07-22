@@ -53,6 +53,15 @@ object DataFavoriteMapper {
                 shopItem.shopImageEcs = topAdsShopItem.shopImageEcs
                 shopItem.shopLocation = topAdsShopItem.shopLocation
                 shopItem.isFav = topAdsShopItem.isSelected
+                shopItem.imageUrl = topAdsShopItem.imageUrl
+                shopItem.fullEcs = topAdsShopItem.fullEcs
+                shopItem.shopIsOfficial = topAdsShopItem.shopIsOfficial
+                shopItem.isPMPro = topAdsShopItem.isPMPro
+                shopItem.isPowerMerchant = topAdsShopItem.isPowerMerchant
+                shopItem.imageShop = topAdsShopItem.imageShop
+                shopItem.layout = topAdsShopItem.layout
+                shopItem.applink = topAdsShopItem.applink
+                shopItem.isFollowed = topAdsShopItem.isFollowed
                 viewModelTopAdsShopItemList.add(shopItem)
             }
         }

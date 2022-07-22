@@ -61,7 +61,9 @@ class MiniCartListUiModelMapper @Inject constructor() {
     private fun getTotalProductAvailable(miniCartData: MiniCartData): Int {
         var count = 0
         miniCartData.data.availableSection.availableGroup.forEach { availableGroup ->
-            count += availableGroup.cartDetails.size
+            availableGroup.cartDetails.forEach {
+                count += it.products.size
+            }
         }
 
         return count
@@ -71,7 +73,9 @@ class MiniCartListUiModelMapper @Inject constructor() {
         var count = 0
         miniCartData.data.unavailableSection.forEach { unavailableSection ->
             unavailableSection.unavailableGroup.forEach { unavailableGroup ->
-                count += unavailableGroup.cartDetails.size
+                unavailableGroup.cartDetails.forEach {
+                    count += it.products.size
+                }
             }
         }
 

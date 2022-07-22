@@ -787,13 +787,17 @@ class MerchantPageFragment : BaseMultiFragment(),
                     }
                 }
                 UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
-                    (it.data as? CheckoutTokoFoodData)?.let { data ->
+                    (it.data as? CheckoutTokoFoodData)?.let { checkOutTokoFoodData ->
                         if (it.source == SOURCE){
-                            val purchaseAmount = data.summaryDetail.totalPrice
-
+                            val products = checkOutTokoFoodData.getProductListFromCart()
+                            val purchaseAmount = checkOutTokoFoodData.summaryDetail.totalPrice
+                            val merchantId = checkOutTokoFoodData.shop.shopId
+                            val merchantName = checkOutTokoFoodData.shop.name
                             merchantPageAnalytics.clickCheckoutOnMiniCart(
+                                products,
                                 purchaseAmount,
-                                merchantId
+                                merchantId,
+                                merchantName
                             )
                             navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
                         }
