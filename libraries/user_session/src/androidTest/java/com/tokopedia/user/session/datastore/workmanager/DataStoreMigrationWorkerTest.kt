@@ -1,7 +1,6 @@
 package com.tokopedia.user.session.datastore.workmanager
 
 import android.content.Context
-import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.ListenableWorker.Result
@@ -11,7 +10,6 @@ import com.tokopedia.di.FakeComponentFactory
 import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.datastore.DataStorePreference
-import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform
 import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
 import com.tokopedia.user.session.datastore.workmanager.WorkOps.MIGRATED
 import com.tokopedia.user.session.datastore.workmanager.WorkOps.NO_OPS
@@ -20,8 +18,6 @@ import com.tokopedia.user.session.di.ComponentFactory
 import com.tokopedia.utils.SampleUserModel
 import com.tokopedia.utils.getSampleUser
 import com.tokopedia.utils.setSample
-import io.mockk.every
-import io.mockk.mockkObject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`

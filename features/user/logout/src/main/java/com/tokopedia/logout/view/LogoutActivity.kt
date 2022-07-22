@@ -46,7 +46,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform
+import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import com.tokopedia.user.session.util.EncoderDecoder
@@ -182,7 +182,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun isEnableDataStore(): Boolean =
-        UserSessionAbTestPlatform.isDataStoreEnable(applicationContext)
+        DataStorePreference(applicationContext).isDataStoreEnabled()
 
     private fun clearData() {
         hideLoading()

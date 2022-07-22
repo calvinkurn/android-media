@@ -8,17 +8,6 @@ import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import okhttp3.internal.cache2.Relay.Companion.edit
 import javax.inject.Inject
 
-object UserSessionAbTestPlatform {
-    fun isDataStoreEnable(context: Context): Boolean {
-        val sharedPreferences = context.getSharedPreferences(
-            SHARED_PREFERENCE_AB_TEST_PLATFORM,
-            Context.MODE_PRIVATE
-        )
-        val cacheValue: String = sharedPreferences.getString(USER_SESSION_AB_TEST_KEY, "") ?: ""
-        return cacheValue.isNotEmpty()
-    }
-}
-
 open class DataStorePreference @Inject constructor(private val context: Context) {
 
     private val dsPref: SharedPreferences by lazy {
