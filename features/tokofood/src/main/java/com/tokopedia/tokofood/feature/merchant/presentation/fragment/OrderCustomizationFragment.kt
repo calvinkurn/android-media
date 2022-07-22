@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +24,7 @@ import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodExt.copyParcelable
+import com.tokopedia.tokofood.common.util.TokofoodExt.setupEditText
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentOrderCustomizationLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.analytics.MerchantPageAnalytics
@@ -39,7 +38,6 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapper
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderNoteInputViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductAddOnViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.OrderCustomizationViewModel
-import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -202,7 +200,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             }
 
             // setup quantity editor
-            setupQuantityEditorEditText(binding?.qeuProductQtyEditor)
+            binding?.qeuProductQtyEditor?.setupEditText()
             binding?.qeuProductQtyEditor?.setAddClickListener {
                 val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
                 val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
@@ -287,23 +285,6 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     title = foodName
                     subtitle = it.getString(com.tokopedia.tokofood.R.string.text_header_order_custom)
                 }
-            }
-        }
-    }
-
-    private fun setupQuantityEditorEditText(quantityEditorUnify: QuantityEditorUnify?) {
-        quantityEditorUnify?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
-        quantityEditorUnify?.editText?.setOnEditorActionListener { view, actionId, _ ->
-            try {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    view.clearFocus()
-                    val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(view.windowToken, 0)
-                    true
-                } else false
-            } catch (e: Exception) {
-                e.printStackTrace()
-                false
             }
         }
     }

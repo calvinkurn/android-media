@@ -1,16 +1,14 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.viewholder
 
 import android.content.Context
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodExt.setupEditText
 import com.tokopedia.tokofood.databinding.TokofoodItemOrderInfoLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.AddOnInfoAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
-import com.tokopedia.unifycomponents.QuantityEditorUnify
 
 class OrderDetailViewHolder(
         private val binding: TokofoodItemOrderInfoLayoutBinding,
@@ -30,7 +28,7 @@ class OrderDetailViewHolder(
 
     init {
         context = binding.root.context
-        setupQuantityEditorEditText(binding.qeuProductQtyEditor)
+        binding.qeuProductQtyEditor.setupEditText()
         binding.tpgEditButton.setOnClickListener {
             val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
             clickListener.onEditButtonClicked(cartId = customOrderDetail.cartId)
@@ -69,23 +67,6 @@ class OrderDetailViewHolder(
         binding.rvSelectedAddOns.apply {
             adapter = addOnInfoAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        }
-    }
-
-    private fun setupQuantityEditorEditText(quantityEditorUnify: QuantityEditorUnify) {
-        quantityEditorUnify.editText.imeOptions = EditorInfo.IME_ACTION_DONE
-        quantityEditorUnify.editText.setOnEditorActionListener { view, actionId, _ ->
-            try {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    view.clearFocus()
-                    val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(view.windowToken, 0)
-                    true
-                } else false
-            } catch (e: Exception) {
-                e.printStackTrace()
-                false
-            }
         }
     }
 }
