@@ -1965,19 +1965,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onRetryMembership(position: Int, headerTitle: String, balanceDrawerStatus: Int) {
-        if (balanceDrawerStatus == BalanceDrawerItemModel.STATE_LOADING) {
-            getHomeViewModel().onRefreshMembership(position, headerTitle)
-        } else {
-            getHomeViewModel().onRefreshMembership(position, headerTitle, isReload = true)
-        }
+        getHomeViewModel().onRefreshMembership(position, headerTitle)
     }
 
     override fun onRetryWalletApp(position: Int, headerTitle: String, balanceDrawerStatus: Int) {
-        if (balanceDrawerStatus == BalanceDrawerItemModel.STATE_LOADING) {
-            getHomeViewModel().onRefreshWalletApp(position, headerTitle)
-        } else {
-            getHomeViewModel().onRefreshWalletApp(position, headerTitle, isReload = true)
-        }
+        getHomeViewModel().onRefreshWalletApp(position, headerTitle)
     }
 
     override fun onLegoBannerClicked(actionLink: String, trackingAttribution: String) {

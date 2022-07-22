@@ -384,22 +384,14 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<TickerDataModel> { tickerModel, index -> deleteWidget(tickerModel, index) }
     }
 
-    fun onRefreshMembership(position: Int, headerTitle: String, isReload: Boolean = false) {
+    fun onRefreshMembership(position: Int, headerTitle: String) {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
-                if (isReload) {
-                    headerModel.headerDataModel?.homeBalanceModel?.let {
-                       it.balanceDrawerItemModels[position].state = BalanceDrawerItemModel.STATE_LOADING
-                    }
-                    val visitable = updateHeaderData(headerModel, index)
-                    visitable?.let { updateWidget(visitable, index) }
-                } else {
-                    val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
-                        .onGetTokopointData(headerModel, position, headerTitle)
-                    val visitable = updateHeaderData(currentHeaderDataModel, index)
-                    visitable?.let { updateWidget(visitable, index) }
-                }
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
+                    .onGetTokopointData(headerModel, position, headerTitle)
+                val visitable = updateHeaderData(currentHeaderDataModel, index)
+                visitable?.let { updateWidget(visitable, index) }
             }
         }
     }
@@ -408,18 +400,10 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
-                if (isReload) {
-                    headerModel.headerDataModel?.homeBalanceModel?.let {
-                       it.balanceDrawerItemModels[position].state = BalanceDrawerItemModel.STATE_LOADING
-                    }
-                    val visitable = updateHeaderData(headerModel, index)
-                    visitable?.let { updateWidget(visitable, index) }
-                } else {
-                    val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
-                        .onGetWalletAppData(headerModel, position, headerTitle)
-                    val visitable = updateHeaderData(currentHeaderDataModel, index)
-                    visitable?.let { updateWidget(visitable, index) }
-                }
+                val currentHeaderDataModel = homeBalanceWidgetUseCase.get()
+                    .onGetWalletAppData(headerModel, position, headerTitle)
+                val visitable = updateHeaderData(currentHeaderDataModel, index)
+                visitable?.let { updateWidget(visitable, index) }
             }
         }
     }

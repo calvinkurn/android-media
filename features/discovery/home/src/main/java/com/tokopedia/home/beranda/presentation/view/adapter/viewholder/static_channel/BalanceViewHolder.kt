@@ -146,10 +146,22 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                     itemView.context.getString(com.tokopedia.home.R.string.text_reload)
                 binding?.homeContainerBalance?.handleItemClickType(
                     element = element,
-                    rewardsAction = { listener?.onRetryMembership(adapterPosition, element.headerTitle, BalanceDrawerItemModel.STATE_ERROR) },
-                    walletAppAction = { listener?.onRetryWalletApp(adapterPosition, element.headerTitle, BalanceDrawerItemModel.STATE_ERROR) }
+                    rewardsAction = { showLoading(element) },
+                    walletAppAction = { showLoading(element) }
                 )
             }
+        }
+    }
+
+    private fun showLoading(element: BalanceDrawerItemModel) {
+        binding?.shimmerItemBalanceWidget?.root?.show()
+        binding?.homeContainerBalance?.invisible()
+        if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
+            element.state = BalanceDrawerItemModel.STATE_LOADING
+            listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
+        } else if (element.drawerItemType == TYPE_REWARDS) {
+            element.state = BalanceDrawerItemModel.STATE_LOADING
+            listener?.onRetryMembership(adapterPosition, element.headerTitle)
         }
     }
 
