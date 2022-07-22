@@ -1968,7 +1968,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (balanceDrawerStatus == BalanceDrawerItemModel.STATE_LOADING) {
             getHomeViewModel().onRefreshMembership(position, headerTitle)
         } else {
-            getHomeViewModel().getBalanceWidgetData()
+            getHomeViewModel().onRefreshMembership(position, headerTitle, isReload = true)
         }
     }
 
@@ -1976,7 +1976,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (balanceDrawerStatus == BalanceDrawerItemModel.STATE_LOADING) {
             getHomeViewModel().onRefreshWalletApp(position, headerTitle)
         } else {
-            getHomeViewModel().getBalanceWidgetData()
+            getHomeViewModel().onRefreshWalletApp(position, headerTitle, isReload = true)
         }
     }
 
