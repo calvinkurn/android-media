@@ -103,7 +103,7 @@ class MiniCartListAdapterTypeFactory(
                 MiniCartLoadingViewHolder(viewBinding)
             }
             MiniCartProductBundleRecomViewHolder.LAYOUT -> {
-                val viewBinding = ItemMiniCartProductBundleBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                val viewBinding = ItemMiniCartProductBundleRecomBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
                 MiniCartProductBundleRecomViewHolder(viewBinding, multipleProductBundleListener, singleProductBundleListener)
             }
             MiniCartProductBundleRecomShimmeringViewHolder.LAYOUT -> {

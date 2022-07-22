@@ -7,20 +7,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
-import com.tokopedia.minicart.databinding.ItemMiniCartProductBundleBinding
+import com.tokopedia.minicart.databinding.ItemMiniCartProductBundleRecomBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 
 class MiniCartProductBundleRecomViewHolder (
-    private val viewBinding: ItemMiniCartProductBundleBinding,
+    private val viewBinding: ItemMiniCartProductBundleRecomBinding,
     private val multipleProductBundleListener: MultipleProductBundleListener? = null,
     private val singleProductBundleListener: SingleProductBundleListener? = null
 ) : AbstractViewHolder<MiniCartProductBundleRecomUiModel>(viewBinding.root) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_mini_cart_product_bundle
+        val LAYOUT = R.layout.item_mini_cart_product_bundle_recom
 
         private const val BUNDLE_MULTIPLE_ITEM_SIZE = 2
         private const val BUNDLE_SINGLE_ITEM_SIZE = 1
