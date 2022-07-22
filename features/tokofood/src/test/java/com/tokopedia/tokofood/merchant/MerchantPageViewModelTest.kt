@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.merchant
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.data.*
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataType
@@ -219,23 +220,48 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
                                 cartId = "cartId-garlicKnots",
                                 notes = "",
                                 quantity = 1,
-                                variants = listOf()
+                                variants = listOf(
+                                        UpdateProductVariantParam(
+                                                variantId = "d105b801-75de-4306-93a6-cc7124193042",
+                                                optionId = "379913bf-e89e-4a26-a2e6-a650ebe77aef"
+                                        )
+                                )
                         )
                 ),
                 shopId = "shopId",
         )
         val testData = generateTestCustomOrderDetail()
+        val actualResult = viewModel.mapCustomOrderDetailToAtcRequestParam(
+                shopId = "shopId",
+                productId = "bf3eba99-534d-4344-9cf8-6a46326feae0",
+                customOrderDetail = testData
+        )
+        assertEquals(expectedResult.productList.first().productId, actualResult.productList.first().productId)
+        assertEquals(expectedResult.productList.first().cartId, actualResult.productList.first().cartId)
+        assertEquals(expectedResult.productList.first().notes, actualResult.productList.first().notes)
+        assertEquals(expectedResult.productList.first().quantity, actualResult.productList.first().quantity)
+        assertEquals(expectedResult.productList.first().variants.first().variantId, actualResult.productList.first().variants.first().variantId)
+        assertEquals(expectedResult.productList.first().variants.first().optionId, actualResult.productList.first().variants.first().optionId)
+        assertEquals(expectedResult.shopId, actualResult.shopId)
     }
 
     @Test
     fun `when mapping CartTokoFood to CustomOrderDetail expect legit CustomOrderDetail`() {
-
+        val expectedResult = generateExpectedCustomOrderDetail()
+        val testData = generateTestCartTokoFood()
+        val productUiModel = generateTestProductUiModelWithVariant()
+        val actualResult = viewModel.mapCartTokoFoodToCustomOrderDetail(testData, productUiModel)
+        assertEquals(expectedResult.cartId, actualResult.cartId)
+        assertEquals(expectedResult.subTotal, actualResult.subTotal, 0.0)
+        assertEquals(expectedResult.subTotalFmt, actualResult.subTotalFmt)
+        assertEquals(expectedResult.qty, actualResult.qty)
+        assertEquals(expectedResult.customListItems.first(), actualResult.customListItems.first())
     }
 
     @Test
     fun `when title and subtitle are empty expect isTickerDetailEmpty to be true`() {
         val emptyTickerData = TokoFoodTickerDetail()
-        val expectedResult = false
+        val expectedResult = true
         val actualResult = viewModel.isTickerDetailEmpty(emptyTickerData)
         assertEquals(expectedResult, actualResult)
     }
@@ -520,5 +546,48 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
                 )
         )
         return listOf(categoryHeader, garlicKnots, battingUpChicken)
+    }
+
+    private fun generateExpectedCustomOrderDetail() : CustomOrderDetail {
+        val original = OptionUiModel(
+                isSelected = true,
+                id = "379913bf-e89e-4a26-a2e6-a650ebe77aef",
+                status = 1,
+                name = "Original",
+                price = 0.0,
+                priceFmt = "Gratis",
+                selectionControlType = SelectionControlType.SINGLE_SELECTION
+        )
+        val hot = OptionUiModel(
+                isSelected = false,
+                id = "8af415a2-3406-4536-b2b6-0561f7b68148",
+                status = 1,
+                name = "Hot",
+                price = 0.0,
+                priceFmt = "Gratis",
+                selectionControlType = SelectionControlType.SINGLE_SELECTION
+        )
+        val spicyAddOnUiModel = AddOnUiModel(
+                id = "d105b801-75de-4306-93a6-cc7124193042",
+                name = "Spicy",
+                isRequired = true,
+                isSelected = true,
+                maxQty = 1,
+                minQty = 1,
+                options = listOf(hot, original),
+                outOfStockWording = "Stok habis",
+                selectedAddOns = listOf("Original")
+        )
+        val customListItem = CustomListItem(
+                listItemType = CustomListItemType.PRODUCT_ADD_ON,
+                addOnUiModel = spicyAddOnUiModel
+        )
+        return CustomOrderDetail(
+                cartId = "cartId-garlicKnots",
+                subTotal = 38000.0,
+                subTotalFmt = "Rp38.000",
+                qty = 1,
+                customListItems = listOf(customListItem)
+        )
     }
 }

@@ -2,14 +2,11 @@ package com.tokopedia.tokofood.data
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantOption
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantRules
+import com.tokopedia.tokofood.common.domain.response.*
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.*
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomListItem
-import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
-import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
+import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
+import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 
 fun generateTestMerchantData(): GetMerchantDataResponse {
     return GetMerchantDataResponse(
@@ -236,11 +233,106 @@ fun generateTestProductUiModel(): ProductUiModel {
 }
 
 fun generateTestCustomOrderDetail(): CustomOrderDetail {
+    val original = OptionUiModel(
+            isSelected = true,
+            id = "379913bf-e89e-4a26-a2e6-a650ebe77aef",
+            status = 1,
+            name = "Original",
+            price = 0.0,
+            priceFmt = "Gratis",
+            selectionControlType = SelectionControlType.SINGLE_SELECTION
+    )
+    val hot = OptionUiModel(
+            isSelected = false,
+            id = "8af415a2-3406-4536-b2b6-0561f7b68148",
+            status = 1,
+            name = "Hot",
+            price = 0.0,
+            priceFmt = "Gratis",
+            selectionControlType = SelectionControlType.SINGLE_SELECTION
+    )
+    val spicyAddOnUiModel = AddOnUiModel(
+            id = "d105b801-75de-4306-93a6-cc7124193042",
+            name = "Spicy",
+            isRequired = true,
+            isSelected = true,
+            maxQty = 1,
+            minQty = 1,
+            options = listOf(hot, original),
+            outOfStockWording = "Stok habis"
+    )
+    val customListItem = CustomListItem(
+            listItemType = CustomListItemType.PRODUCT_ADD_ON,
+            addOnUiModel = spicyAddOnUiModel
+    )
     return CustomOrderDetail(
             cartId = "cartId-garlicKnots",
             subTotal = 0.0,
             subTotalFmt = "",
             qty = 1,
-            customListItems = listOf()
+            customListItems = listOf(customListItem)
     )
+}
+
+fun generateTestCartTokoFood(): CartTokoFood {
+    return CartTokoFood(
+            cartId = "cartId-garlicKnots",
+            productId = "bf3eba99-534d-4344-9cf8-6a46326feae0",
+            quantity = 1,
+            metadata = "{\"variants\":[{\"variant_id\":\"d105b801-75de-4306-93a6-cc7124193042\",\"option_id\":\"379913bf-e89e-4a26-a2e6-a650ebe77aef\"}],\"notes\":\"ini notes\"}"
+    )
+}
+
+fun generateTestProductUiModelWithVariant(): ProductUiModel {
+    val original = OptionUiModel(
+            isSelected = true,
+            id = "379913bf-e89e-4a26-a2e6-a650ebe77aef",
+            status = 1,
+            name = "Original",
+            price = 0.0,
+            priceFmt = "Gratis",
+            selectionControlType = SelectionControlType.SINGLE_SELECTION
+    )
+    val hot = OptionUiModel(
+            isSelected = false,
+            id = "8af415a2-3406-4536-b2b6-0561f7b68148",
+            status = 1,
+            name = "Hot",
+            price = 0.0,
+            priceFmt = "Gratis",
+            selectionControlType = SelectionControlType.SINGLE_SELECTION
+    )
+    val spicyAddOnUiModel = AddOnUiModel(
+            id = "d105b801-75de-4306-93a6-cc7124193042",
+            name = "Spicy",
+            isRequired = true,
+            isSelected = true,
+            maxQty = 1,
+            minQty = 1,
+            options = listOf(hot, original),
+            outOfStockWording = "Stok habis"
+    )
+    val customListItem = CustomListItem(
+            listItemType = CustomListItemType.PRODUCT_ADD_ON,
+            addOnUiModel = spicyAddOnUiModel
+    )
+    return ProductUiModel(
+            cartId = "cartId-garlicKnots",
+            isAtc = true,
+            id = "bf3eba99-534d-4344-9cf8-6a46326feae0",
+            name = "Home-plate Garlic Knots",
+            description = "What\u0027s better than garlic bread? 5 pcs of Garlic tangled in knots!",
+            imageURL = "https://i.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2e561a5c-55ef-47f6-8b6a-967ca35d229e_master-menu-item-image_1612931947827.jpg",
+            price = 38000.0,
+            priceFmt = "Rp38.000",
+            slashPrice = 0.0,
+            slashPriceFmt = "",
+            isOutOfStock = false,
+            isShopClosed = false,
+            customListItems = listOf(customListItem)
+    )
+
+    fun generateTestMerchantData() {
+
+    }
 }
