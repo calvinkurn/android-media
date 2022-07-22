@@ -139,8 +139,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/som_list_order_item_padding_right_left_bottom"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="2dp"
                     app:layout_constraintBottom_toBottomOf="@id/tvSomListBuyerName"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tvSomListBuyerName"
@@ -151,6 +149,8 @@
                         android:id="@+id/icDeadline"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
+                        android:layout_marginVertical="2dp"
+                        android:layout_marginStart="4dp"
                         android:layout_marginEnd="4dp"
                         android:contentDescription="Ikon tenggat waktu"
                         app:icon_color_light_enable="@color/Unify_Static_White"
@@ -158,12 +158,15 @@
                         app:icon_name="CLOCK"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tvSomListDeadline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginVertical="2dp"
+                        android:layout_marginEnd="8dp"
                         android:gravity="center_vertical"
                         android:textColor="@color/Unify_Static_White"
                         app:layout_constraintBottom_toBottomOf="parent"
