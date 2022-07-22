@@ -155,7 +155,7 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
 
     private fun handlePageMode() {
         if (pageMode == PageMode.UPDATE) {
-            binding?.btnDraft?.text = getString(R.string.sfs_save)
+            binding?.btnDraft?.gone()
         }
     }
 

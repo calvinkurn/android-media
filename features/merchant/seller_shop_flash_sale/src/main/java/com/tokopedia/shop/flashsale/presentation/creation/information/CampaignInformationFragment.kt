@@ -414,7 +414,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             binding?.loader?.visible()
             binding?.groupContent?.gone()
             viewModel.getCampaignDetail(campaignId)
-            binding?.btnDraft?.text = getString(R.string.sfs_save)
+            binding?.btnDraft?.gone()
         }
     }
 
