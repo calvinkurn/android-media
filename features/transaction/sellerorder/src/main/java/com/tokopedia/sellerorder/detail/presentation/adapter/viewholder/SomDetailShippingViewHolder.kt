@@ -5,7 +5,6 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
@@ -53,13 +52,13 @@ class SomDetailShippingViewHolder(
                         setOnClickListener {
                             actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
                         }
-                        text = StringBuilder(item.dataObject.shippingName)
+                        text = item.dataObject.shippingName
                     }
+                    tvChevron.showWithCondition(true)
                     tvChevron.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 } else {
                     tvShippingName.text = item.dataObject.shippingName
                     tvShippingName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
-                    tvChevron.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 }
                 val numberPhone = if (item.dataObject.receiverPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
                     item.dataObject.receiverPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)
@@ -132,7 +131,8 @@ class SomDetailShippingViewHolder(
                 }
 
                 item.dataObject.shipmentLogo.isNotEmpty().let { isNotEmpty ->
-                    ivOrderDetailFreeShippingBadge.loadImage(item.dataObject.shipmentLogo)
+                    if (isNotEmpty)
+                        ivOrderDetailFreeShippingBadge.loadImage(item.dataObject.shipmentLogo)
                     ivOrderDetailFreeShippingBadge.showWithCondition(isNotEmpty)
                 }
 
