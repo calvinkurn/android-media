@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.DateHelper
@@ -24,12 +26,13 @@ import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import java.math.RoundingMode
-import java.util.Date
 import java.util.Calendar
+import java.util.Date
 
 class ShopHomeFlashSaleViewHolder(
     itemView: View,
@@ -63,6 +66,7 @@ class ShopHomeFlashSaleViewHolder(
         private const val FORMAT_PREFIX_HEX_COLOR = "#"
         private const val VALUE_INT_HUNDREDS = 100
         private const val DELAY_IN_THREE_SECONDS = 3000L
+        private const val NOTIFY_ME_WRAPPER_BORDER_RADIUS = 16f
     }
 
     init {
@@ -219,6 +223,7 @@ class ShopHomeFlashSaleViewHolder(
         // set text wording ingatkan into number of users after 3 seconds
         handler.postDelayed({
             reminderCountView?.text = reminderWording
+            reminderCountView?.showWithCondition(reminderWording.isNotEmpty())
         }, DELAY_IN_THREE_SECONDS)
     }
 
@@ -226,7 +231,7 @@ class ShopHomeFlashSaleViewHolder(
         return if (totalNotify > VALUE_INT_HUNDREDS) {
             totalNotify.thousandFormatted(1, RoundingMode.DOWN)
         } else {
-            itemView.context.getString(R.string.shop_page_label_remind_me)
+            String.EMPTY
         }
     }
 
@@ -245,7 +250,10 @@ class ShopHomeFlashSaleViewHolder(
         if (isOngoing) {
             flashSaleReminderView?.hide()
         } else {
-            flashSaleReminderView?.show()
+            flashSaleReminderView?.apply {
+                radius = NOTIFY_ME_WRAPPER_BORDER_RADIUS.dpToPx()
+                show()
+            }
         }
     }
 
