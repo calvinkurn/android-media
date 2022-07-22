@@ -22,10 +22,9 @@ data class BalanceDrawerItemModel(
         var balanceCoachmark: BalanceCoachmark? = null,
         val reserveBalance: String = "",
         val headerTitle: String = "",
-        val isSubscriberGoToPlus: Boolean = false
+        val isSubscriberGoToPlus: Boolean = false,
 ) {
     companion object {
-        const val TYPE_COUPON = 3
         const val TYPE_REWARDS = 4
 
         //is not linked for any type of wallet
