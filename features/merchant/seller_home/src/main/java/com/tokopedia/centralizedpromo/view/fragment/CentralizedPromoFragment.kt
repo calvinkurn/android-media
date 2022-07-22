@@ -305,10 +305,22 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
                         pageName = promoCreationUiModel.title,
                         isDontShowBottomSheet
                     )
+                    CentralizedPromoTracking.sendClickCheckboxBottomSheet(
+                        currentFilterTab.name,
+                        promoCreationUiModel.title
+                    )
                 }
-                detailPromoBottomSheet.setOnDismissListener {
+                detailPromoBottomSheet.onCreateCampaignTracking {
+                    CentralizedPromoTracking.sendClickCreateCampaign(
+                        currentFilterTab.name,
+                        promoCreationUiModel.title
+                    )
+                }
 
-                }
+                CentralizedPromoTracking.sendImpressionBottomSheetPromo(
+                    currentFilterTab.name,
+                    promoCreationUiModel.title
+                )
             }
 
         } else {

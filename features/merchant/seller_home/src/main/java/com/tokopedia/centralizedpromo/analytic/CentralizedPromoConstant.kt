@@ -37,11 +37,16 @@ object CentralizedPromoConstant {
     const val EVENT_BOTTOM_SHEET_CHECKBOX = "click bottom sheet - checkbox"
     const val TRACKER_ID_BOTTOM_SHEET_CHECKBOX = "34640"
 
+    const val EVENT_BOTTOM_SHEET_CREATE_CAMPAIGN = "click bottom sheet - create campaign"
+    const val TRACKER_ID_BOTTOM_SHEET_CREATE_CAMPAIGN = "34641"
+
 
     // ON GOING
-    const val EVENT_ACTION_ON_GOING_IMPRESSION = "impression your promotion"
-    const val EVENT_ACTION_ON_GOING_CLICK = "click your promotion"
+    const val EVENT_ACTION_ON_GOING_IMPRESSION = "impression - fitur tokomu"
+    const val TRACKER_ID_ON_GOING_IMPRESSION = "34645"
 
+    const val EVENT_ACTION_ON_GOING_CLICK = "click card - fitur tokomu"
+    const val TRACKER_ID_ON_GOING_CLICK = "34644"
 
     // POWER MERCHANT
     const val EVENT_CATEGORY_SELLER_APP = "tokopedia seller app"

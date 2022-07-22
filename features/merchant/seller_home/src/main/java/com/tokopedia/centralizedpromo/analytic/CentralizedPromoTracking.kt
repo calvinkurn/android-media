@@ -9,6 +9,7 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_AC
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_BOTTOM_SHEET_CHECKBOX
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_BOTTOM_SHEET_CREATE_CAMPAIGN
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CATEGORY_ADS_AND_PROMO
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CATEGORY_MAIN_APP
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CATEGORY_MVC_PRODUCT
@@ -33,6 +34,7 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_INCREASE_LOYALTY
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_INCREASE_NEW_ORDER
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_BOTTOM_SHEET_CHECKBOX
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_BOTTOM_SHEET_CREATE_CAMPAIGN
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_CLICK_CARD
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_FILTER_ALL
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_IMPRESSION_BOTTOM_SHEET
@@ -40,6 +42,8 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_INCREASE_BUYER
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_INCREASE_LOYALTY
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_INCREASE_NEW_ORDER
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_ON_GOING_CLICK
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_ON_GOING_IMPRESSION
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerhome.analytic.TrackingConstant
@@ -63,6 +67,21 @@ object CentralizedPromoTracking {
         event: String,
         category: String,
         action: String,
+        label: String
+    ): MutableMap<String, Any> {
+        return mutableMapOf(
+            TrackingConstant.EVENT to event,
+            TrackingConstant.EVENT_CATEGORY to category,
+            TrackingConstant.EVENT_ACTION to action,
+            TrackingConstant.EVENT_LABEL to label,
+        )
+    }
+
+    @Suppress("SameParameterValue")
+    private fun createMap(
+        event: String,
+        category: String,
+        action: String,
         label: String,
         trackerId: String = ""
     ): MutableMap<String, Any> {
@@ -75,28 +94,26 @@ object CentralizedPromoTracking {
         )
     }
 
-    fun sendImpressionOnGoingPromoStatus(widgetName: String, value: Int, state: String) {
+    fun sendImpressionOnGoingPromoStatus(widgetName: String) {
         val data = createMap(
-            event = EVENT_NAME_IMPRESSION,
+            event = EVENT_NAME_VIEW_PG_IRIS,
             category = EVENT_CATEGORY_ADS_AND_PROMO,
-            action = arrayOf(
-                EVENT_ACTION_ON_GOING_IMPRESSION,
-                widgetName,
-                state
-            ).joinToString(" - "),
-            label = value.toString()
-        )
+            action = EVENT_ACTION_ON_GOING_IMPRESSION,
+            label = widgetName,
+            trackerId = TRACKER_ID_ON_GOING_IMPRESSION
+        ).completeEventInfo()
 
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun sendClickOnGoingPromoStatus(widgetName: String, value: Int, state: String) {
+    fun sendClickOnGoingPromoStatus(widgetName: String) {
         val data = createMap(
-            event = EVENT_NAME_CLICK,
+            event = EVENT_NAME_VIEW_PG_IRIS,
             category = EVENT_CATEGORY_ADS_AND_PROMO,
-            action = arrayOf(EVENT_ACTION_ON_GOING_CLICK, widgetName, state).joinToString(" - "),
-            label = value.toString()
-        )
+            action = EVENT_ACTION_ON_GOING_CLICK,
+            label = widgetName,
+            trackerId = TRACKER_ID_ON_GOING_CLICK
+        ).completeEventInfo()
 
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
@@ -309,6 +326,21 @@ object CentralizedPromoTracking {
                 featureName
             ).joinToString(" - "),
             trackerId = TRACKER_ID_BOTTOM_SHEET_CHECKBOX
+        ).completeEventInfo()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun sendClickCreateCampaign(filterTabName: String, featureName: String) {
+        val data = createMap(
+            event = EVENT_NAME_CLICK_PG,
+            action = EVENT_BOTTOM_SHEET_CREATE_CAMPAIGN,
+            category = EVENT_CATEGORY_ADS_AND_PROMO,
+            label = arrayOf(
+                filterTabName,
+                featureName
+            ).joinToString(" - "),
+            trackerId = TRACKER_ID_BOTTOM_SHEET_CREATE_CAMPAIGN
         ).completeEventInfo()
 
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
