@@ -94,35 +94,6 @@ class OrderPriceSummaryBottomSheet {
             binding.tvTotalInsurancePriceValue.gone()
         }
 
-//        if (orderCost.paymentFee > 0.0) {
-//        binding.tvTotalPaymentFeePriceLabel.text = serviceFee.title
-//        binding.tvTotalPaymentFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.paymentFee, false).removeDecimalSuffix()
-//        binding.tvTotalPaymentFeePriceLabel.visible()
-//        binding.tvTotalPaymentFeePriceValue.visible()
-//        binding.imgPaymentFeeInfo.setOnClickListener {
-//            showTransactionFeeInfoBottomSheet(view, serviceFee.tooltipTitle, serviceFee.tooltipInfo)
-//        }
-//        binding.imgPaymentFeeInfo.visible()
-//        } else {
-//            binding.tvTotalPaymentFeePriceLabel.gone()
-//            binding.tvTotalPaymentFeePriceValue.gone()
-//            binding.imgPaymentFeeInfo.gone()
-//        }
-
-//        binding.tvPlatformFeePriceLabel.text = platformFee.title
-//        if (platformFee.showSlashed) {
-//            binding.tvPlatformFeeSlashPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(platformFee.slashedFee, false).removeDecimalSuffix()
-//            binding.tvPlatformFeeSlashPriceValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-//            binding.tvPlatformFeeSlashPriceValue.visible()
-//        }
-//        else {
-//            binding.tvPlatformFeeSlashPriceValue.invisible()
-//        }
-//        binding.tvPlatformFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(platformFee.fee, false).removeDecimalSuffix()
-//        binding.imgPlatformFeeInfo.setOnClickListener {
-//            showTransactionFeeInfoBottomSheet(view, platformFee.tooltipTitle, platformFee.tooltipInfo)
-//        }
-
         binding.tvTotalPaymentPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false).removeDecimalSuffix()
 
         renderCashbacks(orderCost, binding)
