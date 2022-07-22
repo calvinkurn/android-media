@@ -1,0 +1,127 @@
+package com.tokopedia.people.viewmodel.userprofile
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.model.CommonModelBuilder
+import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
+import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
+import com.tokopedia.people.model.userprofile.ProfileWhitelistUiModelBuilder
+import com.tokopedia.people.robot.UserProfileViewModelRobot
+import com.tokopedia.people.util.*
+import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
+import io.mockk.mockk
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
+class UserProfileShopRecomViewModelTest {
+
+    @get:Rule
+    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
+
+    private val testDispatcher = rule.dispatchers
+
+    private val mockRepo: UserProfileRepository = mockk(relaxed = true)
+    private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
+
+    private val commonBuilder = CommonModelBuilder()
+    private val followInfoBuilder = FollowInfoUiModelBuilder()
+    private val profileWhitelistBuilder = ProfileWhitelistUiModelBuilder()
+    private val shopRecomBuilder = ShopRecomModelBuilder()
+
+    private val mockException = commonBuilder.buildException()
+    private val mockOwnUserId = "1"
+    private val mockOtherUserId = "2"
+    private val mockOwnUsername = "fachrizalmrsln"
+
+    private val mockOwnFollow = followInfoBuilder.buildFollowInfo(
+        userID = mockOwnUserId,
+        encryptedUserID = mockOwnUserId,
+        status = true
+    )
+    private val mockOtherNotFollow = followInfoBuilder.buildFollowInfo(
+        userID = mockOtherUserId,
+        encryptedUserID = mockOtherUserId,
+        status = false
+    )
+
+    private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
+    private val mockShopRecom = shopRecomBuilder.buildModel()
+
+    private val robot = UserProfileViewModelRobot(
+        username = mockOwnUsername,
+        repo = mockRepo,
+        dispatcher = testDispatcher,
+        userSession = mockUserSession,
+    )
+
+    @Before
+    fun setUp() {
+        coEvery { mockUserSession.userId } returns mockOwnUserId
+
+        coEvery { mockRepo.getProfile(mockOwnUsername) }
+
+        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecom
+    }
+
+    @Test
+    fun `when user successfully load shop recommendation and isShown is true, it will emit the data`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
+
+        robot.use {
+            it.recordStateAndEvent {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+
+                robot.viewModel.isShopRecomShow.assertTrue()
+            } andThen { state, _ ->
+                state.shopRecom.size equalTo 10
+                state.shopRecom equalTo mockShopRecom.items
+            }
+        }
+    }
+
+    @Test
+    fun `when user successfully load shop recommendation and isShown is false, it will emit emptyList`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
+
+        robot.use {
+            it.recordStateAndEvent {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+
+                robot.viewModel.isShopRecomShow.assertFalse()
+            } andThen { state, _ ->
+                state.shopRecom.assertEmpty()
+                state.shopRecom equalTo emptyList()
+            }
+        }
+    }
+
+    @Test
+    fun `when user fail load shop recommendation and isShown is false, it will emit emptyList`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getFollowInfo(any()) } throws mockException
+
+        robot.use {
+            it.recordStateAndEvent {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+
+                robot.viewModel.isShopRecomShow.assertFalse()
+            } andThen { state, events ->
+                state.shopRecom.assertEmpty()
+                events.last().assertEvent(UserProfileUiEvent.ErrorLoadProfile(Throwable("any throwable")))
+            }
+        }
+    }
+
+}
