@@ -81,7 +81,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
 
             init(listener)
             getImageFromMedia(getImageFromMediaFlag = true)
-            setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.FLASH_SALE_TOKO)
+            setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.FS_TOKO)
 
             //tnTitle will be displayed on share bottomsheet
             setMetaData(tnTitle = findOutgoingDescription(param, isOngoing), tnImage = thumbnailImageUrl)
