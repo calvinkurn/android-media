@@ -242,18 +242,16 @@ open class SomListOrderViewHolder(
     private fun setupDeadline(element: SomListOrderUiModel) {
         binding?.run {
             val deadlineText = element.deadlineText
-            val deadlineColor = element.deadlineColor
-            if (deadlineText.isNotBlank() && deadlineColor.isNotBlank()) {
+            val deadlineBackground = Utils.getColoredDeadlineBackground(
+                context = root.context,
+                colorHex = element.deadlineColor,
+                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
+            )
+            if (deadlineText.isNotBlank()) {
                 tvSomListDeadline.text = deadlineText
                 tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
                 layoutSomListDeadline.apply {
-                    setBackgroundResource(
-                        if (element.orderPlusData != null) {
-                            R.drawable.bg_due_response_order_plus
-                        } else {
-                            R.drawable.bg_due_response_order_regular
-                        }
-                    )
+                    background = deadlineBackground
                     setPadding(
                         LAYOUT_DEADLINE_PADDING_START.toPx(),
                         LAYOUT_DEADLINE_PADDING_VERTICAL.toPx(),
