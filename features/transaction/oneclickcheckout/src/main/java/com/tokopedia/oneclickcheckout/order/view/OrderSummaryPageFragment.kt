@@ -560,6 +560,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 cartString = data.cartString,
                 isDisableOrderPrioritas = true,
                 isOcc = true,
+                pslCode = data.pslCode,
                 shippingDurationBottomsheetListener = object : ShippingDurationBottomsheetListener {
                     override fun onShippingDurationChoosen(
                         shippingCourierUiModels: List<ShippingCourierUiModel>?,
