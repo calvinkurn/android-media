@@ -652,7 +652,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
     override fun onNameItemClicked(productName: String) {
         var newProductName = productName
-        val maxLengthKeyword = resources.getInteger(R.integer.max_product_name_length)
+        val maxLengthKeyword = context?.resources?.getInteger(R.integer.max_product_name_length).orZero()
 
         if (productName.trim().length > maxLengthKeyword) {
             newProductName = productName.take(maxLengthKeyword)
@@ -1819,8 +1819,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         val tooltipBottomSheet = TooltipBottomSheet()
         val tips: ArrayList<NumericWithDescriptionTooltipModel> = ArrayList()
         val tooltipTitle = getString(R.string.title_price_recommendation_bottom_sheet)
-        val contentTitles = resources.getStringArray(R.array.array_price_recommendation_content_titles)
-        val contentDescriptions = resources.getStringArray(R.array.array_price_recommendation_content_descriptions)
+        val contentTitles = context?.resources?.getStringArray(R.array.array_price_recommendation_content_titles).orEmpty()
+        val contentDescriptions = context?.resources?.getStringArray(R.array.array_price_recommendation_content_descriptions).orEmpty()
 
         contentTitles.forEachIndexed { index, title ->
             val description = contentDescriptions.getOrNull(index).orEmpty()
