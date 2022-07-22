@@ -3435,7 +3435,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 uploadModel.setDescriptionText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_count_text,
                         prescriptions.size()));
             }
-            if(isApi){
+            if(!isApi){
                 showToastNormal(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text));
             }
             shipmentAdapter.updateUploadPrescription(uploadModel);
