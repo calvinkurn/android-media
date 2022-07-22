@@ -79,20 +79,21 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
-    @Test
-    fun testGetBalanceWidgetNotLinked() {
-        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        HomeDCCassavaTest {
-            initTest()
-            login()
-            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                actionOnBalanceWidget(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_NOT_LINKED)
-        }
-    }
+    //awkward test lab
+//    @Test
+//    fun testGetBalanceWidgetNotLinked() {
+//        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+//        HomeDCCassavaTest {
+//            initTest()
+//            login()
+//            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+//                actionOnBalanceWidget(viewHolder)
+//            }
+//        } validateAnalytics {
+//            addDebugEnd()
+//            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_NOT_LINKED)
+//        }
+//    }
 
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
