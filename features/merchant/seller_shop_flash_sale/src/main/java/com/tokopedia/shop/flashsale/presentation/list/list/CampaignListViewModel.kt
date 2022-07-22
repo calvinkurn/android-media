@@ -152,7 +152,7 @@ class CampaignListViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val requestParams = GqlShopPageGetHomeType.createParams(userSession.shopId.toIntOrZero(), extParam = "")
+                val requestParams = GqlShopPageGetHomeType.createParams(userSession.shopId, extParam = "")
                 getShopPageHomeTypeUseCase.params = requestParams
                 getShopPageHomeTypeUseCase.isFromCacheFirst = false
                 val shopHome = getShopPageHomeTypeUseCase.executeOnBackground()

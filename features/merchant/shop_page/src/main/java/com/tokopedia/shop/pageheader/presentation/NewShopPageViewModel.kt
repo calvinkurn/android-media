@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RollenceKey
@@ -43,7 +42,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
@@ -192,7 +190,7 @@ class NewShopPageViewModel @Inject constructor(
                     dispatcherProvider.io,
                     block = {
                         getProductListData(
-                                shopId.toString(),
+                                shopId,
                                 page,
                                 itemPerPage,
                                 shopProductFilterParameter,
@@ -280,7 +278,7 @@ class NewShopPageViewModel @Inject constructor(
                 dispatcherProvider.io,
                 block = {
                     getProductListData(
-                        shopId.toString(),
+                        shopId,
                         page,
                         itemPerPage,
                         shopProductFilterParameter,
@@ -575,4 +573,5 @@ class NewShopPageViewModel @Inject constructor(
         useCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopId.toString())
         return useCase.executeOnBackground()
     }
+
 }

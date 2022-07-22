@@ -35,6 +35,7 @@ import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
@@ -49,7 +50,11 @@ import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHol
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, ShopCampaignProductBundleParentWidgetViewHolder.Listener {
+class ShopPageCampaignFragment :
+    ShopPageHomeFragment(),
+    WidgetConfigListener,
+    ShopCampaignProductBundleParentWidgetViewHolder.Listener,
+    ShopHomeListener {
 
     companion object {
         private const val KEY_SHOP_ID = "SHOP_ID"
@@ -61,6 +66,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val CONFETTI_URL = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json"
+        private const val KEY_ENABLE_SHOP_DIRECT_PURCHASE = "ENABLE_SHOP_DIRECT_PURCHASE"
 
         fun createInstance(
             shopId: String,
@@ -68,7 +74,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             isGoldMerchant: Boolean,
             shopName: String,
             shopAttribution: String,
-            shopRef: String
+            shopRef: String,
+            isEnableDirectPurchase: Boolean
         ): ShopPageCampaignFragment {
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
@@ -77,7 +84,7 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             bundle.putString(KEY_SHOP_NAME, shopName)
             bundle.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
             bundle.putString(KEY_SHOP_REF, shopRef)
-
+            bundle.putBoolean(KEY_ENABLE_SHOP_DIRECT_PURCHASE, isEnableDirectPurchase)
             return ShopPageCampaignFragment().apply {
                 arguments = bundle
             }
@@ -121,7 +128,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
             thematicWidgetListener = thematicWidgetProductClickListenerImpl(),
             shopHomeProductListSellerEmptyListener = this,
             widgetConfigListener = this,
-            bundlingParentListener = this
+            bundlingParentListener = this,
+            shopHomeListener = this
         )
     }
 
@@ -158,7 +166,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
                     listWidgetLayout,
                     isOwner,
                     isLogin,
-                    isThematicWidgetShown
+                    isThematicWidgetShown,
+                    isEnableDirectPurchase
                 )
             shopCampaignTabAdapter.setCampaignLayoutData(shopHomeWidgetContentData)
         }
@@ -697,7 +706,8 @@ class ShopPageCampaignFragment : ShopPageHomeFragment(), WidgetConfigListener, S
                 listWidgetLayoutToLoad.toList(),
                 shopId,
                 widgetUserAddressLocalData,
-                isThematicWidgetShown
+                isThematicWidgetShown,
+                isEnableDirectPurchase
             )
         }
     }
