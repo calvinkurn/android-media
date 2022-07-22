@@ -42,11 +42,14 @@ class WarehouseViewHolder(
     fun bind(item: WarehouseUiModel) {
         binding?.apply {
             val stockText = itemView.context.getString(R.string.editproduct_stock_text, item.stock)
+            val itemEnabled = item.stock.isMoreThanZero()
             typographyWarehouseName.text = item.name
             typographyStock.text = stockText
             checkboxItem.isChecked = item.isSelected
-            checkboxItem.isEnabled = item.stock.isMoreThanZero()
-            root.isEnabled = item.stock.isMoreThanZero()
+            checkboxItem.isEnabled = itemEnabled
+            typographyWarehouseName.isEnabled = itemEnabled
+            typographyStock.isEnabled = itemEnabled
+            root.isEnabled = itemEnabled
         }
     }
 }

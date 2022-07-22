@@ -10,14 +10,17 @@ import android.view.inputmethod.EditorInfo
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentChooseProductBinding
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_COUNT
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUCT_LIST_SIZE
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ReserveProductAdapter
+import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ReserveProductMapper
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
@@ -35,10 +38,11 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         const val GUIDELINE_ANIMATION_DELAY = 500L
 
         @JvmStatic
-        fun newInstance(campaignId: String): ChooseProductFragment {
+        fun newInstance(campaignId: String, selectedProductCount: Int): ChooseProductFragment {
             val fragment = ChooseProductFragment()
             val bundle = Bundle()
             bundle.putString(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+            bundle.putInt(BUNDLE_KEY_SELECTED_PRODUCT_COUNT, selectedProductCount)
             fragment.arguments = bundle
             return fragment
         }
@@ -51,6 +55,9 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     private var guidelineMarginMax = GUIDELINE_MARGIN_MIN
     private val campaignId by lazy {
         arguments?.getString(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
+    }
+    private val selectedProductCount by lazy {
+        arguments?.getInt(BUNDLE_KEY_SELECTED_PRODUCT_COUNT).orZero()
     }
     private val animateScrollDebounce: (Int) -> Unit by lazy {
         debounce(GUIDELINE_ANIMATION_DELAY, GlobalScope) {
@@ -82,8 +89,10 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
         setupObservers()
         setupSearchBar()
+        // TODO tidy up this
         guidelineMarginMax = binding?.guidelineFooter?.getGuidelineEnd().orZero()
         guidelineMargin = guidelineMarginMax
+        viewModel.setPreviousSelectedProductCount(selectedProductCount)
     }
 
     override fun createAdapter() = ReserveProductAdapter(::onSelectedItemChanges)
@@ -166,7 +175,13 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     private fun setupErrorsObserver() {
         viewModel.errors.observe(viewLifecycleOwner) {
-            showGetListError(it)
+            // TODO tidy up this
+            if (it is MessageErrorException) {
+                val errorMessage = ReserveProductMapper.mapErrorMessage(context ?: return@observe, it.message.orEmpty())
+                binding?.btnSave.showError(errorMessage)
+            } else {
+                showGetListError(it)
+            }
             binding?.btnSave?.isLoading = false
         }
     }
@@ -179,7 +194,8 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     private fun setupSelectionItemsObserver() {
         viewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
-            val selectedCount = selectedItems.filter { !it.hasChild }.size
+            //TODO: Move to viewmodel (faisal)
+            val selectedCount = selectedItems.filter { !it.hasChild && !it.isProductPreviouslySubmitted }.size + selectedProductCount
             binding?.tvSelectedProduct?.text =
                 getString(R.string.chooseproduct_selected_product_suffix, selectedCount)
             setupButtonSave(selectedCount)
