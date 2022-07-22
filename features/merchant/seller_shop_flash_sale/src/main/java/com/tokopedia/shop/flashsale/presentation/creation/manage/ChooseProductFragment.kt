@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentChooseProductBinding
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
@@ -18,6 +19,7 @@ import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragmen
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ReserveProductAdapter
+import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ReserveProductMapper
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.viewmodel.ChooseProductViewModel
@@ -172,7 +174,13 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     private fun setupErrorsObserver() {
         viewModel.errors.observe(viewLifecycleOwner) {
-            showGetListError(it)
+            // TODO tidy up this
+            if (it is MessageErrorException) {
+                val errorMessage = ReserveProductMapper.mapErrorMessage(context ?: return@observe, it.message.orEmpty())
+                binding?.btnSave.showError(errorMessage)
+            } else {
+                showGetListError(it)
+            }
             binding?.btnSave?.isLoading = false
         }
     }

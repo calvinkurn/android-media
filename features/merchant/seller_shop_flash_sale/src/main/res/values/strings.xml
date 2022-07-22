@@ -259,6 +259,7 @@
     <string name="chooseproduct_sku_text">SKU: %s</string>
     <string name="chooseproduct_stock_total_text">Total stok: %d</string>
     <string name="chooseproduct_variant_text">+ %d Varian lain</string>
+    <string name="chooseproduct_error_exceed_limit">Tidak dapat memilih produk, total produk (termasuk variant) melebihi sisa kuota</string>
 
     <!--Manage Product-->
     <string name="manage_product_complete_product_info_warning_label">Klik <b>Ubah</b> untuk melengkapi informasi produk ini, ya.</string>
