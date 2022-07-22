@@ -5,7 +5,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant
 import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignProductSubmissionRequest
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignValidatedProductListResponse
-import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 
@@ -50,14 +49,6 @@ object ReserveProductMapper {
         ?.filter { it.parentProductId == null && !it.isProductPreviouslySubmitted } // filter only parent product and not submitted before
         ?.map { mapToProductData(it) }
         .orEmpty()
-
-    fun mapToShopStatusEnum(shopStatus: Int): ShopStatus {
-        return when(shopStatus) {
-            ShopStatus.OPEN.type -> ShopStatus.OPEN
-            ShopStatus.CLOSED.type -> ShopStatus.CLOSED
-            else -> ShopStatus.OTHER
-        }
-    }
 
     fun canReserveProduct(selectedItem: List<SelectedProductModel>, previousSelectedProductCount: Int): Boolean {
         return selectedItem.filter { !it.hasChild && !it.isProductPreviouslySubmitted }.run {

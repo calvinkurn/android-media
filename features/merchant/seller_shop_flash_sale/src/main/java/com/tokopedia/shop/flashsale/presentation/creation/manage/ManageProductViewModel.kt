@@ -6,25 +6,21 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.di.GqlGetShopCloseDetailInfoQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.ProductErrorStatusHandler
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.EMPTY_BANNER
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.ERROR_BANNER
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.HIDE_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.NOT_ERROR
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
-import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ManageProductMapper
-import com.tokopedia.shop.flashsale.presentation.creation.manage.mapper.ReserveProductMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -60,8 +56,8 @@ class ManageProductViewModel @Inject constructor(
     val removeProductsStatus: LiveData<Result<Boolean>>
         get() = _removeProductsStatus
 
-    private var _shopStatus = MutableLiveData<Result<ShopStatus>>()
-    val shopStatus: LiveData<Result<ShopStatus>>
+    private var _shopStatus = MutableLiveData<Result<Int>>()
+    val shopStatus: LiveData<Result<Int>>
         get() = _shopStatus
 
     val incompleteProducts = Transformations.map(products) {
@@ -182,8 +178,7 @@ class ManageProductViewModel @Inject constructor(
                 val shopId = userSessionInterface.shopId.toIntOrZero()
                 gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId))
                 val result = gqlGetShopInfoUseCase.executeOnBackground()
-                val mappedResult = ReserveProductMapper.mapToShopStatusEnum(result.statusInfo.shopStatus)
-                _shopStatus.postValue(Success(mappedResult))
+                _shopStatus.postValue(Success(result.statusInfo.shopStatus))
             },
             onError = { error ->
                 _shopStatus.postValue(Fail(error))
