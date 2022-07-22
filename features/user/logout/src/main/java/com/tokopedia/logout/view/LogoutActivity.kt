@@ -74,6 +74,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     lateinit var userSessionDataStore: UserSessionDataStore
 
     @Inject
+    lateinit var dataStorePreference: DataStorePreference
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val logoutViewModel by lazy { viewModelProvider.get(LogoutViewModel::class.java) }
@@ -181,9 +184,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }.show()
     }
 
-    private fun isEnableDataStore(): Boolean =
-        DataStorePreference(applicationContext).isDataStoreEnabled()
-
     private fun clearData() {
         hideLoading()
         clearStickyLogin()
@@ -229,7 +229,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun clearDataStore() {
-        if(isEnableDataStore()) {
+        if(dataStorePreference.isDataStoreEnabled()) {
             GlobalScope.launch {
                 try {
                     userSessionDataStore.clearDataStore()
