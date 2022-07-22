@@ -18,8 +18,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:paddingBottom="16dp">
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/pdp_icon"
@@ -28,11 +27,9 @@
             android:layout_marginEnd="8dp"
             android:contentDescription="pdp_icon"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/pdp_info_title"
-            app:layout_constraintEnd_toStartOf="@id/pdp_info_title"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/pdp_info_title"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="HardcodedText"
             tools:src="@drawable/ic_product_fintech_qr_normal_24"
             tools:visibility="visible" />
@@ -41,8 +38,7 @@
             android:id="@+id/pdp_info_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toStartOf="@+id/pdp_see"
             app:layout_constraintStart_toEndOf="@+id/pdp_icon"
@@ -50,6 +46,13 @@
             app:typographyType="paragraph_1"
             app:typographyWeight="bold"
             tools:text="Varian Produk" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_title_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="pdp_icon, pdp_info_title" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/pdp_info_desc"
@@ -63,7 +66,7 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pdp_info_title"
+            app:layout_constraintTop_toBottomOf="@+id/barrier_title_bottom"
             app:typographyType="display_2"
             tools:text="@string/ktp_protection" />
 
@@ -72,6 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
+            android:paddingStart="16dp"
             android:text="@string/pdp_general_info_see"
             android:textColor="@color/Unify_GN500"
             android:visibility="gone"

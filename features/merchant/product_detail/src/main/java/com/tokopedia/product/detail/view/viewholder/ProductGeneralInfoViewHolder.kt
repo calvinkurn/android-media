@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -16,6 +17,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicGeneralInfoBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.unifycomponents.toPx
 
 class ProductGeneralInfoViewHolder(
     val view: View,
@@ -29,25 +31,32 @@ class ProductGeneralInfoViewHolder(
     private val binding = ItemDynamicGeneralInfoBinding.bind(view)
 
     override fun bind(element: ProductGeneralInfoDataModel) {
-        val viewWillBeRendered = element.subtitle.isNotEmpty()
+        val shouldRenderView = shouldRenderView(element = element)
 
         // render layout view
-        renderView(viewWillBeRendered)
+        renderView(shouldRender = shouldRenderView)
 
         // render content view
-        if (viewWillBeRendered) {
+        if (shouldRenderView) {
             // set event
-            setEvent(element)
+            setEvent(element = element)
 
             // render icon
-            renderIcon(element)
+            renderIcon(element = element)
 
             // set text to widget
-            setContentWidget(element)
+            setWidgetContent(element = element)
 
             // set widget visibility
-            setWidgetVisibility(element)
+            setWidgetVisibility(element = element)
+
+            // set widget margin
+            setWidgetMargin(element = element)
         }
+    }
+
+    private fun shouldRenderView(element: ProductGeneralInfoDataModel): Boolean {
+        return element.subtitle.isNotEmpty() || element.title.isNotEmpty()
     }
 
     /**
@@ -60,14 +69,16 @@ class ProductGeneralInfoViewHolder(
         }
         // set event
         view.setOnClickListener {
-            listener.onInfoClicked(element.applink, element.name, getComponentTrackData(element))
+            if (element.applink.isNotEmpty()) {
+                listener.onInfoClicked(element.applink, element.name, getComponentTrackData(element))
+            }
         }
     }
 
     /**
      * set text to each widget
      */
-    private fun setContentWidget(element: ProductGeneralInfoDataModel) {
+    private fun setWidgetContent(element: ProductGeneralInfoDataModel) {
         binding.pdpInfoTitle.text = MethodChecker.fromHtml(element.title)
         binding.pdpInfoDesc.text = MethodChecker.fromHtml(element.subtitle)
     }
@@ -103,13 +114,54 @@ class ProductGeneralInfoViewHolder(
     /**
      * show or not [ProductGeneralInfoViewHolder] view
      */
-    private fun renderView(willRender: Boolean) = with(binding) {
-        if (willRender) {
+    private fun renderView(shouldRender: Boolean) = with(binding) {
+        if (shouldRender) {
             infoSeparator.show()
             generalInfoContainer.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         } else {
             infoSeparator.gone()
             generalInfoContainer.layoutParams.height = 0
+        }
+    }
+
+    /**
+     * custom margin widget
+     */
+    private fun setWidgetMargin(element: ProductGeneralInfoDataModel) {
+        // description label
+        if (element.title.isEmpty() && element.parentIcon.isEmpty()) {
+            // avoid broken with `see` label
+            binding.pdpInfoDesc.setMargin(
+                left = 0,
+                top = 0,
+                right = 32.toPx(),
+                bottom = 0
+            )
+        } else {
+            // avoid broken with `see` label
+            binding.pdpInfoDesc.setMargin(
+                left = 0,
+                top = 12.toPx(),
+                right = 0,
+                bottom = 0
+            )
+        }
+
+        // adjust title margin between icon and title when icon is empty,
+        if (element.parentIcon.isEmpty()) {
+            binding.pdpInfoTitle.setMargin(
+                left = 0,
+                top = 0,
+                right = 0,
+                bottom = 0
+            )
+        } else {
+            binding.pdpInfoTitle.setMargin(
+                left = 8.toPx(),
+                top = 0,
+                right = 0,
+                bottom = 0
+            )
         }
     }
 

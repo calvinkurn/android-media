@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -32,12 +33,52 @@ class ProductCustomInfoViewHolder(
     private val binding = ItemDynamicCustomInfoBinding.bind(view)
 
     override fun bind(element: ProductCustomInfoDataModel) {
-        impressComponent(element)
-        setWidgetMargin(element)
-        renderWidget(element)
-        setupAppLink(element)
+        val shouldRenderView = shouldRenderView(element = element)
+
+        renderView(shouldRender = shouldRenderView)
+
+        if (shouldRenderView) {
+            // set impression event
+            impressComponent(element)
+
+            // set widget margin
+            setWidgetMargin(element)
+
+            // render widget
+            setWidgetContent(element)
+
+            // set AppLink
+            setupAppLink(element)
+        }
     }
 
+    /**
+     * get view visibility condition
+     */
+    private fun shouldRenderView(element: ProductCustomInfoDataModel): Boolean {
+        return element.title.isNotEmpty()
+                || element.description.isNotEmpty()
+                || element.labelValue.isNotEmpty()
+    }
+
+    /**
+     * show or not [ProductCustomInfoViewHolder] view
+     */
+    private fun renderView(shouldRender: Boolean) = with(binding) {
+        if (shouldRender) {
+            topSeparator.show()
+            bottomSeparator.show()
+            customLayoutContainer.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        } else {
+            topSeparator.hide()
+            bottomSeparator.hide()
+            customLayoutContainer.layoutParams.height = 0
+        }
+    }
+
+    /**
+     * tracking impression event
+     */
     private fun impressComponent(element: ProductCustomInfoDataModel) {
         if (element.title.isNotEmpty() && element.icon.isNotEmpty()) {
             val componentTrack = getComponentTrackData(element)
@@ -76,7 +117,7 @@ class ProductCustomInfoViewHolder(
     /**
      * render widget and set content with condition
      */
-    private fun renderWidget(element: ProductCustomInfoDataModel) = with(binding) {
+    private fun setWidgetContent(element: ProductCustomInfoDataModel) = with(binding) {
         customDesc.shouldShowWithAction(element.description.isNotEmpty()) {
             customDesc.text = HtmlLinkHelper(view.context, element.description).spannedString
         }
@@ -114,28 +155,45 @@ class ProductCustomInfoViewHolder(
     /**
      * custom margin widget
      */
-    private fun setWidgetMargin(element: ProductCustomInfoDataModel) {
+    private fun setWidgetMargin(element: ProductCustomInfoDataModel) = with(binding) {
         // description label
         if (element.title.isEmpty() && element.icon.isEmpty()) {
             // avoid broken with `see` label
-            binding.customDesc.setMargin(0, 16.toPx(), 32.toPx(), 0)
+            customDesc.setMargin(0, 16.toPx(), 32.toPx(), 0)
         } else {
             // avoid broken with `see` label
-            binding.customDesc.setMargin(0, 12.toPx(), 0, 0)
+            customDesc.setMargin(0, 12.toPx(), 0, 0)
         }
 
-        // adjust title margin between icon and title when icon is empty,
+        // adjust title margin start between icon and title when icon is empty,
         if (element.icon.isEmpty()) {
-            binding.customTitle.setMargin(
+            customTitle.setMargin(
                 left = 0,
                 top = 16.toPx(),
                 right = 0,
                 bottom = 0
             )
         } else {
-            binding.customTitle.setMargin(
+            customTitle.setMargin(
                 left = 8.toPx(),
                 top = 16.toPx(),
+                right = 0,
+                bottom = 0
+            )
+        }
+
+        // adjust label margin top when title, icon and description is empty
+        if (element.title.isEmpty() && element.icon.isEmpty() && element.description.isEmpty()) {
+            labelCustomInfo.setMargin(
+                left = 0.toPx(),
+                top = 16.toPx(),
+                right = 0,
+                bottom = 0
+            )
+        } else {
+            labelCustomInfo.setMargin(
+                left = 0.toPx(),
+                top = 8.toPx(),
                 right = 0,
                 bottom = 0
             )
