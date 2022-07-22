@@ -173,7 +173,6 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
                 tabLayout.addNewTab(listMenu[i].title)
             }
             changeDataSet { telcoTabViewModel.addAll(listMenu) }
-            viewPager.show()
 
             if (listMenu.size > 1) {
                 tabLayout.show()
@@ -340,7 +339,6 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
 
                     if (isInputValid) {
                         hitTrackingForInputNumber()
-                        viewPager.show()
                         signalClientNumberWidget.clearErrorState()
                         signalClientNumberWidget.setButtonEnquiry(true)
                     } else {
