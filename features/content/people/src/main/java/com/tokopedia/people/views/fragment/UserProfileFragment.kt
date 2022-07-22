@@ -165,19 +165,21 @@ class UserProfileFragment @Inject constructor(
             activity?.finish()
         }
 
-        mainBinding.swipeRefreshLayout.setOnRefreshListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            mainBinding.userPostContainer.displayedChild = PAGE_LOADING
             if (viewModel.isShopRecomShow) showLoadingShopRecom()
             refreshLandingPageData(true)
         }
 
         refreshLandingPageData(true)
-        binding.rootContainer.displayedChild = PAGE_LOADING
+        binding.viewFlipper.displayedChild = PAGE_LOADING
+        mainBinding.userPostContainer.displayedChild = PAGE_LOADING
 
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             shouldRefreshRecyclerView = verticalOffset == 0
         })
 
-        mainBinding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
+        binding.swipeRefreshLayout.setOnChildScrollUpCallback { _, _ ->
             mainBinding.rvPost.canScrollVertically(-1) || !shouldRefreshRecyclerView
         }
 
@@ -453,15 +455,13 @@ class UserProfileFragment @Inject constructor(
     ) {
         if(prev == curr || curr == ProfileUiModel.Empty) return
 
-        binding.rootContainer.displayedChild = PAGE_CONTENT
-
         userProfileTracker.openUserProfile(
             viewModel.profileUserID,
             live = curr.liveInfo.isLive
         )
 
-        if(mainBinding.swipeRefreshLayout.isRefreshing) {
-            mainBinding.swipeRefreshLayout.isRefreshing = false
+        if(binding.swipeRefreshLayout.isRefreshing) {
+            binding.swipeRefreshLayout.isRefreshing = false
         }
 
         /** Setup Profile Info */
@@ -490,9 +490,11 @@ class UserProfileFragment @Inject constructor(
                     textSeeMore.show()
                 }
             } else textSeeMore.hide()
-
-            headerProfile.title = curr.name
         }
+        binding.headerProfile.title = curr.name
+        binding.headerProfile.alpha = 1F
+
+        binding.viewFlipper.displayedChild = PAGE_CONTENT
     }
 
     private fun renderButtonAction(
@@ -626,7 +628,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun setHeader() {
-        mainBinding.headerProfile.apply {
+        binding.headerProfile.apply {
             setNavigationOnClickListener {
                 activity?.onBackPressed()
                 userProfileTracker.clickBack(userSession.userId, self = viewModel.isSelfProfile)
@@ -639,7 +641,7 @@ class UserProfileFragment @Inject constructor(
             imgShare.setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000
                 ),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
@@ -659,7 +661,7 @@ class UserProfileFragment @Inject constructor(
             imgMenu.setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000
                 ),
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
@@ -686,12 +688,12 @@ class UserProfileFragment @Inject constructor(
 
     private fun showGlobalError(type: Int) {
         with(binding) {
-            rootContainer.displayedChild = PAGE_ERROR
+            viewFlipper.displayedChild = PAGE_ERROR
             globalError.setType(type)
             globalError.show()
 
             globalError.setActionClickListener {
-                binding.rootContainer.displayedChild = PAGE_LOADING
+                binding.viewFlipper.displayedChild = PAGE_LOADING
                 refreshLandingPageData()
             }
         }
@@ -728,6 +730,7 @@ class UserProfileFragment @Inject constructor(
         intent.putExtra(KEY_TITLE, getString(feedComponentR.string.feed_post_sebagai))
         intent.putExtra(KEY_APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
         intent.putExtra(KEY_IS_CREATE_POST_AS_BUYER, true)
+        intent.putExtra(KEY_IS_OPEN_FROM, VALUE_IS_OPEN_FROM_USER_PROFILE)
         startActivity(intent)
     }
 
@@ -741,6 +744,19 @@ class UserProfileFragment @Inject constructor(
         bundle.putString(EXTRA_TOTAL_FOLLOWERS, viewModel.totalFollower)
         bundle.putBoolean(EXTRA_IS_FOLLOWERS, isFollowers)
         return bundle
+    }
+
+    private fun emptyPostSelf() {
+        mainBinding.emptyPost.textErrorEmptyTitle.text = getString(R.string.up_empty_post_title_on_self)
+        mainBinding.emptyPost.textErrorEmptyDesc.apply {
+            text = getString(R.string.up_empty_post_desc_on_self)
+            show()
+        }
+    }
+
+    private fun emptyPostVisitor() {
+        mainBinding.emptyPost.textErrorEmptyTitle.text = getString(R.string.up_empty_post_on_visitor)
+        mainBinding.emptyPost.textErrorEmptyDesc.hide()
     }
 
     override fun onShopRecomCloseClicked(itemID: Long) {
@@ -779,6 +795,8 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onEmptyList(rawObject: Any?) {
+        if (viewModel.isSelfProfile) emptyPostSelf()
+        else emptyPostVisitor()
         mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
     }
 
@@ -890,6 +908,8 @@ class UserProfileFragment @Inject constructor(
         private const val KEY_TITLE = "title"
         private const val KEY_APPLINK_FOR_GALLERY_PROCEED = "link_gall"
         private const val KEY_IS_CREATE_POST_AS_BUYER = "is_create_post_as_buyer"
+        private const val KEY_IS_OPEN_FROM = "key_is_open_from"
+        private const val VALUE_IS_OPEN_FROM_USER_PROFILE = 11023
 
         private const val TAG = "UserProfileFragment"
 
