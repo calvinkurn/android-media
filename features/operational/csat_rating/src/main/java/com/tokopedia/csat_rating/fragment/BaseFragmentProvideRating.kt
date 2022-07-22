@@ -50,6 +50,8 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
         const val CAPTION_LIST = "captionList"
         const val QUESTION_LIST = "questionList"
         const val NO_EMOJI = 0
+        const val minLength = 1
+        const val maxLength = 29
 
         fun newInstance(bundle: Bundle): BaseFragmentProvideRating {
             val fragment = BaseFragmentProvideRating()
@@ -169,7 +171,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
                         selectedOption.add(typeFilter)
                     }
                 }
-                handleSubmitButtonState()
+                handleSubmitButtonState(0)
             }
         })
     }
@@ -240,8 +242,8 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     open fun getTextFinishedId():Int = R.id.txt_finished
     open fun getFilterReviewId():Int = R.id.filter_review
 
-    fun handleSubmitButtonState() {
-        if (mFilterReview.isAnyItemSelected) {
+    fun handleSubmitButtonState(reviewLength : Int) {
+        if (mFilterReview.isAnyItemSelected && reviewLength !in minLength..maxLength) {
             enableSubmitButton()
         } else {
             disableSubmitButton()
