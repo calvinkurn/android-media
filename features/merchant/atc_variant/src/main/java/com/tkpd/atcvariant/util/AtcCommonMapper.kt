@@ -1,7 +1,11 @@
 package com.tkpd.atcvariant.util
 
 import android.content.Intent
-import com.tkpd.atcvariant.data.uidata.*
+import com.tkpd.atcvariant.data.uidata.PartialButtonDataModel
+import com.tkpd.atcvariant.data.uidata.ProductHeaderData
+import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
+import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
+import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -32,13 +36,6 @@ import com.tokopedia.usecase.coroutines.Success
  */
 object AtcCommonMapper {
 
-    private const val KEY_COLOUR_VARIANT = "colour"
-    private const val KEY_VALUE_VARIANT = "value"
-    private const val KEY_HEX_VARIANT = "hex"
-    private const val KEY_ID_VARIANT = "id"
-    private const val KEY_SIZE_VARIANT = "size"
-    private const val DEFAULT_MIN_ORDER = 1
-
     fun generateAtcData(actionButtonCart: Int,
                         selectedChild: VariantChild?,
                         selectedWarehouse: WarehouseInfo?,
@@ -48,7 +45,7 @@ object AtcCommonMapper {
                         categoryName: String,
                         shippingMinPrice: Double,
                         userId: String,
-                        isTokoNow: Boolean,
+                        showQtyEditor: Boolean,
                         selectedStock: Int
     ): Any {
         return when (actionButtonCart) {
@@ -91,11 +88,15 @@ object AtcCommonMapper {
                 )
             }
             else -> {
+                val quantityData = if (showQtyEditor)
+                    selectedStock
+                else
+                    selectedChild?.getFinalMinOrder() ?: 0
+
                 AddToCartRequestParams().apply {
                     productId = selectedChild?.productId?.toLongOrZero() ?: 0L
                     shopId = shopIdInt
-                    quantity = if (isTokoNow) selectedStock else selectedChild?.getFinalMinOrder()
-                            ?: 0
+                    quantity = quantityData
                     notes = ""
                     attribution = trackerAttributionPdp
                     listTracker = trackerListNamePdp
@@ -177,14 +178,14 @@ object AtcCommonMapper {
     }
 
     fun mapToVisitable(
-        selectedChild: VariantChild?,
-        isTokoNow: Boolean,
-        initialSelectedVariant: MutableMap<String, String>,
-        processedVariant: List<VariantCategory>?,
-        selectedProductFulfillment: Boolean,
-        selectedQuantity: Int,
-        shouldShowDeleteButton: Boolean,
-        aggregatorUiData: ProductVariantAggregatorUiData?,
+            selectedChild: VariantChild?,
+            showQtyEditor: Boolean,
+            initialSelectedVariant: MutableMap<String, String>,
+            processedVariant: List<VariantCategory>?,
+            selectedProductFulfillment: Boolean,
+            selectedQuantity: Int,
+            shouldShowDeleteButton: Boolean,
+            aggregatorUiData: ProductVariantAggregatorUiData?,
     ): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
@@ -229,7 +230,7 @@ object AtcCommonMapper {
                         minOrder = selectedChild?.getFinalMinOrder() ?: 0,
                         maxOrder = selectedChild?.getFinalMaxOrder() ?: DEFAULT_ATC_MAX_ORDER,
                         shouldShowDeleteButton = shouldShowDeleteButton,
-                        shouldShowView = isTokoNow && selectedChild?.isBuyable == true)
+                        shouldShowView = showQtyEditor && selectedChild?.isBuyable == true)
         ).also {
             idCounter += 1
         }
@@ -256,12 +257,10 @@ object AtcCommonMapper {
                         selectedVariantChild: VariantChild?,
                         variantImage: String,
                         selectedProductFulfillment: Boolean,
-                        isTokoNow: Boolean,
+                        showQtyEditor: Boolean,
                         selectedQuantity: Int,
                         shouldShowDeleteButton: Boolean,
                         aggregatorUiData: ProductVariantAggregatorUiData?): List<AtcVariantVisitable> {
-
-
 
         return oldList.map {
             when (it) {
@@ -277,7 +276,7 @@ object AtcCommonMapper {
                             maxOrder = selectedVariantChild?.getFinalMaxOrder()
                                     ?: DEFAULT_ATC_MAX_ORDER,
                             shouldShowDeleteButton = shouldShowDeleteButton,
-                            shouldShowView = isTokoNow && selectedVariantChild?.isBuyable == true)
+                            shouldShowView = showQtyEditor && selectedVariantChild?.isBuyable == true)
                 }
                 is VariantHeaderDataModel -> {
                     if (isPartiallySelected) {
