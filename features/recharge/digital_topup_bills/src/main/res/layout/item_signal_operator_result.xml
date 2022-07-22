@@ -18,7 +18,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/signal_operator_value"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:lines="1"
         android:textColor="@color/Unify_N700_96"
