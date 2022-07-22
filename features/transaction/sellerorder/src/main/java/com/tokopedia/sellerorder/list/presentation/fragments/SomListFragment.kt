@@ -1977,7 +1977,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         showCommonToaster(view, message)
     }
 
-    private fun toggleBulkAction(enable: Boolean = !viewModel.isMultiSelectEnabled) {
+    protected fun toggleBulkAction(enable: Boolean = !viewModel.isMultiSelectEnabled) {
         viewModel.isMultiSelectEnabled = enable
     }
 
