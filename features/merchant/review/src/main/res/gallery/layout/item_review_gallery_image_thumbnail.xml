@@ -67,6 +67,15 @@
             app:layout_constraintTop_toBottomOf="@id/iv_review_gallery_image_thumbnail_rating"
             app:typographyType="body_3" />
 
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_review_gallery_image_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect"
+            app:unify_image_corner_radius="0" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>
