@@ -41,7 +41,14 @@ data class HomeBalanceModel(
     }
 
     override fun equals(other: Any?): Boolean {
-        return false
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HomeBalanceModel
+
+        if (balanceDrawerItemModels != other.balanceDrawerItemModels) return false
+
+        return true
     }
 
     override fun hashCode(): Int {
