@@ -57,12 +57,12 @@ class FeedUGCTncOnboardingStrategy @Inject constructor(
                     _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
                 }
 
-                _hasAcceptTnc.update { result }
                 _isSubmit.update { false }
+                _hasAcceptTnc.update { result }
             }
         }) {
-            _hasAcceptTnc.update { false }
             _isSubmit.update { false }
+            _hasAcceptTnc.update { false }
             _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
         }
     }

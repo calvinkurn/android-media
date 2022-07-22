@@ -109,8 +109,8 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
                     _uiEvent.emit(FeedUGCOnboardingUiEvent.ShowError)
                 }
 
-                _hasAcceptTnc.update { acceptTncResult }
                 _isSubmit.update { false }
+                _hasAcceptTnc.update { acceptTncResult }
             }
         }) {
             submitFail()
@@ -131,8 +131,8 @@ class FeedUGCCompleteOnboardingStrategy @Inject constructor(
     }
 
     private fun submitFail() {
-        _hasAcceptTnc.update { false }
         _isSubmit.update { false }
+        _hasAcceptTnc.update { false }
     }
 
     companion object {
