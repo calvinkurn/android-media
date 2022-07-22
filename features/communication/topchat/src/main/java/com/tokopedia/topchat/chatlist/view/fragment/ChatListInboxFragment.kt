@@ -61,6 +61,7 @@ import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatListWebSocketViewModel
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
+import com.tokopedia.topchat.chatlist.view.widget.OperationalInsightBottomSheet
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.custom.ChatFilterView
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
@@ -111,6 +112,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
     private var filterMenu = FilterMenu()
+    private var operationalInsightBottomSheet: OperationalInsightBottomSheet? = null
     private var chatBannedSellerTicker: Ticker? = null
     private var rv: RecyclerView? = null
     private var rvAdapter: ChatListAdapter? = null
@@ -262,6 +264,18 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun onScrollToTop() {}
 
+    override fun onOperationalInsightTickerClicked() {
+        if (operationalInsightBottomSheet == null) {
+            operationalInsightBottomSheet = OperationalInsightBottomSheet()
+        }
+        if (operationalInsightBottomSheet?.isAdded == true) return
+        operationalInsightBottomSheet?.show(childFragmentManager, FilterMenu.TAG)
+    }
+
+    override fun onOperationalInsightCloseButtonClicked(visitable: Visitable<*>) {
+        adapter?.removeElement(visitable)
+    }
+
     private fun setupLifecycleObserver() {
         viewLifecycleOwner.lifecycle.addObserver(webSocket)
     }
@@ -380,7 +394,13 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         setupWebSocketObserver()
         viewModel.mutateChatList.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessGetChatList(it.data.data)
+                is Success -> {
+                    onSuccessGetChatList(it.data.data)
+                    if (isTabSeller() && isFirstPage()) {
+//                    if (GlobalConfig.isSellerApp())  {
+                        viewModel.getOperationalInsight(userSession.shopId)
+                    }
+                }
                 is Fail -> onFailGetChatList(it.throwable)
             }
         })
@@ -417,6 +437,11 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 }
             }
         })
+        viewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
+            if (it is Success && it.data.showTicker == true) {
+                adapter?.addElement(0, it.data)
+            }
+        }
     }
 
     private fun setupWebSocketObserver() {

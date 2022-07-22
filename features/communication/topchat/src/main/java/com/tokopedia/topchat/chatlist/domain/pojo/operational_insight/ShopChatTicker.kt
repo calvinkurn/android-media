@@ -1,6 +1,8 @@
 package com.tokopedia.topchat.chatlist.domain.pojo.operational_insight
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFactory
 
 data class ShopChatTicker(
     @SerializedName("Date")
@@ -29,4 +31,9 @@ data class ShopChatTicker(
 
     @SerializedName("ShowTicker")
     var showTicker: Boolean? = false
-)
+) : Visitable<ChatListTypeFactory> {
+
+    override fun type(typeFactory: ChatListTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+}

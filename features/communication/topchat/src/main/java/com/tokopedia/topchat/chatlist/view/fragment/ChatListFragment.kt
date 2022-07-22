@@ -108,9 +108,8 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
     private var filterMenu = FilterMenu()
-    private var operationalInsightBottomSheet = OperationalInsightBottomSheet()
+    private var operationalInsightBottomSheet: OperationalInsightBottomSheet? = null
     private var chatBannedSellerTicker: Ticker? = null
-    private var chatPerformanceSellerTicker: ConstraintLayout? = null
     private var rv: RecyclerView? = null
     private var emptyUiModel: Visitable<*>? = null
     private var menu: Menu? = null
@@ -286,16 +285,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         showLoading()
         broadCastButton = view.findViewById(R.id.fab_broadcast)
         chatBannedSellerTicker = view.findViewById(R.id.ticker_ban_status)
-        chatPerformanceSellerTicker = view.findViewById(R.id.layout_ticker_chat_performance)
         rv = view.findViewById(R.id.recycler_view)
-
-        initViewListener()
-    }
-
-    private fun initViewListener() {
-        chatPerformanceSellerTicker?.setOnClickListener {
-            onChatPerformanceSellerTickerClicked()
-        }
     }
 
     private fun setUpRecyclerView(view: View) {
@@ -314,7 +304,8 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             when (it) {
                 is Success -> {
                     onSuccessGetChatList(it.data.data)
-                    if (isTabSeller()) {
+                    if (isTabSeller() && isFirstPage()) {
+//                    if (GlobalConfig.isSellerApp())  {
                         chatItemListViewModel.getOperationalInsight(userSession.shopId)
                     }
                 }
@@ -353,26 +344,9 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         }
 
         chatItemListViewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
-            when(it) {
-                is Success -> {
-                    if (it.data.showTicker == true) {
-                        chatPerformanceSellerTicker?.show()
-                    } else {
-                        chatPerformanceSellerTicker?.hide()
-                    }
-                }
-                is Fail -> {
-                    it.throwable.printStackTrace()
-                    chatPerformanceSellerTicker?.hide()
-                }
+            if (it is Success && it.data.showTicker == true) {
+                adapter?.addElement(0, it.data)
             }
-        }
-    }
-
-    fun onChatPerformanceSellerTickerClicked() {
-        activity?.let {
-            if (operationalInsightBottomSheet.isAdded) return@let
-            operationalInsightBottomSheet.show(childFragmentManager, FilterMenu.TAG)
         }
     }
 
@@ -628,7 +602,6 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                         showToaster(R.string.title_success_delete_chat)
                     }
                 }
-                Unit
             }
         }
     }
@@ -662,6 +635,18 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         rv?.post {
             rv?.smoothScrollToPosition(RV_TOP_POSITION)
         }
+    }
+
+    override fun onOperationalInsightTickerClicked() {
+        if (operationalInsightBottomSheet == null) {
+            operationalInsightBottomSheet = OperationalInsightBottomSheet()
+        }
+        if (operationalInsightBottomSheet?.isAdded == true) return
+        operationalInsightBottomSheet?.show(childFragmentManager, FilterMenu.TAG)
+    }
+
+    override fun onOperationalInsightCloseButtonClicked(visitable: Visitable<*>) {
+        adapter?.removeElement(visitable)
     }
 
     private fun onViewCreatedFirstSight(view: View?) {
