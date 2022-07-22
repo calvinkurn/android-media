@@ -52,12 +52,11 @@
         android:id="@+id/label_discount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
         app:labelTitle="20%"
         app:labelType="general_light_red"
-        app:layout_constraintBottom_toBottomOf="@+id/tpg_discounted_price"
-        app:layout_constraintStart_toEndOf="@+id/tpg_discounted_price"
-        app:layout_constraintTop_toTopOf="@+id/tpg_discounted_price" />
+        app:layout_constraintStart_toStartOf="@+id/tpg_discounted_price"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_discounted_price" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_original_price"
@@ -82,7 +81,7 @@
         app:labelTitle="Belum Lengkap"
         app:labelType="general_light_grey"
         app:layout_constraintStart_toStartOf="@+id/check_product_item"
-        app:layout_constraintTop_toBottomOf="@+id/image_product_item" />
+        app:layout_constraintTop_toBottomOf="@+id/tpg_original_price" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_error_copy"
@@ -217,7 +216,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="start"
-        app:constraint_referenced_ids="icon_dilayani_tokopedia"/>
+        app:constraint_referenced_ids="image_product_item, label_discount"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineStarter"
