@@ -102,7 +102,7 @@ class CampaignListViewModel @Inject constructor(
 
     }
 
-    fun getShareComponentThumbnailImageUrl(campaignId: Long) {
+    private fun getShareComponentThumbnailImageUrl(campaignId: Long) {
         launchCatchError(
             dispatchers.io,
             block = {
