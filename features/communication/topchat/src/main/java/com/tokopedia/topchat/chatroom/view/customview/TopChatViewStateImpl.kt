@@ -97,7 +97,7 @@ open class TopChatViewStateImpl constructor(
 
 
     var chatTextAreaTabLayout: ChatTextAreaTabLayout? = null
-    private var chatTextAreaShimmer: LoaderUnify? = null
+    var chatTextAreaShimmer: LoaderUnify? = null
 
     var isAbleToReply: Boolean? = null
         set(value) {

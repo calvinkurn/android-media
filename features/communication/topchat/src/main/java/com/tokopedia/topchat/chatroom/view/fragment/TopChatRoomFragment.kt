@@ -1543,6 +1543,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         resultProducts?.let { products ->
             removeSrwBubble()
             removeSrwPreview()
+            topchatViewState?.chatTextAreaShimmer?.show()
             val productIds = products.map { it.productId }
             viewModel.loadProductPreview(productIds)
         }
@@ -2897,6 +2898,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val afterReadyState = viewModel.isAttachmentPreviewReady()
         if (!previousReadyState && afterReadyState) {
             reloadSrw()
+        } else if (!afterReadyState) {
+            //when fail to get attachment, update srw preview state to hide loading & srw
+            updateSrwPreviewState()
         }
     }
 
