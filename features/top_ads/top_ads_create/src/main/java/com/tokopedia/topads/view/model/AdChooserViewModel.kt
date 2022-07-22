@@ -66,19 +66,9 @@ class AdChooserViewModel @Inject constructor(
             toggle_status, CHANNEL, budget, userSession.shopId, SOURCE
         ))
 
-        queryPostAutoadsUseCase.setParam(param).execute(
-            onSuccess = { data ->
-                _autoAdsData.postValue(
-                    if(data.autoAds.data != null) {
-                        Success(data = data.autoAds.data!!)
-                    } else {
-                        Fail(Throwable(data.autoAds.error.firstOrNull()?.detail))
-                    }
-                )
-            }, onError = {
-                it.printStackTrace()
-            }
-        )
+        queryPostAutoadsUseCase.executeQuery(param) {
+            _autoAdsData.postValue(it)
+        }
     }
 
     fun getAutoAdsStatus(onSuccess: ((AutoAdsResponse) -> Unit)) {

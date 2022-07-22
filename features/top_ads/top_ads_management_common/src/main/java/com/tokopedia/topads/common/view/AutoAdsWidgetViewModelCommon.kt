@@ -63,19 +63,9 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
     }
 
     fun postAutoAds(param: AutoAdsParam) {
-        queryPostAutoadsUseCase.setParam(param).execute(
-            onSuccess = { data ->
-                _autoAdsData.postValue(
-                    if(data.autoAds.data != null) {
-                        Success(data = data.autoAds.data)
-                    } else {
-                        Fail(Throwable(data.autoAds.error.firstOrNull()?.detail))
-                    }
-                )
-            }, onError = {
-                it.printStackTrace()
-            }
-        )
+        queryPostAutoadsUseCase.executeQuery(param) {
+            _autoAdsData.postValue(it)
+        }
     }
 
     fun getNotDeliveredReason(shopID: String) {
