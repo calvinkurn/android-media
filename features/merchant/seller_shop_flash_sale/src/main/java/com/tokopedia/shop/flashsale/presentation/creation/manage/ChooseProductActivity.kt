@@ -9,11 +9,11 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_COUNT
 
 class ChooseProductActivity : BaseSimpleActivity() {
 
     companion object {
-        const val BUNDLE_KEY_SELECTED_PRODUCT_COUNT = "selected_count"
         @JvmStatic
         fun createIntent(context: Context, campaignId: String, selectedProductCount: Int) =
             Intent(context, ChooseProductActivity::class.java).apply {

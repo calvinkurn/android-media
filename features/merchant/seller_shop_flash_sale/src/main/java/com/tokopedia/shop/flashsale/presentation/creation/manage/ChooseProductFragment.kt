@@ -14,6 +14,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentChooseProductBinding
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
+import com.tokopedia.shop.flashsale.common.constant.BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_COUNT
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant.PRODUCT_LIST_SIZE
 import com.tokopedia.shop.flashsale.common.customcomponent.BaseSimpleListFragment
 import com.tokopedia.shop.flashsale.common.extension.*
@@ -41,7 +42,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
             val fragment = ChooseProductFragment()
             val bundle = Bundle()
             bundle.putString(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
-            bundle.putInt(ChooseProductActivity.BUNDLE_KEY_SELECTED_PRODUCT_COUNT, selectedProductCount)
+            bundle.putInt(BUNDLE_KEY_SELECTED_PRODUCT_COUNT, selectedProductCount)
             fragment.arguments = bundle
             return fragment
         }
@@ -56,7 +57,7 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         arguments?.getString(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
     }
     private val selectedProductCount by lazy {
-        arguments?.getInt(ChooseProductActivity.BUNDLE_KEY_SELECTED_PRODUCT_COUNT).orZero()
+        arguments?.getInt(BUNDLE_KEY_SELECTED_PRODUCT_COUNT).orZero()
     }
     private val animateScrollDebounce: (Int) -> Unit by lazy {
         debounce(GUIDELINE_ANIMATION_DELAY, GlobalScope) {
