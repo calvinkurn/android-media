@@ -1565,7 +1565,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             bundleListSize: Int,
             productDetails: List<ShopHomeBundleProductUiModel>,
             bundleName: String,
-            widgetLayout: ShopHomeWidgetLayout
+            widgetLayout: ShopHomeWidgetLayout,
+            bundleGroupId: String
     ) {
         if (isOwner) {
             // disable owner add their own bundle to cart
@@ -1611,7 +1612,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             bundleListSize: Int,
             bundleProducts: ShopHomeBundleProductUiModel,
             bundleName: String,
-            widgetLayout: ShopHomeWidgetLayout
+            widgetLayout: ShopHomeWidgetLayout,
+            bundleGroupId: String
     ) {
         if (isOwner) {
             // disable owner add their own bundle to cart

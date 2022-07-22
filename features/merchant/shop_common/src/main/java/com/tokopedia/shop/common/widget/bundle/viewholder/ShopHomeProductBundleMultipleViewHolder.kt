@@ -106,7 +106,8 @@ class ShopHomeProductBundleMultipleViewHolder(
                     bundleListSize,
                     bundle.bundleProducts,
                     bundle.bundleName,
-                    widgetLayout
+                    widgetLayout,
+                    bundle.bundleGroupId
             )
         }
     }

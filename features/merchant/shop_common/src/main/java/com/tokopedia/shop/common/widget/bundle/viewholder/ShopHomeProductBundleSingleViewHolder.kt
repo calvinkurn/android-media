@@ -138,7 +138,8 @@ class ShopHomeProductBundleSingleViewHolder(
                     bundleListSize,
                     singleBundleProduct,
                     parentSingleBundle.bundleName,
-                    widgetLayout
+                    widgetLayout,
+                    bundle.bundleGroupId
             )
         }
     }
@@ -193,7 +194,8 @@ interface SingleProductBundleListener {
             bundleListSize: Int,
             bundleProducts: ShopHomeBundleProductUiModel,
             bundleName: String,
-            widgetLayout: ShopHomeWidgetLayout
+            widgetLayout: ShopHomeWidgetLayout,
+            bundleGroupId: String
     )
     fun onTrackSingleVariantChange(
             selectedProduct: ShopHomeBundleProductUiModel,

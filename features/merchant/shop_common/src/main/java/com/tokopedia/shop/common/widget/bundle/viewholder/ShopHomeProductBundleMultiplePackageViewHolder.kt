@@ -70,7 +70,8 @@ interface MultipleProductBundleListener {
             bundleListSize: Int,
             productDetails: List<ShopHomeBundleProductUiModel>,
             bundleName: String,
-            widgetLayout: ShopHomeWidgetLayout
+            widgetLayout: ShopHomeWidgetLayout,
+            bundleGroupId: String
     )
     fun impressionProductBundleMultiple(
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,

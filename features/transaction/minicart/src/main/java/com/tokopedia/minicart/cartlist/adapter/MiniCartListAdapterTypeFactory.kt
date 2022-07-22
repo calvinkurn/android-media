@@ -53,7 +53,11 @@ class MiniCartListAdapterTypeFactory(
     }
 
     override fun type(uiModel: MiniCartProductBundleRecomUiModel): Int {
-        return MiniCartProductBundleViewHolder.LAYOUT
+        return MiniCartProductBundleRecomViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: MiniCartProductBundleRecomShimmeringUiModel): Int {
+        return MiniCartProductBundleRecomShimmeringViewHolder.LAYOUT
     }
 
     override fun type(uiModel: LoadingModel): Int {
@@ -98,9 +102,13 @@ class MiniCartListAdapterTypeFactory(
                 val viewBinding = ItemMiniCartLoadingBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
                 MiniCartLoadingViewHolder(viewBinding)
             }
-            MiniCartProductBundleViewHolder.LAYOUT -> {
+            MiniCartProductBundleRecomViewHolder.LAYOUT -> {
                 val viewBinding = ItemMiniCartProductBundleBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
-                MiniCartProductBundleViewHolder(viewBinding, multipleProductBundleListener, singleProductBundleListener)
+                MiniCartProductBundleRecomViewHolder(viewBinding, multipleProductBundleListener, singleProductBundleListener)
+            }
+            MiniCartProductBundleRecomShimmeringViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartProductBundleRecomShimmeringBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                MiniCartProductBundleRecomShimmeringViewHolder(viewBinding)
             }
             else -> super.createViewHolder(view, viewType)
         }

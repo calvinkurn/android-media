@@ -12,7 +12,7 @@ import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidg
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
 
-class MiniCartProductBundleViewHolder (
+class MiniCartProductBundleRecomViewHolder (
     private val viewBinding: ItemMiniCartProductBundleBinding,
     private val multipleProductBundleListener: MultipleProductBundleListener? = null,
     private val singleProductBundleListener: SingleProductBundleListener? = null

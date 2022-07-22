@@ -148,6 +148,9 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                     onResultFromEditBundle(resultCode, data)
                 }
             }
+            override fun onDismiss() {
+                viewModel?.tmpProductBundleRecomUiModel = null
+            }
         }).apply {
             showCloseIcon = false
             showHeader = true
@@ -214,9 +217,16 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 bundleListSize: Int,
                 productDetails: List<ShopHomeBundleProductUiModel>,
                 bundleName: String,
-                widgetLayout: ShopHomeWidgetLayout
+                widgetLayout: ShopHomeWidgetLayout,
+                bundleGroupId: String
             ) {
-
+                showProgressLoading()
+                viewModel?.addBundleToCart(
+                    bundleGroupId = bundleGroupId,
+                    bundleId = selectedMultipleBundle.bundleId,
+                    productDetails = productDetails,
+                    productQuantity = selectedMultipleBundle.minOrder
+                )
             }
 
             override fun impressionProductBundleMultiple(
@@ -242,9 +252,15 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 bundleListSize: Int,
                 bundleProducts: ShopHomeBundleProductUiModel,
                 bundleName: String,
-                widgetLayout: ShopHomeWidgetLayout
+                widgetLayout: ShopHomeWidgetLayout,
+                bundleGroupId: String
             ) {
-                viewModel?.updateProductBundle(bundleName)
+                viewModel?.addBundleToCart(
+                    bundleGroupId = bundleGroupId,
+                    bundleId = selectedBundle.bundleId,
+                    productDetails = listOf(bundleProducts),
+                    productQuantity = selectedBundle.minOrder
+                )
             }
 
             override fun onTrackSingleVariantChange(
@@ -320,7 +336,39 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 GlobalEvent.STATE_FAILED_TO_CHECKOUT -> {
                     onFailedGoToCheckout(viewBinding, it, fragmentManager)
                 }
+                GlobalEvent.STATE_SUCCESS_ADD_TO_CART_BUNDLE_RECOM_ITEM -> {
+                    onSuccessAddToCartProductBundleRecom(viewBinding)
+                }
+                GlobalEvent.STATE_FAILED_ADD_TO_CART_BUNDLE_RECOM_ITEM -> {
+                    onFailedAddToCartProductBundleRecom(it, viewBinding)
+                }
             }
+        }
+    }
+
+    private fun onSuccessAddToCartProductBundleRecom(viewBinding: LayoutBottomsheetMiniCartListBinding) {
+        hideProgressLoading()
+
+        viewBinding.bottomsheetContainer.let { container ->
+            bottomSheetListener?.showToaster(
+                view = container,
+                message = container.context.getString(R.string.mini_cart_product_bundle_recommendation_success_toaster_description),
+                type = Toaster.TYPE_NORMAL
+            )
+        }
+    }
+
+    private fun onFailedAddToCartProductBundleRecom(globalEvent: GlobalEvent, viewBinding: LayoutBottomsheetMiniCartListBinding) {
+        hideProgressLoading()
+
+        val messageError = globalEvent.data as? String
+
+        viewBinding.bottomsheetContainer.let { container ->
+            bottomSheetListener?.showToaster(
+                view = container,
+                message = if (messageError.isNullOrEmpty()) ErrorHandler.getErrorMessage(context = container.context, globalEvent.throwable) else messageError,
+                type = Toaster.TYPE_ERROR
+            )
         }
     }
 
