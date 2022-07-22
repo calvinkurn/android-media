@@ -89,9 +89,9 @@ class ProductCustomInfoViewHolder(
             customTitle.text = element.title
         }
 
-        binding.labelCustomInfo.shouldShowWithAction(element.labelValue.isNotEmpty()) {
-            binding.labelCustomInfo.setLabel(element.labelValue)
-            binding.labelCustomInfo.setLabelType(element.labelColor)
+        labelCustomInfo.shouldShowWithAction(element.labelValue.isNotEmpty()) {
+            labelCustomInfo.setLabel(element.labelValue)
+            labelCustomInfo.setLabelType(element.getLabelTypeByColor())
         }
 
         // separator

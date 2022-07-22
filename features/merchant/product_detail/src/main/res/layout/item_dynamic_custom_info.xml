@@ -79,8 +79,8 @@
             android:paddingEnd="0dp"
             android:text="@string/pdp_general_info_see"
             android:textColor="@color/Unify_GN500"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:visibility="visible" />
