@@ -41,6 +41,11 @@ object DataProvider {
         return json.miniCart
     }
 
+    fun provideGetMiniCartListSuccessMultipleAvailableAndUnavailableOneCart(): MiniCartData {
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_multiple_available_unavailable_one_cart"), MiniCartGqlResponse::class.java)
+        return json.miniCart
+    }
+
     fun provideGetMiniCartBundleListSuccessAvailableAndUnavailable(): MiniCartData {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_bundle_success_available_and_unavailable"), MiniCartGqlResponse::class.java)
         return json.miniCart

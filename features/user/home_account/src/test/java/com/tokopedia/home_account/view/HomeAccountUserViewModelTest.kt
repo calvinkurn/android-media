@@ -10,9 +10,9 @@ import com.tokopedia.home_account.account_settings.data.model.UserProfileSetting
 import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
-import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
-import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
-import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
+import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
+import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
+import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
