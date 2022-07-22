@@ -11,6 +11,7 @@ import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductM
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.result.product.pagination.PaginationImpl
@@ -87,6 +88,7 @@ internal open class ProductListPresenterTestFixtures {
             topAdsHeadlineHelper,
             { performanceMonitoring },
             ChooseAddressPresenterDelegate(chooseAddressView),
+            BannerPresenterDelegate(pagination),
             RequestParamsGenerator(userSession, pagination),
             pagination,
         )
@@ -120,7 +122,12 @@ internal open class ProductListPresenterTestFixtures {
                 topAdsProductListIndex++
             }
             else {
-                productItem.assertOrganicProduct(organicProductList[organicProductListIndex], expectedOrganicProductPosition)
+                productItem.assertOrganicProduct(
+                    organicProductList[organicProductListIndex],
+                    expectedOrganicProductPosition,
+                    "",
+                    searchProductModel.getProductListType(),
+                )
                 expectedOrganicProductPosition++
                 organicProductListIndex++
             }
@@ -154,6 +161,7 @@ internal open class ProductListPresenterTestFixtures {
         organicProduct: SearchProductModel.Product,
         position: Int,
         expectedPageTitle: String = "",
+        productListType: String = "",
     ) {
         val productItem = this as ProductItemDataView
 
@@ -178,6 +186,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.price shouldBe organicProduct.price
         productItem.minOrder shouldBe organicProduct.minOrder
         productItem.pageTitle shouldBe expectedPageTitle
+        productItem.productListType shouldBe productListType
     }
 
     @Suppress("UNCHECKED_CAST")

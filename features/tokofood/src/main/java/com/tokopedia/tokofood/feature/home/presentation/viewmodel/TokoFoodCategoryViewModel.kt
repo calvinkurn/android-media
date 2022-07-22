@@ -120,6 +120,12 @@ class TokoFoodCategoryViewModel @Inject constructor(
         _categoryLayoutList.postValue(Success(data))
     }
 
+    fun isShownEmptyState(): Boolean {
+        val layoutList = categoryLayoutItemList.toMutableList()
+        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
+        return isError
+    }
+
     private fun loadMoreMerchant(localCacheModel: LocalCacheModel, option: Int,
                                  sortBy: Int, cuisine: String, brandUId: String) {
         launchCatchError(block = {

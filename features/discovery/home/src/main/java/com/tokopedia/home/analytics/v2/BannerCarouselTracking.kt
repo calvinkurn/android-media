@@ -61,7 +61,7 @@ object BannerCarouselTracking : BaseTrackerConst() {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_ON_BANNER_CAROUEL,
                 eventLabel = Label.NONE,
-                promotions = channel.convertToHomePromotionModelList(position))
+                promotions = channel.convertToHomePromotionModelList())
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .build() as HashMap<String, Any>
@@ -87,6 +87,6 @@ object BannerCarouselTracking : BaseTrackerConst() {
             position = (position + 1).toString()
     )
 
-    fun ChannelModel.convertToHomePromotionModelList(position: Int) =
-            this.channelGrids.map { it.convertToHomePromotionModel(this, position) }
+    private fun ChannelModel.convertToHomePromotionModelList() =
+            this.channelGrids.mapIndexed { index, channelGrid -> channelGrid.convertToHomePromotionModel(this, index) }
 }
