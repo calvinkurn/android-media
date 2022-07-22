@@ -39,7 +39,7 @@ class EPharmacyProductViewHolder(view: View) : AbstractViewHolder<EPharmacyProdu
         dataModel.product?.apply {
             productCard.cardType = CardUnify2.TYPE_BORDER
             productText.text = name ?: ""
-            productQuantity.text = quantity.toString()
+            productQuantity.text = itemView.context.getString(R.string.epharmacy_quantity_weight_text, quantity.toString() ,itemWeight)
             productImageUnify.loadImage(productImage)
             shopNameText.displayTextOrHide(shopName ?: "")
             shopLocationText.displayTextOrHide(shopLocation ?: "")

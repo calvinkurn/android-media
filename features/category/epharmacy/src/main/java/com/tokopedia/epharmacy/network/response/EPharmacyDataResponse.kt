@@ -109,7 +109,7 @@ data class EPharmacyProduct(
     @SerializedName("quantity")
     val quantity: Int?,
     @SerializedName("item_weight")
-    val itemWeight: Int?,
+    val itemWeight: String?,
     @SerializedName(value = "shop_id")
     var shopId: Long?,
     @SerializedName(value = "shop_name")

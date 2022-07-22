@@ -426,6 +426,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         }
 
         if (data.needPrescription) {
+            if (!isProductInformationExist) layoutProductInfo.removeAllViews()
             val needPrescriptionView = createProductInfoTextWithIcon(ProductInformationWithIcon(data.butuhResepText, data.butuhResepIconUrl))
             if(layoutProductInfo.childCount > 0){
                 needPrescriptionView.setPadding(itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),0,0,0)

@@ -5,19 +5,10 @@ import com.google.gson.annotations.SerializedName
 
 data class EPharmacyUploadPrescriptionIdsResponse(
     @SerializedName("confirmPrescriptionIDs")
-    val confirmPrescriptionIDs : Data?,
+    val confirmPrescriptionIDs : EPharmacyUploadPrescriptionData?,
 ) {
-    data class Data(
+    data class EPharmacyUploadPrescriptionData(
         @SerializedName("success")
-        val success: Boolean?,
-        @SerializedName("header")
-        val header: EPharmacyHeader?
-    ){
-        data class EPharmacyHeader(
-            @SerializedName("error_code")
-            val errorCode: String?,
-            @SerializedName("error_message")
-            val errorMessage: String?
-        )
-    }
+        val success: Boolean?
+    )
 }

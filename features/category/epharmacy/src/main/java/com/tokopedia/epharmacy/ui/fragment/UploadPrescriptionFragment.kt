@@ -127,6 +127,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
         observePrescriptionImages()
         observeUploadPrescriptionIdsData()
         observerUploadPrescriptionError()
+        observeUploadPhotoLiveData()
     }
 
     private fun initViews(view: View) {
@@ -313,7 +314,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 is Fail -> {
                     if (it.throwable is UnknownHostException
                         || it.throwable is SocketTimeoutException) {
-                        showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
+                        showToast(context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
                     } else {
                         it.throwable.message?.let { errorMessage ->
                             showToast(errorMessage)
@@ -331,6 +332,14 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 is EPharmacyUploadBackendError -> showToast(error.errMsg)
                 is EPharmacyUploadEmptyImageError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
                 is EPharmacyUploadNoPrescriptionIdError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
+            }
+        })
+    }
+
+    private fun observeUploadPhotoLiveData() {
+        uploadPrescriptionViewModel.successUploadPhoto.observe(viewLifecycleOwner, { isSuccessUpload ->
+            if(isSuccessUpload){
+                sendUploadImageSuccessEvent()
             }
         })
     }

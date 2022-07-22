@@ -111,7 +111,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .setCustomProperty(EventKeys.IS_LOGGED_IN, userSession.isLoggedIn)
             .setCustomProperty(EventKeys.PAGE_PATH, "")
-            .setCustomProperty(EventKeys.SCREEN_NAME, screenName)
+            .setCustomProperty(EventKeys.SCREEN_NAME, "view upload prescription page - $entryPoint - new flow")
             .setUserId(userSession.userId)
             .build()
             .send()

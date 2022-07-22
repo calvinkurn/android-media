@@ -33,10 +33,6 @@ const val GQL_FETCH_ORDER_DETAILS_QUERY = """
 const val GQL_POST_PRESCRIPTION_IDS_QUERY: String = """mutation confirmPrescriptionIDs(${'$'}input: EpharmacyConfirmPrescriptionParam!) {
       confirmPrescriptionIDs(input: ${"$"}input) {
         success
-        header {
-            error_code
-            error_message
-        }
       }
     }
 """

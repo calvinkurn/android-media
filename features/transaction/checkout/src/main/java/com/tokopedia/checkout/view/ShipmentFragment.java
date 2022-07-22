@@ -3430,12 +3430,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if(!isApi || (prescriptions != null && !prescriptions.isEmpty())){
                 uploadModel.setUploadImageText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_title_text));
                 uploadModel.setLeftIconUrl(UploadPrescriptionViewHolder.EPharmacyCountImageUrl);
-            }
-            if(prescriptions != null){
                 uploadModel.setPrescriptionIds(prescriptions);
                 uploadModel.setUploadedImageCount(prescriptions.size());
                 uploadModel.setDescriptionText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_count_text,
-                            prescriptions.size()));
+                        prescriptions.size()));
+            }
+            if(isApi){
+                showToastNormal(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text));
             }
             shipmentAdapter.updateUploadPrescription(uploadModel);
         }

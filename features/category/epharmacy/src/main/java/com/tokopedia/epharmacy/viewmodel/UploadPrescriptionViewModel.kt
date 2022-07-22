@@ -47,6 +47,9 @@ class UploadPrescriptionViewModel @Inject constructor(
     private val _prescriptionImages = MutableLiveData<ArrayList<PrescriptionImage?>>()
     val prescriptionImages: LiveData<ArrayList<PrescriptionImage?>> = _prescriptionImages
 
+    private val _successUploadPhoto = MutableLiveData<Boolean>()
+    val successUploadPhoto: LiveData<Boolean> = _successUploadPhoto
+
     fun getEPharmacyOrderDetail(orderId: Long) {
         getEPharmacyOrderDetailUseCase.cancelJobs()
         getEPharmacyOrderDetailUseCase.getEPharmacyOrderDetail(
@@ -218,6 +221,7 @@ class UploadPrescriptionViewModel @Inject constructor(
                         isUploadSuccess = true
                         isUploading = false
                         prescriptionId = uploadResult.prescriptionId
+                        _successUploadPhoto.postValue(true)
                     }else {
                         uploadFailed(uniquePositionId, EPharmacyUploadNoPrescriptionIdError(true))
                     }
@@ -320,7 +324,7 @@ class UploadPrescriptionViewModel @Inject constructor(
         if(data.confirmPrescriptionIDs?.success == true){
             _uploadPrescriptionIdsData.postValue(Success(true))
         }else {
-            _uploadPrescriptionIdsData.postValue(Fail(Throwable(data.confirmPrescriptionIDs?.header?.errorMessage)))
+            _uploadPrescriptionIdsData.postValue(Fail(Throwable()))
         }
     }
 
