@@ -53,11 +53,13 @@ class SomDetailShippingViewHolder(
                         setOnClickListener {
                             actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
                         }
-                        text = StringBuilder("${item.dataObject.shippingName} >")
+                        text = StringBuilder(item.dataObject.shippingName)
                     }
+                    tvChevron.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 } else {
                     tvShippingName.text = item.dataObject.shippingName
                     tvShippingName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                    tvChevron.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 }
                 val numberPhone = if (item.dataObject.receiverPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
                     item.dataObject.receiverPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)

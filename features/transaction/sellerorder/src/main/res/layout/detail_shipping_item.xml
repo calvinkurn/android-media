@@ -56,6 +56,18 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_chevron"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=">"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_order_detail_free_shipping_badge"
+        app:layout_constraintStart_toEndOf="@+id/iv_order_detail_free_shipping_badge"
+        app:layout_constraintTop_toTopOf="@+id/iv_order_detail_free_shipping_badge" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/booking_code_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
