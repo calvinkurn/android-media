@@ -8,16 +8,19 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.scrollTo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.BaseMatcher
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
+
 
 class OrderPriceSummaryBottomSheetRobot {
 
@@ -28,7 +31,9 @@ class OrderPriceSummaryBottomSheetRobot {
                       isBbo: Boolean = false,
                       insurancePrice: String? = null,
                       paymentFee: String? = null,
-                      totalPrice: String = "") {
+                      totalPrice: String = "",
+                      isInstallment: Boolean = false,
+                      paymentFeeDetails: List<OrderPaymentFee> = emptyList()) {
         onView(withId(R.id.tv_total_product_price_value)).check(matches(withText(productPrice)))
         onView(withId(R.id.tv_total_product_discount_value)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
@@ -65,15 +70,51 @@ class OrderPriceSummaryBottomSheetRobot {
                 assertEquals(insurancePrice, (view as Typography).text)
             }
         }
-        onView(withId(R.id.tv_total_payment_fee_price_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (paymentFee == null) {
-                assertEquals(View.GONE, view.visibility)
-            } else {
-                assertEquals(View.VISIBLE, view.visibility)
-                assertEquals(paymentFee, (view as Typography).text)
+//        onView(withId(R.id.tv_total_payment_fee_price_value)).check { view, noViewFoundException ->
+//            noViewFoundException?.printStackTrace()
+//            if (paymentFee == null) {
+//                assertEquals(View.GONE, view.visibility)
+//            } else {
+//                assertEquals(View.VISIBLE, view.visibility)
+//                assertEquals(paymentFee, (view as Typography).text)
+//            }
+//        }
+        if (paymentFeeDetails.isEmpty() && !isInstallment) {
+            onView(withId(R.id.divider_transaction_fee)).check(matches(not(isDisplayed())))
+            onView(withId(R.id.tv_transaction_fee)).check(matches(not(isDisplayed())))
+        }
+        else {
+            onView(withId(R.id.divider_transaction_fee)).check(matches(isDisplayed()))
+            onView(withId(R.id.tv_transaction_fee)).check(matches(isDisplayed()))
+            onView(withId(R.id.ll_payment_fee)).check { view, _ ->
+                val llPaymentFee = (view as ViewGroup)
+                for (i in 0 until llPaymentFee.childCount) {
+                    val clPaymentFeeView = (llPaymentFee.getChildAt(i)) as ViewGroup
+                    val orderPaymentFee = paymentFeeDetails[i]
+                    assertEquals(orderPaymentFee.title, clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_price_label).text.toString())
+                    if (orderPaymentFee.showTooltip) {
+                        assertEquals(View.VISIBLE, clPaymentFeeView.findViewById<IconUnify>(R.id.img_payment_fee_info).visibility)
+                    }
+                    else {
+                        assertEquals(View.GONE, clPaymentFeeView.findViewById<IconUnify>(R.id.img_payment_fee_info).visibility)
+                    }
+                    if (orderPaymentFee.showSlashed) {
+                        assertEquals(View.VISIBLE, clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_slash_price_value).visibility)
+                        assertEquals("Rp${orderPaymentFee.slashedFee}", clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_slash_price_value).text.toString())
+                    }
+                    else {
+                        assertEquals(View.INVISIBLE, clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_slash_price_value).visibility)
+                    }
+                    if (isInstallment) {
+                        assertEquals(paymentFee ?: "Rp0", clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_price_value).text.toString())
+                    }
+                    else {
+                        assertEquals("Rp${orderPaymentFee.fee}", clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_price_value).text.toString())
+                    }
+                }
             }
         }
+
         onView(withId(R.id.tv_total_payment_price_value)).check(matches(withText(totalPrice)))
     }
 

@@ -17,6 +17,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterce
 import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_INSURANCE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
@@ -71,7 +72,16 @@ class OrderSummaryPageActivityGoCicilTest {
                         productPrice = "Rp2.000.000",
                         shippingPrice = "Rp15.000",
                         paymentFee = "Rp1.500",
-                        totalPrice = "Rp2.016.500"
+                        totalPrice = "Rp2.016.500",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1500.0,
+                                showTooltip = true
+                            )
+                        )
                 )
 
                 assertInstallmentSummary(
@@ -111,7 +121,16 @@ class OrderSummaryPageActivityGoCicilTest {
                         productPrice = "Rp2.000.000",
                         shippingPrice = "Rp15.000",
                         paymentFee = "Rp1.500",
-                        totalPrice = "Rp2.127.606"
+                        totalPrice = "Rp2.127.606",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1500.0,
+                                showTooltip = true
+                            )
+                        )
                 )
 
                 assertInstallmentSummary(
@@ -153,7 +172,16 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp4.000.000",
                         shippingPrice = "Rp15.000",
-                        totalPrice = "Rp4.015.000"
+                        totalPrice = "Rp4.015.000",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 0.0,
+                                showTooltip = true
+                            )
+                        )
                 )
                 closeBottomSheet()
             }
@@ -171,7 +199,16 @@ class OrderSummaryPageActivityGoCicilTest {
                         productPrice = "Rp4.000.000",
                         shippingPrice = "Rp15.000",
                         paymentFee = "Rp1.500",
-                        totalPrice = "Rp4.127.606"
+                        totalPrice = "Rp4.127.606",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1500.0,
+                                showTooltip = true
+                            )
+                        )
                 )
 
                 assertInstallmentSummary(
@@ -212,7 +249,16 @@ class OrderSummaryPageActivityGoCicilTest {
                         productPrice = "Rp6.000.000",
                         shippingPrice = "Rp15.000",
                         paymentFee = "Rp1.500",
-                        totalPrice = "Rp6.016.500"
+                        totalPrice = "Rp6.016.500",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1500.0,
+                                showTooltip = true
+                            )
+                        )
                 )
             }
         }
@@ -245,7 +291,16 @@ class OrderSummaryPageActivityGoCicilTest {
                         productPrice = "Rp6.000.000",
                         shippingPrice = "Rp15.000",
                         paymentFee = "Rp1.500",
-                        totalPrice = "Rp6.016.500"
+                        totalPrice = "Rp6.016.500",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 1500.0,
+                                showTooltip = true
+                            )
+                        )
                 )
             }
         }
@@ -272,7 +327,16 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp2.000.000",
                         shippingPrice = "Rp15.000",
-                        totalPrice = "Rp2.015.000"
+                        totalPrice = "Rp2.015.000",
+                        isInstallment = true,
+                        paymentFeeDetails = listOf(
+                            OrderPaymentFee(
+                                title = "Biaya Layanan",
+                                tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                                fee = 0.0,
+                                showTooltip = true
+                            )
+                        )
                 )
             }
         }
