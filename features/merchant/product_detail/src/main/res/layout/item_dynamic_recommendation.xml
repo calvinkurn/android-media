@@ -31,7 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/title_other_product"
-            app:typographyType="heading_4"
+            app:typographyType="paragraph_1"
             app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -51,7 +51,7 @@
             android:layout_marginTop="@dimen/dp_1"
             app:layout_constraintTop_toBottomOf="@id/titleRecom"
             app:layout_constraintStart_toStartOf="@id/titleRecom"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -71,7 +71,8 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:visibility="gone"
             tools:visibility="visible"
-            app:typographyType="heading_5"/>
+            app:typographyWeight="bold"
+            app:typographyType="display_3"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView

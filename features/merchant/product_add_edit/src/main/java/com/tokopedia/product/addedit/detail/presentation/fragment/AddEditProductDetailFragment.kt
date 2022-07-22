@@ -346,6 +346,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         subscribeToInputStatus()
         subscribeToPriceRecommendation()
         subscribeToProductNameValidationFromNetwork()
+        subscribeToMaxStockThreshold()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
@@ -1254,6 +1255,18 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         })
     }
 
+    private fun subscribeToMaxStockThreshold() {
+        viewModel.maxStockThreshold.observe(viewLifecycleOwner) {
+            val productStockInput = productStockField?.getEditableValue().toString()
+            viewModel.validateProductStockInput(productStockInput)
+            viewModel.isProductStockInputError.value?.let { isError ->
+                if (isError) {
+                    productStockField?.requestFocus()
+                }
+            }
+        }
+    }
+
     private fun validateSpecificationList() {
         if (viewModel.validateSelectedSpecificationList()) {
             viewModel.validateProductNameInputFromNetwork(productNameField.getText())
@@ -1440,6 +1453,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             orderQuantityInput?.let { viewModel.validateProductMinOrderInput(productStockInput, it) }
             productStockInput.let { viewModel.validateProductStockInput(it) }
         }
+
+        // max stock as threshold when seller inserts stock
+        viewModel.getMaxStockThreshold(userSession.shopId)
     }
 
     private fun setupWholesaleViews() {

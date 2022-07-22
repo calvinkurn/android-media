@@ -8,4 +8,7 @@
     <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
 
     <string name="favorite_empty_button">Masuk Sekarang</string>
+    <string name="favorite_on_success_favorite_text">Berhasil mengikuti toko</string>
+    <string name="favorite_error_text_for_followed">Toko yang kamu pilih sudah pernah di-follow</string>
+    <string name="favorite_on_success_favorite_action_text">Okay</string>
 </resources>

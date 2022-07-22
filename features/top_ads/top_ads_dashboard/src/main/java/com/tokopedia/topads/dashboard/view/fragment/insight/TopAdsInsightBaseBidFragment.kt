@@ -41,7 +41,7 @@ import javax.inject.Inject
  */
 
 const val CLICK_TERAPKAN = "click - terapkan"
-private const val INSIGHT_BID_PAGE = "topads.insightBid"
+private const val INSIGHT_BID_PAGE = "android.topads_insight_bid"
 
 class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
@@ -193,11 +193,14 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
-        val map = HashMap<String, Any?>()
-        map[PARAM_PRICE_BID] = data?.bidSettings?.get(0)?.priceBid
-        map[PARAM_DAILY_BUDGET] = adapter.items[currentPosition].setCurrentBid
-        map[PARAM_GROUP_Id] = adapter.items[currentPosition].groupId
-        topAdsDashboardPresenter.editBudgetThroughInsight(null, map, ::onResultEdit, ::onError)
+        val priceBid = data.bidSettings?.get(0)?.priceBid
+        val dailyBudget = adapter.items[currentPosition].setCurrentBid
+        val groupId = adapter.items[currentPosition].groupId
+
+        topAdsDashboardPresenter.editBudgetThroughInsight(
+            null, priceBid, groupId,dailyBudget,
+            ::onResultEdit, ::onError
+        )
     }
 
     private fun onResultEdit(topadsManageGroupAds: FinalAdResponse.TopadsManageGroupAds) {

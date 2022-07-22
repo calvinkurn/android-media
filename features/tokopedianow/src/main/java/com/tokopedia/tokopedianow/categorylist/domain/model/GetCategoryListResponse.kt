@@ -30,6 +30,9 @@ data class CategoryResponse(
     @SerializedName("url")
     val url: String,
     @Expose
+    @SerializedName("isAdult")
+    val isAdult: Int,
+    @Expose
     @SerializedName("applinks")
     val appLinks: String,
     @Expose

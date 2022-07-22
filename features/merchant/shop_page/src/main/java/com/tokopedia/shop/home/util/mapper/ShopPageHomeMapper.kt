@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -45,6 +46,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
@@ -788,12 +790,12 @@ object ShopPageHomeMapper {
         }
     }
 
-    fun mapToShopHomeWidgetLayoutData(response: ShopPageGetHomeType.HomeLayoutData): ShopPageHomeWidgetLayoutUiModel {
+    fun mapToShopHomeWidgetLayoutData(response: HomeLayoutData): ShopPageHomeWidgetLayoutUiModel {
         return ShopPageHomeWidgetLayoutUiModel(
             layoutId = response.layoutId,
             masterLayoutId = response.masterLayoutId.toIntOrZero().toString(),
             listWidgetLayout = response.widgetIdList.map {
-                ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                ShopPageWidgetLayoutUiModel(
                     it.widgetId,
                     it.widgetMasterId,
                     it.widgetType,
@@ -804,7 +806,7 @@ object ShopPageHomeMapper {
     }
 
     fun mapShopHomeWidgetLayoutToListShopHomeWidget(
-            listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
+            listWidgetLayout: List<ShopPageWidgetLayoutUiModel>,
             myShop: Boolean,
             isLoggedIn: Boolean,
             isThematicWidgetShown: Boolean

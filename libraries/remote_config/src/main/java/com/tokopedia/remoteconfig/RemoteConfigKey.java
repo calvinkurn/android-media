@@ -298,4 +298,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_INIT_NR_IN_ACTIVITY = "android_mainapp_init_nr_in_activity";
 
     public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
+
+    public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
 }
