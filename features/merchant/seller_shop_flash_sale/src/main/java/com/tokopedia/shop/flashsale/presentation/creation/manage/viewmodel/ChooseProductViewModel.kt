@@ -77,8 +77,7 @@ class ChooseProductViewModel @Inject constructor(
                 )
                 val isProductAddSuccess = result.errorMessage.isEmpty()
                 _isAddProductSuccess.postValue(isProductAddSuccess)
-                if (isProductAddSuccess)
-                    _errors.postValue(MessageErrorException(result.errorMessage))
+                _errors.postValue(MessageErrorException(result.errorMessage))
             },
             onError = { error ->
                 _errors.postValue(error)
