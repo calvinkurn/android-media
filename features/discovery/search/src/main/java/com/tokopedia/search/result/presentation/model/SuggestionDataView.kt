@@ -7,6 +7,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.separator.VerticalSeparable
 
 @Suppress("LongParameterList")
 class SuggestionDataView(
@@ -18,8 +19,10 @@ class SuggestionDataView(
         val keyword: String = "",
         val dimension90: String = "",
         val trackingValue: String = "",
+        val verticalSeparable: VerticalSeparable = VerticalSeparable.None,
 ) : ImpressHolder(),
     Parcelable,
+    VerticalSeparable by verticalSeparable,
     Visitable<ProductListTypeFactory?>,
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,

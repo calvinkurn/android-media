@@ -86,6 +86,7 @@ import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
@@ -1127,9 +1128,7 @@ class ProductListPresenter @Inject constructor(
     ) {
         val headlineAdsVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
         if (isUseSeparator) {
-            headlineAdsVisitableList.add(SeparatorDataView())
-            headlineAdsVisitableList.add(cpmDataView)
-            headlineAdsVisitableList.add(SeparatorDataView())
+            headlineAdsVisitableList.add(CpmDataView(cpmDataView.cpmModel, VerticalSeparable.Both))
         } else {
             headlineAdsVisitableList.add(cpmDataView)
         }
@@ -1276,18 +1275,30 @@ class ProductListPresenter @Inject constructor(
     private fun convertInspirationCarouselToBroadMatch(data: InspirationCarouselDataView): List<Visitable<*>> {
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()
 
-        broadMatchVisitableList.add(SeparatorDataView())
-        if (data.title.isNotEmpty()) broadMatchVisitableList.add(SuggestionDataView(data.title))
-        broadMatchVisitableList.addAll(data.options.mapToBroadMatchDataView(data.type))
-        broadMatchVisitableList.add(SeparatorDataView())
+        if (data.title.isNotEmpty()) {
+            broadMatchVisitableList.add(
+                SuggestionDataView(data.title, verticalSeparable = VerticalSeparable.Top)
+            )
+            broadMatchVisitableList.addAll(data.options.mapToBroadMatchDataView(data.type, false))
+        } else {
+            broadMatchVisitableList.addAll(data.options.mapToBroadMatchDataView(data.type, true))
+        }
 
         return broadMatchVisitableList
     }
 
     private fun List<InspirationCarouselDataView.Option>.mapToBroadMatchDataView(
-            type: String,
+        type: String,
+        addTopSeparator: Boolean,
     ): List<Visitable<*>> {
-        return map { option ->
+        return mapIndexed { index, option ->
+            val verticalSeparable = if (index == 0 && addTopSeparator) {
+                VerticalSeparable.Top
+            } else if (index == size - 1) {
+                VerticalSeparable.Bottom
+            } else {
+                VerticalSeparable.None
+            }
             BroadMatchDataView(
                 keyword = option.title,
                 subtitle = option.subtitle,
@@ -1328,6 +1339,7 @@ class ProductListPresenter @Inject constructor(
                     option.cardButton.title,
                     option.cardButton.applink,
                 ),
+                verticalSeparable = verticalSeparable,
             )
         }
     }
@@ -1385,30 +1397,68 @@ class ProductListPresenter @Inject constructor(
 
     private fun processBroadMatchAtBottom(list: MutableList<Visitable<*>>) {
         if (isLastPage()) {
-            list.add(SeparatorDataView())
-            addBroadMatchToVisitableList(list)
+            val broadMatchVisitableList = mutableListOf<Visitable<*>>()
+            addBroadMatchToVisitableList(broadMatchVisitableList)
+            list.addAll(broadMatchVisitableList.addVerticalSeparator(addBottomSeparator = false))
         }
     }
 
     private fun processBroadMatchAtTop(list: MutableList<Visitable<*>>) {
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()
         addBroadMatchToVisitableList(broadMatchVisitableList)
-        broadMatchVisitableList.add(SeparatorDataView())
 
-        list.addAll(list.indexOf(productList[0]), broadMatchVisitableList)
+        list.addAll(
+            list.indexOf(productList[0]),
+            broadMatchVisitableList.addVerticalSeparator(addTopSeparator = false)
+        )
     }
 
     private fun processBroadMatchAtPosition(list: MutableList<Visitable<*>>, broadMatchPosition: Int) {
         if (productList.size < broadMatchPosition) return
 
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()
-        broadMatchVisitableList.add(SeparatorDataView())
         addBroadMatchToVisitableList(broadMatchVisitableList)
-        broadMatchVisitableList.add(SeparatorDataView())
 
         val productItemAtBroadMatchPosition = productList[broadMatchPosition - 1]
         val broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1
-        list.addAll(broadMatchIndex, broadMatchVisitableList)
+        list.addAll(broadMatchIndex, broadMatchVisitableList.addVerticalSeparator())
+    }
+
+    private fun List<Visitable<*>>.addVerticalSeparator(
+        addTopSeparator: Boolean = true,
+        addBottomSeparator: Boolean = true
+    ): List<Visitable<*>> {
+        return mapIndexed { index, visitable ->
+            if (index == 0 && addTopSeparator) {
+                when (visitable) {
+                    is SuggestionDataView -> {
+                        visitable.changeVerticalSeparable(VerticalSeparable.Top)
+                    }
+                    is BroadMatchDataView -> {
+                        visitable.copy(verticalSeparable = VerticalSeparable.Top)
+                    }
+                    else -> visitable
+                }
+            } else if (addBottomSeparator && index == size - 1 && visitable is BroadMatchDataView) {
+                visitable.copy(verticalSeparable = VerticalSeparable.Bottom)
+            } else visitable
+        }
+    }
+
+    private fun SuggestionDataView.changeVerticalSeparable(
+        verticalSeparable: VerticalSeparable
+    ): SuggestionDataView {
+        return SuggestionDataView(
+            suggestionText,
+            suggestedQuery,
+            suggestion,
+            componentId,
+            trackingOption,
+            keyword,
+            dimension90,
+            trackingValue,
+            verticalSeparable
+        )
     }
 
     private fun processTopAdsImageViewModel(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {
