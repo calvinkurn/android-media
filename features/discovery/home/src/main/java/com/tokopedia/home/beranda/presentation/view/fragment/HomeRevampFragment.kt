@@ -91,6 +91,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
@@ -1963,14 +1964,22 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
     }
 
-    override fun onRetryMembership(position: Int, headerTitle: String) {
+    override fun onRetryMembership(position: Int, headerTitle: String, balanceDrawerStatus: Int) {
 //        startShimmeringBalanceWidget()
-        getHomeViewModel().onRefreshMembership(position, headerTitle)
+        if (balanceDrawerStatus == BalanceDrawerItemModel.STATE_LOADING) {
+            getHomeViewModel().onRefreshMembership(position, headerTitle)
+        } else {
+            getHomeViewModel().getBalanceWidgetData()
+        }
     }
 
-    override fun onRetryWalletApp(position: Int, headerTitle: String) {
+    override fun onRetryWalletApp(position: Int, headerTitle: String, balanceDrawerStatus: Int) {
 //        startShimmeringBalanceWidget()
-        getHomeViewModel().onRefreshWalletApp(position, headerTitle)
+        if (balanceDrawerStatus == BalanceDrawerItemModel.STATE_LOADING) {
+            getHomeViewModel().onRefreshWalletApp(position, headerTitle)
+        } else {
+            getHomeViewModel().getBalanceWidgetData()
+        }
     }
 
     override fun onLegoBannerClicked(actionLink: String, trackingAttribution: String) {

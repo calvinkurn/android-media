@@ -56,15 +56,6 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
             )
         )
         when (element?.state) {
-            BalanceDrawerItemModel.STATE_LOADING -> {
-                binding?.shimmerItemBalanceWidget?.root?.show()
-                binding?.homeContainerBalance?.invisible()
-                if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
-                    listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
-                } else if (element.drawerItemType == TYPE_REWARDS) {
-                    listener?.onRetryMembership(adapterPosition, element.headerTitle)
-                }
-            }
             BalanceDrawerItemModel.STATE_SUCCESS -> {
                 binding?.shimmerItemBalanceWidget?.root?.invisible()
                 binding?.homeContainerBalance?.show()
@@ -123,6 +114,15 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                 }
                 handleClickSuccess(element, reserveBalance)
             }
+            BalanceDrawerItemModel.STATE_LOADING -> {
+                binding?.shimmerItemBalanceWidget?.root?.show()
+                binding?.homeContainerBalance?.invisible()
+                if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
+                    listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
+                } else if (element.drawerItemType == TYPE_REWARDS) {
+                    listener?.onRetryMembership(adapterPosition, element.headerTitle)
+                }
+            }
             BalanceDrawerItemModel.STATE_ERROR -> {
                 binding?.shimmerItemBalanceWidget?.root?.invisible()
                 binding?.homeContainerBalance?.show()
@@ -146,8 +146,8 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                     itemView.context.getString(com.tokopedia.home.R.string.text_reload)
                 binding?.homeContainerBalance?.handleItemClickType(
                     element = element,
-                    rewardsAction = { listener?.onRetryMembership(adapterPosition, element.headerTitle) },
-                    walletAppAction = { listener?.onRetryWalletApp(adapterPosition, element.headerTitle) }
+                    rewardsAction = { listener?.onRetryMembership(adapterPosition, element.headerTitle, BalanceDrawerItemModel.STATE_ERROR) },
+                    walletAppAction = { listener?.onRetryWalletApp(adapterPosition, element.headerTitle, BalanceDrawerItemModel.STATE_ERROR) }
                 )
             }
         }
