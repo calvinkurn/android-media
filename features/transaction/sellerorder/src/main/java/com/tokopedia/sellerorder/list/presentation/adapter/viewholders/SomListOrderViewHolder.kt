@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.list.presentation.adapter.viewholders
 import android.animation.LayoutTransition.CHANGING
 import android.annotation.SuppressLint
 import android.graphics.Typeface
-import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
@@ -44,7 +43,6 @@ open class SomListOrderViewHolder(
     companion object {
         val LAYOUT = R.layout.item_som_list_order
 
-        const val TOGGLE_SELECTION = "toggle_selection"
         const val CARD_MARGIN_TOP_ORDER_REGULAR = 0
         const val CARD_MARGIN_TOP_ORDER_PLUS = 13
         const val CARD_ALPHA_SELECTABLE = 1f
@@ -85,31 +83,22 @@ open class SomListOrderViewHolder(
 
     override fun bind(element: SomListOrderUiModel?, payloads: MutableList<Any>) {
         payloads.firstOrNull()?.let {
-            if (it is Bundle) {
-                if (it.containsKey(TOGGLE_SELECTION)) {
-                    binding?.container?.layoutTransition?.enableTransitionType(CHANGING)
-                    element?.let {
-                        setupOrderCard(it)
-                        setupStatusIndicator(it)
-                        setupCheckBox(it)
-                        setupQuickActionButton(element)
-                    }
-                    binding?.container?.layoutTransition?.disableTransitionType(CHANGING)
-                    return
-                }
-            } else if (it is Pair<*, *>) {
+            if (it is Pair<*, *>) {
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is SomListOrderUiModel && newItem is SomListOrderUiModel) {
-                    setupOrderPlusRibbon(newItem)
                     setupOrderCard(newItem)
                     val oldIsEnded = oldItem.orderStatusId in endedOrderStatusCode
                     val newIsEnded = newItem.orderStatusId in endedOrderStatusCode
+                    val multiSelectEnableChanged = oldItem.multiSelectEnabled != newItem.multiSelectEnabled
                     binding?.container?.layoutTransition?.enableTransitionType(CHANGING)
-                    if (oldItem.statusIndicatorColor != newItem.statusIndicatorColor) {
+                    if (oldItem.orderPlusData != newItem.orderPlusData) {
+                        setupOrderPlusRibbon(newItem)
+                    }
+                    if (oldItem.statusIndicatorColor != newItem.statusIndicatorColor || multiSelectEnableChanged) {
                         setupStatusIndicator(newItem)
                     }
-                    if (oldItem.isChecked != newItem.isChecked || oldItem.cancelRequest != newItem.cancelRequest) {
+                    if (oldItem.isChecked != newItem.isChecked || oldItem.cancelRequest != newItem.cancelRequest || multiSelectEnableChanged) {
                         setupCheckBox(newItem)
                     }
                     if (oldItem.status != newItem.status) {
@@ -139,7 +128,7 @@ open class SomListOrderViewHolder(
                     if (oldIsEnded != newIsEnded || oldItem.destinationProvince != newItem.destinationProvince) {
                         setupDestinationInfo(newItem, newIsEnded)
                     }
-                    if (oldItem.buttons.firstOrNull() != newItem.buttons.firstOrNull()) {
+                    if (oldItem.buttons.firstOrNull() != newItem.buttons.firstOrNull() || multiSelectEnableChanged) {
                         setupQuickActionButton(newItem)
                     }
                     onBindFinished(newItem)
@@ -154,7 +143,7 @@ open class SomListOrderViewHolder(
     protected open fun setupQuickActionButton(element: SomListOrderUiModel) {
         binding?.run{
             val firstButton = element.buttons.firstOrNull()
-            if (firstButton != null && !listener.isMultiSelectEnabled()) {
+            if (firstButton != null && !element.multiSelectEnabled) {
                 btnQuickAction?.text = firstButton.displayName
                 btnQuickAction?.buttonVariant = if (firstButton.type == SomConsts.KEY_PRIMARY_DIALOG_BUTTON) UnifyButton.Variant.FILLED else UnifyButton.Variant.GHOST
                 btnQuickAction?.setOnClickListener { onQuickActionButtonClicked(element) }
@@ -188,9 +177,9 @@ open class SomListOrderViewHolder(
             ivSomListProduct.apply {
                 loadImageRounded(element.orderProduct.firstOrNull()?.picture.orEmpty())
                 if (element.tickerInfo.text.isNotBlank()) {
-                    setMargin(12.toPx(), 6.5f.dpToPx().toInt(), 0, 0)
+                    setMargin(12.toPx(), 6.5f.dpToPx().toInt(), Int.ZERO, Int.ZERO)
                 } else {
-                    setMargin(12.toPx(), 11f.dpToPx().toInt(), 0, 0)
+                    setMargin(12.toPx(), 11f.dpToPx().toInt(), Int.ZERO, Int.ZERO)
                 }
             }
             val displayedProduct = element.orderProduct.firstOrNull()
@@ -207,9 +196,9 @@ open class SomListOrderViewHolder(
                         isSingleLine = true
                     }
                     if (element.orderProduct.size == 1 && productVariant.isBlank()) {
-                        setPadding(0, 0, 1.5f.dpToPx().toInt(), 0)
+                        setPadding(Int.ZERO, Int.ZERO, 1.5f.dpToPx().toInt(), Int.ZERO)
                     } else {
-                        setPadding(0, 0, 0, 0)
+                        setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
                     }
                     text = productName
                     return@apply
@@ -242,18 +231,16 @@ open class SomListOrderViewHolder(
     private fun setupDeadline(element: SomListOrderUiModel) {
         binding?.run {
             val deadlineText = element.deadlineText
-            val deadlineColor = element.deadlineColor
-            if (deadlineText.isNotBlank() && deadlineColor.isNotBlank()) {
+            val deadlineBackground = Utils.getColoredDeadlineBackground(
+                context = root.context,
+                colorHex = element.deadlineColor,
+                defaultColor = com.tokopedia.unifyprinciples.R.color.Unify_YN600
+            )
+            if (deadlineText.isNotBlank()) {
                 tvSomListDeadline.text = deadlineText
                 tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
                 layoutSomListDeadline.apply {
-                    setBackgroundResource(
-                        if (element.orderPlusData != null) {
-                            R.drawable.bg_due_response_order_plus
-                        } else {
-                            R.drawable.bg_due_response_order_regular
-                        }
-                    )
+                    background = deadlineBackground
                     setPadding(
                         LAYOUT_DEADLINE_PADDING_START.toPx(),
                         LAYOUT_DEADLINE_PADDING_VERTICAL.toPx(),
@@ -294,12 +281,12 @@ open class SomListOrderViewHolder(
     @SuppressLint("ClickableViewAccessibility")
     private fun setupCheckBox(element: SomListOrderUiModel) {
         binding?.run {
-            checkBoxSomListMultiSelect.showWithCondition(listener.isMultiSelectEnabled())
+            checkBoxSomListMultiSelect.showWithCondition(element.multiSelectEnabled)
             checkBoxSomListMultiSelect.isChecked = element.isChecked
             checkBoxSomListMultiSelect.skipAnimation()
             checkBoxSomListMultiSelect.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
-                    if (element.cancelRequest != 0 && element.cancelRequestStatus != 0) {
+                    if (element.cancelRequest != Int.ZERO && element.cancelRequestStatus != Int.ZERO) {
                         listener.onCheckBoxClickedWhenDisabled()
                         true
                     } else {
@@ -316,7 +303,7 @@ open class SomListOrderViewHolder(
 
     private fun setupStatusIndicator(element: SomListOrderUiModel) {
         binding?.run {
-            if (listener.isMultiSelectEnabled()) {
+            if (element.multiSelectEnabled) {
                 somOrderListIndicator.gone()
             } else {
                 somOrderListIndicator.background = Utils.getColoredIndicator(root.context, element.statusIndicatorColor)
@@ -357,7 +344,7 @@ open class SomListOrderViewHolder(
     }
 
     protected fun touchCheckBox(element: SomListOrderUiModel) {
-        if (element.cancelRequest != 0 && element.cancelRequestStatus != 0) {
+        if (element.cancelRequest != Int.ZERO && element.cancelRequestStatus != Int.ZERO) {
             listener.onCheckBoxClickedWhenDisabled()
         } else {
             binding?.checkBoxSomListMultiSelect?.run {
@@ -387,13 +374,13 @@ open class SomListOrderViewHolder(
 
     protected open fun setupOrderCard(element: SomListOrderUiModel) {
         binding?.cardSomOrder?.alpha =
-            if (listener.isMultiSelectEnabled() && hasActiveRequestCancellation(element)) {
+            if (element.multiSelectEnabled && element.hasActiveRequestCancellation()) {
                 CARD_ALPHA_NOT_SELECTABLE
             } else {
                 CARD_ALPHA_SELECTABLE
             }
         binding?.root?.setOnClickListener {
-            if (listener.isMultiSelectEnabled()) touchCheckBox(element)
+            if (element.multiSelectEnabled) touchCheckBox(element)
             else listener.onOrderClicked(element)
         }
         binding?.cardSomOrder?.setMargin(
@@ -408,12 +395,8 @@ open class SomListOrderViewHolder(
         )
     }
 
-    private fun hasActiveRequestCancellation(element: SomListOrderUiModel): Boolean {
-        return element.cancelRequest != 0 && element.cancelRequestStatus != 0
-    }
-
     private fun skipValidateOrder(element: SomListOrderUiModel): Boolean {
-        return element.cancelRequest != 0 && element.cancelRequestStatus == 0
+        return element.cancelRequest != Int.ZERO && element.cancelRequestStatus == Int.ZERO
     }
 
     interface SomListOrderItemListener {
@@ -429,6 +412,5 @@ open class SomListOrderViewHolder(
         fun onEditAwbButtonClicked(orderId: String)
         fun onChangeCourierClicked(orderId: String)
         fun onFinishBindOrder(view: View, itemIndex: Int)
-        fun isMultiSelectEnabled(): Boolean
     }
 }

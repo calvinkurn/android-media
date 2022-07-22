@@ -918,8 +918,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onResume() {
         if(getHomeViewModel().isFirstLoad) {
             getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
-        } else if (!getHomeViewModel().isFirstLoad) {
-            getHomeViewModel().getBalanceWidgetData()
         }
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
@@ -2001,9 +1999,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (this::viewModel.isInitialized) {
             resetAutoPlay(isVisibleToUser)
             trackScreen(isVisibleToUser)
-            conditionalViewModelRefresh()
             if (isVisibleToUser) {
-                getHomeViewModel().getBalanceWidgetData()
+                conditionalViewModelRefresh()
             }
             playWidgetOnVisibilityChanged(
                 isUserVisibleHint = isVisibleToUser

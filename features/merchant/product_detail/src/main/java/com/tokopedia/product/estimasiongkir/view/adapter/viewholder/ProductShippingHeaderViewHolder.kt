@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -75,7 +76,8 @@ class ProductShippingHeaderViewHolder(view: View,
             icShippingLine?.setMargin(0, 0, 0, 0)
             txtShippingFrom?.text = context.getString(R.string.pdp_shipping_from_builder, element.tokoCabangTitle).boldOrLinkText(false, context, element.tokoCabangTitle to {})
             renderGeneralContentTokoCabang(element.tokoCabangContent)
-        } else if (element.isFulfillment && element.boType == ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA) {
+        } else if (element.isFulfillment && (element.boType == ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA ||
+                    element.boType == ProductDetailCommonConstant.BO_PLUS_DT)) {
             icShippingLine?.setMargin(0, 20.toDp(), 0, 20.toDp())
             renderGeneralContentTokoCabang(element.tokoCabangContent, element.uspTokoCabangImgUrl)
             txtShippingFrom?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_bold_html_builder, element.tokoCabangTitle)).spannedString
@@ -198,6 +200,9 @@ class ProductShippingHeaderViewHolder(view: View,
     }
 
     private fun renderBoTokoNow(shouldShowTxtTokoNow: Boolean, freeOngkirEstimation: String, freeOngkirPrice: String, freeOngkirTokoNowText: String) = with(itemView) {
+
+        dividerFreeOngkir?.show()
+
         txtFreeOngkirPrice?.shouldShowWithAction(shouldShowTxtTokoNow && freeOngkirPrice.isNotEmpty()) {
             txtFreeOngkirPrice.text = freeOngkirPrice
         }
