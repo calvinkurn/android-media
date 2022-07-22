@@ -23,13 +23,11 @@
             android:id="@+id/custom_image"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
             android:contentDescription="custom_image"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/custom_title"
-            app:layout_constraintEnd_toStartOf="@id/custom_title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/custom_title"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="HardcodedText"
             tools:src="@drawable/ic_power_merchant"
             tools:visibility="visible" />
@@ -48,7 +46,14 @@
             app:typographyType="paragraph_1"
             app:typographyWeight="bold"
             tools:text="Bangga Buatan Indonesiaa"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_title_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="custom_title, custom_image" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/custom_desc"
@@ -60,7 +65,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/custom_title"
+            app:layout_constraintTop_toBottomOf="@+id/barrier_title_bottom"
             app:typographyType="display_2"
             tools:text="Buktikan kamu bangga beli produk dalam negeri.Bacass SK untuk dapat cashback."
             tools:visibility="visible" />
@@ -69,13 +74,13 @@
             android:id="@+id/custom_label_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
             android:paddingStart="16dp"
             android:paddingEnd="0dp"
-            android:layout_marginTop="19dp"
             android:text="@string/pdp_general_info_see"
             android:textColor="@color/Unify_GN500"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:visibility="visible" />

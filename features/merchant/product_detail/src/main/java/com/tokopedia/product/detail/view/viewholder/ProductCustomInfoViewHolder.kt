@@ -115,12 +115,30 @@ class ProductCustomInfoViewHolder(
      * custom margin widget
      */
     private fun setWidgetMargin(element: ProductCustomInfoDataModel) {
+        // description label
         if (element.title.isEmpty() && element.icon.isEmpty()) {
             // avoid broken with `see` label
             binding.customDesc.setMargin(0, 16.toPx(), 32.toPx(), 0)
         } else {
             // avoid broken with `see` label
             binding.customDesc.setMargin(0, 12.toPx(), 0, 0)
+        }
+
+        // adjust title margin between icon and title when icon is empty,
+        if (element.icon.isEmpty()) {
+            binding.customTitle.setMargin(
+                left = 0,
+                top = 16.toPx(),
+                right = 0,
+                bottom = 0
+            )
+        } else {
+            binding.customTitle.setMargin(
+                left = 8.toPx(),
+                top = 16.toPx(),
+                right = 0,
+                bottom = 0
+            )
         }
     }
 
