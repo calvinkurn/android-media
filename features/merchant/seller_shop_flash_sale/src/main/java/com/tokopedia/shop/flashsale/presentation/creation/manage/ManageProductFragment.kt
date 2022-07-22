@@ -168,7 +168,7 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun handlePageMode() {
         if (pageMode == PageMode.UPDATE) {
-            binding?.btnSaveDraft?.text = getString(R.string.sfs_save)
+            binding?.btnSaveDraft?.gone()
         }
     }
 
@@ -276,6 +276,7 @@ class ManageProductFragment : BaseDaggerFragment() {
         viewModel.setProductInfoCompletion(productList)
         viewModel.getBannerType(productList)
         viewModel.getCampaignDetail(campaignId)
+        handleScrollUp()
         binding?.apply {
             recyclerViewProduct.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -292,11 +293,7 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun setupScrollListener() {
         binding?.apply {
-            guidelineMarginHeaderMax = guidelineHeader.getGuidelineBegin().orZero()
-            guidelineMarginFooterMax = guidelineFooter.getGuidelineEnd().orZero()
-            guidelineMarginHeader = guidelineMarginHeaderMax
-            guidelineMarginFooter = guidelineMarginFooterMax
-
+            setInitialMaxGuideline()
             recyclerViewProduct.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -308,6 +305,15 @@ class ManageProductFragment : BaseDaggerFragment() {
                     animateScrollDebounce.invoke(dy)
                 }
             })
+        }
+    }
+
+    private fun setInitialMaxGuideline() {
+        binding?.apply {
+            guidelineMarginHeaderMax = guidelineHeader.getGuidelineBegin().orZero()
+            guidelineMarginFooterMax = guidelineFooter.getGuidelineEnd().orZero()
+            guidelineMarginHeader = guidelineMarginHeaderMax
+            guidelineMarginFooter = guidelineMarginFooterMax
         }
     }
 

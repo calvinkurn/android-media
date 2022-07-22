@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -244,7 +245,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun handlePageMode() {
         if (pageMode == PageMode.UPDATE) {
-            binding?.btnSaveDraft?.text = getString(R.string.sfs_save)
+            binding?.btnSaveDraft?.gone()
         }
     }
 
