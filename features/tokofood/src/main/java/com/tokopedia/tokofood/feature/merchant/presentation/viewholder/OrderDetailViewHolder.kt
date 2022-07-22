@@ -10,6 +10,7 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.TokofoodItemOrderInfoLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.AddOnInfoAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 
 class OrderDetailViewHolder(
         private val binding: TokofoodItemOrderInfoLayoutBinding,
@@ -29,6 +30,7 @@ class OrderDetailViewHolder(
 
     init {
         context = binding.root.context
+        setupQuantityEditorEditText(binding.qeuProductQtyEditor)
         binding.tpgEditButton.setOnClickListener {
             val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
             clickListener.onEditButtonClicked(cartId = customOrderDetail.cartId)
@@ -37,15 +39,6 @@ class OrderDetailViewHolder(
             binding.root.getTag(R.id.dataset_position) as Int
             val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
             clickListener.onDeleteButtonClicked(adapterPosition =  adapterPosition, cartId = customOrderDetail.cartId)
-        }
-        binding.qeuProductQtyEditor.editText.imeOptions = EditorInfo.IME_ACTION_DONE
-        binding.qeuProductQtyEditor.editText.setOnEditorActionListener { view, actionId, _ ->
-            if(actionId== EditorInfo.IME_ACTION_DONE) {
-                view.clearFocus()
-                val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(view.windowToken, 0)
-                true
-            } else false
         }
         binding.qeuProductQtyEditor.setAddClickListener {
             val quantity = binding.qeuProductQtyEditor.getValue()
@@ -68,9 +61,6 @@ class OrderDetailViewHolder(
         binding.notesLabel.isVisible = customOrderDetail.orderNote.isNotBlank()
         binding.tpgOrderNote.text = customOrderDetail.orderNote
         binding.qeuProductQtyEditor.setValue(customOrderDetail.qty)
-
-
-
         addOnInfoAdapter?.setCustomListItems(customOrderDetail.customListItems)
     }
 
@@ -79,6 +69,23 @@ class OrderDetailViewHolder(
         binding.rvSelectedAddOns.apply {
             adapter = addOnInfoAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
+    }
+
+    private fun setupQuantityEditorEditText(quantityEditorUnify: QuantityEditorUnify) {
+        quantityEditorUnify.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+        quantityEditorUnify.editText.setOnEditorActionListener { view, actionId, _ ->
+            try {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    view.clearFocus()
+                    val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                    true
+                } else false
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 
 class ProductCardViewHolder(
     private val binding: TokofoodProductCardLayoutBinding,
@@ -74,15 +75,7 @@ class ProductCardViewHolder(
             )
         }
 
-        binding.qeuProductQtyEditor.editText.imeOptions = EditorInfo.IME_ACTION_DONE
-        binding.qeuProductQtyEditor.editText.setOnEditorActionListener { view, actionId, _ ->
-            if(actionId==EditorInfo.IME_ACTION_DONE) {
-                view.clearFocus()
-                val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(view.windowToken, 0)
-                true
-            } else false
-        }
+        setupQuantityEditorEditText(binding.qeuProductQtyEditor)
         binding.qeuProductQtyEditor.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -197,6 +190,23 @@ class ProductCardViewHolder(
             binding.atcButton.text = context?.run { this.getString(com.tokopedia.tokofood.R.string.text_orders, orderCount) }
         } else {
             binding.atcButton.text = context?.run { getString(com.tokopedia.tokofood.R.string.action_order) }
+        }
+    }
+
+    private fun setupQuantityEditorEditText(quantityEditorUnify: QuantityEditorUnify) {
+        quantityEditorUnify.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+        quantityEditorUnify.editText.setOnEditorActionListener { view, actionId, _ ->
+            try {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    view.clearFocus()
+                    val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                    true
+                } else false
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
         }
     }
 

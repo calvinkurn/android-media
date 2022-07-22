@@ -39,6 +39,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapper
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.OrderNoteInputViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductAddOnViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.OrderCustomizationViewModel
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -201,15 +202,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             }
 
             // setup quantity editor
-            binding?.qeuProductQtyEditor?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
-            binding?.qeuProductQtyEditor?.editText?.setOnEditorActionListener { view, actionId, _ ->
-                if(actionId== EditorInfo.IME_ACTION_DONE) {
-                    view.clearFocus()
-                    val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(view.windowToken, 0)
-                    true
-                } else false
-            }
+            setupQuantityEditorEditText(binding?.qeuProductQtyEditor)
             binding?.qeuProductQtyEditor?.setAddClickListener {
                 val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
                 val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
@@ -294,6 +287,23 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     title = foodName
                     subtitle = it.getString(com.tokopedia.tokofood.R.string.text_header_order_custom)
                 }
+            }
+        }
+    }
+
+    private fun setupQuantityEditorEditText(quantityEditorUnify: QuantityEditorUnify?) {
+        quantityEditorUnify?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
+        quantityEditorUnify?.editText?.setOnEditorActionListener { view, actionId, _ ->
+            try {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    view.clearFocus()
+                    val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                    true
+                } else false
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
             }
         }
     }
