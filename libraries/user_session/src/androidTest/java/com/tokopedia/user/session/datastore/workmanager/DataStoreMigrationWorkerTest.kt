@@ -110,5 +110,24 @@ class DataStoreMigrationWorkerTest {
         }
     }
 
+    @Test
+    fun basic_migration_test_with_non_default_value() {
+        val sample = SampleUserModel(
+            true, "fakeId", "Foo Name", "fooToken", "barToken", true
+        )
+        with(UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())) {
+            setSample(sample)
+        }
+
+        val worker = TestListenableWorkerBuilder<DataStoreMigrationWorker>(context).build()
+        runBlocking {
+            val result = worker.doWork()
+
+            val dataStore = UserSessionDataStoreClient.getInstance(context)
+            assertThat(result, `is`(Result.success(workDataOf(OPERATION_KEY to MIGRATED))))
+            assertThat(dataStore.getSampleUser(), equalTo(sample))
+        }
+    }
+
 
 }

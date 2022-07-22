@@ -32,6 +32,8 @@ object DataStoreMigrationHelper {
                 userSessionDataStore.setAccessToken(userSessionInterface.accessToken.trim())
                 userSessionDataStore.setFirstTimeUserOnboarding(userSessionInterface.isFirstTimeUser)
                 userSessionDataStore.setFirstTimeUser(userSessionInterface.isFirstTimeUser)
+                userSessionDataStore.setIsShopOwner(userSessionInterface.isShopOwner)
+                userSessionDataStore.setIsShopAdmin(userSessionInterface.isShopAdmin)
                 userSessionDataStore.setIsMSISDNVerified(userSessionInterface.isMsisdnVerified)
                 userSessionDataStore.setHasPassword(userSessionInterface.hasPassword())
                 userSessionDataStore.setProfilePicture(userSessionInterface.profilePicture.trim())

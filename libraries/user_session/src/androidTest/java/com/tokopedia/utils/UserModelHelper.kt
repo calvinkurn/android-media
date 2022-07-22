@@ -10,6 +10,7 @@ data class SampleUserModel(
     val name: String,
     val token: String,
     val refreshToken: String,
+    val isShopOwner: Boolean = false
 )
 
 internal fun UserSession.setSample(model: SampleUserModel) {
@@ -17,6 +18,7 @@ internal fun UserSession.setSample(model: SampleUserModel) {
     userId = model.userId
     name = model.name
     setToken(model.token, "Bearer", model.refreshToken)
+    setIsShopOwner(model.isShopOwner)
 }
 
 internal suspend fun UserSessionDataStore.getSampleUser(): SampleUserModel {
@@ -26,5 +28,6 @@ internal suspend fun UserSessionDataStore.getSampleUser(): SampleUserModel {
         getName().first(),
         getAccessToken().first(),
         getRefreshToken().first(),
+        isShopOwner().first()
     )
 }
