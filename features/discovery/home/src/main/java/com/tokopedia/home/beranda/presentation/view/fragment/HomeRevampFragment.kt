@@ -1965,7 +1965,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onRetryMembership(position: Int, headerTitle: String, balanceDrawerStatus: Int) {
-//        startShimmeringBalanceWidget()
         if (balanceDrawerStatus == BalanceDrawerItemModel.STATE_LOADING) {
             getHomeViewModel().onRefreshMembership(position, headerTitle)
         } else {
@@ -1974,7 +1973,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onRetryWalletApp(position: Int, headerTitle: String, balanceDrawerStatus: Int) {
-//        startShimmeringBalanceWidget()
         if (balanceDrawerStatus == BalanceDrawerItemModel.STATE_LOADING) {
             getHomeViewModel().onRefreshWalletApp(position, headerTitle)
         } else {
