@@ -177,6 +177,7 @@ class ManageProductViewModel @Inject constructor(
             block = {
                 val shopId = userSessionInterface.shopId.toIntOrZero()
                 gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId))
+                gqlGetShopInfoUseCase.isFromCacheFirst = true
                 val result = gqlGetShopInfoUseCase.executeOnBackground()
                 _shopStatus.postValue(Success(result.statusInfo.shopStatus))
             },
