@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking.sendImpressionCard
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
@@ -45,6 +46,10 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
 
             root.setOnClickListener {
                 openApplink(element)
+            }
+
+            root.addOnImpressionListener(element.impressHolder) {
+                sendImpressionCard(element.title)
             }
         }
     }

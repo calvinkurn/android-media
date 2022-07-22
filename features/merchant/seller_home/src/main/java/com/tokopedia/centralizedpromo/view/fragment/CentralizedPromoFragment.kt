@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.LoadingType
@@ -20,6 +21,7 @@ import com.tokopedia.centralizedpromo.view.fragment.partialview.BasePartialView
 import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoCreationView
 import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoOnGoingPromoView
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
+import com.tokopedia.centralizedpromo.view.model.FilterPromoUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.centralizedpromo.view.viewmodel.CentralizedPromoViewModel
 import com.tokopedia.coachmark.CoachMark
@@ -93,7 +95,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
 
     private var isErrorToastShown: Boolean = false
     private var isCoachMarkShowed: Boolean = false
-    private var currentFilterTabId = "0"
+    private var currentFilterTab = FilterPromoUiModel()
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -127,6 +129,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
     override fun onRefreshButtonClicked() {
         getLayoutData(LayoutType.ON_GOING_PROMO)
     }
+
     override fun onRefreshPromotionListButtonClicked() {
         getLayoutData(LayoutType.PROMO_CREATION)
     }
@@ -167,8 +170,9 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
                     SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION,
                     true
                 ),
-                onSelectedFilter = { filterTabId ->
-                    currentFilterTabId = filterTabId
+                onSelectedFilter = { filter ->
+                    currentFilterTab = filter
+                    CentralizedPromoTracking.sendClickFilter(filter.id)
                     partialViews[LayoutType.PROMO_CREATION]?.renderLoading(LoadingType.PROMO_LIST)
                     getLayoutData(
                         LayoutType.PROMO_CREATION
@@ -193,7 +197,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
     }
 
     private fun getLayoutData(vararg layoutTypes: LayoutType) {
-        centralizedPromoViewModel.getLayoutData(*layoutTypes, tabId = currentFilterTabId)
+        centralizedPromoViewModel.getLayoutData(*layoutTypes, tabId = currentFilterTab.id)
     }
 
     private fun observeGetLayoutDataResult() {
@@ -288,14 +292,39 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
     }
 
     private fun onClickPromo(promoCreationUiModel: PromoCreationUiModel) {
+
         if (promoCreationUiModel.isEligble()) {
-            val detailPromoBottomSheet = DetailPromoBottomSheet.createInstance(promoCreationUiModel)
-            detailPromoBottomSheet.show(childFragmentManager)
+            if (sharedPref.getBoolean(promoCreationUiModel.title, false)){
+                RouteManager.route(requireContext(),promoCreationUiModel.ctaLink)
+            } else {
+                val detailPromoBottomSheet =
+                    DetailPromoBottomSheet.createInstance(promoCreationUiModel)
+                detailPromoBottomSheet.show(childFragmentManager)
+                detailPromoBottomSheet.onCheckBoxListener { isDontShowBottomSheet ->
+                    updateDontShowBottomSheet(
+                        pageName = promoCreationUiModel.title,
+                        isDontShowBottomSheet
+                    )
+                }
+                detailPromoBottomSheet.setOnDismissListener {
+
+                }
+            }
+
         } else {
             val restrictBottomSheet =
                 AdminRestrictionBottomSheet.createInstance(requireContext(), String.EMPTY)
             restrictBottomSheet.show(childFragmentManager)
         }
+
+        CentralizedPromoTracking.sendClickCampaignCard(
+            currentFilterTab.name,
+            promoCreationUiModel.title
+        )
+    }
+
+    private fun updateDontShowBottomSheet(pageName: String, isChecked: Boolean) {
+        sharedPref.edit().putBoolean(pageName, isChecked).apply()
     }
 
     private fun trackProductCouponOngoingPromoClick(campaignName: String) {

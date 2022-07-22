@@ -1,5 +1,6 @@
 package com.tokopedia.centralizedpromo.view.bottomSheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhome.databinding.BottomSheetDetailPromoBinding
@@ -16,6 +19,8 @@ import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidg
 
 class DetailPromoBottomSheet :
     BaseBottomSheet<BottomSheetDetailPromoBinding>() {
+
+    private var onCheckBoxListener: ((Boolean) -> Unit?)? =null
 
     companion object {
         private const val TAG = "DetailPromoBottomSheet"
@@ -54,12 +59,16 @@ class DetailPromoBottomSheet :
                 cbDontShowInfo.gone()
             }else{
                 tickerInfoEligble.gone()
+                cbDontShowInfo.setOnCheckedChangeListener { compoundButton, isChecked ->
+                    onCheckBoxListener?.invoke(binding?.cbDontShowInfo?.isChecked.orFalse())
+                }
             }
             tvHeaderText.text = it.headerText
             ivBannerImage.loadImage(it.banner)
             tvBottomText.text = it.bottomText
             btnCtaPromo.text = it.ctaText
             btnCtaPromo.setOnClickListener {  _->
+                dismiss()
                 RouteManager.route(context,it.ctaLink)
             }
         }
@@ -70,4 +79,9 @@ class DetailPromoBottomSheet :
             show(fm, TAG)
         }
     }
+
+    fun onCheckBoxListener(onCheckBoxListener:(Boolean) -> Unit){
+        this.onCheckBoxListener = onCheckBoxListener
+    }
+
 }

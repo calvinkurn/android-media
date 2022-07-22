@@ -3,6 +3,7 @@ package com.tokopedia.centralizedpromo.view.fragment.partialview
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.LoadingType
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
@@ -10,8 +11,10 @@ import com.tokopedia.centralizedpromo.view.model.FilterPromoUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.CentralizedPromoPartialPromoCreationBinding
 import com.tokopedia.sellerhome.databinding.FragmentCentralizedPromoBinding
@@ -24,7 +27,7 @@ class PartialCentralizedPromoCreationView(
     adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
     coachMarkListener: CoachMarkListener,
     showCoachMark: Boolean,
-    val onSelectedFilter: ((String) -> Unit)? = null
+    val onSelectedFilter: ((FilterPromoUiModel) -> Unit)? = null
 ) : BasePartialListView<PromoCreationListUiModel, CentralizedPromoAdapterTypeFactory, PromoCreationUiModel>(
     binding,
     adapterTypeFactory,
@@ -61,12 +64,13 @@ class PartialCentralizedPromoCreationView(
         val filterItems = dataFilter.map {
             SortFilterItem(it.name) {
                 selectedTab = it
-                onSelectedFilter?.invoke(selectedTab?.id.orEmpty())
+                onSelectedFilter?.invoke(it)
             }
         }
         if (selectedTab == null) {
-            filterItems[0].type = ChipsUnify.TYPE_SELECTED
-            selectedTab = dataFilter[0]
+            filterItems[Int.ZERO].type = ChipsUnify.TYPE_SELECTED
+            selectedTab = dataFilter[Int.ZERO]
+            CentralizedPromoTracking.sendClickFilter(selectedTab?.id.toIntOrZero().toString())
         } else {
             filterItems[dataFilter.indexOf(selectedTab)].type = ChipsUnify.TYPE_SELECTED
         }

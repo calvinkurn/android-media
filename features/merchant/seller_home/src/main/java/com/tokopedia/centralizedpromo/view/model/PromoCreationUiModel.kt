@@ -24,7 +24,7 @@ data class PromoCreationUiModel(
     val banner: String,
     val infoText: String,
     val headerText:String,
-    val bottomText:String
+    val bottomText:String,
 ) : Parcelable, BaseUiListItemModel<CentralizedPromoAdapterTypeFactory> {
     override val impressHolder: ImpressHolder = ImpressHolder()
 
@@ -36,6 +36,6 @@ data class PromoCreationUiModel(
 }
 
 data class FilterPromoUiModel(
-    val id: String,
-    val name: String,
+    val id: String = "0",
+    val name: String = "Semua Fitur",
 )
