@@ -46,20 +46,23 @@ class SomDetailShippingViewHolder(
                     shippingPrintedLabel.hide()
                 }
 
-                if (item.dataObject.logisticInfo.logisticInfoAllList.isNotEmpty()) {
-                    tvShippingName.apply {
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                        setOnClickListener {
-                            actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
+                item.dataObject.logisticInfo.logisticInfoAllList.isNotEmpty().let { isLogisticInfoNotEmpty ->
+                    tvChevron.showWithCondition(isLogisticInfoNotEmpty)
+                    if (isLogisticInfoNotEmpty) {
+                        tvShippingName.apply {
+                            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                            setOnClickListener {
+                                actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
+                            }
+                            text = item.dataObject.shippingName
                         }
-                        text = item.dataObject.shippingName
+                        tvChevron.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    } else {
+                        tvShippingName.text = item.dataObject.shippingName
+                        tvShippingName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                     }
-                    tvChevron.showWithCondition(true)
-                    tvChevron.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                } else {
-                    tvShippingName.text = item.dataObject.shippingName
-                    tvShippingName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 }
+
                 val numberPhone = if (item.dataObject.receiverPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
                     item.dataObject.receiverPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)
                 } else {
