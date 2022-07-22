@@ -1,0 +1,10 @@
+package com.tokopedia.usercomponents.userconsent.fakes
+
+enum class UserConsentUiTestType {
+    TNC_SINGLE_OPTIONAL,
+    TNC_SINGLE_MANDATORY,
+    TNC_POLICY_SINGLE_OPTIONAL,
+    TNC_POLICY_SINGLE_MANDATORY,
+    TNC_MULTIPLE_SOME_ARE_OPTIONAL,
+    TNC_POLICY_MULTIPLE_SOME_ARE_OPTIONAL
+}

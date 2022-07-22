@@ -188,7 +188,7 @@ class ContentExploreFragment :
             presenter.updateCategoryId(categoryId)
         }
 
-        feedFloatingButtonManager.setInitialData(requireParentFragment())
+        feedFloatingButtonManager.setInitialData(parentFragment)
     }
 
     private fun loadData() {

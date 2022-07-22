@@ -111,6 +111,7 @@ private const val FOLLOW_MARGIN = 6
 private const val MARGIN_ZERO = 0
 private const val ASGC_NEW_PRODUCTS = "asgc_new_products"
 private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
+private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
 
 
 /**
@@ -223,7 +224,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             }
 
-            override fun onTopAdsChangeColorToGreen(viewHolder: CarouselImageViewHolder) {
+            override fun onCTAColorChangedAsPerWidgetColor(viewHolder: CarouselImageViewHolder) {
                 (rvCarousel.adapter as FeedPostCarouselAdapter).updateNeighbourTopAdsColor(
                     viewHolder.adapterPosition
                 )
@@ -428,7 +429,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         bindTracking(feedXCard)
         shareButton.setOnClickListener {
             changeTopadsCekSekarangBtnColorToGreen(feedXCard)
-            adapter.updateTopAdsToGreen(pageControl.indicatorCurrentPosition)
+            adapter.updateCTAasperWidgetColor(pageControl.indicatorCurrentPosition)
 
             val desc = context.getString(R.string.feed_share_default_text)
             val url = if (feedXCard.isTopAds && feedXCard.media.size > feedXCard.lastCarouselIndex) {
@@ -534,6 +535,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 followCount.text = context.getString(R.string.feeds_asgc_new_product_text)
             else if (feedXCard.type == ASGC_RESTOCK_PRODUCTS)
                 followCount.text = context.getString(R.string.feeds_asgc_restock_text)
+            else if(feedXCard.type == ASGC_DISCOUNT_TOKO)
+                followCount.text = context.getString(R.string.feed_asgc_diskon_toko)
             followCount.show()
         }
 
@@ -788,7 +791,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         likeButton.setOnClickListener {
             changeTopadsCekSekarangBtnColorToGreen(feedXCard)
-            adapter.updateTopAdsToGreen(pageControl.indicatorCurrentPosition)
+            adapter.updateCTAasperWidgetColor(pageControl.indicatorCurrentPosition)
 
             listener?.onLikeClick(
                 positionInFeed,
@@ -1316,21 +1319,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 )
             }
 
-        if (products.isNotEmpty()) {
-            imagePostListener.userGridPostImpression(
-                positionInFeed, feedXCard.id,
-                feedXCard.typename,
-                feedXCard.author.id
-            )
-            imagePostListener.userProductImpression(
-                positionInFeed,
-                feedXCard.id,
-                feedXCard.typename,
-                feedXCard.author.id,
-                listOf(products.first())
-            )
-        }
-
         commentButton.invisible()
         seeAllCommentText.hide()
 
@@ -1642,7 +1630,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
     private fun changeTopadsCekSekarangBtnColorToGreen(feedXCard: FeedXCard) {
-        feedXCard.isAsgcColorChangedToGreen = true
+        feedXCard.isAsgcColorChangedAsPerWidgetColor = true
         val backgroundWhiteColor = MethodChecker.getColor(
             context,
             unifyPrinciplesR.color.Unify_G500
@@ -1657,7 +1645,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
 
     fun changeTopadsCekSekarangBtnColorToDefaultWhite(feedXCard: FeedXCard) {
-        feedXCard.isAsgcColorChangedToGreen = false
+        feedXCard.isAsgcColorChangedAsPerWidgetColor = false
         val backgroundWhiteColor = MethodChecker.getColor(
             context,
             unifyPrinciplesR.color.Unify_NN50
@@ -1733,7 +1721,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             )
             val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
 
-            if ((isTypeNewASGC || feedXCard.isTopAds) && !feedXCard.isAsgcColorChangedToGreen) {
+            if ((isTypeNewASGC || feedXCard.isTopAds) && !feedXCard.isAsgcColorChangedAsPerWidgetColor) {
                 topAdsCard?.let {
                     if (changeBgColorAnim == null)
                         changeBgColorAnim = handlerFeed
@@ -1750,10 +1738,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 unifyPrinciplesR.color.Unify_N0
                             )
                         )
-                           if(!feedXCard.isAsgcColorChangedToGreen) {
-                               changeBackgroundColorAnimation(startColor, endColor, topAdsCard)
-                               feedXCard.isAsgcColorChangedToGreen = true
-                           }
+                        if (!feedXCard.isAsgcColorChangedAsPerWidgetColor) {
+                            changeBackgroundColorAnimation(startColor, endColor, topAdsCard)
+                            feedXCard.isAsgcColorChangedAsPerWidgetColor = true
+                        }
 
                     }, TIME_TWO_SEC)
                 }

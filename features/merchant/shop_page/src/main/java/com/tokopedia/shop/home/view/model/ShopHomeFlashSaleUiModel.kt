@@ -3,7 +3,7 @@ package com.tokopedia.shop.home.view.model
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 
-class ShopHomeFlashSaleUiModel(
+data class ShopHomeFlashSaleUiModel(
     override val widgetId: String,
     override val layoutOrder: Int,
     override val name: String,

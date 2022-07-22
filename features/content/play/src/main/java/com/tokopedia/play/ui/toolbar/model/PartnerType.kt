@@ -8,6 +8,7 @@ enum class PartnerType(val value: String) {
     Tokopedia("tokopedia"),
     Shop("shop"),
     Buyer("buyer"),
+    TokoNow("tokonow"),
     Unknown("");
 
     companion object {
