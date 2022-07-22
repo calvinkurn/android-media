@@ -453,16 +453,6 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getParentProductOnMiniCart(
-        childProductId: String,
-        miniCartData: MiniCartSimplifiedData?
-    ): String {
-        val miniCartItemValues = miniCartData?.miniCartItems?.values
-        return miniCartItemValues?.filterIsInstance<MiniCartItem.MiniCartItemProduct>()?.firstOrNull {
-            it.productId == childProductId
-        }?.productParentId.orEmpty()
-    }
-
     private suspend fun getSortListData(): List<ShopProductSortModel> {
         val listSort = gqlGetShopSortUseCase.executeOnBackground()
         return shopProductSortMapper.convertSort(listSort)
