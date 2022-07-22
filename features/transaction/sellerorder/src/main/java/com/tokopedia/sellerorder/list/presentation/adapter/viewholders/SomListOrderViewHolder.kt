@@ -47,9 +47,6 @@ open class SomListOrderViewHolder(
         const val CARD_MARGIN_TOP_ORDER_PLUS = 13
         const val CARD_ALPHA_SELECTABLE = 1f
         const val CARD_ALPHA_NOT_SELECTABLE = 0.5f
-        const val LAYOUT_DEADLINE_PADDING_START = 4
-        const val LAYOUT_DEADLINE_PADDING_END = 8
-        const val LAYOUT_DEADLINE_PADDING_VERTICAL = 2
 
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
@@ -239,15 +236,7 @@ open class SomListOrderViewHolder(
             if (deadlineText.isNotBlank()) {
                 tvSomListDeadline.text = deadlineText
                 tvSomListResponseLabel.text = composeDeadlineLabel(element.preOrderType != 0)
-                layoutSomListDeadline.apply {
-                    background = deadlineBackground
-                    setPadding(
-                        LAYOUT_DEADLINE_PADDING_START.toPx(),
-                        LAYOUT_DEADLINE_PADDING_VERTICAL.toPx(),
-                        LAYOUT_DEADLINE_PADDING_END.toPx(),
-                        LAYOUT_DEADLINE_PADDING_VERTICAL.toPx(),
-                    )
-                }
+                layoutSomListDeadline.background = deadlineBackground
                 tvSomListResponseLabel.show()
                 layoutSomListDeadline.show()
             } else {
