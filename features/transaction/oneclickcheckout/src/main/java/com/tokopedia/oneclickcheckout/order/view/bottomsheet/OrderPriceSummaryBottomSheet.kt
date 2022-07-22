@@ -189,19 +189,16 @@ class OrderPriceSummaryBottomSheet {
                     tooltipInfo = view.getString(com.tokopedia.oneclickcheckout.R.string.occ_service_fee_tooltip_info)
                 )
             )
+            showPaymentFeeSection(binding, true)
         }
         if (orderCost.orderPaymentFees.isNotEmpty()) {
             for (orderPaymentFee in orderCost.orderPaymentFees) {
                 renderPaymentFeeView(view, binding, orderPaymentFee)
             }
-            binding.dividerTransactionFee.visible()
-            binding.llPaymentFee.visible()
-            binding.tvTransactionFee.visible()
+            showPaymentFeeSection(binding, true)
         }
         else if (orderCost.orderPaymentFees.isEmpty() && !orderCost.isInstallment) {
-            binding.dividerTransactionFee.gone()
-            binding.llPaymentFee.gone()
-            binding.tvTransactionFee.gone()
+            showPaymentFeeSection(binding, false)
         }
     }
 
@@ -233,5 +230,18 @@ class OrderPriceSummaryBottomSheet {
             }
         }
         binding.llPaymentFee.addView(itemPaymentFeeBinding.root)
+    }
+
+    private fun showPaymentFeeSection(binding: BottomSheetOrderPriceSummaryBinding, isShown: Boolean) {
+        if (isShown) {
+            binding.dividerTransactionFee.visible()
+            binding.llPaymentFee.visible()
+            binding.tvTransactionFee.visible()
+        }
+        else {
+            binding.dividerTransactionFee.gone()
+            binding.llPaymentFee.gone()
+            binding.tvTransactionFee.gone()
+        }
     }
 }
