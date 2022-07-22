@@ -21,11 +21,11 @@ object MissionWidgetTracking : BaseTrackerConst() {
             const val TRACKER_ID_CLICKED_PDP = "34629"
             const val TRACKER_ID_IMPRESSION = "32076"
             const val DEFAULT_VALUE = ""
+            const val DEFAULT_PRICE = "0"
             const val ITEM_ID_FORMAT = "%s_%s_%s_%s"
             const val DYNAMIC_CHANNEL_MISSION_WIDGET = "dynamic channel mission widget"
             const val BANNER = "banner"
             const val ITEM_NAME_FORMAT = "/ - p%s - %s - %s - %s"
-            const val ITEM_CATEGORY_FORMAT = "%s / %s / %s"
             const val ITEM_LIST_FORMAT = "/ - p%s - $DYNAMIC_CHANNEL_MISSION_WIDGET - product - %s - %s - %s - %s - %s - %s"
             const val TOPADS = "topads"
             const val NON_TOPADS = "non topads"
@@ -136,16 +136,12 @@ object MissionWidgetTracking : BaseTrackerConst() {
         item.putString(Items.ITEM_BRAND, CustomAction.DEFAULT_VALUE)
         item.putString(
             Items.ITEM_CATEGORY,
-            CustomAction.ITEM_CATEGORY_FORMAT.format(
-                CustomAction.DEFAULT_VALUE,
-                CustomAction.DEFAULT_VALUE,
-                element.categoryID
-            )
+            element.categoryID
         )
         item.putString(Items.ITEM_ID, element.productID)
         item.putString(Items.ITEM_NAME, element.productName)
         item.putString(Items.ITEM_VARIANT, CustomAction.DEFAULT_VALUE)
-        item.putString(Items.PRICE, CustomAction.DEFAULT_VALUE)
+        item.putString(Items.PRICE, CustomAction.DEFAULT_PRICE)
         bundle.putParcelableArrayList(Items.KEY, arrayListOf(item))
         bundle.putString(ItemList.KEY, CustomAction.ITEM_LIST_FORMAT.format(
             element.verticalPosition,
