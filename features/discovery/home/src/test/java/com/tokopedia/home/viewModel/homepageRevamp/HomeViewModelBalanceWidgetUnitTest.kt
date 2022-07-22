@@ -228,7 +228,7 @@ class HomeViewModelBalanceWidgetUnitTest{
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDynamicChannelModel(list = listOf(mockInitialHomeHeaderDataModel), flowCompleted = true)
         )
-        getHomeBalanceWidgetUseCase.givenGetBalanceWidgetDataReturn(
+        getHomeBalanceWidgetUseCase.givenGetWalletDataReturn(
             homeHeaderDataModel = mockSuccessHomeHeaderDataModel
         )
         homeViewModel = createHomeViewModel(
@@ -258,8 +258,9 @@ class HomeViewModelBalanceWidgetUnitTest{
             getHomeUseCase = getHomeUseCase,
             homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
         )
+        homeViewModel.getBalanceWidgetData()
         val homeBalanceModel = getHomeBalanceModel()
-        Assert.assertTrue(homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty() == true)
+        Assert.assertEquals(homeBalanceModel, mockInitialHomeHeaderDataModel.headerDataModel?.homeBalanceModel)
     }
 
     @ExperimentalCoroutinesApi
