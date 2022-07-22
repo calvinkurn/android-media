@@ -7,6 +7,7 @@ import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPh
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberAction.checkInitViewIsShowing
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberAction.clickOnButtonSubmit
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberAction.setPhoneNumberText
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberCassava.validateTrackerOnSubmitPhone
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -43,6 +44,10 @@ class InputOldPhoneNumberGeneralTest : BaseInputOldPhoneNumberTest() {
 
             //THEN
             checkErrorMessageOnInputPhone(ERROR_PHONE_EMPTY)
+            cassavaRule.validateTrackerOnSubmitPhone(
+                state = InputOldPhoneNumberCassavaState.EMPTY_PHONE,
+                phoneNumber = phone
+            )
         }
     }
 
@@ -58,6 +63,10 @@ class InputOldPhoneNumberGeneralTest : BaseInputOldPhoneNumberTest() {
 
             //THEN
             checkErrorMessageOnInputPhone(ERROR_PHONE_TOO_LONG)
+            cassavaRule.validateTrackerOnSubmitPhone(
+                state = InputOldPhoneNumberCassavaState.TOO_LONG_PHONE,
+                phoneNumber = phone
+            )
         }
     }
 
@@ -73,6 +82,10 @@ class InputOldPhoneNumberGeneralTest : BaseInputOldPhoneNumberTest() {
 
             //THEN
             checkErrorMessageOnInputPhone(ERROR_PHONE_TOO_SHORT)
+            cassavaRule.validateTrackerOnSubmitPhone(
+                state = InputOldPhoneNumberCassavaState.TOO_SHORT_PHONE,
+                phoneNumber = phone
+            )
         }
     }
 
@@ -88,6 +101,10 @@ class InputOldPhoneNumberGeneralTest : BaseInputOldPhoneNumberTest() {
 
             //THEN
             checkErrorMessageIsNotDisplayed()
+            cassavaRule.validateTrackerOnSubmitPhone(
+                state = InputOldPhoneNumberCassavaState.REGISTERED_PHONE,
+                phoneNumber = phone
+            )
         }
     }
 

@@ -5,6 +5,7 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberAction.checkErrorMessageOnInputPhone
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberAction.clickOnButtonSubmit
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberAction.setPhoneNumberText
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberCassava.validateTrackerOnSubmitPhone
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -31,6 +32,10 @@ class InputOldPhoneNumberNotRegisteredTest : BaseInputOldPhoneNumberTest() {
 
             //THEN
             checkErrorMessageOnInputPhone(ERROR_PHONE_NOT_REGISTERED)
+            cassavaRule.validateTrackerOnSubmitPhone(
+                state = InputOldPhoneNumberCassavaState.REGISTERED_PHONE,
+                phoneNumber = phone
+            )
         }
     }
 
