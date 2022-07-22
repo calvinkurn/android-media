@@ -20,9 +20,10 @@ import com.tokopedia.unifycomponents.toPx
 /**
  * Created by Yehezkiel on 13/08/20
  */
-class ProductCustomInfoViewHolder(val view: View,
-                                  private val listener: DynamicProductDetailListener)
-    : AbstractViewHolder<ProductCustomInfoDataModel>(view) {
+class ProductCustomInfoViewHolder(
+    val view: View,
+    private val listener: DynamicProductDetailListener
+) : AbstractViewHolder<ProductCustomInfoDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_custom_info
@@ -31,46 +32,40 @@ class ProductCustomInfoViewHolder(val view: View,
     private val binding = ItemDynamicCustomInfoBinding.bind(view)
 
     override fun bind(element: ProductCustomInfoDataModel) {
-        if (element.title.isEmpty() && element.icon.isEmpty()) {
-            binding.customDesc.setMargin(0, 0, 8.toPx(), 0)
-        } else {
-            binding.customDesc.setMargin(0, 4.toPx(), 8.toPx(), 0)
-            impressComponent(element)
-        }
-
-        renderSeparator(element.separator)
-        renderTitle(element.title, element.icon)
-        renderDescription(element.description)
-        renderLabel(element.getLabelTypeByColor(), element.labelValue)
-        setupApplink(element.applink, element.title, getComponentTrackData(element))
-    }
-
-    private fun renderLabel(labelColor: Int, labelValue: String) {
-        binding.labelCustomInfo.run {
-            setLabel(labelValue)
-            setLabelType(labelColor)
-            showWithCondition(labelValue.isNotEmpty())
-        }
+        impressComponent(element)
+        setWidgetMargin(element)
+        renderWidget(element)
+        setupAppLink(element)
     }
 
     private fun impressComponent(element: ProductCustomInfoDataModel) {
-        val componentTrack = getComponentTrackData(element)
-        itemView.addOnImpressionListener(element.impressHolder) {
-            listener.onImpressComponent(componentTrack)
-            listener.showCustomInfoCoachMark(element.name, binding.customImage)
+        if (element.title.isNotEmpty() && element.icon.isNotEmpty()) {
+            val componentTrack = getComponentTrackData(element)
+            itemView.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(componentTrack)
+                listener.showCustomInfoCoachMark(element.name, binding.customImage)
+            }
         }
     }
 
-    private fun renderSeparator(separator: String) = with(binding) {
-        topSeparator.showWithCondition(separator == ProductCustomInfoDataModel.SEPARATOR_BOTH || separator == ProductCustomInfoDataModel.SEPARATOR_TOP)
-        bottomSeparator.showWithCondition(separator == ProductCustomInfoDataModel.SEPARATOR_BOTH || separator == ProductCustomInfoDataModel.SEPARATOR_BOTTOM)
-    }
+    /**
+     * show label `see` and set event click if appLink is not empty
+     */
+    private fun setupAppLink(
+        element: ProductCustomInfoDataModel
+    ) = with(binding) {
 
-    private fun setupApplink(applink: String, title: String, componentTrackData: ComponentTrackDataModel) = with(binding) {
-        if (applink.isNotEmpty()) {
+        if (element.applink.isNotEmpty()) {
             customLabelCheck.show()
+
+            val trackData = getComponentTrackData(element = element)
+
             view.setOnClickListener {
-                listener.onBbiInfoClick(applink, title, componentTrackData)
+                listener.onBbiInfoClick(
+                    url = element.applink,
+                    title = element.title,
+                    componentTrackDataModel = trackData
+                )
             }
         } else {
             customLabelCheck.hide()
@@ -78,22 +73,63 @@ class ProductCustomInfoViewHolder(val view: View,
         }
     }
 
-    private fun renderDescription(description: String) = with(binding) {
-        customDesc.shouldShowWithAction(description.isNotEmpty()) {
-            customDesc.text = HtmlLinkHelper(view.context, description).spannedString
+    /**
+     * render widget and set content with condition
+     */
+    private fun renderWidget(element: ProductCustomInfoDataModel) = with(binding) {
+        customDesc.shouldShowWithAction(element.description.isNotEmpty()) {
+            customDesc.text = HtmlLinkHelper(view.context, element.description).spannedString
+        }
+
+        customImage.shouldShowWithAction(element.icon.isNotEmpty()) {
+            customImage.loadIcon(element.icon)
+        }
+
+        customTitle.shouldShowWithAction(element.title.isNotEmpty()) {
+            customTitle.text = element.title
+        }
+
+        binding.labelCustomInfo.shouldShowWithAction(element.labelValue.isNotEmpty()) {
+            binding.labelCustomInfo.setLabel(element.labelValue)
+            binding.labelCustomInfo.setLabelType(element.labelColor)
+        }
+
+        // separator
+        renderSeparator(element.separator)
+    }
+
+    /**
+     * show top and bottom separator with condition
+     */
+    private fun renderSeparator(separator: String) = with(binding) {
+        val shouldTopSeparatorShow = separator == ProductCustomInfoDataModel.SEPARATOR_BOTH
+                || separator == ProductCustomInfoDataModel.SEPARATOR_TOP
+        val shouldBottomSeparatorShow = separator == ProductCustomInfoDataModel.SEPARATOR_BOTH
+                || separator == ProductCustomInfoDataModel.SEPARATOR_BOTTOM
+
+        topSeparator.showWithCondition(shouldShow = shouldTopSeparatorShow)
+        bottomSeparator.showWithCondition(shouldShow = shouldBottomSeparatorShow)
+    }
+
+    /**
+     * custom margin widget
+     */
+    private fun setWidgetMargin(element: ProductCustomInfoDataModel) {
+        if (element.title.isEmpty() && element.icon.isEmpty()) {
+            // avoid broken with `see` label
+            binding.customDesc.setMargin(0, 16.toPx(), 32.toPx(), 0)
+        } else {
+            // avoid broken with `see` label
+            binding.customDesc.setMargin(0, 12.toPx(), 0, 0)
         }
     }
 
-    private fun renderTitle(title: String, icon: String) = with(binding) {
-        customImage.shouldShowWithAction(icon.isNotEmpty()) {
-            customImage.loadIcon(icon)
-        }
-        customTitle.shouldShowWithAction(title.isNotEmpty()) {
-            customTitle.text = title
-        }
-    }
-
-    private fun getComponentTrackData(element: ProductCustomInfoDataModel?) = ComponentTrackDataModel(element?.type
-            ?: "", element?.name ?: "", adapterPosition + 1)
+    private fun getComponentTrackData(
+        element: ProductCustomInfoDataModel?
+    ) = ComponentTrackDataModel(
+        componentType = element?.type.orEmpty(),
+        componentName = element?.name.orEmpty(),
+        adapterPosition = adapterPosition + 1
+    )
 
 }
