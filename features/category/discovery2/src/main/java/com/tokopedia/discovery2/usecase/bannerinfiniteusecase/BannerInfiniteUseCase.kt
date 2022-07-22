@@ -12,7 +12,7 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
         private const val PAGE_START = 1
     }
 
-    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, bannersLimit: Int = BANNER_PER_PAGE): Boolean {
+    suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, bannersLimit: Int = BANNER_PER_PAGE, isDarkMode: Boolean = false): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
@@ -22,7 +22,7 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
                         component.dynamicOriginalId!! else componentId,
                     getQueryParameterMap(PAGE_START,
                             bannersLimit,
-                            it.nextPageKey),
+                            it.nextPageKey,isDarkMode),
                     pageEndPoint, it.name)
             it.showVerticalLoader = bannerListData.isNotEmpty()
             it.setComponentsItem(bannerListData, component.tabName)
@@ -36,7 +36,7 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
         return false
     }
 
-    suspend fun getBannerUseCase(componentId: String, pageEndPoint: String, bannerLimit: Int = BANNER_PER_PAGE): Boolean {
+    suspend fun getBannerUseCase(componentId: String, pageEndPoint: String, bannerLimit: Int = BANNER_PER_PAGE, isDarkMode: Boolean = false): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
@@ -46,7 +46,7 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
                         component1.dynamicOriginalId!! else component1.id,
                     getQueryParameterMap(component1.pageLoadedCounter,
                             bannerLimit,
-                            component1.nextPageKey),
+                            component1.nextPageKey,isDarkMode),
                     pageEndPoint,
                     component1.name)
             component1.nextPageKey = nextPage
@@ -66,14 +66,15 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
 
     private fun getQueryParameterMap(pageNumber: Int,
                                      bannerPerPage: Int,
-                                     nextPageKey: String?): MutableMap<String, Any> {
+                                     nextPageKey: String?,
+                                     isDarkMode: Boolean): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
         queryParameterMap[Utils.RPC_PAGE__SIZE] = bannerPerPage.toString()
         queryParameterMap[Utils.RPC_PAGE_NUMBER] = pageNumber.toString()
-
         queryParameterMap[Utils.RPC_NEXT_PAGE] = nextPageKey ?: ""
+        queryParameterMap[Utils.DARK_MODE] = isDarkMode
 
         return queryParameterMap
     }

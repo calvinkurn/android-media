@@ -1251,7 +1251,8 @@ class ModelBuilder {
             price: ProductPrice = buildOriginalPrice(),
             minQty: Int = 2,
             isFreeShipping: Boolean = true,
-            applink: String? = "https://tkp.me"
+            applink: String? = "https://tkp.me",
+            isTokoNow: Boolean = false,
     ) = PlayProductUiModel.Product(
             id = id,
             shopId = shopId,
@@ -1262,7 +1263,8 @@ class ModelBuilder {
             price = price,
             minQty = minQty,
             isFreeShipping = isFreeShipping,
-            applink = applink
+            applink = applink,
+            isTokoNow = isTokoNow,
     )
 
     fun buildProductStockAvailable(

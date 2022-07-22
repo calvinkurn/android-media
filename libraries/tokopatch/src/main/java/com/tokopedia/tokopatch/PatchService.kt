@@ -131,6 +131,7 @@ class PatchService(val context: Context) {
             }
             PatchExecutors.getInstance(context, patchList, logger).start()
             logger.exceptionNotify(context, t, context.getString(R.string.applied_from_local))
+            logger.onPatchFetched(context, false, false)
         }
         t.printStackTrace()
     }
@@ -146,6 +147,7 @@ class PatchService(val context: Context) {
                     decodeData(result, patchList)
                 }
                 PatchExecutors.getInstance(context, patchList, logger).start()
+                logger.onPatchFetched(context, true, true)
             }
         }
     }
