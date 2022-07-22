@@ -304,8 +304,12 @@ fun HomeBalanceWidgetUseCase.givenGetTokopointDataReturn(homeHeaderDataModel: Ho
     coEvery { onGetTokopointData(any(), any(), any()) } returns homeHeaderDataModel
 }
 
-fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
+fun HomeBalanceWidgetUseCase.givenGetWalletDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
     coEvery { onGetWalletAppData(any(), any(), any()) } returns homeHeaderDataModel
+}
+
+fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetDataReturn(homeHeaderDataModel: HomeHeaderDataModel) {
+    coEvery { onGetBalanceWidgetData() } returns homeHeaderDataModel
 }
 
 fun HomeBalanceWidgetUseCase.givenGetBalanceWidgetFailed() {
