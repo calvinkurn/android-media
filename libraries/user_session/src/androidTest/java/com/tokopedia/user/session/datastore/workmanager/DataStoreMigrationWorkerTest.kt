@@ -87,7 +87,7 @@ class DataStoreMigrationWorkerTest {
     }
 
     @Test
-    fun When_usersession_is_set_after_migration_Then_datastore_is_updated() {
+    fun When_usersession_is_set_after_migration_Then_datastore_is_updated_and_next_migration_is_noop() {
         val sample = SampleUserModel(
             true, "fakeId", "Foo Name", "fooToken", "barToken"
         )
@@ -104,21 +104,11 @@ class DataStoreMigrationWorkerTest {
             userSession.name = newName
             val dataStore = UserSessionDataStoreClient.getInstance(context)
             assertThat(dataStore.getName().first(), equalTo(newName))
+
+            val secondResult = worker.doWork()
+            assertThat(secondResult, `is`(Result.success(workDataOf(OPERATION_KEY to NO_OPS))))
         }
     }
 
-    @Test
-    fun test_encrypt_decrypt_tink_repeatedly() {
-        repeat(10) {
-            val aead = AeadEncryptorImpl(context)
 
-            val msg = "secret message #$it"
-            val start = System.currentTimeMillis()
-            val cipher = aead.encrypt(msg)
-            val decrypted = aead.decrypt(cipher)
-            assertThat(msg, `is`(decrypted))
-            Log.d(this::class.java.simpleName, "The process took ${System.currentTimeMillis() - start} ms")
-        }
-
-    }
 }

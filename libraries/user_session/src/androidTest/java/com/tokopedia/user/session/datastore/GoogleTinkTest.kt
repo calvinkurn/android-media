@@ -1,11 +1,14 @@
 package com.tokopedia.user.session.datastore
 
 import android.content.Context
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import com.google.crypto.tink.Aead
+import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.utils.GoogleTinkExplorerLab
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
@@ -16,6 +19,21 @@ class GoogleTinkTest {
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
+    }
+
+    @Test
+    fun test_encrypt_decrypt_tink_repeatedly() {
+        repeat(10) {
+            val aead = AeadEncryptorImpl(context)
+
+            val msg = "secret message #$it"
+            val start = System.currentTimeMillis()
+            val cipher = aead.encrypt(msg)
+            val decrypted = aead.decrypt(cipher)
+            assertThat(msg, `is`(decrypted))
+            Log.d(this::class.java.simpleName, "The process took ${System.currentTimeMillis() - start} ms")
+        }
+
     }
 
     @Test
