@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.flashsale.common.extension.digitsOnly
 import com.tokopedia.shop.flashsale.common.extension.isNumber
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
@@ -13,7 +15,6 @@ import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignCreationElig
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignPrerequisiteData
 import com.tokopedia.shop.flashsale.domain.entity.aggregate.ShareComponentMetadata
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignListUseCase
-import com.tokopedia.shop.flashsale.domain.usecase.GetShopDecorStatusUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GenerateCampaignBannerUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetCampaignPrerequisiteDataUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.GetShareComponentMetadataUseCase
@@ -22,6 +23,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class CampaignListViewModel @Inject constructor(
@@ -31,7 +33,8 @@ class CampaignListViewModel @Inject constructor(
     private val getShareComponentMetadataUseCase: GetShareComponentMetadataUseCase,
     private val validateCampaignCreationEligibility: ValidateCampaignCreationEligibilityUseCase,
     private val generateCampaignBannerUseCase: GenerateCampaignBannerUseCase,
-    private val getShopDecorStatusUseCase: GetShopDecorStatusUseCase,
+    private val getShopPageHomeTypeUseCase : GqlShopPageGetHomeType,
+    private val userSession: UserSessionInterface,
     private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
 
@@ -149,8 +152,12 @@ class CampaignListViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val metadata = getShopDecorStatusUseCase.execute()
-                _shopDecorStatus.postValue(Success(metadata))
+                val requestParams = GqlShopPageGetHomeType.createParams(userSession.shopId.toIntOrZero(), extParam = "")
+                getShopPageHomeTypeUseCase.params = requestParams
+                getShopPageHomeTypeUseCase.isFromCacheFirst = false
+                val shopHome = getShopPageHomeTypeUseCase.executeOnBackground()
+                val shopHomeType = shopHome.shopHomeType
+                _shopDecorStatus.postValue(Success(shopHomeType))
             },
             onError = { error ->
                 _shopDecorStatus.postValue(Fail(error))
