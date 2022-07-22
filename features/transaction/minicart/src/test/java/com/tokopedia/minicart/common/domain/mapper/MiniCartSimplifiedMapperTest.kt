@@ -107,6 +107,7 @@ class MiniCartSimplifiedMapperTest {
                                                         CartDetail(
                                                                 bundleDetail = BundleDetail(
                                                                         bundleId = "123",
+                                                                        bundleGroupId = "234",
                                                                         bundleQty = 1
                                                                 ),
                                                                 products = listOf(
@@ -133,7 +134,7 @@ class MiniCartSimplifiedMapperTest {
         // THEN
         assertEquals(1, miniCartSimplifiedData.miniCartItems.size)
         assertEquals(mapOf(
-                MiniCartItemKey("123", type = MiniCartItemType.BUNDLE) to MiniCartItem.MiniCartItemBundle(bundleId = "123", bundleQuantity = 1, bundleLabelQuantity = 1, bundleMultiplier = 1, products = mapOf(
+                MiniCartItemKey("234", type = MiniCartItemType.BUNDLE) to MiniCartItem.MiniCartItemBundleGroup(bundleId = "123", bundleGroupId = "234", bundleQuantity = 1, bundleLabelQuantity = 1, bundleMultiplier = 1, products = mapOf(
                         MiniCartItemKey("2") to MiniCartItem.MiniCartItemProduct(productId = "2", quantity = 1),
                         MiniCartItemKey("3") to MiniCartItem.MiniCartItemProduct(productId = "3", quantity = 1)
                 )),
