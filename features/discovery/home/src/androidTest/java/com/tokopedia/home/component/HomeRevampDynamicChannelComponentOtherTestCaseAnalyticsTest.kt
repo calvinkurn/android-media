@@ -80,7 +80,7 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
     }
 
     @Test
-    fun testBalanceWidgetNotLinked() {
+    fun testGetBalanceWidgetNotLinked() {
         onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
