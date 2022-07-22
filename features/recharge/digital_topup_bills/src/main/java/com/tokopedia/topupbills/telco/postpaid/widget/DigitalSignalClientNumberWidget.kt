@@ -18,22 +18,22 @@ class DigitalSignalClientNumberWidget : DigitalClientNumberWidget {
     private lateinit var postpaidListener: ClientNumberPostpaidListener
 
     constructor(context: Context) : super(context) {
-        initV()
+        initView()
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initV()
+        initView()
     }
 
     constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initV()
+        initView()
     }
 
     override fun getLayout(): Int {
         return R.layout.view_telco_input_number_signal
     }
 
-    fun initV() {
+    fun initView() {
         btnCheckout = view.findViewById(R.id.signal_checkout_button)
         prefixOperatorResult = view.findViewById(R.id.signal_operator)
 

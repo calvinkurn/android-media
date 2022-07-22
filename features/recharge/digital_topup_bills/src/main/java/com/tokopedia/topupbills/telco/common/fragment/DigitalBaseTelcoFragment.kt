@@ -420,7 +420,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         super.processMenuDetail(data)
-        (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
+        (activity as? BaseSimpleActivity)?.updateTitle(data.menuLabel)
         renderTicker(data.tickers)
         sendOpenScreenTracking()
         initiateMenuTelco(data.recommendations, data.promos)
