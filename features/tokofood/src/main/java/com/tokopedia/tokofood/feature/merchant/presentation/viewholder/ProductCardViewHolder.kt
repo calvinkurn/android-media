@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Paint
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
@@ -72,6 +74,15 @@ class ProductCardViewHolder(
             )
         }
 
+        binding.qeuProductQtyEditor.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+        binding.qeuProductQtyEditor.editText.setOnEditorActionListener { view, actionId, _ ->
+            if(actionId==EditorInfo.IME_ACTION_DONE) {
+                view.clearFocus()
+                val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+                true
+            } else false
+        }
         binding.qeuProductQtyEditor.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }

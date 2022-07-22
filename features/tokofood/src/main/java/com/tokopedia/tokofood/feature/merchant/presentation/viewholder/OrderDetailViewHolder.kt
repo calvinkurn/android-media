@@ -1,6 +1,8 @@
 package com.tokopedia.tokofood.feature.merchant.presentation.viewholder
 
 import android.content.Context
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -35,6 +37,15 @@ class OrderDetailViewHolder(
             binding.root.getTag(R.id.dataset_position) as Int
             val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
             clickListener.onDeleteButtonClicked(adapterPosition =  adapterPosition, cartId = customOrderDetail.cartId)
+        }
+        binding.qeuProductQtyEditor.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+        binding.qeuProductQtyEditor.editText.setOnEditorActionListener { view, actionId, _ ->
+            if(actionId== EditorInfo.IME_ACTION_DONE) {
+                view.clearFocus()
+                val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+                true
+            } else false
         }
         binding.qeuProductQtyEditor.setAddClickListener {
             val quantity = binding.qeuProductQtyEditor.getValue()

@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
@@ -199,6 +201,15 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             }
 
             // setup quantity editor
+            binding?.qeuProductQtyEditor?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
+            binding?.qeuProductQtyEditor?.editText?.setOnEditorActionListener { view, actionId, _ ->
+                if(actionId== EditorInfo.IME_ACTION_DONE) {
+                    view.clearFocus()
+                    val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                    true
+                } else false
+            }
             binding?.qeuProductQtyEditor?.setAddClickListener {
                 val addOnUiModels = customListAdapter?.getCustomListItems()?.map { it.addOnUiModel }
                 val quantity = binding?.qeuProductQtyEditor?.getValue() ?: Int.ONE
