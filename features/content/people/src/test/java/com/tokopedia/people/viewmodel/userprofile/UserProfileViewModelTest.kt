@@ -99,7 +99,7 @@ class UserProfileViewModelTest {
 
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockUserSession.userId } returns mockUserId
-        coEvery { mockRepo.getWhitelist(mockUserId) } returns mockHasAcceptTnc
+        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
 
         val robot = UserProfileViewModelRobot(
             username = mockOwnUsername,
