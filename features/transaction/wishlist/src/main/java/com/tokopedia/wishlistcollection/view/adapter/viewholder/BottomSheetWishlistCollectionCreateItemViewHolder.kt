@@ -14,11 +14,11 @@ class BottomSheetWishlistCollectionCreateItemViewHolder(
         item: BottomSheetWishlistCollectionTypeLayoutData,
         actionListener: BottomSheetCollectionWishlistAdapter.ActionListener?
     ) {
-        if (item.dataObject is com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data.Placeholder) {
+        if (item.dataObject is com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data) {
             binding.createCollectionImage.setImageUrl(IMAGE_URL_SMALL_CREATE_NEW)
-            binding.createCollectionLabel.text = HtmlLinkHelper(itemView.context, item.dataObject.text).spannedString
+            binding.createCollectionLabel.text = HtmlLinkHelper(itemView.context, item.dataObject.placeholder.text).spannedString
             binding.root.setOnClickListener {
-                actionListener?.onCreateNewCollectionClicked()
+                actionListener?.onCreateNewCollectionClicked(item.dataObject)
             }
         }
     }

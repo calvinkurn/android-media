@@ -90,6 +90,12 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    init {
+        isDragable = true
+        isKeyboardOverlap = true
+        isFullpage = false
+    }
+
     private fun initLayout() {
         binding = BottomsheetAddWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.rvAddWishlistCollection?.adapter = collectionAdapter
@@ -120,6 +126,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bottomSheetBehaviorKnob(view, true)
         initObserver()
     }
 
@@ -199,10 +206,11 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
             )
         }
 
+        // data.placeholder needs for layout, and need validation data for click listener
         if (data.placeholder.text.isNotEmpty()) {
             listData.add(
                 BottomSheetWishlistCollectionTypeLayoutData(
-                    data.placeholder,
+                    data,
                     TYPE_CREATE_NEW_COLLECTION
                 )
             )

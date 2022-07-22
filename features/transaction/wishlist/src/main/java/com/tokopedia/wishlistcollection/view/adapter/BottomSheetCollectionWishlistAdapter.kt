@@ -8,6 +8,7 @@ import com.tokopedia.wishlist.databinding.AddWishlistCollectionCreateNewItemBind
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionMainSectionTextItemBinding
 import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ADDITIONAL_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ITEM
@@ -27,7 +28,7 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
 
     interface ActionListener {
         fun onCollectionItemClicked(name: String, id: String)
-        fun onCreateNewCollectionClicked()
+        fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

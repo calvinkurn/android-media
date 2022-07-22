@@ -62,6 +62,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private var binding by autoClearedNullable<FragmentCollectionWishlistBinding>()
     private lateinit var collectionAdapter: WishlistCollectionAdapter
     private var activityWishlistCollection = ""
+    private var isEligibleAddNewCollection = false
+    private var wordingMaxLimitCollection = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -224,6 +226,10 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK) {
+                        if (result.data.data.totalCollection >= result.data.data.maxLimitCollection) {
+                            isEligibleAddNewCollection = false
+                            wordingMaxLimitCollection = result.data.data.wordingMaxLimitCollection
+                        }
                         if (result.data.data.collections.size == 1) {
                             onlyAllCollection = true
                         }
@@ -320,7 +326,11 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     override fun onCreateNewCollectionClicked() {
-        showBottomSheetCreateNewCollection(childFragmentManager)
+        if (isEligibleAddNewCollection && wordingMaxLimitCollection.isEmpty()) {
+            showBottomSheetCreateNewCollection(childFragmentManager)
+        } else {
+            showToaster(wordingMaxLimitCollection, getString(R.string.wishlist_oke_label), Toaster.TYPE_ERROR)
+        }
     }
 
     private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {

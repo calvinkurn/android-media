@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRIN
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
@@ -61,8 +62,16 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         bottomSheetCollection.saveToCollection(addWishlistParam)
     }
 
-    override fun onCreateNewCollectionClicked() {
-        showBottomSheetCreateNewCollection(childFragmentManager)
+    override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data) {
+        if (dataObject.totalCollection < dataObject.maxLimitCollection) {
+            showBottomSheetCreateNewCollection(childFragmentManager)
+        } else {
+            val intent = Intent()
+            intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
+            intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, dataObject.wordingMaxLimitCollection)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
     }
 
     private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {
