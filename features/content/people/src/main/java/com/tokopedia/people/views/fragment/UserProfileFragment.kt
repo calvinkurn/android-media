@@ -715,15 +715,15 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun emptyPostSelf() {
-        mainBinding.emptyPost.textErrorEmptyTitle.text = getString(R.string.up_empty_page_title)
+        mainBinding.emptyPost.textErrorEmptyTitle.text = getString(R.string.up_empty_post_title_on_self)
         mainBinding.emptyPost.textErrorEmptyDesc.apply {
-            text = getString(R.string.up_empty_page_desc)
+            text = getString(R.string.up_empty_post_desc_on_self)
             show()
         }
     }
 
     private fun emptyPostVisitor() {
-        mainBinding.emptyPost.textErrorEmptyTitle.text = getString(R.string.up_empty_page_title2)
+        mainBinding.emptyPost.textErrorEmptyTitle.text = getString(R.string.up_empty_post_on_visitor)
         mainBinding.emptyPost.textErrorEmptyDesc.hide()
     }
 
