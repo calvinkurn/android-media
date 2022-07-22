@@ -35,10 +35,11 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
         const val GUIDELINE_ANIMATION_DELAY = 500L
 
         @JvmStatic
-        fun newInstance(campaignId: String): ChooseProductFragment {
+        fun newInstance(campaignId: String, selectedProductCount: Int): ChooseProductFragment {
             val fragment = ChooseProductFragment()
             val bundle = Bundle()
             bundle.putString(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+            bundle.putInt(ChooseProductActivity.BUNDLE_KEY_SELECTED_PRODUCT_COUNT, selectedProductCount)
             fragment.arguments = bundle
             return fragment
         }
@@ -51,6 +52,9 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
     private var guidelineMarginMax = GUIDELINE_MARGIN_MIN
     private val campaignId by lazy {
         arguments?.getString(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID).orEmpty()
+    }
+    private val selectedProductCount by lazy {
+        arguments?.getInt(ChooseProductActivity.BUNDLE_KEY_SELECTED_PRODUCT_COUNT).orZero()
     }
     private val animateScrollDebounce: (Int) -> Unit by lazy {
         debounce(GUIDELINE_ANIMATION_DELAY, GlobalScope) {
@@ -82,8 +86,10 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
         setupObservers()
         setupSearchBar()
+        // TODO tidy up this
         guidelineMarginMax = binding?.guidelineFooter?.getGuidelineEnd().orZero()
         guidelineMargin = guidelineMarginMax
+        viewModel.setPreviousSelectedProductCount(selectedProductCount)
     }
 
     override fun createAdapter() = ReserveProductAdapter(::onSelectedItemChanges)
@@ -179,7 +185,8 @@ class ChooseProductFragment : BaseSimpleListFragment<ReserveProductAdapter, Rese
 
     private fun setupSelectionItemsObserver() {
         viewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
-            val selectedCount = selectedItems.filter { !it.hasChild }.size
+            //TODO: Move to viewmodel (faisal)
+            val selectedCount = selectedItems.filter { !it.hasChild && !it.isProductPreviouslySubmitted }.size + selectedProductCount
             binding?.tvSelectedProduct?.text =
                 getString(R.string.chooseproduct_selected_product_suffix, selectedCount)
             setupButtonSave(selectedCount)

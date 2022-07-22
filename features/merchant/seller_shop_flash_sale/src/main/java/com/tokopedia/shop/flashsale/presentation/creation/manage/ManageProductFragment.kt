@@ -342,6 +342,7 @@ class ManageProductFragment : BaseDaggerFragment() {
             tpgAddProduct.gone()
             recyclerViewProduct.gone()
             cardBottomButtonGroup.gone()
+            showHeaderPadding(false)
 
             emptyState.setImageUrl(EMPTY_STATE_IMAGE_URL)
             emptyState.setPrimaryCTAClickListener {
@@ -479,9 +480,7 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun showChooseProductPage() {
         val context = context ?: return
-        val intent = Intent(context, ChooseProductActivity::class.java).apply {
-            putExtra(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId.toString())
-        }
+        val intent = ChooseProductActivity.createIntent(context, campaignId.toString(), manageProductListAdapter.itemCount)
         startActivityForResult(intent, REQUEST_CODE)
     }
 

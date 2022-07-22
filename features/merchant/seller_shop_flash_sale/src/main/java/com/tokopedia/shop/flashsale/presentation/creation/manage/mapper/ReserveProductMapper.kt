@@ -59,9 +59,10 @@ object ReserveProductMapper {
         }
     }
 
-    fun canReserveProduct(selectedItem: List<SelectedProductModel>): Boolean {
-        return selectedItem.filter { !it.hasChild }.run {
-            size.isMoreThanZero() && size < ChooseProductConstant.PRODUCT_SELECTION_MAX
+    fun canReserveProduct(selectedItem: List<SelectedProductModel>, previousSelectedProductCount: Int): Boolean {
+        return selectedItem.filter { !it.hasChild && !it.isProductPreviouslySubmitted }.run {
+            val actualSize = size + previousSelectedProductCount
+            actualSize.isMoreThanZero() && actualSize < ChooseProductConstant.PRODUCT_SELECTION_MAX
         }
     }
 
