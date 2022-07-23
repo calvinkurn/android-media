@@ -526,9 +526,10 @@ class UserProfileFragment @Inject constructor(
     ) {
         if (prev?.shopRecom == value.shopRecom) return
 
-        mAdapterShopRecom.updateData(value.shopRecom)
+        mainBinding.shopRecommendation.txtWordingFollow.text = value.shopRecom.title
+        mAdapterShopRecom.updateData(value.shopRecom.items)
 
-        if (value.shopRecom.isEmpty()) showEmptyShopRecom()
+        if (value.shopRecom.items.isEmpty()) showEmptyShopRecom()
         else showContentShopRecom()
     }
 
