@@ -59,7 +59,7 @@
 
         <activity
             android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionHostBottomSheetActivity"
-            android:label="@string/page_name_wishlist_collection"
+            android:label="@string/page_name_wishlist_collection_host_bottomsheet"
             android:theme="@style/Theme.TransparentNoAnimation"
             android:exported="false">
             <intent-filter>
