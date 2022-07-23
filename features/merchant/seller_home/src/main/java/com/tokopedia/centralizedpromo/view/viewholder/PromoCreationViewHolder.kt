@@ -50,18 +50,26 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
                 tvRecommendedPromoExtra.text = element.extra
                 tvRecommendedPromoExtra.show()
                 tvRecommendedPromoDescription.setPadding(
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl4).toInt()
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl4).toInt()
                 )
             } else {
                 tvRecommendedPromoExtra.text = ""
                 tvRecommendedPromoDescription.setPadding(
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl2).toInt()
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()
                 )
             }
 
