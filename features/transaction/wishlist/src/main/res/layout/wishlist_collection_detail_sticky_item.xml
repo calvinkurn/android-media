@@ -35,61 +35,53 @@
             app:typographyWeight="reguler"
             android:text="@string/wishlist_v2_barang_label"/>
 
-        <!--<com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/wishlist_collection_detail_manage_label"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="@string/wishlist_manage_label"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            android:layout_marginEnd="16dp"
-            android:textColor="@color/Unify_G500"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"/>-->
+            android:orientation="horizontal"
+            android:layout_marginEnd="16dp">
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/wishlist_collection_detail_type_layout_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:icon_name="VIEW_LIST"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="12dp"
-            android:layout_marginEnd="16dp"/>
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_gear_collection_detail"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="6dp"
+                app:icon_name="SETTING"
+                android:visibility="gone"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"/>
 
-        <View
-            android:id="@+id/wishlist_divider"
-            android:layout_width="1dp"
-            android:layout_height="24dp"
-            android:layout_toStartOf="@id/wishlist_collection_detail_type_layout_icon"
-            android:background="@color/Unify_N75"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="12dp"
-            android:layout_alignBottom="@id/wishlist_collection_detail_manage_label"/>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/wishlist_collection_detail_manage_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wishlist_manage_label"
+                android:textColor="@color/Unify_G500"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                android:layout_marginEnd="6dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/wishlist_collection_detail_manage_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/wishlist_manage_label"
-            android:textColor="@color/Unify_G500"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            android:layout_toStartOf="@id/wishlist_divider"
-            android:layout_marginEnd="6dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"/>
+            <View
+                android:id="@+id/wishlist_divider"
+                android:layout_width="1dp"
+                android:layout_height="24dp"
+                android:background="@color/Unify_N75"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"/>
 
-        <!--<com.tokopedia.iconunify.IconUnify
-            android:id="@+id/wishlist_type_layout_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/wishlist_divider"
-            app:icon_name="VIEW_LIST"
-            android:layout_marginEnd="6dp"
-            android:layout_marginTop="12dp"
-            android:layout_alignBottom="@id/wishlist_collection_detail_manage_label"/>-->
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/wishlist_collection_detail_type_layout_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_name="VIEW_LIST"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -54,6 +54,7 @@
     <string name="collection_create_bottomsheet_name_error">Kamu sudah punya koleksi dengan nama ini</string>
     <string name="collection_item_kebab_menu_1">Ubah Nama Koleksi</string>
     <string name="collection_item_kebab_menu_2">Hapus Koleksi</string>
+    <string name="collection_settings_menu">Atur Barang dalam Koleksi</string>
     <string name="collection_coachmark_see_all_wishlist">Lihat semua barang di Wishlist-mu di sini. Ada juga fitur buat cek barang termurah, lagi diskon, dll.</string>
     <string name="collection_coachmark_create_collection">Baru! Pakai fitur “Koleksi”, buat mengelompokkan barang di Wishlist sesuai keinginanmu.</string>
     <string name="collection_coachmark_try_create_wishlist">Coba</string>

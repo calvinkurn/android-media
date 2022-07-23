@@ -452,6 +452,17 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         if (requestCode == REQUEST_CODE_COLLECTION_DETAIL && resultCode == Activity.RESULT_OK) {
             val isNeedRefresh = data?.getBooleanExtra(EXTRA_NEED_REFRESH, false)
             if (isNeedRefresh == true) getWishlistCollections()
+
+            val isSuccess = data?.getBooleanExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS, false)
+            val messageToaster =
+                data?.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
+            if (messageToaster != null) {
+                if (isSuccess == true) {
+                    showToaster(messageToaster, "", Toaster.TYPE_NORMAL)
+                } else {
+                    showToaster(messageToaster, "", Toaster.TYPE_ERROR)
+                }
+            }
         }
     }
 }

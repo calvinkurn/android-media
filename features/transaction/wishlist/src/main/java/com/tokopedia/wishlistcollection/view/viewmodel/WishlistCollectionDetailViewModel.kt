@@ -26,8 +26,10 @@ import com.tokopedia.wishlist.util.WishlistV2Utils.convertRecommendationIntoProd
 import com.tokopedia.wishlist.util.WishlistV2Utils.organizeWishlistV2Data
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionItemsResponse
+import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseCase
+import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,7 +43,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
     private val deleteWishlistV2UseCase: com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase,
     private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
-    private val deleteCollectionItemsUseCase: DeleteWishlistCollectionItemsUseCase
+    private val deleteCollectionItemsUseCase: DeleteWishlistCollectionItemsUseCase,
+    private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _collectionItems =
@@ -65,6 +68,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val _deleteCollectionItemsResult = MutableLiveData<Result<DeleteWishlistCollectionItemsResponse.Data.DeleteWishlistCollectionItems>>()
     val deleteCollectionItemsResult: LiveData<Result<DeleteWishlistCollectionItemsResponse.Data.DeleteWishlistCollectionItems>>
         get() = _deleteCollectionItemsResult
+
+    private val _deleteCollectionResult = MutableLiveData<Result<DeleteWishlistCollectionResponse.Data.DeleteWishlistCollection>>()
+    val deleteCollectionResult: LiveData<Result<DeleteWishlistCollectionResponse.Data.DeleteWishlistCollection>>
+        get() = _deleteCollectionResult
 
     fun getWishlistCollectionItems(
         params: GetWishlistCollectionItemsParams,
@@ -181,6 +188,22 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             } else {
                 val error = (result as Fail).throwable
                 _deleteCollectionItemsResult.value = Fail(error)
+            }
+        }
+    }
+
+    fun deleteWishlistCollection(collectionId: String) {
+        launch(dispatcher.main) {
+            val result =
+                withContext(dispatcher.io) {
+                    deleteWishlistCollectionUseCase.setParams(collectionId)
+                    deleteWishlistCollectionUseCase.executeOnBackground()
+                }
+            if (result is Success) {
+                _deleteCollectionResult.value = result
+            } else {
+                val error = (result as Fail).throwable
+                _deleteCollectionResult.value = Fail(error)
             }
         }
     }

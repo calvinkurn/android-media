@@ -55,7 +55,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_WISHLIST
-import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -102,8 +101,10 @@ import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsPa
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionDetailComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionDetailModule
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
+import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetWishlistCollectionSettings
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.CoroutineScope
@@ -120,7 +121,8 @@ import com.tokopedia.wishlist.R as Rv2
 
 @Keep
 class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener,
-    CoroutineScope, BottomSheetUpdateWishlistCollectionName.ActionListener {
+    CoroutineScope, BottomSheetUpdateWishlistCollectionName.ActionListener,
+    BottomSheetWishlistCollectionSettings.ActionListener {
     private var binding by autoClearedNullable<FragmentWishlistCollectionDetailBinding>()
     private lateinit var collectionItemsAdapter: WishlistV2Adapter
     private lateinit var rvScrollListener: EndlessRecyclerViewScrollListener
@@ -283,6 +285,36 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         observingDeleteWishlistV2()
         observingBulkDeleteWishlistV2()
         observingDeleteCollectionItems()
+        observingDeleteWishlistCollection()
+    }
+
+    private fun observingDeleteWishlistCollection() {
+        wishlistCollectionDetailViewModel.deleteCollectionResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    finishRefresh()
+                    if (result.data.status == WishlistCollectionFragment.OK && result.data.data.success) {
+                        val intent = Intent()
+                        intent.putExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS, true)
+                        intent.putExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER, result.data.data.message)
+                        intent.putExtra(WishlistCollectionConsts.EXTRA_NEED_REFRESH, true)
+                        activity?.setResult(Activity.RESULT_OK, intent)
+                        activity?.finish()
+                    } else {
+                        val errorMessage = result.data.errorMessage.first().ifEmpty {
+                            context?.getString(
+                                com.tokopedia.wishlist.R.string.wishlist_v2_common_error_msg
+                            )
+                        }
+                        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                }
+            }
+        }
     }
 
     private fun observingDeleteCollectionItems() {
@@ -629,8 +661,19 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             wishlistCollectionDetailNavtoolbar.setIcon(icons)
-            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailManageLabel.setOnClickListener {
-                onStickyManageClicked() }
+            if (collectionId == "0") {
+                wishlistCollectionDetailStickyCountManageLabel.apply {
+                    iconGearCollectionDetail.gone()
+                    wishlistCollectionDetailManageLabel.show()
+                    wishlistCollectionDetailManageLabel.setOnClickListener { onStickyManageClicked() }
+                }
+            } else {
+                wishlistCollectionDetailStickyCountManageLabel.apply {
+                    wishlistCollectionDetailManageLabel.gone()
+                    iconGearCollectionDetail.show()
+                    iconGearCollectionDetail.setOnClickListener { onCollectionSettingsClicked(collectionId, collectionName) }
+                }
+            }
             wishlistCollectionDetailFb.circleMainMenu.setOnClickListener {
                 rvWishlistCollectionDetail.smoothScrollToPosition(0)
             }
@@ -723,7 +766,19 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         binding?.run {
             containerDeleteCollectionDetail.gone()
             clWishlistCollectionDetailHeader.visible()
-            wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailManageLabel.text = getString(Rv2.string.wishlist_manage_label)
+            if (collectionId == "0") {
+                wishlistCollectionDetailStickyCountManageLabel.apply {
+                    iconGearCollectionDetail.gone()
+                    wishlistCollectionDetailManageLabel.show()
+                    wishlistCollectionDetailManageLabel.text = getString(Rv2.string.wishlist_manage_label)
+                }
+            } else {
+                wishlistCollectionDetailStickyCountManageLabel.apply {
+                    wishlistCollectionDetailManageLabel.gone()
+                    iconGearCollectionDetail.show()
+                }
+            }
+
         }
     }
 
@@ -1289,8 +1344,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
                 onTickerCTASortFromLatest()
                 turnOnBulkDeleteMode()
-                binding?.run {
-                    wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailManageLabel.text = getString(Rv2.string.wishlist_cancel_manage_label)
+                if (collectionId == "0") {
+                    binding?.run {
+                        wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailManageLabel.text = getString(Rv2.string.wishlist_cancel_manage_label)
+                    }
                 }
                 view?.let { Toaster.build(it, getString(Rv2.string.wishlist_v2_terlama_disimpan),
                     Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
@@ -1660,6 +1717,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
+    private fun onCollectionSettingsClicked(collectionId: String, collectionName: String) {
+        val bottomSheetCollectionSettings =
+            BottomSheetWishlistCollectionSettings.newInstance(collectionName, collectionId)
+        bottomSheetCollectionSettings.setListener(this@WishlistCollectionDetailFragment)
+        if (bottomSheetCollectionSettings.isAdded || childFragmentManager.isStateSaved) return
+        bottomSheetCollectionSettings.show(childFragmentManager)
+    }
+
     private fun turnOnBulkDeleteMode() {
         isBulkDeleteShow = true
         onManageClicked(showCheckbox = true)
@@ -1744,7 +1809,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun doBulkDelete() {
-        // wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(listBulkDelete, userSession.userId, bulkDeleteMode, bulkDeleteAdditionalParams)
+        wishlistCollectionDetailViewModel.bulkDeleteWishlistV2(listBulkDelete, userSession.userId, bulkDeleteMode)
         WishlistV2Analytics.clickHapusOnPopUpMultipleWishlistProduct()
     }
 
@@ -1834,4 +1899,43 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
+
+    override fun onChangeCollectionName(collectionId: String, collectionName: String) {
+        showUpdateWishlistCollectionNameBottomSheet(collectionId, collectionName)
+    }
+
+    override fun onManageCollectionItems() {
+        turnOnBulkDeleteMode()
+    }
+
+    override fun onDeleteCollectionItem(collectionId: String, collectionName: String) {
+        showDialogDeleteCollection(collectionId, collectionName)
+    }
+
+    private fun showDialogDeleteCollection(collectionId: String, collectionName: String) {
+        val dialog =
+            context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.setTitle(
+            getString(
+                com.tokopedia.wishlist.R.string.wishlist_collection_detail_delete_confirmation_title,
+                collectionName
+            )
+        )
+        dialog?.dialogDesc?.gone()
+        dialog?.setPrimaryCTAText(getString(com.tokopedia.wishlist.R.string.wishlist_delete_label))
+        dialog?.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            doDeleteCollection(collectionId)
+        }
+        dialog?.setSecondaryCTAText(getString(com.tokopedia.wishlist.R.string.wishlist_cancel_manage_label))
+        dialog?.setSecondaryCTAClickListener {
+            dialog.dismiss()
+            // WishlistV2Analytics.clickBatalOnPopUpMultipleWishlistProduct()
+        }
+        dialog?.show()
+    }
+
+    private fun doDeleteCollection(collectionId: String) {
+        wishlistCollectionDetailViewModel.deleteWishlistCollection(collectionId)
+    }
 }
