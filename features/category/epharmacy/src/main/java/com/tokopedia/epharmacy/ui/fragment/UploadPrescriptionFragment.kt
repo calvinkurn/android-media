@@ -214,6 +214,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun onDoneButtonClick(){
         sendSubmitButtonClickEvent()
+        ePharmacyLoader?.show()
         if(orderId != DEFAULT_ZERO_VALUE){
             uploadPrescriptionViewModel.uploadPrescriptionIdsInOrder(orderId)
         }else if(checkoutId.isNotBlank()){
@@ -302,6 +303,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun observeUploadPrescriptionIdsData() {
         uploadPrescriptionViewModel.uploadPrescriptionIdsData.observe(viewLifecycleOwner,{
+            ePharmacyLoader?.hide()
             when(it){
                 is Success -> {
                     sendSubmitSuccessEvent()
