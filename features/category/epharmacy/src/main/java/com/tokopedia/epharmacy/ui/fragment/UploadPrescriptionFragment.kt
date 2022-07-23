@@ -364,6 +364,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
             }
             putStringArrayListExtra(EPHARMACY_PRESCRIPTION_IDS,prescriptionIds)
             activity?.setResult(EPHARMACY_REQUEST_CODE,this)
+            activity?.finish()
         }
     }
 
