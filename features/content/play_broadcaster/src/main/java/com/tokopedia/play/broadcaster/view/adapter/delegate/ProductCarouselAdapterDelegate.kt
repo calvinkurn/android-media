@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.carousel.ProductCarouselViewHolder
@@ -23,7 +22,7 @@ internal class ProductCarouselAdapterDelegate private constructor() {
             isFlexibleType: Boolean
         ): Boolean {
             val product = itemList.filterIsInstance<ProductUiModel>()[position]
-            return product.pinStatus.pinStatus != PinStatus.Pinned
+            return !product.pinStatus.pinStatus
         }
 
         override fun onBindViewHolder(
@@ -50,7 +49,7 @@ internal class ProductCarouselAdapterDelegate private constructor() {
             isFlexibleType: Boolean
         ): Boolean {
             val product = itemList.filterIsInstance<ProductUiModel>()[position]
-            return product.pinStatus.pinStatus == PinStatus.Pinned
+            return product.pinStatus.pinStatus
         }
 
         override fun onBindViewHolder(

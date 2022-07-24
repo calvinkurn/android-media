@@ -17,7 +17,6 @@ import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryA
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
@@ -133,12 +132,12 @@ internal class ProductSummaryViewHolder private constructor() {
             }
 
             when(item.product.pinStatus.pinStatus) {
-                PinStatus.Pinned -> {
+                true -> {
                     binding.viewPinProduct.ivPin.setImage(newIconId = IconUnify.PUSH_PIN, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_RN400), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_RN400))
                     binding.viewPinProduct.tvPin.text = context.resources.getString(R.string.play_bro_unpin)
                     binding.viewPinProduct.tvPin.setTextColor(MethodChecker.getColor(context, unifyR.color.Unify_RN400))
                 }
-                PinStatus.Unpin -> {
+                false -> {
                     binding.viewPinProduct.ivPin.setImage(newIconId = IconUnify.PUSH_PIN, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
                     binding.viewPinProduct.tvPin.text = context.resources.getString(R.string.play_bro_pin)
                     binding.viewPinProduct.tvPin.setTextColor(MethodChecker.getColor(context, unifyR.color.Unify_Static_White))

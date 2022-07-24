@@ -20,7 +20,6 @@ import com.tokopedia.play.broadcaster.databinding.ItemPlayBroPlaceholderCarousel
 import com.tokopedia.play.broadcaster.databinding.ItemPlayBroProductCarouselBinding
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -91,7 +90,7 @@ class ProductCarouselViewHolder private constructor() {
             }
 
             when (item.pinStatus.pinStatus) {
-                PinStatus.Pinned -> {
+                true -> {
                     binding.viewPinProduct.ivPin.setImage(
                         newIconId = IconUnify.PUSH_PIN,
                         newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_RN400),
@@ -106,7 +105,7 @@ class ProductCarouselViewHolder private constructor() {
                         )
                     )
                 }
-                PinStatus.Unpin -> {
+                false -> {
                     binding.viewPinProduct.ivPin.setImage(
                         newIconId = IconUnify.PUSH_PIN,
                         newDarkEnable = MethodChecker.getColor(
@@ -214,7 +213,7 @@ class ProductCarouselViewHolder private constructor() {
             }
 
             when (item.pinStatus.pinStatus) {
-                PinStatus.Pinned -> {
+                true -> {
                     binding.viewPinProduct.ivPin.setImage(
                         newIconId = IconUnify.PUSH_PIN,
                         newDarkEnable = MethodChecker.getColor(
@@ -235,7 +234,7 @@ class ProductCarouselViewHolder private constructor() {
                         )
                     )
                 }
-                PinStatus.Unpin -> {
+                false -> {
                     binding.viewPinProduct.ivPin.setImage(
                         newIconId = IconUnify.PUSH_PIN,
                         newDarkEnable = MethodChecker.getColor(

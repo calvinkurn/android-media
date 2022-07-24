@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -35,8 +34,6 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.switch
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
