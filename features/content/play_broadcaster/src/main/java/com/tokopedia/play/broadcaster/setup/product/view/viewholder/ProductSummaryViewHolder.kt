@@ -131,7 +131,7 @@ internal class ProductSummaryViewHolder private constructor() {
                 listener.onPinProductClicked(item.product)
             }
 
-            when(item.product.pinStatus.pinStatus) {
+            when(item.product.pinStatus.isPinned) {
                 true -> {
                     binding.viewPinProduct.ivPin.setImage(newIconId = IconUnify.PUSH_PIN, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_RN400), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_RN400))
                     binding.viewPinProduct.tvPin.text = context.resources.getString(R.string.play_bro_unpin)

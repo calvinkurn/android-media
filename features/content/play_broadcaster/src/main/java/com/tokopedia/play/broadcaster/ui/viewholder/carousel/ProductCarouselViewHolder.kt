@@ -89,7 +89,7 @@ class ProductCarouselViewHolder private constructor() {
                 listener.onPinProductClicked(item)
             }
 
-            when (item.pinStatus.pinStatus) {
+            when (item.pinStatus.isPinned) {
                 true -> {
                     binding.viewPinProduct.ivPin.setImage(
                         newIconId = IconUnify.PUSH_PIN,
@@ -212,7 +212,7 @@ class ProductCarouselViewHolder private constructor() {
                 listener.onPinProductClicked(item)
             }
 
-            when (item.pinStatus.pinStatus) {
+            when (item.pinStatus.isPinned) {
                 true -> {
                     binding.viewPinProduct.ivPin.setImage(
                         newIconId = IconUnify.PUSH_PIN,

@@ -22,7 +22,7 @@ internal class ProductCarouselAdapterDelegate private constructor() {
             isFlexibleType: Boolean
         ): Boolean {
             val product = itemList.filterIsInstance<ProductUiModel>()[position]
-            return !product.pinStatus.pinStatus
+            return !product.pinStatus.isPinned
         }
 
         override fun onBindViewHolder(
@@ -49,7 +49,7 @@ internal class ProductCarouselAdapterDelegate private constructor() {
             isFlexibleType: Boolean
         ): Boolean {
             val product = itemList.filterIsInstance<ProductUiModel>()[position]
-            return product.pinStatus.pinStatus
+            return product.pinStatus.isPinned
         }
 
         override fun onBindViewHolder(

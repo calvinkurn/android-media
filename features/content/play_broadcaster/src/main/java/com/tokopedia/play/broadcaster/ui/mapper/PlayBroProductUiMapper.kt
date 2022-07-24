@@ -221,5 +221,5 @@ class PlayBroProductUiMapper @Inject constructor() {
      * isPinned -> show [status: Lepas / Pin]
      */
     private fun getPinStatus(isPinned: Boolean, canPin: Boolean): PinProductUiModel =
-        PinProductUiModel(pinStatus = isPinned, canPin = canPin)
+        PinProductUiModel(isPinned = isPinned, canPin = canPin)
 }

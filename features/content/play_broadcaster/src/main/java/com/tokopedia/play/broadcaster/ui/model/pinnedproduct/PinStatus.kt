@@ -11,12 +11,12 @@ sealed interface PinUiModel : Parcelable
 
 @Parcelize
 data class PinProductUiModel(
-    val pinStatus: Boolean,
+    val isPinned: Boolean,
     val canPin: Boolean,
     val isLoading: Boolean = false,
 ): PinUiModel {
     companion object {
-        val Empty = PinProductUiModel(pinStatus = false, canPin = false, isLoading = false)
+        val Empty = PinProductUiModel(isPinned = false, canPin = false, isLoading = false)
     }
 }
 
