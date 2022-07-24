@@ -152,10 +152,19 @@ class PartialCentralizedPromoCreationView(
         )
     }
 
-    override fun onRecyclerViewItemEmpty() {}
+    override fun onRecyclerViewItemEmpty() = with(promoCreationBinding) {
+        rvCentralizedPromoCreation.hide()
+        centralizedPromoCreationError.layoutCentralizedPromoCreationError.hide()
+        centralizedPromoCreationShimmering.layoutCentralizedPromoCreationShimmering.hide()
+    }
 
-    override fun bindSuccessData(data: PromoCreationListUiModel) {
-        setupFilter(data.filterItems)
+    override fun bindSuccessData(data: PromoCreationListUiModel)  = with(promoCreationBinding){
+        if (data.filterItems.isNotEmpty()){
+            centralizedFilterPromoCreationShimmering.layoutCentralizedPromoCreationShimmering.hide()
+            filter.show()
+            centralizedPromoCreationError.layoutCentralizedPromoCreationError.hide()
+            setupFilter(data.filterItems)
+        }
     }
 
     private fun showError(cause:Throwable){
