@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
-import com.tokopedia.centralizedpromo.view.fragment.CentralizedPromoFragment
+import com.tokopedia.centralizedpromoold.view.fragment.CentralizedPromoFragmentOld
 
 class CentralizedPromoActivity : BaseSimpleActivity() {
 
@@ -14,7 +14,8 @@ class CentralizedPromoActivity : BaseSimpleActivity() {
         handleIntent(intent)
     }
 
-    override fun getNewFragment(): Fragment = CentralizedPromoFragment.createInstance()
+    //TODO change with remote config
+    override fun getNewFragment(): Fragment = CentralizedPromoFragmentOld.createInstance()
 
     private fun handleIntent(intent: Intent?) {
         intent?.run {
