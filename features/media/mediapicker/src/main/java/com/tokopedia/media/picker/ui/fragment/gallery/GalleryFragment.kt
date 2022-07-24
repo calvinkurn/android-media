@@ -16,7 +16,9 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentGalleryBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
+import com.tokopedia.media.picker.data.URL_EMPTY_STATE_DRAWABLE
 import com.tokopedia.media.picker.data.repository.AlbumRepository.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
@@ -88,17 +90,13 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_ALBUM_SELECTOR && resultCode == Activity.RESULT_OK) {
-            val bucketId = data?.getLongExtra(AlbumActivity.INTENT_BUCKET_ID, 0)?: -1
-            val bucketName = data?.getStringExtra(AlbumActivity.INTENT_BUCKET_NAME)
+            val (id, name) = AlbumActivity.getAlbumBucketDetails(data)
 
-            // set the title of album selector
-            binding?.albumSelector?.txtName?.text = bucketName
-
-            // fetch album by bucket id
-            viewModel.fetch(bucketId)
+            binding?.albumSelector?.txtName?.text = name
+            viewModel.fetch(id)
 
             // force and scroll to up if the bucketId is "recent medias / all media"
-            if (bucketId == -1L) {
+            if (id == ALL_MEDIA_BUCKET_ID) {
                 binding?.lstMedia?.smoothScrollToPosition(0)
             }
         }
@@ -168,6 +166,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
     private fun setupEmptyState(isShown: Boolean) {
         binding?.emptyState?.root?.showWithCondition(isShown)
+        binding?.emptyState?.imgEmptyState?.loadImage(URL_EMPTY_STATE_DRAWABLE)
         binding?.emptyState?.emptyNavigation?.showWithCondition(param.get().isCommonPageType())
         binding?.emptyState?.emptyNavigation?.setOnClickListener {
             contract?.onEmptyStateActionClicked()
@@ -188,11 +187,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
         binding?.albumSelector?.container?.setOnClickListener {
             galleryAnalytics.clickDropDown()
-
-            startActivityForResult(Intent(
-                requireContext(),
-                AlbumActivity::class.java
-            ), RC_ALBUM_SELECTOR)
+            AlbumActivity.start(this, RC_ALBUM_SELECTOR)
         }
     }
 
@@ -214,53 +209,65 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.lstMedia?.adapter = adapter
     }
 
+    private fun hasVideoValid(media: MediaUiModel): Boolean {
+        if (contract?.hasVideoLimitReached() == true) {
+            contract?.onShowVideoLimitReachedGalleryToast()
+            return false
+        }
+
+        if (contract?.isMinVideoDuration(media) == true) {
+            contract?.onShowVideoMinDurationToast()
+            return false
+        }
+
+        if(contract?.isMaxVideoDuration(media) == true){
+            contract?.onShowVideoMaxDurationToast()
+            return false
+        }
+
+        if (contract?.isMaxVideoSize(media) == true) {
+            contract?.onShowVideoMaxFileSizeToast()
+            return false
+        }
+
+        return true
+    }
+
+    private fun hasImageValid(media: MediaUiModel): Boolean {
+        if (contract?.isMaxImageResolution(media) == true) {
+            contract?.onShowImageMaxResToast()
+            return false
+        }
+
+        if (contract?.isMinImageResolution(media) == true) {
+            contract?.onShowImageMinResToast()
+            return false
+        }
+
+        if (contract?.isMaxImageSize(media) == true) {
+            contract?.onShowImageMaxFileSizeToast()
+            return false
+        }
+
+        return true
+    }
+
     private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
+        if (!isSelected && media.file?.isVideo() == true && !hasVideoValid(media)) {
+            return false
+        } else if (!isSelected && media.file?.isImage() == true && !hasImageValid(media)) {
+            return false
+        }
+
         if (param.get().isMultipleSelectionType()) {
-            if (!isSelected && media.file?.isVideo() == true) {
-                // video validation
-                if (contract?.hasVideoLimitReached() == true) {
-                    contract?.onShowVideoLimitReachedGalleryToast()
-                    return false
-                }
-
-                if (contract?.isMinVideoDuration(media) == true) {
-                    contract?.onShowVideoMinDurationToast()
-                    return false
-                }
-
-                if(contract?.isMaxVideoDuration(media) == true){
-                    contract?.onShowVideoMaxDurationToast()
-                    return false
-                }
-
-                if (contract?.isMaxVideoSize(media) == true) {
-                    contract?.onShowVideoMaxFileSizeToast()
-                    return false
-                }
-            } else if (!isSelected && media.file?.isImage() == true) {
-                // image validation
-                if (contract?.isMaxImageResolution(media) == true) {
-                    contract?.onShowImageMaxResToast()
-                    return false
-                }
-
-                if (contract?.isMinImageResolution(media) == true) {
-                    contract?.onShowImageMinResToast()
-                    return false
-                }
-
-                if (contract?.isMaxImageSize(media) == true) {
-                    contract?.onShowImageMaxFileSizeToast()
-                    return false
-                }
-            }
-
             if (!isSelected && contract?.hasMediaLimitReached() == true) {
                 contract?.onShowMediaLimitReachedGalleryToast()
                 return false
             }
-        } else if (!param.get().isMultipleSelectionType() && (contract?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty())) {
-            adapter.removeAllSelectedSingleClick()
+        } else {
+            if (contract?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
+                adapter.removeAllSelectedSingleClick()
+            }
         }
 
         if (!isSelected) {
@@ -285,5 +292,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     companion object {
         private const val RC_ALBUM_SELECTOR = 123
         private const val LIST_SPAN_COUNT = 3
+
+        private const val ALL_MEDIA_BUCKET_ID = -1L
     }
 }

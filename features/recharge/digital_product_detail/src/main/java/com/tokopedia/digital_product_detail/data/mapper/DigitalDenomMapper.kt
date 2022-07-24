@@ -27,7 +27,7 @@ class DigitalDenomMapper @Inject constructor() {
         return InputMultiTabDenomModel(
             getDenomFullMapper(productsDenom?.text, dataCollectionProduct),
             getDenomFullMapper(dataCollectionMCCM?.firstOrNull()?.name,
-                dataCollectionMCCM, true),
+                dataCollectionMCCM),
             inputMultiTab.multitabData.productInputs.firstOrNull()?.filterTagComponents ?: emptyList(),
             isRefresheedFilter
         )
@@ -40,8 +40,7 @@ class DigitalDenomMapper @Inject constructor() {
 
         return DenomMCCMModel(
             getDenomGridMapper(productsDenom?.text, dataCollectionProduct),
-            getDenomGridMapper(dataCollectionMCCM?.firstOrNull()?.name,
-                dataCollectionMCCM, true)
+            getDenomGridMapper(dataCollectionMCCM?.firstOrNull()?.name, dataCollectionMCCM)
         )
     }
 
@@ -79,12 +78,12 @@ class DigitalDenomMapper @Inject constructor() {
         }
     }
 
-    private fun getDenomGridMapper(title: String?, rechargeDataCollections: List<RechargeCatalogDataCollection>?, isMCCM: Boolean = false): DenomWidgetModel {
+    private fun getDenomGridMapper(title: String?, rechargeDataCollections: List<RechargeCatalogDataCollection>?): DenomWidgetModel {
         val denomList: MutableList<DenomData> = mutableListOf()
         if (!rechargeDataCollections.isNullOrEmpty()) {
             rechargeDataCollections.forEach {
                 denomList.addAll(it.products.map {
-                    rechargeToDenomMapperGrid(it, isMCCM)
+                    rechargeToDenomMapperGrid(it)
                 })
             }
         }
@@ -92,12 +91,12 @@ class DigitalDenomMapper @Inject constructor() {
         return DenomWidgetModel(title?: "", listDenomData = denomList)
     }
 
-    private fun getDenomFullMapper(title:String?, rechargeDataCollections: List<RechargeCatalogDataCollection>?, isMCCM: Boolean = false): DenomWidgetModel {
+    private fun getDenomFullMapper(title:String?, rechargeDataCollections: List<RechargeCatalogDataCollection>?): DenomWidgetModel {
       val denomList: MutableList<DenomData> = mutableListOf()
         if (!rechargeDataCollections.isNullOrEmpty()) {
             rechargeDataCollections.forEach {
                 denomList.addAll(it.products.map {
-                    rechargeToDenomMapperFull(it, isMCCM)
+                    rechargeToDenomMapperFull(it)
                 })
             }
         }
@@ -105,7 +104,7 @@ class DigitalDenomMapper @Inject constructor() {
         return DenomWidgetModel(title?: "", listDenomData = denomList)
     }
     
-    private fun rechargeToDenomMapperGrid(rechargeProduct: RechargeProduct, isMCCM: Boolean = false): DenomData {
+    private fun rechargeToDenomMapperGrid(rechargeProduct: RechargeProduct): DenomData {
         return rechargeProduct?.let {
             DenomData(
                 id = it.id,
@@ -122,12 +121,13 @@ class DigitalDenomMapper @Inject constructor() {
                 specialLabel = it.attributes.productLabels.firstOrNull() ?: "",
                 slashPrice = if(!it.attributes.productPromo?.newPrice.isNullOrEmpty()) it.attributes.price  else "",
                 slashPricePlain = if(it.attributes.productPromo?.newPricePlain.isMoreThanZero()) it.attributes.pricePlain else EMPTY_PRICE_PLAIN,
-                discountLabel = if (isMCCM) it.attributes.productPromo?.discount ?: "" else "",
+                discountLabel = it.attributes.productPromo?.discount ?: "",
+                activePeriod = getMapCustomAttributes(it.attributes.customAttributes, PRODUCT_PULSA_EXPIRE)
             )
         }
     }
 
-    private fun rechargeToDenomMapperFull(rechargeProduct: RechargeProduct, isMCCM: Boolean = false): DenomData {
+    private fun rechargeToDenomMapperFull(rechargeProduct: RechargeProduct): DenomData {
         return rechargeProduct.let {
             DenomData(
                 id = it.id,
@@ -152,7 +152,7 @@ class DigitalDenomMapper @Inject constructor() {
                 isShowChevron = !it.attributes.productDescriptions.isNullOrEmpty(),
                 quotaInfo = getMapCustomAttributes(it.attributes.customAttributes, QUOTA_NAME_KEY),
                 expiredDays = getMapCustomAttributes(it.attributes.customAttributes, EXPIRED_DAYS_NAME_KEY),
-                discountLabel = if (isMCCM) it.attributes.productPromo?.discount ?: "" else "",
+                discountLabel = it.attributes.productPromo?.discount ?: "",
                 productDescriptions = it.attributes.productDescriptions,
                 greenLabel = getMapCustomAttributes(it.attributes.customAttributes, PRODUCT_DESC_TICKER_KEY)
             )
@@ -185,7 +185,9 @@ class DigitalDenomMapper @Inject constructor() {
                 productId = it.trackingData.productId,
                 operatorId = it.trackingData.operatorId,
                 productType = if (isBigRecommendation) it.label1 else "",
-                productExpired = if (isBigRecommendation) it.label2 else ""
+                productExpired = if (isBigRecommendation) it.label2 else "",
+                specialLabel = if (isBigRecommendation) it.label3 else "",
+                itemType = it.trackingData.itemType
             )
         }
     }
@@ -202,5 +204,6 @@ class DigitalDenomMapper @Inject constructor() {
         const val QUOTA_NAME_KEY = "product_paket_data_kuota"
         const val EXPIRED_DAYS_NAME_KEY = "product_paket_data_expire"
         const val PRODUCT_DESC_TICKER_KEY = "product_detail_ticker"
+        const val PRODUCT_PULSA_EXPIRE = "product_pulsa_expire"
     }
 }

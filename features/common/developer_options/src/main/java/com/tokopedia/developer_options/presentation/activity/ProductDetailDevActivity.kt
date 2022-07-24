@@ -57,6 +57,7 @@ class ProductDetailDevActivity : BaseActivity() {
         val dismissAfterAtc = findViewById<TextFieldUnify>(R.id.pdp_dismiss_after_atc_vbs)
         val extParamsEditText = findViewById<TextFieldUnify>(R.id.pdp_ext_param_vbs)
         val toggleTokoNow = findViewById<CheckBox>(R.id.toggle_is_tokonow)
+        val toggleQtyEditor = findViewById<CheckBox>(R.id.toggle_show_qty_editor)
         val spinnerPageSource = findViewById<Spinner>(R.id.page_source_spinner)
 
         val listOfPageSource: List<String> = VariantPageSource.values().toList().map {
@@ -69,6 +70,7 @@ class ProductDetailDevActivity : BaseActivity() {
 
         findViewById<UnifyButton>(R.id.pdp_vbs_btn).setOnClickListener {
             val isTokonow = toggleTokoNow.isChecked
+            val showQtyEditor = toggleQtyEditor.isChecked
             val dismissAfterAtcData = dismissAfterAtc.textFieldInput.text.toString().toBoolean()
             val saveAfterClose = saveAfterCloseEditText.textFieldInput.text.toString().toBoolean()
 
@@ -89,6 +91,7 @@ class ProductDetailDevActivity : BaseActivity() {
                     dismissAfterTransaction = dismissAfterAtcData,
                     saveAfterClose = saveAfterClose,
                     extParams = extParams,
+                    showQuantityEditor = showQtyEditor,
                     startActivitResult = { data, _ ->
                         startActivity(data)
                     }

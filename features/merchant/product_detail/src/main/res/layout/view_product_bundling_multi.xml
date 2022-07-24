@@ -84,7 +84,7 @@
             app:layout_constraintLeft_toLeftOf="@id/product_bundling_image_1"
             app:layout_constraintRight_toRightOf="@id/product_bundling_image_1"
             app:layout_constraintTop_toBottomOf="@id/product_bundling_image_1"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Rp7.899.000" />
 
@@ -130,7 +130,7 @@
             app:layout_constraintLeft_toLeftOf="@id/product_bundling_image_2"
             app:layout_constraintRight_toRightOf="@id/product_bundling_image_2"
             app:layout_constraintTop_toBottomOf="@id/product_bundling_image_2"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Rp95.000" />
 
@@ -176,7 +176,7 @@
             app:layout_constraintLeft_toLeftOf="@id/product_bundling_image_3"
             app:layout_constraintRight_toRightOf="@id/product_bundling_image_3"
             app:layout_constraintTop_toBottomOf="@id/product_bundling_image_3"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Rp215.000" />
 

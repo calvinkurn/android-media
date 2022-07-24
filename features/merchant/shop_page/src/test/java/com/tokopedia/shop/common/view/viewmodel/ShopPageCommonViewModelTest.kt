@@ -2,6 +2,7 @@ package com.tokopedia.shop.common.view.viewmodel
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
@@ -31,6 +32,10 @@ class ShopPageCommonViewModelTest {
 
     private val shopPageFeedTabSharedViewModel by lazy {
         ShopPageFeedTabSharedViewModel()
+    }
+
+    private val shopPageMiniCartSharedViewModel by lazy {
+        ShopPageMiniCartSharedViewModel()
     }
 
     private val context = mockk<Context>(relaxed = true)
@@ -139,7 +144,9 @@ class ShopPageCommonViewModelTest {
 
     @Test
     fun `Setup shop page fab should be success`() {
-        shopPageFeedTabSharedViewModel.setupShopPageFab(ShopPageFabConfig())
+        val mockShopPageFabConfig = ShopPageFabConfig()
+        shopPageFeedTabSharedViewModel.setupShopPageFab(mockShopPageFabConfig)
+        assert(shopPageFeedTabSharedViewModel.shopPageFabConfig == mockShopPageFabConfig)
         shopPageFeedTabSharedViewModel.shopPageFab.observeAwaitValue()
         shopPageFeedTabSharedViewModel.shopPageFab.value?.let {
             verifySuccessResult(ShopPageFeedTabSharedViewModel.FAB_ACTION_SETUP, it)
@@ -164,11 +171,27 @@ class ShopPageCommonViewModelTest {
         }
     }
 
+    @Test
+    fun `When assign shopPageFabConfig, then get shopPageFabConfig should return mocked data`() {
+        val mockShopPageFabConfig = ShopPageFabConfig()
+        shopPageFeedTabSharedViewModel.shopPageFabConfig = mockShopPageFabConfig
+        assert(shopPageFeedTabSharedViewModel.shopPageFabConfig == mockShopPageFabConfig)
+    }
+
     private fun verifySuccessResult(prevData: Any?, currentData: Any) {
         Assert.assertEquals(prevData, currentData)
     }
 
     private fun verifyNotSameResult(prevData: Any, currentData: Any) {
         Assert.assertNotEquals(prevData, currentData)
+    }
+
+    @Test
+    fun `When updateSharedMiniCartData, then miniCartSimplifiedData data should be the same as mocked data`() {
+        val mockMiniCartSimplifiedData = MiniCartSimplifiedData()
+        shopPageMiniCartSharedViewModel.updateSharedMiniCartData(mockMiniCartSimplifiedData)
+        val resultMiniCartSimplifiedData =
+            shopPageMiniCartSharedViewModel.miniCartSimplifiedData.value
+        assert(resultMiniCartSimplifiedData == mockMiniCartSimplifiedData)
     }
 }

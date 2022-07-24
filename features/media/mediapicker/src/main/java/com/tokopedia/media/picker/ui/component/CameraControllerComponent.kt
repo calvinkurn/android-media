@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.otaliastudios.cameraview.controls.Flash
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.R
+import com.tokopedia.media.picker.ui.fragment.camera.CameraMode
 import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.media.picker.ui.activity.picker.PickerActivityContract
 import com.tokopedia.media.picker.ui.adapter.CameraSliderAdapter
@@ -89,24 +90,24 @@ class CameraControllerComponent(
     }
 
     override fun onCameraSliderItemClicked(view: View) {
-        val targetIndex = lstCameraMode.getChildLayoutPosition(view)
-        lstCameraMode.smoothScrollToPosition(targetIndex)
-        setCameraModeSelected(targetIndex)
+        val cameraIndex = lstCameraMode.getChildLayoutPosition(view)
+        lstCameraMode.smoothScrollToPosition(cameraIndex)
+        setCameraModeSelected(CameraMode.to(cameraIndex))
     }
 
     override fun onScrollChanged() {
         val position = getActiveCameraMode()
-
         if (position == RecyclerView.NO_POSITION) return
 
-        controllerListener.onCameraModeChanged(position)
+        val cameraMode = CameraMode.to(position)
+        controllerListener.onCameraModeChanged(cameraMode)
 
         if (isPhotoMode()) {
             photoModeButtonState()
-            setCameraModeSelected(PHOTO_MODE)
+            setCameraModeSelected(CameraMode.Photo)
         } else if (isVideoMode()) {
             videoModeButtonState()
-            setCameraModeSelected(VIDEO_MODE)
+            setCameraModeSelected(CameraMode.Video)
         }
     }
 
@@ -123,22 +124,22 @@ class CameraControllerComponent(
                 setupCameraSlider()
             }
             param.isOnlyVideoFile() -> {
-                controllerListener.onCameraModeChanged(VIDEO_MODE)
+                controllerListener.onCameraModeChanged(CameraMode.Video)
                 videoModeButtonState()
             }
             else -> {
-                controllerListener.onCameraModeChanged(PHOTO_MODE)
+                controllerListener.onCameraModeChanged(CameraMode.Photo)
                 photoModeButtonState()
             }
         }
     }
 
     fun scrollToPhotoMode() {
-        lstCameraMode.smoothScrollToPosition(PHOTO_MODE)
+        lstCameraMode.smoothScrollToPosition(CameraMode.Photo.value)
     }
 
     fun scrollToVideoMode() {
-        lstCameraMode.smoothScrollToPosition(VIDEO_MODE)
+        lstCameraMode.smoothScrollToPosition(CameraMode.Video.value)
     }
 
     fun setThumbnailPreview(model: MediaUiModel) {
@@ -154,7 +155,7 @@ class CameraControllerComponent(
     }
 
     fun startRecording() {
-        if (getActiveCameraMode() != VIDEO_MODE && !param.isIncludeVideoFile()) return
+        if (getActiveCameraMode() != CameraMode.Video.value && !param.isIncludeVideoFile()) return
 
         btnTakeCamera.animStartRecording()
         videoDurationContainer.show()
@@ -163,7 +164,7 @@ class CameraControllerComponent(
     }
 
     fun stopRecording() {
-        if (getActiveCameraMode() != VIDEO_MODE) return
+        if (getActiveCameraMode() != CameraMode.Video.value) return
         if (param.isIncludeVideoFile()) scrollToVideoMode()
 
         resetVideoDuration()
@@ -216,9 +217,9 @@ class CameraControllerComponent(
         videoDurationTimer?.start()
     }
 
-    fun isVideoMode() = getActiveCameraMode() == VIDEO_MODE
+    fun isVideoMode() = getActiveCameraMode() == CameraMode.Video.value
 
-    private fun isPhotoMode() = getActiveCameraMode() == PHOTO_MODE
+    private fun isPhotoMode() = getActiveCameraMode() == CameraMode.Photo.value
 
     private fun resetVideoDuration() {
         try {
@@ -270,10 +271,12 @@ class CameraControllerComponent(
         btnTakeCamera.setBackgroundResource(R.drawable.bg_picker_camera_take_video)
     }
 
-    private fun setCameraModeSelected(index: Int){
-        if(index == cameraModeIndex) return
+    private fun setCameraModeSelected(mode: CameraMode){
+        val cameraIndex = CameraMode.to(mode)
+
+        if (cameraIndex == cameraModeIndex) return
         updateCameraModeRecyclerItem(cameraModeIndex, false)
-        cameraModeIndex = index
+        cameraModeIndex = cameraIndex
         updateCameraModeRecyclerItem(cameraModeIndex, true)
     }
 
@@ -284,7 +287,7 @@ class CameraControllerComponent(
 
     private fun getActiveCameraMode(): Int {
         return if (param.isOnlyVideoFile()) {
-            VIDEO_MODE
+            CameraMode.Video.value
         } else {
             (lstCameraMode.layoutManager as LinearLayoutManager)
                 .findLastCompletelyVisibleItemPosition()
@@ -292,7 +295,7 @@ class CameraControllerComponent(
     }
 
     interface Listener {
-        fun onCameraModeChanged(mode: Int)
+        fun onCameraModeChanged(mode: CameraMode)
         fun isFrontCamera(): Boolean
 
         fun onCameraThumbnailClicked()
@@ -304,9 +307,6 @@ class CameraControllerComponent(
     companion object {
         private const val HALF_SIZE_OF_CAMERA_MODE_ITEM = 30f
         private const val COUNTDOWN_INTERVAL = 1000L
-
-        const val PHOTO_MODE = 0
-        const val VIDEO_MODE = 1
     }
 
 }
