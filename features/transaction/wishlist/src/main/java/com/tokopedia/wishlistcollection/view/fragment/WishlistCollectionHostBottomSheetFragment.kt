@@ -52,6 +52,7 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         bottomSheetCollection = BottomSheetAddCollectionWishlist.newInstance(productId, source)
         if (bottomSheetCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCollection.setActionListener(this@WishlistCollectionHostBottomSheetFragment)
+        bottomSheetCollection.setOnDismissListener { activity?.finish() }
         bottomSheetCollection.show(fragmentManager)
     }
 

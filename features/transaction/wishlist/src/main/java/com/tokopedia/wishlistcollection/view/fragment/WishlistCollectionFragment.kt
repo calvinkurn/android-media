@@ -229,6 +229,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                         if (result.data.data.totalCollection >= result.data.data.maxLimitCollection) {
                             isEligibleAddNewCollection = false
                             wordingMaxLimitCollection = result.data.data.wordingMaxLimitCollection
+                        } else {
+                            isEligibleAddNewCollection = true
                         }
                         if (result.data.data.collections.size == 1) {
                             onlyAllCollection = true
