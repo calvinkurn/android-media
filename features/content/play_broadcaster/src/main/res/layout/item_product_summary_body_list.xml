@@ -59,12 +59,12 @@
             android:id="@+id/tv_product_summary_stock"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_product_summary_image"
-            app:layout_constraintTop_toTopOf="@id/iv_product_summary_image"
+            app:layout_constraintStart_toStartOf="@id/iv_pinned_product_carousel_info"
+            app:layout_constraintTop_toBottomOf="@id/iv_pinned_product_carousel_info"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Stok 10" />
@@ -148,6 +148,34 @@
             android:layout_marginStart="@dimen/spacing_lvl2"
             app:layout_constraintStart_toStartOf="@+id/iv_product_summary_image"
             app:layout_constraintTop_toTopOf="@+id/iv_product_summary_image" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_pinned_product_carousel_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_pinned_product_carousel_info"
+            app:layout_constraintTop_toTopOf="@id/iv_pinned_product_carousel_info"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            android:visibility="visible"
+            android:text="@string/play_bro_pinned_product_info" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_pinned_product_carousel_info"
+            app:icon_name="PUSH_PIN_FILLED"
+            android:layout_width="@dimen/play_dp_12"
+            android:layout_height="@dimen/play_dp_12"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            app:layout_constraintStart_toEndOf="@id/iv_product_summary_image"
+            app:layout_constraintTop_toTopOf="@id/iv_product_summary_image"
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_color_light_disabled="@color/Unify_Y500"
+            app:icon_color_night_enable="@color/Unify_B500"
+            app:icon_color_night_disabled="@color/Unify_P500" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>
