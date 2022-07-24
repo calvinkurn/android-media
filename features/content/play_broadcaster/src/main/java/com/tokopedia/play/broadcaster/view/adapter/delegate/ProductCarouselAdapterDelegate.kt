@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
 import com.tokopedia.play_common.R as commonR
@@ -13,7 +14,7 @@ import com.tokopedia.play.broadcaster.ui.viewholder.carousel.ProductCarouselView
  */
 internal class ProductCarouselAdapterDelegate private constructor() {
 
-    class Product(private val listener: ProductCarouselViewHolder.Product.Listener) : TypedAdapterDelegate<
+    class Product(private val listener: ProductCarouselViewHolder.Product.Listener) : BaseAdapterDelegate<
             ProductUiModel, Any, ProductCarouselViewHolder.Product>(commonR.layout.view_play_empty) {
 
         override fun isForViewType(
@@ -40,7 +41,7 @@ internal class ProductCarouselAdapterDelegate private constructor() {
         }
     }
 
-    class PinnedProduct(private val pinnedProductListener: ProductCarouselViewHolder.PinnedProduct.Listener): TypedAdapterDelegate<
+    class PinnedProduct(private val pinnedProductListener: ProductCarouselViewHolder.PinnedProduct.Listener): BaseAdapterDelegate<
             ProductUiModel, Any, ProductCarouselViewHolder.PinnedProduct>(commonR.layout.view_play_empty){
 
         override fun isForViewType(
