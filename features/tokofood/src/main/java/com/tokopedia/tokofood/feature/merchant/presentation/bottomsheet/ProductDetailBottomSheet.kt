@@ -78,6 +78,7 @@ class ProductDetailBottomSheet : BottomSheetUnify() {
                 val isCustomizable = productUiModel.isCustomizable
                 // !isAtc + isCustomizable = onNavigateToOrderCustomizationPage
                 if (!isAtc && isCustomizable) {
+                    dismiss()
                     clickListener?.onNavigateToOrderCustomizationPage(
                             cartId = "",
                             productUiModel = productUiModel,

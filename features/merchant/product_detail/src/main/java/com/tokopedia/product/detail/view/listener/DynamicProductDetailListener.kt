@@ -171,6 +171,7 @@ interface DynamicProductDetailListener {
     fun onRetryClicked(forceRefresh: Boolean)
     fun goToHomePageClicked()
     fun goToWebView(url: String)
+    fun onImpressPageNotFound()
 
     /**
      * ImpressionComponent

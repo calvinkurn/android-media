@@ -20,12 +20,17 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Servi
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -333,6 +338,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         courierData.etaText = data.etaData.textEta
         courierData.etaErrorCode = data.etaData.errorCode
         courierData.freeShippingChosenCourierTitle = data.freeShippingChosenCourierTitle
+        courierData.freeShippingMetadata = data.freeShippingMetadata
         try {
             shippingDurationBottomsheetListener?.onLogisticPromoChosen(
                     serviceData.shippingCourierViewModelList, courierData,

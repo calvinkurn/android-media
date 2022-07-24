@@ -13,42 +13,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/toolbarOrderCustomization"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tpg_product_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="body_1"
-                    app:typographyWeight="bold"
-                    tools:text="Gimpo Sweet and Sour Chicken + Busan Odeng"/>
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/text_header_order_custom"
-                    android:textColor="@color/Unify_NN600"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tpg_product_name"
-                    app:typographyType="body_3"
-                    app:typographyWeight="reguler"
-                    tools:Text="Custom pesanan" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.appcompat.widget.Toolbar>
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_header_is_show_back_button="true"
+            app:unify_header_is_show_shadow="true" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

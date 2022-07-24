@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
@@ -40,6 +42,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 import javax.inject.Inject
 
 @FlowPreview
@@ -57,6 +60,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         private const val BUNDLE_KEY_MERCHANT_ID = "merchantId"
         private const val BUNDLE_KEY_CACHE_MANAGER_ID = "cache_manager_id"
         private const val SOURCE = "merchant_page"
+        private const val BUNDLE_KEY_SOURCE = "source"
         private const val BUNDLE_KEY_IS_CHANGE_MERCHANT = "is_change_merchant"
 
         @JvmStatic
@@ -64,6 +68,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             productUiModel: ProductUiModel,
             cartId: String = "",
             merchantId: String = "",
+            source: String = "",
             cacheManagerId: String? = null,
             isChangeMerchant: Boolean = false
         ) = OrderCustomizationFragment().apply {
@@ -71,6 +76,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
                 putString(BUNDLE_KEY_CART_ID, cartId)
                 putString(BUNDLE_KEY_MERCHANT_ID, merchantId)
+                putString(BUNDLE_KEY_SOURCE, source)
                 putBoolean(BUNDLE_KEY_IS_CHANGE_MERCHANT, isChangeMerchant)
                 if (cacheManagerId != null) {
                     putString(BUNDLE_KEY_CACHE_MANAGER_ID, cacheManagerId)
@@ -108,10 +114,9 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     private var variantWrapperUiModel: VariantWrapperUiModel? = null
 
     private var productUiModel: ProductUiModel? = null
+    private var source: String = String.EMPTY
 
-    override fun getFragmentToolbar(): Toolbar? {
-        return binding?.toolbar
-    }
+    override fun getFragmentToolbar(): Toolbar? = null
 
     override fun getFragmentTitle(): String {
         return ""
@@ -156,18 +161,19 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         super.onViewCreated(view, savedInstanceState)
         setDataFromCacheManagerOrArguments()
         observeUpdateCart()
-        (activity as AppCompatActivity).setSupportActionBar(binding?.toolbar)
 
         val cartId = arguments?.getString(BUNDLE_KEY_CART_ID) ?: ""
         val merchantId = arguments?.getString(BUNDLE_KEY_MERCHANT_ID) ?: ""
         val isChangeMerchant = arguments?.getBoolean(BUNDLE_KEY_IS_CHANGE_MERCHANT, false) ?: false
+
+        source = arguments?.getString(BUNDLE_KEY_SOURCE) ?: SOURCE
 
         context?.run {
             if (cartId.isNotBlank()) binding?.atcButton?.text = getString(com.tokopedia.tokofood.R.string.action_update)
         }
 
         productUiModel?.apply {
-            binding?.tpgProductName?.text = name
+            setupHeaderToolbar(name)
             // set the product quantity based on custom order qty
             customOrderDetails.firstOrNull { it.cartId == cartId }?.let { customOrderDetail ->
                 binding?.qeuProductQtyEditor?.setValue(customOrderDetail.qty)
@@ -241,18 +247,18 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                     if (viewModel.isEditingCustomOrder(cartId)) {
                         activityViewModel?.updateCart(
                             updateParam = updateParam,
-                            source = SOURCE
+                            source = source
                         )
                     } else {
                         if (isChangeMerchant) {
                             activityViewModel?.deleteAllAtcAndAddProduct(
                                 updateParam = updateParam,
-                                source = SOURCE
+                                source = source
                             )
                         } else {
                             activityViewModel?.addToCart(
                                 updateParam = updateParam,
-                                source = SOURCE
+                                source = source
                             )
                         }
                         //hit trackers
@@ -268,12 +274,26 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         }
     }
 
+    private fun setupHeaderToolbar(foodName: String) {
+        activity?.let {
+            (it as? AppCompatActivity)?.apply {
+                supportActionBar?.hide()
+                setSupportActionBar(binding?.toolbarOrderCustomization)
+                binding?.toolbarOrderCustomization?.run {
+                    title = foodName
+                    subtitle = it.getString(com.tokopedia.tokofood.R.string.text_header_order_custom)
+                }
+            }
+        }
+    }
+
     private fun observeUpdateCart() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             activityViewModel?.cartDataValidationFlow?.collect {
                 when (it.state) {
                     UiEvent.EVENT_HIDE_LOADING_ADD_TO_CART, UiEvent.EVENT_HIDE_LOADING_UPDATE_TO_CART -> {
                         binding?.atcButton?.isLoading = false
+                        hideKeyboard()
                         parentFragmentManager.popBackStack()
                     }
                     UiEvent.EVENT_PHONE_VERIFICATION -> {
@@ -331,6 +351,14 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_NORMAL
             ).show()
+        }
+    }
+
+    private fun hideKeyboard() {
+        try {
+            KeyboardHandler.hideSoftKeyboard(activity)
+        } catch (ex: Exception) {
+            Timber.e(ex)
         }
     }
 

@@ -107,6 +107,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private val _isPlayingVideo = MutableStateFlow(false)
     val isPlayingVideo: StateFlow<Boolean>
         get() = _isPlayingVideo
+    private val _videoDurationMillis = MutableStateFlow(0L)
+    val videoDurationMillis: StateFlow<Long>
+        get() = _videoDurationMillis
     private val _toggleLikeRequest = MutableStateFlow<Pair<String, Int>?>(null)
     private val _detailedReviewActionMenu = _currentReviewDetail.mapLatest {
         if (it?.isReportable == true) {
@@ -504,6 +507,10 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         if (isPausing) {
             _overlayVisibility.value = true
         }
+    }
+
+    fun updateVideoDurationMillis(totalDuration: Long) {
+        _videoDurationMillis.value = totalDuration
     }
 
     fun getUserID(): String {

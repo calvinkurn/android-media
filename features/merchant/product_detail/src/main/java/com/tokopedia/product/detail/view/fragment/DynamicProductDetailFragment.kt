@@ -75,6 +75,7 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.network.utils.URLGenerator.generateURLSessionLogin
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget.Companion.ACTIVATION_LINKINING_FLOW
 import com.tokopedia.pdp.fintech.view.bottomsheet.GopayLinkBenefitBottomSheet.Companion.ACTIVATION_BOTTOMSHEET_DETAIl
@@ -120,6 +121,7 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -169,6 +171,8 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.PageErrorTracker
+import com.tokopedia.product.detail.tracking.PageErrorTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
@@ -200,7 +204,6 @@ import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
-import com.tokopedia.product.detail.view.widget.FtPDPInsuranceBottomSheet
 import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
@@ -277,6 +280,9 @@ open class DynamicProductDetailFragment :
     ScreenShotListener, PlayWidgetListener {
 
     companion object {
+
+        private const val DEBOUNCE_CLICK = 750
+
         fun newInstance(
             productId: String? = null,
             warehouseId: String? = null,
@@ -1139,12 +1145,8 @@ open class DynamicProductDetailFragment :
                 }
             }
             ProductDetailConstant.PRODUCT_PROTECTION -> {
-                DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(
-                    viewModel.getDynamicProductInfoP1,
-                    getPurchaseProtectionUrl(),
-                    componentTrackDataModel
-                )
-                openFtInsuranceBottomSheet(getPurchaseProtectionUrl())
+                DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, getPurchaseProtectionUrl(), componentTrackDataModel)
+                openFtInsuranceWebView(getPurchaseProtectionUrl())
             }
             ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO -> {
                 goToApplink(appLink)
@@ -1455,6 +1457,7 @@ open class DynamicProductDetailFragment :
     }
 
     override fun goToHomePageClicked() {
+        PageErrorTracking.clickBackToHomepage(generatePageErrorTrackerData())
         (activity as? ProductDetailActivity)?.goToHomePageClicked()
     }
 
@@ -2947,8 +2950,10 @@ open class DynamicProductDetailFragment :
     }
 
     private fun goToTradein() {
-        if (tradeinDialog?.isAdded == false) {
-            tradeinDialog?.show(childFragmentManager, "ACCESS REQUEST")
+        tradeinDialog?.let { dialog ->
+            showImmediately(getProductFragmentManager(), "ACCESS REQUEST") {
+                dialog
+            }
         }
     }
 
@@ -2996,7 +3001,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
-        SingleClick.doSomethingBeforeTime {
+        SingleClick.doSomethingBeforeTime(interval = DEBOUNCE_CLICK) {
             context?.let { ctx ->
                 viewModel.getDynamicProductInfoP1?.let { p1 ->
                     DynamicProductDetailTracking.Click.onSingleVariantClicked(
@@ -3625,8 +3630,15 @@ open class DynamicProductDetailFragment :
     /**
      * @param url : linkUrl for insurance partner to be rendered in web-view
      */
-    private fun openFtInsuranceBottomSheet(url: String) {
-        FtPDPInsuranceBottomSheet.show(url, childFragmentManager)
+    private fun openFtInsuranceWebView(url: String) {
+        val semalessUrl = generateURLSessionLogin(url, viewModel.deviceId, viewModel.userId)
+        val webViewUrl = String.format(
+            Locale.getDefault(),
+            "%s?titlebar=true&url=%s",
+            ApplinkConst.WEBVIEW,
+            semalessUrl
+        )
+        RouteManager.route(context, webViewUrl)
     }
 
     private fun onSuccessRemoveWishlist(productId: String?) {
@@ -5073,4 +5085,17 @@ open class DynamicProductDetailFragment :
                 )
     }
 
+    override fun onImpressPageNotFound() {
+        PageErrorTracking.impressPageNotFound(
+            generatePageErrorTrackerData()
+        )
+    }
+
+    private fun generatePageErrorTrackerData() = PageErrorTracker(
+        productId,
+        isFromDeeplink,
+        deeplinkUrl,
+        shopDomain.orEmpty(),
+        productKey.orEmpty()
+    )
 }
