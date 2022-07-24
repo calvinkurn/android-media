@@ -179,6 +179,8 @@ class ProductShippingHeaderViewHolder(view: View,
         isFreeOngkir: Boolean,
         isFreeOngkirQuotaEmpty: Boolean
     ) {
+        viewFreeOngkirEtas?.removeAllViews()
+
         freeOngkirEtas.forEach { eta ->
             val etaView = ViewFreeShippingEtaBinding.inflate(itemView.context.layoutInflater)
 

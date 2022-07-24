@@ -84,7 +84,7 @@ data class ServiceProduct(
 
         @SerializedName("ui_rates_hidden")
         @Expose
-        val uiRatesHidden: Boolean
+        val uiRatesHidden: Boolean = false
 )
 
 data class Features(
