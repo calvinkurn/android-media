@@ -23,7 +23,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
-import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -42,7 +41,6 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
     var activityRule = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            disableCoachMark(context)
             setupGraphqlMockResponse(HomeMockResponseConfig(isLinkedBalanceWidget = false))
         }
     }
@@ -51,7 +49,6 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
     var cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private var visibilityIdlingResource: ViewVisibilityIdlingResource? = null
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
 
     @Before
@@ -73,18 +70,21 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
 
     @After
     fun tearDown() {
-        visibilityIdlingResource?.let {
-            IdlingRegistry.getInstance().unregister(visibilityIdlingResource)
-        }
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
     @Test
-    fun testGetBalanceWidgetNotLinked() {
+    fun triggerLogin() {
+        login()
+    }
+
+    @Test
+    fun testBalanceWidgetGopayNotLinked() {
         onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
             login()
+            waitForData()
             doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 actionOnBalanceWidget(viewHolder)
             }
@@ -137,7 +137,7 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.loginInstrumentationTestUser2()
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 
