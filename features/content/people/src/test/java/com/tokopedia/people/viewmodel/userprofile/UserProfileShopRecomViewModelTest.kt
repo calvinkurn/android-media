@@ -6,6 +6,7 @@ import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
+import com.tokopedia.people.model.userprofile.MutationUiModelBuilder
 import com.tokopedia.people.model.userprofile.ProfileWhitelistUiModelBuilder
 import com.tokopedia.people.robot.UserProfileViewModelRobot
 import com.tokopedia.people.util.*
@@ -36,11 +37,15 @@ class UserProfileShopRecomViewModelTest {
     private val followInfoBuilder = FollowInfoUiModelBuilder()
     private val profileWhitelistBuilder = ProfileWhitelistUiModelBuilder()
     private val shopRecomBuilder = ShopRecomModelBuilder()
+    private val mutationBuilder = MutationUiModelBuilder()
 
+    private val mockMutationSuccess = mutationBuilder.buildSuccess()
+    private val mockMutationError = mutationBuilder.buildError()
     private val mockException = commonBuilder.buildException()
     private val mockOwnUserId = "1"
     private val mockOtherUserId = "2"
     private val mockOwnUsername = "fachrizalmrsln"
+    private val mockItemId: Long = 1353688
 
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(
         userID = mockOwnUserId,
@@ -120,6 +125,73 @@ class UserProfileShopRecomViewModelTest {
             } andThen { state, events ->
                 state.shopRecom.items.assertEmpty()
                 events.last().assertEvent(UserProfileUiEvent.ErrorLoadProfile(Throwable("any throwable")))
+            }
+        }
+    }
+
+    @Test
+    fun `when user success follow shop`() {
+        val mockShopRecomAfterFollow = mockShopRecom.copy(
+            items = mockShopRecom.items.map {
+                if (it.id == mockItemId) it.copy(isFollow = true)
+                else it
+            }
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
+        coEvery { mockRepo.followProfile(any()) } returns mockMutationSuccess
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomAfterFollow
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom equalTo mockShopRecomAfterFollow
+            }
+        }
+    }
+
+    @Test
+    fun `when user success unfollow shop`() {
+        val mockShopRecomAfterUnfollow = mockShopRecom.copy(
+            items = mockShopRecom.items.map {
+                if (it.id == mockItemId) it.copy(isFollow = false)
+                else it
+            }
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
+        coEvery { mockRepo.unFollowProfile(any()) } returns mockMutationSuccess
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomAfterUnfollow
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom equalTo mockShopRecomAfterUnfollow
+            }
+        }
+    }
+
+    @Test
+    fun `when user fail follow or unfollow shop`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
+        coEvery { mockRepo.unFollowProfile(any()) } returns mockMutationError
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordEvent  {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
             }
         }
     }
