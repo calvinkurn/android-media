@@ -166,18 +166,15 @@ class ProductCarouselViewHolder private constructor() {
             binding.tvPinnedProductCarouselName.text = item.name
 
             if (item.stock > 0) {
-                binding.tvPinnedProductCarouselStock.apply {
-                    text = itemView.context.getString(
-                        R.string.play_bro_product_chooser_stock,
-                        item.stock
-                    )
-                    visibility = View.VISIBLE
-                }
-                binding.tvProductSummaryEmptyStock.gone()
+                binding.tvProductSummaryEmptyStock.text = context.getString(
+                    R.string.play_bro_product_stock,
+                    item.stock
+                )
                 binding.ivPinnedProductCarouselOos.gone()
             } else {
-                binding.tvPinnedProductCarouselStock.gone()
-                binding.tvProductSummaryEmptyStock.visible()
+                binding.tvProductSummaryEmptyStock.text = context.getString(
+                    R.string.play_bro_product_tag_stock_empty
+                )
                 binding.ivPinnedProductCarouselOos.visible()
             }
 

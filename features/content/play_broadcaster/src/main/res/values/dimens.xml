@@ -136,4 +136,5 @@
     <!-- Interactive -->
     <dimen name="play_interactive_preview_width">320dp</dimen>
     <dimen name="play_interactive_preview_height">240dp</dimen>
+    <dimen name="play_bro_pinned_img_size">104dp</dimen>
 </resources>

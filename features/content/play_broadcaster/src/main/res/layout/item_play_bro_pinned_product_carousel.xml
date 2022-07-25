@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,8 +13,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_pinned_product_carousel"
-            android:layout_width="@dimen/layout_lvl8"
-            android:layout_height="@dimen/layout_lvl8"
+            android:layout_width="@dimen/play_bro_pinned_img_size"
+            android:layout_height="@dimen/play_bro_pinned_img_size"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
@@ -33,8 +33,10 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/iv_pinned_product_carousel"
             app:layout_constraintEnd_toEndOf="@id/iv_pinned_product_carousel"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@id/iv_pinned_product_carousel"
             app:layout_constraintTop_toTopOf="@id/iv_pinned_product_carousel"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/bg_play_product_tag_empty_stock"
             tools:visibility="visible" />
 
@@ -47,28 +49,15 @@
             android:padding="@dimen/spacing_lvl2"
             android:text="@string/play_bro_product_tag_stock_empty"
             android:textColor="@color/Unify_Static_White"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/iv_pinned_product_carousel_oos"
-            app:layout_constraintStart_toStartOf="@id/iv_pinned_product_carousel_oos"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/iv_pinned_product_carousel"
+            app:layout_constraintEnd_toEndOf="@+id/iv_pinned_product_carousel"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/iv_pinned_product_carousel"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Stok Habis"
             tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_pinned_product_carousel_stock"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/iv_pinned_product_carousel"
-            app:layout_constraintTop_toBottomOf="@id/tv_pinned_product_carousel_info"
-            app:typographyType="small"
-            app:typographyWeight="bold"
-            tools:text="Stok 10" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_pinned_product_carousel_name"
@@ -82,7 +71,7 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_pinned_product_carousel"
-            app:layout_constraintTop_toBottomOf="@id/tv_pinned_product_carousel_stock"
+            app:layout_constraintTop_toBottomOf="@id/iv_pinned_product_carousel_info"
             app:typographyType="body_3"
             tools:text="2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP" />
 
@@ -103,11 +92,13 @@
             android:id="@+id/label_pinned_product_carousel_discount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
             app:labelType="general_light_red"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_pinned_product_carousel_price"
-            app:layout_constraintStart_toEndOf="@+id/tv_pinned_product_carousel_price"
-            app:layout_constraintTop_toTopOf="@+id/tv_pinned_product_carousel_price"
+            app:layout_constraintEnd_toEndOf="@+id/iv_pinned_product_carousel"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/view_pin_product"
+            app:layout_constraintTop_toTopOf="@+id/iv_pinned_product_carousel"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:ignore="TextContrastCheck,TextContrastCheck"
@@ -120,10 +111,10 @@
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl1"
             android:textColor="@color/Unify_N700_32"
-            app:layout_constraintBottom_toBottomOf="@+id/label_pinned_product_carousel_discount"
-            app:layout_constraintStart_toEndOf="@+id/label_pinned_product_carousel_discount"
-            app:layout_constraintTop_toTopOf="@+id/label_pinned_product_carousel_discount"
-            app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_pinned_product_carousel_price"
+            app:layout_constraintStart_toEndOf="@+id/tv_pinned_product_carousel_price"
+            app:layout_constraintTop_toTopOf="@+id/tv_pinned_product_carousel_price"
+            app:layout_constraintVertical_bias="0.5"
             app:typographyType="small"
             tools:ignore="TextContrastCheck"
             tools:text="Rp349.000" />
@@ -133,8 +124,8 @@
             layout="@layout/view_play_bro_pin_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintStart_toStartOf="@+id/iv_pinned_product_carousel"
             app:layout_constraintTop_toTopOf="@+id/iv_pinned_product_carousel" />
 
@@ -143,15 +134,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:text="@string/play_bro_pinned_product_info"
             android:textColor="@color/Unify_G500"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="visible"
             app:layout_constraintStart_toEndOf="@id/iv_pinned_product_carousel_info"
             app:layout_constraintTop_toTopOf="@id/iv_pinned_product_carousel_info"
             app:typographyType="small"
-            app:typographyWeight="bold"
-            android:visibility="visible"
-            android:text="@string/play_bro_pinned_product_info" />
+            app:typographyWeight="bold" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_pinned_product_carousel_info"
