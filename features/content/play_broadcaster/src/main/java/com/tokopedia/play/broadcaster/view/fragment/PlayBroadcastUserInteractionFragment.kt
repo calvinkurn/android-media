@@ -83,6 +83,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import java.util.Collections
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -848,9 +849,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prevState == state) return
 
+        val newList = state.filterNot { it.campaignStatus.isUpcoming() }
+            .flatMap { it.products }
+
+        val pinnedIndex = newList.indexOfFirst { it.pinStatus.isPinned }
+
+        if(newList.isNotEmpty() && pinnedIndex.isMoreThanZero())
+            Collections.swap(newList, pinnedIndex, 0)
+
         productTagView.setProducts(
-            state.filterNot { it.campaignStatus.isUpcoming() }
-                .flatMap { it.products }
+            newList
         )
     }
 
