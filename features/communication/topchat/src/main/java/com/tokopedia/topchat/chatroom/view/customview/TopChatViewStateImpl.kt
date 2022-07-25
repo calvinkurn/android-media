@@ -97,7 +97,7 @@ open class TopChatViewStateImpl constructor(
 
 
     var chatTextAreaTabLayout: ChatTextAreaTabLayout? = null
-    var chatTextAreaShimmer: LoaderUnify? = null
+    private var chatTextAreaShimmer: LoaderUnify? = null
 
     var isAbleToReply: Boolean? = null
         set(value) {
@@ -865,7 +865,10 @@ open class TopChatViewStateImpl constructor(
                     chatTextAreaShimmer?.hide()
                     actionBox.show()
                     replyBox.hide()
-                    chatTextAreaTabLayout?.srwLayout?.renderSrwState()
+                    //Render SRW only when succes get the questions
+                    if (chatTextAreaTabLayout?.srwLayout?.isSuccessState() == true) {
+                        chatTextAreaTabLayout?.srwLayout?.renderSrwState()
+                    }
                     chatTextAreaTabLayout?.show()
                 }
                 (isAbleToReply == true) && (shouldShowSrw == false) -> {
@@ -884,12 +887,16 @@ open class TopChatViewStateImpl constructor(
                 }
                 else -> {
                     //Show Shimmer, hide comment area, hide reply box, hide tab
-                    chatTextAreaShimmer?.show()
-                    actionBox.hide()
-                    replyBox.hide()
-                    chatTextAreaTabLayout?.hide()
+                    showChatAreaShimmer()
                 }
             }
         }
+    }
+
+    fun showChatAreaShimmer() {
+        chatTextAreaShimmer?.show()
+        actionBox.hide()
+        replyBox.hide()
+        chatTextAreaTabLayout?.hide()
     }
 }

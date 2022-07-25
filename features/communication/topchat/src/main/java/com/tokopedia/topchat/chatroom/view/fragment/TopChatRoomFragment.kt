@@ -343,6 +343,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 topchatViewState?.shouldShowSrw = (replyCompose?.isVisible != true)
             }, onOldDesign = {
                 rvSrw?.renderSrwState()
+                topchatViewState?.shouldShowSrw = false
             })
             topchatViewState?.hideTemplateChat()
         } else if (topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isLoadingState() != true) {
@@ -350,6 +351,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 topchatViewState?.shouldShowSrw = false
             }, onOldDesign = {
                 rvSrw?.hideSrw()
+                topchatViewState?.shouldShowSrw = false
             })
             showTemplateChatIfReady()
         }
@@ -415,10 +417,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun notifyPreviewRemoved(model: SendablePreview) {
+        viewModel.removeAttachmentPreview(model)
         if (model is TopchatProductAttachmentPreviewUiModel && hasProductPreviewShown()) {
+            if (isSrwNewDesign()) {
+                topchatViewState?.showChatAreaShimmer()
+                topchatViewState?.chatTextAreaTabLayout?.srwLayout?.resetChatReplyQuestion()
+            }
             reloadSrw()
         }
-        viewModel.removeAttachmentPreview(model)
     }
 
     override fun reloadCurrentAttachment() {
@@ -1543,7 +1549,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         resultProducts?.let { products ->
             removeSrwBubble()
             removeSrwPreview()
-            topchatViewState?.chatTextAreaShimmer?.show()
+            topchatViewState?.showChatAreaShimmer()
             val productIds = products.map { it.productId }
             viewModel.loadProductPreview(productIds)
         }
@@ -2621,14 +2627,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun setupObservers() {
-        viewModel.messageId.observe(viewLifecycleOwner, {
+        viewModel.messageId.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetMessageId(it.data)
                 is Fail -> onError(it.throwable)
             }
-        })
+        }
 
-        viewModel.shopFollowing.observe(viewLifecycleOwner, {
+        viewModel.shopFollowing.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.shopInfoById.result.isNullOrEmpty()) {
@@ -2639,9 +2645,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
                 is Fail -> onErrorGetShopFollowingStatus()
             }
-        })
+        }
 
-        viewModel.followUnfollowShop.observe(viewLifecycleOwner, {
+        viewModel.followUnfollowShop.observe(viewLifecycleOwner) {
             val element = it.first
             val result = it.second
             if (element != null) {
@@ -2655,9 +2661,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     is Fail -> onErrorFollowUnfollowShop(result.throwable)
                 }
             }
-        })
+        }
 
-        viewModel.addToCart.observe(viewLifecycleOwner, {
+        viewModel.addToCart.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     when (it.data.source) {
@@ -2675,13 +2681,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     }
                 }
             }
-        })
+        }
 
-        viewModel.seamlessLogin.observe(viewLifecycleOwner, {
+        viewModel.seamlessLogin.observe(viewLifecycleOwner) {
             redirectToBrowser(it)
-        })
+        }
 
-        viewModel.chatRoomSetting.observe(viewLifecycleOwner, {
+        viewModel.chatRoomSetting.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     val widget = filterSettingToBeShown(it.data)
@@ -2691,24 +2697,24 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     //Do nothing
                 }
             }
-        })
+        }
 
-        viewModel.orderProgress.observe(viewLifecycleOwner, {
+        viewModel.orderProgress.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> renderOrderProgress(it.data.chatOrderProgress)
                 is Fail -> {
                     //Do nothing
                 }
             }
-        })
+        }
 
-        viewModel.srwTickerReminder.observe(viewLifecycleOwner, {
+        viewModel.srwTickerReminder.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTickerReminder(it.data)
             }
-        })
+        }
 
-        viewModel.occProduct.observe(viewLifecycleOwner, {
+        viewModel.occProduct.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     topchatViewState?.chatRoomViewModel?.let { chatData ->
@@ -2720,60 +2726,63 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
                 is Fail -> onError(it.throwable)
             }
-        })
+        }
 
-        viewModel.toggleBlock.observe(viewLifecycleOwner, {
+        viewModel.toggleBlock.observe(viewLifecycleOwner) {
             handleToggleBlock(it)
-        })
+        }
 
-        viewModel.chatDeleteStatus.observe(viewLifecycleOwner, {
+        viewModel.chatDeleteStatus.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessDeleteConversation()
                 is Fail -> onError(it.throwable)
             }
-        })
+        }
 
-        viewModel.chatBackground.observe(viewLifecycleOwner, {
+        viewModel.chatBackground.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> renderBackground(it.data)
                 is Fail -> {
                     //Do nothing
                 }
             }
-        })
+        }
 
-        viewModel.chatAttachments.observe(viewLifecycleOwner, {
+        viewModel.chatAttachments.observe(viewLifecycleOwner) {
             updateAttachmentsView(it)
-        })
+        }
 
-        viewModel.chatAttachmentsPreview.observe(viewLifecycleOwner, {
+        viewModel.chatAttachmentsPreview.observe(viewLifecycleOwner) {
             updateAttachmentsPreview(it)
-        })
+        }
 
-        viewModel.chatListGroupSticker.observe(viewLifecycleOwner, {
+        viewModel.chatListGroupSticker.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     val listGroupSticker = it.data.first.chatListGroupSticker.list
                     val listUpdate = it.data.second
                     getChatMenuView()?.stickerMenu?.updateStickers(listGroupSticker, listUpdate)
-                    topchatViewState?.chatTextAreaTabLayout?.updateStickers(listGroupSticker, listUpdate)
+                    topchatViewState?.chatTextAreaTabLayout?.updateStickers(
+                        listGroupSticker,
+                        listUpdate
+                    )
                 }
                 is Fail -> {
                     //Do nothing
                 }
             }
-        })
+        }
 
-        viewModel.srw.observe(viewLifecycleOwner, {
+        viewModel.srw.observe(viewLifecycleOwner) {
             handleSrw(onNewDesign = {
                 topchatViewState?.chatTextAreaTabLayout?.srwLayout?.updateStatus(it)
             }, onOldDesign = {
                 rvSrw?.updateStatus(it)
             })
             updateSrwPreviewState()
-        })
+        }
 
-        viewModel.existingChat.observe(viewLifecycleOwner, {
+        viewModel.existingChat.observe(viewLifecycleOwner) {
             val result = it.first
             val isInit = it.second
             when (result) {
@@ -2798,23 +2807,24 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     topchatViewState?.isAbleToReply = false
                 }
             }
-        })
+        }
 
-        viewModel.topChat.observe(viewLifecycleOwner, {
+        viewModel.topChat.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTopChat(it.data.chatroomViewModel, it.data.chatReplies)
                 is Fail -> onErrorGetTopChat(it.throwable)
             }
-        })
+        }
 
-        viewModel.bottomChat.observe(viewLifecycleOwner, {
+        viewModel.bottomChat.observe(viewLifecycleOwner) {
+
             when (it) {
                 is Success -> onSuccessGetBottomChat(it.data.chatroomViewModel, it.data.chatReplies)
                 is Fail -> onErrorGetBottomChat(it.throwable)
             }
-        })
+        }
 
-        viewModel.deleteBubble.observe(viewLifecycleOwner, {
+        viewModel.deleteBubble.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     adapter.deleteMsg(it.data)
@@ -2822,42 +2832,42 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
                 is Fail -> showToasterError(R.string.topchat_error_delete_msg_bubble)
             }
-        })
+        }
 
-        viewModel.isWebsocketError.observe(viewLifecycleOwner, {
+        viewModel.isWebsocketError.observe(viewLifecycleOwner) {
             showErrorWebSocket(it)
-        })
+        }
 
-        viewModel.isTyping.observe(viewLifecycleOwner, { isTyping ->
+        viewModel.isTyping.observe(viewLifecycleOwner) { isTyping ->
             if (isTyping) {
                 onReceiveStartTypingEvent()
             } else {
                 onReceiveStopTypingEvent()
             }
-        })
+        }
 
         viewModel.msgDeleted.observeForever(deleteMsgObserver)
 
-        viewModel.msgRead.observe(viewLifecycleOwner, { replyTime ->
+        viewModel.msgRead.observe(viewLifecycleOwner) { replyTime ->
             onReceiveReadEvent()
-        })
+        }
 
-        viewModel.unreadMsg.observe(viewLifecycleOwner, { totalUnread ->
+        viewModel.unreadMsg.observe(viewLifecycleOwner) { totalUnread ->
             if (totalUnread > 0) {
                 showUnreadMessage(totalUnread)
             } else {
                 hideUnreadMessage()
             }
-        })
+        }
 
         viewModel.newMsg.observeForever(newMsgObserver)
         viewModel.removeSrwBubble.observeForever(srwRemovalObserver)
 
-        viewModel.previewMsg.observe(viewLifecycleOwner, { preview ->
+        viewModel.previewMsg.observe(viewLifecycleOwner) { preview ->
             showPreviewMsg(preview)
-        })
+        }
 
-        viewModel.showableAttachmentPreviews.observe(viewLifecycleOwner, { attachPreview ->
+        viewModel.showableAttachmentPreviews.observe(viewLifecycleOwner) { attachPreview ->
             if (attachPreview.isNotEmpty()) {
                 showAttachmentPreview(attachPreview)
                 if (hasProductPreviewShown()) {
@@ -2866,30 +2876,30 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             } else {
                 clearAttachmentPreviews()
             }
-        })
+        }
 
-        viewModel.attachmentSent.observe(viewLifecycleOwner, { attachment ->
+        viewModel.attachmentSent.observe(viewLifecycleOwner) { attachment ->
             sendAnalyticAttachmentSent(attachment)
-        })
+        }
 
-        viewModel.failUploadImage.observe(viewLifecycleOwner, { image ->
+        viewModel.failUploadImage.observe(viewLifecycleOwner) { image ->
             topchatViewState?.showRetryUploadImages(image, true)
-        })
+        }
 
-        viewModel.errorSnackbar.observe(viewLifecycleOwner, { error ->
+        viewModel.errorSnackbar.observe(viewLifecycleOwner) { error ->
             showSnackbarError(error)
-        })
+        }
 
-        viewModel.uploadImageService.observe(viewLifecycleOwner, { image ->
+        viewModel.uploadImageService.observe(viewLifecycleOwner) { image ->
             uploadImage(image)
-        })
+        }
 
-        viewModel.templateChat.observe(viewLifecycleOwner, {
-            when(it) {
+        viewModel.templateChat.observe(viewLifecycleOwner) {
+            when (it) {
                 is Success -> onSuccessGetTemplate(it.data)
                 is Fail -> onErrorGetTemplate()
             }
-        })
+        }
     }
 
     private fun updateAttachmentsPreview(products: ArrayMap<String, Attachment>) {
