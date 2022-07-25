@@ -41,6 +41,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.analytics.EPharmacyAnalytics;
 import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
 import com.tokopedia.checkout.view.viewholder.UploadPrescriptionViewHolder;
@@ -249,6 +250,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutTradeInAnalytics checkoutTradeInAnalytics;
     @Inject
     CheckoutEgoldAnalytics checkoutEgoldAnalytics;
+    @Inject
+    EPharmacyAnalytics ePharmacyAnalytics;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     TickerAnnouncementHolderData savedTickerAnnouncementModel;
@@ -3417,6 +3420,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        if(uploadPrescriptionUiModel.getCheckoutId() != null)
+            ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.getCheckoutId());
         Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
         uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, uploadPrescriptionUiModel.getCheckoutId());
         startActivityForResult(uploadPrescriptionIntent,REQUEST_CODE_UPLOAD_PRESCRIPTION);
