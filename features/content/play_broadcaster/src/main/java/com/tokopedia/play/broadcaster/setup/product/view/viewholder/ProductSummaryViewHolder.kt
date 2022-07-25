@@ -80,12 +80,14 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
             binding.tvProductSummaryName.text = item.product.name
 
+            val stockWording = itemView.context.getString(R.string.play_bro_product_chooser_stock,
+                item.product.stock
+            )
+
             if(item.product.stock > 0) {
                 binding.tvProductSummaryStock.apply {
-                    text = itemView.context.getString(
-                        R.string.play_bro_product_chooser_stock,
-                        item.product.stock
-                    )
+                    text = if(item.product.pinStatus.isPinned) "・$stockWording" else stockWording
+
                     visibility = View.VISIBLE
                 }
                 binding.tvProductSummaryEmptyStock.visibility = View.GONE
@@ -132,6 +134,8 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.viewPinProduct.root.setOnClickListener {
                 listener.onPinProductClicked(item.product)
             }
+            binding.tvPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
+            binding.ivPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
 
             when(item.product.pinStatus.isPinned) {
                 true -> {
