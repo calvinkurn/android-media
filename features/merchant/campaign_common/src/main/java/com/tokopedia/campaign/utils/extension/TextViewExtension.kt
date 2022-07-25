@@ -13,6 +13,8 @@ import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 
+private const val SUBSTRING_INDEX_NOT_FOUND = -1
+
 fun AppCompatTextView.strikethrough() {
     this.paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 }
@@ -30,7 +32,12 @@ fun AppCompatTextView.setTextColorCompat(@ColorRes resourceId: Int) {
  * Otherwise, no substring will be converted to hyperlink
  * @param onHyperlinkClick: Block of code that will be triggered if any of the hyperlink substring is clicked
  */
-fun AppCompatTextView.setHyperlinkText(fullText: String, hyperlinkSubstring: String, onHyperlinkClick: () -> Unit) {
+fun AppCompatTextView.setHyperlinkText(
+    fullText: String,
+    hyperlinkSubstring: String,
+    ignoreCase: Boolean = true,
+    onHyperlinkClick: () -> Unit
+) {
     val spannableString = SpannableString(fullText)
     val clickableSpan: ClickableSpan = object : ClickableSpan() {
         override fun onClick(textView: View) {
@@ -45,7 +52,7 @@ fun AppCompatTextView.setHyperlinkText(fullText: String, hyperlinkSubstring: Str
     }
 
     val boldSpan = StyleSpan(Typeface.BOLD)
-    val substringIndexes = findFirstAndLastIndexOfSubstring(fullText, hyperlinkSubstring)
+    val substringIndexes = findFirstAndLastIndexOfSubstring(fullText, hyperlinkSubstring, ignoreCase)
     val (substringFirstIndex, substringLastIndex) = substringIndexes
 
     try {
@@ -68,11 +75,11 @@ fun AppCompatTextView.setHyperlinkText(fullText: String, hyperlinkSubstring: Str
 
 }
 
-private fun findFirstAndLastIndexOfSubstring(text: String, textSubstring: String): Pair<Int, Int> {
-    val start = text.indexOf(textSubstring)
-    return if (start != -1) {
+private fun findFirstAndLastIndexOfSubstring(text: String, textSubstring: String, ignoreCase: Boolean): Pair<Int, Int> {
+    val start = text.indexOf(textSubstring, ignoreCase = ignoreCase)
+    return if (start != SUBSTRING_INDEX_NOT_FOUND) {
         Pair(start, start + textSubstring.length)
     } else {
-        Pair(-1, -1)
+        Pair(SUBSTRING_INDEX_NOT_FOUND, SUBSTRING_INDEX_NOT_FOUND)
     }
 }
