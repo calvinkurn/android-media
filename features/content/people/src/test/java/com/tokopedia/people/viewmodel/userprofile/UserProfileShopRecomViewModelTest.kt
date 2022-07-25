@@ -1,7 +1,6 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
@@ -60,6 +59,7 @@ class UserProfileShopRecomViewModelTest {
 
     private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
     private val mockShopRecom = shopRecomBuilder.buildModel()
+    private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
 
     private val robot = UserProfileViewModelRobot(
         username = mockOwnUsername,
@@ -106,14 +106,14 @@ class UserProfileShopRecomViewModelTest {
             } andThen {
                 robot.viewModel.isShopRecomShow.assertFalse()
                 shopRecom.items.assertEmpty()
-                shopRecom equalTo ShopRecomUiModel()
+                shopRecom equalTo mockEmptyShopRecom
             }
         }
     }
 
     @Test
     fun `when user fail load shop recommendation and isShown is false, it will emit empty`() {
-        coEvery { mockRepo.getShopRecom() } returns ShopRecomUiModel()
+        coEvery { mockRepo.getShopRecom() } returns mockEmptyShopRecom
         coEvery { mockRepo.getFollowInfo(any()) } throws mockException
 
         robot.use {
@@ -121,7 +121,7 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen { state, events ->
                 robot.viewModel.isShopRecomShow.assertFalse()
-                state.shopRecom equalTo ShopRecomUiModel()
+                state.shopRecom equalTo mockEmptyShopRecom
                 events.last().assertEvent(UserProfileUiEvent.ErrorLoadProfile(Throwable("any throwable")))
             }
         }

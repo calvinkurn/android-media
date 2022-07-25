@@ -27,4 +27,6 @@ class ShopRecomModelBuilder {
             })
     }
 
+    fun buildEmptyModel() = ShopRecomUiModel()
+
 }
