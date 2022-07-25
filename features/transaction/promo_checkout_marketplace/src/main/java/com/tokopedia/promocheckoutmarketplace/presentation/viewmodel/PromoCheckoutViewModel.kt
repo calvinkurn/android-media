@@ -18,9 +18,17 @@ import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutLogger
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoErrorException
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
-import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_TRY_AGAIN
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoErrorStateUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoInputUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListHeaderUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoSuggestionUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoTabUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_OCC_MULTI
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -33,8 +41,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import kotlinx.coroutines.CoroutineDispatcher
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                  private val getCouponListRecommendationUseCase: GetCouponListRecommendationUseCase,
@@ -44,6 +50,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                                  private val uiModelMapper: PromoCheckoutUiModelMapper,
                                                  private val analytics: PromoCheckoutAnalytics)
     : BaseViewModel(dispatcher) {
+
+    // TEMPORARY, remove in PR
+    var bboPromoCodes: ArrayList<String> = ArrayList()
 
     // Fragment UI Model. Store UI model and state on fragment level
     private val _fragmentUiModel = MutableLiveData<FragmentUiModel>()
@@ -576,6 +585,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         // Invalid promo code is promo code from outside promo page (cart/checkout) which previously selected,
         // but become invalid or not selected on promo page, except promo BBO
         removeInvalidPromoCode(validateUsePromoRequest, selectedPromoList, bboPromoCodes)
+        this.bboPromoCodes = bboPromoCodes
 
         validateUsePromoRequest.skipApply = 0
 
@@ -830,6 +840,15 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun setApplyPromoStateSuccess(request: ValidateUsePromoRequest, response: ValidateUsePromoRevampUiModel) {
+        // TEMPORARY, uncomment to force BO code to red state
+//        for (voucherOrderUiModel in response.promoUiModel.voucherOrderUiModels) {
+//            val uniqueId = voucherOrderUiModel.uniqueId
+//            if (voucherOrderUiModel.code in bboPromoCodes) {
+//                voucherOrderUiModel.messageUiModel.state = "red"
+//            }
+//        }
+        // TEMPORARY, uncomment to add error message
+//        response.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message = "Pengiriman disesuaikan untuk promo yang kamu pilih."
         applyPromoResponseAction.value?.let {
             it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CALLER_PAGE
             it.data = response

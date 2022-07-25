@@ -1291,6 +1291,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     && Objects.equals(data.getStringExtra(ARGS_PROMO_ERROR), ARGS_FINISH_ERROR) && getActivity() != null) {
                 getActivity().finish();
             } else {
+                // todo: check do we need to reset/apply BO?
                 shipmentPresenter.setCouponStateChanged(true);
                 ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
                 if (validateUsePromoRevampUiModel != null) {
