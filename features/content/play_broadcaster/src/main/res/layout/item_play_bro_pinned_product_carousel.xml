@@ -15,6 +15,8 @@
             android:id="@+id/iv_pinned_product_carousel"
             android:layout_width="@dimen/play_bro_pinned_img_size"
             android:layout_height="@dimen/play_bro_pinned_img_size"
+            android:adjustViewBounds="true"
+            app:layout_constrainedHeight="true"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
