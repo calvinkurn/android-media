@@ -3,7 +3,11 @@ package com.tokopedia.promocheckoutmarketplace.presentation.viewholder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
@@ -186,6 +190,53 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
+    private fun renderCustomIcon(iconUnify: IconUnify, customIconResId: Int, state: Int, isOverrideColorOnSelected: Boolean = false) {
+        val iconColor =
+                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) { // night mode
+                    when (state) {
+                        STATE_SELECTED -> {
+                            if (isOverrideColorOnSelected) {
+                                colorIconDarkSelected
+                            } else {
+                                colorIconDarkEnabled
+                            }
+                        }
+                        STATE_ENABLED -> {
+                            colorIconDarkEnabled
+                        }
+                        STATE_DISABLED -> {
+                            colorIconDarkDisabled
+                        }
+                        else -> {
+                            colorIconDarkEnabled
+                        }
+                    }
+                } else { // light mode
+                    when (state) {
+                        STATE_SELECTED -> {
+                            if (isOverrideColorOnSelected) {
+                                colorIconLightSelected
+                            } else {
+                                colorIconLightEnabled
+                            }
+                        }
+                        STATE_ENABLED -> {
+                            colorIconLightEnabled
+                        }
+                        STATE_DISABLED -> {
+                            colorIconLightDisabled
+                        }
+                        else -> {
+                            colorIconLightEnabled
+                        }
+                    }
+                }
+        val iconImg = AppCompatResources.getDrawable(iconUnify.context, customIconResId)
+        iconImg?.mutate()
+        iconImg?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(iconColor, BlendModeCompat.SRC_ATOP)
+        iconUnify.setImageDrawable(iconImg)
+    }
+
     private fun renderPromoData(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
                                 element: PromoListItemUiModel) {
         renderHighlightIdentifier(viewBinding, element)
@@ -308,7 +359,11 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 val promoInfoList = element.uiData.promoInfos.filter { it.type == PromoInfo.TYPE_PROMO_INFO }
                 promoInfoList.forEach {
                     val promoInfoView = PromoCheckoutMarketplaceModuleSubLayoutPromoInfoBinding.inflate(LayoutInflater.from(itemView.context))
-                    renderIcon(promoInfoView.iconPromoInfo, IconHelper.getIcon(it.icon), getState(element))
+                    if (IconHelper.isCustomIcon(it.icon)) {
+                        renderCustomIcon(promoInfoView.iconPromoInfo, IconHelper.getIcon(it.icon), getState(element))
+                    } else {
+                        renderIcon(promoInfoView.iconPromoInfo, IconHelper.getIcon(it.icon), getState(element))
+                    }
                     promoInfoView.textPromoInfo.text = HtmlLinkHelper(itemView.context, it.title).spannedString
                     if (!element.uiState.isParentEnabled || element.uiState.isDisabled || element.uiData.errorMessage.isNotBlank()) {
                         promoInfoView.textPromoInfo.setTextColor(colorTextDisabled)

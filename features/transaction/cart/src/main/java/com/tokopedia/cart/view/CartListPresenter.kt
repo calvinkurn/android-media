@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
+import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
@@ -22,7 +23,20 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
-import com.tokopedia.cart.view.subscriber.*
+import com.tokopedia.cart.view.subscriber.AddCartToWishlistSubscriber
+import com.tokopedia.cart.view.subscriber.AddToCartExternalSubscriber
+import com.tokopedia.cart.view.subscriber.AddToCartSubscriber
+import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
+import com.tokopedia.cart.view.subscriber.ClearRedPromosBeforeGoToCheckoutSubscriber
+import com.tokopedia.cart.view.subscriber.FollowShopSubscriber
+import com.tokopedia.cart.view.subscriber.GetRecentViewSubscriber
+import com.tokopedia.cart.view.subscriber.GetRecommendationSubscriber
+import com.tokopedia.cart.view.subscriber.GetWishlistSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateAndReloadCartSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartAndValidateUseSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartSubscriber
+import com.tokopedia.cart.view.subscriber.ValidateUseSubscriber
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
@@ -141,6 +155,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     // Store last validate use request for clearing promo if got akamai error
     var lastValidateUseRequest: ValidateUsePromoRequest? = null
 
+    // Store promo ticker
+    private var promoTicker: CartPromoTicker = CartPromoTicker()
+    // Store flag show choose promo widget
+    private var showChoosePromoWidget: Boolean = false
+
     // Store LCA data for bo affordability
     var lca: LocalCacheModel? = null
 
@@ -246,6 +265,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             }
             setCartListData(cartData)
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData)
+            showChoosePromoWidget = cartData.promo.showChoosePromoWidget
+            promoTicker = cartData.promo.ticker
             it.renderLoadGetCartDataFinish()
             it.renderInitialGetCartListDataSuccess(cartData)
             it.stopCartPerformanceTrace(true)
@@ -1576,7 +1597,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemHolderData>()
-            cartListView.getAllSelectedCartDataList()?.let { listCartItemData ->
+            cartListView.getAllSelectedCartDataList().let { listCartItemData ->
                 for (data in listCartItemData) {
                     if (!data.isError) {
                         cartItemDataList.add(data)
@@ -1594,7 +1615,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
                 compositeSubscription.add(
                         updateCartAndValidateUseUseCase.createObservable(requestParams)
-                                .subscribe(UpdateCartAndValidateUseSubscriber(cartListView, this))
+                                .subscribe(UpdateCartAndValidateUseSubscriber(cartListView, this, promoTicker.enable))
                 )
             } else {
                 cartListView.hideProgressLoading()
@@ -1749,5 +1770,13 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         } else {
             false
         }
+    }
+
+    override fun getTickerPromoData(): CartPromoTicker {
+        return promoTicker
+    }
+
+    override fun getShowChoosePromoWidget(): Boolean {
+        return showChoosePromoWidget
     }
 }

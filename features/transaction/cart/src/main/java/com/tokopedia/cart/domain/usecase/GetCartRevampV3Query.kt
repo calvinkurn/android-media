@@ -650,11 +650,18 @@ const val CART_REVAMP_V3_QUERY =
               global_checkbox_state
               tickers {
                 id
+                title
                 message
                 page
               }
               hashed_email
               promo {
+                show_choose_promo_widget
+                ticker {
+                    enable
+                    text
+                    icon_url
+                }
                 last_apply {
                   data {
                     global_success

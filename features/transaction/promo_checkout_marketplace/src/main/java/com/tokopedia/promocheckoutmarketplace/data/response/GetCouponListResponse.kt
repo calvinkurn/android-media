@@ -228,6 +228,7 @@ data class PromoInfo(
         const val ICON_CLOCK = "CLOCK"
         const val ICON_COURIER = "COURIER"
         const val ICON_TOKO_MEMBER = "TOKOMEMBER"
+        const val ICON_DOT = "DOT"
     }
 }
 

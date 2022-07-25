@@ -10,4 +10,11 @@ data class CartPromoData (
         var errorDefault: ErrorDefault = ErrorDefault(),
 
         @SerializedName("last_apply")
-        var lastApplyPromo: LastApplyPromo = LastApplyPromo())
+        var lastApplyPromo: LastApplyPromo = LastApplyPromo(),
+
+        @SerializedName("ticker")
+        var ticker: CartPromoTicker = CartPromoTicker(),
+
+        @SerializedName("show_choose_promo_widget")
+        var showChoosePromoWidget: Boolean = false
+)

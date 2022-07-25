@@ -106,8 +106,10 @@ import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -150,6 +152,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
@@ -157,9 +160,9 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
@@ -2227,6 +2230,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun validateRenderPromo(cartData: CartData) {
+        // reset promo position
+        initialPromoButtonPosition = 0f
         if (dPresenter.isLastApplyValid()) {
             // Render promo from last apply
             validateRenderPromoFromLastApply(cartData)
@@ -2259,7 +2264,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun validateRenderPromoFromLastApply(cartData: CartData) {
         val lastApplyPromoData = cartData.promo.lastApplyPromo.lastApplyPromoData
         // show toaster if any promo applied has been changed
-        if (lastApplyPromoData.additionalInfo.errorDetail.message.isNotEmpty()) {
+        if (cartData.promo.showChoosePromoWidget && lastApplyPromoData.additionalInfo.errorDetail.message.isNotEmpty()) {
             showToastMessageGreen(lastApplyPromoData.additionalInfo.errorDetail.message)
             PromoRevampAnalytics.eventCartViewPromoMessage(lastApplyPromoData.additionalInfo.errorDetail.message)
         }
@@ -2448,49 +2453,67 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderPromoCheckoutButton(lastApplyData: LastApplyUiModel) {
-        val isApplied: Boolean
+        val tickerPromoData = dPresenter.getTickerPromoData()
+        if (dPresenter.getShowChoosePromoWidget()) {
+            binding?.promoCheckoutBtnCart?.visible()
+            binding?.llPromoCheckoutShadow?.visible()
 
-        binding?.promoCheckoutBtnCart?.state = ButtonPromoCheckoutView.State.ACTIVE
-        binding?.promoCheckoutBtnCart?.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+            val isApplied: Boolean
 
-        val title: String = when {
-            lastApplyData.additionalInfo.messageInfo.message.isNotEmpty() -> {
-                lastApplyData.additionalInfo.messageInfo.message
-            }
-            lastApplyData.defaultEmptyPromoMessage.isNotBlank() -> {
-                lastApplyData.defaultEmptyPromoMessage
-            }
-            else -> {
-                getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
-            }
-        }
+            binding?.promoCheckoutBtnCart?.state = ButtonPromoCheckoutView.State.ACTIVE
+            binding?.promoCheckoutBtnCart?.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
 
-        if (lastApplyData.additionalInfo.messageInfo.detail.isNotEmpty()) {
-            isApplied = true
-            binding?.promoCheckoutBtnCart?.desc = lastApplyData.additionalInfo.messageInfo.detail
+            val title: String = when {
+                lastApplyData.additionalInfo.messageInfo.message.isNotEmpty() -> {
+                    lastApplyData.additionalInfo.messageInfo.message
+                }
+                lastApplyData.defaultEmptyPromoMessage.isNotBlank() -> {
+                    lastApplyData.defaultEmptyPromoMessage
+                }
+                else -> {
+                    getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
+                }
+            }
+
+            if (lastApplyData.additionalInfo.messageInfo.detail.isNotEmpty()) {
+                isApplied = true
+                binding?.promoCheckoutBtnCart?.desc = lastApplyData.additionalInfo.messageInfo.detail
+            } else {
+                isApplied = false
+
+                if (cartAdapter.selectedCartItemData.isEmpty()) {
+                    binding?.promoCheckoutBtnCart?.desc = getString(R.string.promo_desc_no_selected_item)
+                } else {
+                    binding?.promoCheckoutBtnCart?.desc = ""
+                }
+            }
+
+            binding?.promoCheckoutBtnCart?.title = title
+            binding?.promoCheckoutBtnCart?.setOnClickListener {
+                if (cartAdapter.selectedCartItemData.isEmpty()) {
+                    showToastMessageGreen(getString(R.string.promo_choose_item_cart))
+                    PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
+                } else {
+                    dPresenter.doUpdateCartForPromo()
+                    // analytics
+                    PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied, userSession.userId)
+                }
+            }
+            if (isApplied) {
+                PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
+            }
         } else {
-            isApplied = false
-
-            if (cartAdapter.selectedCartItemData.isEmpty()) {
-                binding?.promoCheckoutBtnCart?.desc = getString(R.string.promo_desc_no_selected_item)
-            } else {
-                binding?.promoCheckoutBtnCart?.desc = ""
-            }
+            binding?.promoCheckoutBtnCart?.gone()
+            binding?.llPromoCheckoutShadow?.gone()
         }
-
-        binding?.promoCheckoutBtnCart?.title = title
-        binding?.promoCheckoutBtnCart?.setOnClickListener {
-            if (cartAdapter.selectedCartItemData.isEmpty()) {
-                showToastMessageGreen(getString(R.string.promo_choose_item_cart))
-                PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
-            } else {
-                dPresenter.doUpdateCartForPromo()
-                // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied, userSession.userId)
+        if (tickerPromoData.enable) {
+            binding?.promoCheckoutTickerCart?.visible()
+            binding?.promoCheckoutTickerCart?.context?.let {
+                binding?.promoCheckoutTickerCartText?.text = HtmlLinkHelper(it, tickerPromoData.text).spannedString
             }
-        }
-        if (isApplied) {
-            PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
+            binding?.promoCheckoutTickerCartImage?.loadImage(tickerPromoData.iconUrl)
+        } else {
+            binding?.promoCheckoutTickerCart?.gone()
         }
 
         dPresenter.updatePromoSummaryData(lastApplyData)
