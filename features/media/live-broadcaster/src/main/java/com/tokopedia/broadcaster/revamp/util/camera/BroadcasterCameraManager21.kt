@@ -74,9 +74,7 @@ class BroadcasterCameraManager21(private val context: Context) : BroadcasterCame
                 physicalCameras
             )
 
-        } catch (e: NullPointerException) {
-            null
-        } catch (e: CameraAccessException) {
+        } catch (e: Exception) {
             null
         }
     }
