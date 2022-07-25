@@ -117,7 +117,7 @@ class MainNavAnalyticsTest {
     }
 
     @Test
-    fun testComponentFavoriteShop() {
+    fun testComponentShopFavorite() {
         mainNavCassavaTest {
             login()
             waitForData()

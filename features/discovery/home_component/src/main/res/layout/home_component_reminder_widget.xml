@@ -14,7 +14,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/home_component_margin_default"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="12dp"
         android:layout_marginRight="@dimen/home_component_margin_default"
         android:ellipsize="end"
         android:lines="1"
@@ -23,13 +23,13 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/ic_close_reminder_recommendation"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_2" />
+        app:typographyType="display_1"
+        app:typographyWeight="bold"/>
 
     <ImageView
         android:id="@+id/ic_close_reminder_recommendation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/home_component_margin_default"
         app:layout_constraintBottom_toBottomOf="@id/reminder_recommendation_title"
         app:layout_constraintRight_toRightOf="parent"
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/home_component_margin_default"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="12dp"
         android:layout_marginRight="@dimen/home_component_margin_default"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:cardCornerRadius="@dimen/layout_lvl1"
@@ -95,7 +95,7 @@
                 app:layout_constraintLeft_toRightOf="@id/ic_reminder_recommendation_product"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_3" />
+                app:typographyType="display_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/reminder_recommendation_text_sub"
@@ -108,7 +108,7 @@
                 app:layout_constraintLeft_toRightOf="@id/ic_reminder_recommendation_product"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reminder_recommendation_text_main"
-                app:typographyType="body_3" />
+                app:typographyType="display_3" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_reminder_recommendation"

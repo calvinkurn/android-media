@@ -27,8 +27,6 @@ interface ChatbotTypeFactory : AdapterTypeFactory {
             type: Int,
             chatbotAdapterListener: ChatbotAdapterListener): AbstractViewHolder<*>
 
-    fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int
-
     fun type(attachInvoiceSelectionViewModel: AttachInvoiceSelectionViewModel): Int
 
     fun type(quickReplyListViewModel: QuickReplyListViewModel): Int
@@ -46,5 +44,7 @@ interface ChatbotTypeFactory : AdapterTypeFactory {
     fun type(csatOptionsViewModel: CsatOptionsViewModel): Int
 
     fun type(stickyActionButtonViewModel: StickyActionButtonViewModel): Int
+
+    fun type(attachInvoiceSentUiModel: com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel): Int
 
 }

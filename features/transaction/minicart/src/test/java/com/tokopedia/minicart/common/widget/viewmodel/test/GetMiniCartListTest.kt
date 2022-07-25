@@ -286,4 +286,35 @@ class GetMiniCartListTest {
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET)
     }
 
+    @Test
+    fun `WHEN first load mini cart list success with multiple available items in one cart THEN total product count should more than one`() {
+        //given
+        val mockResponse = DataProvider.provideGetMiniCartListSuccessMultipleAvailableAndUnavailableOneCart()
+        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.getCartList(isFirstLoad = true)
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductCount ?: 0 > 1)
+    }
+
+    @Test
+    fun `WHEN first load mini cart list success with multiple unavailable items in one cart THEN total product error should more than one`() {
+        //given
+        val mockResponse = DataProvider.provideGetMiniCartListSuccessMultipleAvailableAndUnavailableOneCart()
+        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.getCartList(isFirstLoad = true)
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductError ?: 0 > 1)
+    }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.product.estimasiongkir.data
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductServiceDetailDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
@@ -45,7 +46,7 @@ object RatesMapper {
             val servicesDetail = service.products.map {
                 ProductServiceDetailDataModel(it.name, it.eta.textEta, it.price.priceFmt, it.cod.isCodAvailable == 1, it.cod.text, it.features.dynamicPrice.dynamicPriceString)
             }
-            ProductShippingServiceDataModel(service.id.toLong(), service.name, servicesDetail)
+            ProductShippingServiceDataModel(service.id.toLongOrZero(), service.name, servicesDetail)
         }.toMutableList()
     }
 }

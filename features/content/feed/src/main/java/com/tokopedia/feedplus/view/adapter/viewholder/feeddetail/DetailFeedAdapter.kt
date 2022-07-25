@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import java.util.*
 
 /**
@@ -38,7 +39,7 @@ class DetailFeedAdapter(typeFactory: FeedPlusDetailTypeFactory) : RecyclerView.A
         return (list[position] as Visitable<FeedPlusDetailTypeFactory>).type(typeFactory)
     }
 
-    fun addList(list: MutableList<ProductFeedDetailViewModelNew>) {
+    fun addList(list: MutableList<FeedDetailProductModel>) {
         this.list.addAll(list)
         notifyDataSetChanged()
     }

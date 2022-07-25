@@ -898,7 +898,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         const val ALPHA_FULL = 1.0f
 
         private const val IMAGE_PRODUCT_MARGIN_START = 12
-        private const val TEXT_NOTES_CHANGE_WIDTH = 32
+        private const val TEXT_NOTES_CHANGE_WIDTH = 40
         private const val BUNDLING_SEPARATOR_MARGIN_START = 32
         private const val BUNDLING_SEPARATOR_WIDTH = 48
     }

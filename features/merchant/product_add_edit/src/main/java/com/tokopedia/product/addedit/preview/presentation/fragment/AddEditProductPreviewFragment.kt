@@ -285,7 +285,6 @@ class AddEditProductPreviewFragment :
         setupDescriptionViews(view)
         setupVariantViews(view)
         setupShipmentViews(view)
-        setupPromotionViews(view)
         setupStatusViews(view)
         setupLoadingViews(view)
         setupAdminRevampViews(view)
@@ -640,17 +639,6 @@ class AddEditProductPreviewFragment :
             if (isChecked && isEditing()) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
             }
-        }
-    }
-
-    private fun setupPromotionViews(view: View) {
-        editProductPromotionLayout = view.findViewById(R.id.edit_product_promotion_step_layout)
-        editProductPromotionButton = view.findViewById(R.id.tv_edit_product_promotion)
-        editProductPromotionButton?.setOnClickListener {
-            if (isEditing()) {
-                ProductEditStepperTracking.trackChangePromotion(shopId)
-            }
-            setCashback()
         }
     }
 
@@ -1310,23 +1298,6 @@ class AddEditProductPreviewFragment :
                 updateProductStatusSwitch(it)
             }
             viewModel.setIsDataChanged(true)
-        }
-    }
-
-    private fun setCashback() {
-        viewModel.productInputModel.value?.let { productInputModel ->
-            val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, viewModel.getProductId())
-            val uri = Uri.parse(newUri)
-                    .buildUpon()
-                    .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_NAME, productInputModel.detailInputModel.productName)
-                    .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, viewModel.productDomain.cashback.percentage.toString())
-                    .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, productInputModel.detailInputModel.price.toString())
-                    .build()
-                    .toString()
-            val intent = RouteManager.getIntent(context, uri)
-            intent.putExtra(EXTRA_CASHBACK_SHOP_ID, shopId)
-            intent.putExtra(EXTRA_CASHBACK_IS_DRAFTING, isDrafting())
-            startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
         }
     }
 

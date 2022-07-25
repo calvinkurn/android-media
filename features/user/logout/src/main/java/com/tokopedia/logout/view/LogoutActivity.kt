@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.CookieSyncManager
@@ -31,6 +32,8 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.logger.ServerLogger.log
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.logout.R
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
@@ -43,8 +46,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform
+import com.tokopedia.user.session.datastore.UserSessionDataStore
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import com.tokopedia.user.session.util.EncoderDecoder
 import kotlinx.android.synthetic.main.activity_logout.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -61,6 +69,9 @@ import javax.inject.Inject
 class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var userSessionDataStore: UserSessionDataStore
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -170,6 +181,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }.show()
     }
 
+    private fun isEnableDataStore(): Boolean =
+        UserSessionAbTestPlatform.isDataStoreEnable(applicationContext)
+
     private fun clearData() {
         hideLoading()
         clearStickyLogin()
@@ -185,13 +199,14 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         clearWebView()
         clearLocalChooseAddress()
         clearRegisterPushNotificationPref()
-
+        clearTemporaryTokenForSeamless()
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
 
+        clearDataStore()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         if (isReturnToHome) {
@@ -213,6 +228,21 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }
     }
 
+    private fun clearDataStore() {
+        if(isEnableDataStore()) {
+            GlobalScope.launch {
+                try {
+                    userSessionDataStore.clearDataStore()
+                } catch (e: Exception) {
+                    val data = mapOf(
+                        "method" to "logout_activity",
+                        "error" to Log.getStackTraceString(e).take(MAX_STACKTRACE_LENGTH)
+                    )
+                    log(Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG, data)
+                }
+            }
+        }
+    }
 
     fun dismissAllActivedNotifications() {
         val notificationManager =
@@ -270,6 +300,14 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         logoutLoading?.visibility = View.GONE
     }
 
+    private fun clearTemporaryTokenForSeamless() {
+        val sharedPrefs = getSharedPreferences(
+            GOTO_SEAMLESS_PREF,
+            Context.MODE_PRIVATE
+        )
+        sharedPrefs.edit().clear().apply()
+    }
+
     @SuppressLint("ObsoleteSdkInt")
     private fun clearWebView() {
         try {
@@ -293,6 +331,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
         private const val INVALID_TOKEN = "Token tidak valid."
+
+        private const val MAX_STACKTRACE_LENGTH = 1000
+
+        const val GOTO_SEAMLESS_PREF = "goto_seamless_pref"
+        const val KEY_TEMPORARY = "temporary_key"
 
         /**
          * class [com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker]
