@@ -138,6 +138,7 @@ class AddEditProductEditingAnalyticTest {
         performScrollAndClick(R.id.su_wholesale)
         performScrollAndClick(R.id.switch_preorder)
         performReplaceText(R.id.tfu_duration, "2")
+        performReplaceText(R.id.tfu_available_stock, "1000")
         performScrollAndClick(R.id.btn_submit)
     }
 
