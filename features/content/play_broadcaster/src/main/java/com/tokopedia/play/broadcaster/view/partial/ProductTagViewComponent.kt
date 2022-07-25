@@ -24,13 +24,19 @@ class ProductTagViewComponent(
 
     private val rvProductTag: RecyclerView = findViewById(R.id.rv_bro_product_tag)
 
-    private val viewHolderListener = object : ProductCarouselViewHolder.Product.Listener{
+    private val productListener = object : ProductCarouselViewHolder.Product.Listener{
         override fun onPinProductClicked(product: ProductUiModel) {
             listener.onPinProductClicked(product)
         }
     }
 
-    private val adapter = PlayProductTagAdapter(viewHolderListener)
+    private val pinnedProductListener = object : ProductCarouselViewHolder.PinnedProduct.Listener{
+        override fun onPinProductClicked(product: ProductUiModel) {
+            listener.onPinProductClicked(product)
+        }
+    }
+
+    private val adapter = PlayProductTagAdapter(productListener = productListener, pinnedProductListener = pinnedProductListener)
 
     private val coachMark: CoachMark2 = CoachMark2(container.context)
 
