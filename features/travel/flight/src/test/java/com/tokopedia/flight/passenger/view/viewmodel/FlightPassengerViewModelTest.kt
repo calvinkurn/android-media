@@ -118,7 +118,7 @@ class FlightPassengerViewModelTest {
         coEvery { getPhoneCodeByIdUseCase.execute(any(), any()) } returns Fail(Throwable("Failed"))
 
         // when
-        viewModel.getNationalityById("", "")
+        viewModel.getNationalityById(FlightDummyGqlInterfaceImpl(), "")
 
         // then
         viewModel.nationalityData.value shouldBe null
@@ -130,7 +130,7 @@ class FlightPassengerViewModelTest {
         coEvery { getPhoneCodeByIdUseCase.execute(any(), any()) } returns DUMMY_NATIONALITY_SUCCESS
 
         // when
-        viewModel.getNationalityById("", "")
+        viewModel.getNationalityById(FlightDummyGqlInterfaceImpl(), "")
 
         // then
         viewModel.nationalityData.value?.countryId shouldBe DUMMY_NATIONALITY_SUCCESS.data.countryId
@@ -144,7 +144,7 @@ class FlightPassengerViewModelTest {
         coEvery { getPhoneCodeByIdUseCase.execute(any(), any()) } returns Fail(Throwable("Failed"))
 
         // when
-        viewModel.getPassportIssuerCountryById("", "")
+        viewModel.getPassportIssuerCountryById(FlightDummyGqlInterfaceImpl(), "")
 
         // then
         viewModel.passportIssuerCountryData.value shouldBe null
@@ -156,7 +156,7 @@ class FlightPassengerViewModelTest {
         coEvery { getPhoneCodeByIdUseCase.execute(any(), any()) } returns DUMMY_NATIONALITY_SUCCESS
 
         // when
-        viewModel.getPassportIssuerCountryById("", "")
+        viewModel.getPassportIssuerCountryById(FlightDummyGqlInterfaceImpl(), "")
 
         // then
         viewModel.passportIssuerCountryData.value?.countryId shouldBe DUMMY_NATIONALITY_SUCCESS.data.countryId

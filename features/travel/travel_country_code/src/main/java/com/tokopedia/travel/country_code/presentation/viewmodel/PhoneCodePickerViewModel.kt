@@ -3,6 +3,7 @@ package com.tokopedia.travel.country_code.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.travel.country_code.domain.TravelCountryCodeUseCase
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import com.tokopedia.usecase.coroutines.Result
@@ -27,7 +28,7 @@ class PhoneCodePickerViewModel @Inject constructor(
     val filteredCountryList: LiveData<Result<List<TravelCountryPhoneCode>>>
         get() = _filteredCountryList
 
-    fun getCountryList(rawQuery: String) {
+    fun getCountryList(rawQuery: GqlQueryInterface) {
         launch {
             _countryList.value = useCase.execute(rawQuery)
             _filteredCountryList.value = _countryList.value

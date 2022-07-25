@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -52,12 +51,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
-import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
+import com.tokopedia.travel.country_code.util.QueryTravelCountryCode
 import com.tokopedia.travel.passenger.data.entity.TravelContactIdCard
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.util.QueryGetContactList
-import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
@@ -118,7 +116,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             passengerViewModel = viewModelProvider.get(FlightPassengerViewModel::class.java)
         }
     }
@@ -830,11 +828,11 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                             )
                         )
                         passengerViewModel.getNationalityById(
-                            TravelCountryCodeGqlQuery.ALL_COUNTRY,
+                            QueryTravelCountryCode(),
                             contact.nationality
                         )
                         passengerViewModel.getPassportIssuerCountryById(
-                            TravelCountryCodeGqlQuery.ALL_COUNTRY,
+                            QueryTravelCountryCode(),
                             id.country
                         )
                     } else if (isIdCard(id)) {

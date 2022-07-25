@@ -7,9 +7,7 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.travel.country_code.domain.TravelCountryCodeByIdUseCase
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
-import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
-import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,7 +41,7 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
         }
     }
 
-    fun getNationalityById(rawQuery: String, paramId: String) {
+    fun getNationalityById(rawQuery: GqlQueryInterface, paramId: String) {
         launch(dispatcherProvider.main) {
             when (val result = getPhoneCodeByIdUseCase.execute(rawQuery, paramId)) {
                 is Success -> {
@@ -53,7 +51,7 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
         }
     }
 
-    fun getPassportIssuerCountryById(rawQuery: String, paramId: String) {
+    fun getPassportIssuerCountryById(rawQuery: GqlQueryInterface, paramId: String) {
         launch(dispatcherProvider.main) {
             when (val result = getPhoneCodeByIdUseCase.execute(rawQuery, paramId)) {
                 is Success -> {
