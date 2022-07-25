@@ -19,6 +19,15 @@ class ShopRecomModelBuilder {
         )
     }
 
+    fun buildModelIsNotShown(): ShopRecomUiModel {
+        return ShopRecomUiModel(
+            isShown = false,
+            nextCursor = "",
+            title = "Toko lain sesuai rekomendasimu",
+            items = generateShopItem()
+        )
+    }
+
     fun buildEmptyModel() = ShopRecomUiModel()
 
     private fun generateShopItem(itemId: Long = mockItemId): List<ShopRecomUiModelItem> {
