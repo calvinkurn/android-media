@@ -10,7 +10,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/product_report_divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_height="2dp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
