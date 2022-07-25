@@ -61,6 +61,7 @@ import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
@@ -108,7 +109,6 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
     private var filterMenu = FilterMenu()
-    private var operationalInsightBottomSheet: OperationalInsightBottomSheet? = null
     private var chatBannedSellerTicker: Ticker? = null
     private var rv: RecyclerView? = null
     private var emptyUiModel: Visitable<*>? = null
@@ -300,7 +300,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun setObserver() {
-        chatItemListViewModel.mutateChatList.observe(viewLifecycleOwner, {
+        chatItemListViewModel.mutateChatList.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessGetChatList(it.data.data)
@@ -311,7 +311,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                 }
                 is Fail -> onFailGetChatList(it.throwable)
             }
-        })
+        }
 
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, { result ->
             when (result) {
@@ -637,12 +637,9 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         }
     }
 
-    override fun onOperationalInsightTickerClicked() {
-        if (operationalInsightBottomSheet == null) {
-            operationalInsightBottomSheet = OperationalInsightBottomSheet()
-        }
-        if (operationalInsightBottomSheet?.isAdded == true) return
-        operationalInsightBottomSheet?.show(childFragmentManager, FilterMenu.TAG)
+    override fun onOperationalInsightTickerClicked(element: ShopChatTicker) {
+        val operationalInsightBottomSheet = OperationalInsightBottomSheet(element)
+        operationalInsightBottomSheet.show(childFragmentManager, FilterMenu.TAG)
     }
 
     override fun onOperationalInsightCloseButtonClicked(visitable: Visitable<*>) {

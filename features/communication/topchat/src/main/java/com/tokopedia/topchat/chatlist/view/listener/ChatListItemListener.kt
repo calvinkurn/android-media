@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.usecase.coroutines.Result
 
 /**
@@ -23,6 +24,6 @@ interface ChatListItemListener {
     fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean = true)
     fun returnToSellerHome()
     fun onScrollToTop()
-    fun onOperationalInsightTickerClicked()
+    fun onOperationalInsightTickerClicked(element: ShopChatTicker)
     fun onOperationalInsightCloseButtonClicked(visitable: Visitable<*>)
 }

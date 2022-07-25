@@ -28,7 +28,7 @@ class OperationalInsightViewHolder(
 
     private fun bindListener(element: ShopChatTicker) {
         binding?.layoutTickerChatPerformance?.setOnClickListener {
-            listener.onOperationalInsightTickerClicked()
+            listener.onOperationalInsightTickerClicked(element)
         }
 
         binding?.iconCloseTickerChatPerformance?.setOnClickListener {

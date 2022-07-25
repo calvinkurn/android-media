@@ -57,6 +57,7 @@ import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatListWebSocketViewModel
@@ -264,9 +265,9 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun onScrollToTop() {}
 
-    override fun onOperationalInsightTickerClicked() {
+    override fun onOperationalInsightTickerClicked(element: ShopChatTicker) {
         if (operationalInsightBottomSheet == null) {
-            operationalInsightBottomSheet = OperationalInsightBottomSheet()
+            operationalInsightBottomSheet = OperationalInsightBottomSheet(element)
         }
         if (operationalInsightBottomSheet?.isAdded == true) return
         operationalInsightBottomSheet?.show(childFragmentManager, FilterMenu.TAG)
