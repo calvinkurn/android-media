@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
@@ -22,11 +22,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 
 class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
@@ -90,15 +86,14 @@ class UserProfileViewModel @AssistedInject constructor(
     val needOnboarding: Boolean
         get() = _profileWhitelist.value.hasAcceptTnc.not()
 
-    private var _isShopRecomShow: Boolean = false
-    val isShopRecomShow: Boolean get() = _isShopRecomShow
+    val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
 
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
     private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
-    private val _shopRecom = MutableStateFlow(emptyList<ShopRecomUiModelItem>())
+    private val _shopRecom = MutableStateFlow(ShopRecomUiModel())
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -229,7 +224,7 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
 
             val followInfo = _followInfo.value
-            val currItem = _shopRecom.value.find { it.id == itemID } ?: return@launchCatchError
+            val currItem = _shopRecom.value.items.find { it.id == itemID } ?: return@launchCatchError
 
             val result = if (currItem.isFollow) repo.unFollowProfile(currItem.encryptedID)
             else repo.followProfile(currItem.encryptedID)
@@ -237,11 +232,11 @@ class UserProfileViewModel @AssistedInject constructor(
             when (result) {
                 is MutationUiModel.Success -> {
                     _profileInfo.update { repo.getProfile(followInfo.userID) }
-                    _shopRecom.update {
-                        _shopRecom.value.map {
+                    _shopRecom.update { data ->
+                        data.copy(items = data.items.map {
                             if (itemID == it.id) it.copy(isFollow = !it.isFollow)
                             else it
-                        }
+                        })
                     }
                 }
                 is MutationUiModel.Error -> {
@@ -254,7 +249,9 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleRemoveShopRecomItem(itemID: Long) {
-        _shopRecom.update { _shopRecom.value.filterNot { it.id == itemID } }
+        _shopRecom.update { data ->
+            data.copy(items = data.items.filterNot { it.id == itemID })
+        }
     }
 
     /** Helper */
@@ -300,9 +297,8 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private suspend fun loadShopRecom() {
         val result = repo.getShopRecom()
-        _isShopRecomShow = result.isShown
-        if (result.isShown) _shopRecom.emit(result.items)
-        else _shopRecom.emit(emptyList())
+        if (result.isShown) _shopRecom.emit(result)
+        else _shopRecom.emit(ShopRecomUiModel())
     }
 
 }

@@ -12,12 +12,12 @@
         android:layout_marginHorizontal="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_8"
         android:gravity="start"
-        android:text="@string/other_shops_based_on_your_recommendation"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4" />
+        app:typographyType="heading_4"
+        tools:text="@string/other_shops_based_on_your_recommendation" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_shop_recom"
