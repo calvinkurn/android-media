@@ -234,7 +234,7 @@ class UserProfileViewModel @AssistedInject constructor(
                 is MutationUiModel.Success -> {
                     _profileInfo.update { repo.getProfile(followInfo.userID) }
                     _shopRecom.update { data ->
-                        data.copy(items = _shopRecom.value.items.map {
+                        data.copy(items = data.items.map {
                             if (itemID == it.id) it.copy(isFollow = !it.isFollow)
                             else it
                         })
@@ -251,7 +251,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleRemoveShopRecomItem(itemID: Long) {
         _shopRecom.update { data ->
-            data.copy(items = _shopRecom.value.items.filterNot { it.id == itemID })
+            data.copy(items = data.items.filterNot { it.id == itemID })
         }
     }
 
