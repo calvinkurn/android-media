@@ -10,6 +10,7 @@ import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.remoteconfig.RemoteConfig
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -40,9 +41,6 @@ class PlayBroadcaster(
     private var mLastIngestUrl = ""
     private var isStartedBefore = false
 
-    private val monitoringInterval: Long
-        get() = remoteConfig.getLong(FIREBASE_REMOTE_CONFIG_KEY_BRO_MONITORING, 0) * 1000
-
     private val broadcastListener = object : Broadcaster.Listener {
         override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
             callback.onBroadcastInitStateChanged(state)
@@ -72,7 +70,7 @@ class PlayBroadcaster(
     init {
         broadcaster.init(activityContext, handler)
         broadcaster.addListener(broadcastListener)
-        if(monitoringInterval > 0) broadcaster.enableStatistic(monitoringInterval)
+        enableDebugMonitoring()
     }
 
     /**
@@ -130,6 +128,11 @@ class PlayBroadcaster(
     private fun updateAspectFrameSize() {
         val size = broadcaster.activeCameraVideoSize ?: return
         callback.updateAspectRatio(size)
+    }
+
+    private fun enableDebugMonitoring() {
+        val monitoringInterval = remoteConfig.getLong(FIREBASE_REMOTE_CONFIG_KEY_BRO_MONITORING, 0)
+        if (monitoringInterval > 0) broadcaster.enableStatistic(TimeUnit.SECONDS.toMillis(monitoringInterval))
     }
 
     interface Callback {
