@@ -70,7 +70,7 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                         val reviewLength = s.toString().findLength()
-                        handleSubmitButtonState(reviewLength)
+                        updateReviewLength(reviewLength)
                         if (reviewLength in minLength..maxLength) {
                             warning_text.show()
                         } else {

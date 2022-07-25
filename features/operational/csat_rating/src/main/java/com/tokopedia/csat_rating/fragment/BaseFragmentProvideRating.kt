@@ -41,6 +41,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     private var progress: ProgressDialog?=null
     private var selectedOption: MutableList<String> = ArrayList()
     protected lateinit var mFilterReview: QuickSingleFilterView
+    private var reviewLength : Int = 0
 
     companion object {
         const val CSAT_TITLE = "csatTitle"
@@ -171,7 +172,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
                         selectedOption.add(typeFilter)
                     }
                 }
-                handleSubmitButtonState(0)
+                handleSubmitButtonState()
             }
         })
     }
@@ -242,7 +243,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     open fun getTextFinishedId():Int = R.id.txt_finished
     open fun getFilterReviewId():Int = R.id.filter_review
 
-    fun handleSubmitButtonState(reviewLength : Int) {
+    fun handleSubmitButtonState() {
         if (mFilterReview.isAnyItemSelected && reviewLength !in minLength..maxLength) {
             enableSubmitButton()
         } else {
@@ -250,12 +251,17 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
         }
     }
 
-    fun disableSubmitButton() {
+    fun updateReviewLength(reviewTextLength : Int) {
+        reviewLength = reviewTextLength
+        handleSubmitButtonState()
+    }
+
+    override fun disableSubmitButton() {
         mTxtFinished.setTextColor(MethodChecker.getColor(context, RAbstraction.color.grey_500))
         mTxtFinished.isEnabled = false
     }
 
-    fun enableSubmitButton() {
+    override fun enableSubmitButton() {
         mTxtFinished.setTextColor(MethodChecker.getColor(context, RAbstraction.color.white))
         mTxtFinished.isEnabled = true
     }
