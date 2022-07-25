@@ -18,7 +18,7 @@ import javax.inject.Inject
  */
 class PlayBroadcaster(
     activityContext: Context,
-    private val handler: Handler?,
+    handler: Handler?,
     private val broadcaster: Broadcaster,
     private val callback: Callback,
     private val remoteConfig: RemoteConfig,
@@ -61,12 +61,6 @@ class PlayBroadcaster(
         }
     }
 
-    inner class RetryRunnable : Runnable {
-        override fun run() {
-            broadcaster.retry()
-        }
-    }
-
     init {
         broadcaster.init(activityContext, handler)
         broadcaster.addListener(broadcastListener)
@@ -95,10 +89,6 @@ class PlayBroadcaster(
     override fun flip() {
         broadcaster.flip()
         updateAspectFrameSize()
-    }
-
-    fun doRetry() {
-        handler?.postDelayed(RetryRunnable(), RETRY_TIMEOUT)
     }
 
     override fun stop() {
@@ -143,7 +133,7 @@ class PlayBroadcaster(
     }
 
     companion object {
-        private const val RETRY_TIMEOUT = 3000L
+        const val RETRY_TIMEOUT = 3000L
         private const val FIREBASE_REMOTE_CONFIG_KEY_BRO_MONITORING = "android_mainapp_play_broadcaster_monitoring"
     }
 }

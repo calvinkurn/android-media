@@ -21,6 +21,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
+import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
@@ -74,8 +75,10 @@ import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -607,7 +610,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 BroadcasterErrorType.InternetUnavailable,
                 BroadcasterErrorType.StreamFailed -> {
                     errorLiveNetworkLossView.show()
-                    broadcaster.doRetry()
+                    reconnectLiveStreaming()
                 }
                 BroadcasterErrorType.AuthFailed,
                 BroadcasterErrorType.UrlEmpty -> {
@@ -625,7 +628,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         actionLabel = getString(R.string.play_broadcast_try_again),
                         actionListener = {
                             showLoading(true)
-                            broadcaster.doRetry()
+                            reconnectLiveStreaming()
                         })
                 }
                 else -> {
@@ -1115,6 +1118,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun resumeBroadcast() {
         broadcaster.resume(shouldContinue = false)
+    }
+
+    private fun reconnectLiveStreaming() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(PlayBroadcaster.RETRY_TIMEOUT)
+            broadcaster.retry()
+        }
     }
 
     private fun stopBroadcast() {
