@@ -40,6 +40,8 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
         private const val SLASHED_PRICE_WITHOUT_DISCOUNT_MARGIN_START = 16
         private const val SLASHED_PRICE_WITH_DISCOUNT_MARGIN_START = 8
         private const val SLASHED_PRICE_MARGIN_END = 16
+        private const val SLASHED_PRICE_WITHOUT_DISCOUNT_MARGIN_TOP = 4
+        private const val SLASHED_PRICE_WITH_DISCOUNT_MARGIN_TOP = 0
     }
 
     val ivHeader = itemView.findViewById<ImageView>(R.id.snapshot_main_img)
@@ -172,7 +174,11 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
                 } else {
                     SLASHED_PRICE_WITH_DISCOUNT_MARGIN_START.toPx()
                 },
-                top = Int.ZERO,
+                top = if (discPercentage.isEmpty()) {
+                    SLASHED_PRICE_WITHOUT_DISCOUNT_MARGIN_TOP.toPx()
+                } else {
+                    SLASHED_PRICE_WITH_DISCOUNT_MARGIN_TOP.toPx()
+                },
                 right = SLASHED_PRICE_MARGIN_END.toPx(),
                 bottom = Int.ZERO
             )
