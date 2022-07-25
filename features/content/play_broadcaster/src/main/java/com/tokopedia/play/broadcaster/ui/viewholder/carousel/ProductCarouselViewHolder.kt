@@ -11,6 +11,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.play.broadcaster.R
@@ -68,12 +69,12 @@ class ProductCarouselViewHolder private constructor() {
                     binding.tvProductTagNormalPrice.text = item.price.originalPrice
                 }
                 is OriginalPrice -> {
-                    binding.tvProductTagNormalPrice.gone()
+                    binding.tvProductTagNormalPrice.invisible()
                     binding.tvProductTagDiscount.hide()
                     binding.tvProductTagPrice.text = item.price.price
                 }
                 else -> {
-                    binding.tvProductTagNormalPrice.gone()
+                    binding.tvProductTagNormalPrice.invisible()
                     binding.tvProductTagDiscount.hide()
                     binding.tvProductTagPrice.text = context.getString(
                         R.string.play_bro_product_tag_no_price

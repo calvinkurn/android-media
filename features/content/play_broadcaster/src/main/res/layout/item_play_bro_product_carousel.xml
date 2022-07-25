@@ -79,8 +79,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_product_tag"
-        app:layout_constraintBottom_toTopOf="@id/tv_product_tag_normal_price"
-        app:layout_goneMarginBottom="@dimen/spacing_lvl2"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="RP 999.999.999" />
