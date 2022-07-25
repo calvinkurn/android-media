@@ -84,17 +84,6 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
         }
     }
 
-    fun getParams(dataParams: AutoAdsParam): RequestParams {
-        val params = RequestParams.create()
-        try {
-            params.putAll(Utils.jsonToMap(Gson().toJson(dataParams)))
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        } finally {
-            return params
-        }
-    }
-
     companion object {
         const val SHOP_ID = "shopId"
         const val SHOPID = "shopID"
