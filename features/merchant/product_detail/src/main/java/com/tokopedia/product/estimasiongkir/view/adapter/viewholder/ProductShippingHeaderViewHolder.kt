@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -36,6 +37,8 @@ class ProductShippingHeaderViewHolder(view: View,
                                       private val chooseAddressListener: ChooseAddressWidget.ChooseAddressWidgetListener) : AbstractViewHolder<ProductShippingHeaderDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_product_shipping_header
+
+        private const val MIN_MULTI_ETAS = 1
     }
 
     private val txtShippingFrom: Typography? = itemView.findViewById(R.id.txt_shipping_header_from)
@@ -143,7 +146,7 @@ class ProductShippingHeaderViewHolder(view: View,
 
         txtTokoNow?.hide()
 
-        if (freeOngkirEtas.size > 1) renderMultipleBoEta(
+        if (freeOngkirEtas.size > MIN_MULTI_ETAS) renderMultipleBoEta(
             freeOngkirEtas,
             isFreeOngkir,
             isFreeOngkirQuotaEmpty
@@ -168,7 +171,7 @@ class ProductShippingHeaderViewHolder(view: View,
             txtFreeOngkirEstimation.text = freeOngkirEstimation
         }
 
-        txtFreeOngkirPriceOriginal?.showIfWithBlock(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPriceOriginal > 0) {
+        txtFreeOngkirPriceOriginal?.showIfWithBlock(isFreeOngkir && !isFreeOngkirQuotaEmpty && freeOngkirPriceOriginal > Int.ZERO) {
             text = freeOngkirPriceOriginal.getCurrencyFormatted()
             paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
@@ -188,7 +191,7 @@ class ProductShippingHeaderViewHolder(view: View,
                 text = eta.etaText
             }
 
-            etaView.pdpFreeShippingOriginalPrice.showIfWithBlock(isFreeOngkir && !isFreeOngkirQuotaEmpty && eta.rawShippingRate > 0) {
+            etaView.pdpFreeShippingOriginalPrice.showIfWithBlock(isFreeOngkir && !isFreeOngkirQuotaEmpty && eta.rawShippingRate > Int.ZERO) {
                 text = eta.rawShippingRate.getCurrencyFormatted()
                 paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             }
