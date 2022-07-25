@@ -42,7 +42,7 @@ class TokoNowDynamicHeaderCustomView @JvmOverloads constructor(context: Context,
     private fun handleHeaderComponent(model: TokoNowDynamicHeaderUiModel) {
         setupUi()
         handleTitle(model.title)
-        handleSubtitle(model.subTitle)
+        handleSubtitle(model.subTitle, model.expiredTime)
         handleSeeAllAppLink(model.ctaText, model.ctaTextLink)
         handleHeaderExpiredTime(model.expiredTime, model.serverTimeOffset, model.backColor)
     }
@@ -65,11 +65,15 @@ class TokoNowDynamicHeaderCustomView @JvmOverloads constructor(context: Context,
         }
     }
 
-    private fun handleSubtitle(subtitle: String) {
+    private fun handleSubtitle(subtitle: String, expiredTime: String) {
         if (subtitle.isNotBlank()) {
             tpSubtitle?.text = subtitle
         } else {
-            tpSubtitle?.gone()
+            if (expiredTime.isNotBlank()) {
+                tpSubtitle?.text = context.getString(R.string.tokopedianow_dynamic_header_subtitle_default_value)
+            } else {
+                tpSubtitle?.gone()
+            }
         }
     }
 

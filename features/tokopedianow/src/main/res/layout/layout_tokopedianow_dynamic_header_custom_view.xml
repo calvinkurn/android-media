@@ -41,10 +41,9 @@
         android:layout_height="20dp"
         android:layout_centerVertical="true"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tp_subtitle"
-        app:layout_constraintEnd_toEndOf="@+id/tp_title"
         app:layout_constraintStart_toEndOf="@+id/tp_subtitle"
         app:layout_constraintTop_toTopOf="@+id/tp_subtitle"
         tools:visibility="visible" />
