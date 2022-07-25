@@ -504,7 +504,7 @@ class PlayBroadcastActivity : BaseActivity(),
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
                     dialog.dismiss()
-                    // todo: stop streaming
+                    stopBroadcast()
                 }
             )
         }
@@ -687,6 +687,11 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun getBroadcaster(): PlayBroadcaster {
         return broadcaster
+    }
+
+    private fun stopBroadcast() {
+        broadcaster.stop()
+        viewModel.stopTimer()
     }
 
     companion object {
