@@ -41,11 +41,13 @@ class UserProfileShopRecomViewModelTest {
     private val mockMutationSuccess = mutationBuilder.buildSuccess()
     private val mockMutationError = mutationBuilder.buildError()
     private val mockException = commonBuilder.buildException()
-    private val mockOwnUserId = "1"
-    private val mockOtherUserId = "2"
-    private val mockOwnUsername = "fachrizalmrsln"
-    private val mockItemId: Long = 1353688
-
+    private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
+    private val mockShopRecom = shopRecomBuilder.buildModel()
+    private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
+    private val mockOwnUserId = shopRecomBuilder.mockOwnUserId
+    private val mockOtherUserId = shopRecomBuilder.mockOtherUserId
+    private val mockOwnUsername = shopRecomBuilder.mockOwnUsername
+    private val mockItemId = shopRecomBuilder.mockItemId
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(
         userID = mockOwnUserId,
         encryptedUserID = mockOwnUserId,
@@ -56,10 +58,6 @@ class UserProfileShopRecomViewModelTest {
         encryptedUserID = mockOtherUserId,
         status = false
     )
-
-    private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
-    private val mockShopRecom = shopRecomBuilder.buildModel()
-    private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
 
     private val robot = UserProfileViewModelRobot(
         username = mockOwnUsername,
