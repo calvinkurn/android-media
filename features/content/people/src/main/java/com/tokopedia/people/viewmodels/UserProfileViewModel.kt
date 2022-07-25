@@ -90,8 +90,6 @@ class UserProfileViewModel @AssistedInject constructor(
     val needOnboarding: Boolean
         get() = _profileWhitelist.value.hasAcceptTnc.not()
 
-    var visibleShopRecom: Boolean = false
-
     private var _isShopRecomShow: Boolean = false
     val isShopRecomShow: Boolean get() = _isShopRecomShow
 
