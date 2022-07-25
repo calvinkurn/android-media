@@ -115,6 +115,9 @@
     <string name="btn_confirm_order_change_merchant">Iya, Pesan</string>
     <string name="btn_cancel_order_change_merchant">Nggak Jadi</string>
     <string name="text_header_order_custom">Custom pesanan</string>
+    <string name="text_order_customization_total_order">Jumlah Pesanan:</string>
+    <string name="text_order_customization_total_price">Total Harga</string>
+    <string name="text_order_customization_note_optional">Opsional</string>
 
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>
