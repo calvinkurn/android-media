@@ -358,12 +358,12 @@ class AccountHeaderViewHolder(itemView: View,
         tokopediaPlusDataModel.let {
             if(it.isGetTokopediaPlusLoading){
                 tokopediaPlusWidget.showLoading()
-            }
-            it.tokopediaPlusParam?.let { param ->
-                tokopediaPlusWidget.setContent(param)
-            }
-            it.tokopediaPlusError?.let { error ->
-                tokopediaPlusWidget.onError(error)
+            } else {
+                it.tokopediaPlusError?.let { error ->
+                    tokopediaPlusWidget.onError(error)
+                } ?: it.tokopediaPlusParam?.let { param ->
+                    tokopediaPlusWidget.setContent(param)
+                }
             }
         }
     }
