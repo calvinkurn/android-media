@@ -8,6 +8,7 @@ import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -60,9 +61,9 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         }
     }
 
-    fun getContactList(query: String) {
+    fun getContactList(query: GqlQueryInterface) {
         launch {
-            var contacts = getContactListUseCase.execute(query = query,
+            val contacts = getContactListUseCase.execute(query = query,
                     product = GetContactListUseCase.PARAM_PRODUCT_HOTEL)
             contactListResult.postValue(contacts.map {
                 if (it.fullName.isBlank()) {

@@ -3,6 +3,7 @@ package com.tokopedia.flight.passenger.view.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.travel.country_code.domain.TravelCountryCodeByIdUseCase
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
@@ -25,9 +26,9 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
     var nationalityData = MutableLiveData<TravelCountryPhoneCode>()
     var passportIssuerCountryData = MutableLiveData<TravelCountryPhoneCode>()
 
-    fun getContactList(query: String, filterType: String = "") {
+    fun getContactList(query: GqlQueryInterface, filterType: String = "") {
         launch {
-            var contacts = getContactListUseCase.execute(query = query,
+            val contacts = getContactListUseCase.execute(query = query,
                     filterType = filterType,
                     product = GetContactListUseCase.PARAM_PRODUCT_FLIGHT)
 

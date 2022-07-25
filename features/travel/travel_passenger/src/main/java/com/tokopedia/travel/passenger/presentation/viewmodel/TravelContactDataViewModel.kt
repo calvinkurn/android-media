@@ -2,6 +2,7 @@ package com.tokopedia.travel.passenger.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
@@ -20,10 +21,10 @@ class TravelContactDataViewModel @Inject constructor(private val getContactListU
 
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
 
-    fun getContactList(query: String, travelProduct: String) {
+    fun getContactList(query: GqlQueryInterface, travelProduct: String) {
 
         launch {
-            var contacts = getContactListUseCase.execute(query = query,
+            val contacts = getContactListUseCase.execute(query = query,
                     product = travelProduct)
             contactListResult.value = contacts.map {
                 if (it.fullName.isBlank()) {

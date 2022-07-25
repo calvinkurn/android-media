@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
@@ -25,8 +24,8 @@ import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
+import com.tokopedia.travel.passenger.util.QueryGetContactList
 import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
-import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -50,7 +49,7 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             bookingViewModel = viewModelProvider.get(HotelBookingViewModel::class.java)
         }
 
@@ -70,7 +69,7 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
 
         initView()
 
-        bookingViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST)
+        bookingViewModel.getContactList(QueryGetContactList())
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

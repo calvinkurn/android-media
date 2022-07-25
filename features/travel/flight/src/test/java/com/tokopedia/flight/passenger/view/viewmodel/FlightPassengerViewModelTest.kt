@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.flight.dummy.DUMMY_NATIONALITY_SUCCESS
 import com.tokopedia.flight.dummy.DUMMY_PASSENGER_DATA
+import com.tokopedia.flight.dummy.FlightDummyGqlInterfaceImpl
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.travel.country_code.domain.TravelCountryCodeByIdUseCase
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
@@ -43,7 +44,7 @@ class FlightPassengerViewModelTest {
         coEvery { getContactListUseCase.execute(any(), any(), any()) } returns DUMMY_PASSENGER_DATA
 
         // when
-        viewModel.getContactList("", "")
+        viewModel.getContactList(FlightDummyGqlInterfaceImpl(), "")
 
         // then
         viewModel.contactListResult.value?.size shouldBe DUMMY_PASSENGER_DATA.size
@@ -80,7 +81,7 @@ class FlightPassengerViewModelTest {
         coEvery { getContactListUseCase.execute(any(), any(), any()) } returns DUMMY_PASSENGER_DATA
 
         // when
-        viewModel.getContactList("")
+        viewModel.getContactList(FlightDummyGqlInterfaceImpl())
 
         // then
         viewModel.contactListResult.value?.size shouldBe DUMMY_PASSENGER_DATA.size

@@ -56,6 +56,7 @@ import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
 import com.tokopedia.travel.passenger.data.entity.TravelContactIdCard
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
+import com.tokopedia.travel.passenger.util.QueryGetContactList
 import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.date.DateUtil
@@ -136,7 +137,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
         if (autofillName.isNotEmpty()) binding?.loadingScreen?.root?.show() else binding?.loadingScreen?.root?.hide()
         passengerViewModel.getContactList(
-            TravelPassengerGqlQuery.CONTACT_LIST,
+            QueryGetContactList(),
             getPassengerTypeString(passengerModel.type)
         )
         initView()

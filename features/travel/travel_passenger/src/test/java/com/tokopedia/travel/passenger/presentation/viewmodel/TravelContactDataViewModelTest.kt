@@ -6,7 +6,6 @@ import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
 import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
 import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
-import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
@@ -37,7 +36,7 @@ class TravelContactDataViewModelTest{
     @Test
     fun getContactList_isCalled(){
         //given
-        val query = TravelPassengerGqlQuery.CONTACT_LIST
+        val query = TravelGqlInterface()
         val product = "hotel"
         val expectedData = listOf<TravelContactListModel.Contact>(
                 TravelContactListModel.Contact(uuid = "uuid_f9f3ef8ccd3a855533d304e90a819d5e", phoneNumber = "81255216660", birthDate = "26 Agustus 1998", nationality = "Indonesia", firstName = "Asti"))

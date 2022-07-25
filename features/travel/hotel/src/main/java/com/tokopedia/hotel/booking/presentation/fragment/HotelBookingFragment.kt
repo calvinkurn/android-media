@@ -60,6 +60,7 @@ import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataAct
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
+import com.tokopedia.travel.passenger.util.QueryGetContactList
 import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -196,7 +197,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         bookingViewModel.fetchTickerData()
         bookingViewModel.getCartData(HotelGqlQuery.GET_CART, hotelBookingPageModel.cartId)
-        bookingViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST)
+        bookingViewModel.getContactList(QueryGetContactList())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
