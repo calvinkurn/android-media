@@ -17,7 +17,7 @@ fun Long.toDate(): Date {
 
 /**
  * Input: 1_000_000
- * Output: Rp 1.000.000 (if locale is Indonesia)
+ * Output: Rp1.000.000 (if locale is Indonesia)
  */
 fun Long.splitByThousand(
     desiredOutputFormat: String = DECIMAL_FORMAT_PATTERN,
