@@ -85,7 +85,6 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
@@ -104,6 +103,8 @@ import com.tokopedia.search.result.product.banner.BannerListenerDelegate
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
+import com.tokopedia.search.result.product.cpm.BannerAdsListenerDelegate
+import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
@@ -145,7 +146,6 @@ class ProductListFragment: BaseDaggerFragment(),
     ProductListener,
     TickerListener,
     SuggestionListener,
-    BannerAdsListener,
     RecommendationListener,
     InspirationCarouselListener,
     BroadMatchListener,
@@ -168,7 +168,6 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT"
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
         private const val REQUEST_CODE_LOGIN = 561
-        private const val SHOP = "shop"
         private const val ON_BOARDING_DELAY_MS: Long = 200
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
@@ -425,7 +424,15 @@ class ProductListFragment: BaseDaggerFragment(),
             tickerListener = this,
             suggestionListener = this,
             globalNavListener = GlobalNavListenerDelegate(trackingQueue, activity, iris),
-            bannerAdsListener = this,
+            bannerAdsListener = object: BannerAdsListenerDelegate(
+                this@ProductListFragment,
+                activity,
+                redirectionListener,
+                presenter as BannerAdsPresenter
+            ) {
+                override val userId: String
+                    get() = getUserId()
+              },
             emptyStateListener = EmptyStateListenerDelegate(
                 activity,
                 this,
@@ -1313,35 +1320,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 val cache = LocalCacheHandler(it, SEARCH_RESULT_ENHANCE_ANALYTIC)
                 return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0)
             } ?: 0
-    //endregion
-
-    //region Headline Ads
-    override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-        if (applink == null || data == null) return
-
-        redirectionListener?.startActivityWithApplink(applink)
-        trackBannerAdsClicked(position, applink, data)
-    }
-
-    private fun trackBannerAdsClicked(position: Int, applink: String, data: CpmData) {
-        if (applink.contains(SHOP)) {
-            TopAdsGtmTracker.eventTopAdsHeadlineShopClick(position, queryKey, data, getUserId())
-            TopAdsGtmTracker.eventSearchResultPromoShopClick(activity, data, position)
-        } else {
-            TopAdsGtmTracker.eventTopAdsHeadlineProductClick(position, queryKey, data, getUserId())
-            TopAdsGtmTracker.eventSearchResultPromoProductClick(activity, data, position)
-        }
-    }
-
-    override fun onBannerAdsImpressionListener(position: Int, data: CpmData?) {
-        if (data == null) return
-
-        TopAdsGtmTracker.eventTopAdsHeadlineShopView(position, data, queryKey, getUserId())
-    }
-
-    override fun onTopAdsCarouselItemImpressionListener(impressionCount: Int) {
-        presenter?.shopAdsImpressionCount(impressionCount)
-    }
     //endregion
 
     //region Inspiration Carousel

@@ -1,21 +1,18 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
+package com.tokopedia.search.result.product.cpm
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutBinding
-import com.tokopedia.search.result.presentation.model.CpmDataView
-import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
-import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
+import com.tokopedia.topads.sdk.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CpmViewHolder(
-        itemView: View,
-        bannerAdsListener: BannerAdsListener?,
+    itemView: View,
+    bannerAdsListener: BannerAdsListener?,
 ) : AbstractViewHolder<CpmDataView>(itemView) {
 
     companion object {
@@ -35,7 +32,7 @@ class CpmViewHolder(
             it.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
                 override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData?) {
                     bannerAdsListener?.onBannerAdsImpressionListener(position, data)
-                    if (data?.cpm?.layout == LAYOUT_6 || data?.cpm?.layout == LAYOUT_5) {
+                    if (data?.cpm?.layout == TopAdsConstants.LAYOUT_6 || data?.cpm?.layout == TopAdsConstants.LAYOUT_5) {
                         bannerAdsListener?.onTopAdsCarouselItemImpressionListener(binding?.adsBanner?.impressionCount ?: 0)
                     }
                 }
