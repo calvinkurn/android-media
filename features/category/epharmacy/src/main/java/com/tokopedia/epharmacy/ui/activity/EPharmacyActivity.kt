@@ -91,10 +91,6 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
 
     }
 
-    override fun getScreenName(): String {
-        return EPHARMACY_SCREEN_NAME
-    }
-
     override fun getComponent() = ePharmacyComponent
 
     private fun initInjector() = DaggerEPharmacyComponent.builder()
@@ -109,7 +105,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
             .setCustomProperty(EventKeys.TRACKER_ID, OPEN_SCREEN_ID)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .setCustomProperty(EventKeys.IS_LOGGED_IN, userSession.isLoggedIn)
+            .setCustomProperty(EventKeys.IS_LOGGED_IN, userSession.isLoggedIn.toString())
             .setCustomProperty(EventKeys.PAGE_PATH, "")
             .setCustomProperty(EventKeys.SCREEN_NAME, "view upload prescription page - $entryPoint - new flow")
             .setUserId(userSession.userId)

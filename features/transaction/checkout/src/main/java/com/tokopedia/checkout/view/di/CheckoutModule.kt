@@ -158,6 +158,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @CheckoutScope
     fun provideEPharmacyAnalytics(userSession: UserSessionInterface): EPharmacyAnalytics {
-        return EPharmacyAnalytics(userSession.userId, userSession.isLoggedIn)
+        return EPharmacyAnalytics(userSession.userId)
     }
 }
