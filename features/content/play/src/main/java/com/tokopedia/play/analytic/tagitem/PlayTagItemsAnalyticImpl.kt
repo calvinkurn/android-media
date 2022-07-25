@@ -3,6 +3,7 @@ package com.tokopedia.play.analytic.tagitem
 import com.tokopedia.play.analytic.KEY_BUSINESS_UNIT
 import com.tokopedia.play.analytic.KEY_CHANNEL
 import com.tokopedia.play.analytic.KEY_CURRENT_SITE
+import com.tokopedia.play.analytic.KEY_EVENT_PRODUCT_CLICK
 import com.tokopedia.play.analytic.KEY_IS_LOGGED_IN_STATUS
 import com.tokopedia.play.analytic.KEY_SESSION_IRIS
 import com.tokopedia.play.analytic.KEY_TRACK_BUSINESS_UNIT
@@ -11,11 +12,14 @@ import com.tokopedia.play.analytic.KEY_TRACK_CLICK_GROUP_CHAT
 import com.tokopedia.play.analytic.KEY_TRACK_CURRENT_SITE
 import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
 import com.tokopedia.play.analytic.KEY_USER_ID
+import com.tokopedia.play.analytic.VAL_BUSINESS_UNIT
+import com.tokopedia.play.analytic.VAL_CURRENT_SITE
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ProductPrice
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
@@ -23,6 +27,8 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_PRODUCT_ID
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -247,6 +253,33 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         )
     }
 
+    override fun clickPinnedProductInCarousel(product: PlayProductUiModel.Product) {
+        val trackerMap = BaseTrackerBuilder().constructBasicProductClick(
+            event = KEY_EVENT_PRODUCT_CLICK,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view on pinned featured product",
+            eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial (true|false)",
+            list = "/groupchat - featured product",
+            products = listOf(
+                BaseTrackerConst.Product(
+                    productPosition = 1.toString(), //because pinned product is always in index 0
+                    id = product.id,
+                    name = product.title,
+                    productPrice = product.price.currentPrice,
+                    brand = "",
+                    category = "",
+                    isFreeOngkir = product.isFreeShipping,
+                    variant = "",
+                )
+            ),
+        ).appendUserId(userId)
+            .appendBusinessUnit(VAL_BUSINESS_UNIT)
+            .appendCurrentSite(VAL_CURRENT_SITE)
+            .build()
+
+        if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
+    }
+
     /**
      * Util
      */
@@ -450,6 +483,12 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
             "shop_type" to shopInfo.type.value
         )
     }
+
+    private val ProductPrice.currentPrice
+        get() = when (this) {
+            is OriginalPrice -> price
+            is DiscountedPrice -> discountedPrice
+        }
 
     companion object {
         private const val KEY_ITEM_LIST = "item_list"

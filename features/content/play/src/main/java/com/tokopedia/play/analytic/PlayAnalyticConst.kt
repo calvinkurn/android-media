@@ -21,6 +21,9 @@ internal const val KEY_TRACK_VIEW_TOP_ADS = "viewTopAdsIris"
 internal const val KEY_TRACK_VIEW_CONTENT_IRIS = "viewContentIris"
 internal const val KEY_TRACK_CLICK_CONTENT = "clickContent"
 
+internal const val KEY_EVENT_PRODUCT_VIEW = "productView"
+internal const val KEY_EVENT_PRODUCT_CLICK = "productClick"
+
 internal const val KEY_TRACK_CLICK = "click"
 internal const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
 internal const val KEY_TRACK_UPCOMING_PAGE = "upcoming page"
@@ -34,3 +37,6 @@ internal const val KEY_SESSION_IRIS = "sessionIris"
 
 internal const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
 internal const val KEY_CHANNEL = "channel"
+
+internal const val VAL_BUSINESS_UNIT = "play"
+internal const val VAL_CURRENT_SITE = "tokopediamarketplace"

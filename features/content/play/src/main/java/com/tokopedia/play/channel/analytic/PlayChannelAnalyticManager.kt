@@ -1,19 +1,26 @@
 package com.tokopedia.play.channel.analytic
 
+import android.content.Context
 import androidx.lifecycle.Lifecycle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.eventbus.EventBus
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -22,26 +29,46 @@ import kotlinx.coroutines.launch
 class PlayChannelAnalyticManager @AssistedInject constructor(
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
+    private val analytic2Factory: PlayAnalytic2.Factory,
     private val dispatchers: CoroutineDispatchers,
+    @Assisted context: Context,
     @Assisted private val productAnalyticHelper: ProductAnalyticHelper,
 ) {
 
     @AssistedFactory
     interface Factory {
         fun create(
+            context: Context,
             productAnalyticHelper: ProductAnalyticHelper,
         ) : PlayChannelAnalyticManager
     }
 
+    private val trackingQueue = TrackingQueue(context)
+    private var analytic2 : PlayAnalytic2? = null
+
     fun observe(
         scope: CoroutineScope,
         event: EventBus<Any>,
+        uiState: Flow<PlayViewerNewUiState>,
         lifecycle: Lifecycle,
     ) {
+        scope.launch(dispatchers.computation) {
+            uiState.collectLatest {
+                if (analytic2 != null) return@collectLatest
+                analytic2 = analytic2Factory.create(
+                    trackingQueue = trackingQueue,
+                    channelInfo = it.channel.channelInfo,
+                )
+            }
+        }
+
         scope.launch(dispatchers.computation) {
             event.subscribe().collect {
                 when (it) {
                     is ProductCarouselUiComponent.Event.OnClicked -> {
+                        if (it.product.isPinned) {
+
+                        }
                         if(it.product.isTokoNow) {
                             newAnalytic.clickFeaturedProduct(it.product, it.position)
                         } else analytic.clickFeaturedProduct(it.product, it.position)

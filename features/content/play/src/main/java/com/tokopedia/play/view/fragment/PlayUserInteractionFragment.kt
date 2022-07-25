@@ -236,9 +236,12 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private val productAnalyticHelper = ProductAnalyticHelper(analytic, newAnalytic)
 
-    private val analyticManager = analyticManagerFactory.create(
-        productAnalyticHelper = productAnalyticHelper,
-    )
+    private val analyticManager by lazy(LazyThreadSafetyMode.NONE) {
+        analyticManagerFactory.create(
+            context = requireContext(),
+            productAnalyticHelper = productAnalyticHelper,
+        )
+    }
 
     private lateinit var localCache: LocalCacheModel
 
@@ -1007,6 +1010,7 @@ class PlayUserInteractionFragment @Inject constructor(
         analyticManager.observe(
             viewLifecycleOwner.lifecycleScope,
             eventBus,
+            playViewModel.uiState,
             viewLifecycleOwner.lifecycle,
         )
     }
