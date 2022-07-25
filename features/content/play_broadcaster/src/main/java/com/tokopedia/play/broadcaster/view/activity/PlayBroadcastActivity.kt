@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.*
 import android.widget.FrameLayout
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +24,7 @@ import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
@@ -31,6 +33,7 @@ import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
@@ -148,6 +151,8 @@ class PlayBroadcastActivity : BaseActivity(),
 
         getConfiguration()
         observeConfiguration()
+
+        if (GlobalConfig.DEBUG) setupDebugView()
     }
 
     private fun initBroadcaster() {
@@ -614,6 +619,18 @@ class PlayBroadcastActivity : BaseActivity(),
     /**
      * Larix
      */
+    private var debugView: PlayLivePusherDebugView? = null
+
+    private fun setupDebugView() {
+        val ivSetting = findViewById<AppCompatImageView>(R.id.iv_play_bro_debug_mode)
+        debugView = findViewById(R.id.view_play_bro_debug)
+
+        ivSetting.show()
+        ivSetting.setOnClickListener {
+            debugView?.show()
+        }
+    }
+
     private fun createBroadcaster() {
         if (isRequiredPermissionGranted()) {
             val holder = surfaceHolder ?: return
@@ -644,18 +661,22 @@ class PlayBroadcastActivity : BaseActivity(),
         val height = activeCameraVideoSize.height.toDouble()
         val aspectRatio = if (isPortrait) height / width else width / height
         aspectFrameLayout.setAspectRatio(aspectRatio)
+        debugView?.logAspectRatio(aspectRatio)
     }
 
     override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
         if (state is BroadcastInitState.Error) showDialogWhenUnSupportedDevices()
+        debugView?.logBroadcastInitState(state)
     }
 
     override fun onBroadcastStateChanged(state: PlayBroadcasterState) {
         viewModel.submitAction(BroadcastStateChanged(state))
+        debugView?.logBroadcastState(state)
     }
 
     override fun onBroadcastStatisticUpdate(metric: BroadcasterMetric) {
         viewModel.sendBroadcasterLog(metric)
+        debugView?.logBroadcastStatistic(metric)
     }
 
     override fun getBroadcaster(): PlayBroadcaster {

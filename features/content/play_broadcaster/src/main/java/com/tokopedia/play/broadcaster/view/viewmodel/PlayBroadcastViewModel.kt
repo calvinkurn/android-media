@@ -159,7 +159,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableLeaderboardInfo =
         MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
-//    private val _observableLivePusherInfo = MutableLiveData<PlayLiveLogState>()
 
     private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
     private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
@@ -273,12 +272,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val timerState = broadcastTimer.state
     val isBroadcastStopped
         get() = mIsBroadcastStopped
-
-//    private val livePusherStatisticListener = object : PlayLivePusherMediatorListener {
-//        override fun onLivePusherStatsUpdated(statistic: LivePusherStatistic) {
-//            sendLivePusherStats(statistic)
-//        }
-//    }
 
     private var socketJob: Job? = null
 

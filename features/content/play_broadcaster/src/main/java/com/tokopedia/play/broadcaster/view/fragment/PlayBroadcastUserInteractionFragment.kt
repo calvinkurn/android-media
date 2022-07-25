@@ -97,7 +97,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val pmvMetrics: PlayMetricsView by detachableView(R.id.pmv_metrics)
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
-//    private val debugView: PlayLivePusherDebugView by detachableView(R.id.live_debug_view)
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
 
     private val actionBarLiveView by viewComponent {
@@ -199,8 +198,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         setupView()
         setupInsets()
         setupObserve()
-
-//        if (GlobalConfig.DEBUG) setupDebugView(view)
     }
 
     override fun onStart() {
@@ -353,40 +350,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-//    private fun setupDebugView(view: View) {
-//        val ivSetting = view.findViewById<AppCompatImageView>(R.id.iv_setting)
-//
-//        ivSetting.show()
-//        ivSetting.setOnClickListener {
-//            debugView.show()
-//        }
-
-//        observeLiveInfo()
-//        observeLiveStats()
-//    }
-
     private fun observeTitle() {
         parentViewModel.observableTitle.observe(viewLifecycleOwner) {
             actionBarLiveView.setTitle(it.title)
         }
     }
-
-//    private fun observeLiveInfo() {
-//        parentViewModel.observableLivePusherInfo.observe(viewLifecycleOwner) {
-//            when (it) {
-//                is PlayLiveLogState.Init -> debugView.setLiveInfo(it)
-//                is PlayLiveLogState.Changed -> debugView.updateState(it.state)
-//            }
-//        }
-//    }
-
-//    private fun observeLiveStats() {
-//        parentViewModel.observableLivePusherStatistic.observe(viewLifecycleOwner) {
-//            if (it is PlayLivePusherStatistic) {
-//                debugView.updateStats(it)
-//            }
-//        }
-//    }
 
     private fun setupObserve() {
         observeTotalViews()
