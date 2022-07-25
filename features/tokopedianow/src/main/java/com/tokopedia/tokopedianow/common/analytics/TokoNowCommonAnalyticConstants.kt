@@ -3,6 +3,8 @@ package com.tokopedia.tokopedianow.common.analytics
 object TokoNowCommonAnalyticConstants {
 
     object EVENT{
+        const val EVENT_VIEW_CONTENT_IRIS = "viewContentIris"
+        const val EVENT_CLICK_CONTENT = "clickContent"
         const val EVENT_VIEW_TOKONOW_IRIS = "viewTokoNowIris"
         const val EVENT_CLICK_TOKONOW = "clickTokoNow"
         const val EVENT_SELECT_CONTENT = "select_content"
@@ -85,6 +87,7 @@ object TokoNowCommonAnalyticConstants {
         const val BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE = "tokopediamarketplace"
         const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
         const val BUSINESS_UNIT_SHARING_EXPERIENCE = "sharingexperience"
+        const val BUSINESS_UNIT_PLAY = "play"
         const val LIST_HOME_PAGE_PAST_PURCHASE_WIDGET = "/tokonow - homepage - past_purchase_widget"
         const val CURRENCY_CODE_IDR = "IDR"
         const val SCREEN_NAME_TOKONOW_OOC = "tokonow ooc - "

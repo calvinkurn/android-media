@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.campaignstock
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.network.data.model.response.Header
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -11,8 +12,10 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.result.Sto
 import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignStockViewModel
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
+import com.tokopedia.shop.common.data.source.cloud.model.MaxStockThresholdResponse
 import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocationResponse
 import com.tokopedia.usecase.coroutines.Result
@@ -55,6 +58,9 @@ open class CampaignStockViewModelTestFixture {
     lateinit var getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase
 
     @RelaxedMockK
+    lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
+
+    @RelaxedMockK
     lateinit var tickerStaticDataProvider: TickerStaticDataProvider
 
     @RelaxedMockK
@@ -77,6 +83,7 @@ open class CampaignStockViewModelTestFixture {
             editProductVariantUseCase,
             getProductManageAccessUseCase,
             getAdminInfoShopLocationUseCase,
+            getMaxStockThresholdUseCase,
             userSession,
             CoroutineTestDispatchersProvider,
             tickerStaticDataProvider
@@ -105,6 +112,19 @@ open class CampaignStockViewModelTestFixture {
         coEvery {
             getAdminInfoShopLocationUseCase.execute(any())
         } returns locationList
+    }
+
+    protected fun onGetMaxStockThreshold_thenReturn(maxStock: Int?) {
+        coEvery {
+            getMaxStockThresholdUseCase.execute(any())
+        } returns MaxStockThresholdResponse(
+            getIMSMeta = MaxStockThresholdResponse.GetIMSMeta(
+                data = MaxStockThresholdResponse.GetIMSMeta.Data(
+                    maxStockThreshold = maxStock?.toString().orEmpty()
+                ),
+                header = Header()
+            )
+        )
     }
 
     protected companion object LocationType {

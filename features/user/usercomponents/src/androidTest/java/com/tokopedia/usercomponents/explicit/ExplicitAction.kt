@@ -1,8 +1,8 @@
 package com.tokopedia.usercomponents.explicit
 
-import com.tokopedia.usercomponents.common.isDisplayed
 import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.common.clickOnButton
+import com.tokopedia.usercomponents.common.isDisplayed
 import com.tokopedia.usercomponents.common.isNotDisplayed
 import com.tokopedia.usercomponents.common.isTextDisplayed
 
