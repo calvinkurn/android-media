@@ -733,7 +733,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             parentViewModel.uiEvent.collect { event ->
                 showLoading(false)
                 when (event) {
-                    is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                     PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
                     PlayBroadcastEvent.ShowLeaderboardBottomSheet -> openLeaderboardSheet()
