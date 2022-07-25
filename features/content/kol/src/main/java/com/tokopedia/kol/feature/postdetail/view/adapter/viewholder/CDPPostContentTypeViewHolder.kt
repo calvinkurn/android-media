@@ -737,13 +737,6 @@ class CDPPostContentTypeViewHolder  @JvmOverloads constructor(
         pageControl.hide()
         var ratio = VOD_VIDEO_RATIO
 
-//        if (feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO) {
-//            val orientation = getOrientation(feedXCard.mediaRatio)
-//            ratio = if (orientation == PORTRAIT)
-//                getRatioIfPortrait(feedXCard.mediaRatio)
-//            else
-//                getRatioIfLandscape(feedXCard.mediaRatio)
-//        }
         val feedMedia = media.first()
         val tags = feedMedia.tagging
         val tagProducts = mutableListOf<FeedXProduct>()
@@ -781,7 +774,42 @@ class CDPPostContentTypeViewHolder  @JvmOverloads constructor(
         )
         feedMedia.vodView = feedVODViewHolder
         feedVODViewHolder.bindData(GridPostAdapter.isMute)
-//        listener?.let { feedVODViewHolder.setListener(it) }
+        feedVODViewHolder.setListener(listener = object : FeedVODViewHolder.VODListener {
+            override fun onLihatProdukClicked(
+                feedXCard: FeedXCard,
+                positionInFeed: Int,
+                products: List<FeedXProduct>
+            ) {
+
+            }
+
+            override fun onFullScreenBtnClicked(
+                feedXCard: FeedXCard,
+                positionInFeed: Int,
+                redirectUrl: String,
+                currentTime: Long,
+                shouldTrack: Boolean,
+                isFullScreenButton: Boolean
+            ) {
+
+            }
+
+            override fun onVolumeBtnClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String) {
+
+            }
+
+            override fun addViewsToVOD(
+                feedXCard: FeedXCard,
+                rowNumber: Int,
+                time: Long,
+                hitTrackerApi: Boolean
+            ) {
+
+            }
+
+
+        })
+
         feedVODViewHolder.updateLikedText {
             likedText.text = it
         }

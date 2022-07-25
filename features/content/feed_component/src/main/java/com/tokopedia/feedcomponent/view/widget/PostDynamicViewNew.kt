@@ -86,6 +86,7 @@ private const val TIME_FOUR_SEC = 4000L
 private const val TIME_TWO_SEC = 2000L
 private const val MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL = 5
 private const val ROUND_OFF_TO_ONE_DECIMAL_VALUE = 10
+private const val TIME_FIVE_SEC = 5000L
 
 
 private const val TIME_SECOND = 1000L
@@ -1216,7 +1217,76 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
         feedMedia.vodView = feedVODViewHolder
         feedVODViewHolder.bindData(GridPostAdapter.isMute)
-        listener?.let { feedVODViewHolder.setListener(it) }
+        listener?.let {
+            feedVODViewHolder.setListener(listener = object : FeedVODViewHolder.VODListener {
+                override fun onLihatProdukClicked(
+                    feedXCard: FeedXCard,
+                    positionInFeed: Int,
+                    products: List<FeedXProduct>
+                ) {
+                    val finalPostId =
+                        if (feedXCard.isTypeVOD) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
+                    it.onTagClicked(
+                        finalPostId,
+                        products,
+                        it,
+                        feedXCard.author.id,
+                        feedXCard.typename,
+                        feedXCard.followers.isFollowed,
+                        feedXCard.type,
+                        positionInFeed,
+                        playChannelId = feedXCard.playChannelID,
+                        shopName = feedXCard.author.name
+                    )
+                }
+
+                override fun onFullScreenBtnClicked(
+                    feedXCard: FeedXCard,
+                    positionInFeed: Int,
+                    redirectUrl: String,
+                    currentTime: Long,
+                    shouldTrack: Boolean,
+                    isFullScreenButton: Boolean
+                ) {
+                    it.onFullScreenCLick(
+                        feedXCard,
+                        positionInFeed,
+                        feedXCard.appLink,
+                        currentTime,
+                        shouldTrack,
+                        isFullScreenButton
+                    )
+                }
+
+                override fun onVolumeBtnClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String) {
+                    it.muteUnmuteVideo(
+                        feedXCard.playChannelID,
+                        mute,
+                        feedXCard.author.id,
+                        feedXCard.followers.isFollowed,
+                        true,
+                        mediaType
+                    )
+                }
+
+                override fun addViewsToVOD(
+                    feedXCard: FeedXCard,
+                    rowNumber: Int,
+                    time: Long,
+                    hitTrackerApi: Boolean
+                ) {
+                    it.addVODView(
+                        feedXCard,
+                        feedXCard.playChannelID,
+                        positionInFeed,
+                        TIME_FIVE_SEC,
+                        true
+                    )
+                }
+
+
+            })
+        }
         feedVODViewHolder.updateLikedText {
             likedText.text = it
         }
