@@ -11,7 +11,7 @@ interface PlayBroadcastTimer {
 
     val isPastPauseDuration: Boolean
 
-    val state: Flow<PlayBroadcastTimerState>
+    val stateChanged: Flow<PlayBroadcastTimerState>
 
     fun setupDuration(duration: Long, maxDuration: Long)
 

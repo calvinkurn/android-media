@@ -777,7 +777,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeBroadcastTimerState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            parentViewModel.timerState.collectLatest { state ->
+            parentViewModel.broadcastTimerStateChanged.collectLatest { state ->
                 when(state) {
                     is PlayBroadcastTimerState.Active -> showCounterDuration(state.duration)
                     PlayBroadcastTimerState.Finish -> {

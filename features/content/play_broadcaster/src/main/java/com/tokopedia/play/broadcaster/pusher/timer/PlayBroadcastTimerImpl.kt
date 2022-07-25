@@ -37,7 +37,7 @@ class PlayBroadcastTimerImpl @Inject constructor(
 
     private var mListener: PlayBroadcastTimer.Listener? = null
 
-    override val state: Flow<PlayBroadcastTimerState>
+    override val stateChanged: Flow<PlayBroadcastTimerState>
         get() = callbackFlow {
             val listener = object : PlayBroadcastTimer.Listener {
                 override fun onStateChanged(state: PlayBroadcastTimerState) {

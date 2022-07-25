@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
+import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
 import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
@@ -265,7 +266,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val uiEvent: Flow<PlayBroadcastEvent>
         get() = _uiEvent
 
-    val timerState = broadcastTimer.state
+    val broadcastTimerStateChanged: Flow<PlayBroadcastTimerState>
+        get() = broadcastTimer.stateChanged
+
     val isBroadcastStopped
         get() = mIsBroadcastStopped
 
@@ -287,6 +290,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         _observableChatList.value = mutableListOf()
+
+
     }
 
     override fun onCleared() {
