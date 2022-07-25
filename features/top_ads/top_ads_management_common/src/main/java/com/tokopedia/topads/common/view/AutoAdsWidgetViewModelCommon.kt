@@ -15,12 +15,12 @@ import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.NonDeliveryResponse
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
-import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.di.ActivityContext
+import com.tokopedia.topads.common.domain.mapper.TopAdsAutoAdsMapper.mapToDomain
+import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
 import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -40,9 +40,9 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
         private val queryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase
 ) : BaseViewModel(dispatcher) {
 
-    private val _autoAdsData : MutableLiveData<Result<TopAdsAutoAdsData>> = MutableLiveData()
-    val autoAdsData : LiveData<Result<TopAdsAutoAdsData>> = _autoAdsData
-    val autoAdsStatus = MutableLiveData<TopAdsAutoAdsData>()
+    private val _autoAdsData : MutableLiveData<Result<TopAdsAutoAdsModel>> = MutableLiveData()
+    val autoAdsData : LiveData<Result<TopAdsAutoAdsModel>> = _autoAdsData
+    val autoAdsStatus = MutableLiveData<TopAdsAutoAdsModel>()
     val adsDeliveryStatus = MutableLiveData<NonDeliveryResponse.TopAdsGetShopStatus.DataItem>()
 
     fun getAutoAdsStatus(shopId: Int) {
@@ -54,8 +54,8 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
 
                 repository.response(listOf(request), cacheStrategy)
             }
-            data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data?.let {
-                _autoAdsData.postValue(Success(it))
+            data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
+                _autoAdsData.postValue(Success(it.mapToDomain))
             }
         }) {
             it.printStackTrace()

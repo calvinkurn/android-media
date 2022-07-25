@@ -17,16 +17,13 @@ import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.ResponseBidInfo
-import com.tokopedia.topads.common.data.response.TopAdsAutoAds
-import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import org.json.JSONException
 import javax.inject.Inject
@@ -44,8 +41,8 @@ class DailyBudgetViewModel @Inject constructor(
     private val queryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _autoAdsData : MutableLiveData<Result<TopAdsAutoAdsData>> = MutableLiveData()
-    val autoAdsData : LiveData<Result<TopAdsAutoAdsData>> = _autoAdsData
+    private val _autoAdsData : MutableLiveData<Result<TopAdsAutoAdsModel>> = MutableLiveData()
+    val autoAdsData : LiveData<Result<TopAdsAutoAdsModel>> = _autoAdsData
     private val topAdsDeposit: MutableLiveData<Int> = MutableLiveData()
     fun getTopAdsDepositLiveData(): LiveData<Int> = topAdsDeposit
 

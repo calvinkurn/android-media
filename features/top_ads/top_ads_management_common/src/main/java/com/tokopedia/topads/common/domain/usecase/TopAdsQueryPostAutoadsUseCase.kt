@@ -6,8 +6,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.topads.common.data.model.AutoAdsParam
-import com.tokopedia.topads.common.data.response.TopAdsAutoAds
-import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
+import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
+import com.tokopedia.topads.common.data.response.TopAdsAutoAdsV2
+import com.tokopedia.topads.common.domain.mapper.TopAdsAutoAdsMapper.mapToDomain
 import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase.Companion.QUERY
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -17,10 +18,10 @@ import javax.inject.Inject
 @GqlQuery("TopAdsQueryPostAutoads", QUERY)
 class TopAdsQueryPostAutoadsUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
-) : GraphqlUseCase<TopAdsAutoAds.Response>(graphqlRepository) {
+) : GraphqlUseCase<TopAdsAutoAdsV2.Response>(graphqlRepository) {
 
     init {
-        setTypeClass(TopAdsAutoAds.Response::class.java)
+        setTypeClass(TopAdsAutoAdsV2.Response::class.java)
         setCacheStrategy(
             GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD)
@@ -29,7 +30,7 @@ class TopAdsQueryPostAutoadsUseCase @Inject constructor(
         setGraphqlQuery(TopAdsQueryPostAutoads())
     }
 
-    fun executeQuery(param: AutoAdsParam, block: (Result<TopAdsAutoAdsData>) -> Unit) {
+    fun executeQuery(param: AutoAdsParam, block: (Result<TopAdsAutoAdsModel>) -> Unit) {
         setParam(param)
 
         execute(onSuccess = { data ->
@@ -38,7 +39,7 @@ class TopAdsQueryPostAutoadsUseCase @Inject constructor(
                 if (error != null) {
                     Fail(Throwable(error.detail))
                 } else {
-                    Success(data = data.autoAds.data)
+                    Success(data = data.autoAds.data.mapToDomain)
                 }
             )
         }, onError = {
