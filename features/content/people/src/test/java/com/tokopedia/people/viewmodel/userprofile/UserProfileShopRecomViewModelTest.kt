@@ -247,7 +247,7 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
-    fun `when user remove shop`() {
+    fun `when user success remove shop`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getShopRecom() } returns mockShopRecom
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
@@ -259,6 +259,23 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.RemoveShopRecomItem(mockItemId))
             } andThen {
                 shopRecom.items.size equalTo 9
+            }
+        }
+    }
+
+    @Test
+    fun `when user fail remove shop`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecom
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.RemoveShopRecomItem(123))
+            } andThen {
+                shopRecom.items.size equalTo 10
             }
         }
     }
