@@ -10,13 +10,12 @@ import com.tokopedia.tokofood.feature.merchant.presentation.enums.CarouselDataTy
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
-import com.tokopedia.tokofood.feature.merchant.presentation.mapper.TokoFoodMerchantUiModelMapper
 import com.tokopedia.tokofood.feature.merchant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {

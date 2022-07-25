@@ -43,9 +43,4 @@ abstract class MerchantPageViewModelTestFixture {
             return@let it.get(this) as T
         }
     }
-
-    companion object {
-        const val GET_MERCHANT_DATA_SUCCESS_JSON = "json/merchant/get_merchant_data_success.json"
-        private const val MERCHANT_PAGE_SOURCE = "checkout_page"
-    }
 }
