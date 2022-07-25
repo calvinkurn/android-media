@@ -13,17 +13,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomAdapter
-import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
 import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
+import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
@@ -31,12 +33,7 @@ import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -49,7 +46,8 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
-import com.tokopedia.people.analytic.UserProfileTracker
+import com.tokopedia.people.analytic.cordinator.ShopRecomImpressCoordinator
+import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
 import com.tokopedia.people.utils.showErrorToast
@@ -89,6 +87,7 @@ class UserProfileFragment @Inject constructor(
     private var userProfileTracker: UserProfileTracker,
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
+    private val impressionCoordinator: ShopRecomImpressCoordinator,
 ) : TkpdBaseV4Fragment(),
     AdapterCallback,
     ShareBottomsheetListener,
@@ -99,7 +98,7 @@ class UserProfileFragment @Inject constructor(
     FeedPlusContainerListener {
 
     private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        LinearLayoutManager(activity, HORIZONTAL, false)
     }
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -200,6 +199,11 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        impressionCoordinator.sendTracker()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
@@ -216,6 +220,30 @@ class UserProfileFragment @Inject constructor(
                     override fun onSuccess() {
                         submitAction(UserProfileAction.LoadProfile())
                         goToCreatePostPage()
+                    }
+
+                    override fun impressTncOnboarding() {
+                        userProfileTracker.impressionOnBoardingBottomSheetWithUsername(
+                            viewModel.profileUserID
+                        )
+                    }
+
+                    override fun impressCompleteOnboarding() {
+                        userProfileTracker.impressionOnBoardingBottomSheetWithoutUsername(
+                            viewModel.profileUserID
+                        )
+                    }
+
+                    override fun clickNextOnTncOnboarding() {
+                        userProfileTracker.clickLanjutOnBoardingBottomSheetWithUsername(
+                            viewModel.profileUserID
+                        )
+                    }
+
+                    override fun clickNextOnCompleteOnboarding() {
+                        userProfileTracker.clickLanjutOnBoardingBottomSheetWithoutUsername(
+                            viewModel.profileUserID
+                        )
                     }
                 })
             }
@@ -242,6 +270,7 @@ class UserProfileFragment @Inject constructor(
 
             btnAction.setOnClickListener {
                 if (viewModel.isSelfProfile) {
+                    userProfileTracker.clickEditProfileButtonInOwnProfile(viewModel.profileUserID)
                     navigateToEditProfile()
                     return@setOnClickListener
                 }
@@ -255,6 +284,7 @@ class UserProfileFragment @Inject constructor(
             }
 
             fabUserProfile.setOnClickListener {
+                userProfileTracker.clickCreatePost(viewModel.profileUserID)
                 if(viewModel.needOnboarding) {
                     val bundle = Bundle().apply {
                         putString(FeedUGCOnboardingParentFragment.KEY_USERNAME, viewModel.profileUsername)
@@ -269,6 +299,7 @@ class UserProfileFragment @Inject constructor(
             }
 
             mainBinding.cardUserReminder.btnCompleteProfile.setOnClickListener {
+                userProfileTracker.clickProfileCompletionPrompt(viewModel.profileUserID)
                 navigateToEditProfile()
             }
         }
@@ -516,6 +547,7 @@ class UserProfileFragment @Inject constructor(
         val isShowProfileReminder = viewModel.isSelfProfile && usernameEmpty && biographyEmpty
 
         mainBinding.cardUserReminder.root.shouldShowWithAction(isShowProfileReminder) {
+            userProfileTracker.impressionProfileCompletionPrompt(viewModel.profileUserID)
             mainBinding.btnAction.hide()
         }
     }
@@ -526,9 +558,10 @@ class UserProfileFragment @Inject constructor(
     ) {
         if (prev?.shopRecom == value.shopRecom) return
 
-        mAdapterShopRecom.updateData(value.shopRecom)
+        mainBinding.shopRecommendation.txtWordingFollow.text = value.shopRecom.title
+        mAdapterShopRecom.updateData(value.shopRecom.items)
 
-        if (value.shopRecom.isEmpty()) showEmptyShopRecom()
+        if (value.shopRecom.items.isEmpty()) showEmptyShopRecom()
         else showContentShopRecom()
     }
 
@@ -732,11 +765,30 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomFollowClicked(itemID: Long) {
+        userProfileTracker.clickFollowProfileRecommendation(
+            viewModel.profileUserID,
+            itemID.toString()
+        )
         submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
     }
 
-    override fun onShopRecomItemClicked(itemID: Long, appLink: String) {
+    override fun onShopRecomItemClicked(
+        itemID: Long,
+        appLink: String,
+        imageUrl: String,
+        postPosition: Int
+    ) {
+        userProfileTracker.clickProfileRecommendation(
+            viewModel.profileUserID,
+            itemID.toString(),
+            imageUrl,
+            postPosition
+        )
         RouteManager.route(requireContext(), appLink)
+    }
+
+    override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
+        impressionCoordinator.initiateShopImpress(viewModel.profileUserID, item, postPosition + 1)
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
@@ -964,10 +1016,10 @@ class UserProfileFragment @Inject constructor(
         //this will give you the bottomsheet type : if it's screenshot or general
         when(UniversalShareBottomSheet.getShareBottomSheetType()){
             UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET ->{
-                userSession.userId.let { UserProfileTracker().clickCloseScreenshotShareBottomsheet(it, self = viewModel.isSelfProfile) }
+                userSession.userId.let { userProfileTracker.clickCloseScreenshotShareBottomsheet(it, self = viewModel.isSelfProfile) }
             }
             UniversalShareBottomSheet.CUSTOM_SHARE_SHEET ->{
-                userSession.userId.let { UserProfileTracker().clickCloseShareButton(it, self = viewModel.isSelfProfile) }
+                userSession.userId.let { userProfileTracker.clickCloseShareButton(it, self = viewModel.isSelfProfile) }
             }
         }
     }

@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.view.widget.shoprecom.ShopRecomView
-import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomViewHolder
 import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
 import androidx.recyclerview.widget.DiffUtil
 
@@ -22,6 +21,7 @@ class ShopRecomAdapter(
     }
 
     override fun onBindViewHolder(holder: ShopRecomViewHolder, position: Int) {
+        shopRecomCallback.onShopRecomItemImpress(shopRecomItem[position], position)
         holder.bindData(shopRecomItem[position])
     }
 
@@ -45,8 +45,12 @@ class ShopRecomAdapter(
         shopRecomCallback.onShopRecomFollowClicked(itemID)
     }
 
-    override fun onShopRecomItemClicked(itemID: Long, appLink: String) {
-        shopRecomCallback.onShopRecomItemClicked(itemID, appLink)
+    override fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int) {
+        shopRecomCallback.onShopRecomItemClicked(itemID, appLink, imageUrl, postPosition)
+    }
+
+    override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
+        shopRecomCallback.onShopRecomItemImpress(item, postPosition)
     }
 
 }

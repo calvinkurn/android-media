@@ -13,20 +13,26 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.databinding.BottomsheetFeedUserCompleteOnboardingBinding
 import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.base.BaseFeedUserOnboardingBottomSheet
+import com.tokopedia.feedcomponent.onboarding.view.strategy.factory.FeedUGCOnboardingStrategyFactory
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
 import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.feedcomponent.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
+import com.tokopedia.feedcomponent.onboarding.view.viewmodel.factory.FeedUGCOnboardingViewModelFactory
 import com.tokopedia.feedcomponent.util.withCache
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */
-class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet() {
+class FeedUserCompleteOnboardingBottomSheet @Inject constructor(
+    private val viewModelFactoryCreator: FeedUGCOnboardingViewModelFactory.Creator,
+    private val strategyFactory: FeedUGCOnboardingStrategyFactory,
+): BaseFeedUserOnboardingBottomSheet() {
 
     private var _binding: BottomsheetFeedUserCompleteOnboardingBinding? = null
     private val binding: BottomsheetFeedUserCompleteOnboardingBinding
@@ -34,10 +40,18 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
 
     private lateinit var viewModel: FeedUGCOnboardingViewModel
 
+    private val _listener: Listener?
+        get() = mListener as? Listener
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(
-            requireParentFragment()
+            this,
+            viewModelFactoryCreator.create(
+                this,
+                usernameArg,
+                strategyFactory.create(usernameArg),
+            )
         )[FeedUGCOnboardingViewModel::class.java]
     }
 
@@ -88,6 +102,7 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
         }
 
         binding.btnContinue.setOnClickListener {
+            _listener?.clickNextOnCompleteOnboarding()
             viewModel.submitAction(FeedUGCOnboardingAction.ClickNext)
         }
     }
@@ -168,4 +183,9 @@ class FeedUserCompleteOnboardingBottomSheet : BaseFeedUserOnboardingBottomSheet(
             ) as FeedUserCompleteOnboardingBottomSheet
         }
     }
+
+    interface Listener : BaseFeedUserOnboardingBottomSheet.Listener {
+        fun clickNextOnCompleteOnboarding()
+    }
+
 }

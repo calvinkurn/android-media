@@ -296,7 +296,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         )
         SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
 
-        when (intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0) ?: 0) {
+        when (intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0)) {
             BundleData.VALUE_IS_OPEN_FROM_USER_PROFILE -> goToUserProfile()
             else -> createPostViewModel?.let { goToFeed(it) }
         }
