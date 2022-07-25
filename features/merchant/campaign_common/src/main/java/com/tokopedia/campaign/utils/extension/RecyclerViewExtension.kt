@@ -2,6 +2,7 @@ package com.tokopedia.campaign.utils.extension
 
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.campaign.utils.scroll.RecyclerViewScrollListener
 
 fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoothScroller.SNAP_TO_START) {
     val smoothScroller = object : LinearSmoothScroller(this.context) {
@@ -10,4 +11,9 @@ fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoot
     }
     smoothScroller.targetPosition = position
     layoutManager?.startSmoothScroll(smoothScroller)
+}
+
+fun RecyclerView.attachOnScrollListener(onScrollDown: () -> Unit, onScrollUp: () -> Unit) {
+    val scrollListener = RecyclerViewScrollListener(onScrollDown, onScrollUp)
+    addOnScrollListener(scrollListener)
 }

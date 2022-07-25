@@ -2,7 +2,7 @@ package com.tokopedia.campaign.utils.scroll
 
 import androidx.recyclerview.widget.RecyclerView
 
-class RecyclerViewScrollListener(
+internal class RecyclerViewScrollListener(
     private val onScrollDown: () -> Unit = {},
     private val onScrollUp: () -> Unit = {}
 ) : RecyclerView.OnScrollListener() {
