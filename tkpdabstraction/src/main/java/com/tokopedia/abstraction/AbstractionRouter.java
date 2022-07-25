@@ -16,7 +16,9 @@ import okhttp3.Response;
 
 public interface AbstractionRouter {
 
-    void onForceLogout(Activity activity, int redirectionType);
+    void onForceLogout(Activity activity);
+
+    void onForceLogoutV2(Activity activity, int redirectionType, String url);
 
     void showTimezoneErrorSnackbar();
 

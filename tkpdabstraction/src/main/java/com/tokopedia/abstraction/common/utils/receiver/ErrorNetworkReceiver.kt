@@ -48,15 +48,7 @@ class ErrorNetworkReceiver : BroadcastReceiver() {
 
             when (action) {
                 "com.tokopedia.tkpd.FORCE_LOGOUT" -> {
-                    if (path?.startsWith("FORCE_LOGOUT_INFO") == true) {
-                        val data = path.split(",").toTypedArray()
-                        val title = data[1]
-                        val description = data[2]
-                        val url = data[3]
-                        mReceiver?.onForceLogout(title = title, description = description, url = url)
-                    } else {
-                        mReceiver?.onForceLogout()
-                    }
+                    mReceiver?.onForceLogout()
                 }
                 "com.tokopedia.tkpd.SERVER_ERROR" -> {
                     mReceiver?.onServerError()
@@ -69,7 +61,7 @@ class ErrorNetworkReceiver : BroadcastReceiver() {
     }
 
     interface ReceiveListener {
-        fun onForceLogout(title: String = "", description: String = "", url: String = "")
+        fun onForceLogout()
         fun onServerError()
         fun onTimezoneError()
     }

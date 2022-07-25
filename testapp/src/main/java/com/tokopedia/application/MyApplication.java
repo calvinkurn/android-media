@@ -176,7 +176,7 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void onForceLogout(Activity activity, int redirectionType) {
+    public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
 
     }
 

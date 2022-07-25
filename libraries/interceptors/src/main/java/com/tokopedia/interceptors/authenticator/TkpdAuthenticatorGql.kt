@@ -1,7 +1,9 @@
 package com.tokopedia.interceptors.authenticator
 
 import android.app.Application
+import android.content.Intent
 import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.interceptors.forcelogout.ForceLogoutData
 import com.tokopedia.interceptors.forcelogout.ForceLogoutUseCase
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
@@ -62,6 +64,15 @@ class TkpdAuthenticatorGql(
         return newAccessToken ?: ""
     }
 
+    private fun broadcastForceLogoutInfo(forceLogoutData: ForceLogoutData) {
+        val intent = Intent()
+        intent.action = "com.tokopedia.tkpd.FORCE_LOGOUT_v2"
+        intent.putExtra("title", forceLogoutData.title)
+        intent.putExtra("description", forceLogoutData.description)
+        intent.putExtra("url", forceLogoutData.url)
+        LocalBroadcastManager.getInstance(application.applicationContext).sendBroadcast(intent)
+    }
+
     override fun authenticate(route: Route?, response: Response): Request? {
         if(isNeedRefresh()) {
             val path: String = getRefreshQueryPath(response.request, response)
@@ -77,12 +88,11 @@ class TkpdAuthenticatorGql(
                         if(tokenResponse.errors?.isNotEmpty() == true) {
                             val forceLogoutInfo = checkForceLogoutInfo()
                             if(forceLogoutInfo?.isForceLogout == true) {
-                                val customPath = "FORCE_LOGOUT_INFO,${forceLogoutInfo.title},${forceLogoutInfo.description},${forceLogoutInfo.url}"
-                                networkRouter.showForceLogoutTokenDialog(customPath)
+                                broadcastForceLogoutInfo(forceLogoutInfo)
+                                return null
                             } else {
-                                networkRouter.showForceLogoutTokenDialog("/")
+                                return refreshWithOldMethod(response)
                             }
-                            return null
                         } else if (tokenResponse.accessToken?.isEmpty() == true) {
                             logRefreshTokenEvent(
                                 ERROR_GQL_ACCESS_TOKEN_EMPTY,

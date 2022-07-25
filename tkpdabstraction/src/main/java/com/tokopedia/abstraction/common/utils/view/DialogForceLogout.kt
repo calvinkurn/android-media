@@ -26,15 +26,15 @@ object DialogForceLogout {
     @JvmStatic
     fun showDialogUnify(
         context: Context,
-        screenName: String = "",
+        screenName: String? = "",
         title: String = "",
         description: String = "",
         listener: UnifyActionListener?,
     ) {
-        val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(title)
         dialog.setDescription(description)
-        dialog.setPrimaryCTAText("Cek Informasi Lengkap")
+        dialog.setPrimaryCTAText(context.getString(com.tokopedia.abstraction.R.string.force_logout_primary_btn_text))
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
             setIsDialogShown(context, false)
@@ -46,12 +46,16 @@ object DialogForceLogout {
             )
             listener?.onPrimaryBtnClicked()
         }
-        dialog.setSecondaryCTAText("Batal")
+        dialog.setSecondaryCTAText(context.getString(com.tokopedia.abstraction.R.string.force_logout_secondary_btn_text))
         dialog.setSecondaryCTAClickListener {
             dialog.dismiss()
+            setIsDialogShown(context, false)
             listener?.onSecondaryBtnClicked()
         }
-        dialog.setOnDismissListener { listener?.onDismiss() }
+        dialog.setOnDismissListener {
+            setIsDialogShown(context, false)
+            listener?.onDismiss()
+        }
         dialog.show()
         setIsDialogShown(context, true)
     }
@@ -60,25 +64,24 @@ object DialogForceLogout {
         context: Context,
         listener: ActionListener?,
         screenName: String?
-    ): AlertDialog {
-        val dialog = AlertDialog.Builder(context)
-        dialog.setMessage(R.string.title_session_expired)
-        dialog.setPositiveButton(
-            context.getString(R.string.title_ok)
-        ) { dialog, which ->
-            listener!!.onDialogClicked()
+    ): DialogUnify {
+        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(context.getString(com.tokopedia.abstraction.R.string.force_logout_general_title))
+        dialog.setDescription(context.getString(com.tokopedia.abstraction.R.string.force_logout_general_description))
+        dialog.setPrimaryCTAText(context.getString(com.tokopedia.abstraction.R.string.force_logout_general_btn_text))
+        dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
             setIsDialogShown(context, false)
-            val screen = screenName ?: ""
             TrackApp.getInstance().gtm.sendGeneralEvent(
                 "clickLogout",
                 "force logout",
                 "get session expired pop up",
-                screen
+                screenName
             )
+            listener?.onDialogClicked()
         }
         dialog.setCancelable(false)
-        return dialog.create()
+        return dialog
     }
 
     fun setIsDialogShown(context: Context?, status: Boolean?) {

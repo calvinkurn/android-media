@@ -1,7 +1,6 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 
-import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,12 +8,14 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.TaskStackBuilder;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kotlin.Unit;
+import kotlin.jvm.Throws;
 import timber.log.Timber;
 
 
@@ -55,6 +57,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
+    public static final String FORCE_LOGOUT_V2 = "com.tokopedia.tkpd.FORCE_LOGOUT_v2";
+
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     public static final String INAPP_UPDATE = "inappupdate";
@@ -62,6 +66,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
+
+    private BroadcastReceiver forceLogoutV2Receiver;
+
     private boolean pauseFlag;
 
     private final ArrayList<DebugVolumeListener> debugVolumeListeners = new ArrayList<>();
@@ -81,6 +88,17 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 AppUpdateManagerWrapper.showSnackBarComplete(BaseActivity.this);
             }
         };
+
+        forceLogoutV2Receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String title = intent.getStringExtra("title");
+                String description = intent.getStringExtra("description");
+                String url = intent.getStringExtra("url");
+                if (!DialogForceLogout.isDialogShown(BaseActivity.this)) showForceLogoutDialogUnify(title, description, url);
+                Log.d("force_logout_v2", intent.getStringExtra("title"));
+            }
+        };
         checkAppUpdateAndInApp();
     }
 
@@ -90,6 +108,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
         pauseFlag = true;
         unregisterForceLogoutReceiver();
         unregisterInAppReceiver();
+        unregisterForceLogoutV2Receiver();
     }
 
     public void addListener(DebugVolumeListener debugVolumeListener) {
@@ -129,6 +148,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
         registerForceLogoutReceiver();
         registerInAppReceiver();
+        registerForceLogoutV2Receiver();
         checkIfForceLogoutMustShow();
     }
 
@@ -143,6 +163,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
         filter.addAction(SERVER_ERROR);
         filter.addAction(TIMEZONE_ERROR);
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutNetworkReceiver, filter);
+    }
+
+    private void registerForceLogoutV2Receiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(FORCE_LOGOUT_V2);
+        LocalBroadcastManager.getInstance(this).registerReceiver(forceLogoutV2Receiver, filter);
     }
 
     private void registerInAppReceiver() {
@@ -160,14 +186,15 @@ public abstract class BaseActivity extends AppCompatActivity implements
         LocalBroadcastManager.getInstance(this).unregisterReceiver(inappReceiver);
     }
 
-    @Override
-    public void onForceLogout(@NonNull String title, @NonNull String description, @NonNull String url) {
-        if(!title.isEmpty()) {
-            if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialogUnify(title, description, url);
-        } else {
-            if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
-        }
+    private void unregisterForceLogoutV2Receiver() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(forceLogoutV2Receiver);
     }
+
+    @Override
+    public void onForceLogout() {
+        if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
+    }
+
 
     @Override
     public void onServerError() {
@@ -208,7 +235,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
                     @Override
                     public void onDialogClicked() {
                         if (getApplication() instanceof AbstractionRouter) {
-                            ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this, REDIRECTION_DEFAULT);
+                            ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
                         }
                     }
                 });
@@ -216,17 +243,17 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     public void showForceLogoutDialogUnify(String title, String description, String url) {
         removeUserSession();
-        DialogForceLogout.showDialogUnify(this, getScreenName(), title, description, new DialogForceLogout.UnifyActionListener() {
+        DialogForceLogout.showDialogUnify(BaseActivity.this, getScreenName(), title, description, new DialogForceLogout.UnifyActionListener() {
             @Override
             public void onPrimaryBtnClicked() {
                 if (getApplication() instanceof AbstractionRouter) {
-                    ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this, REDIRECTION_WEBVIEW);
+                    ((AbstractionRouter) getApplication()).onForceLogoutV2(BaseActivity.this, REDIRECTION_WEBVIEW, url);
                 }
             }
             @Override
             public void onSecondaryBtnClicked() {
                 if (getApplication() instanceof AbstractionRouter) {
-                    ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this, REDIRECTION_HOME);
+                    ((AbstractionRouter) getApplication()).onForceLogoutV2(BaseActivity.this, REDIRECTION_HOME, url);
                 }
             }
             @Override
@@ -238,12 +265,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         TrackApp.getInstance().getMoEngage().logoutEvent();
         UserSessionInterface userSession = new UserSession(this);
         userSession.logoutSession();
-    }
-
-    public void redirectToHome() {
-//        Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(intent);
     }
 
     public void checkIfForceLogoutMustShow() {
