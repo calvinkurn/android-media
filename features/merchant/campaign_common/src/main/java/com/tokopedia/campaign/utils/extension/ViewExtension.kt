@@ -3,7 +3,6 @@ package com.tokopedia.campaign.utils.extension
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
-import com.tokopedia.campaign.R
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 
@@ -11,62 +10,31 @@ private const val DEFAULT_SCROLL_ANIMATION_DURATION = 200
 
 //region Toaster Error
 fun View?.showToasterError(throwable: Throwable, ctaText: String = "") {
-    this?.run {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        showToasterError(errorMessage, ctaText)
-    }
+    if (this == null) return
+
+    val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+    showToasterError(errorMessage, ctaText)
 }
 
-fun View?.showToasterError(errorMessage: String) {
-    Toaster.build(
-        this ?: return,
-        errorMessage,
-        Toaster.LENGTH_SHORT,
-        Toaster.TYPE_ERROR
-    ).apply {
-        anchorView = this@showToasterError
-        show()
-    }
-}
+fun View?.showToasterError(errorMessage: String, ctaText: String = "") {
+    if (this == null) return
 
-fun View?.showToasterErrorWithCta(errorMessage: String, ctaText: String) {
-    Toaster.build(
-        this ?: return,
-        errorMessage,
-        Toaster.LENGTH_SHORT,
-        Toaster.TYPE_ERROR,
-        ctaText
-    ).apply {
-        anchorView = this@showToasterErrorWithCta
-        show()
+    if (ctaText.isEmpty()) {
+        showToasterError(errorMessage)
+    } else {
+        showToasterErrorWithCta(errorMessage, ctaText)
     }
 }
 //endregion
 
+//region Normal Toaster
+fun View?.showToaster(message: String, ctaText: String = "") {
+    if (this == null) return
 
-//region Toaster
-fun View?.showToaster(message: String) {
-    Toaster.build(
-        this ?: return,
-        message,
-        Toaster.LENGTH_LONG,
-        Toaster.TYPE_NORMAL
-    ).apply {
-        anchorView = this@showToaster
-        show()
-    }
-}
-
-fun View?.showToasterWithCta(message: String, ctaText: String) {
-    Toaster.build(
-        this ?: return,
-        message,
-        Toaster.LENGTH_LONG,
-        Toaster.TYPE_NORMAL,
-        ctaText
-    ).apply {
-        anchorView = this@showToasterWithCta
-        show()
+    if (ctaText.isEmpty()) {
+        showToaster(message)
+    } else {
+        showToasterWithCta(message, ctaText)
     }
 }
 //endregion
@@ -108,6 +76,7 @@ fun View?.slideDown(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
 }
 //endregion
 
+//region View visibility
 fun View.visible() {
     this.visibility = View.VISIBLE
 }
@@ -119,7 +88,9 @@ fun View.invisible() {
 fun View.gone() {
     this.visibility = View.GONE
 }
+//endregion
 
+//region View state
 fun View.enable() {
     this.isEnabled = true
 }
@@ -127,14 +98,56 @@ fun View.enable() {
 fun View.disable() {
     this.isEnabled = false
 }
+//endregion
 
-
-private fun View?.showToasterError(errorMessage: String, ctaText: String = "") {
-    if (ctaText.isEmpty()) {
-        showToasterError(errorMessage)
-    } else {
-        val defaultCtaText = this?.context?.getString(R.string.campaign_common_oke)
-        val updatedCtaText = ctaText.ifEmpty { defaultCtaText }.orEmpty()
-        showToasterErrorWithCta(errorMessage, updatedCtaText)
+//region Toaster internal
+private fun View?.showToasterError(errorMessage: String) {
+    Toaster.build(
+        this ?: return,
+        errorMessage,
+        Toaster.LENGTH_SHORT,
+        Toaster.TYPE_ERROR
+    ).apply {
+        anchorView = this@showToasterError
+        show()
     }
 }
+
+private fun View?.showToasterErrorWithCta(errorMessage: String, ctaText: String) {
+    Toaster.build(
+        this ?: return,
+        errorMessage,
+        Toaster.LENGTH_SHORT,
+        Toaster.TYPE_ERROR,
+        ctaText
+    ).apply {
+        anchorView = this@showToasterErrorWithCta
+        show()
+    }
+}
+
+private fun View?.showToaster(message: String) {
+    Toaster.build(
+        this ?: return,
+        message,
+        Toaster.LENGTH_LONG,
+        Toaster.TYPE_NORMAL
+    ).apply {
+        anchorView = this@showToaster
+        show()
+    }
+}
+
+private fun View?.showToasterWithCta(message: String, ctaText: String) {
+    Toaster.build(
+        this ?: return,
+        message,
+        Toaster.LENGTH_LONG,
+        Toaster.TYPE_NORMAL,
+        ctaText
+    ).apply {
+        anchorView = this@showToasterWithCta
+        show()
+    }
+}
+//endregion
