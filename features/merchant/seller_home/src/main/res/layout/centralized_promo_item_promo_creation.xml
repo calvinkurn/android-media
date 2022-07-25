@@ -28,19 +28,33 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvRecommendedPromoTitle"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl4"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textAlignment="center"
+                android:gravity="center"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 tools:text="Broadcast Chat" />
+
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/newTagLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:labelTitle="Baru"
+                app:labelType="highlight_dark_red"
+                android:layout_marginStart="4dp"
+                tools:visibility="visible"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@id/tvRecommendedPromoTitle"
+                app:layout_constraintTop_toTopOf="@id/tvRecommendedPromoTitle"
+                app:layout_constraintBottom_toBottomOf="@id/tvRecommendedPromoTitle"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvRecommendedPromoDescription"

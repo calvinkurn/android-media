@@ -11,8 +11,6 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.google.android.material.tabs.TabLayout
-import com.google.gson.Gson
-import com.google.gson.JsonParser
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
