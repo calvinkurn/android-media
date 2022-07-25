@@ -135,7 +135,6 @@ internal fun createGlobalNavListener(): GlobalNavListener {
 
 internal fun createBannerAdsListener(): BannerAdsListener {
     return object: BannerAdsListener {
-        override val userId: String = "0"
         override fun onBannerAdsImpressionListener(position: Int, data: CpmData?) {}
         override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {}
     }

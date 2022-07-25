@@ -10,11 +10,12 @@ import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 
-open class BannerAdsListenerDelegate(
+class BannerAdsListenerDelegate(
     queryKeyProvider: QueryKeyProvider,
     context: Context?,
     private val redirectionListener: RedirectionListener?,
     private val bannerAdsPresenter: BannerAdsPresenter,
+    private val userId: String,
 ):
     BannerAdsListener,
     QueryKeyProvider by queryKeyProvider,
@@ -22,8 +23,6 @@ open class BannerAdsListenerDelegate(
     companion object {
         private const val SHOP = "shop"
     }
-
-    override val userId: String = "0"
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
         if (applink == null || data == null) return

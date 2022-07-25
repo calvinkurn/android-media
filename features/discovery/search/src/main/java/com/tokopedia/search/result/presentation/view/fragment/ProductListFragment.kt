@@ -124,7 +124,6 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.Category
-import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -424,15 +423,13 @@ class ProductListFragment: BaseDaggerFragment(),
             tickerListener = this,
             suggestionListener = this,
             globalNavListener = GlobalNavListenerDelegate(trackingQueue, activity, iris),
-            bannerAdsListener = object: BannerAdsListenerDelegate(
+            bannerAdsListener = BannerAdsListenerDelegate(
                 this@ProductListFragment,
                 activity,
                 redirectionListener,
-                presenter as BannerAdsPresenter
-            ) {
-                override val userId: String
-                    get() = getUserId()
-              },
+                presenter as BannerAdsPresenter,
+                getUserId(),
+            ),
             emptyStateListener = EmptyStateListenerDelegate(
                 activity,
                 this,
