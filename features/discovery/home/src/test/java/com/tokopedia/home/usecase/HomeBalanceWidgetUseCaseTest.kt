@@ -57,6 +57,14 @@ class HomeBalanceWidgetUseCaseTest {
             )
         )
     )
+    private val mockValueSuccessHomeBalanceWidgetOnlyGopayAndRewards = GetHomeBalanceWidgetData(
+        getHomeBalanceList = GetHomeBalanceList(
+            balancesList = listOf(
+                GetHomeBalanceItem("Gopay", "gopay"),
+                GetHomeBalanceItem("Rewards", "rewards")
+            )
+        )
+    )
     private val mockValueHomeBalanceWidgetErrorDataSubscription = GetHomeBalanceWidgetData(
         getHomeBalanceList = GetHomeBalanceList(
             balancesList = listOf(
@@ -159,6 +167,53 @@ class HomeBalanceWidgetUseCaseTest {
                 headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.size
             )
             Assert.assertEquals(
+                TYPE_SUBSCRIPTION,
+                headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.get(2)?.drawerItemType
+            )
+            Assert.assertEquals(
+                mockTierRewards,
+                headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.get(1)?.balanceTitleTextAttribute?.text
+            )
+            Assert.assertEquals(
+                mockNewCoupon,
+                headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.get(1)?.balanceSubTitleTextAttribute?.text
+            )
+            Assert.assertEquals(
+                mockTitleGopay,
+                headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.get(0)?.balanceTitleTextAttribute?.text
+            )
+            Assert.assertEquals(
+                mockSubtitleGopay,
+                headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.get(0)?.balanceSubTitleTextAttribute?.text
+            )
+        }
+    }
+
+    @Test
+    fun `given balance widget contains gopay and rewards when get balance widget then success get data gopay and rewards`() {
+        val getHomeBalanceWidgetRepository = mockk<GetHomeBalanceWidgetRepository>(relaxed = true)
+        val homeWalletAppRepository = mockk<HomeWalletAppRepository>(relaxed = true)
+        val homeTokopointsListRepository = mockk<HomeTokopointsListRepository>(relaxed = true)
+        val homeBalanceWidgetUseCase = createBalanceWidgetUseCase(
+            homeTokopointsListRepository = homeTokopointsListRepository,
+            homeWalletAppRepository = homeWalletAppRepository,
+            getHomeBalanceWidgetRepository = getHomeBalanceWidgetRepository
+        )
+        `given walletapprepository tokopointsrepository and balance widget use case only gopay and rewards`(
+            homeWalletAppRepository,
+            getHomeBalanceWidgetRepository,
+            homeTokopointsListRepository
+        )
+        runBlocking {
+            var headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
+            headerDataModel = homeBalanceWidgetUseCase.onGetWalletAppData(headerDataModel, 0, mockTitleGopay)
+            headerDataModel = homeBalanceWidgetUseCase.onGetTokopointData(headerDataModel, 1, mockTierRewards)
+            Assert.assertEquals(HomeBalanceModel.STATUS_SUCCESS, headerDataModel.headerDataModel?.homeBalanceModel?.status)
+            Assert.assertEquals(
+                mockValueSuccessHomeBalanceWidgetOnlyGopayAndRewards.getHomeBalanceList.balancesList.size,
+                headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.size
+            )
+            Assert.assertEquals(
                 mockTierRewards,
                 headerDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.get(1)?.balanceTitleTextAttribute?.text
             )
@@ -237,6 +292,16 @@ class HomeBalanceWidgetUseCaseTest {
     ) {
         coEvery { homeWalletAppRepository.getRemoteData(any()) } returns mockWalletAppData
         coEvery { getHomeBalanceWidgetRepository.getRemoteData(any()) } returns mockValueSuccessHomeBalanceWidget
+        coEvery { homeTokopointsListRepository.getRemoteData(any()) } returns mockTokopointsDrawerData
+    }
+
+    private fun `given walletapprepository tokopointsrepository and balance widget use case only gopay and rewards`(
+        homeWalletAppRepository: HomeWalletAppRepository,
+        getHomeBalanceWidgetRepository: GetHomeBalanceWidgetRepository,
+        homeTokopointsListRepository: HomeTokopointsListRepository
+    ) {
+        coEvery { homeWalletAppRepository.getRemoteData(any()) } returns mockWalletAppData
+        coEvery { getHomeBalanceWidgetRepository.getRemoteData(any()) } returns mockValueSuccessHomeBalanceWidgetOnlyGopayAndRewards
         coEvery { homeTokopointsListRepository.getRemoteData(any()) } returns mockTokopointsDrawerData
     }
 

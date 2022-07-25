@@ -23,6 +23,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
+import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -74,8 +75,17 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
     }
 
     @Test
-    fun triggerLogin() {
-        login()
+    fun testMissionWidgetLogin() {
+        HomeDCCassavaTest {
+            initTest()
+            login()
+            doActivityTestByModelClass(dataModelClass = MissionWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnMissionWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET)
+        }
     }
 
     @Test
