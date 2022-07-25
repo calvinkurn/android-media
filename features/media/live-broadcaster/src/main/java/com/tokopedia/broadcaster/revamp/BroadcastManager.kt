@@ -288,7 +288,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     // To get vertical video just swap width and height
     // do not modify videoSize itself because Android camera is always landscape
-    fun getAndroidVideoSize(videoSize: Streamer.Size): Streamer.Size {
+    private fun getAndroidVideoSize(videoSize: Streamer.Size): Streamer.Size {
         return if(videoSize.height > videoSize.width) {
             Streamer.Size(videoSize.width, videoSize.height)
         } else {

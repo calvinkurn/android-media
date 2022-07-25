@@ -36,9 +36,7 @@ object BroadcasterUtil {
     fun getVideoSize(activeCamera: BroadcasterCamera): Streamer.Size {
         val recordSizes = activeCamera.recordSizes ?: return Streamer.Size(1280, 720)
 
-        // force to 1280x720px
-        var videoSize =  recordSizes.firstOrNull { it.width == 1280 && it.height == 720 }
-            ?: recordSizes.first()
+        var videoSize = recordSizes.first()
 
         // Reduce 4K to FullHD, because some encoders can fail with 4K frame size.
         // https://source.android.com/compatibility/android-cdd.html#5_2_video_encoding
