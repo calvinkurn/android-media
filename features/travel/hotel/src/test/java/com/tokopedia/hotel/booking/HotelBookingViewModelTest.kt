@@ -6,6 +6,7 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
@@ -78,7 +79,7 @@ class HotelBookingViewModelTest {
         } returns contacts
 
         //when
-        hotelBookingViewModel.getContactList("")
+        hotelBookingViewModel.getContactList(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert((hotelBookingViewModel.contactListResult.value as List<TravelContactListModel.Contact>).isNotEmpty())
@@ -95,7 +96,7 @@ class HotelBookingViewModelTest {
         } returns Success(TravelUpsertContactModel.Response(TravelUpsertContactModel.Response.SuccessResponse(true)))
 
         //when
-        hotelBookingViewModel.updateContactList("", TravelUpsertContactModel.Contact())
+        hotelBookingViewModel.updateContactList(DummyHotelGqlQueryInterfaceImpl(), TravelUpsertContactModel.Contact())
 
     }
 

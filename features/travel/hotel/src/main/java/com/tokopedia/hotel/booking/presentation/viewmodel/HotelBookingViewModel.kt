@@ -74,7 +74,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         }
     }
 
-    fun updateContactList(query: String,
+    fun updateContactList(query: GqlQueryInterface,
                           updatedContact: TravelUpsertContactModel.Contact) {
         launch {
             upsertContactListUseCase.execute(query,

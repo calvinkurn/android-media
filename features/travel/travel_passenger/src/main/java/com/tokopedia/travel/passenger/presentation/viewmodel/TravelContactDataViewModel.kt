@@ -35,7 +35,7 @@ class TravelContactDataViewModel @Inject constructor(private val getContactListU
         }
     }
 
-    fun updateContactList(query: String,
+    fun updateContactList(query: GqlQueryInterface,
                           updatedContact: TravelUpsertContactModel.Contact) {
         launch {
             upsertContactListUseCase.execute(query,

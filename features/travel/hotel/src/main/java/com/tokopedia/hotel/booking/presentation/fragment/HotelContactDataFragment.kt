@@ -24,8 +24,8 @@ import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
+import com.tokopedia.travel.passenger.util.MutationUpsertContact
 import com.tokopedia.travel.passenger.util.QueryGetContactList
-import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -160,7 +160,7 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
             contactData.phone = binding?.tilContactPhoneNumber?.getEditableValue() ?: ""
             contactData.phoneCode = (binding?.spContactPhoneCode?.selectedItem as String).toInt()
 
-            bookingViewModel.updateContactList(TravelPassengerGqlMutation.UPSERT_CONTACT,
+            bookingViewModel.updateContactList(MutationUpsertContact(),
                     TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
                             phoneCountryCode = contactData.phoneCode))
 
