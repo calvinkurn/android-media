@@ -41,7 +41,7 @@
             android:layout_marginTop="16dp"
             android:textColor="@color/Unify_NN950"
             app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toStartOf="@+id/custom_label_check"
+            app:layout_constraintEnd_toStartOf="@+id/custom_label_see"
             app:layout_constraintStart_toEndOf="@+id/custom_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginStart="0dp"
@@ -73,7 +73,7 @@
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/custom_label_check"
+            android:id="@+id/custom_label_see"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="19dp"

@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -28,6 +29,27 @@ class ProductCustomInfoViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_custom_info
+
+        // added space between description with parent layout when icon and title hide
+        private const val DESCRIPTION_MARGIN_TOP_WHEN_ICON_TITLE_EMPTY = 16
+
+        // added space between description with title when icon and title show, same as xml value
+        private const val DESCRIPTION_MARGIN_TOP_DEFAULT = 12
+
+        // added space between description with parent layout when icon and title hide
+        // so as not to crash with `see` label
+        private const val DESCRIPTION_MARGIN_RIGHT_WHEN_ICON_TITLE_EMPTY = 32
+
+        // default margin top value same as xml value between title with parent layout
+        private const val TITLE_MARGIN_TOP_DEFAULT = 16
+
+        // added space between title to icon when icon is show
+        private const val TITLE_MARGIN_LEFT_WHEN_ICON_SHOW = 8
+
+        // default margin top value same as xml value between custom info with description label
+        private const val CUSTOM_INFO_MARGIN_TOP_DEFAULT = 8
+        // added space between custom info with parent layout when title, icon, and desc is hide
+        private const val CUSTOM_INFO_MARGIN_TOP_WHEN_TITLE_ICON_DESC_IS_HIDE = 16
     }
 
     private val binding = ItemDynamicCustomInfoBinding.bind(view)
@@ -97,7 +119,7 @@ class ProductCustomInfoViewHolder(
     ) = with(binding) {
 
         if (element.applink.isNotEmpty()) {
-            customLabelCheck.show()
+            customLabelSee.show()
 
             val trackData = getComponentTrackData(element = element)
 
@@ -109,7 +131,7 @@ class ProductCustomInfoViewHolder(
                 )
             }
         } else {
-            customLabelCheck.hide()
+            customLabelSee.hide()
             view.setOnClickListener {}
         }
     }
@@ -159,43 +181,53 @@ class ProductCustomInfoViewHolder(
         // description label
         if (element.title.isEmpty() && element.icon.isEmpty()) {
             // avoid broken with `see` label
-            customDesc.setMargin(0, 16.toPx(), 32.toPx(), 0)
+            customDesc.setMargin(
+                left = Int.ZERO,
+                top = DESCRIPTION_MARGIN_TOP_WHEN_ICON_TITLE_EMPTY.toPx(),
+                right = DESCRIPTION_MARGIN_RIGHT_WHEN_ICON_TITLE_EMPTY.toPx(),
+                bottom = Int.ZERO
+            )
         } else {
             // avoid broken with `see` label
-            customDesc.setMargin(0, 12.toPx(), 0, 0)
+            customDesc.setMargin(
+                left = Int.ZERO,
+                top = DESCRIPTION_MARGIN_TOP_DEFAULT.toPx(),
+                right = Int.ZERO,
+                bottom = Int.ZERO
+            )
         }
 
         // adjust title margin start between icon and title when icon is empty,
         if (element.icon.isEmpty()) {
             customTitle.setMargin(
-                left = 0,
-                top = 16.toPx(),
-                right = 0,
-                bottom = 0
+                left = Int.ZERO,
+                top = TITLE_MARGIN_TOP_DEFAULT.toPx(),
+                right = Int.ZERO,
+                bottom = Int.ZERO
             )
         } else {
             customTitle.setMargin(
-                left = 8.toPx(),
-                top = 16.toPx(),
-                right = 0,
-                bottom = 0
+                left = TITLE_MARGIN_LEFT_WHEN_ICON_SHOW.toPx(),
+                top = TITLE_MARGIN_TOP_DEFAULT.toPx(),
+                right = Int.ZERO,
+                bottom = Int.ZERO
             )
         }
 
         // adjust label margin top when title, icon and description is empty
         if (element.title.isEmpty() && element.icon.isEmpty() && element.description.isEmpty()) {
             labelCustomInfo.setMargin(
-                left = 0.toPx(),
-                top = 16.toPx(),
-                right = 0,
-                bottom = 0
+                left = Int.ZERO,
+                top = CUSTOM_INFO_MARGIN_TOP_WHEN_TITLE_ICON_DESC_IS_HIDE.toPx(),
+                right = Int.ZERO,
+                bottom = Int.ZERO
             )
         } else {
             labelCustomInfo.setMargin(
-                left = 0.toPx(),
-                top = 8.toPx(),
-                right = 0,
-                bottom = 0
+                left = Int.ZERO,
+                top = CUSTOM_INFO_MARGIN_TOP_DEFAULT.toPx(),
+                right = Int.ZERO,
+                bottom = Int.ZERO
             )
         }
     }
