@@ -32,7 +32,6 @@ class OrderPriceSummaryBottomSheetRobot {
                       shippingDiscount: String? = null,
                       isBbo: Boolean = false,
                       insurancePrice: String? = null,
-                      paymentFee: String? = null,
                       totalPrice: String = "",
                       isInstallment: Boolean = false,
                       paymentFeeDetails: List<OrderPaymentFee> = emptyList()) {
