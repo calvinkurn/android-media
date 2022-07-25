@@ -666,17 +666,23 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
         if (state is BroadcastInitState.Error) showDialogWhenUnSupportedDevices()
-        debugView?.logBroadcastInitState(state)
+        lifecycleScope.launch(dispatcher.main) {
+            debugView?.logBroadcastInitState(state)
+        }
     }
 
     override fun onBroadcastStateChanged(state: PlayBroadcasterState) {
         viewModel.submitAction(BroadcastStateChanged(state))
-        debugView?.logBroadcastState(state)
+        lifecycleScope.launch(dispatcher.main) {
+            debugView?.logBroadcastState(state)
+        }
     }
 
     override fun onBroadcastStatisticUpdate(metric: BroadcasterMetric) {
         viewModel.sendBroadcasterLog(metric)
-        debugView?.logBroadcastStatistic(metric)
+        lifecycleScope.launch(dispatcher.main) {
+            debugView?.logBroadcastStatistic(metric)
+        }
     }
 
     override fun getBroadcaster(): PlayBroadcaster {
