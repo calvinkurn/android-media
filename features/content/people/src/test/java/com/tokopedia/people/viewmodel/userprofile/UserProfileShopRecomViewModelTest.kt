@@ -288,10 +288,11 @@ class UserProfileShopRecomViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordEvent {
+            } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
-            } andThen {
-                last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+            } andThen { state, events ->
+                state.shopRecom equalTo mockShopRecomIsShown
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
             }
         }
     }
@@ -306,10 +307,11 @@ class UserProfileShopRecomViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordEvent {
+            } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
-            } andThen {
-                last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+            } andThen { state, events ->
+                state.shopRecom equalTo mockShopRecomIsShown
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
             }
         }
     }
