@@ -13,12 +13,15 @@ fun getEditorSaveFolderDir(context: Context): String {
     return "${context.externalCacheDir?.path}/editor-cache/"
 }
 
-fun getDestinationUri(context: Context): Uri {
+fun getDestinationUri(context: Context, filename: String? = null): Uri {
     val folderPath = getEditorSaveFolderDir(context)
     val dir = File(folderPath)
     if (!dir.exists()) dir.mkdir()
 
-    return Uri.fromFile(File("${folderPath}/${generateFileName()}.png"))
+    return if (filename == null)
+        Uri.fromFile(File("${folderPath}/${generateFileName()}.png"))
+    else
+        Uri.fromFile(File("${folderPath}/$filename.png"))
 }
 
 @SuppressLint("SimpleDateFormat")

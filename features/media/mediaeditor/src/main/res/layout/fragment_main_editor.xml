@@ -39,22 +39,23 @@
     <ImageView
         android:elevation="1dp"
         android:id="@+id/img_main_preview"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="#D3D3D3"
         android:contentDescription="@string/cd_img_preview"
+        android:scaleType="fitCenter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintDimensionRatio="W,1:1" />
+        app:layout_constraintBottom_toTopOf="@id/uc_editor_tool_container"/>
 
     <include
         layout="@layout/ui_component_tools_editor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/img_preview"
         android:layout_marginTop="25dp"
-        app:layout_constraintTop_toBottomOf="@+id/img_main_preview" />
+        app:layout_constraintTop_toBottomOf="@+id/img_main_preview"
+        app:layout_constraintBottom_toTopOf="@id/uc_drawer_thumbnail"/>
 
     <include
         layout="@layout/ui_component_thumbnail_drawer"

@@ -2,20 +2,30 @@ package com.tokopedia.media.editor.ui.fragment
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.graphics.scale
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.drawToBitmap
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepositoryImpl
@@ -30,19 +40,25 @@ import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorRotateModel
 import com.tokopedia.media.editor.utils.getDestinationUri
 import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.loadImageWithTarget
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.callback.BitmapCropCallback
+import com.yalantis.ucrop.util.RectUtils
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.lang.Exception
 import javax.inject.Inject
+import kotlin.math.ceil
+import kotlin.math.min
 
 class DetailEditorFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
@@ -110,9 +126,18 @@ class DetailEditorFragment @Inject constructor(
         data.watermarkMode = value
     }
 
-    override fun onRotateValueChanged(value: Float) {
-        rotateFilterRepositoryImpl.rotate(rotateComponent.ucropView.cropImageView, value)
-        data.rotateValue = value
+    override fun onRotateValueChanged(value: Float, scaleX: Float, scaleY: Float) {
+        rotateFilterRepositoryImpl.rotate(rotateComponent.cropImageView, value)
+
+        if (data.rotateData == null)
+            data.rotateData = EditorRotateModel(value, scaleX, scaleY)
+        else {
+            data.rotateData!!.rotateDegree = value
+            data.rotateData!!.scaleX = scaleX
+            data.rotateData!!.scaleY = scaleY
+        }
+
+        Log.d("kodok","$value - $scaleX - $scaleY Y")
     }
 
     override fun initObserver() {
@@ -222,6 +247,8 @@ class DetailEditorFragment @Inject constructor(
                                 && data.editorToolType != EditorToolType.CONTRAST) viewModel.setContrast(data.contrastValue!!)
                             if (data.watermarkMode != null
                                 && data.editorToolType != EditorToolType.WATERMARK) viewModel.setWatermark(data.watermarkMode!!)
+                            if (data.rotateData != null
+                                && data.editorToolType != EditorToolType.ROTATE) rotateFilterRepositoryImpl.rotate(rotateComponent.cropImageView, data.rotateData?.rotateDegree ?: 0f)
 
                             originalBitmap = it.drawToBitmap()
 
@@ -229,6 +256,7 @@ class DetailEditorFragment @Inject constructor(
                                 EditorToolType.WATERMARK -> viewModel.setWatermark(data.watermarkMode)
                                 EditorToolType.BRIGHTNESS -> viewModel.setBrightness(data.brightnessValue)
                                 EditorToolType.CONTRAST -> viewModel.setContrast(data.contrastValue)
+                                EditorToolType.ROTATE -> rotateFilterRepositoryImpl.rotate(rotateComponent.cropImageView, data.rotateData?.rotateDegree ?: 0f)
                             }
 
                             // render result for watermark drawer item
@@ -274,7 +302,6 @@ class DetailEditorFragment @Inject constructor(
 
         viewBinding?.btnSave?.setOnClickListener {
             saveImage()
-            if(data.editorToolType != EditorToolType.ROTATE) editingSave()
         }
     }
 
@@ -288,12 +315,28 @@ class DetailEditorFragment @Inject constructor(
         activity?.finish()
     }
 
-    private fun crop(){
-        rotateComponent.ucropView.cropImageView.viewBitmap
-        rotateComponent.ucropView.cropImageView.cropAndSaveImage(
+    private fun crop(): Bitmap?{
+        val rotateCropImageView = rotateComponent.cropImageView
+
+        if(rotateCropImageView.currentAngle % 90f == 0f){
+            data.rotateData?.let {
+                val bitmap = rotateCropImageView.drawable.toBitmap()
+                val matrix = Matrix()
+
+                matrix.postScale(
+                    it.scaleX,
+                    it.scaleY
+                )
+
+                matrix.preRotate(rotateCropImageView.currentAngle)
+
+                return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            }
+        }
+        rotateCropImageView.cropAndSaveImage(
             Bitmap.CompressFormat.PNG,
             100,
-            object: BitmapCropCallback {
+            object : BitmapCropCallback {
                 override fun onBitmapCropped(
                     resultUri: Uri,
                     offsetX: Int,
@@ -301,31 +344,75 @@ class DetailEditorFragment @Inject constructor(
                     imageWidth: Int,
                     imageHeight: Int
                 ) {
-                    data.resultUrl = resultUri.path
-                    editingSave()
+                    loadImageWithEmptyTarget(requireContext(),
+                        data.originalUrl,
+                        {},
+                        MediaBitmapEmptyTarget(
+                            onReady = { loadedOriginalBitmap ->
+                                getProcessedBitmap(
+                                    loadedOriginalBitmap,
+                                    offsetX, offsetY, imageWidth, imageHeight
+                                ).let {
+                                    saveImage(it)
+                                }
+                            }
+                        )
+                    )
                 }
 
                 override fun onCropFailure(t: Throwable) {
-                    val x = 0
+                    Toast.makeText(context, "Crop Error", Toast.LENGTH_LONG).show()
                 }
             }
         )
+        return null
     }
 
-    private fun saveImage() {
+    private fun getProcessedBitmap(
+        originalBitmap: Bitmap,
+        offsetX: Int,
+        offsetY: Int,
+        imageWidth: Int,
+        imageHeight: Int
+    ): Bitmap? {
+        val originalWidth = originalBitmap.width
+        val originalHeight = originalBitmap.height
+
+        data.rotateData?.let {
+            val scaleNormalizeValue = min(it.scaleX, it.scaleY)
+
+            val matrix = Matrix()
+            matrix.preScale(it.scaleX, it.scaleY)
+            matrix.postRotate(it.rotateDegree * scaleNormalizeValue, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
+
+            val rotatedBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalWidth, originalHeight, matrix, true)
+
+            // set crop area on data that will be pass to landing pass for state
+            data.rotateData?.let {
+                it.leftRectPos = offsetX
+                it.topRectPos = offsetY
+                it.rightRectPos = imageWidth
+                it.bottomRectPos = imageHeight
+            }
+
+            return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
+        }
+        return null
+    }
+
+    private fun saveImage(bitmapParam: Bitmap? = null, filename: String? = null) {
         viewBinding?.let {
             try {
-                val bitmap = if (data.editorToolType == EditorToolType.ROTATE) {
-                    crop()
-                    return@let
+                val bitmap = bitmapParam ?: if (data.editorToolType == EditorToolType.ROTATE) {
+                    crop() ?: return@let
                 } else
                     it.imgPreview.drawToBitmap()
 
-                val file = getDestinationUri(requireContext()).toFile()
+                val file = getDestinationUri(requireContext(), filename).toFile()
                 file.createNewFile()
 
                 val bos = ByteArrayOutputStream()
-                bitmap?.compress(Bitmap.CompressFormat.PNG, 0, bos)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos)
                 val bitmapData = bos.toByteArray()
 
                 val fos = FileOutputStream(file)
@@ -335,6 +422,8 @@ class DetailEditorFragment @Inject constructor(
 
                 val uri = file.toUri()
                 data.resultUrl = uri.path
+
+                editingSave()
             } catch (e: Exception) {
             }
         }

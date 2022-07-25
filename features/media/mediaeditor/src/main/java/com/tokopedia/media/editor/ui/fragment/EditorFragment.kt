@@ -65,7 +65,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
             it.backValue++
             viewBinding?.imgMainPreview?.loadImage(it.getImageUrl()) {
-                this.centerCrop()
+//                this.centerCrop()
             }
 
             renderUndoText(it)
@@ -83,7 +83,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
             it.backValue--
             viewBinding?.imgMainPreview?.loadImage(it.getImageUrl()) {
-                this.centerCrop()
+//                this.centerCrop()
             }
 
             renderUndoText(it)
@@ -147,9 +147,9 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                     paramData.brightnessValue = item.brightnessValue
                     paramData.contrastValue = item.contrastValue
                     paramData.watermarkMode = item.watermarkMode
-                    paramData.rotateValue = item.rotateValue
                     paramData.removeBackgroundUrl = item.removeBackgroundUrl
                     paramData.cropBound = item.cropBound
+                    paramData.rotateData = item.rotateData
                 }
 
                 val intent = Intent(it, DetailEditorActivity::class.java).apply {
@@ -171,7 +171,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         val editList = viewModel.getEditState(originalUrl)
 
         viewBinding?.imgMainPreview?.loadImage(editList?.getImageUrl()) {
-            centerCrop()
+//            centerCrop()
         }
 
         viewBinding?.imgMainPreview?.post {

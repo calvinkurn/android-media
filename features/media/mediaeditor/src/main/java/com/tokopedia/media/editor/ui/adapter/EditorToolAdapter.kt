@@ -34,7 +34,7 @@ class EditorToolAdapter constructor(
             isActive = when(toolModel.id){
                 EditorToolType.BRIGHTNESS -> it.brightnessValue != null
                 EditorToolType.CONTRAST -> it.contrastValue != null
-                EditorToolType.ROTATE -> it.rotateValue != null
+                EditorToolType.ROTATE -> it.rotateData != null
                 EditorToolType.WATERMARK -> it.watermarkMode != null
                 EditorToolType.REMOVE_BACKGROUND -> it.removeBackgroundUrl != null
                 EditorToolType.CROP -> it.cropBound != null
