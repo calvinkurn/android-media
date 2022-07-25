@@ -53,6 +53,8 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
     var originalWidth = 0
     var originalHeight = 0
 
+    var rotateNumber = 0
+
     @SuppressLint("ClickableViewAccessibility")
     fun setupView(paramData: EditorDetailUiModel) {
         container().show()
@@ -122,9 +124,19 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
             cropImageView.zoomOutImage(0.01f)
 
             isRatioRotated = !isRatioRotated
+            rotateNumber++
 
             updateRotation()
         }
+    }
+
+    fun getFinalRotationDegree(): Float{
+        val scaleNormalizeValue = min(scaleX, scaleY)
+        return ((rotateNumber * ROTATE_BTN_DEGREE) + sliderValue) * scaleNormalizeValue
+    }
+
+    fun getScale(): Pair<Float, Float>{
+        return Pair(scaleX, scaleY)
     }
 
     private fun updateRotation() {
@@ -155,5 +167,9 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
 
     interface Listener {
         fun onRotateValueChanged(rotateValue: Float, scaleX: Float, scaleY: Float)
+    }
+
+    companion object {
+        private const val ROTATE_BTN_DEGREE = 90
     }
 }

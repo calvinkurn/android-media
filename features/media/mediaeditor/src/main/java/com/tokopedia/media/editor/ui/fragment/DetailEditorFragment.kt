@@ -129,13 +129,13 @@ class DetailEditorFragment @Inject constructor(
     override fun onRotateValueChanged(value: Float, scaleX: Float, scaleY: Float) {
         rotateFilterRepositoryImpl.rotate(rotateComponent.cropImageView, value)
 
-        if (data.rotateData == null)
-            data.rotateData = EditorRotateModel(value, scaleX, scaleY)
-        else {
-            data.rotateData!!.rotateDegree = value
-            data.rotateData!!.scaleX = scaleX
-            data.rotateData!!.scaleY = scaleY
-        }
+//        if (data.rotateData == null)
+//            data.rotateData = EditorRotateModel(value, scaleX, scaleY)
+//        else {
+//            data.rotateData!!.rotateDegree = value
+//            data.rotateData!!.scaleX = scaleX
+//            data.rotateData!!.scaleY = scaleY
+//        }
 
         Log.d("kodok","$value - $scaleX - $scaleY Y")
     }
@@ -378,26 +378,29 @@ class DetailEditorFragment @Inject constructor(
         val originalWidth = originalBitmap.width
         val originalHeight = originalBitmap.height
 
+        val scale = rotateComponent.getScale()
+        val scaleX = scale.first
+        val scaleY = scale.second
+
+        val rotateDegree = rotateComponent.getFinalRotationDegree()
+
+        val scaleNormalizeValue = min(scaleX, scaleY)
+
+        val matrix = Matrix()
+        matrix.preScale(scaleX, scaleY)
+        matrix.postRotate(rotateDegree * scaleNormalizeValue, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
+
+        val rotatedBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalWidth, originalHeight, matrix, true)
+
+        // set crop area on data that will be pass to landing pass for state
         data.rotateData?.let {
-            val scaleNormalizeValue = min(it.scaleX, it.scaleY)
-
-            val matrix = Matrix()
-            matrix.preScale(it.scaleX, it.scaleY)
-            matrix.postRotate(it.rotateDegree * scaleNormalizeValue, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
-
-            val rotatedBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalWidth, originalHeight, matrix, true)
-
-            // set crop area on data that will be pass to landing pass for state
-            data.rotateData?.let {
-                it.leftRectPos = offsetX
-                it.topRectPos = offsetY
-                it.rightRectPos = imageWidth
-                it.bottomRectPos = imageHeight
-            }
-
-            return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
+            it.leftRectPos = offsetX
+            it.topRectPos = offsetY
+            it.rightRectPos = imageWidth
+            it.bottomRectPos = imageHeight
         }
-        return null
+
+        return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
     }
 
     private fun saveImage(bitmapParam: Bitmap? = null, filename: String? = null) {
