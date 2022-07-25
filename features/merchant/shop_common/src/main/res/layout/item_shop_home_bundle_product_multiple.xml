@@ -9,11 +9,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/card_bundle_product_multiple"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/layout_bundle_multiple_image"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:card_type="border"
+        android:padding="0.7dp"
+        android:background="@drawable/bg_button_white_border"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -26,7 +27,7 @@
             app:unify_image_type="rect"
             />
 
-    </com.tokopedia.unifycomponents.CardUnify>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bundle_product_multiple_count"
@@ -37,9 +38,9 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:text="@string/shop_page_product_bundle_count"
-        app:layout_constraintStart_toStartOf="@id/card_bundle_product_multiple"
-        app:layout_constraintEnd_toEndOf="@id/card_bundle_product_multiple"
-        app:layout_constraintTop_toBottomOf="@id/card_bundle_product_multiple"
+        app:layout_constraintStart_toStartOf="@id/layout_bundle_multiple_image"
+        app:layout_constraintEnd_toEndOf="@id/layout_bundle_multiple_image"
+        app:layout_constraintTop_toBottomOf="@id/layout_bundle_multiple_image"
         android:textColor="@color/Unify_NN600"
         app:typographyType="small"
         />
@@ -53,8 +54,8 @@
         android:gravity="center"
         android:maxLines="2"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toEndOf="@id/card_bundle_product_multiple"
-        app:layout_constraintStart_toStartOf="@id/card_bundle_product_multiple"
+        app:layout_constraintEnd_toEndOf="@id/layout_bundle_multiple_image"
+        app:layout_constraintStart_toStartOf="@id/layout_bundle_multiple_image"
         app:layout_constraintTop_toBottomOf="@+id/tv_bundle_product_multiple_count"
         app:typographyType="display_3"
         tools:text="Rinso Matic Professional ..."
