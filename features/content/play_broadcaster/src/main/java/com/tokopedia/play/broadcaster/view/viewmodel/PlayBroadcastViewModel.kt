@@ -7,7 +7,6 @@ import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
-import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
@@ -137,9 +136,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = getCurrentSetupDataStore().getInteractiveId()
     val activeInteractiveTitle: String
         get() = getCurrentSetupDataStore().getActiveInteractiveTitle()
-    val interactiveDurations: List<Long>
-        get() = getCurrentSetupDataStore().getInteractiveDurations()
-            .filter { it < broadcastTimer.remainingDuration }
 
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
@@ -401,8 +397,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun getChannelDetail() = getChannelById(channelId)
-
     private suspend fun createChannel() {
         val channelId = repo.createChannel()
         setChannelId(channelId)
@@ -471,16 +465,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    fun setInteractiveTitle(title: String) {
-        getCurrentSetupDataStore().setSetupInteractiveTitle(title)
-    }
-
     private fun setActiveInteractiveTitle(title: String) {
         getCurrentSetupDataStore().setActiveInteractiveTitle(title)
-    }
-
-    private fun setSelectedInteractiveDuration(durationInMs: Long) {
-        getCurrentSetupDataStore().setSelectedInteractiveDuration(durationInMs)
     }
 
     private fun isCreateSessionAllowed(duration: Long): Boolean {
@@ -497,9 +483,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val gameConfig = repo.getInteractiveConfig()
 
             _interactiveConfig.value = mergeInteractiveConfigWithPreference(gameConfig)
-
-            /** TODO: should save config on flow instead */
-            setInteractiveDurations(gameConfig.giveawayConfig.availableStartTimeInMs)
 
             if (!gameConfig.isNoGameActive()) {
                 initQuizFormData()
@@ -743,15 +726,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val durationInMillis = TimeUnit.SECONDS.toMillis(duration.duration)
             broadcastTimer.restart(durationInMillis)
         }) { }
-    }
-
-    private fun setInteractiveDurations(durations: List<Long>) {
-        getCurrentSetupDataStore().setInteractiveDurations(durations)
-    }
-
-    private fun resetSetupInteractive() {
-        setInteractiveTitle(InteractiveDataStoreImpl.DEFAULT_INTERACTIVE_TITLE)
-        setSelectedInteractiveDuration(InteractiveDataStoreImpl.DEFAULT_INTERACTIVE_DURATION)
     }
 
     private fun setInteractiveId(id: String) {

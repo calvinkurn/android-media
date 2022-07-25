@@ -1071,10 +1071,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         return pinnedView
     }
 
-    private fun getAvailableInteractiveDurations(): List<Long> {
-        return parentViewModel.interactiveDurations
-    }
-
     /** Game Region */
     private fun showQuizForm(isShow: Boolean) {
         if(isShow) gameIconView.cancelCoachMark()
