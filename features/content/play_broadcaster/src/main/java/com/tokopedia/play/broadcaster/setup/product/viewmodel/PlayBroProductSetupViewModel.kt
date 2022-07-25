@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.extension.combine
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -34,6 +35,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -132,6 +134,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             productTagSummary = productTagSummary
         )
     }
+
+    private var coolDownTimerJob: Job? = null
 
     init {
         getCampaignAndEtalaseList()
@@ -412,6 +416,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             val result = repo.setPinProduct(channelId, product.id)
             if(result) {
                 updatePinProduct(product = product)
+                addCoolDown()
             } else {
                 throw MessageErrorException("Gagal pin product")
             }
@@ -435,7 +440,18 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
+    private fun addCoolDown() {
+        coolDownTimerJob?.cancel()
+        coolDownTimerJob = viewModelScope.launch(dispatchers.computation) {
+            delay(COOL_DOWN_TIMER)
+        }
+    }
+
+    fun getCoolDownStatus() : Boolean = coolDownTimerJob?.isActive ?: false
+
     companion object {
         private const val KEY_PRODUCT_SECTIONS = "product_sections"
+
+        private const val COOL_DOWN_TIMER = 5000L
     }
 }

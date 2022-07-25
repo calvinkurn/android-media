@@ -1590,7 +1590,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun addCoolDown() {
         coolDownTimerJob?.cancel()
         coolDownTimerJob = viewModelScope.launch(dispatcher.computation) {
-            delay(COOLDOWN_TIMER)
+            delay(COOL_DOWN_TIMER)
         }
     }
 
@@ -1606,7 +1606,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
 
         private const val START_LIVE_TIMER_DELAY = 1000L
-        private const val COOLDOWN_TIMER = 5000L
+        private const val COOL_DOWN_TIMER = 5000L
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
         private const val DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE = 5L
