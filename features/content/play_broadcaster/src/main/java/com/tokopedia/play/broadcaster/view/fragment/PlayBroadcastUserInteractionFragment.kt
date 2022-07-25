@@ -34,7 +34,6 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
@@ -166,7 +165,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             override fun onPinProductClicked(product: ProductUiModel) {
                 checkPinProduct (
-                    { parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product)) }, product.pinStatus.pinStatus
+                    { parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product)) }, product.pinStatus.isPinned
                 )
             }
         })
@@ -1132,8 +1131,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         ongoingLeaderboardBottomSheet.show(childFragmentManager)
     }
 
-    private fun checkPinProduct(ifTimerIsOn: () -> Unit, pinStatus: PinStatus) {
-        if(!parentViewModel.getCoolDownStatus() || pinStatus == PinStatus.Pinned) ifTimerIsOn()
+    private fun checkPinProduct(ifTimerIsOn: () -> Unit, pinStatus: Boolean) {
+        if(!parentViewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
         else {
             showErrorToaster(Throwable("Gagal Pin"))
         }
