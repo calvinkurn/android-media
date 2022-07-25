@@ -50,6 +50,11 @@ private const val CLICK_TAMBAH_KATA_KUNCI_NEGATIVE = "click - tambah kata kunci 
 
 class NegKeywordTabFragment : BaseDaggerFragment() {
 
+    private lateinit var adapter: NegKeywordAdapter
+    private val groupId by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getInt(TopAdsDashboardConstant.GROUP_ID, 0).toString()
+    }
+
     companion object {
         fun createInstance(bundle: Bundle): NegKeywordTabFragment {
             val frag = NegKeywordTabFragment()
@@ -70,7 +75,6 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     private var loader: LoaderUnify? = null
     private lateinit var recyclerView: RecyclerView
 
-    private lateinit var adapter: NegKeywordAdapter
     private var deleteCancel = false
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
@@ -222,10 +226,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 delay(TOASTER_DURATION)
                 if (activity != null && isAdded) {
                     if (!deleteCancel) {
-                        viewModel.setKeywordAction(actionActivate,
-                            getAdIds(),
-                            resources,
-                            ::onSuccessAction)
+                        viewModel.setKeywordActionForGroup(groupId, actionActivate, getAdIds(), resources, ::onSuccessAction)
                         activity?.setResult(Activity.RESULT_OK)
                     }
                     deleteCancel = false
@@ -233,7 +234,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 }
             }
         } else {
-            viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+            viewModel.setKeywordActionForGroup(groupId, actionActivate, getAdIds(), resources, ::onSuccessAction)
         }
     }
 

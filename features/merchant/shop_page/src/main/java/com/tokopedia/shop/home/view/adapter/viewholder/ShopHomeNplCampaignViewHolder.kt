@@ -121,7 +121,7 @@ class ShopHomeNplCampaignViewHolder(
             if (productList.isNotEmpty()) {
                 layoutParams?.width = clickableBannerAreaWidth
                 setOnClickListener {
-                    shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(model)
+                    shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(model, adapterPosition)
                 }
                 show()
             } else {
@@ -155,9 +155,11 @@ class ShopHomeNplCampaignViewHolder(
                     adapter = productListCampaignAdapter
                     setHeightBasedOnProductCardMaxHeight(productList.map {
                         ShopPageHomeMapper.mapToProductCardCampaignModel(
-                                isHasAddToCartButton = false,
-                                hasThreeDots = false,
-                                shopHomeProductViewModel = it
+                            isHasAddToCartButton = false,
+                            hasThreeDots = false,
+                            shopHomeProductViewModel = it,
+                            widgetName = model.name,
+                            statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
                         )
                     })
                 } catch (throwable: Exception) {

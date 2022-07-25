@@ -16,7 +16,7 @@ class FeedFloatingButtonManager {
     private val scope = CoroutineScope(dispatchers.computation)
     private var job: Job? = null
 
-    private lateinit var mParentFragment: Fragment
+    private var mParentFragment: Fragment? = null
 
     val scrollListener = object : RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -38,7 +38,7 @@ class FeedFloatingButtonManager {
         }
     }
 
-    fun setInitialData(parentFragment: Fragment) {
+    fun setInitialData(parentFragment: Fragment?) {
         mParentFragment = parentFragment
     }
 
@@ -65,13 +65,13 @@ class FeedFloatingButtonManager {
     }
 
     private fun expandFab() {
-        if(::mParentFragment.isInitialized && mParentFragment is FeedPlusContainerListener) {
+        if(mParentFragment != null && mParentFragment is FeedPlusContainerListener) {
             (mParentFragment as FeedPlusContainerListener).expandFab()
         }
     }
 
     fun shrinkFab() {
-        if(::mParentFragment.isInitialized && mParentFragment is FeedPlusContainerListener) {
+        if(mParentFragment != null && mParentFragment is FeedPlusContainerListener) {
             (mParentFragment as FeedPlusContainerListener).shrinkFab()
         }
     }

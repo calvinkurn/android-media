@@ -63,7 +63,7 @@ object UserProfileVideoMapper {
                     partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
                     video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
                     channelType = channelType,
-                    hasGiveaway = mapHasGiveaway(item.configurations.promoLabels),
+                    hasGame = mapHasGame(item.configurations.promoLabels),
                     //TODO later
                     share = PlayWidgetShareUiModel("", false),
                     performanceSummaryLink = performanceSummaryLink,
@@ -78,7 +78,7 @@ object UserProfileVideoMapper {
         }
     }
 
-    private fun mapHasGiveaway(promoLabels: List<PostPromoLabel>): Boolean {
+    private fun mapHasGame(promoLabels: List<PostPromoLabel>): Boolean {
         return promoLabels.firstOrNull { it.text == HADIAH } != null
     }
 
