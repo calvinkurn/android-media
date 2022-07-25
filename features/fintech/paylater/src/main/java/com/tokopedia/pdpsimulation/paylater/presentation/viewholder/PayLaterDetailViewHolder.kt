@@ -84,6 +84,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             itemView.payLaterActionCta.gone()
             itemView.llBenefits.gone()
             itemView.payLaterStatusTicker.visible()
+            itemView.disableTitleDetail()
             itemView.payLaterStatusTicker.setHtmlDescription(element.paylaterDisableDetail.header.orEmpty())
         } else {
             itemView.payLaterActionCta.visible()
@@ -98,7 +99,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         element.benefits?.forEach {
             val typography = Typography(itemView.context)
             typography.text = it
-            typography.setType(Typography.BODY_3)
+            typography.setType(Typography.DISPLAY_3)
             typography.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
@@ -159,4 +160,15 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             linkingStatus = detail.linkingStatus ?: ""
             action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
         }
+}
+
+private fun View.disableTitleDetail() {
+
+    this.tvTitlePaymentPartner.setTextColor( ContextCompat.getColor(
+        this.context,com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+    this.tvInstallmentAmount.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+    this.tvTenureMultiplier.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+    this.partnerTenureInfo.isEnabled = false
 }
