@@ -2,6 +2,7 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_component.model.DynamicChannelLayout
@@ -9,21 +10,19 @@ import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.officialstore.OfficialHomeMapper
 import com.tokopedia.officialstore.TopAdsHeadlineConstant.PAGE
 import com.tokopedia.officialstore.TopAdsHeadlineConstant.SEEN_ADS
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.handleResult
+import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
-import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
-import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
-import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
-import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -43,7 +42,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -67,8 +65,17 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase,
         private val bestSellerMapper: BestSellerMapper,
         private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
-        private val dispatchers: CoroutineDispatchers
+        private val dispatchers: CoroutineDispatchers,
+        private val listener: FeaturedShopListener
 ) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        private const val BANNER_POSITION = 0
+        private const val BENEFIT_POSITION = 1
+        private const val FEATURE_SHOP_POSITION = 2
+        private const val RECOM_WIDGET_POSITION = 3
+        private const val WIDGET_NOT_FOUND = -1
+    }
 
     var currentSlug: String = ""
         private set
@@ -80,44 +87,24 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     val impressedShop = mutableMapOf<String, MutableSet<String>>()
 
-    //Pair first -> should show error message
-    //Pair second -> official store banner value
-    val officialStoreBannersResult: LiveData<Pair<Boolean, Result<OfficialStoreBanners>>>
-        get() = _officialStoreBannersResult
+    private var _officialStoreListVisitable = mutableListOf<Visitable<*>>()
 
-    val officialStoreBenefitsResult: LiveData<Result<OfficialStoreBenefits>>
-        get() = _officialStoreBenefitResult
+    val officialStoreLiveData: LiveData<OfficialStoreDataModel>
+        get() = _officialStoreLiveData
+    private val _officialStoreLiveData: MutableLiveData<OfficialStoreDataModel> = MutableLiveData(OfficialStoreDataModel(
+        dataList = _officialStoreListVisitable
+    ))
 
-    val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>>
-        get() = _officialStoreFeaturedShopResult
-
-    val officialStoreDynamicChannelResult: LiveData<Result<List<OfficialStoreChannel>>>
-        get() = _officialStoreDynamicChannelResult
+    val officialStoreError : LiveData<Throwable>
+        get() = _officialStoreError
+    private val _officialStoreError : MutableLiveData<Throwable> = MutableLiveData()
 
     val topAdsWishlistResult: LiveData<Result<WishlistModel>>
         get() = _topAdsWishlistResult
 
-    private val _officialStoreBannersResult by lazy {
-        MutableLiveData<Pair<Boolean, Result<OfficialStoreBanners>>>()
-    }
-
-    private val _officialStoreBenefitResult by lazy {
-        MutableLiveData<Result<OfficialStoreBenefits>>()
-    }
-
-    private val _officialStoreFeaturedShopResult by lazy {
-        MutableLiveData<Result<OfficialStoreFeaturedShop>>()
-    }
-
-    val featuredShopResult: LiveData<Result<FeaturedShopDataModel>>
-        get() = _featuredShopResult
-    val _featuredShopResult by lazy { MutableLiveData<Result<FeaturedShopDataModel>>() }
-
     val featuredShopRemove: LiveData<FeaturedShopDataModel>
         get() = _featuredShopRemove
     val _featuredShopRemove by lazy { MutableLiveData<FeaturedShopDataModel>() }
-
-    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<List<OfficialStoreChannel>>>()
 
     private val _productRecommendation = MutableLiveData<Result<ProductRecommendationWithTopAdsHeadline>>()
     val productRecommendation: LiveData<Result<ProductRecommendationWithTopAdsHeadline>>
@@ -131,7 +118,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val recomWidget: LiveData<Result<BestSellerDataModel>>
         get() = _recomWidget
 
-    fun loadFirstData(category: Category?, location: String = "",
+    fun loadFirstDataRevamp(category: Category?, location: String = "",
                       onBannerCacheStartLoad: () -> Unit = {},
                       onBannerCacheStopLoad: () -> Unit = {},
                       onBannerCloudStartLoad: () -> Unit = {},
@@ -142,18 +129,16 @@ class OfficialStoreHomeViewModel @Inject constructor(
             currentSlugDC = category?.slug ?: ""
             onBannerCacheStartLoad.invoke()
             onBannerCloudStartLoad.invoke()
-            _officialStoreBannersResult.value =
-                Pair(false, getOfficialStoreBanners(currentSlug, true, onBannerCacheStopLoad))
-            _officialStoreBannersResult.value =
-                Pair(true, getOfficialStoreBanners(currentSlug, false, onBannerCloudStopLoad))
-            _officialStoreBenefitResult.value = getOfficialStoreBenefit()
-            _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
+            getOfficialStoreBannersRevamp(currentSlug, true, category?.title, onBannerCacheStopLoad)
+            getOfficialStoreBannersRevamp(currentSlug, false, category?.title, onBannerCloudStopLoad)
+            getOfficialStoreBenefitRevamp()
+            getOfficialStoreFeaturedShopRevamp(
+                categoryId, category?.title, listener
+            )
 
-            getOfficialStoreDynamicChannel(currentSlug, location)
+            getOfficialStoreDynamicChannelRevamp(currentSlug, location)
         }) {
-            _officialStoreBannersResult.value = Pair(true, Fail(it))
-            _officialStoreBenefitResult.value = Fail(it)
-            _officialStoreFeaturedShopResult.value = Fail(it)
+            _officialStoreError.value = it
         }
     }
 
@@ -209,67 +194,134 @@ class OfficialStoreHomeViewModel @Inject constructor(
         return count.toString()
     }
 
-    private suspend fun getOfficialStoreBanners(
+    private suspend fun getOfficialStoreBannersRevamp(
         categoryId: String,
         isCache: Boolean,
+        categoryName: String?,
         onCompleteInvokeData: () -> Unit
-    ): Result<OfficialStoreBanners> {
-        return withContext(dispatchers.io) {
+    ) {
+        withContext(dispatchers.io) {
             try {
                 getOfficialStoreBannersUseCase.params =
                     GetOfficialStoreBannerUseCase.createParams(categoryId)
                 val banner = getOfficialStoreBannersUseCase.executeOnBackground(isCache)
                 banner.isCache = isCache
                 onCompleteInvokeData.invoke()
-                Success(banner)
+                if (banner.banners.isNotEmpty()) {
+                    val newList = mutableListOf<Visitable<*>>()
+                    val officialBanner = OfficialBannerDataModel(banner.banners, categoryName.toEmptyStringIfNull())
+                    _officialStoreListVisitable.forEach {
+                        if (it is OfficialBannerDataModel) {
+                            newList.add(officialBanner)
+                        }
+                        else if (it !is OfficialLoadingMoreDataModel && it !is OfficialLoadingDataModel){
+                            newList.add(it)
+                        }
+                    }
+                    val isOfficialBannerDataNotExist = _officialStoreListVisitable.indexOfFirst { it is OfficialBannerDataModel } == OfficialHomeMapper.WIDGET_NOT_FOUND
+                    if (isOfficialBannerDataNotExist) {
+                        // baru to be checked
+                        newList.add(BANNER_POSITION, officialBanner)
+                    }
+                    _officialStoreListVisitable = newList
+                    _officialStoreLiveData.value = OfficialStoreDataModel(_officialStoreListVisitable)
+                }
             } catch (t: Throwable) {
                 onCompleteInvokeData.invoke()
-                Fail(t)
             }
         }
     }
 
-    private suspend fun getOfficialStoreBenefit(): Result<OfficialStoreBenefits> {
-        return withContext(dispatchers.io) {
+    private suspend fun getOfficialStoreBenefitRevamp() {
+        withContext(dispatchers.io) {
             try {
                 val benefits = getOfficialStoreBenefitUseCase.executeOnBackground()
-                Success(benefits)
+                val newList = mutableListOf<Visitable<*>>()
+                val benefit = OfficialBenefitDataModel(benefits.benefits)
+                _officialStoreListVisitable.toMutableList().forEach {
+                    if(it is OfficialBenefitDataModel) {
+                        newList.add(benefit)
+                    }
+                    else {
+                        newList.add(it)
+                    }
+                }
+                val isBenefitNotExisted = newList.indexOfFirst { it is OfficialBenefitDataModel } == OfficialHomeMapper.WIDGET_NOT_FOUND
+                if(isBenefitNotExisted) {
+                    if(newList.size > OfficialHomeMapper.BENEFIT_POSITION) {
+                        newList.add(OfficialHomeMapper.BENEFIT_POSITION, benefit)
+                    }
+                    else {
+                        newList.add(benefit)
+                    }
+                }
+                _officialStoreListVisitable = newList
+                _officialStoreLiveData.value = OfficialStoreDataModel(_officialStoreListVisitable)
             } catch (t: Throwable) {
-                Fail(t)
+                _officialStoreError.value = t
             }
         }
     }
 
-    private suspend fun getOfficialStoreFeaturedShop(categoryId: Int): Result<OfficialStoreFeaturedShop> {
-        return withContext(dispatchers.io) {
+    private suspend fun getOfficialStoreFeaturedShopRevamp(
+        categoryId: Int, categoryName: String?, listener: FeaturedShopListener
+    ) {
+        withContext(dispatchers.io) {
             try {
                 getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.createParams(categoryId)
                 val featuredShop = getOfficialStoreFeaturedShopUseCase.executeOnBackground()
-                Success(featuredShop)
+                val newList = mutableListOf<Visitable<*>>()
+                val officialFeaturedShop = OfficialFeaturedShopDataModel(
+                    featuredShop.featuredShops,
+                    featuredShop.header,
+                    categoryName.toEmptyStringIfNull(),
+                    listener
+                )
+                _officialStoreListVisitable.forEach {
+                    if(it is OfficialFeaturedShopDataModel) {
+                        newList.add(officialFeaturedShop)
+                    }
+                    else {
+                        newList.add(it)
+                    }
+                }
+                val isOfficialFeaturedShopNotExisted = newList.indexOfFirst { it is OfficialFeaturedShopDataModel } == OfficialHomeMapper.WIDGET_NOT_FOUND
+                if (isOfficialFeaturedShopNotExisted && newList.size > OfficialHomeMapper.FEATURE_SHOP_POSITION) {
+                    newList.add(OfficialHomeMapper.FEATURE_SHOP_POSITION, officialFeaturedShop)
+                }
+                else {
+                    newList.add(officialFeaturedShop)
+                }
+                _officialStoreListVisitable = newList
+                _officialStoreLiveData.value = OfficialStoreDataModel(_officialStoreListVisitable)
             } catch (t: Throwable) {
-                Fail(t)
+                _officialStoreError.value = t
             }
         }
     }
 
-    private fun getOfficialStoreDynamicChannel(channelType: String, location: String) {
+    private fun getOfficialStoreDynamicChannelRevamp(channelType: String, location: String) {
         launchCatchError(coroutineContext, block = {
             getOfficialStoreDynamicChannelUseCase.setupParams(channelType, location)
             val result = getOfficialStoreDynamicChannelUseCase.executeOnBackground()
-            _officialStoreDynamicChannelResult.postValue(Success(result))
+            val newList = OfficialHomeMapper.mappingDynamicChannel(result, _officialStoreListVisitable)
+
             result.forEach {
                 //call external api
                 if (it.channel.layout == DynamicChannelLayout.LAYOUT_FEATURED_SHOP) {
                     getDisplayTopAdsHeader(FeaturedShopDataModel(
-                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(it.channel, 0)))
+                        OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(it.channel, 0)))
                     isFeaturedShopAllowed = true
                 }
                 if (it.channel.layout == DynamicChannelLayout.LAYOUT_BEST_SELLING){
                     fetchRecomWidgetData(it.channel.pageName,  it.channel.widgetParam, it.channel.id)
                 }
             }
+
+            _officialStoreListVisitable = newList
+            _officialStoreLiveData.value = OfficialStoreDataModel(_officialStoreListVisitable)
         }){
-            _officialStoreDynamicChannelResult.postValue(Fail(it))
+            _officialStoreError.value = it
         }
     }
 
@@ -381,31 +433,31 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
-        launchCatchError(coroutineContext, block={
-            getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
-            val data = getDisplayHeadlineAds.executeOnBackground()
-            if (data.isEmpty()) {
-                _featuredShopResult.value = Success(
-                    featuredShopDataModel.copy(
-                        state = FeaturedShopDataModel.STATE_READY,
-                        page = featuredShopDataModel.page
-                    )
-                )
-                isFeaturedShopAllowed = false
-            } else {
-                _featuredShopResult.value = Success(
-                    featuredShopDataModel.copy(
-                        channelModel = featuredShopDataModel.channelModel.copy(
-                            channelGrids = data.mappingTopAdsHeaderToChannelGrid()
-                        ),
-                        state = FeaturedShopDataModel.STATE_READY,
-                        page = featuredShopDataModel.page
-                    )
-                )
-            }
-        }){
-            _featuredShopRemove.value = featuredShopDataModel
-        }
+//        launchCatchError(coroutineContext, block={
+//            getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
+//            val data = getDisplayHeadlineAds.executeOnBackground()
+//            if (data.isEmpty()) {
+//                _featuredShopResult.value = Success(
+//                    featuredShopDataModel.copy(
+//                        state = FeaturedShopDataModel.STATE_READY,
+//                        page = featuredShopDataModel.page
+//                    )
+//                )
+//                isFeaturedShopAllowed = false
+//            } else {
+//                _featuredShopResult.value = Success(
+//                    featuredShopDataModel.copy(
+//                        channelModel = featuredShopDataModel.channelModel.copy(
+//                            channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+//                        ),
+//                        state = FeaturedShopDataModel.STATE_READY,
+//                        page = featuredShopDataModel.page
+//                    )
+//                )
+//            }
+//        }){
+//            _featuredShopRemove.value = featuredShopDataModel
+//        }
     }
 
     fun resetIsFeatureShopAllowed() {
@@ -436,4 +488,47 @@ class OfficialStoreHomeViewModel @Inject constructor(
         getDisplayHeadlineAds.cancelJobs()
     }
 
+    // ============================================================================================
+    // ================================ Live Data Controller ======================================
+    // ============================================================================================
+
+    private fun updateWidget(visitable: Visitable<*>, position: Int) {
+        val newMainNavList = _officialStoreListVisitable
+        newMainNavList[position] = visitable
+        _officialStoreListVisitable = newMainNavList
+        _officialStoreLiveData.postValue(_officialStoreLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
+    }
+
+    private fun addWidgetList(visitables: List<Visitable<*>>, position: Int) {
+        val newMainNavList = _officialStoreListVisitable
+        newMainNavList.addAll(position, visitables)
+        _officialStoreListVisitable = newMainNavList
+        _officialStoreLiveData.postValue(_officialStoreLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
+    }
+
+    private fun deleteWidget(visitable: Visitable<*>) {
+        val newMainNavList = _officialStoreListVisitable.toMutableList()
+        newMainNavList.remove(visitable)
+        _officialStoreListVisitable = newMainNavList
+        _officialStoreLiveData.postValue(_officialStoreLiveData.value?.copy(dataList = newMainNavList))
+    }
+
+    private fun deleteWidgetList(visitables: List<Visitable<*>>) {
+        val newMainNavList = _officialStoreListVisitable.toMutableList()
+        newMainNavList.removeAll(visitables)
+        _officialStoreListVisitable = newMainNavList
+        _officialStoreLiveData.postValue(_officialStoreLiveData.value?.copy(dataList = newMainNavList))
+    }
+
+    private inline fun <reified T> findWidget(
+        predicate: (T?) -> Boolean = {true},
+        actionOnFound: (T, Int) -> Unit) {
+        _officialStoreListVisitable.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
+            for(visitable in it) {
+                if (visitable.value is T) {
+                    actionOnFound.invoke(visitable.value as T, visitable.index)
+                }
+            }
+        }
+    }
 }
