@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -35,8 +34,6 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.switch
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -292,6 +289,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
+
+    private var coolDownTimerJob: Job? = null
 
     private val liveViewStateListener = object : PlayLiveViewStateListener {
         override fun onLivePusherViewStateChanged(viewState: PlayLiveViewState) {
@@ -1564,6 +1563,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val result = repo.setPinProduct(channelId, product.id)
             if(result) {
                 updatePinProduct(product = product)
+                addCoolDown()
             } else {
                 throw MessageErrorException("Gagal pin product")
             }
@@ -1587,6 +1587,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun addCoolDown() {
+        coolDownTimerJob?.cancel()
+        coolDownTimerJob = viewModelScope.launch(dispatcher.computation) {
+            delay(COOLDOWN_TIMER)
+        }
+    }
+
+    fun getCoolDownStatus() : Boolean = coolDownTimerJob?.isActive ?: false
+
     companion object {
 
         private const val UI_STATE_STOP_TIMEOUT = 5000L
@@ -1597,6 +1606,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
 
         private const val START_LIVE_TIMER_DELAY = 1000L
+        private const val COOLDOWN_TIMER = 5000L
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
         private const val DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE = 5L
