@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.feedcomponent.R as feedComponentR
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -679,6 +681,10 @@ class CDPPostContentTypeViewHolder  @JvmOverloads constructor(
 //            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, mediaType, playChannelId=playChannelId, isClickIcon = true)
         }
     }
+    fun bindImageOnImpress(){
+        adapter.focusItemAt(mData.lastCarouselIndex)
+
+    }
 
     private fun bindItems(
         feedXCard: FeedXCard,
@@ -1047,6 +1053,14 @@ class CDPPostContentTypeViewHolder  @JvmOverloads constructor(
         ) else caption.length
     }
 
+    fun playVOD(feedXCard: FeedXCard, position: Int = feedXCard.lastCarouselIndex) {
+        if (feedXCard.media[position].canPlay) {
+            val feedMedia = feedXCard.media[position]
+            val vodItem = feedMedia.vodView
+            vodItem?.setVODControl(GridPostAdapter.isMute)
+        }
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         adapter.removeAllFocus(pageControl.indicatorCurrentPosition)
@@ -1060,6 +1074,16 @@ class CDPPostContentTypeViewHolder  @JvmOverloads constructor(
         }
         scrollHostCarousel.setTargetParent(parent)
         adapter.focusItemAt(mData.lastCarouselIndex)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    internal fun onResume() {
+        adapter.focusItemAt(pageControl.indicatorCurrentPosition)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    internal fun onPause() {
+        adapter.onPause()
     }
 
 

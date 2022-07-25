@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.view.adapter
 
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseAdapterDelegate
@@ -25,6 +26,8 @@ class CDPRevampAdapter(
     override fun areContentsTheSame(oldItem: FeedXCard, newItem: FeedXCard): Boolean {
         return oldItem == newItem
     }
+    fun getList() = itemList
+
 
     private class CDPPostDelegate(
         private val dataSource: DataSource,
@@ -33,6 +36,20 @@ class CDPRevampAdapter(
         R.layout.item_cdp_revamp_view) {
         override fun onBindViewHolder(item: FeedXCard, holder: CDPPostViewHolder) {
             holder.bind(feedXCard = item)
+        }
+
+        override fun onBindViewHolderWithPayloads(
+            item: FeedXCard,
+            holder: CDPPostViewHolder,
+            payloads: Bundle
+        ) {
+            if (payloads.isEmpty) super.onBindViewHolderWithPayloads(item, holder, payloads)
+            else {
+                if (payloads.containsKey(IMAGE_ITEM_IMPRESSED) || payloads.containsKey(
+                        VOD_ITEM_IMPRESSED)) {
+                    holder.bindWithPayloads(item, payloads)
+                }
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): CDPPostViewHolder {
@@ -46,6 +63,11 @@ class CDPRevampAdapter(
         ): Boolean {
             return true
         }
+    }
+    companion object{
+        private const val IMAGE_ITEM_IMPRESSED = "image_item_impressed"
+        private const val VOD_ITEM_IMPRESSED = "vod_item_impressed"
+
     }
 
     interface DataSource {

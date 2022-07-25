@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent
@@ -142,6 +143,21 @@ class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(view, dx, dy)
 
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                try {
+                    when (newState) {
+                            RecyclerView.SCROLL_STATE_IDLE -> {
+                                FeedScrollListenerNew.onCDPScrolled(
+                                    recyclerView,
+                                    adapter.getList()
+                                )
+                            }
+                        }
+                } catch (e: IndexOutOfBoundsException) {
+                }
             }
         }
     }
