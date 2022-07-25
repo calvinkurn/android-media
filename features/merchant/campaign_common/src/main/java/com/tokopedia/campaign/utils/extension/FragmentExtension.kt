@@ -1,5 +1,6 @@
 package com.tokopedia.campaign.utils.extension
 
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.ApplinkConst
@@ -24,4 +25,11 @@ fun Fragment.routeToUrl(url : String) {
     val encodedUrl = URLEncoder.encode(url, "UTF-8")
     val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
     RouteManager.route(activity ?: return, route)
+}
+
+fun Fragment.applyUnifyBackgroundColor() {
+    activity?.run {
+        val backgroundColor = ContextCompat.getColor(context ?: return, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+        window.decorView.setBackgroundColor(backgroundColor)
+    }
 }
