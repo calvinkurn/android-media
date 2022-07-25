@@ -111,6 +111,7 @@ class AccountHeaderMapper(
                 data.profileSellerDataModel.isGetShopError = isShopDataError
                 data.profileAffiliateDataModel.isGetAffiliateError = isAffiliateError
                 data.profileMembershipDataModel.isGetUserMembershipError = isGetTokopointsError
+                data.tokopediaPlusDataModel.isGetTokopediaPlusLoading = false
                 data.tokopediaPlusDataModel.tokopediaPlusError = tokopediaPlusError
                 // extra case when tokopoint null and ab is false
                 if(data.profileMembershipDataModel.isTokopointExternalAmountError){
