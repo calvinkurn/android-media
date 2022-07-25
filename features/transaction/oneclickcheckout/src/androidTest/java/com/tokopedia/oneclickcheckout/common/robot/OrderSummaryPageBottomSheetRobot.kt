@@ -72,15 +72,7 @@ class OrderPriceSummaryBottomSheetRobot {
                 assertEquals(insurancePrice, (view as Typography).text)
             }
         }
-//        onView(withId(R.id.tv_total_payment_fee_price_value)).check { view, noViewFoundException ->
-//            noViewFoundException?.printStackTrace()
-//            if (paymentFee == null) {
-//                assertEquals(View.GONE, view.visibility)
-//            } else {
-//                assertEquals(View.VISIBLE, view.visibility)
-//                assertEquals(paymentFee, (view as Typography).text)
-//            }
-//        }
+
         if (paymentFeeDetails.isEmpty() && !isInstallment) {
             onView(withId(R.id.divider_transaction_fee)).check(matches(not(isDisplayed())))
             onView(withId(R.id.tv_transaction_fee)).check(matches(not(isDisplayed())))
@@ -107,12 +99,7 @@ class OrderPriceSummaryBottomSheetRobot {
                     else {
                         assertEquals(View.INVISIBLE, clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_slash_price_value).visibility)
                     }
-//                    if (isInstallment && i == 0) {
-//                        assertEquals(paymentFee ?: "Rp0", clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_price_value).text.toString())
-//                    }
-//                    else {
                     assertEquals(CurrencyFormatUtil.convertPriceValueToIdrFormat(orderPaymentFee.fee, false).removeDecimalSuffix(), clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_price_value).text.toString())
-//                    }
                 }
             }
         }
@@ -130,6 +117,22 @@ class OrderPriceSummaryBottomSheetRobot {
         onView(withId(R.id.tv_total_installment_per_period_value)).check(matches(withText(installmentPerPeriod)))
         onView(withId(R.id.tv_total_installment_first_date_value)).check(matches(withText(installmentFirstDate)))
         onView(withId(R.id.tv_total_installment_last_date_value)).check(matches(withText(installmentLastDate)))
+    }
+
+    fun clickPaymentFeeInfo(index: Int, func: OrderPriceSummaryBottomSheetRobot.() -> Unit) {
+        onView(withId(R.id.ll_payment_fee)).check { view, _ ->
+            val llPaymentFee = (view as ViewGroup)
+            if (llPaymentFee.childCount > 0) {
+                val clPaymentFeeView = (llPaymentFee.getChildAt(index)) as ViewGroup
+                clPaymentFeeView.findViewById<IconUnify>(R.id.img_payment_fee_info).performClick()
+            }
+        }
+        OrderPriceSummaryBottomSheetRobot().apply(func)
+    }
+
+    fun assertPaymentFeeBottomSheetInfo(tooltipTitle: String, tooltipInfo: String) {
+        onView(withId(R.id.bottom_sheet_title)).check(matches(withText(tooltipTitle)))
+        onView(withId(R.id.tv_info)).check(matches(withText(tooltipInfo)))
     }
 
     fun closeBottomSheet() {

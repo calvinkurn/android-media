@@ -10,6 +10,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.CREDIT_CARD_TENOR_LIST_ALL_ENABLED_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_AFPB_PAYMENT_FEE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_CREDIT_CARD_AFPB_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
@@ -89,6 +90,71 @@ class OrderSummaryPageActivityCreditCardAfpbTest {
                     redirectUrl = "https://www.tokopedia.com/payment",
                     queryString = "transaction_id=123",
                     method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun happyFlow_WithPaymentFee() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CREDIT_CARD_AFPB_PAYMENT_FEE_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+
+            assertInstallmentRevamp("Bayar Penuh")
+
+            assertPayment("Rp517.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                    productPrice = "Rp500.000",
+                    shippingPrice = "Rp16.000",
+                    insurancePrice = "Rp0",
+                    totalPrice = "Rp517.000",
+                    isInstallment = true,
+                    paymentFeeDetails = listOf(
+                        OrderPaymentFee(
+                            title = "Biaya Layanan",
+                            tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                            fee = 0.0,
+                            showTooltip = true
+                        ),
+                        OrderPaymentFee(
+                            fee = 1000.0,
+                            showSlashed = true,
+                            showTooltip = true,
+                            slashedFee = 2000,
+                            title = "Biaya Jasa Aplikasi",
+                            tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu.",
+                        )
+                    )
+                )
+                clickPaymentFeeInfo(index = 0) {
+                    assertPaymentFeeBottomSheetInfo(
+                        tooltipTitle = "Tentang biaya layanan",
+                        tooltipInfo = "Biaya ini dikenakan khusus pembayaran dengan metode tertentu."
+                    )
+                }
+
+                closeBottomSheet()
+
+                clickPaymentFeeInfo(index = 1) {
+                    assertPaymentFeeBottomSheetInfo(
+                        tooltipTitle = "Tentang biaya jasa aplikasi",
+                        tooltipInfo = "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu."
+                    )
+                }
+                closeBottomSheet()
+
+                closeBottomSheet()
+            }
+        } pay {
+            assertGoToPayment(
+                redirectUrl = "https://www.tokopedia.com/payment",
+                queryString = "transaction_id=123",
+                method = "POST"
             )
         }
     }
