@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
+package com.tokopedia.search.result.product.lastfilter
 
 import android.graphics.drawable.Drawable
 import android.view.View
@@ -8,8 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductLastFilterViewHolderBinding
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
-import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.utils.view.binding.viewBinding
 import timber.log.Timber
 
@@ -29,7 +27,7 @@ class LastFilterViewHolder(
     override fun bind(element: LastFilterDataView) {
         val binding = binding ?: return
 
-        binding.root.addOnImpressionListener(element.impressHolder) {
+        binding.root.addOnImpressionListener(element) {
             lastFilterListener.onImpressedLastFilter(element)
         }
         binding.searchLastFilterHeaderView.safeSetBackground(getSearchLastFilterHeader())
