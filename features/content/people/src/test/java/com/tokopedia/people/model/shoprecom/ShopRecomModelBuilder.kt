@@ -6,11 +6,8 @@ import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 class ShopRecomModelBuilder {
 
     val mockItemId: Long = 12345
-    val mockOwnUserId = "1"
-    val mockOtherUserId = "2"
-    val mockOwnUsername = "fachrizalmrsln"
 
-    fun buildModel(): ShopRecomUiModel {
+    fun buildModelIsShown(): ShopRecomUiModel {
         return ShopRecomUiModel(
             isShown = true,
             nextCursor = "",

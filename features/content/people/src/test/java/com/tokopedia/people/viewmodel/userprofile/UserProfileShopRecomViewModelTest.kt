@@ -44,9 +44,10 @@ class UserProfileShopRecomViewModelTest {
     private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
     private val mockShopRecom = shopRecomBuilder.buildModel()
     private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
-    private val mockOwnUserId = shopRecomBuilder.mockOwnUserId
-    private val mockOtherUserId = shopRecomBuilder.mockOtherUserId
-    private val mockOwnUsername = shopRecomBuilder.mockOwnUsername
+    private val mockOwnUserId = "1"
+    private val mockOtherUserId = "2"
+    private val mockOwnUsername = "fachrizalmrsln"
+    private val mockOtherUsername = "jonathandarwin"
     private val mockItemId = shopRecomBuilder.mockItemId
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(
         userID = mockOwnUserId,
