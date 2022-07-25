@@ -95,7 +95,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOwnFollow
                 profileType equalTo ProfileType.NotLoggedIn
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
-                shopRecom equalTo emptyList()
+                shopRecom.items equalTo emptyList()
             }
         }
     }
@@ -122,7 +122,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOwnFollow
                 profileType equalTo ProfileType.Self
                 profileWhitelist equalTo mockHasAcceptTnc
-                shopRecom equalTo mockShopRecom.items
+                shopRecom.items equalTo mockShopRecom.items
             }
         }
     }
@@ -147,7 +147,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOtherNotFollow
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
-                shopRecom equalTo emptyList()
+                shopRecom.items equalTo emptyList()
             }
         }
     }
@@ -172,7 +172,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOtherFollowed
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
-                shopRecom equalTo emptyList()
+                shopRecom.items equalTo emptyList()
             }
         }
     }
@@ -198,7 +198,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOtherFollowed
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
-                shopRecom equalTo emptyList()
+                shopRecom.items equalTo emptyList()
             }
         }
     }
@@ -224,7 +224,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo FollowInfoUiModel.Empty
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
-                shopRecom equalTo emptyList()
+                shopRecom.items equalTo emptyList()
             }
         }
     }

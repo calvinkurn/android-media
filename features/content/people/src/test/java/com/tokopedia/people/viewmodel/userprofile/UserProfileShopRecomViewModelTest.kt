@@ -1,7 +1,7 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
@@ -84,8 +84,8 @@ class UserProfileShopRecomViewModelTest {
 
                 robot.viewModel.isShopRecomShow.assertTrue()
             } andThen { state, _ ->
-                state.shopRecom.size equalTo 10
-                state.shopRecom equalTo mockShopRecom.items
+                state.shopRecom.items.size equalTo 10
+                state.shopRecom equalTo mockShopRecom
             }
         }
     }
@@ -101,8 +101,8 @@ class UserProfileShopRecomViewModelTest {
 
                 robot.viewModel.isShopRecomShow.assertFalse()
             } andThen { state, _ ->
-                state.shopRecom.assertEmpty()
-                state.shopRecom equalTo emptyList()
+                state.shopRecom.items.assertEmpty()
+                state.shopRecom equalTo ShopRecomUiModel()
             }
         }
     }
@@ -118,7 +118,7 @@ class UserProfileShopRecomViewModelTest {
 
                 robot.viewModel.isShopRecomShow.assertFalse()
             } andThen { state, events ->
-                state.shopRecom.assertEmpty()
+                state.shopRecom.items.assertEmpty()
                 events.last().assertEvent(UserProfileUiEvent.ErrorLoadProfile(Throwable("any throwable")))
             }
         }
