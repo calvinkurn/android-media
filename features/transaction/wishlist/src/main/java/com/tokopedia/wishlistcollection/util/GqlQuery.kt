@@ -132,6 +132,7 @@ package com.tokopedia.wishlistcollection.util
                     query
                     has_next_page
                     total_data
+                    count_removable_items
                     show_empty_state_on_bottomsheet
                     empty_state {
                       type
@@ -146,6 +147,27 @@ package com.tokopedia.wishlistcollection.util
                         url
                       }
                     }
+                    ticker {
+                        message
+                        type
+                        button {
+                            text
+                            action
+                        }
+                    }
+                    storage_cleaner_bottomsheet {
+                        title
+                        description
+                        options {
+                            name
+                            description
+                            action
+                        }
+                        button {
+                            text
+                        }
+                    }
+                    show_delete_progress
                     has_collection
                     setting {
                         buttons {
