@@ -329,11 +329,14 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun observerUploadPrescriptionError() {
         uploadPrescriptionViewModel.uploadError.observe(viewLifecycleOwner,{ error ->
-            sendUploadImageFailedEvent()
             when(error){
+                is EPharmacyNoInternetError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
                 is EPharmacyUploadBackendError -> showToast(error.errMsg)
                 is EPharmacyUploadEmptyImageError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
                 is EPharmacyUploadNoPrescriptionIdError -> showToast(context?.resources?.getString(R.string.epharmacy_upload_error) ?: "")
+            }
+            if(error !is EPharmacyNoInternetError){
+                sendUploadImageFailedEvent()
             }
         })
     }

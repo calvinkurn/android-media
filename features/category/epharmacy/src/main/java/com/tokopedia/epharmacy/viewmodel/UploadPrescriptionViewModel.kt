@@ -15,6 +15,7 @@ import com.tokopedia.epharmacy.network.response.EPharmacyUploadPrescriptionIdsRe
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
 import com.tokopedia.epharmacy.usecase.*
 import com.tokopedia.epharmacy.utils.*
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,6 +23,8 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class UploadPrescriptionViewModel @Inject constructor(
@@ -204,7 +207,10 @@ class UploadPrescriptionViewModel @Inject constructor(
         launchCatchError(block = {
             uploadImageToServer(uniquePositionId, path)
         }, onError = {
-            uploadFailed(uniquePositionId , EPharmacyUploadBackendError(it.message ?: ""))
+            when(it){
+                is UnknownHostException, is SocketTimeoutException -> uploadFailed(uniquePositionId , EPharmacyNoInternetError(true))
+                else -> uploadFailed(uniquePositionId , EPharmacyUploadBackendError(it.message ?: ""))
+            }
         })
 
     }
