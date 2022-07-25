@@ -15,11 +15,11 @@ import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkAcceptOrderUseC
 import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkRequestPickupUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetBulkAcceptOrderStatusUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetFilterListUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetHeaderIconsInfoUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetMultiShippingStatusUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetOrderListUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTickerUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTopAdsCategoryUseCase
-import com.tokopedia.sellerorder.list.domain.usecases.SomListGetWaitingPaymentUseCase
 import com.tokopedia.sellerorder.list.presentation.models.AllFailEligible
 import com.tokopedia.sellerorder.list.presentation.models.AllNotEligible
 import com.tokopedia.sellerorder.list.presentation.models.AllSuccess
@@ -34,8 +34,8 @@ import com.tokopedia.sellerorder.list.presentation.models.RefreshOrder
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderStatusUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkRequestPickupUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListHeaderIconsInfoUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
-import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
 import com.tokopedia.sellerorder.util.TestHelper
 import com.tokopedia.sellerorder.util.TestHelper.invokeSuspend
 import com.tokopedia.sellerorder.util.observeAwaitValue
@@ -78,7 +78,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     lateinit var somListGetFilterListUseCase: SomListGetFilterListUseCase
 
     @RelaxedMockK
-    lateinit var somListGetWaitingPaymentUseCase: SomListGetWaitingPaymentUseCase
+    lateinit var somListGetHeaderIconsInfoUseCase: SomListGetHeaderIconsInfoUseCase
 
     @RelaxedMockK
     lateinit var somListGetOrderListUseCase: SomListGetOrderListUseCase
@@ -147,7 +147,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 coroutineTestRule.dispatchers,
                 somListGetTickerUseCase,
                 somListGetFilterListUseCase,
-                somListGetWaitingPaymentUseCase,
+                somListGetHeaderIconsInfoUseCase,
                 somListGetOrderListUseCase,
                 somListGetTopAdsCategoryUseCase,
                 bulkAcceptOrderStatusUseCase,
@@ -1582,51 +1582,51 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getWaitingPaymentCounter_shouldSuccess() = coroutineTestRule.runBlockingTest {
-        val waitingPaymentCounterData = WaitingPaymentCounter()
+    fun getHeaderIconsInfo_shouldSuccess() = coroutineTestRule.runBlockingTest {
+        val headerIconsInfoData = SomListHeaderIconsInfoUiModel(mockk(relaxed = true), mockk(relaxed = true))
         coEvery {
-            somListGetWaitingPaymentUseCase.executeOnBackground()
-        } returns waitingPaymentCounterData
+            somListGetHeaderIconsInfoUseCase.executeOnBackground()
+        } returns headerIconsInfoData
 
-        viewModel.getWaitingPaymentCounter()
+        viewModel.getHeaderIconsInfo()
 
         coVerify {
-            somListGetWaitingPaymentUseCase.executeOnBackground()
+            somListGetHeaderIconsInfoUseCase.executeOnBackground()
         }
-        val waitingPaymentCounterResult = viewModel.waitingPaymentCounterResult.observeAwaitValue()
-        assert(waitingPaymentCounterResult is Success && waitingPaymentCounterResult.data == waitingPaymentCounterData)
+        val waitingPaymentCounterResult = viewModel.somListHeaderIconsInfoResult.observeAwaitValue()
+        assert(waitingPaymentCounterResult is Success && waitingPaymentCounterResult.data == headerIconsInfoData)
     }
 
     @Test
-    fun getWaitingPaymentCounter_shouldFailed() = coroutineTestRule.runBlockingTest {
+    fun getHeaderIconsInfo_shouldFailed() = coroutineTestRule.runBlockingTest {
         coEvery {
-            somListGetWaitingPaymentUseCase.executeOnBackground()
+            somListGetHeaderIconsInfoUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.getWaitingPaymentCounter()
+        viewModel.getHeaderIconsInfo()
 
         coVerify {
-            somListGetWaitingPaymentUseCase.executeOnBackground()
+            somListGetHeaderIconsInfoUseCase.executeOnBackground()
         }
 
-        assert(viewModel.waitingPaymentCounterResult.observeAwaitValue() is Fail)
+        assert(viewModel.somListHeaderIconsInfoResult.observeAwaitValue() is Fail)
     }
 
     @Test
-    fun getWaitingPaymentCounter_shouldNotSuccess_whenCannotShowOrderData() = coroutineTestRule.runBlockingTest {
+    fun getHeaderIconsInfo_shouldNotSuccess_whenCannotShowOrderData() = coroutineTestRule.runBlockingTest {
         coEvery {
-            somListGetWaitingPaymentUseCase.executeOnBackground(any())
-        } returns WaitingPaymentCounter()
+            somListGetHeaderIconsInfoUseCase.executeOnBackground(any())
+        } returns SomListHeaderIconsInfoUiModel(mockk(relaxed = true), mockk(relaxed = true))
 
         somCanShowOrderDataField.set(viewModel, MediatorLiveData<Boolean>().apply { value = false })
 
-        viewModel.getWaitingPaymentCounter()
+        viewModel.getHeaderIconsInfo()
 
         coVerify(exactly = 0) {
-            somListGetWaitingPaymentUseCase.executeOnBackground(any())
+            somListGetHeaderIconsInfoUseCase.executeOnBackground(any())
         }
 
-        assertFalse(viewModel.waitingPaymentCounterResult.observeAwaitValue() is Success)
+        assertFalse(viewModel.somListHeaderIconsInfoResult.observeAwaitValue() is Success)
     }
     @Test
     fun getOrderList_shouldSuccessAndClearAllFailedRefreshOrder() = coroutineTestRule.runBlockingTest {

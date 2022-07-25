@@ -317,7 +317,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         observeTopAdsCategory()
         observeTickers()
         observeFilters()
-        observeWaitingPaymentCounter()
+        observeSomListHeaderIconsInfo()
         observeOrderList()
         observeRefreshOrder()
         observeAcceptOrder()
@@ -903,9 +903,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
+        showPlusOrderListMenuShimmer()
         showWaitingPaymentOrderListMenuShimmer()
         somListBinding?.rvSomList?.layoutManager = somListLayoutManager
-        setupToolbar()
+        setupHeader()
         setupSearchBar()
         setupListeners()
         setupMasks()
@@ -1001,8 +1002,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             })
     }
 
-    private fun observeWaitingPaymentCounter() {
-        viewModel.waitingPaymentCounterResult.observe(viewLifecycleOwner) { result ->
+    private fun observeSomListHeaderIconsInfo() {
+        viewModel.somListHeaderIconsInfoResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Fail -> {
                     showToasterError(view)
@@ -1015,7 +1016,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     )
                 }
             }
-            updateToolbarMenu()
+            updateHeaderMenu()
         }
     }
 
@@ -1805,8 +1806,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     protected fun loadWaitingPaymentOrderCounter() {
+        showPlusOrderListMenuShimmer()
         showWaitingPaymentOrderListMenuShimmer()
-        viewModel.getWaitingPaymentCounter()
+        viewModel.getHeaderIconsInfo()
     }
 
     protected fun loadFilters(showShimmer: Boolean = true, loadOrders: Boolean) {
@@ -2003,6 +2005,29 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
+    private fun showPlusOrderListMenu() {
+        somListHeaderBinding?.run {
+            loaderSomListMenuPlus.gone()
+            icSomListMenuPlus.show()
+        }
+    }
+
+    private fun showPlusOrderListMenuShimmer() {
+        somListHeaderBinding?.run {
+            if (canDisplayOrderData) {
+                loaderSomListMenuPlus.show()
+                icSomListMenuPlus.gone()
+            }
+        }
+    }
+
+    private fun hidePlusOrderListMenu() {
+        somListHeaderBinding?.run {
+            loaderSomListMenuPlus.gone()
+            icSomListMenuPlus.gone()
+        }
+    }
+
     private fun showWaitingPaymentOrderListMenuShimmer() {
         somListHeaderBinding?.run {
             if (canDisplayOrderData) {
@@ -2079,6 +2104,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             scrollViewErrorState.gone()
         }
         errorToaster?.dismiss()
+        hidePlusOrderListMenu()
         hideWaitingPaymentOrderListMenu()
         somListBinding?.somAdminPermissionView?.setUserNotAllowedToViewSom {
             if (GlobalConfig.isSellerApp()) {
@@ -2305,9 +2331,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun refreshFailedRequests() {
-        if (viewModel.waitingPaymentCounterResult.value is Fail) {
+        if (viewModel.somListHeaderIconsInfoResult.value is Fail) {
+            showPlusOrderListMenuShimmer()
             showWaitingPaymentOrderListMenuShimmer()
-            viewModel.getWaitingPaymentCounter()
+            viewModel.getHeaderIconsInfo()
         }
         if (viewModel.tickerResult.value is Fail) {
             somListBinding?.tickerSomList?.gone()
@@ -2681,24 +2708,31 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    private fun updateToolbarMenu() {
+    private fun updateHeaderMenu() {
         if (canDisplayOrderData) {
-            val waitingPaymentCounterResult = viewModel.waitingPaymentCounterResult.value
-            if (waitingPaymentCounterResult is Success) {
-                if (!isWaitingPaymentOrderPageOpened && waitingPaymentCounterResult.data.amount > 0) {
+            val headerIconsInfoResult = viewModel.somListHeaderIconsInfoResult.value
+            if (headerIconsInfoResult is Success) {
+                if (!isWaitingPaymentOrderPageOpened && headerIconsInfoResult.data.waitingPaymentCounter.amount > 0) {
                     showDottedWaitingPaymentOrderListMenu()
                 } else {
                     showWaitingPaymentOrderListMenu()
                 }
+                if (headerIconsInfoResult.data.plusIconInfo != null) {
+                    showPlusOrderListMenu()
+                } else {
+                    hidePlusOrderListMenu()
+                }
             } else {
+                showPlusOrderListMenuShimmer()
                 showWaitingPaymentOrderListMenuShimmer()
             }
         } else {
+            hidePlusOrderListMenu()
             hideWaitingPaymentOrderListMenu()
         }
     }
 
-    private fun setupToolbar() {
+    private fun setupHeader() {
         (activity as? AppCompatActivity)?.supportActionBar?.hide()
         somListHeaderBinding?.icSomListNavigationBack?.run {
             showWithCondition(showBackButton())
@@ -2708,17 +2742,17 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
         somListHeaderBinding?.icSomListMenuWaitingPayment?.setOnClickListener {
             goToWaitingPaymentOrderListPage()
-            val waitingPaymentOrderCounterResult = viewModel.waitingPaymentCounterResult.value
-            if (waitingPaymentOrderCounterResult is Success) {
+            val headerIconsInfoResult = viewModel.somListHeaderIconsInfoResult.value
+            if (headerIconsInfoResult is Success) {
                 SomAnalytics.eventClickWaitingPaymentOrderCard(
                     viewModel.getTabActive(),
-                    waitingPaymentOrderCounterResult.data.amount,
+                    headerIconsInfoResult.data.waitingPaymentCounter.amount,
                     userSession.userId,
                     userSession.shopId
                 )
             }
             isWaitingPaymentOrderPageOpened = true
-            updateToolbarMenu()
+            updateHeaderMenu()
         }
         somListHeaderBinding?.searchBarSomList?.setMargin(
             if (GlobalConfig.isSellerApp()) {
@@ -2730,7 +2764,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             SEARCH_BAR_MARGIN_END.toPx(),
             Int.ZERO
         )
-        updateToolbarMenu()
+        updateHeaderMenu()
     }
 
     private fun showBackButton(): Boolean = !GlobalConfig.isSellerApp()
