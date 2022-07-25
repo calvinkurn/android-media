@@ -5,9 +5,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductTagItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.carousel.ProductCarouselViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductTagAdapter
@@ -30,6 +31,9 @@ class ProductTagViewComponent(
     }
 
     private val adapter = PlayProductTagAdapter(viewHolderListener)
+
+    private val coachMark: CoachMark2 = CoachMark2(container.context)
+
 
     private val layoutManager = object : LinearLayoutManager(rvProductTag.context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
@@ -83,10 +87,28 @@ class ProductTagViewComponent(
 
         adapter.setItemsAndAnimateChanges(products)
         rvProductTag.invalidateItemDecorations()
+        showCoachMark()
     }
 
     private fun setLoading() {
         adapter.setItemsAndAnimateChanges(List(MAX_PLACEHOLDER) { })
+    }
+
+    private fun showCoachMark() {
+        //return if empty
+        val holder = rvProductTag.findViewHolderForAdapterPosition(0)
+        holder?.let {
+            val coachMarkItem = arrayListOf(
+                CoachMark2Item(
+                    holder.itemView.findViewById(R.id.view_pin_product),
+                    "",
+                    "Pasang pin di produk agar penonton tahu\nkalau lagi kamu membahasnya.",
+                    CoachMark2.POSITION_BOTTOM
+                )
+            )
+         coachMark.showCoachMark(coachMarkItem)
+            //delay dismiss
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
