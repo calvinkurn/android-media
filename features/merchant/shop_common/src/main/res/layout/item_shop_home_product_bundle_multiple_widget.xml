@@ -14,6 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/guideline_tail_ribbon"
         android:layout_marginBottom="21dp"
+        android:elevation="2dp"
         />
 
     <androidx.constraintlayout.widget.Guideline
@@ -110,12 +111,11 @@
                 app:typographyType="body_3"
                 />
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/saving_amount_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constrainedWidth="true"
-                android:orientation="horizontal"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_bundle_display_price"
@@ -125,17 +125,19 @@
                 android:paddingEnd="12dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/bg_product_bundle_item_promotion_footer"
                 >
 
                 <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/ic_bundle_discount"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    app:layout_constraintStart_toStartOf="@id/tv_bundle_display_price"
-                    app:layout_constraintTop_toBottomOf="@id/tv_bundle_display_price"
                     app:icon_name="PROMO"
                     app:icon_color_light_enable="@color/Unify_Background"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -143,11 +145,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     app:typographyType="body_3"
                     android:textColor="@color/Unify_NN0"
+                    app:layout_constraintStart_toEndOf="@id/ic_bundle_discount"
+                    app:layout_constraintTop_toTopOf="@id/ic_bundle_discount"
+                    app:layout_constraintBottom_toBottomOf="@id/ic_bundle_discount"
                     />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_bundle_atc"

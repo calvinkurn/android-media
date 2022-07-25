@@ -35,7 +35,7 @@ class GetDepositHistoryInfoUseCase @Inject constructor(
 
     private fun parseResponse(response: DepositHistoryInvoiceDetail, onSuccess: (DepositHistoryData) -> Unit, onError: (Throwable) -> Unit) {
         if (response.isSuccess) {
-            response.data.depositDetail.add(FeeDetailData(context.getString(R.string.saldo_sales_total_received), response.data.totalAmount))
+            response.data.depositDetail.add(FeeDetailData(context.getString(R.string.saldo_sales_total_received), response.data.totalAmount,DEFAULT_LATE_STATUS,DEFAULT_LATE_MESSAGE))
             onSuccess(response.data)
         } else onError(NullPointerException("GQL Failure"))
     }
@@ -44,5 +44,12 @@ class GetDepositHistoryInfoUseCase @Inject constructor(
         mutableMapOf(
             SaldoDetailsConstants.DetailScreenParams.SUMMARY_ID to summaryId,
         )
+
+
+    companion object{
+
+        const val DEFAULT_LATE_STATUS = false
+        const val DEFAULT_LATE_MESSAGE = ""
+    }
 
 }

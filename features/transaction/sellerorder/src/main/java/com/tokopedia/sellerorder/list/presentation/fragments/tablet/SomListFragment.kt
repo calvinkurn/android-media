@@ -110,6 +110,7 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
             resetMultiSelectState()
             isLoadingInitialData = true
             somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+            toggleBulkAction(false)
             loadTopAdsCategory()
             loadTickers()
             loadWaitingPaymentOrderCounter()

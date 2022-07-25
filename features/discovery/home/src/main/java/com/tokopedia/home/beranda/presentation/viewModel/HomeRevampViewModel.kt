@@ -30,6 +30,7 @@ import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CMHomeWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
@@ -395,7 +396,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun onRefreshWalletApp(position: Int, headerTitle: String) {
+    fun onRefreshWalletApp(position: Int, headerTitle: String, isReload: Boolean = false) {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {

@@ -150,7 +150,9 @@ class HomeBalanceWidgetUseCaseTest {
             homeTokopointsListRepository
         )
         runBlocking {
-            val headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
+            var headerDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
+            headerDataModel = homeBalanceWidgetUseCase.onGetWalletAppData(headerDataModel, 0, mockTitleGopay)
+            headerDataModel = homeBalanceWidgetUseCase.onGetTokopointData(headerDataModel, 1, mockTierRewards)
             Assert.assertEquals(HomeBalanceModel.STATUS_SUCCESS, headerDataModel.headerDataModel?.homeBalanceModel?.status)
             Assert.assertEquals(
                 mockValueSuccessHomeBalanceWidget.getHomeBalanceList.balancesList.size,

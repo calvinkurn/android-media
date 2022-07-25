@@ -13,6 +13,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.databinding.ItemBalanceWidgetNewBinding
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -55,6 +57,8 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
         )
         when (element?.state) {
             BalanceDrawerItemModel.STATE_SUCCESS -> {
+                binding?.shimmerItemBalanceWidget?.root?.invisible()
+                binding?.homeContainerBalance?.show()
                 //load image
                 if (totalItems == BALANCE_WIDGET_2_ITEMS && adapterPosition == POSITION_2) {
                     binding?.homeContainerBalance?.setPadding(
@@ -110,7 +114,18 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                 }
                 handleClickSuccess(element, reserveBalance)
             }
+            BalanceDrawerItemModel.STATE_LOADING -> {
+                binding?.shimmerItemBalanceWidget?.root?.show()
+                binding?.homeContainerBalance?.invisible()
+                if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
+                    listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
+                } else if (element.drawerItemType == TYPE_REWARDS) {
+                    listener?.onRetryMembership(adapterPosition, element.headerTitle)
+                }
+            }
             BalanceDrawerItemModel.STATE_ERROR -> {
+                binding?.shimmerItemBalanceWidget?.root?.invisible()
+                binding?.homeContainerBalance?.show()
                 binding?.homeIvLogoBalance?.setImageDrawable(
                     ContextCompat.getDrawable(
                         itemView.context,
@@ -131,10 +146,22 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                     itemView.context.getString(com.tokopedia.home.R.string.text_reload)
                 binding?.homeContainerBalance?.handleItemClickType(
                     element = element,
-                    rewardsAction = { listener?.onRetryMembership(adapterPosition, element.headerTitle) },
-                    walletAppAction = { listener?.onRetryWalletApp(adapterPosition, element.headerTitle) }
+                    rewardsAction = { showLoading(element) },
+                    walletAppAction = { showLoading(element) }
                 )
             }
+        }
+    }
+
+    private fun showLoading(element: BalanceDrawerItemModel) {
+        binding?.shimmerItemBalanceWidget?.root?.show()
+        binding?.homeContainerBalance?.invisible()
+        if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
+            element.state = BalanceDrawerItemModel.STATE_LOADING
+            listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
+        } else if (element.drawerItemType == TYPE_REWARDS) {
+            element.state = BalanceDrawerItemModel.STATE_LOADING
+            listener?.onRetryMembership(adapterPosition, element.headerTitle)
         }
     }
 
