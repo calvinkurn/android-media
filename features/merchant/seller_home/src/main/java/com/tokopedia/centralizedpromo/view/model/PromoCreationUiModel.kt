@@ -20,7 +20,7 @@ data class PromoCreationUiModel(
     val titleSuffix: String,
     val ctaLink: String,
     val ctaText: String,
-    val eligble: Int,
+    val eligible: Int,
     val banner: String,
     val infoText: String,
     val headerText:String,
@@ -32,7 +32,7 @@ data class PromoCreationUiModel(
         return typeFactory.type(this)
     }
 
-    fun isEligble() = eligble == 1
+    fun isEligible() = eligible == 1
 }
 
 data class FilterPromoUiModel(

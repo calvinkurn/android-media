@@ -2,8 +2,6 @@ package com.tokopedia.centralizedpromo.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking.sendImpressionCard
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -28,14 +26,14 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
         binding.run {
             ivRecommendedPromo.loadImage(element.icon)
             tvRecommendedPromoTitle.text = element.title
-            if (!element.isEligble()) {
+            if (element.isEligible()) {
+                tvRecommendedPromoDescription.text = element.description
+            } else {
                 tvRecommendedPromoDescription.text = itemView.context.getString(
                     R.string.centralized_promo_description,
                     element.notAvailableText,
                     element.description
                 ).parseAsHtml()
-            } else {
-                tvRecommendedPromoDescription.text = element.description
             }
             if (element.titleSuffix.equals(getTextBadgeNew(), ignoreCase = true)) {
                 tvBadgeNew.show()

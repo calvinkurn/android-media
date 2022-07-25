@@ -7,9 +7,12 @@ import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 
 object PromoCreationMapper {
 
+    const val TAB_ID_ALL_FEATURE = "0"
+    const val TAB_NAME_ALL_FEATURE = "Semua Fitur"
+
     fun mapperToPromoCreationUiModel(merchantPromotionGetPromoList: MerchantPromotionGetPromoList): PromoCreationListUiModel {
 
-        val filterItems = arrayListOf(FilterPromoUiModel("0", "Semua Fitur"))
+        val filterItems = arrayListOf(FilterPromoUiModel(TAB_ID_ALL_FEATURE, TAB_NAME_ALL_FEATURE))
         merchantPromotionGetPromoList.data.filterTab.map {
             filterItems.add(FilterPromoUiModel(it.id, it.name))
         }
@@ -24,7 +27,7 @@ object PromoCreationMapper {
                     titleSuffix = it.pageNameSuffix,
                     ctaLink = it.ctaLink,
                     ctaText = it.ctaText,
-                    eligble = it.isEligible,
+                    eligible = it.isEligible,
                     banner = it.bannerImage,
                     infoText = it.infoText,
                     bottomText = it.bottomText,

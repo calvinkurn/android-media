@@ -13,6 +13,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class CentralizedPromoActivity : BaseSimpleActivity() {
 
+
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
 
     override fun onNewIntent(intent: Intent?) {
@@ -21,8 +22,8 @@ class CentralizedPromoActivity : BaseSimpleActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun getNewFragment(): Fragment {

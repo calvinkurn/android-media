@@ -61,22 +61,24 @@ class PartialCentralizedPromoCreationView(
     }
 
     private fun setupFilter(dataFilter: List<FilterPromoUiModel>) = with(promoCreationBinding) {
-        val filterItems = dataFilter.map {
-            SortFilterItem(it.name) {
-                selectedTab = it
-                onSelectedFilter?.invoke(it)
+
+        if (dataFilter.isNotEmpty()){
+            val filterItems = dataFilter.map {
+                SortFilterItem(it.name) {
+                    selectedTab = it
+                    onSelectedFilter?.invoke(it)
+                }
             }
-        }
-        if (selectedTab == null) {
-            filterItems[Int.ZERO].type = ChipsUnify.TYPE_SELECTED
-            selectedTab = dataFilter[Int.ZERO]
-            CentralizedPromoTracking.sendClickFilter(selectedTab?.id.toIntOrZero().toString())
-        } else {
-            filterItems[dataFilter.indexOf(selectedTab)].type = ChipsUnify.TYPE_SELECTED
-        }
+            if (selectedTab == null) {
+                filterItems[Int.ZERO].type = ChipsUnify.TYPE_SELECTED
+                selectedTab = dataFilter[Int.ZERO]
+                CentralizedPromoTracking.sendClickFilter(selectedTab?.id.toIntOrZero().toString())
+            } else {
+                filterItems[dataFilter.indexOf(selectedTab)].type = ChipsUnify.TYPE_SELECTED
+            }
 
-        filter.addItem(ArrayList(filterItems))
-
+            filter.addItem(ArrayList(filterItems))
+        }
     }
 
     override fun renderError(cause: Throwable) {

@@ -293,7 +293,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
 
     private fun onClickPromo(promoCreationUiModel: PromoCreationUiModel) {
 
-        if (promoCreationUiModel.isEligble()) {
+        if (promoCreationUiModel.isEligible()) {
             if (sharedPref.getBoolean(promoCreationUiModel.title, false)){
                 RouteManager.route(requireContext(),promoCreationUiModel.ctaLink)
             } else {

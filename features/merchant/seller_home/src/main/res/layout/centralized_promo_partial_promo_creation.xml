@@ -8,7 +8,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvCentralizedPromoCreationTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingHorizontal="16dp"
         android:maxLines="1"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:paddingTop="16dp"
         android:paddingBottom="8dp"
-        app:typographyType="heading_4" />
+        app:typographyType="heading_3" />
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/filter"
