@@ -42,7 +42,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.network)
