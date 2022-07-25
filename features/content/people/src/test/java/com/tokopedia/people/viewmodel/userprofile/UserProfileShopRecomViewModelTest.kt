@@ -75,12 +75,11 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUsername) }
 
         coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
-
-        coEvery { mockUserSession.isLoggedIn } returns true
     }
 
     @Test
-    fun `when user successfully load shop recommendation and isShown is true, it will emit the data`() {
+    fun `when user login and successfully load shop recommendation then isShown is true, it will emit the data`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getShopRecom() } returns mockShopRecom
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
 
@@ -96,7 +95,8 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
-    fun `when user successfully load shop recommendation and isShown is false, it will emit empty`() {
+    fun `when user login and successfully load shop recommendation then isShown is false, it will emit empty`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getShopRecom() } returns mockShopRecom
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
 
@@ -112,7 +112,8 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
-    fun `when user fail load shop recommendation and isShown is false, it will emit empty`() {
+    fun `when user login and fail load shop recommendation then isShown is false, it will emit empty`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getShopRecom() } returns mockEmptyShopRecom
         coEvery { mockRepo.getFollowInfo(any()) } throws mockException
 
@@ -128,6 +129,23 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
+    fun `when user not login and successfully load shop recommendation then isShown is false, it will emit empty`() {
+        coEvery { mockUserSession.isLoggedIn } returns false
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecom
+        coEvery { mockRepo.getFollowInfo(any()) } returns mockOwnFollow
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                robot.viewModel.isShopRecomShow.assertFalse()
+                shopRecom.items.assertEmpty()
+                shopRecom equalTo mockEmptyShopRecom
+            }
+        }
+    }
+
+    @Test
     fun `when user success follow shop`() {
         val mockShopRecomAfterFollow = mockShopRecom.copy(
             items = mockShopRecom.items.map {
@@ -136,6 +154,7 @@ class UserProfileShopRecomViewModelTest {
             }
         )
 
+        coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom() } returns mockShopRecomAfterFollow
         coEvery { mockRepo.followProfile(any()) } returns mockMutationSuccess
@@ -160,6 +179,7 @@ class UserProfileShopRecomViewModelTest {
             }
         )
 
+        coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom() } returns mockShopRecomAfterUnfollow
         coEvery { mockRepo.unFollowProfile(any()) } returns mockMutationSuccess
@@ -177,6 +197,7 @@ class UserProfileShopRecomViewModelTest {
 
     @Test
     fun `when user fail follow or unfollow shop`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom() } returns mockShopRecom
         coEvery { mockRepo.unFollowProfile(any()) } returns mockMutationError
