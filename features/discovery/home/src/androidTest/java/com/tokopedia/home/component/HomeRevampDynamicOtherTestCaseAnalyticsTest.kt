@@ -92,9 +92,7 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
     fun testBalanceWidgetGopayNotLinked() {
         onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
-            initTest()
             login()
-            waitForData()
             doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 actionOnBalanceWidget(viewHolder)
             }
