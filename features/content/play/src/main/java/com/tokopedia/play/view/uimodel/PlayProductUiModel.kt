@@ -20,6 +20,7 @@ sealed class PlayProductUiModel {
         val applink: String?,
         val isTokoNow: Boolean,
         val isPinned: Boolean,
+        val isRilisanSpesial: Boolean,
     ) : PlayProductUiModel() {
         companion object {
             val Empty: Product
@@ -36,6 +37,7 @@ sealed class PlayProductUiModel {
                     applink = null,
                     isTokoNow = false,
                     isPinned = false,
+                    isRilisanSpesial = false,
                 )
         }
     }

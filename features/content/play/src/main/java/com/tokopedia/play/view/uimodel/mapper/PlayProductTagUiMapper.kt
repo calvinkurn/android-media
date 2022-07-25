@@ -81,6 +81,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             applink = input.appLink,
             isTokoNow = input.isTokoNow,
             isPinned = input.isPinned,
+            isRilisanSpesial = sectionType == ProductSectionType.Active || sectionType == ProductSectionType.Upcoming,
 //            isPinned = isPinned,
         )
     }

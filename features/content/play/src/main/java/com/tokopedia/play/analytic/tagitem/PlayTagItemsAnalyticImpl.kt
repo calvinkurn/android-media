@@ -258,18 +258,19 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
             event = KEY_EVENT_PRODUCT_CLICK,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = "view on pinned featured product",
-            eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial (true|false)",
+            eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
             list = "/groupchat - featured product",
             products = listOf(
                 BaseTrackerConst.Product(
                     productPosition = 1.toString(), //because pinned product is always in index 0
                     id = product.id,
                     name = product.title,
-                    productPrice = product.price.currentPrice,
+                    productPrice = product.price.currentPrice.toString(),
                     brand = "",
                     category = "",
                     isFreeOngkir = product.isFreeShipping,
                     variant = "",
+                    shopId = product.shopId,
                 )
             ),
         ).appendUserId(userId)
@@ -486,8 +487,8 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
 
     private val ProductPrice.currentPrice
         get() = when (this) {
-            is OriginalPrice -> price
-            is DiscountedPrice -> discountedPrice
+            is OriginalPrice -> priceNumber
+            is DiscountedPrice -> discountedPriceNumber
         }
 
     companion object {

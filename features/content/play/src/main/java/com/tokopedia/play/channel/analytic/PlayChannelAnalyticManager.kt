@@ -67,11 +67,13 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
                 when (it) {
                     is ProductCarouselUiComponent.Event.OnClicked -> {
                         if (it.product.isPinned) {
-
+                            analytic2?.clickPinnedProductInCarousel(it.product)
                         }
-                        if(it.product.isTokoNow) {
+                        else if (it.product.isTokoNow) {
                             newAnalytic.clickFeaturedProduct(it.product, it.position)
-                        } else analytic.clickFeaturedProduct(it.product, it.position)
+                        } else {
+                            analytic.clickFeaturedProduct(it.product, it.position)
+                        }
                     }
                     is ProductCarouselUiComponent.Event.OnImpressed -> {
                         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) ||
