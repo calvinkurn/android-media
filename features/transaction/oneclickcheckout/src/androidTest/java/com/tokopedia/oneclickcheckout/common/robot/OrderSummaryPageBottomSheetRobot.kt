@@ -13,8 +13,10 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.scrollTo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
@@ -100,17 +102,17 @@ class OrderPriceSummaryBottomSheetRobot {
                     }
                     if (orderPaymentFee.showSlashed) {
                         assertEquals(View.VISIBLE, clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_slash_price_value).visibility)
-                        assertEquals("Rp${orderPaymentFee.slashedFee}", clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_slash_price_value).text.toString())
+                        assertEquals(CurrencyFormatUtil.convertPriceValueToIdrFormat(orderPaymentFee.slashedFee, false).removeDecimalSuffix(), clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_slash_price_value).text.toString())
                     }
                     else {
                         assertEquals(View.INVISIBLE, clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_slash_price_value).visibility)
                     }
-                    if (isInstallment) {
-                        assertEquals(paymentFee ?: "Rp0", clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_price_value).text.toString())
-                    }
-                    else {
-                        assertEquals("Rp${orderPaymentFee.fee}", clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_price_value).text.toString())
-                    }
+//                    if (isInstallment && i == 0) {
+//                        assertEquals(paymentFee ?: "Rp0", clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_price_value).text.toString())
+//                    }
+//                    else {
+                    assertEquals(CurrencyFormatUtil.convertPriceValueToIdrFormat(orderPaymentFee.fee, false).removeDecimalSuffix(), clPaymentFeeView.findViewById<Typography>(R.id.tv_payment_fee_price_value).text.toString())
+//                    }
                 }
             }
         }

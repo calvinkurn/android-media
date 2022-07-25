@@ -71,7 +71,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp2.000.000",
                         shippingPrice = "Rp15.000",
-                        paymentFee = "Rp1.500",
                         totalPrice = "Rp2.016.500",
                         isInstallment = true,
                         paymentFeeDetails = listOf(
@@ -120,7 +119,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp2.000.000",
                         shippingPrice = "Rp15.000",
-                        paymentFee = "Rp1.500",
                         totalPrice = "Rp2.127.606",
                         isInstallment = true,
                         paymentFeeDetails = listOf(
@@ -198,7 +196,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp4.000.000",
                         shippingPrice = "Rp15.000",
-                        paymentFee = "Rp1.500",
                         totalPrice = "Rp4.127.606",
                         isInstallment = true,
                         paymentFeeDetails = listOf(
@@ -248,7 +245,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp6.000.000",
                         shippingPrice = "Rp15.000",
-                        paymentFee = "Rp1.500",
                         totalPrice = "Rp6.016.500",
                         isInstallment = true,
                         paymentFeeDetails = listOf(
@@ -290,7 +286,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp6.000.000",
                         shippingPrice = "Rp15.000",
-                        paymentFee = "Rp1.500",
                         totalPrice = "Rp6.016.500",
                         isInstallment = true,
                         paymentFeeDetails = listOf(
