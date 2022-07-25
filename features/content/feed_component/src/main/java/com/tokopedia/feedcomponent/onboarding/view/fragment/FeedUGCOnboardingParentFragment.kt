@@ -50,19 +50,37 @@ class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
-        when(childFragment) {
-            is BaseFeedUserOnboardingBottomSheet -> {
-                childFragment.setListener(object : BaseFeedUserOnboardingBottomSheet.Listener {
+        when (childFragment) {
+            is FeedUserCompleteOnboardingBottomSheet -> {
+                childFragment.setListener(object : FeedUserCompleteOnboardingBottomSheet.Listener,
+                    BaseFeedUserOnboardingBottomSheet.Listener {
+                    override fun clickNextOnCompleteOnboarding() {
+                        mListener?.clickNextOnCompleteOnboarding()
+                    }
+
                     override fun onSuccess() {
                         mListener?.onSuccess()
                     }
                 })
+            }
+            is FeedUserTnCOnboardingBottomSheet -> {
+                childFragment.setListener(object : FeedUserTnCOnboardingBottomSheet.Listener,
+                        BaseFeedUserOnboardingBottomSheet.Listener {
+                        override fun clickNextOnTncOnboarding() {
+                            mListener?.clickNextOnTncOnboarding()
+                        }
+
+                        override fun onSuccess() {
+                            mListener?.onSuccess()
+                        }
+                    })
             }
         }
     }
 
     private fun showBottomSheet() {
         if(usernameArg.isEmpty()) {
+            mListener?.impressCompleteOnboarding()
             FeedUserCompleteOnboardingBottomSheet.getFragment(
                 childFragmentManager,
                 requireContext().classLoader
@@ -71,6 +89,7 @@ class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
             }.showNow(childFragmentManager)
         }
         else {
+            mListener?.impressTncOnboarding()
             FeedUserTnCOnboardingBottomSheet.getFragment(
                 childFragmentManager,
                 requireContext().classLoader
@@ -90,6 +109,10 @@ class FeedUGCOnboardingParentFragment : TkpdBaseV4Fragment() {
 
     interface Listener {
         fun onSuccess()
+        fun impressTncOnboarding()
+        fun impressCompleteOnboarding()
+        fun clickNextOnTncOnboarding()
+        fun clickNextOnCompleteOnboarding()
     }
 
     companion object {

@@ -38,6 +38,9 @@ class FeedUserTnCOnboardingBottomSheet @Inject constructor(
 
     private lateinit var viewModel: FeedUGCOnboardingViewModel
 
+    private val _listener: Listener?
+        get() = mListener as? Listener
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(
@@ -85,6 +88,7 @@ class FeedUserTnCOnboardingBottomSheet @Inject constructor(
         }
 
         binding.btnContinue.setOnClickListener {
+            _listener?.clickNextOnTncOnboarding()
             viewModel.submitAction(FeedUGCOnboardingAction.ClickNext)
         }
     }
@@ -148,4 +152,9 @@ class FeedUserTnCOnboardingBottomSheet @Inject constructor(
             ) as FeedUserTnCOnboardingBottomSheet
         }
     }
+
+    interface Listener : BaseFeedUserOnboardingBottomSheet.Listener {
+        fun clickNextOnTncOnboarding()
+    }
+
 }

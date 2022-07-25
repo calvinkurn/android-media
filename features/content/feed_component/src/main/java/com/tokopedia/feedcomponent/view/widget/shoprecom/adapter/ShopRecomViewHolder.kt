@@ -14,7 +14,7 @@ class ShopRecomViewHolder(
 ) : RecyclerView.ViewHolder(view) {
 
     fun bindData(item: ShopRecomUiModelItem) {
-        view.setData(item)
+        view.setData(item, adapterPosition)
         view.setListener(listener)
     }
 

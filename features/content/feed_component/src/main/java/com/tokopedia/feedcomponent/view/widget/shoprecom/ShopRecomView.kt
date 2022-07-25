@@ -47,14 +47,14 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
         mListener = listener
     }
 
-    fun setData(data: ShopRecomUiModelItem) = with(binding) {
+    fun setData(data: ShopRecomUiModelItem, position: Int) = with(binding) {
         txtItemShopName.text = data.name
         txtItemShopUsername.text = data.nickname
         imgItemShopImage.setImageUrl(data.logoImageURL)
         imgItemShopBadge.setImageUrl(data.badgeImageURL)
 
         buttonFollowState(data.isFollow)
-        onClickListener(data)
+        onClickListener(data, position)
     }
 
     private fun buttonFollowState(isFollow: Boolean) = with(binding) {
@@ -65,11 +65,13 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
         }
     }
 
-    private fun onClickListener(data: ShopRecomUiModelItem) = with(binding) {
+    private fun onClickListener(data: ShopRecomUiModelItem, position: Int) = with(binding) {
         clItemShopContainer.setOnClickListener {
             mListener?.onShopRecomItemClicked(
                 data.id,
-                data.applink
+                data.applink,
+                data.logoImageURL,
+                position + 1
             )
         }
         imgItemShopClose.setOnClickListener { mListener?.onShopRecomCloseClicked(data.id) }
