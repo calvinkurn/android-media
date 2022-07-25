@@ -7,13 +7,16 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-fun Fragment.doOnDelayFinished(delay : Long, block: () -> Unit) {
-    CoroutineScope(Dispatchers.Main).launch {
+fun Fragment.doOnDelayFinished(delay: Long, operation: () -> Unit) {
+    viewLifecycleOwner.lifecycleScope.launch {
         delay(delay)
-        block()
+
+        if (isAdded && context != null) {
+            operation()
+        }
+
     }
 }
-
 fun Fragment.routeToUrl(url : String) {
     if (!isAdded) return
     val encodedUrl = url.encodeToUtf8()
