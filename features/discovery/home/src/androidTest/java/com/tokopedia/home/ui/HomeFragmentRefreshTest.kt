@@ -133,6 +133,7 @@ class HomeFragmentRefreshTest {
 
         goToOtherPage()
         Thread.sleep(BELOW_THREE_MINUTES_ELAPSED_TIME)
+
         mDevice?.pressBack()
 
         /**
