@@ -62,7 +62,10 @@ class ProductSummaryBottomSheet @Inject constructor(
     private fun checkPinProduct(ifTimerIsOn: () -> Unit, pinStatus: Boolean) {
         if(!viewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
         else {
-            view?.let { Toaster.build(it, "Gagal Pin", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR) }
+            toaster.showError(
+                err = Throwable(),
+                customErrMessage = "Gagal Pin",
+            )
         }
     }
 
