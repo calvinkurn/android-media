@@ -31,7 +31,6 @@
         app:layout_constraintEnd_toStartOf="@id/swStockReminder"
         app:layout_constraintTop_toTopOf="@+id/tvProductName"
         app:qty_default_value="1"
-        app:qty_max_value="100"
         />
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify

@@ -20,7 +20,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_SPECIFICATION_COUNTER
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PREORDER_DURATION
@@ -37,6 +36,7 @@ import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCate
 import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -67,6 +67,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
     private val priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase,
     private val getProductTitleValidationUseCase: GetProductTitleValidationUseCase,
+    private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
@@ -164,6 +165,10 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val mProductPriceRecommendationError = MutableLiveData<Throwable>()
     val productPriceRecommendationError: LiveData<Throwable>
         get() = mProductPriceRecommendationError
+
+    private val mMaxStockThreshold = MutableLiveData<String>()
+    val maxStockThreshold: LiveData<String>
+        get() = mMaxStockThreshold
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mIsProductPhotoError) {
@@ -263,6 +268,14 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun setProductNameInput(string: String) {
         mProductNameInputLiveData.value = string
+    }
+
+    fun getMaxStockThreshold(shopId: String) {
+        launchCatchError(block = {
+            mMaxStockThreshold.value = getMaxStockThresholdUseCase.execute(shopId).getIMSMeta.data.maxStockThreshold
+        }, onError = {
+            mMaxStockThreshold.value = null
+        })
     }
 
     fun validateProductNameInput(productNameInput: String) {
@@ -378,22 +391,30 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsProductStockInputError.value = false
             return
         }
+
         if (productStockInput.isEmpty()) {
             val errorMessage = provider.getEmptyProductStockErrorMessage()
             errorMessage.let { productStockMessage = it }
             mIsProductStockInputError.value = true
             return
         }
+
         val productStock = productStockInput.toBigIntegerOrNull().orZero()
-        if (productStock < minimumStockCount.toBigInteger()) {
+        val maxStock = mMaxStockThreshold.value
+        val isMaxStockNotNull = maxStock != null
+        val isCurrentStockLessThanMinStock = productStock < minimumStockCount.toBigInteger()
+        val isCurrentStockMoreThanMaxStock = productStock > maxStock?.toBigIntegerOrNull().orZero()
+
+        if (isCurrentStockLessThanMinStock) {
             val errorMessage = provider.getEmptyProductStockErrorMessage()
             errorMessage.let { productStockMessage = it }
             mIsProductStockInputError.value = true
             return
         }
-        if (productStock > MAX_PRODUCT_STOCK_LIMIT.toBigInteger()) {
-            val errorMessage = provider.getMaxLimitProductStockErrorMessage()
-            errorMessage?.let { productStockMessage = it }
+
+        if (isMaxStockNotNull && isCurrentStockMoreThanMaxStock) {
+            val errorMessage = provider.getMaxLimitProductStockErrorMessage(maxStock)
+            productStockMessage = errorMessage
             mIsProductStockInputError.value = true
             return
         }
