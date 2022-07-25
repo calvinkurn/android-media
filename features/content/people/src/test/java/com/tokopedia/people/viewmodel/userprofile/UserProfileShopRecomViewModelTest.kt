@@ -78,7 +78,7 @@ class UserProfileShopRecomViewModelTest {
     @Test
     fun `when user not login, self profile and not load shop then it will emit empty`() {
         coEvery { mockUserSession.isLoggedIn } returns false
-        coEvery { mockRepo.getFollowInfo(listOf(mockOtherUsername)) } returns mockOwnFollow
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom() } returns mockEmptyShopRecom
 
         robot.use {
