@@ -30,7 +30,7 @@ fun AppCompatTextView.setTextColorCompat(@ColorRes resourceId: Int) {
  * @param fullText: Any kind of your lengthy text.
  * @param hyperlinkSubstring: The substring that will by converted to a hyperlink. The substring must exist in the fullText.
  * Otherwise, no substring will be converted to hyperlink
- * @param onHyperlinkClick: Block of code that will be triggered if any of the hyperlink substring is clicked
+ * @param onHyperlinkClick: Chucks of code that will be triggered if any of the hyperlink substring is clicked
  */
 fun AppCompatTextView.setHyperlinkText(
     fullText: String,

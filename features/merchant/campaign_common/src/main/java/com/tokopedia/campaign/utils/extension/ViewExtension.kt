@@ -100,7 +100,7 @@ fun View.disable() {
 }
 //endregion
 
-//region Toaster internal
+//region Toaster creation internals
 private fun View?.showToasterError(errorMessage: String) {
     Toaster.build(
         this ?: return,
