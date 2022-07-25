@@ -5,16 +5,16 @@ import com.google.gson.annotations.SerializedName
 /**
  * Author errysuprayogi on 15,May,2019
  */
-data class TopAdsAutoAds(
+data class TopAdsAutoAds (
 
-    @SerializedName("data")
+        @SerializedName("data")
     val data: TopAdsAutoAdsData = TopAdsAutoAdsData(),
-    @SerializedName("errors")
-    val error: List<Error> = listOf(),
+        @SerializedName("errors")
+    val error: List<Error> = listOf()
 
-    ) {
+) {
     data class Response(
-        @SerializedName(value = "topAdsPostAutoAdsV2", alternate = ["topAdsGetAutoAds"])
-        val autoAds: TopAdsAutoAds,
+            @SerializedName(value = "topAdsGetAutoAds", alternate = ["topAdsPostAutoAds"])
+            val autoAds: TopAdsAutoAds
     )
 }
