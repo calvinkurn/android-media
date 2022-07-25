@@ -1,11 +1,14 @@
 package com.tokopedia.oldminicart.common.analytics
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.getDigits
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.oldminicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics.Page
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -30,10 +33,18 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val KEY_SHOP_ID = "shopId"
         const val KEY_PROMO_CODE = "promoCode"
         const val KEY_PAGE_SOURCE = "pageSource"
+        const val KEY_CATEGORY_ID = "category_id"
+        const val KEY_CREATIVE_NAME = "creative_name"
+        const val KEY_CREATIVE_SLOT = "creative_slot"
+        const val KEY_TRACKER_ID = "trackerId"
+        const val KEY_WAREHOUSE_ID = "warehouseId"
+        const val KEY_PROMOTIONS = "promotions"
+        const val KEY_VIEW_ITEM = "view_item"
 
         // EXTRA KEY'S VALUE
         const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
         const val VALUE_BUSINESS_UNIT_HOME_AND_BROWSE = "home & browse"
+        const val VALUE_BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
         const val VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val VALUE_CHECKOUT_OPTION_CLICK_BUY_IN_MINICART = "click beli in minicart"
         const val VALUE_CHECKOUT_OPTION_VIEW_MINI_CART_PAGE = "view minicart page"
@@ -42,6 +53,10 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val VALUE_PROMO_CODE_FULFILLED = "fulfilled"
         const val VALUE_PROMO_CODE_NOT_FULFILLED = "not_fulfilled"
         const val VALUE_PAGE_SOURCE_MVC_PAGE = "mvcpage"
+        const val VALUE_SHOP_NAME_TOKOPEDIA_NOW = "Tokopedia NOW!"
+        const val VALUE_SHOP_TYPE_TOKOPEDIA_NOW = "official_store"
+        const val VALUE_DIMENSION_87 = "shop page"
+        const val VALUE_DIMENSION_40 = "/tokonow - product bundling"
 
         // EVENT NAME
         const val EVENT_NAME_CLICK_MINICART = "clickMinicart"
@@ -51,11 +66,14 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_NAME_CHECKOUT = "checkout"
         const val EVENT_NAME_CLICK_PG = "clickPG"
         const val EVENT_NAME_VIEW_PG_IRIS = "viewPGIris"
+        const val EVENT_NAME_ADD_TO_CART = "add_to_cart"
+        const val EVENT_NAME_SELECT_CONTENT = "select_content"
 
         // EVENT CATEGORY
         const val EVENT_CATEGORY_MINICART = "minicart"
         const val EVENT_CATEGORY_CLICK_BUY = "tokonow %s"
         const val EVENT_CATEGORY_SHOP_PAGE_BUYER = "shop page - buyer"
+        const val EVENT_CATEGORY_TOKONOW_MINI_CART = "tokonow - minicart"
 
         // EVENT ACTION
         const val EVENT_ACTION_CLICK_PRODUCT_NAME = "click product name"
@@ -84,6 +102,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_ACTION_CLICK_ASK_PRODUCT_CHAT_ON_BOTTOM_SHEET = "click tanya soal produk on minicart chat attachment"
         const val EVENT_ACTION_CLICK_CHECK_CART = "click check cart"
         const val EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION = "mvc progress bar impression"
+        const val EVENT_ACTION_ADD_TO_CART = "click bundling widget - add to cart"
+        const val EVENT_ACTION_CLICK_BUNDLING_WIDGET = "click bundling widget"
+        const val EVENT_ACTION_VIEW_BUNDLING = "view bundling widget"
 
         // EVENT LABEL
         const val EVENT_LABEL_SUCCESS = "success"
@@ -105,6 +126,10 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val DIMENSION_81 = "dimension81" // Shop type
         const val DIMENSION_82 = "dimension82" // Category id
         const val DIMENSION_83 = "dimension83" // Product type
+        const val DIMENSION_117 = "dimension117"
+        const val DIMENSION_118 = "dimension118"
+        const val DIMENSION_40 = "dimension40"
+        const val DIMENSION_87 = "dimension87"
         const val ITEM_BRAND = "item_brand"
         const val ITEM_CATEGORY = "item_category"
         const val ITEM_ID = "item_id"
@@ -593,5 +618,133 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         trackingData[KEY_SHOP_ID] = shopId
         trackingData[KEY_USER_ID] = userSession.userId
         sendGeneralEvent(trackingData)
+    }
+
+    fun sendViewBundlingWidgetEvent (
+        shopId: String,
+        userId: String,
+        warehouseId: String,
+        bundleId: String,
+        bundleName: String,
+        bundleType: String,
+        bundlePosition: Int,
+        priceCut: String
+    ) {
+        val trackerId = "34074"
+        val promotions = listOf(
+            mapOf(
+                KEY_CREATIVE_NAME to "",
+                KEY_CREATIVE_SLOT to bundlePosition,
+                DIMENSION_117 to bundleType,
+                DIMENSION_118 to bundleId,
+                ITEM_ID to bundleId,
+                ITEM_NAME to bundleName
+            )
+        )
+
+        Tracker.Builder()
+            .setEvent(KEY_VIEW_ITEM)
+            .setEventAction(EVENT_ACTION_VIEW_BUNDLING)
+            .setEventCategory(EVENT_CATEGORY_MINICART)
+            .setEventLabel("$warehouseId - $bundlePosition - $bundleId - $bundleName - $priceCut")
+            .setCustomProperty(KEY_TRACKER_ID, trackerId)
+            .setBusinessUnit(VALUE_BUSINESS_UNIT_PHYSICAL_GOODS)
+            .setCurrentSite(VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .setCustomProperty(KEY_PROMOTIONS, promotions)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .build()
+            .send()
+    }
+
+    fun sendClickBundlingWidgetEvent (
+        shopId: String,
+        userId: String,
+        warehouseId: String,
+        bundleId: String,
+        bundleName: String,
+        bundleType: String,
+        bundlePosition: Int,
+        priceCut: String
+    ) {
+        val trackerId = "34075"
+        val promotions = listOf(
+            mapOf(
+                KEY_CREATIVE_NAME to "",
+                KEY_CREATIVE_SLOT to bundlePosition,
+                DIMENSION_117 to bundleType,
+                DIMENSION_118 to bundleId,
+                DIMENSION_40 to VALUE_DIMENSION_40,
+                DIMENSION_87 to VALUE_DIMENSION_87,
+                ITEM_ID to bundleId,
+                ITEM_NAME to bundleName
+            )
+        )
+
+        Tracker.Builder()
+            .setEvent(EVENT_NAME_SELECT_CONTENT)
+            .setEventAction(EVENT_ACTION_CLICK_BUNDLING_WIDGET)
+            .setEventCategory(EVENT_CATEGORY_MINICART)
+            .setEventLabel("$warehouseId - $bundlePosition - $bundleId - $bundleName - $priceCut")
+            .setCustomProperty(KEY_TRACKER_ID, trackerId)
+            .setBusinessUnit(VALUE_BUSINESS_UNIT_PHYSICAL_GOODS)
+            .setCurrentSite(VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .setCustomProperty(KEY_PROMOTIONS, promotions)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .build()
+            .send()
+    }
+
+    fun sendClickBundlingWidgetAddToCartEvent (
+        shopId: String,
+        userId: String,
+        warehouseId: String,
+        bundleId: String,
+        bundleName: String,
+        bundleType: String,
+        bundlePosition: Int,
+        priceCut: String,
+        cartId: String,
+        quantity: String
+    ) {
+        val trackerId = "34076"
+        val items = listOf(
+            mapOf(
+                KEY_CATEGORY_ID to "",
+                DIMENSION_117 to bundleType,
+                DIMENSION_118 to bundleId,
+                DIMENSION_40 to VALUE_DIMENSION_40,
+                DIMENSION_45 to cartId,
+                DIMENSION_87 to VALUE_DIMENSION_87,
+                ITEM_BRAND to "",
+                ITEM_CATEGORY to "",
+                ITEM_ID to bundleId,
+                ITEM_NAME to bundleName,
+                ITEM_VARIANT to "",
+                PRICE to priceCut.getDigits().toZeroIfNull(),
+                QUANTITY to quantity,
+                SHOP_ID to shopId,
+                SHOP_NAME to VALUE_SHOP_NAME_TOKOPEDIA_NOW,
+                SHOP_TYPE to VALUE_SHOP_TYPE_TOKOPEDIA_NOW
+            )
+        )
+
+        Tracker.Builder()
+            .setEvent(EVENT_NAME_ADD_TO_CART)
+            .setEventAction(EVENT_ACTION_ADD_TO_CART)
+            .setEventCategory(EVENT_CATEGORY_TOKONOW_MINI_CART)
+            .setEventLabel("$warehouseId - $bundlePosition - $bundleId - $bundleName - $priceCut")
+            .setCustomProperty(KEY_TRACKER_ID, trackerId)
+            .setBusinessUnit(VALUE_BUSINESS_UNIT_PHYSICAL_GOODS)
+            .setCurrentSite(VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .setCustomProperty(KEY_ITEMS, items)
+            .setShopId(shopId)
+            .setUserId(userId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .build()
+            .send()
     }
 }
