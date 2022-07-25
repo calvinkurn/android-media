@@ -5,7 +5,7 @@
     tools:replace="android:resizeableActivity">
 
     <application
-        android:taskAffinity="@string/tkpd_identifier_val_ma">
+        android:taskAffinity="@string/qodndmcgfk">
         <activity
             android:name="com.tokopedia.tkpd.ConsumerSplashScreen"
             android:label="Tokopedia"
