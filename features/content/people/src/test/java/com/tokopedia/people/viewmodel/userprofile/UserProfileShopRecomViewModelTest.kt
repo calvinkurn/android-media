@@ -96,7 +96,7 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
-    fun `when user successfully load shop recommendation and isShown is false, it will emit emptyList`() {
+    fun `when user successfully load shop recommendation and isShown is false, it will emit empty`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
 
@@ -113,7 +113,7 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
-    fun `when user fail load shop recommendation and isShown is false, it will emit emptyList`() {
+    fun `when user fail load shop recommendation and isShown is false, it will emit empty`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getFollowInfo(any()) } throws mockException
 
