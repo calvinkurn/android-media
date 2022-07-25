@@ -44,6 +44,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.seller.menu.common.exception.UserShopInfoException
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
@@ -478,6 +479,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onTokoPlusClicked() {
         NewOtherMenuTracking.sendEventClickTokoPlus()
+        RouteManager.route(
+            context, ApplinkConstInternalGlobal.WEBVIEW,
+            SellerMenuFreeShippingUrl.URL_FREE_SHIPPING_INTERIM_PAGE
+        )
     }
 
     override fun onTokoPlusImpressed() {
