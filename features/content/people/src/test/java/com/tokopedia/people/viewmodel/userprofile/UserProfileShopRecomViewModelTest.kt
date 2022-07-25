@@ -84,13 +84,13 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
 
         robot.use {
-            it.recordStateAndEvent {
+            it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
 
                 robot.viewModel.isShopRecomShow.assertTrue()
-            } andThen { state, _ ->
-                state.shopRecom.items.size equalTo 10
-                state.shopRecom equalTo mockShopRecom
+            } andThen {
+                shopRecom.items.size equalTo 10
+                shopRecom equalTo mockShopRecom
             }
         }
     }
@@ -101,13 +101,13 @@ class UserProfileShopRecomViewModelTest {
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
 
         robot.use {
-            it.recordStateAndEvent {
+            it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
 
                 robot.viewModel.isShopRecomShow.assertFalse()
-            } andThen { state, _ ->
-                state.shopRecom.items.assertEmpty()
-                state.shopRecom equalTo ShopRecomUiModel()
+            } andThen {
+                shopRecom.items.assertEmpty()
+                shopRecom equalTo ShopRecomUiModel()
             }
         }
     }
@@ -124,7 +124,8 @@ class UserProfileShopRecomViewModelTest {
                 robot.viewModel.isShopRecomShow.assertFalse()
             } andThen { state, events ->
                 state.shopRecom.items.assertEmpty()
-                events.last().assertEvent(UserProfileUiEvent.ErrorLoadProfile(Throwable("any throwable")))
+                events.last()
+                    .assertEvent(UserProfileUiEvent.ErrorLoadProfile(Throwable("any throwable")))
             }
         }
     }
@@ -188,7 +189,7 @@ class UserProfileShopRecomViewModelTest {
         robot.use {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordEvent  {
+            } recordEvent {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
