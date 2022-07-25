@@ -434,6 +434,7 @@ class ProductViewModelMapper {
             trackingOption = lastFilterData.trackingOption,
             componentId = lastFilterData.componentId,
             dimension90 = dimension90,
+            valueName = lastFilterData.title + lastFilterData.filters.joinToString { it.name }
         )
     }
 

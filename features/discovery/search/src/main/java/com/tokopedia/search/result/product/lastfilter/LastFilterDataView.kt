@@ -18,12 +18,13 @@ class LastFilterDataView(
     val trackingOption: Int = 0,
     val componentId: String = "",
     val dimension90: String = "",
+    val valueName: String = "",
 ) : Visitable<ProductListTypeFactory>, ImpressHolder(),
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
         keyword = keyword,
         applink = applink,
-        valueName = title,
+        valueName = valueName,
         componentId = componentId,
         dimension90 = dimension90,
     ) {
