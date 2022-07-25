@@ -30,16 +30,16 @@
         app:search_bar_placeholder="@string/som_list_hint_search_product"
         app:search_bar_show_icon="false" />
 
-    <com.tokopedia.iconunify.IconUnify
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icSomListMenuPlus"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginEnd="14dp"
         android:visibility="gone"
-        app:icon_name="SALDO_TEMPO"
         app:layout_constraintBottom_toBottomOf="@id/searchBarSomList"
         app:layout_constraintEnd_toStartOf="@id/barrier_start_som_list_menu_waiting_payment"
         app:layout_constraintTop_toTopOf="@id/searchBarSomList"
+        app:unify_image_corner_radius="0"
         tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify

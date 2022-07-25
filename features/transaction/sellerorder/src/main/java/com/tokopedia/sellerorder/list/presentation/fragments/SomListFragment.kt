@@ -51,6 +51,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
@@ -120,6 +121,7 @@ import com.tokopedia.sellerorder.list.presentation.models.OptionalOrderData
 import com.tokopedia.sellerorder.list.presentation.models.PartialSuccess
 import com.tokopedia.sellerorder.list.presentation.models.PartialSuccessNotEligible
 import com.tokopedia.sellerorder.list.presentation.models.PartialSuccessNotEligibleFail
+import com.tokopedia.sellerorder.list.presentation.models.PlusIconInfo
 import com.tokopedia.sellerorder.list.presentation.models.ServerFail
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkProcessOrderDescriptionUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkProcessOrderMenuItemUiModel
@@ -2005,10 +2007,16 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    private fun showPlusOrderListMenu() {
+    private fun showPlusOrderListMenu(plusIconInfo: PlusIconInfo) {
         somListHeaderBinding?.run {
             loaderSomListMenuPlus.gone()
-            icSomListMenuPlus.show()
+            icSomListMenuPlus.run {
+                loadImage(plusIconInfo.logoUrl)
+                setOnClickListener {
+                    SomNavigator.openAppLink(context, plusIconInfo.eduUrl)
+                }
+                show()
+            }
         }
     }
 
@@ -2717,11 +2725,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 } else {
                     showWaitingPaymentOrderListMenu()
                 }
-                if (headerIconsInfoResult.data.plusIconInfo != null) {
-                    showPlusOrderListMenu()
-                } else {
-                    hidePlusOrderListMenu()
-                }
+                headerIconsInfoResult.data.plusIconInfo?.let {
+                    showPlusOrderListMenu(it)
+                } ?: hidePlusOrderListMenu()
             } else {
                 showPlusOrderListMenuShimmer()
                 showWaitingPaymentOrderListMenuShimmer()
