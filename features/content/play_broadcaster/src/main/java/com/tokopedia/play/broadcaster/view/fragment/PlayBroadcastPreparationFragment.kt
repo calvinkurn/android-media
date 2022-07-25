@@ -670,7 +670,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             .build()
 
         binding.playPreparationCountdownTimer.startCountDown(animationProperty, object : PlayTimerLiveCountDown.Listener {
-            override fun onTick(milisUntilFinished: Long) {}
+            override fun onTick(millisUntilFinished: Long) {}
 
             override fun onFinish() {
                 showCountdown(false)
