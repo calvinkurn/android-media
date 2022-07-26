@@ -11,7 +11,8 @@
     <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
         android:id="@+id/text_area_expanded_create_review_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@id/review_template_expanded_create_review_bottom_sheet"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0" />

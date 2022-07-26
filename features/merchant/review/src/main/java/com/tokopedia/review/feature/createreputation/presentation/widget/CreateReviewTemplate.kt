@@ -25,18 +25,17 @@ class CreateReviewTemplate @JvmOverloads constructor(
 ) : BaseCreateReviewCustomView<WidgetCreateReviewTemplateBinding>(context, attrs, defStyleAttr) {
 
     private val createReviewTemplateListener = CreateReviewTemplateListener()
-    private val innerBaseCreateReviewCustomViewListener = BaseCreateReviewCustomViewListener()
     private val layoutManager = StaggeredGridLayoutManager(CreateReviewBottomSheet.TEMPLATES_ROW_COUNT, RecyclerView.HORIZONTAL)
     private val itemAnimator = CreateReviewItemAnimator()
-    private val typeFactory = CreateReviewTemplateTypeFactory(createReviewTemplateListener, innerBaseCreateReviewCustomViewListener)
+    private val typeFactory = CreateReviewTemplateTypeFactory(createReviewTemplateListener)
     private val adapter = CreateReviewTemplateAdapter(typeFactory)
 
     override val binding = WidgetCreateReviewTemplateBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
-        binding.layoutTemplate.root.layoutManager = layoutManager
-        binding.layoutTemplate.root.itemAnimator = itemAnimator
-        binding.layoutTemplate.root.adapter = adapter
+        binding.rvTemplate.layoutManager = layoutManager
+        binding.rvTemplate.itemAnimator = itemAnimator
+        binding.rvTemplate.adapter = adapter
     }
 
     private fun showLoading() {
@@ -87,18 +86,6 @@ class CreateReviewTemplate @JvmOverloads constructor(
 
         override fun onTemplateSelected(template: CreateReviewTemplate) {
             listener?.onTemplateSelected(template)
-        }
-    }
-
-    private inner class BaseCreateReviewCustomViewListener: BaseCreateReviewCustomView.Listener {
-        var listener: BaseCreateReviewCustomView.Listener? = null
-
-        override fun onRequestClearTextAreaFocus() {
-            listener?.onRequestClearTextAreaFocus()
-        }
-
-        override fun onRequestTextAreaFocus() {
-            listener?.onRequestTextAreaFocus()
         }
     }
 

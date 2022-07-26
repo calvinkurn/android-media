@@ -51,7 +51,6 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProgressBarUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewSubmitButtonUiState
-import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateItemUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
@@ -883,7 +882,7 @@ class CreateReviewViewModel @Inject constructor(
         return reviewTemplates.result.takeIf { it.isNotEmpty() }?.let { templates ->
             templates.mapNotNull { template ->
                 if (!template.selected) {
-                    CreateReviewTemplateItemUiModel(CreateReviewTemplateItemUiState.Showing(template))
+                    CreateReviewTemplateItemUiModel(template)
                 } else null
             }
         }.orEmpty()

@@ -24,7 +24,6 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProgressBarUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewSubmitButtonUiState
-import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateItemUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
@@ -992,7 +991,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val templateToSelect = (viewModel.templateUiState.first().templates.first().uiState as CreateReviewTemplateItemUiState.Showing).data
+        val templateToSelect = viewModel.templateUiState.first().templates.first().data
         viewModel.selectTemplate(templateToSelect)
         Assert.assertEquals(templateToSelect.text, (viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing).reviewTextAreaTextUiModel.text)
     }
@@ -1323,7 +1322,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val templateToSelect = (viewModel.templateUiState.first().templates.last().uiState as CreateReviewTemplateItemUiState.Showing).data
+        val templateToSelect = viewModel.templateUiState.first().templates.last().data
         viewModel.selectTemplate(templateToSelect)
         viewModel.templateUiState.first()
         Assert.assertEquals(1, viewModel.getSelectedTemplateCount())
