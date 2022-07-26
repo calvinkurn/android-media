@@ -80,8 +80,7 @@ class HotelDestinationViewModel @Inject constructor(
         }
     }
 
-    //TODO : need to update query mutation
-    fun deleteRecentSearch(query: String, uuid: String) {
+    fun deleteRecentSearch(query: GqlQueryInterface, uuid: String) {
         val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt(), PARAM_DELETE_RECENT_UUID to uuid)
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
