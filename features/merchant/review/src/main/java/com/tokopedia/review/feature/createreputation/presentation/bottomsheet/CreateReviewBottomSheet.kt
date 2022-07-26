@@ -722,67 +722,89 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
         private fun collectProductCardUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.productCardUiState) {
-                binding?.reviewFormProductCard?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormProductCard?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectRatingUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.ratingUiState) {
-                binding?.reviewFormRating?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormRating?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectTickerUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.tickerUiState) {
-                binding?.reviewFormTicker?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormTicker?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectTextAreaTitleUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.textAreaTitleUiState) {
-                binding?.reviewFormTextAreaTitle?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormTextAreaTitle?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectBadRatingCategoriesUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.badRatingCategoriesUiState) {
-                binding?.reviewFormBadRatingCategories?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormBadRatingCategories?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectTextAreaUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.textAreaUiState) {
-                binding?.reviewFormTextArea?.updateUi(it, CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormTextArea?.updateUi(it, CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA, continuation)
+                }
             }
         }
 
         private fun collectTemplateUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.templateUiState) {
-                binding?.reviewFormTemplates?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormTemplates?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectMediaPickerUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.mediaPickerUiState) {
-                binding?.reviewFormMediaPicker?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormMediaPicker?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectAnonymousUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.anonymousUiState) {
-                binding?.reviewFormAnonymous?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormAnonymous?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectProgressBarUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.progressBarUiState) {
-                binding?.reviewFormProgressBarWidget?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormProgressBarWidget?.updateUi(it, continuation)
+                }
             }
         }
 
         private fun collectSubmitButtonUiState() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.submitButtonUiState) {
-                binding?.reviewFormSubmitButton?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormSubmitButton?.updateUi(it, continuation)
+                }
             }
         }
 

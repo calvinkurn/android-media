@@ -13,6 +13,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetCreateReviewAnonymousBinding
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousUiState
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewAnonymous @JvmOverloads constructor(
     context: Context,
@@ -46,16 +48,20 @@ class CreateReviewAnonymous @JvmOverloads constructor(
         layoutAnonymous.root.isChecked = checked
     }
 
-    fun updateUi(uiState: CreateReviewAnonymousUiState) {
+    fun updateUi(uiState: CreateReviewAnonymousUiState, continuation: Continuation<Unit>) {
         when(uiState) {
             is CreateReviewAnonymousUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewAnonymousUiState.Showing -> {
                 trackerData = uiState.trackerData
                 binding.showAnonymous(uiState.checked)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }

@@ -25,6 +25,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.filterIsInstance
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.suspendCoroutine
 
 class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
 
@@ -119,14 +120,22 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
     private inner class UiStateHandler {
         private fun collectTextAreaUiState() {
             collectLatestWhenResumed(viewModel.textAreaUiState) {
-                binding?.textAreaExpandedCreateReviewBottomSheet?.updateUi(it, CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_EXPANDED_TEXT_AREA)
-                binding?.helperTextAreaExpandedCreateReviewBottomSheet?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.textAreaExpandedCreateReviewBottomSheet?.updateUi(
+                        it,
+                        CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_EXPANDED_TEXT_AREA,
+                        continuation
+                    )
+                    binding?.helperTextAreaExpandedCreateReviewBottomSheet?.updateUi(it)
+                }
             }
         }
 
         private fun collectReviewTemplateUiState() {
             collectLatestWhenResumed(viewModel.templateUiState) {
-                binding?.reviewTemplateExpandedCreateReviewBottomSheet?.updateUi(it)
+                suspendCoroutine { continuation ->
+                    binding?.reviewTemplateExpandedCreateReviewBottomSheet?.updateUi(it, continuation)
+                }
             }
         }
 
