@@ -1,6 +1,4 @@
-package com.tokopedia.search.result.presentation.view.listener
-
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
+package com.tokopedia.search.result.product.lastfilter
 
 interface LastFilterListener {
 

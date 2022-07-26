@@ -82,8 +82,6 @@ public class TopChatAnalytics {
     public static final String FPM_CHAT_LIST = "mp_chat_list";
     public static final String FPM_CHAT_LIST_SELLERAPP = "mp_chat_list_sellerapp";
 
-    public static final String SELLERAPP_PUSH_NOTIF = "sellerapp_push_notif";
-
     public interface Category {
         String PRODUCT_PAGE = "product page";
         String SEND_MESSAGE_PAGE = "send message page";
@@ -96,8 +94,6 @@ public class TopChatAnalytics {
         String INBOX_CHAT_2 = "inbox chat";
 
         String EVENT_CATEGORY_INBOX_CHAT = "inbox-chat";
-        String PUSH_NOTIFICATION = "push notification";
-
     }
 
     public interface Name {
@@ -146,7 +142,6 @@ public class TopChatAnalytics {
         String CLICK_HEADER_SHOP = "click - shop - login";
         String CLICK_ADD_TO_WISHLIST = "add wishlist - chat";
         String CLICK_REMOVE_FROM_WISHLIST = "remove wishlist - chat";
-        String CLICK_REPLY_BUTTON = "click on reply button";
         String CLICK_IMAGE_THUMBNAIL = "click image on product thumbnail ";
         String CLICK_OP_CARD_DESCRIPTION = "click on order progress card";
         String CLICK_OP_CTA_DESCRIPTION = "click cta on order progress card";
@@ -532,18 +527,6 @@ public class TopChatAnalytics {
                 Action.CLICK_REMOVE_FROM_WISHLIST,
                 productId
         );
-    }
-
-    public void eventClickReplyChatFromNotif(String userId) {
-        Map<String, Object> payload = new HashMap<>();
-        payload.put(EVENT_NAME, Name.CHAT_DETAIL);
-        payload.put(EVENT_CATEGORY, Category.PUSH_NOTIFICATION);
-        payload.put(EVENT_ACTION, Action.CLICK_REPLY_BUTTON);
-        payload.put(EVENT_LABEL, "");
-        payload.put(USER_ID, userId);
-        payload.put("source", SELLERAPP_PUSH_NOTIF);
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(payload);
     }
 
     // #AP11

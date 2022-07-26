@@ -1,6 +1,8 @@
-package com.tokopedia.search.result.presentation.model
+package com.tokopedia.search.result.product.lastfilter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.analytics.SearchComponentTracking
+import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
@@ -11,9 +13,21 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 class LastFilterDataView(
     val filterList: List<SavedOption> = listOf(),
     val title: String = "",
-): Visitable<ProductListTypeFactory> {
-
-    val impressHolder = ImpressHolder()
+    val applink: String = "",
+    val keyword: String = "",
+    val trackingOption: Int = 0,
+    val componentId: String = "",
+    val dimension90: String = "",
+    val valueName: String = "",
+) : Visitable<ProductListTypeFactory>, ImpressHolder(),
+    SearchComponentTracking by searchComponentTracking(
+        trackingOption = trackingOption,
+        keyword = keyword,
+        applink = applink,
+        valueName = valueName,
+        componentId = componentId,
+        dimension90 = dimension90,
+    ) {
 
     fun shouldShow() = filterList.isNotEmpty()
 
