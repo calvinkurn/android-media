@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/unify_space_128"
     android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/unify_space_4"
-    android:backgroundTint="@color/Unify_NN0"
     app:cardCornerRadius="@dimen/unify_space_8"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    app:card_type="clear">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_item_shop_container"
@@ -98,4 +98,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify2>
