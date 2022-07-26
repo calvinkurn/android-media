@@ -39,12 +39,17 @@ data class Order(
         var codes: MutableList<String> = mutableListOf(),
         @SerializedName("is_checked")
         var isChecked: Boolean = false,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("shipping_id")
         var shippingId: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("sp_id")
         var spId: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("is_insurance_price")
-        var isInsurancePrice: Int = 0
+        var isInsurancePrice: Int = 0,
+        @SerializedName("free_shipping_metadata")
+        var freeShippingMetadata: String = ""
 ) : Parcelable
 
 @Parcelize

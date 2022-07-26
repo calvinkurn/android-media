@@ -1,6 +1,12 @@
 package com.tokopedia.oneclickcheckout.order.view
 
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.*
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.CodDataPromo
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.EstimatedTimeArrivalPromo
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PriceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
@@ -82,12 +88,14 @@ class OrderSummaryPageViewModelTestHelper {
     val logisticPromo = LogisticPromoUiModel("bbo", "bbo", "bbo", firstCourierSecondDuration.productData.shipperName,
             secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
             "", "", "", false, "",
-            500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false)
+            500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false,
+            freeShippingMetadata = """{"sent_shipper_partner":true}""")
 
     val logisticPromoEko = LogisticPromoUiModel("boeko", "boeko", "boeko", firstCourierSecondDuration.productData.shipperName,
-        secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
-        "", "", "", false, "",
-        500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false)
+            secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
+            "", "", "", false, "",
+            500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false,
+            freeShippingMetadata = """{"sent_shipper_partner":false}""")
 
     val shippingRecommendationData = ShippingRecommendationData().apply {
         shippingDurationUiModels = listOf(firstDuration, secondDuration)

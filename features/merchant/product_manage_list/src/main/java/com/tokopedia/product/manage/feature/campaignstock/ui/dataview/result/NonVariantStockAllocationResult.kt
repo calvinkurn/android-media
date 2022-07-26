@@ -7,6 +7,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.Re
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 
 data class NonVariantStockAllocationResult(
+        val maxStock: Int?,
         val reservedEventInfoUiModels: ArrayList<ReservedEventInfoUiModel>,
         override val getStockAllocationSummary: GetStockAllocationSummary,
         override val sellableStockProductUiModels: ArrayList<SellableStockProductUIModel>,
