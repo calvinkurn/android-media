@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import android.graphics.Typeface
-import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
@@ -33,12 +32,12 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiMode
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
+import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
-import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
@@ -49,7 +48,8 @@ import javax.inject.Inject
  * Created by jegul on 02/06/20
  */
 class PlayBroadcastUiMapper @Inject constructor(
-    private val textTransformer: HtmlTextTransformer
+    private val textTransformer: HtmlTextTransformer,
+    private val uriParser: UriParser,
 ) : PlayBroadcastMapper {
 
     override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> =
@@ -279,7 +279,7 @@ class PlayBroadcastUiMapper @Inject constructor(
         return PlayCoverUiModel(
             croppedCover = CoverSetupState.Cropped.Uploaded(
                 localImage = null,
-                coverImage = Uri.parse(coverUrl),
+                coverImage = uriParser.parse(coverUrl),
                 coverSource = prevSource ?: CoverSource.None
             ),
             state = SetupDataState.Uploaded,

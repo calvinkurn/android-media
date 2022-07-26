@@ -1388,7 +1388,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private suspend fun getChannelInfo(): ChannelInfoUiModel {
         val err = getChannelById(channelId)
-        if (err != null) throw IllegalStateException(err)
+        if (err != null) throw err
         val channelInfo = (_observableChannelInfo.value as? NetworkResult.Success)?.data
         return channelInfo ?: throw IllegalStateException("this error not supposed to happen")
     }

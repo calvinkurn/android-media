@@ -23,6 +23,8 @@ import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
 import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransformer
+import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
+import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
@@ -121,8 +123,14 @@ class PlayBroadcastModule {
 
     @ActivityRetainedScope
     @Provides
-    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer): PlayBroadcastMapper {
-        return PlayBroadcastUiMapper(htmlTextTransformer)
+    fun provideUriParser(): UriParser {
+        return DefaultUriParser()
+    }
+
+    @ActivityRetainedScope
+    @Provides
+    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer, uriParser: UriParser): PlayBroadcastMapper {
+        return PlayBroadcastUiMapper(htmlTextTransformer, uriParser)
     }
 
     @ActivityRetainedScope
