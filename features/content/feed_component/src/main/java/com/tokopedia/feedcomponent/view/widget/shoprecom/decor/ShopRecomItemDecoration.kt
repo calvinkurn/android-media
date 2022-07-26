@@ -17,7 +17,7 @@ class ShopRecomItemDecoration(
     }
 
     private val spaceItemEdge = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-    private val spaceItem = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_font_12)
+    private val spaceItem = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
     override fun getItemOffsets(
         outRect: Rect,
