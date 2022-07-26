@@ -31,7 +31,6 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.common.util.MutationAddToCart
 import com.tokopedia.hotel.databinding.FragmentHotelRoomDetailBinding
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
