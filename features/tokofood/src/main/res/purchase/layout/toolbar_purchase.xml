@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
-    android:layout_height="?actionBarSize"
-    tools:layout_height="44dp">
+    android:layout_height="44dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_toolbar_purchase"
@@ -35,8 +34,6 @@
             android:maxLines="1"
             app:layout_constraintStart_toEndOf="@+id/backButton"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/merchantDistance"
-            app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="Kopi Janji Jiwa, Priok" />
@@ -50,8 +47,6 @@
             android:maxLines="1"
             app:layout_constraintStart_toStartOf="@+id/merchantName"
             app:layout_constraintTop_toBottomOf="@+id/merchantName"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="display_3"
             tools:text="Jarak Pengiriman: 0,5 km" />
 
