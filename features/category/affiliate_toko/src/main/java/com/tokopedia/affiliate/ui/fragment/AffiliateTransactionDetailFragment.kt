@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TRAFFIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -33,6 +34,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -41,6 +43,8 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private lateinit var affiliateVM: AffiliateTransactionDetailViewModel
 
@@ -141,11 +145,31 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
     private fun setData(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?) {
         if(commissionData?.data?.commissionType != TRAFFIC_TYPE) {
             showView()
+            sendOrderOpenScreenEvent(commissionData?.data?.pageType)
             setProductTransactionData(commissionData)
         }
         else{
+            sendTrafficOpenScreenEvent(commissionData.data?.pageType)
             setTrafficTransactionView()
         }
+    }
+
+    private fun sendOrderOpenScreenEvent(pageType: String?) {
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            if (pageType.equals(PAGE_PDP, true)) AffiliateAnalytics.ScreenKeys.AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_ORDER_PRODUCT else AffiliateAnalytics.ScreenKeys.AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_ORDER_SHOP,
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
+    }
+
+    private fun sendTrafficOpenScreenEvent(pageType: String?) {
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            if (pageType.equals(PAGE_PDP, true)) AffiliateAnalytics.ScreenKeys.AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_TRAFFIC_PRODUCT else AffiliateAnalytics.ScreenKeys.AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_TRAFFIC_SHOP,
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
     }
 
     private fun setTrafficTransactionView() {
