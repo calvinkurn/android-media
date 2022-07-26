@@ -2,9 +2,12 @@ package com.tokopedia.play.broadcaster.setup.product.view.viewholder
 
 import android.content.Context
 import android.graphics.Paint
+import android.text.Spanned
+import android.text.style.BulletSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.buildSpannedString
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
@@ -76,18 +79,19 @@ internal class ProductSummaryViewHolder private constructor() {
         private val context: Context
             get() = itemView.context
 
+        private val bulletSpan: BulletSpan
+            get() = BulletSpan(2, MethodChecker.getColor(context, unifyR.color.Unify_NN500))
+
         fun bind(item: ProductSummaryAdapter.Model.Body) {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
             binding.tvProductSummaryName.text = item.product.name
 
-            val stockWording = itemView.context.getString(R.string.play_bro_product_chooser_stock,
-                item.product.stock
-            )
-
             if(item.product.stock > 0) {
                 binding.tvProductSummaryStock.apply {
-                    text = if(item.product.pinStatus.isPinned) "・$stockWording" else stockWording
-
+                    text = buildSpannedString {
+                        if(item.product.pinStatus.isPinned) append(" ", bulletSpan, Spanned.SPAN_COMPOSING)
+                        append(itemView.context.getString(R.string.play_bro_product_chooser_stock, item.product.stock))
+                    }
                     visibility = View.VISIBLE
                 }
                 binding.tvProductSummaryEmptyStock.visibility = View.GONE
