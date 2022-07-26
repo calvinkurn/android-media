@@ -21,7 +21,7 @@ class RightChatMessageUnifyViewHolder(
 
      private val backgroundChatWithoutReplyBubble = ViewUtil.generateBackgroundWithShadow(
             customChatLayout?.fxChat,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            R.color.chatbot_dms_right_chat_message_bg,
             R.dimen.dp_chatbot_20,
             R.dimen.dp_chatbot_0,
             R.dimen.dp_chatbot_20,
