@@ -572,18 +572,10 @@ class SellerHomeLayoutHelper @Inject constructor(
 
     private suspend fun getUnificationData(widgets: List<BaseWidgetUiModel<*>>): List<UnificationDataUiModel> {
         widgets.setLoading()
-        val dataKeys = widgets.filterIsInstance<UnificationWidgetUiModel>()
-            .map { widget ->
-                UnificationDataFetchModel(
-                    unificationDataKey = widget.dataKey,
-                    shopId = userSession.get().shopId,
-                    tabDataKey = widget.data?.tabs?.firstOrNull {
-                        it.isSelected
-                    }?.dataKey.orEmpty()
-                )
-            }
+        val mWidgets = widgets.filterIsInstance<UnificationWidgetUiModel>()
         val useCase = getUnificationDataUseCase.get()
-        useCase.setParam(dataKeys, dynamicParameter)
+        val shopId = userSession.get().shopId
+        useCase.setParam(shopId, mWidgets, dynamicParameter)
         withContext(dispatcher.main) {
             startWidgetCustomMetricTag.value =
                 SellerHomePerformanceMonitoringConstant.SELLER_HOME_UNIFICATION_TRACE

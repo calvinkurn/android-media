@@ -356,10 +356,11 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getUnificationWidgetData(dataKeys: List<UnificationDataFetchModel>) {
+    fun getUnificationWidgetData(widgets: List<UnificationWidgetUiModel>) {
         launchCatchError(block = {
             val useCase = getUnificationDataUseCase.get()
-            useCase.setParam(dataKeys, dynamicParameter)
+            val shopId = userSession.get().shopId
+            useCase.setParam(shopId, widgets, dynamicParameter)
             getDataFromUseCase(useCase, _unificationWidgetData)
         }, onError = {
             _unificationWidgetData.value = Fail(it)

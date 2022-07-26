@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.model
 
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
+
 /**
  * Created by @ilhamsuaib on 18/07/22.
  */
@@ -7,5 +9,5 @@ package com.tokopedia.sellerhomecommon.domain.model
 data class UnificationDataFetchModel(
     val unificationDataKey: String = "",
     val shopId: String = "",
-    val tabDataKey: String? = null
+    val tabs: List<UnificationTabUiModel> = emptyList()
 )

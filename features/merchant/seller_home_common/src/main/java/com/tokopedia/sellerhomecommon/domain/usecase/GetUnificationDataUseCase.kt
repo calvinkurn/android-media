@@ -12,9 +12,9 @@ import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.GetUnificationDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
-import com.tokopedia.sellerhomecommon.domain.model.UnificationDataFetchModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -29,18 +29,38 @@ class GetUnificationDataUseCase(
     gqlRepository: GraphqlRepository,
     unificationMapper: UnificationMapper,
     dispatchers: CoroutineDispatchers,
-    private val getTableDataUseCase: GetTableDataUseCase
+    private val getTableDataUseCase: GetTableDataUseCase,
 ) : CloudAndCacheGraphqlUseCase<GetUnificationDataResponse, List<UnificationDataUiModel>>(
     gqlRepository, unificationMapper, dispatchers, GetUnificationDataGqlQuery()
 ) {
 
-    private var unificationParams: List<UnificationDataFetchModel> = emptyList()
+    private var shopId: String = String.EMPTY
+    private var widgets: List<UnificationWidgetUiModel> = emptyList()
     private var dynamicParameter: DynamicParameterModel = DynamicParameterModel()
 
     override val classType: Class<GetUnificationDataResponse>
         get() = GetUnificationDataResponse::class.java
 
     override suspend fun executeOnBackground(): List<UnificationDataUiModel> {
+        val existingWidget = widgets.filter { !it.data?.tabs.isNullOrEmpty() }
+        val isWidgetExist = existingWidget.isNotEmpty()
+        return if (isWidgetExist) {
+            getExistingWidgetData()
+        } else {
+            fetchNewWidgetData()
+        }
+    }
+
+    private suspend fun getExistingWidgetData(): List<UnificationDataUiModel> {
+        val unificationDataList = widgets.filter { it.data != null }.map { it.data!! }
+        return fetchTabData(
+            unificationDataList,
+            isExistingWidgetDataFetch = true,
+            isFromCache = false
+        )
+    }
+
+    private suspend fun fetchNewWidgetData(): List<UnificationDataUiModel> {
         initRequestParam()
         if (params.parameters.isEmpty()) {
             throw RuntimeException(PARAM_ERROR_MESSAGE)
@@ -58,25 +78,27 @@ class GetUnificationDataUseCase(
             val data: GetUnificationDataResponse = gqlResponse.getData(classType)
             val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
             val unificationUiModel = mapper.mapRemoteDataToUiData(data, isFromCache)
-            return fetchTabData(unificationUiModel, isFromCache)
+            return fetchTabData(unificationUiModel, false, isFromCache)
         } else {
             throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
     }
 
     fun setParam(
-        params: List<UnificationDataFetchModel>,
+        shopId: String,
+        widgets: List<UnificationWidgetUiModel>,
         dynamicParameter: DynamicParameterModel
     ) {
-        this.unificationParams = params
+        this.shopId = shopId
+        this.widgets = widgets
         this.dynamicParameter = dynamicParameter
     }
 
     private fun initRequestParam() {
-        val dataKeys = unificationParams.map {
+        val dataKeys = widgets.map { widget ->
             DataKeyModel(
-                key = it.unificationDataKey,
-                jsonParams = String.format(UNIFICATION_PARAMS, it.shopId)
+                key = widget.dataKey,
+                jsonParams = String.format(UNIFICATION_PARAMS, shopId)
             )
         }
         this.params = RequestParams.create().apply {
@@ -86,17 +108,17 @@ class GetUnificationDataUseCase(
 
     private suspend fun fetchTabData(
         unificationUiModels: List<UnificationDataUiModel>,
+        isExistingWidgetDataFetch: Boolean,
         isFromCache: Boolean
     ): List<UnificationDataUiModel> {
         return unificationUiModels
             .filter { it.tabs.isNotEmpty() }
             .map { model ->
-                val param = unificationParams.firstOrNull {
-                    model.dataKey == it.unificationDataKey
+                val tab = if (isExistingWidgetDataFetch) {
+                    model.tabs.firstOrNull { it.isSelected } ?: model.tabs.first()
+                } else {
+                    model.tabs.first()
                 }
-                val tab = model.tabs.firstOrNull {
-                    it.dataKey == param?.tabDataKey
-                } ?: model.tabs.first()
 
                 val dataKeyModel = TableAndPostDataKey(
                     dataKey = tab.dataKey,

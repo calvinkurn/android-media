@@ -1135,17 +1135,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun getUnificationData(widgets: List<BaseWidgetUiModel<*>>) {
         startCustomMetric(SELLER_HOME_UNIFICATION_TRACE)
         widgets.setLoading()
-        val dataKeys = widgets.filterIsInstance<UnificationWidgetUiModel>()
-            .map { widget ->
-                UnificationDataFetchModel(
-                    unificationDataKey = widget.dataKey,
-                    shopId = userSession.shopId,
-                    tabDataKey = widget.data?.tabs?.firstOrNull {
-                        it.isSelected
-                    }?.dataKey.orEmpty()
-                )
-            }
-        sellerHomeViewModel.getUnificationWidgetData(dataKeys)
+        val mWidgets = widgets.filterIsInstance<UnificationWidgetUiModel>()
+        sellerHomeViewModel.getUnificationWidgetData(mWidgets)
     }
 
     private fun setupShopSharing() {
