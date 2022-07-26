@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="8dp"
     tools:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.DividerUnify
@@ -84,6 +83,7 @@
         tools:text="Rp15.500.000" />
 
     <LinearLayout
+        android:id="@+id/product_bundling_view_saving"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -125,7 +125,7 @@
         android:id="@+id/product_bundling_total_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="@id/product_bundling_title"
         app:layout_constraintTop_toBottomOf="@id/product_bundling_line"
         app:typographyType="display_2"

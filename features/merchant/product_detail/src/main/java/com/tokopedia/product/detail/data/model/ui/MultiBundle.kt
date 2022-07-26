@@ -39,8 +39,6 @@ class MultiBundle(parent: View) {
     private val iconAdd1: IconUnify = view.findViewById(R.id.product_bundling_icon_add_1)
     private val iconAdd2: IconUnify = view.findViewById(R.id.product_bundling_icon_add_2)
 
-    private val quantity: Typography = parent.findViewById(R.id.product_bundling_total_quantity)
-
     private val images = listOf(image1, image2, image3)
     private val prices = listOf(price1, price2, price3)
     private val discounts = listOf(discount1, discount2, discount3)
@@ -106,18 +104,10 @@ class MultiBundle(parent: View) {
         }
 
         unusedViews.forEach { it.hide() }
-
-        val quantityText = weakContext.get()?.getString(
-            R.string.pdp_bundling_quantity,
-            items.size.toString()
-        ) ?: items.size.toString()
-        quantity.text = quantityText
-        quantity.show()
     }
 
     fun hide() {
         view.hide()
-        quantity.hide()
     }
 
     private fun setItemClickListener(views: List<View>, onClick: () -> Unit) {
