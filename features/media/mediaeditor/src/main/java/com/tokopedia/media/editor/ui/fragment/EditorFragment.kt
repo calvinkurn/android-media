@@ -2,10 +2,13 @@ package com.tokopedia.media.editor.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.media.editor.R
@@ -19,6 +22,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -73,6 +77,9 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
             renderToolsIconActiveState(it)
             updateDrawerSelectionItemIcon()
+
+            val undoIndex = (it.editList.size - it.backValue)
+            renderStateChangeToast(TOAST_UNDO, it.editList[undoIndex].editorToolType)
         }
     }
 
@@ -91,6 +98,9 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
             renderToolsIconActiveState(it)
             updateDrawerSelectionItemIcon()
+
+            val redoIndex = (it.editList.size - 1) - it.backValue
+            renderStateChangeToast(TOAST_REDO, it.editList[redoIndex].editorToolType)
         }
     }
 
@@ -110,6 +120,31 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
     private fun updateDrawerSelectionItemIcon(){
         viewModel.updatedIndexItem.value?.let { updatedIndex ->
             thumbnailDrawerComponent.refreshItem(updatedIndex, viewModel.editStateList.values.toList())
+        }
+    }
+
+    private fun renderStateChangeToast(toastKey: Int, @EditorToolType editorToolType: Int) {
+        val toastStateChangeText = if(toastKey == TOAST_UNDO)
+            "Undo"
+        else
+            "Redo"
+
+        val toastEditText = when(editorToolType){
+            EditorToolType.BRIGHTNESS -> "Brightness"
+            EditorToolType.CONTRAST -> "Contrast"
+            EditorToolType.WATERMARK -> "Watermark"
+            EditorToolType.ROTATE -> "Rotate"
+            EditorToolType.REMOVE_BACKGROUND -> "Remove Background"
+            else -> ""
+        }
+
+        viewBinding?.undoRedoToast?.let {
+            it.text = "$toastStateChangeText $toastEditText"
+            it.show()
+
+            Handler().postDelayed({
+                it.hide()
+            }, 1500)
         }
     }
 
@@ -210,6 +245,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
     companion object {
         private const val SCREEN_NAME = "Main Editor"
+        private const val TOAST_UNDO = 0
+        private const val TOAST_REDO = 1
     }
 
 }
