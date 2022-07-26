@@ -3194,8 +3194,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun isSrwNewDesign(): Boolean {
-        return true
-//        return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
+        return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
     }
 
     companion object {
@@ -3220,8 +3219,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
-        const val AB_TEST_NEW_SRW = "chat_srw_exp"
-        const val AB_TEST_OLD_SRW = "chat_srw_control"
+        const val AB_TEST_NEW_SRW = "srw_new_design"
+        const val AB_TEST_OLD_SRW = "control_variant"
         const val ROLLENCE_ENABLE_MEDIA_PICKER = "android_chat_picker"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
