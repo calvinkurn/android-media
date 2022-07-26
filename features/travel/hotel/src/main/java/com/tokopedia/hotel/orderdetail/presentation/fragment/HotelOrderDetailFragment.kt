@@ -22,13 +22,11 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.QueryTravelCrossSelling
-import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.common.travel.utils.TextHtmlUtils
@@ -38,7 +36,6 @@ import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.QueryHotelOrderDetail
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_ORDER_DETAIL
 import com.tokopedia.hotel.databinding.FragmentHotelOrderDetailBinding
@@ -68,7 +65,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-
 
 /**
  * @author by jessica on 10/05/19
@@ -107,7 +103,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_ORDER_DETAIL)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             orderDetailViewModel = viewModelProvider.get(HotelOrderDetailViewModel::class.java)
         }
 
