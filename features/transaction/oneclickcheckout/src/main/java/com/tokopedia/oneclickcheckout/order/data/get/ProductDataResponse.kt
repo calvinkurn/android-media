@@ -18,6 +18,7 @@ class ProductDataResponse(
         val parentId: String = "",
         @SerializedName("product_name")
         val productName: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("product_price")
         val productPrice: Long = 0,
         @SerializedName("category_id")
@@ -28,6 +29,7 @@ class ProductDataResponse(
         val lastLevelCategory: String = "",
         @SerializedName("category_identifier")
         val categoryIdentifier: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("wholesale_price")
         val wholesalePrice: List<WholesalePrice> = ArrayList(),
         @SerializedName("product_weight")
@@ -54,8 +56,10 @@ class ProductDataResponse(
         val productQuantity: Int = 0,
         @SerializedName("campaign_id")
         val campaignId: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("product_original_price")
         val productOriginalPrice: Long = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("initial_price")
         val initialPrice: Long = 0,
         @SerializedName("slash_price_label")
