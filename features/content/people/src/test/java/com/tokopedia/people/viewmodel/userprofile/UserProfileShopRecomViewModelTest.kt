@@ -79,7 +79,6 @@ class UserProfileShopRecomViewModelTest {
     fun `when user not login, self profile and not load shop then it will emit empty`() {
         coEvery { mockUserSession.isLoggedIn } returns false
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
-        coEvery { mockRepo.getShopRecom() } returns mockEmptyShopRecom
 
         robot.use {
             it.recordState {
@@ -96,7 +95,6 @@ class UserProfileShopRecomViewModelTest {
     fun `when user not login, other profile and not load shop then it will emit empty`() {
         coEvery { mockUserSession.isLoggedIn } returns false
         coEvery { mockRepo.getFollowInfo(listOf(mockOtherUsername)) } returns mockOtherNotFollow
-        coEvery { mockRepo.getShopRecom() } returns mockEmptyShopRecom
 
         robot.use {
             it.recordState {
@@ -110,18 +108,18 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
-    fun `when user not login, fail and not load shop then it will emit empty`() {
+    fun `when user not login, fail get profile and not load shop then it will emit empty`() {
         coEvery { mockUserSession.isLoggedIn } returns false
         coEvery { mockRepo.getFollowInfo(any()) } throws mockException
-        coEvery { mockRepo.getShopRecom() } returns mockEmptyShopRecom
 
         robot.use {
-            it.recordState {
+            it.recordStateAndEvent {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } andThen {
+            } andThen { state, events ->
                 robot.viewModel.isShopRecomShow.assertFalse()
-                shopRecom.items.assertEmpty()
-                shopRecom equalTo mockEmptyShopRecom
+                state.shopRecom.items.assertEmpty()
+                state.shopRecom equalTo mockEmptyShopRecom
+                events.last().assertEvent(UserProfileUiEvent.ErrorLoadProfile(Throwable("any throwable")))
             }
         }
     }
@@ -181,7 +179,6 @@ class UserProfileShopRecomViewModelTest {
     fun `when user login, other profile and not load shop then it will emit empty`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getFollowInfo(listOf(mockOtherUsername)) } returns mockOtherNotFollow
-        coEvery { mockRepo.getShopRecom() } returns mockEmptyShopRecom
 
         robot.use {
             it.recordState {
@@ -195,10 +192,9 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
-    fun `when user login, fail and not load shop then it will emit empty`() {
+    fun `when user login, fail load profile and not load shop then it will emit empty`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getFollowInfo(any()) } throws mockException
-        coEvery { mockRepo.getShopRecom() } returns mockEmptyShopRecom
 
         robot.use {
             it.recordStateAndEvent {
