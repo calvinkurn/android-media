@@ -56,7 +56,6 @@ class ManageHighlightedProductFragment : BaseDaggerFragment() {
         private const val ONE_PRODUCT = 1
         private const val FIRST_PAGE = 1
         private const val THIRD_STEP = 3
-        private const val FIRST_PRODUCT = 0
         private const val MAX_PRODUCT_SELECTION = 5
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 100
 

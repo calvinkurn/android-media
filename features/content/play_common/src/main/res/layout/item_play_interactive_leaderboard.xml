@@ -52,6 +52,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_winner"
+        app:layout_constraintVertical_bias="0.0"
         app:layout_goneMarginTop="0dp"
         app:typographyType="body_3"
         tools:text="Dari 100 peserta game"

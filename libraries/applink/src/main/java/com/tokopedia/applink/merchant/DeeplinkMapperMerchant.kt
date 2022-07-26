@@ -336,7 +336,13 @@ object DeeplinkMapperMerchant {
     }
 
     fun isSellerShopFlashSaleApplink(deeplink: String): Boolean {
-        return deeplink.startsWith(ApplinkConst.SellerApp.SELLER_SHOP_FLASH_SALE)
+        val path = Uri.parse(deeplink).path.orEmpty()
+        val removedPathLink = if (path.isEmpty()) {
+            deeplink // already removed
+        } else {
+            deeplink.split(path).firstOrNull()
+        }
+        return removedPathLink == ApplinkConst.SellerApp.SELLER_SHOP_FLASH_SALE
     }
 
     fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {

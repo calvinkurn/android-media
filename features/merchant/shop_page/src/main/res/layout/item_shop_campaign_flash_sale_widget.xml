@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         app:typographyType="heading_4"
-        android:textColor="@color/Unify_Background"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/shop_page_label_flash_sale_toko" />
@@ -34,9 +33,9 @@
         android:id="@+id/tgp_flash_sale_timer_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_Background"
         android:layout_marginTop="8dp"
         android:text="@string/shop_page_label_flash_sale"
+        app:layout_constraintVertical_chainStyle="spread"
         app:layout_constraintLeft_toLeftOf="@id/tgp_flash_sale_campaign_name"
         app:layout_constraintTop_toBottomOf="@id/tgp_flash_sale_campaign_name"
         app:typographyType="body_3" />
@@ -55,15 +54,57 @@
         android:id="@+id/tgp_cta_see_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
         android:text="@string/shop_page_label_see_all"
-        android:textColor="@color/Unify_Background"
-        app:layout_constraintBottom_toBottomOf="@id/tgp_flash_sale_timer_desc"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tgp_flash_sale_campaign_name"
+        app:layout_constraintBottom_toBottomOf="@id/tus_flash_sale_timer"
+        app:layout_constraintTop_toTopOf="@id/tus_flash_sale_timer"
         app:layout_constraintVertical_bias="0.318"
         app:typographyType="body_3"
         app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/flash_sale_reminder_view"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:visibility="gone"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="-12dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tus_flash_sale_timer"
+        app:layout_constraintBottom_toBottomOf="@id/tus_flash_sale_timer">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="8dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_remind_me_bell"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_campaign_fs_remind_me_false" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tgp_remind_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textColor="@color/clr_dms_fs_notify_wording"
+                app:layout_constraintBottom_toBottomOf="@id/iv_remind_me_bell"
+                app:layout_constraintLeft_toRightOf="@id/iv_remind_me_bell"
+                app:layout_constraintTop_toTopOf="@id/iv_remind_me_bell"
+                android:textSize="12sp"
+                app:typographyWeight="bold"
+                tools:text="Ingatkan" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -97,51 +138,17 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/flash_sale_reminder_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/bg_rounded_rect_flash_sale_remind_me"
-            android:paddingHorizontal="8dp"
-            android:visibility="gone"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_remind_me_bell"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_fs_remind_me_false" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tgp_remind_me"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
-                android:layout_marginStart="4dp"
-                android:textColor="@color/clr_dms_AD31353B"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/iv_remind_me_bell"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_3"
-                app:typographyWeight="bold" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_flash_sale_product_carousel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
-            android:layout_marginTop="12dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/flash_sale_count_down_layout" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="2dp"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

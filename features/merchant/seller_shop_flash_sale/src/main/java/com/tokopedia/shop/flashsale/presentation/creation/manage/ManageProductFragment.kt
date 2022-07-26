@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -20,14 +20,13 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsFragmentManageProductBinding
+import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.flashsale.common.constant.BundleConstant
 import com.tokopedia.shop.flashsale.common.extension.*
 import com.tokopedia.shop.flashsale.common.preference.SharedPreferenceDataStore
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.EMPTY_BANNER
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.ERROR_BANNER
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.HIDE_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighlightedProductActivity
 import com.tokopedia.shop.flashsale.presentation.creation.manage.adapter.ManageProductListAdapter
@@ -35,12 +34,10 @@ import com.tokopedia.shop.flashsale.presentation.creation.manage.bottomsheet.Edi
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ProductDeleteDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.ShopClosedDialog
 import com.tokopedia.shop.flashsale.presentation.creation.manage.dialog.showSuccessSaveCampaignDraft
-import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.MainScope
 import javax.inject.Inject
 
 class ManageProductFragment : BaseDaggerFragment() {
@@ -215,7 +212,7 @@ class ManageProductFragment : BaseDaggerFragment() {
     private fun observeShopStatus() {
         viewModel.shopStatus.observeOnce(viewLifecycleOwner) {
             if (it is Success) {
-                if (it.data == ShopStatus.CLOSED) {
+                if (it.data == ShopStatusDef.CLOSED) {
                     showShopClosedDialog()
                 } else {
                     loadProductsData()
@@ -348,6 +345,7 @@ class ManageProductFragment : BaseDaggerFragment() {
             tpgAddProduct.gone()
             recyclerViewProduct.gone()
             cardBottomButtonGroup.gone()
+            showHeaderPadding(false)
 
             emptyState.setImageUrl(EMPTY_STATE_IMAGE_URL)
             emptyState.setPrimaryCTAClickListener {
@@ -485,9 +483,7 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun showChooseProductPage() {
         val context = context ?: return
-        val intent = Intent(context, ChooseProductActivity::class.java).apply {
-            putExtra(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId.toString())
-        }
+        val intent = ChooseProductActivity.createIntent(context, campaignId.toString(), manageProductListAdapter.itemCount)
         startActivityForResult(intent, REQUEST_CODE)
     }
 

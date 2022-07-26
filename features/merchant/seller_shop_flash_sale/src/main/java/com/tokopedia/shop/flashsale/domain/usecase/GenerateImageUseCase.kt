@@ -11,7 +11,7 @@ import com.tokopedia.shop.flashsale.data.request.ImageGeneratorArgumentRequest
 import com.tokopedia.shop.flashsale.data.response.GenerateImageResponse
 import com.tokopedia.shop.flashsale.domain.usecase.GenerateImageUseCase.Companion.QUERY
 import com.tokopedia.shop.flashsale.domain.usecase.GenerateImageUseCase.Companion.QUERY_NAME
-import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants.ImageGeneratorSourceId.FLASH_SALE_TOKO
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants.ImageGeneratorSourceId.FS_TOKO
 import javax.inject.Inject
 
 @GqlQuery(QUERY_NAME, QUERY)
@@ -49,7 +49,7 @@ class GenerateImageUseCase @Inject constructor(
 
     private fun buildRequest(arguments: List<ImageGeneratorArgumentRequest>): GraphqlRequest {
         val params = mapOf(
-            REQUEST_PARAM_KEY_SOURCE_ID to FLASH_SALE_TOKO,
+            REQUEST_PARAM_KEY_SOURCE_ID to FS_TOKO,
             REQUEST_PARAM_KEY_ARGS to arguments
         )
         return GraphqlRequest(

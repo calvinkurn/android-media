@@ -41,7 +41,14 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             products = listOf(ServiceProduct(status = 200))
     ))
 
+    private val serviceWithHiddenFlag = listOf(ServiceModel(
+        status = 200,
+        products = listOf(ServiceProduct(status = 200, uiRatesHidden = true))
+    ))
+
     private val ratesResponse = RatesEstimationModel(rates = RatesModel(services = service))
+
+    private val ratesResponse2 = RatesEstimationModel(rates = RatesModel(services = serviceWithHiddenFlag))
 
     @Test
     fun `test request params non bo`() {
@@ -228,5 +235,25 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         }
 
         Assert.assertNotNull(viewModel.ratesVisitableResult.value is Fail)
+    }
+
+    @Test
+    fun `on success rates with ui rates hidden true should not included in list`(){
+        viewModel.ratesVisitableResult.observeForever { }
+
+        coEvery {
+            ratesUseCase.executeOnBackground(any(), any())
+        } returns ratesResponse2
+
+        viewModel.setRatesRequest(RatesEstimateRequest())
+
+        coVerify {
+            ratesUseCase.executeOnBackground(any(), any())
+        }
+
+        Assert.assertNotNull(viewModel.ratesVisitableResult.value)
+        Assert.assertTrue(viewModel.ratesVisitableResult.value is Success)
+        Assert.assertTrue((viewModel.ratesVisitableResult.value as Success).data.first() is ProductShippingHeaderDataModel)
+        Assert.assertTrue((viewModel.ratesVisitableResult.value as Success).data.size == 1)
     }
 }

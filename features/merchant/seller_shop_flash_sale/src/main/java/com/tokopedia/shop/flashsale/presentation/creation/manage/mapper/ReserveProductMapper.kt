@@ -1,11 +1,12 @@
 package com.tokopedia.shop.flashsale.presentation.creation.manage.mapper
 
+import android.content.Context
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.shop.flashsale.common.constant.ChooseProductConstant
 import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignProductSubmissionRequest
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignValidatedProductListResponse
-import com.tokopedia.shop.flashsale.presentation.creation.manage.enums.ShopStatus
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.ReserveProductModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.model.SelectedProductModel
 
@@ -15,6 +16,7 @@ object ReserveProductMapper {
     private const val TEASER_POS_DEFAULT_VALUE = 0
     private const val TEASER_ACTIVE_DEFAULT_VALUE = false
     private const val SELECTED_DISABLED_REASON_REMOTE_WORDING = "Produk sudah dipilih sebelumnya."
+    private const val ERROR_EXCEED_PRODUCT_LIMIT = "can't reserve product. remaining allowed product to reserve:"
 
     fun mapFromProduct(product: GetSellerCampaignValidatedProductListResponse.Product) =
         ReserveProductModel (
@@ -51,21 +53,22 @@ object ReserveProductMapper {
         ?.map { mapToProductData(it) }
         .orEmpty()
 
-    fun mapToShopStatusEnum(shopStatus: Int): ShopStatus {
-        return when(shopStatus) {
-            ShopStatus.OPEN.type -> ShopStatus.OPEN
-            ShopStatus.CLOSED.type -> ShopStatus.CLOSED
-            else -> ShopStatus.OTHER
-        }
-    }
-
-    fun canReserveProduct(selectedItem: List<SelectedProductModel>): Boolean {
-        return selectedItem.filter { !it.hasChild }.run {
-            size.isMoreThanZero() && size < ChooseProductConstant.PRODUCT_SELECTION_MAX
+    fun canReserveProduct(selectedItem: List<SelectedProductModel>, previousSelectedProductCount: Int): Boolean {
+        return selectedItem.filter { !it.hasChild && !it.isProductPreviouslySubmitted }.run {
+            val actualSize = size + previousSelectedProductCount
+            actualSize.isMoreThanZero() && actualSize < ChooseProductConstant.PRODUCT_SELECTION_MAX
         }
     }
 
     fun hasVariant(selectedItem: List<SelectedProductModel>): Boolean {
         return selectedItem.any { it.parentProductId != null }
+    }
+
+    fun mapErrorMessage(context: Context, errorMessage: String): String {
+        return when {
+            errorMessage.startsWith(ERROR_EXCEED_PRODUCT_LIMIT) ->
+                context.getString(R.string.chooseproduct_error_exceed_limit)
+            else -> errorMessage
+        }
     }
 }

@@ -12,6 +12,8 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -32,6 +34,7 @@ import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
 import com.tokopedia.shop.common.constant.PMIN_PARAM_KEY
 import com.tokopedia.shop.common.constant.RATING_PARAM_KEY
 import com.tokopedia.shop.common.constant.SORT_PARAM_KEY
+import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
@@ -55,6 +58,7 @@ import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
@@ -101,7 +105,16 @@ class ShopHomeViewModelTest {
     lateinit var checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>
 
     @RelaxedMockK
-    lateinit var addToCartUseCase: AddToCartUseCase
+    lateinit var addToCartUseCaseRx: AddToCartUseCase
+
+    @RelaxedMockK
+    lateinit var addToCartUseCase: com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+
+    @RelaxedMockK
+    lateinit var updateCartUseCase: UpdateCartUseCase
+
+    @RelaxedMockK
+    lateinit var deleteCartUseCase: DeleteCartUseCase
 
     @RelaxedMockK
     lateinit var addToCartOccUseCase: AddToCartOccMultiUseCase
@@ -151,6 +164,7 @@ class ShopHomeViewModelTest {
     private val mockCampaignId = "123"
     private val mockPage = 2
     private val mockProductPerPage = 10
+    private val mockIsDirectPurchase = true
     private val shopProductFilterParameter = ShopProductFilterParameter().apply {
         setSortId("6")
         setMapData(
@@ -213,24 +227,27 @@ class ShopHomeViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ShopHomeViewModel(
-                userSessionInterface,
-                getShopProductUseCase,
-                testCoroutineDispatcherProvider,
-                addToCartUseCase,
-                addToCartOccUseCase,
-                addToCartBundleUseCase,
-                gqlCheckWishlistUseCaseProvider,
-                getYoutubeVideoUseCase,
-                getCampaignNotifyMeUseCase,
-                checkCampaignNotifyMeUseCase,
-                getShopFilterBottomSheetDataUseCase,
-                getShopFilterProductCountUseCase,
-                gqlGetShopSortUseCase,
-                shopProductSortMapper,
-                mvcSummaryUseCase,
-                playWidgetTools,
-                gqlShopPageGetHomeType,
-                getShopPageHomeLayoutV2UseCase
+            userSessionInterface,
+            getShopProductUseCase,
+            testCoroutineDispatcherProvider,
+            addToCartUseCaseRx,
+            addToCartUseCase,
+            updateCartUseCase,
+            deleteCartUseCase,
+            addToCartOccUseCase,
+            addToCartBundleUseCase,
+            gqlCheckWishlistUseCaseProvider,
+            getYoutubeVideoUseCase,
+            getCampaignNotifyMeUseCase,
+            checkCampaignNotifyMeUseCase,
+            getShopFilterBottomSheetDataUseCase,
+            getShopFilterProductCountUseCase,
+            gqlGetShopSortUseCase,
+            shopProductSortMapper,
+            mvcSummaryUseCase,
+            playWidgetTools,
+            gqlShopPageGetHomeType,
+            getShopPageHomeLayoutV2UseCase
         )
     }
 
@@ -260,7 +277,7 @@ class ShopHomeViewModelTest {
                 data = listOf(ShopProduct(), ShopProduct())
         )
 
-        viewModel.getNewProductList(mockShopId, mockPage, mockProductPerPage, shopProductFilterParameter, addressWidgetData)
+        viewModel.getNewProductList(mockShopId, mockPage, mockProductPerPage, shopProductFilterParameter, addressWidgetData, mockIsDirectPurchase)
 
         coVerify {
             getShopProductUseCase.executeOnBackground()
@@ -274,7 +291,7 @@ class ShopHomeViewModelTest {
     fun `check whether response get lazy load product failed is null`() {
         coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
 
-        viewModel.getNewProductList(mockShopId, mockPage, mockProductPerPage, shopProductFilterParameter, addressWidgetData)
+        viewModel.getNewProductList(mockShopId, mockPage, mockProductPerPage, shopProductFilterParameter, addressWidgetData, mockIsDirectPurchase)
 
         coVerify {
             getShopProductUseCase.executeOnBackground()
@@ -287,7 +304,7 @@ class ShopHomeViewModelTest {
     fun `check whether get merchant voucher is success`() {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
-        } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(resultStatus = ResultStatus(code = ShopHomeViewModel.CODE_STATUS_SUCCESS, null, null, null), null, null, null))
+        } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(resultStatus = ResultStatus(code = CODE_STATUS_SUCCESS, null, null, null), null, null, null))
         viewModel.getMerchantVoucherCoupon(mockShopId, context, ShopHomeVoucherUiModel())
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
@@ -357,7 +374,7 @@ class ShopHomeViewModelTest {
         val mockDisplayedPrice = "Rp. 1000"
 
         val onSuccessAddToCart: (DataModel) -> Unit = mockk(relaxed = true)
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(AddToCartDataModel(
+        every { addToCartUseCaseRx.createObservable(any()) } returns Observable.just(AddToCartDataModel(
                 data = DataModel(success = 1)
         ))
         viewModel.addProductToCart(
@@ -379,7 +396,7 @@ class ShopHomeViewModelTest {
         val mockProductName = "product mock"
         val mockDisplayedPrice = "Rp. 1000"
         val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
-        every { addToCartUseCase.createObservable(any()) } returns Observable.just(
+        every { addToCartUseCaseRx.createObservable(any()) } returns Observable.just(
                 AddToCartDataModel(
                         data = DataModel(success = 0, message = arrayListOf("Message"))
                 ))
@@ -399,7 +416,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `check whether onErrorAddToCart is called when throw exception`() {
         val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
-        every { addToCartUseCase.createObservable(any()) } throws Throwable()
+        every { addToCartUseCaseRx.createObservable(any()) } throws Throwable()
         viewModel.addProductToCart(
                 ShopHomeProductUiModel(),
                 mockShopId,
@@ -854,7 +871,8 @@ class ShopHomeViewModelTest {
                 mockProductPerPage,
                 shopProductFilterParameter,
                 null,
-                addressWidgetData
+                addressWidgetData,
+                mockIsDirectPurchase
         )
         assert(viewModel.productListData.value is Success)
     }
@@ -876,7 +894,8 @@ class ShopHomeViewModelTest {
                 mockProductPerPage,
                 shopProductFilterParameter,
                 null,
-                addressWidgetData
+                addressWidgetData,
+                mockIsDirectPurchase
         )
         assert(viewModel.productListData.value == null)
     }
@@ -893,7 +912,7 @@ class ShopHomeViewModelTest {
                     name = mockSortName
                 }
         )
-        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData, mockIsDirectPurchase)
         assert(viewModel.getSortNameById(mockSortId) == mockSortName)
     }
 
@@ -902,7 +921,7 @@ class ShopHomeViewModelTest {
         val mockSortId = "123"
         coEvery { gqlGetShopSortUseCase.executeOnBackground() } returns listOf()
         coEvery { shopProductSortMapper.convertSort(any()) } throws Exception()
-        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData, mockIsDirectPurchase)
         assert(viewModel.getSortNameById(mockSortId).isEmpty())
     }
 
@@ -915,7 +934,7 @@ class ShopHomeViewModelTest {
         coEvery { shopProductSortMapper.convertSort(any()) } returns mutableListOf(
                 ShopProductSortModel()
         )
-        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData, mockIsDirectPurchase)
     }
 
     @Test
@@ -930,7 +949,7 @@ class ShopHomeViewModelTest {
                     name = mockSortName
                 }
         )
-        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
+        viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData, mockIsDirectPurchase)
         assert(viewModel.getSortNameById("").isEmpty())
     }
 
@@ -1311,7 +1330,7 @@ class ShopHomeViewModelTest {
                 getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
             } returns ShopLayoutWidgetV2()
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false, any()) } returns listOf(
                     ShopHomeCarousellProductUiModel(widgetId = "1")
             )
             viewModel.getWidgetContentData(
@@ -1325,7 +1344,8 @@ class ShopHomeViewModelTest {
                     ),
                     mockShopId,
                     addressWidgetData,
-                    false
+                    false,
+                    mockIsDirectPurchase
             )
             assert(shopHomeWidgetContentData.await() is Success)
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.isNotEmpty() == true)
@@ -1363,7 +1383,7 @@ class ShopHomeViewModelTest {
             )
 
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false, any()) } returns listOf(
                 resultWidget
             )
 
@@ -1377,7 +1397,8 @@ class ShopHomeViewModelTest {
                 ),
                 mockShopId,
                 addressWidgetData,
-                false
+                false,
+                mockIsDirectPurchase
             )
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == resultWidget)
         }
@@ -1394,7 +1415,7 @@ class ShopHomeViewModelTest {
             } returns ShopLayoutWidgetV2()
 
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false, any()) } returns listOf(
                 ProductCardUiModel()
             )
 
@@ -1408,7 +1429,8 @@ class ShopHomeViewModelTest {
                 ),
                 mockShopId,
                 addressWidgetData,
-                false
+                false,
+                mockIsDirectPurchase
             )
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == null)
         }
@@ -1430,7 +1452,8 @@ class ShopHomeViewModelTest {
                     listOf(ShopPageWidgetLayoutUiModel()),
                     mockShopId,
                     addressWidgetData,
-                    false
+                    false,
+                    mockIsDirectPurchase
             )
             assert(shopHomeWidgetContentData.await() is Fail)
             assert(shopHomeWidgetContentDataError.await().isNotEmpty())

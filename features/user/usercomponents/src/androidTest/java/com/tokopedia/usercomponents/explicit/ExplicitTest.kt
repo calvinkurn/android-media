@@ -8,10 +8,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
+import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
+import com.tokopedia.usercomponents.explicit.di.FakeExplicitModule
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugActivity
 import com.tokopedia.usercomponents.explicit.stub.data.ExplicitRepositoryStub
 import com.tokopedia.usercomponents.explicit.stub.data.TestState
-import com.tokopedia.usercomponents.stub.di.getComponent
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,7 +36,11 @@ class ExplicitTest {
 
     @Before
     fun before() {
-        val fakeBaseComponent = getComponent(applicationContext)
+        val fakeBaseComponent = DaggerFakeExplicitComponent.builder()
+            .fakeAppModule(FakeAppModule(applicationContext))
+            .fakeExplicitModule(FakeExplicitModule())
+            .build()
+
         ApplicationProvider.getApplicationContext<BaseMainApplication>()
             .setComponent(fakeBaseComponent)
         repositoryStub = fakeBaseComponent.repo() as ExplicitRepositoryStub
