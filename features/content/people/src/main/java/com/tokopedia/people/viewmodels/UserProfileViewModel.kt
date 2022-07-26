@@ -38,6 +38,11 @@ class UserProfileViewModel @AssistedInject constructor(
         fun create(username: String): UserProfileViewModel
     }
 
+    companion object {
+        private const val FOLLOW_TYPE_SHOP = 2
+        private const val FOLLOW_TYPE_BUYER = 3
+    }
+
     /**
      * play video will be moved to dedicated fragment when
      * developing another tab user profile eventually. so gonna leave as is for now
@@ -224,18 +229,16 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleClickFollowButtonShopRecom(item: ShopRecomUiModelItem) {
-        val typeShop = 2
-        val typeBuyer = 3
         viewModelScope.launchCatchError(block = {
             val followInfo = _followInfo.value
             val result = when (item.type) {
-                typeShop -> {
+                FOLLOW_TYPE_SHOP -> {
                     repo.shopFollowUnfollow(
                         item.id.toString(),
                         if (item.isFollow) UnFollow else Follow
                     )
                 }
-                typeBuyer -> {
+                FOLLOW_TYPE_BUYER -> {
                     if (item.isFollow) repo.unFollowProfile(item.encryptedID)
                     else repo.followProfile(item.encryptedID)
                 }
