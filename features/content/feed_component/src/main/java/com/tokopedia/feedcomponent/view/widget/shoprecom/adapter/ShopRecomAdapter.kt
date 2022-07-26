@@ -41,8 +41,8 @@ class ShopRecomAdapter(
         shopRecomCallback.onShopRecomCloseClicked(itemID)
     }
 
-    override fun onShopRecomFollowClicked(itemID: Long) {
-        shopRecomCallback.onShopRecomFollowClicked(itemID)
+    override fun onShopRecomFollowClicked(item: ShopRecomUiModelItem) {
+        shopRecomCallback.onShopRecomFollowClicked(item)
     }
 
     override fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int) {

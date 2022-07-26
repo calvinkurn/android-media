@@ -1,5 +1,7 @@
 package com.tokopedia.people.views.uimodel.action
 
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */
@@ -13,7 +15,7 @@ sealed interface UserProfileAction {
 
     data class ClickUpdateReminder(val isFromLogin: Boolean) : UserProfileAction
 
-    data class ClickFollowButtonShopRecom(val itemID: Long) : UserProfileAction
+    data class ClickFollowButtonShopRecom(val item: ShopRecomUiModelItem) : UserProfileAction
 
     data class RemoveShopRecomItem(val itemID: Long,) : UserProfileAction
 
