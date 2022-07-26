@@ -72,7 +72,7 @@
         android:focusable="true"
         android:padding="@dimen/unify_space_4"
         android:text="@string/sob_skip"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
