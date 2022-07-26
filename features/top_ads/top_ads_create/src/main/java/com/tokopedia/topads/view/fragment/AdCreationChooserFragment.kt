@@ -83,7 +83,7 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
         viewModel = ViewModelProvider(this, viewModelFactory).get(AdChooserViewModel::class.java)
-        val view = inflater.inflate(resources.getLayout(R.layout.topads_create_fragment_onboarding),
+        val view = inflater.inflate(context?.resources?.getLayout(R.layout.topads_create_fragment_onboarding),
             container, false)
         setUpView(view)
         return view
@@ -157,15 +157,14 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
         }
 
         topCornerIcon1?.setImageResource(R.drawable.ic_iklan_otomatis)
-        icon2?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-        icon3?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-        icon4?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
+        icon2?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
+        icon3?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
+        icon4?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
 
         topCornerIcon2?.setImageResource(R.drawable.ic_iklan_manual)
-        icon6?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-        icon7?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-        icon8?.setImageResource(R.drawable.topads_create_ic_checklist_blue)
-
+        icon6?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
+        icon7?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
+        icon8?.setImageResource(com.tokopedia.topads.common.R.drawable.topads_create_ic_checklist_blue)
 
         btnStartAutoAds?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_MULAI_IKLAN, "")
