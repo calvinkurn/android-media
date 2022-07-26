@@ -185,6 +185,7 @@ ext {
             statistic                       : ":features:merchant:statistic",
             officialStore                  : ":features:merchant:official_store",
             voucherCreation                 : ":features:merchant:voucher_creation",
+            sellerShopFlashSale             : ":features:merchant:seller_shop_flash_sale",
             brandlist                       : ":features:merchant:brandlist",
             campaignList                    : ":features:merchant:campaign_list",
             favorite                        : ":features:merchant:favorite",
@@ -216,6 +217,8 @@ ext {
             promoMvcWidget                  : ":features:promo:mvc_widget",
             questWidget                     : ":features:promo:quest_widget",
             tokomember                      : ":features:promo:tokomember",
+            tokomemberSellerDashboard       : ":features:promo:tokomember_seller_dashboard",
+            tokomemberUiCommon              : ":features:promo:tokomember_common_widget",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",

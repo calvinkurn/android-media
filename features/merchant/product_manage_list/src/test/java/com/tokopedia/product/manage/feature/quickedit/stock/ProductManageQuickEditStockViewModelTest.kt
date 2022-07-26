@@ -20,17 +20,6 @@ class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewM
     }
 
     @Test
-    fun `when stock too high should set stock to maximum value`() {
-        val veryHighStock = 1000000
-
-        viewModel.updateStock(veryHighStock)
-
-        val expectedStock = MAXIMUM_STOCK
-
-        verifyStockEquals(expectedStock)
-    }
-
-    @Test
     fun `when stock is valid should set stock to desired value`() {
         val validStock = 10
 

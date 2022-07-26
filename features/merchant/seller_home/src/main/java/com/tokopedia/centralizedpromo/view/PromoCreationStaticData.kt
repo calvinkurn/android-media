@@ -9,6 +9,7 @@ import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.sellerhome.R
 
@@ -32,6 +33,22 @@ object PromoCreationStaticData {
         isSlashPriceEligible: Boolean
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
+            PromoCreationUiModel(
+                R.drawable.ic_sah_flash_sale_toko,
+                resourceProvider.getPromoCreationTitleFlashSaleToko(),
+                resourceProvider.getPromoCreationDescFlashSaleToko(),
+                resourceProvider.getPromoCreationNewInfoFlashSaleToko(),
+                ApplinkConst.SellerApp.SELLER_SHOP_FLASH_SALE,
+                resourceProvider.getPromoCreationLabelFlashSaleToko(),
+            ),
+            PromoCreationUiModel(
+                R.drawable.ic_sah_tokomember,
+                resourceProvider.getPromoCreationTitleTokoMember(),
+                resourceProvider.getPromoCreationDescriptionTokoMember(),
+                String.EMPTY,
+                ApplinkConst.SellerApp.TOKOMEMBER,
+                resourceProvider.getPromoCreationLabelTokoMember()
+            ),
             PromoCreationUiModel(
                 R.drawable.ic_tokopedia_play,
                 resourceProvider.getPromoCreationTitleTokopediaPlay(),
@@ -57,8 +74,9 @@ object PromoCreationStaticData {
                     R.drawable.ic_sah_slash_price,
                     resourceProvider.getPromoCreationTitleSlashPrice(),
                     resourceProvider.getPromoCreationDescriptionSlashPrice(),
-                    "",
-                    slashPriceApplink
+                    resourceProvider.getPromoCreationNewInfoSlashPrice(),
+                    slashPriceApplink,
+                    resourceProvider.getPromoCreationLabelSlashPrice()
                 )
             )
         }
@@ -136,7 +154,6 @@ object PromoCreationStaticData {
                 )
             )
         }
-
         return PromoCreationListUiModel(
             items = promoItems,
             errorMessage = ""

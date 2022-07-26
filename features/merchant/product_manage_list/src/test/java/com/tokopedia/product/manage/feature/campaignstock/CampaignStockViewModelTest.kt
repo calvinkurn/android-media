@@ -66,6 +66,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             isActive = otherCampaignStockData.getIsActive(),
             access = access,
             isCampaign = otherCampaignStockData.campaign?.isActive == true,
+            maxStock = null,
             sellableList = getStockAllocationData.detail.sellable
         ) as ArrayList
 
@@ -80,6 +81,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetOtherCampaignStockDataCalled()
 
         val expectedResult = Success(NonVariantStockAllocationResult(
+            null,
             nonVariantReservedEventInfoUiModels,
             getStockAllocationData.summary,
             sellableProducts,
@@ -117,6 +119,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             isActive = otherCampaignStockData.getIsActive(),
             access = access,
             isCampaign = otherCampaignStockData.campaign?.isActive == true,
+            maxStock = null,
             sellableList = getStockAllocationData.detail.sellable
         ) as ArrayList
 
@@ -131,6 +134,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetOtherCampaignStockDataCalled()
 
         val expectedResult = Success(NonVariantStockAllocationResult(
+            null,
             nonVariantReservedEventInfoUiModels,
             getStockAllocationData.summary,
             sellableProducts,
@@ -168,6 +172,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             isActive = otherCampaignStockData.getIsActive(),
             access = access,
             isCampaign = otherCampaignStockData.campaign?.isActive == true,
+            maxStock = null,
             sellableList = getStockAllocationData.detail.sellable
         ) as ArrayList
 
@@ -182,6 +187,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         verifyGetOtherCampaignStockDataCalled()
 
         val expectedResult = Success(NonVariantStockAllocationResult(
+            null,
             nonVariantReservedEventInfoUiModels,
             getStockAllocationData.summary,
             sellableProducts,
@@ -206,7 +212,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         val otherCampaignStockData = OtherCampaignStockData()
         val getVariantResult = ProductManageVariantMapper.mapToVariantsResult(
             getProductVariantResponse.getProductV3,
-            createShopOwnerAccess()
+            createShopOwnerAccess(),
+            null
         )
         val sellableStockProductUiModels =
             CampaignStockMapper.mapToParcellableSellableProduct(
@@ -231,13 +238,112 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             VariantStockAllocationResult(
                 ProductManageVariantMapper.mapToVariantsResult(
                     getProductVariantResponse.getProductV3,
-                    createShopOwnerAccess()
+                    createShopOwnerAccess(),
+                    null
                 ),
                 variantReservedEventInfoUiModels,
                 getStockAllocationData.summary,
                 sellableStockProductUiModels,
                 otherCampaignStockData,
-                createShopOwnerAccess()))
+                createShopOwnerAccess()
+            )
+        )
+
+        verifyGetStockAllocationSuccessResult(expectedResult)
+    }
+
+    @Test
+    fun `given get max stock success, should set non variant result with max stock`() = runBlocking {
+        val productId = "1"
+        val shopId = "1"
+        val maxStock = 5
+        val getStockAllocationData = GetStockAllocationData()
+        val otherCampaignStockData = OtherCampaignStockData(status = ProductStatus.ACTIVE)
+
+        val nonVariantReservedEventInfoUiModels = getStockAllocationData.detail.reserve.map {
+            CampaignStockMapper.mapToParcellableReserved(it)
+        } as ArrayList
+
+        val access = createShopOwnerAccess()
+
+        val sellableProducts = CampaignStockMapper.getSellableProduct(
+            id = productId,
+            isActive = otherCampaignStockData.getIsActive(),
+            access = access,
+            isCampaign = otherCampaignStockData.campaign?.isActive == true,
+            maxStock = null,
+            sellableList = getStockAllocationData.detail.sellable
+        ) as ArrayList
+
+
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetMaxStockThreshold_thenReturn(maxStock)
+
+        viewModel.setShopId(shopId)
+        viewModel.getStockAllocation(listOf(productId), true)
+
+        verifyGetWarehouseIdCalled()
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        val expectedResult = Success(NonVariantStockAllocationResult(
+            maxStock,
+            nonVariantReservedEventInfoUiModels,
+            getStockAllocationData.summary,
+            sellableProducts,
+            otherCampaignStockData,
+            access
+        ))
+
+        verifyGetStockAllocationSuccessResult(expectedResult)
+    }
+
+    @Test
+    fun `given get max stock success, should set variant result with max stock`() = runBlocking {
+        val productId = "1"
+        val shopId = "1"
+        val maxStock = 5
+        val getStockAllocationData =
+            GetStockAllocationData(
+                summary = GetStockAllocationSummary(
+                    isVariant = true
+                )
+            )
+        val getProductVariantResponse = createGetVariantResponse()
+        val otherCampaignStockData = OtherCampaignStockData()
+        val getVariantResult = ProductManageVariantMapper.mapToVariantsResult(
+            getProductVariantResponse.getProductV3,
+            createShopOwnerAccess(),
+            null
+        )
+        val sellableStockProductUiModels =
+            CampaignStockMapper.mapToParcellableSellableProduct(
+                getStockAllocationData.detail.sellable,
+                getVariantResult.variants
+            )
+        val variantReservedEventInfoUiModels =
+            CampaignStockMapper.mapToVariantReserved(getStockAllocationData.detail.reserve) as ArrayList
+
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+        onGetProductVariant_thenReturn(getProductVariantResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetMaxStockThreshold_thenReturn(maxStock)
+
+        viewModel.setShopId(shopId)
+        viewModel.getStockAllocation(listOf(productId), false)
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetProductVariantCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        val expectedResult = Success(VariantStockAllocationResult(
+            ProductManageVariantMapper.mapToVariantsResult(getProductVariantResponse.getProductV3, createShopOwnerAccess(), maxStock),
+            variantReservedEventInfoUiModels,
+            getStockAllocationData.summary,
+            sellableStockProductUiModels,
+            otherCampaignStockData,
+            createShopOwnerAccess()))
 
         verifyGetStockAllocationSuccessResult(expectedResult)
     }
