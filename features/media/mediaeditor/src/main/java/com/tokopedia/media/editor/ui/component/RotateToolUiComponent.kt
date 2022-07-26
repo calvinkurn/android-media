@@ -101,14 +101,12 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
 
         flipBtn.setOnClickListener {
             if (!isRatioRotated) {
-                scaleX = -cropImageView.scaleX
-                scaleY = 1f
+                scaleX = -scaleX
             } else {
-                scaleX = 1f
-                scaleY = -cropImageView.scaleY
+                scaleY = -scaleY
             }
-            cropImageView.scaleX = scaleX
-            cropImageView.scaleY = scaleY
+
+            cropImageView.scaleX = -cropImageView.scaleX
 
             updateRotation()
         }

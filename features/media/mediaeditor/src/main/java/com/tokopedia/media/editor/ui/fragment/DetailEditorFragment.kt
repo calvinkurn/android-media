@@ -320,19 +320,21 @@ class DetailEditorFragment @Inject constructor(
         val rotateCropImageView = rotateComponent.cropImageView
 
         if(rotateCropImageView.currentAngle % 90f == 0f){
-            data.rotateData?.let {
-                val bitmap = rotateCropImageView.drawable.toBitmap()
-                val matrix = Matrix()
+            val bitmap = rotateCropImageView.drawable.toBitmap()
 
-                matrix.postScale(
-                    it.scaleX,
-                    it.scaleY
-                )
+            val scale = rotateComponent.getScale()
+            val scaleX = scale.first
+            val scaleY = scale.second
 
-                matrix.preRotate(rotateCropImageView.currentAngle)
+            val matrix = Matrix()
+            matrix.preScale(
+                scaleX,
+                scaleY
+            )
 
-                return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-            }
+            matrix.postRotate(abs(rotateComponent.getFinalRotationDegree()))
+
+            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
         }
         rotateCropImageView.cropAndSaveImage(
             Bitmap.CompressFormat.PNG,
