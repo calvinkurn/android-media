@@ -7,6 +7,16 @@
     android:background="@drawable/bg_play_product_tag"
     app:rcl_cornerRadius="@dimen/layout_lvl1">
 
+    <include
+        android:id="@+id/view_pin_product"
+        layout="@layout/view_play_bro_pin_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_product_tag_discount" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_product_tag"
         android:layout_width="0dp"

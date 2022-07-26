@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductTagItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.ui.viewholder.carousel.ProductCarouselViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductTagAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -22,7 +23,13 @@ class ProductTagViewComponent(
 
     private val rvProductTag: RecyclerView = findViewById(R.id.rv_bro_product_tag)
 
-    private val adapter = PlayProductTagAdapter()
+    private val viewHolderListener = object : ProductCarouselViewHolder.Product.Listener{
+        override fun onPinProductClicked(product: ProductUiModel) {
+            listener.onPinProductClicked(product)
+        }
+    }
+
+    private val adapter = PlayProductTagAdapter(viewHolderListener)
 
     private val layoutManager = object : LinearLayoutManager(rvProductTag.context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
@@ -94,5 +101,6 @@ class ProductTagViewComponent(
     interface Listener {
         fun impressProductTag(view: ProductTagViewComponent)
         fun scrollProductTag(view: ProductTagViewComponent, product: ProductUiModel, position: Int)
+        fun onPinProductClicked(product: ProductUiModel)
     }
 }

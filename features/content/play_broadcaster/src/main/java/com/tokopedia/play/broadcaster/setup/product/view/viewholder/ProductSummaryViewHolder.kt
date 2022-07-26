@@ -1,17 +1,23 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewholder
 
+import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryBodyListBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryHeaderListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
@@ -68,6 +74,9 @@ internal class ProductSummaryViewHolder private constructor() {
                 binding.tvProductSummaryOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
+        private val context: Context
+            get() = itemView.context
+
         fun bind(item: ProductSummaryAdapter.Model.Body) {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
             binding.tvProductSummaryName.text = item.product.name
@@ -116,6 +125,24 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.icProductSummaryDelete.setOnClickListener {
                 listener.onProductDeleteClicked(item.product)
             }
+            binding.viewPinProduct.root.showWithCondition(item.product.pinStatus.canPin)
+            binding.viewPinProduct.ivLoaderPin.showWithCondition(item.product.pinStatus.isLoading)
+            binding.viewPinProduct.root.setOnClickListener {
+                listener.onPinProductClicked(item.product)
+            }
+
+            when(item.product.pinStatus.pinStatus) {
+                PinStatus.Pinned -> {
+                    binding.viewPinProduct.ivPin.setImage(newIconId = IconUnify.PUSH_PIN, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_RN400), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_RN400))
+                    binding.viewPinProduct.tvPin.text = context.resources.getString(R.string.play_bro_unpin)
+                    binding.viewPinProduct.tvPin.setTextColor(MethodChecker.getColor(context, unifyR.color.Unify_RN400))
+                }
+                PinStatus.Unpin -> {
+                    binding.viewPinProduct.ivPin.setImage(newIconId = IconUnify.PUSH_PIN, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+                    binding.viewPinProduct.tvPin.text = context.resources.getString(R.string.play_bro_pin)
+                    binding.viewPinProduct.tvPin.setTextColor(MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+                }
+            }
         }
 
         companion object {
@@ -131,6 +158,7 @@ internal class ProductSummaryViewHolder private constructor() {
 
         interface Listener {
             fun onProductDeleteClicked(product: ProductUiModel)
+            fun onPinProductClicked(product: ProductUiModel)
         }
     }
 }
