@@ -52,7 +52,8 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
                     bundleProductItem,
                     bundleDetail,
                     bundleParent.bundleName,
-                    bundlePosition,
+                    bundleParent.bundleType,
+                    bundlePosition
             )
         }
     }
@@ -63,19 +64,23 @@ interface MultipleProductBundleListener {
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
-            bundlePosition: Int,
+            bundleType: String,
+            bundlePosition: Int
     )
     fun addMultipleBundleToCart(
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleListSize: Int,
             productDetails: List<ShopHomeBundleProductUiModel>,
             bundleName: String,
+            bundleType: String,
+            bundlePosition: Int,
             widgetLayout: ShopHomeWidgetLayout,
             bundleGroupId: String
     )
     fun impressionProductBundleMultiple(
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
+            bundleType: String,
             bundlePosition: Int,
     )
 }

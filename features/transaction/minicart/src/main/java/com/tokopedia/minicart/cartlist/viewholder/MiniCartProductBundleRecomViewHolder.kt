@@ -37,21 +37,21 @@ class MiniCartProductBundleRecomViewHolder (
         } else {
             GridLayoutManager(itemView.context, BUNDLE_SINGLE_ITEM_SIZE, GridLayoutManager.VERTICAL, false)
         }
-        initRecyclerView(bundleLayoutManager, element)
+        initRecyclerView(bundleLayoutManager)
         rvBundleAdapter?.updateDataSet(element.productBundleList)
         rvBundleAdapter?.setParentPosition(adapterPosition)
     }
 
-    private fun initRecyclerView(bundleLayoutManager: RecyclerView.LayoutManager, bundleLayout: MiniCartProductBundleRecomUiModel) {
+    private fun initRecyclerView(bundleLayoutManager: RecyclerView.LayoutManager) {
         if (multipleProductBundleListener != null && singleProductBundleListener != null) {
             rvBundleAdapter = ShopHomeProductBundleWidgetAdapter(
-                multipleProductBundleListener,
-                singleProductBundleListener,
-                bundleListSize,
-                bundleLayout.widgetId,
-                bundleLayout.widgetMasterId,
-                bundleLayout.type,
-                bundleLayout.name
+                multipleProductBundleListener = multipleProductBundleListener,
+                singleProductBundleListener = singleProductBundleListener,
+                bundleListSize = bundleListSize,
+                widgetId = "",
+                widgetMasterId = "",
+                widgetType = "",
+                widgetName = ""
             )
             viewBinding.rvProductBundleList.apply {
                 setHasFixedSize(true)

@@ -106,6 +106,7 @@ class ShopHomeProductBundleSingleViewHolder(
                     singleBundleProduct,
                     selectedSingleBundle,
                     parentSingleBundle.bundleName,
+                    parentSingleBundle.bundleType,
                     parentSingleBundle.bundleProducts.indexOf(singleBundleProduct)
             )
         }
@@ -115,6 +116,7 @@ class ShopHomeProductBundleSingleViewHolder(
                     singleBundleProduct,
                     selectedSingleBundle,
                     parentSingleBundle.bundleName,
+                    parentSingleBundle.bundleType,
                     parentSingleBundle.bundleProducts.indexOf(singleBundleProduct)
             )
         }
@@ -128,6 +130,7 @@ class ShopHomeProductBundleSingleViewHolder(
                     selectedSingleBundle,
                     singleBundleProduct,
                     bundle.bundleName,
+                    bundle.bundleType,
                     adapterPosition
             )
         }
@@ -138,6 +141,8 @@ class ShopHomeProductBundleSingleViewHolder(
                     bundleListSize,
                     singleBundleProduct,
                     parentSingleBundle.bundleName,
+                    parentSingleBundle.bundleType,
+                    adapterPosition,
                     widgetLayout,
                     bundle.bundleGroupId
             )
@@ -187,6 +192,7 @@ interface SingleProductBundleListener {
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
+            bundleType: String,
             bundlePosition: Int
     )
     fun addSingleBundleToCart(
@@ -194,18 +200,21 @@ interface SingleProductBundleListener {
             bundleListSize: Int,
             bundleProducts: ShopHomeBundleProductUiModel,
             bundleName: String,
+            bundleType: String,
+            bundlePosition: Int,
             widgetLayout: ShopHomeWidgetLayout,
             bundleGroupId: String
     )
     fun onTrackSingleVariantChange(
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleName: String,
+            bundleName: String
     )
     fun impressionProductBundleSingle(
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             selectedProduct: ShopHomeBundleProductUiModel,
             bundleName: String,
-            bundlePosition: Int,
+            bundleType: String,
+            bundlePosition: Int
     )
 }

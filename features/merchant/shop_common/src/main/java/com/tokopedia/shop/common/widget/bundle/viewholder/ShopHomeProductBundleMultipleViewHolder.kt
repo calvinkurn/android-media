@@ -95,6 +95,7 @@ class ShopHomeProductBundleMultipleViewHolder(
             multipleProductBundleListener.impressionProductBundleMultiple(
                     selectedMultipleBundle = multipleBundleItem,
                     bundleName = bundle.bundleName,
+                    bundleType = bundle.bundleType,
                     bundlePosition = adapterPosition
             )
         }
@@ -106,6 +107,8 @@ class ShopHomeProductBundleMultipleViewHolder(
                     bundleListSize,
                     bundle.bundleProducts,
                     bundle.bundleName,
+                    bundle.bundleType,
+                    adapterPosition,
                     widgetLayout,
                     bundle.bundleGroupId
             )
