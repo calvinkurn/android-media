@@ -40,7 +40,6 @@ class ProductTagViewComponent(
 
     private val coachMark: CoachMark2 = CoachMark2(container.context)
 
-
     private val layoutManager = object : LinearLayoutManager(rvProductTag.context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
@@ -108,7 +107,7 @@ class ProductTagViewComponent(
                 CoachMark2Item(
                     holder.itemView.findViewById(R.id.view_pin_product),
                     "",
-                    "Pasang pin di produk agar penonton tahu\nkalau lagi kamu membahasnya.",
+                    getString(R.string.play_bro_pinned_coachmark_desc),
                     CoachMark2.POSITION_BOTTOM
                 )
             )
