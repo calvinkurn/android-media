@@ -51,6 +51,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
+import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -426,6 +427,11 @@ class PlayBroadcastActivity : BaseActivity(),
         analytic.openPermissionScreen()
     }
 
+    private fun openBroadcastSummaryPage() {
+        navigateToFragment(PlayBroadcastSummaryFragment::class.java)
+        analytic.impressReportPage(viewModel.channelId)
+    }
+
     private fun showDialogWhenUnSupportedDevices() {
         getDialog(
                 title = getString(R.string.play_dialog_unsupported_device_title),
@@ -505,6 +511,7 @@ class PlayBroadcastActivity : BaseActivity(),
                 secondaryListener = { dialog ->
                     dialog.dismiss()
                     stopBroadcast()
+                    openBroadcastSummaryPage()
                 }
             )
         }
