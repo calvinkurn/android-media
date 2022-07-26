@@ -28,6 +28,7 @@ class BalanceWidgetView : FrameLayout {
     private var rvBalance: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = null
     private var balanceWidgetAdapter: BalanceWidgetAdapter? = null
+    private var subscriptionPosition = HomeBalanceModel.DEFAULT_BALANCE_POSITION
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -69,6 +70,7 @@ class BalanceWidgetView : FrameLayout {
             }
             else -> {
                 if (element.balanceDrawerItemModels.isNotEmpty()) {
+                    subscriptionPosition = element.balancePositionSubscriptions
                     balanceWidgetAdapter?.setVisitables(listOf(element))
                     rvBalance?.post {
                         listener?.showBalanceWidgetCoachMark(element)
@@ -88,7 +90,7 @@ class BalanceWidgetView : FrameLayout {
         val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
         firstViewHolder?.let {
             if (it is BalanceWidgetViewHolder) {
-                return it.getSubscriptionView()
+                return it.getSubscriptionView(subscriptionPosition)
             }
         }
         return null

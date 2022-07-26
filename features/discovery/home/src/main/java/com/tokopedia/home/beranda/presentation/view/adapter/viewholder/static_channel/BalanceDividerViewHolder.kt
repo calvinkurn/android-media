@@ -17,8 +17,10 @@ class BalanceDividerViewHolder(v: View): RecyclerView.ViewHolder(v) {
         const val FIRST_POSITION = 0
     }
     private val binding: ItemBalanceWidgetDividerBinding? by viewBinding()
+    var coachMarkView: View? = null
 
     fun bind(position: Int) {
+        coachMarkView = binding?.dummyContainerBalanceWidget
         if (itemView.context.isDarkMode()) {
             binding?.dividerBalance?.setBackgroundColor(
                 ContextCompat.getColor(

@@ -808,7 +808,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             context?.let {ctx ->
                 if (scrollPositionY > positionWidgetSubscription && subscriptionCoachmarkIsShowing)
                     subscriptionCoachmark.hideCoachMark()
-                else if (!isSubscriptionCoachmarkShown(ctx)) {
+                else if (!isSubscriptionCoachmarkShown(ctx) && !subscriptionCoachmark.isShowing) {
                     subscriptionCoachmark.showCoachMark(coachMarkItemSubscription)
                 }
             }
@@ -828,8 +828,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun evaluateShowCoachmark() {
-        evaluateScrollTokonowCoachmark()
-        evaluateScrollSubscriptionCoachmark()
+        if (subscriptionCoachmarkIsShowing) {
+            evaluateScrollSubscriptionCoachmark()
+        } else if (tokonowCoachmarkIsShowing) {
+            evaluateScrollTokonowCoachmark()
+        }
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { //set refresh layout to only enabled when reach 0 offset
@@ -2644,6 +2647,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
         val balanceSubscriptionCoachmark = homeBalanceModel.getSubscriptionBalanceCoachmark()
+        if (balanceSubscriptionCoachmark == null && coachmarkSubscription?.isShowing == true)
+            coachmarkSubscription?.hideCoachMark()
         showCoachMark(balanceSubscriptionCoachmark)
     }
 }

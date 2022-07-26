@@ -68,13 +68,4 @@ class BalanceAdapter(
             listener
         )
     }
-
-    fun getSubscriptionView() : View? {
-        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(itemList.balancePositionSubscriptions)
-        viewHolder?.let {
-            if (it is BalanceViewHolder)
-                return it.subscriptionViewCoachMark
-        }
-        return null
-    }
 }
