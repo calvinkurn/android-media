@@ -2,6 +2,7 @@ package com.tokopedia.hotel.common.util
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.hotel.common.util.HotelDestinationSearchQuery.DESTINATION_SEARCH
+import com.tokopedia.hotel.common.util.HotelGetCancellationQuery.GET_CANCELLATION
 import com.tokopedia.hotel.common.util.HotelGetCartQuery.GET_CART
 import com.tokopedia.hotel.common.util.HotelGetPopularPropertyQuery.GET_POPULAR_PROPERTY_QUERY
 import com.tokopedia.hotel.common.util.HotelGetRecentSearchQuery.GET_HOTEL_RECENT_SEARCH_QUERY
@@ -1510,6 +1511,120 @@ internal object HotelGetRecentSearchQuery{
              room
            }
          }
+        }
+    """
+}
+
+@GqlQuery("QueryHotelGetCancellation", GET_CANCELLATION)
+internal object HotelGetCancellationQuery{
+    const val GET_CANCELLATION = """
+        query getCancellation(${'$'}data: PropertyGetCancellationRequest!){
+          propertyGetCancellation(input: ${'$'}data        ){
+            data {
+                cancelCartID
+                cancelCartExpiry
+                property {
+                    propertyID
+                    name
+                    type
+                    address
+                    propertyImage {
+                        urlSquare60
+                        urlOriginal
+                        urlMax300
+                    }
+                    star
+                    paymentNote
+                    checkInOut{
+                        title
+                        checkInOut {
+                          day
+                          date
+                          time
+                        }
+                    }
+                    stayLength
+                    isDirectPayment
+                    room {
+                        isBreakFastIncluded
+                        maxOccupancy
+                        roomName
+                        roomContent
+                        isRefundAble
+                        isCCRequired
+                    }
+                }
+                cancelPolicy {
+                    title
+                    policy {
+                        title
+                        desc
+                        active
+                        feeInLocalCurrency {
+                            amountStr
+                            amount
+                            currency
+                        }
+                        fee {
+                            amountStr
+                            amount
+                            currency
+                        }
+                        styling
+                    }
+                }
+                cancelInfo {
+                    desc
+                    isClickable
+                    longDesc {
+                        title
+                        desc
+                    }
+                }
+                payment {
+                    title
+                    detail {
+                        title
+                        amount
+                    }
+                    summary {
+                        title
+                        amount
+                    }
+                    footer {
+                        desc
+                        links
+                    }
+                }
+                reasons {
+                    id
+                    title
+                    freeText
+                }
+                footer{
+                    desc
+                    links
+                }
+                confirmationButton {
+                    title
+                    desc
+                }
+          }
+            meta{
+              invoiceID
+            }
+            content {
+              success
+              title
+              desc
+                actionButton {
+                   label
+                   buttonType
+                   URI
+                   URIWeb
+                }
+            }
+          }
         }
     """
 }
