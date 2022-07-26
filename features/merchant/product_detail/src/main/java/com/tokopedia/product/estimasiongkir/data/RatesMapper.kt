@@ -13,6 +13,8 @@ import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitabl
  * Created by Yehezkiel on 16/02/21
  */
 object RatesMapper {
+    private const val COD_AVAILABLE = 1
+
     fun mapToVisitable(ratesModel: RatesEstimationModel, request: RatesEstimateRequest): List<ProductShippingVisitable> {
         val address = ratesModel.address
         val shop = ratesModel.shop
@@ -49,7 +51,7 @@ object RatesMapper {
                     it.name,
                     it.eta.textEta,
                     it.price.priceFmt,
-                    it.cod.isCodAvailable == 1,
+                    it.cod.isCodAvailable == COD_AVAILABLE,
                     it.cod.text,
                     it.features.dynamicPrice.dynamicPriceString,
                 )
