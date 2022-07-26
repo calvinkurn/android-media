@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetCreateReviewTemplateBinding
 import com.tokopedia.review.feature.createreputation.model.CreateReviewTemplate
@@ -41,10 +42,12 @@ class CreateReviewTemplate @JvmOverloads constructor(
     }
 
     private fun showLoading() {
+        show()
         binding.layoutTemplateLoading.show()
     }
 
     private fun showTemplate(templates: List<CreateReviewTemplateItemUiModel>) {
+        show()
         binding.layoutTemplateLoading.gone()
         setupTemplate(templates)
     }
@@ -77,8 +80,10 @@ class CreateReviewTemplate @JvmOverloads constructor(
                 })
             }
             is CreateReviewTemplateUiState.Hidden -> {
-                hideTemplate()
-                animateHide(onAnimationEnd = {
+                animateHide(onAnimationStart = {
+                    hideTemplate()
+                }, onAnimationEnd = {
+                    gone()
                     continuation.resume(Unit)
                 })
             }
@@ -87,6 +92,10 @@ class CreateReviewTemplate @JvmOverloads constructor(
 
     fun setListener(newCreateReviewTemplateListener: Listener) {
         createReviewTemplateListener.listener = newCreateReviewTemplateListener
+    }
+
+    fun setMargins(left: Int = Int.ZERO, top: Int = Int.ZERO, right: Int = Int.ZERO, bottom: Int = Int.ZERO) {
+        binding.root.setMargin(left, top, right, bottom)
     }
 
     private inner class CreateReviewTemplateListener: CreateReviewTemplateItemViewHolder.Listener {

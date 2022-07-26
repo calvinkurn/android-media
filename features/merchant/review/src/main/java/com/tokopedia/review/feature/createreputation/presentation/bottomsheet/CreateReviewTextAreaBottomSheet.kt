@@ -19,6 +19,7 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.CreateR
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -88,8 +89,15 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupViews()
         setupListeners()
         binding?.textAreaExpandedCreateReviewBottomSheet?.removeBorder()
+    }
+
+    private fun setupViews() {
+        binding?.reviewTemplateExpandedCreateReviewBottomSheet?.setMargins(
+            bottom = 8.toPx()
+        )
     }
 
     private fun setupListeners() {
@@ -139,6 +147,14 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
             }
         }
 
+        private fun collectTopicsUiState() {
+            collectLatestWhenResumed(viewModel.topicsUiState) {
+                suspendCoroutine { continuation ->
+                    binding?.topicsExpandedCreateReviewBottomSheet?.updateUI(it, continuation)
+                }
+            }
+        }
+
         private fun collectTextAreaTitleUiState() {
             collectLatestWhenResumed(
                 viewModel.textAreaTitleUiState.filterIsInstance<CreateReviewTextAreaTitleUiState.Showing>()
@@ -150,6 +166,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
         fun initUiStateCollectors() {
             collectTextAreaUiState()
             collectReviewTemplateUiState()
+            collectTopicsUiState()
             collectTextAreaTitleUiState()
         }
     }

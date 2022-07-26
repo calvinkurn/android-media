@@ -56,6 +56,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTickerUiState
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTopicsUiState
 import com.tokopedia.review.feature.createreputation.util.CreateReviewMapper
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
@@ -232,6 +233,23 @@ class CreateReviewViewModel @Inject constructor(
         ::mapBadRatingCategoriesUiState
     ).toStateFlow(CreateReviewBadRatingCategoriesUiState.Loading)
     // endregion bad rating categories state
+
+    // region topics state
+    val topicsUiState = combine(
+        canRenderForm,
+        flow {
+            delay(500L)
+            emit(listOf(
+                "Packaging",
+                "Kesesuaian",
+                "Berfungsi",
+                "Warna",
+                "Penjual"
+            ))
+        },
+        ::mapTopics
+    ).toStateFlow(CreateReviewTopicsUiState.Hidden)
+    // endregion topics state
 
     // region text area state
     private val textAreaHint = combine(
@@ -444,6 +462,7 @@ class CreateReviewViewModel @Inject constructor(
             StringRes(R.string.review_form_good_helper)
         }
     }
+
     private fun mapTextAreaHelper(
         reviewTextAreaTextUiModel: CreateReviewTextAreaTextUiModel,
         hasIncentive: Boolean,
@@ -572,6 +591,21 @@ class CreateReviewViewModel @Inject constructor(
             },
             trackerData
         )
+    }
+
+    private fun mapTopics(
+        canRenderForm: Boolean,
+        topics: List<String>
+    ): CreateReviewTopicsUiState {
+        return if (canRenderForm) {
+            if (topics.isEmpty()) {
+                CreateReviewTopicsUiState.Hidden
+            } else {
+                CreateReviewTopicsUiState.Showing(topics)
+            }
+        } else {
+            CreateReviewTopicsUiState.Hidden
+        }
     }
 
     private fun mapTextAreaUiState(

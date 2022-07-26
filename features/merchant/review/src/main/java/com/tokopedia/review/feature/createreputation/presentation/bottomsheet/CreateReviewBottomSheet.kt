@@ -166,6 +166,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
     private fun setupLayout() {
         setupCreateReviewTextArea()
+        setupCreateReviewTemplate()
     }
 
     private fun setupListeners() {
@@ -310,6 +311,10 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
     private fun setupCreateReviewTextArea() {
         binding?.reviewFormTextArea?.setMinLine(TEXT_AREA_MAX_MIN_LINE)
         binding?.reviewFormTextArea?.setMaxLine(TEXT_AREA_MAX_MIN_LINE)
+    }
+
+    private fun setupCreateReviewTemplate() {
+        binding?.reviewFormTemplates?.setMargins(top = 6.toPx())
     }
 
     private object ArgumentHandler {
@@ -677,6 +682,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             collectTickerUiState()
             collectTextAreaTitleUiState()
             collectBadRatingCategoriesUiState()
+            collectTopicsUiState()
             collectTextAreaUiState()
             collectTemplateUiState()
             collectMediaPickerUiState()
@@ -756,6 +762,14 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             viewLifecycleOwner.collectLatestWhenResumed(viewModel.badRatingCategoriesUiState) {
                 suspendCoroutine { continuation ->
                     binding?.reviewFormBadRatingCategories?.updateUi(it, continuation)
+                }
+            }
+        }
+
+        private fun collectTopicsUiState() {
+            viewLifecycleOwner.collectLatestWhenResumed(viewModel.topicsUiState) {
+                suspendCoroutine { continuation ->
+                    binding?.reviewFormTopics?.updateUI(it, continuation)
                 }
             }
         }
