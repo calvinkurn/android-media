@@ -616,6 +616,13 @@ class PlayBottomSheetFragment @Inject constructor(
                                 actionText = toaster,
                                 actionClickListener = {
                                     RouteManager.route(requireContext(), route)
+                                    if (event.product.isPinned) {
+                                        newAnalytic.clickLihatToasterAtcPinnedProductCarousel(
+                                            channelId = playViewModel.channelId,
+                                            channelType = playViewModel.channelType,
+                                        )
+                                    }
+
                                     if (event.product.isTokoNow && partnerTokoNow) {
                                         newAnalytic.clickLihatNowToaster()
                                         analytic.clickSeeToasterAfterAtc()
@@ -638,13 +645,13 @@ class PlayBottomSheetFragment @Inject constructor(
                                 )
                             else
                                 analytic.clickProductAction(
-                                product = event.product,
-                                cartId = event.cartId,
-                                productAction = ProductAction.AddToCart,
-                                bottomInsetsType = bottomInsetsType,
-                                shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                                sectionInfo = sectionInfo,
-                            )
+                                    product = event.product,
+                                    cartId = event.cartId,
+                                    productAction = ProductAction.AddToCart,
+                                    bottomInsetsType = bottomInsetsType,
+                                    shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                    sectionInfo = sectionInfo,
+                                )
                         }
                         else -> {}
                     }

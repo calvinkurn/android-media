@@ -10,9 +10,6 @@ import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.util.isNotChanged
-import com.tokopedia.play.util.withCache
-import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
 import com.tokopedia.play.view.uimodel.event.BuySuccessEvent

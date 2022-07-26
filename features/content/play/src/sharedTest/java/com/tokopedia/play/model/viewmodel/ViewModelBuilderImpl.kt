@@ -1,7 +1,6 @@
 package com.tokopedia.play.model.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.domain.GetReportSummariesUseCase
 import com.tokopedia.play.domain.repository.PlayViewerRepository
