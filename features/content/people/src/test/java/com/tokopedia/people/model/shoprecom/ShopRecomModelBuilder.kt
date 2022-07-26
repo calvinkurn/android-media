@@ -6,6 +6,7 @@ import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 class ShopRecomModelBuilder {
 
     val mockItemId: Long = 12345
+    val mockEncryptedId: String = "d7S/L5fmJQMHljR+nbg0iNvBGQ9U/DdZmuzd0bVvtakdXBg="
 
     fun buildModelIsShown(): ShopRecomUiModel {
         return ShopRecomUiModel(
@@ -29,14 +30,14 @@ class ShopRecomModelBuilder {
 
     fun buildEmptyItemModel() = ShopRecomUiModelItem()
 
-    private fun generateShopItem(itemId: Long = mockItemId): List<ShopRecomUiModelItem> {
+    private fun generateShopItem(): List<ShopRecomUiModelItem> {
         val shopRecomItem = mutableListOf<ShopRecomUiModelItem>()
         for (i in 0..9) {
             shopRecomItem.add(
                 ShopRecomUiModelItem(
                     badgeImageURL = "https://images.tokopedia.net/img/official_store_badge.png",
-                    encryptedID = "d7S/L5fmJQMHljR+nbg0iNvBGQ9U/DdZmuzd0bVvtakdXBg=",
-                    id = if (i == 0) itemId else (i * 1000).toLong(),
+                    encryptedID = if (i == 0) mockEncryptedId else (i * 1000).toString(),
+                    id = if (i == 0) mockItemId else (i * 1000).toLong(),
                     logoImageURL = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/16/ca4843f9-7b5c-468a-8be1-085d1f2b20c3.png",
                     name = "Miisoo Official Shop",
                     nickname = "miisooid",
