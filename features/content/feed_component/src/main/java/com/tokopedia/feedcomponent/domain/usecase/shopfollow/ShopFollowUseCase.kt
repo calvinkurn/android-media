@@ -1,8 +1,8 @@
 package com.tokopedia.feedcomponent.domain.usecase.shopfollow
 
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.ShopFollowModel
-import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase.Companion.QUERY
-import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase.Companion.QUERY_NAME
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase.Companion.SHOP_FOLLOW_QUERY
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase.Companion.SHOP_FOLLOW_QUERY_NAME
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -10,7 +10,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
 
-@GqlQuery(QUERY_NAME, QUERY)
+@GqlQuery(SHOP_FOLLOW_QUERY_NAME, SHOP_FOLLOW_QUERY)
 class ShopFollowUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<ShopFollowModel>(graphqlRepository) {
@@ -22,11 +22,11 @@ class ShopFollowUseCase @Inject constructor(
     }
 
     companion object {
-        private const val SHOP_ID = "shopID"
-        private const val ACTION = "action"
-        private const val INPUT = "input"
-        const val QUERY_NAME = "ShopFollowUseCaseQuery"
-        const val QUERY = """
+        private const val SHOP_FOLLOW_SHOP_ID = "shopID"
+        private const val SHOP_FOLLOW_ACTION = "action"
+        private const val SHOP_FOLLOW_INPUT = "input"
+        const val SHOP_FOLLOW_QUERY_NAME = "ShopFollowUseCaseQuery"
+        const val SHOP_FOLLOW_QUERY = """
             mutation followShop(${'$'}input: ParamFollowShop!) {
               followShop(input:${'$'}input){
                 success
@@ -43,9 +43,9 @@ class ShopFollowUseCase @Inject constructor(
             action: ShopFollowAction,
         ): HashMap<String, Any> {
             return hashMapOf(
-                INPUT to hashMapOf(
-                    SHOP_ID to shopId,
-                    ACTION to action.value
+                SHOP_FOLLOW_INPUT to hashMapOf(
+                    SHOP_FOLLOW_SHOP_ID to shopId,
+                    SHOP_FOLLOW_ACTION to action.value
                 )
             )
         }
