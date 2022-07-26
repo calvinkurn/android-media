@@ -232,7 +232,7 @@ class HotelRoomListViewModelTest {
         coEvery { hotelAddToCartUseCase.execute(any(), any()) } returns Success(HotelAddCartData.Response(HotelAddCartData("aab")))
 
         //when
-        hotelRoomListViewModel.addToCart("", HotelAddCartParam())
+        hotelRoomListViewModel.addToCart(DummyHotelGqlQueryInterfaceImpl(), HotelAddCartParam())
 
         //then
         assert(hotelRoomListViewModel.addCartResponseResult.value is Success)
@@ -245,7 +245,7 @@ class HotelRoomListViewModelTest {
         coEvery { hotelAddToCartUseCase.execute(any(), any()) } returns Fail(Throwable())
 
         //when
-        hotelRoomListViewModel.addToCart("", HotelAddCartParam())
+        hotelRoomListViewModel.addToCart(DummyHotelGqlQueryInterfaceImpl(), HotelAddCartParam())
 
         //then
         assert(hotelRoomListViewModel.addCartResponseResult.value is Fail)
