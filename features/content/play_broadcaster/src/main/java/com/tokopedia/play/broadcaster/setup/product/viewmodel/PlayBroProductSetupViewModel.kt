@@ -53,6 +53,7 @@ import kotlinx.coroutines.launch
 class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val savedStateHandle: SavedStateHandle,
+    @Assisted isDuringLiveStream: Boolean,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     userSession: UserSessionInterface,
@@ -64,6 +65,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         fun create(
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
+            isDuringLiveStream: Boolean,
         ): PlayBroProductSetupViewModel
     }
 
@@ -71,6 +73,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         if (!savedStateHandle.hasProductSections()) {
             savedStateHandle.setProductSections(productSectionList)
         }
+        savedStateHandle.setLiveStreamStatus(isDuringLiveStream)
     }
 
     val channelId: String
@@ -78,6 +81,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     val maxProduct: Int
         get() = configStore.getMaxProduct()
+
+    val isLiveStream: Boolean
+        get() = savedStateHandle.isDuringLiveStream()
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
     private val _selectedProductList = MutableStateFlow(
@@ -406,7 +412,17 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         savedStateHandle[KEY_PRODUCT_SECTIONS] = productSectionList
     }
 
+    private fun SavedStateHandle.setLiveStreamStatus(
+        isDuringLiveStream: Boolean
+    ) {
+        savedStateHandle[KEY_LIVE_STREAM_STATUS] = isDuringLiveStream
+    }
+
     private fun SavedStateHandle.hasProductSections(): Boolean {
+        return savedStateHandle.contains(KEY_PRODUCT_SECTIONS)
+    }
+
+    private fun SavedStateHandle.isDuringLiveStream(): Boolean {
         return savedStateHandle.contains(KEY_PRODUCT_SECTIONS)
     }
 
@@ -451,6 +467,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     companion object {
         private const val KEY_PRODUCT_SECTIONS = "product_sections"
+        private const val KEY_LIVE_STREAM_STATUS = "live_stream_status"
 
         private const val COOL_DOWN_TIMER = 5000L
     }

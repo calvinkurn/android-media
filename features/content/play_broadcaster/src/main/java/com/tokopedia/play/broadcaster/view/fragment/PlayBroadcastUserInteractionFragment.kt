@@ -237,6 +237,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         return if (::parentViewModel.isInitialized) parentViewModel.productSectionList
                         else emptyList()
                     }
+
+                    override fun isDuringLiveStream(): Boolean = true
                 })
             }
             is InteractiveSetupDialogFragment -> {
