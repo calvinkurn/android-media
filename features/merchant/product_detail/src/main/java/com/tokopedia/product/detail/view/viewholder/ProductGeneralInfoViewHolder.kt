@@ -4,9 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -26,6 +26,20 @@ class ProductGeneralInfoViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_general_info
+
+        // add space between info description right and `see` label when title and icon is empty
+        private const val DESCRIPTION_MARGIN_RIGHT_WHEN_TITLE_ICON_IS_HIDE = 38
+        // partner logo margin left by default
+        private const val PARTNER_LOGO_MARGIN_LEFT_WHEN_DEFAULT = 4
+
+        // add space between info description top and parent when title and icon is empty
+        private const val DESCRIPTION_MARGIN_TOP_WHEN_TITLE_ICON_IS_HIDE = 18
+
+        // add space between info description top and parent when title and icon is empty
+        private const val DESCRIPTION_MARGIN_TOP_WHEN_TITLE_ICON_IS_SHOW = 12
+
+        // add space between info description top and parent when title and icon is empty
+        private const val TITLE_MARGIN_LEFT_WHEN_ICON_IS_SHOW = 8
     }
 
     private val binding = ItemDynamicGeneralInfoBinding.bind(view)
@@ -42,13 +56,10 @@ class ProductGeneralInfoViewHolder(
             setEvent(element = element)
 
             // render icon
-            renderIcon(element = element)
+            renderContent(element = element)
 
             // set text to widget
             setWidgetContent(element = element)
-
-            // set widget visibility
-            setWidgetVisibility(element = element)
 
             // set widget margin
             setWidgetMargin(element = element)
@@ -69,7 +80,7 @@ class ProductGeneralInfoViewHolder(
         }
         // set event
         view.setOnClickListener {
-            if (element.applink.isNotEmpty()) {
+            if (element.applink.isNotBlank()) {
                 listener.onInfoClicked(element.applink, element.name, getComponentTrackData(element))
             }
         }
@@ -84,21 +95,14 @@ class ProductGeneralInfoViewHolder(
     }
 
     /**
-     * set widget visibility
+     * render content each widget
      */
-    private fun setWidgetVisibility(element: ProductGeneralInfoDataModel) = with(binding) {
-        pdpInfoTitle.isVisible = element.title.isNotEmpty()
-    }
-
-    /**
-     * render all icon to each widget
-     */
-    private fun renderIcon(
+    private fun renderContent(
         element: ProductGeneralInfoDataModel,
     ) = with(binding) {
 
         // label `see`
-        pdpSee.showWithCondition(element.isApplink)
+        pdpSee.showWithCondition(element.applink.isNotBlank())
 
         // info icon
         pdpIcon.shouldShowWithAction(element.parentIcon.isNotEmpty()) {
@@ -109,6 +113,12 @@ class ProductGeneralInfoViewHolder(
         icPdpPartnerLogo.shouldShowWithAction(element.additionalIcon.isNotEmpty()) {
             icPdpPartnerLogo.loadIcon(element.additionalIcon)
         }
+
+        // title
+        pdpInfoTitle.showWithCondition(element.title.isNotEmpty())
+
+        // description
+        pdpInfoDesc.showWithCondition(element.subtitle.isNotEmpty())
     }
 
     /**
@@ -128,39 +138,83 @@ class ProductGeneralInfoViewHolder(
      * custom margin widget
      */
     private fun setWidgetMargin(element: ProductGeneralInfoDataModel) {
-        // description label
+        // when title and parent icon is not available
         if (element.title.isEmpty() && element.parentIcon.isEmpty()) {
-            // avoid broken with `see` label
-            binding.pdpInfoDesc.setMargin(
-                left = 0,
-                top = 0,
-                right = 32.toPx(),
-                bottom = 0
-            )
+            // when appLink is available & partner logo is available
+            if (element.applink.isNotBlank() && element.additionalIcon.isNotBlank()) {
+                // set partner logo margin right for avoid broken with `see` label
+                // margin left by default
+                binding.icPdpPartnerLogo.setMargin(
+                    left = PARTNER_LOGO_MARGIN_LEFT_WHEN_DEFAULT.toPx(),
+                    top = Int.ZERO,
+                    right = DESCRIPTION_MARGIN_RIGHT_WHEN_TITLE_ICON_IS_HIDE.toPx(),
+                    bottom = Int.ZERO
+                )
+
+                // set description margin top to parent for align with appLink label
+                binding.pdpInfoDesc.setMargin(
+                    left = Int.ZERO,
+                    top = DESCRIPTION_MARGIN_TOP_WHEN_TITLE_ICON_IS_HIDE.toPx(),
+                    right = Int.ZERO,
+                    bottom = Int.ZERO
+                )
+            } else if(element.applink.isNotBlank()) { // when appLink is available & partner logo is NOT available
+                // set partner logo by margin default
+                binding.icPdpPartnerLogo.setMargin(
+                    left = PARTNER_LOGO_MARGIN_LEFT_WHEN_DEFAULT.toPx(),
+                    top = Int.ZERO,
+                    right = Int.ZERO,
+                    bottom = Int.ZERO
+                )
+
+                // set description margin right to parent with 0dp value
+                binding.pdpInfoDesc.setMargin(
+                    left = Int.ZERO,
+                    top = DESCRIPTION_MARGIN_TOP_WHEN_TITLE_ICON_IS_HIDE.toPx(),
+                    right = DESCRIPTION_MARGIN_RIGHT_WHEN_TITLE_ICON_IS_HIDE.toPx(),
+                    bottom = Int.ZERO
+                )
+            } else { // when appLink is not available & partner logo is NOT available
+                binding.pdpInfoDesc.setMargin(
+                    left = Int.ZERO,
+                    top = DESCRIPTION_MARGIN_TOP_WHEN_TITLE_ICON_IS_HIDE.toPx(),
+                    right = Int.ZERO,
+                    bottom = Int.ZERO
+                )
+            }
         } else {
-            // avoid broken with `see` label
+            // set description margin by default
             binding.pdpInfoDesc.setMargin(
-                left = 0,
-                top = 12.toPx(),
-                right = 0,
-                bottom = 0
+                left = Int.ZERO,
+                top = DESCRIPTION_MARGIN_TOP_WHEN_TITLE_ICON_IS_SHOW.toPx(),
+                right = Int.ZERO,
+                bottom = Int.ZERO
+            )
+
+            // set partner logo by margin default
+            binding.icPdpPartnerLogo.setMargin(
+                left = PARTNER_LOGO_MARGIN_LEFT_WHEN_DEFAULT.toPx(),
+                top = Int.ZERO,
+                right = Int.ZERO,
+                bottom = Int.ZERO
             )
         }
 
         // adjust title margin between icon and title when icon is empty,
         if (element.parentIcon.isEmpty()) {
             binding.pdpInfoTitle.setMargin(
-                left = 0,
-                top = 0,
-                right = 0,
-                bottom = 0
+                left = Int.ZERO,
+                top = Int.ZERO,
+                right = Int.ZERO,
+                bottom = Int.ZERO
             )
         } else {
+            // set margin default
             binding.pdpInfoTitle.setMargin(
-                left = 8.toPx(),
-                top = 0,
-                right = 0,
-                bottom = 0
+                left = TITLE_MARGIN_LEFT_WHEN_ICON_IS_SHOW.toPx(),
+                top = Int.ZERO,
+                right = Int.ZERO,
+                bottom = Int.ZERO
             )
         }
     }

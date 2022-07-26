@@ -566,48 +566,37 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun removeUnusedComponent(productInfo: DynamicProductInfoP1?,
-                              variantData: ProductVariant?,
-                              isShopOwner: Boolean,
-                              initialLayoutData: MutableList<DynamicPdpDataModel>)
-            : MutableList<DynamicPdpDataModel> {
-
+    fun removeUnusedComponent(
+        productInfo: DynamicProductInfoP1?,
+        variantData: ProductVariant?,
+        isShopOwner: Boolean,
+        initialLayoutData: MutableList<DynamicPdpDataModel>
+    ): MutableList<DynamicPdpDataModel> {
         val isTradein = productInfo?.data?.isTradeIn == true
-        val hasWholesale = productInfo?.data?.hasWholesale == true
         val isOfficialStore = productInfo?.data?.isOS == true
         val isVariant = productInfo?.isProductVariant() ?: false
         val isVariantEmpty = variantData == null || !variantData.hasChildren
 
-        val removedData = initialLayoutData.map {
-            if ((!isTradein || isShopOwner) && it.name() == ProductDetailConstant.TRADE_IN) {
-                it
-            } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
-                it
-            } else if (!isOfficialStore && it.name() == ProductDetailConstant.VALUE_PROP) {
-                it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) {
-                it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
-                it
-            } else if (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
-                it
-            } else if (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
-                it
-            } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
-                it
-            } else if (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) {
-                it
-            } else if (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp()) {
-                it
-            } else {
-                null
-            }
-        }
-
-        if (removedData.isNotEmpty())
-            initialLayoutData.removeAll(removedData)
-
-        return initialLayoutData
+        return initialLayoutData.filterNot {
+            (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner))
+                    || (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO)
+                    || (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO)
+                    || (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore)
+                    || (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
+                    || (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
+                    || (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp())
+                    || (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner))
+                    || (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp())
+                    /***
+                     * remove palugada type with name
+                     * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
+                     */
+                    || (it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO)
+                    || (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT)
+                    || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
+                    || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
+                    || (it.name() == ProductDetailConstant.COD)
+        }.toMutableList()
     }
 
     private fun getMaxPriceVariant(productInfo: DynamicProductInfoP1, variantData: ProductVariant?): Double {

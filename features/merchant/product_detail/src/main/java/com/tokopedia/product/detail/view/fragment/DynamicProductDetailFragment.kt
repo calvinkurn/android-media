@@ -257,8 +257,7 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -2217,10 +2216,6 @@ open class DynamicProductDetailFragment :
             viewModel.p2Data.value?.upcomingCampaigns,
             boeData.imageURL
         )
-        pdpUiUpdater?.updateFulfillmentData(
-            context,
-            viewModel.getMultiOriginByProductId().isFulfillment
-        )
         val selectedTicker = viewModel.p2Data.value?.getTickerByProductId(productId ?: "")
         pdpUiUpdater?.updateTicker(selectedTicker)
 
@@ -2823,10 +2818,6 @@ open class DynamicProductDetailFragment :
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
         }
 
-        pdpUiUpdater?.updateFulfillmentData(
-            context,
-            viewModel.getMultiOriginByProductId().isFulfillment
-        )
         pdpUiUpdater?.updateDataP2(
                 context = context,
                 p2Data = it,

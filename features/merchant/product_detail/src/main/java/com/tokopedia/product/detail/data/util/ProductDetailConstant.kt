@@ -70,13 +70,18 @@ object ProductDetailConstant {
     const val PDP_K2K = "k2k_pdp"
     const val SHOPADS_CAROUSEL = "shopads_carousel"
     const val PRODUCT_VARIANT_INFO = "variant"
+    // TODO unused
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
     const val PRODUCT_CUSTOM_INFO = "custom_info"
     const val PRODUCT_INSTALLMENT_INFO = "installment"
+    // TODO unused
     const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"
     const val PRODUCT_SHIPPING_INFO = "shipping"
+    // TODO unused
     const val ORDER_PRIORITY = "order_prio"
+    const val COD = "cod"
+    // TODO unused
     const val PRODUCT_FULLFILMENT = "fulfillment"
     const val PRODUCT_PROTECTION = "protection"
     const val VALUE_PROP = "value_prop"

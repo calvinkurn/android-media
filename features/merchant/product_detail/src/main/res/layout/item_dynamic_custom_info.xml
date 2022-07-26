@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/custom_info_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -38,13 +39,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:textColor="@color/Unify_NN950"
             app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_custom_see"
             app:layout_constraintEnd_toStartOf="@+id/custom_label_see"
             app:layout_constraintStart_toEndOf="@+id/custom_image"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginStart="0dp"
+            app:layout_constraintTop_toTopOf="@id/guideline_custom_see"
+            app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="paragraph_1"
             app:typographyWeight="bold"
             tools:text="Bangga Buatan Indonesiaa"
@@ -54,6 +57,7 @@
             android:id="@+id/barrier_title_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:barrierAllowsGoneWidgets="false"
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="custom_title, custom_image" />
 
@@ -74,17 +78,24 @@
             tools:text="Buktikan kamu bangga beli produk dalam negeri.Bacass SK untuk dapat cashback."
             tools:visibility="visible" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_custom_see"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="28dp" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/custom_label_see"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="19dp"
             android:paddingStart="16dp"
             android:paddingEnd="0dp"
             android:text="@string/pdp_general_info_see"
             android:textColor="@color/Unify_GN500"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_custom_see"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guideline_custom_see"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:visibility="visible" />

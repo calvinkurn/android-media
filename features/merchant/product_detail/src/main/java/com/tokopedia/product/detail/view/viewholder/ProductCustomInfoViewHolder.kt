@@ -31,7 +31,7 @@ class ProductCustomInfoViewHolder(
         val LAYOUT = R.layout.item_dynamic_custom_info
 
         // added space between description with parent layout when icon and title hide
-        private const val DESCRIPTION_MARGIN_TOP_WHEN_ICON_TITLE_EMPTY = 16
+        private const val DESCRIPTION_MARGIN_TOP_WHEN_ICON_TITLE_EMPTY = 18
 
         // added space between description with title when icon and title show, same as xml value
         private const val DESCRIPTION_MARGIN_TOP_DEFAULT = 12
@@ -181,12 +181,21 @@ class ProductCustomInfoViewHolder(
         // description label
         if (element.title.isEmpty() && element.icon.isEmpty()) {
             // avoid broken with `see` label
-            customDesc.setMargin(
-                left = Int.ZERO,
-                top = DESCRIPTION_MARGIN_TOP_WHEN_ICON_TITLE_EMPTY.toPx(),
-                right = DESCRIPTION_MARGIN_RIGHT_WHEN_ICON_TITLE_EMPTY.toPx(),
-                bottom = Int.ZERO
-            )
+            if (element.applink.isNotBlank()) {
+                customDesc.setMargin(
+                    left = Int.ZERO,
+                    top = DESCRIPTION_MARGIN_TOP_WHEN_ICON_TITLE_EMPTY.toPx(),
+                    right = DESCRIPTION_MARGIN_RIGHT_WHEN_ICON_TITLE_EMPTY.toPx(),
+                    bottom = Int.ZERO
+                )
+            } else {
+                customDesc.setMargin(
+                    left = Int.ZERO,
+                    top = DESCRIPTION_MARGIN_TOP_WHEN_ICON_TITLE_EMPTY.toPx(),
+                    right = Int.ZERO,
+                    bottom = Int.ZERO
+                )
+            }
         } else {
             // avoid broken with `see` label
             customDesc.setMargin(
