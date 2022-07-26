@@ -53,9 +53,17 @@ class ProductTagViewComponent(
         }
     }
 
+    private val adapterObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+            if (itemCount > 0) rvProductTag.smoothScrollToPosition(0)
+        }
+    }
+
     private var isProductInitialized = false
 
     init {
+        adapter.registerAdapterDataObserver(adapterObserver)
+
         rvProductTag.layoutManager = layoutManager
         rvProductTag.adapter = adapter
         rvProductTag.addItemDecoration(ProductTagItemDecoration(rvProductTag.context))
@@ -119,6 +127,7 @@ class ProductTagViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         rvProductTag.removeOnScrollListener(scrollListener)
+        adapter.unregisterAdapterDataObserver(adapterObserver)
     }
 
     companion object {
