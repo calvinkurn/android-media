@@ -10,7 +10,7 @@ data class ShopMutationModel(
 data class FollowShop(
     @SerializedName("buttonLabel")
     val buttonLabel: String = "",
-    @SerializedName("buttonLabel")
+    @SerializedName("isFirstTime")
     val isFirstTime: Boolean = false,
     @SerializedName("isFollowing")
     val isFollowing: Boolean = false,

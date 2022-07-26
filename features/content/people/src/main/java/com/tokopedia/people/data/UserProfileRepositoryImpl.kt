@@ -22,6 +22,7 @@ import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -107,13 +108,11 @@ class UserProfileRepositoryImpl @Inject constructor(
     override suspend fun shopFollowUnfollow(
         shopId: String,
         action: ShopMutationAction
-    ): MutationUiModel {
-        return withContext(dispatcher.io) {
-            val result = shopMutationUseCase.apply {
-                setRequestParams(ShopMutationUseCase.createParam(shopId, action))
-            }.executeOnBackground()
-            mapper.mapShopMutation(result)
-        }
+    ): MutationUiModel = withContext(dispatcher.io) {
+        val result = shopMutationUseCase.apply {
+            setRequestParams(ShopMutationUseCase.createParam(shopId, action))
+        }.executeOnBackground()
+        return@withContext mapper.mapShopMutation(result)
     }
 
     companion object {

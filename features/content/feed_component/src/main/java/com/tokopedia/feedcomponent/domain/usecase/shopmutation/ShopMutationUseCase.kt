@@ -31,7 +31,9 @@ class ShopMutationUseCase @Inject constructor(
               followShop(input:${'$'}input){
                 success
                 message
+                isFirstTime
                 isFollowing
+                buttonLabel
               }
             }
         """
