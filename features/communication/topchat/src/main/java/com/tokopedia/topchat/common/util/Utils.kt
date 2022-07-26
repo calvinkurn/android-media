@@ -2,6 +2,7 @@ package com.tokopedia.topchat.common.util
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 object Utils {
@@ -24,6 +25,28 @@ object Utils {
             e.printStackTrace()
             e.localizedMessage
         }
+    }
+
+    fun getNextParticularDay(dayOfWeek: Int): Long {
+        return try {
+            val date = Calendar.getInstance()
+            var diff: Int = dayOfWeek - date[Calendar.DAY_OF_WEEK]
+            if (diff <= 0) {
+                diff += 7
+            }
+            date.add(Calendar.DAY_OF_MONTH, diff)
+            getMidnightTimeMillis(date)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0
+        }
+    }
+
+    private fun getMidnightTimeMillis(date: Calendar): Long {
+        date.set(Calendar.HOUR_OF_DAY, 0)
+        date.set(Calendar.MINUTE, 0)
+        date.set(Calendar.SECOND, 0)
+        return date.time.time
     }
 
     val locale: Locale?

@@ -304,7 +304,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             when (it) {
                 is Success -> {
                     onSuccessGetChatList(it.data.data)
-                    if (GlobalConfig.isSellerApp())  {
+                    if (GlobalConfig.isSellerApp() && isFirstPage())  {
                         chatItemListViewModel.getOperationalInsight(userSession.shopId)
                     }
                 }
@@ -648,6 +648,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
 
     override fun onOperationalInsightCloseButtonClicked(visitable: Visitable<*>) {
         adapter?.removeElement(visitable)
+        chatItemListViewModel.saveNextMondayDate()
     }
 
     private fun onViewCreatedFirstSight(view: View?) {

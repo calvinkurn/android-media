@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.view.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -40,11 +41,13 @@ import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import java.util.Calendar
 import javax.inject.Inject
 
 /**
@@ -78,6 +81,7 @@ class ChatItemListViewModel @Inject constructor(
     private val authorizeAccessUseCase: AuthorizeAccessUseCase,
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val operationalInsightUseCase: GetOperationalInsightUseCase,
+    private val sharedPref: SharedPreferences,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), ChatItemListContract {
@@ -378,7 +382,10 @@ class ChatItemListViewModel @Inject constructor(
     fun getOperationalInsight(shopId: String) {
         launchCatchError(block = {
             val dataResponse = operationalInsightUseCase(shopId)
-            dataResponse.shopChatTicker?.showTicker = true
+            if (dataResponse.shopChatTicker?.showTicker == true) {
+                val shouldShowTicker = shouldShowOperationalInsightTicker()
+                dataResponse.shopChatTicker?.showTicker = shouldShowTicker
+            }
             dataResponse.shopChatTicker?.let {
                 _chatOperationalInsight.value = Success(it)
             }
@@ -387,9 +394,23 @@ class ChatItemListViewModel @Inject constructor(
         })
     }
 
+    private fun shouldShowOperationalInsightTicker(): Boolean {
+        val nextMonday = sharedPref.getLong(OPERATIONAL_INSIGHT_NEXT_MONDAY, 0)
+        val todayTimeMillis = System.currentTimeMillis()
+        return todayTimeMillis > nextMonday
+    }
+
+    fun saveNextMondayDate() {
+        val newNextMonday = Utils.getNextParticularDay(Calendar.MONDAY)
+        sharedPref.edit()
+            .putLong(OPERATIONAL_INSIGHT_NEXT_MONDAY, newNextMonday)
+            .apply()
+    }
+
     companion object {
         private const val SELLER_FILTER_THRESHOLD = 3
         private const val ONE_MILLION = 1_000_000L
+        private const val OPERATIONAL_INSIGHT_NEXT_MONDAY = "topchat_operational_insight_next_monday"
         val arrayFilterParam = arrayListOf(
                 PARAM_FILTER_ALL,
                 PARAM_FILTER_UNREAD,

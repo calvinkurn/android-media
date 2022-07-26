@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -26,17 +27,18 @@ import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeature
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
+import com.tokopedia.topchat.chatlist.domain.usecase.GetOperationalInsightUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationPinChatUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
-import kotlinx.coroutines.Dispatchers
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -59,6 +61,8 @@ class ChatItemListViewModelTest {
     private val authorizeAccessUseCase: AuthorizeAccessUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase = mockk(relaxed = true)
+    private val operationalInsightUseCase: GetOperationalInsightUseCase = mockk(relaxed = true)
+    private val sharedPref: SharedPreferences = mockk(relaxed = true)
 
     private val mutateChatListObserver: Observer<Result<ChatListPojo>> = mockk(relaxed = true)
     private val deleteChatObserver: Observer<Result<ChatDelete>> = mockk(relaxed = true)
@@ -80,8 +84,10 @@ class ChatItemListViewModelTest {
             getChatListUseCase,
             authorizeAccessUseCase,
             moveChatToTrashUseCase,
+            operationalInsightUseCase,
+            sharedPref,
             userSession,
-            Dispatchers.Unconfined
+            CoroutineTestDispatchersProvider
         )
         viewModel.mutateChatList.observeForever(mutateChatListObserver)
         viewModel.deleteChat.observeForever(deleteChatObserver)
