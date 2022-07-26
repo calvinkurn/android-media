@@ -207,6 +207,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_display_name"
                     app:typographyType="body_2"
+                    android:visibility="gone"
                     tools:text="john.doe" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -218,6 +219,7 @@
                     android:layout_marginEnd="@dimen/unify_space_16"
                     android:ellipsize="end"
                     android:gravity="start"
+                    android:visibility="gone"
                     android:textColor="@color/Unify_NN950"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
