@@ -3,9 +3,12 @@ package com.tokopedia.review.feature.createreputation.presentation.bottomsheet
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +21,8 @@ import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
@@ -65,6 +70,7 @@ import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvo
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -175,6 +181,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         setCloseClickListener {
             handleDismiss()
         }
+        setupInsetListener()
         baseCreateReviewCustomViewListener.attachListener()
         ratingListener.attachListener()
         tickerListener.attachListener()
@@ -185,6 +192,29 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         templateListener.attachListener()
         anonymousListener.attachListener()
         submitButtonListener.attachListener()
+    }
+
+    private fun setupInsetListener() {
+        dialog?.window?.decorView?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(it) { v, insets ->
+                if (insets.systemWindowInsetBottom.isMoreThanZero()) {
+                    scheduleScrollToTextArea()
+                }
+                insets
+            }
+        }
+    }
+
+    private fun scheduleScrollToTextArea() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding?.let {
+                val mediaPickerBottom = it.reviewFormTextArea.bottom + 8.toPx()
+                val scrollViewHeight = it.reviewFormScrollView.height
+                val scrollX = Int.ZERO
+                val scrollY = mediaPickerBottom - scrollViewHeight
+                it.reviewFormScrollView.smoothScrollTo(scrollX, scrollY)
+            }
+        }, 500L)
     }
 
     private fun handleDismiss() {
@@ -594,7 +624,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             )
         }
 
-        fun trackClickBadRatingReason(title: String, selected: Boolean, ) {
+        fun trackClickBadRatingReason(title: String, selected: Boolean) {
             CreateReviewTracking.eventClickBadRatingReason(
                 viewModel.getOrderId(),
                 viewModel.getProductId(),
