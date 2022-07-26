@@ -10,9 +10,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:page_name="halal_single_name"
-        app:page_path="halal_single_path"
-        app:page_type="halal_single_type"
+        app:page_name="discovery page"
+        app:page_path="discovery path"
+        app:page_type="discovery type"
         app:template_name="halal_single" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
