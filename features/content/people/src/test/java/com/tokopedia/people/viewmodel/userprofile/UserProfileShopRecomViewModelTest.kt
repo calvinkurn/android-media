@@ -227,7 +227,6 @@ class UserProfileShopRecomViewModelTest {
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
-        coEvery { mockUserSession.userId } returns mockOwnUserId
         coEvery { mockRepo.getProfile(mockOwnUsername) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeFollow
@@ -257,7 +256,6 @@ class UserProfileShopRecomViewModelTest {
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
-        coEvery { mockUserSession.userId } returns mockOwnUserId
         coEvery { mockRepo.getProfile(mockOwnUsername) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
