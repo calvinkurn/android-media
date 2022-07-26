@@ -92,9 +92,9 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
         }
     }
 
-    fun getSubscriptionView(): View? {
+    fun getSubscriptionView(subscriptionPosition: Int): View? {
         if (balanceAdapter?.getItemList()?.containsSubscription() == true) {
-            return balanceAdapter?.getSubscriptionView()
+            return balanceDividerAdapter?.getSubscriptionView(subscriptionPosition)
         }
         return null
     }

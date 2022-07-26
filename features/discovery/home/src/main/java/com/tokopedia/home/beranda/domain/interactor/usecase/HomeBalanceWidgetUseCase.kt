@@ -121,8 +121,11 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         homeBalanceModel = getTokopointData(homeBalanceModel, headerTitle, position)
         return currentHeaderDataModel.copy(
                 headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                        homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
-                        isUserLogin = userSession.isLoggedIn
+                    homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS,
+                        balancePositionSubscriptions = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balancePositionSubscriptions
+                            ?: DEFAULT_BALANCE_POSITION
+                    ),
+                        isUserLogin = userSession.isLoggedIn,
                 )
         )
     }
@@ -138,7 +141,10 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         homeBalanceModel = getDataUsingWalletApp(homeBalanceModel, headerTitle, position)
         return currentHeaderDataModel.copy(
             headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
-                homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS),
+                homeBalanceModel = homeBalanceModel.copy(status = HomeBalanceModel.STATUS_SUCCESS,
+                    balancePositionSubscriptions = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balancePositionSubscriptions
+                        ?: DEFAULT_BALANCE_POSITION
+                ),
                 isUserLogin = userSession.isLoggedIn
             )
         )
@@ -149,7 +155,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         return currentHeaderDataModel.copy(
             headerDataModel = currentHeaderDataModel.headerDataModel?.copy(
                 isUserLogin = userSession.isLoggedIn,
-                homeBalanceModel = HomeBalanceModel()
+                homeBalanceModel = HomeBalanceModel(balancePositionSubscriptions = currentHeaderDataModel.headerDataModel?.homeBalanceModel?.balancePositionSubscriptions?: DEFAULT_BALANCE_POSITION)
             )
         )
     }

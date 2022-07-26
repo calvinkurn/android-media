@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,7 +17,7 @@ class BalanceDividerAdapter (
     diffUtil: DiffUtil.ItemCallback<BalanceDividerModel>
 ): ListAdapter<BalanceDividerModel, BalanceDividerViewHolder>(diffUtil) {
 
-    var attachedRecyclerView: RecyclerView? = null
+    private var attachedRecyclerView: RecyclerView? = null
     private var listDivider: MutableList<BalanceDividerModel> = mutableListOf()
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -42,5 +43,15 @@ class BalanceDividerAdapter (
 
     override fun onBindViewHolder(holder: BalanceDividerViewHolder, position: Int) {
         holder.bind(position)
+    }
+
+    fun getSubscriptionView(positionSubscription: Int) : View? {
+        val viewHolder = attachedRecyclerView?.findViewHolderForAdapterPosition(positionSubscription)
+        viewHolder?.let {
+            if (it is BalanceDividerViewHolder) {
+                return it.coachMarkView
+            }
+        }
+        return null
     }
 }

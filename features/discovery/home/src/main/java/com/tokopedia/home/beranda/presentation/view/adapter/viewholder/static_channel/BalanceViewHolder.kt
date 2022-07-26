@@ -33,7 +33,6 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
 
     private val binding: ItemBalanceWidgetNewBinding? by viewBinding()
     private var listener: HomeCategoryListener? = null
-    var subscriptionViewCoachMark: View? = null
 
     fun bind(
         drawerItem: BalanceDrawerItemModel?,
@@ -99,7 +98,6 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                             com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     )
-                    subscriptionViewCoachMark = binding?.homeTvReserveBalance
                 } else {
                     binding?.homeTvReserveBalance?.setWeight(Typography.REGULAR)
                     binding?.homeTvReserveBalance?.setTextColor(
@@ -108,9 +106,6 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                             com.tokopedia.unifyprinciples.R.color.Unify_NN600
                         )
                     )
-                    if (element.drawerItemType == TYPE_SUBSCRIPTION) {
-                        subscriptionViewCoachMark = binding?.homeTvReserveBalance
-                    }
                 }
                 handleClickSuccess(element, reserveBalance)
             }
