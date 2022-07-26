@@ -319,7 +319,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
         forceLogout();
         if(redirectionType == REDIRECTION_HOME) {
-            goToHome(this);
+            Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         } else if(redirectionType == REDIRECTION_WEBVIEW) {
             Intent homeIntent = RouteManager.getIntent(this, ApplinkConst.HOME);
             homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
