@@ -1108,8 +1108,23 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // Perform clash calculation
             calculateClash(promoItem)
 
+            // Update BO clashing state
+            updateBoClashingState(element)
+
             // Calculate total benefit
             calculateAndRenderTotalBenefit()
+        }
+    }
+
+    private fun updateBoClashingState(element: PromoListItemUiModel) {
+        val fragmentUiModel = fragmentUiModel.value
+        val boClashingInfo = element.uiData.boClashingInfos.firstOrNull()
+        fragmentUiModel?.let {
+            it.uiData.boClashingMessage = boClashingInfo?.message ?: ""
+            it.uiState.hasSelectedBo = element.uiState.isBebasOngkir
+            it.uiState.hasSelectedBoClashingPromo = boClashingInfo != null
+
+            _fragmentUiModel.value = it
         }
     }
 
@@ -1402,6 +1417,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private fun checkAndSetClashOnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel): Boolean {
         var clashResult = false
+        // todo
         val clashingInfo = promoListItemUiModel.uiData.clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
         if (clashingInfo != null) {
             if (!promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {

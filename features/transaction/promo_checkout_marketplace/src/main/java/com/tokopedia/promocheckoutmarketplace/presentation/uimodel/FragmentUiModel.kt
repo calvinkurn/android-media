@@ -11,14 +11,17 @@ data class FragmentUiModel(
             var usedPromoCount: Int = 0,
             var exception: Throwable? = null,
             var preAppliedPromoCode: List<String> = emptyList(),
-            var defaultErrorMessage: String = ""
+            var defaultErrorMessage: String = "",
+            var boClashingMessage: String = ""
     )
 
     data class UiState(
             var isLoading: Boolean = false,
             var hasPreAppliedPromo: Boolean = false,
             var hasAnyPromoSelected: Boolean = false,
-            var hasFailedToLoad: Boolean = false
+            var hasFailedToLoad: Boolean = false,
+            var hasSelectedBo: Boolean = false,
+            var hasSelectedBoClashingPromo: Boolean = false
     )
 
 }

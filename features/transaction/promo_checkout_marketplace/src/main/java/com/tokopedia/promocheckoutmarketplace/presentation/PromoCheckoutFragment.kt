@@ -804,6 +804,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             it.buttonApplyPromo.text = applyPromoText
             it.buttonApplyPromo.show()
             it.buttonApplyNoPromo.gone()
+
+            // todo show ticker here
             it.containerActionBottom.show()
         }
     }
