@@ -2133,22 +2133,8 @@ class ProductListPresenter @Inject constructor(
         if (isViewNotAttached) return
         trackBroadMatchSeeMoreClick(broadMatchDataView)
 
-        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.applink)
+        val applink = getModifiedApplinkToSearchResult(broadMatchDataView.applink)
         view.redirectionStartActivity(applink, broadMatchDataView.url)
-    }
-
-    override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {
-        if (isViewNotAttached) return
-        trackBroadMatchSeeMoreClick(broadMatchDataView)
-
-        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.cardButton.applink)
-        view.redirectionStartActivity(applink, null)
-    }
-
-    private fun getModifiedApplinkToSearchResultIfNeeded(applink: String): String {
-        return if (applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-            view.modifyApplinkToSearchResult(applink)
-        else applink
     }
 
     private fun trackBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
@@ -2160,6 +2146,12 @@ class ProductListPresenter @Inject constructor(
                 carouselOptionType.option,
             )
         }
+    }
+
+    private fun getModifiedApplinkToSearchResult(applink: String): String {
+        return if (applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
+            view.modifyApplinkToSearchResult(applink)
+        else applink
     }
     //endregion
 

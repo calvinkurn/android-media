@@ -16,8 +16,6 @@ interface BroadMatchListener {
 
     fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView)
 
-    fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView)
-
     val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
 
     val productCardLifecycleObserver: ProductCardLifecycleObserver?

@@ -40,6 +40,7 @@ private const val chips = "searchproduct/inspirationcarousel/chips.json"
 private const val dynamicProduct = "searchproduct/inspirationcarousel/dynamic-product.json"
 private const val dynamicProductNoSuggestion = "searchproduct/inspirationcarousel/dynamic-product-no-suggestion.json"
 private const val keywordProduct = "searchproduct/inspirationcarousel/keyword-product.json"
+private const val dealsCarouselWithCardButton = "searchproduct/inspirationcarousel/deals-with-card-button.json"
 
 internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFixtures() {
 
@@ -789,6 +790,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             inspirationCarouselOption: SearchProductModel.InspirationCarouselOption,
     ) {
         keyword shouldBe inspirationCarouselOption.title
+        subtitle shouldBe inspirationCarouselOption.subtitle
         applink shouldBe inspirationCarouselOption.applink
 
         val inspirationCarouselProducts = inspirationCarouselOption.inspirationCarouselProducts
@@ -911,5 +913,20 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             val broadMatchProductType = carouselProductType as BroadMatchProduct
             broadMatchProductType.hasThreeDots shouldBe false
         }
+    }
+
+    @Test
+    fun `Show inspiration carousel deals product`() {
+        val searchProductModel = dealsCarouselWithCardButton.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify view set product list`()
+        `Then assert inspiration carousel product list`(
+            0,
+            searchProductModel,
+            ::assertCarouselProductTypeDynamic
+        )
     }
 }

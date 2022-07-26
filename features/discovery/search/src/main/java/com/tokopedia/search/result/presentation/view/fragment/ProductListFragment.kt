@@ -1775,10 +1775,6 @@ class ProductListFragment: BaseDaggerFragment(),
         showProductCardOptions(this, createProductCardOptionsModel(broadMatchItemDataView))
     }
 
-    override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {
-        presenter?.onBroadMatchViewAllCardClicked(broadMatchDataView)
-    }
-
     private fun createProductCardOptionsModel(item: BroadMatchItemDataView): ProductCardOptionsModel {
         val productCardOptionsModel = ProductCardOptionsModel()
 
