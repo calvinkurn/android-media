@@ -130,7 +130,7 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.icProductSummaryDelete.setOnClickListener {
                 listener.onProductDeleteClicked(item.product)
             }
-            binding.viewPinProduct.root.showWithCondition(item.product.pinStatus.canPin)
+            binding.viewPinProduct.root.showWithCondition(item.product.pinStatus.canPin && item.isDuringLiveStream)
             binding.viewPinProduct.ivLoaderPin.showWithCondition(item.product.pinStatus.isLoading)
             binding.viewPinProduct.ivPin.showWithCondition(!item.product.pinStatus.isLoading)
             binding.ivPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
