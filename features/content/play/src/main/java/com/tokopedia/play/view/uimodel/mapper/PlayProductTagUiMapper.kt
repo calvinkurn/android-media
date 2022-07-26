@@ -23,7 +23,7 @@ class PlayProductTagUiMapper @Inject constructor() {
         id = input.id,
     )
 
-//    var index = 0
+    var index = 0
 //
 //    fun mapSection(input: Section): ProductSectionUiModel.Section {
 //        return ProductSectionUiModel.Section(
@@ -80,7 +80,8 @@ class PlayProductTagUiMapper @Inject constructor() {
             isFreeShipping = input.isFreeShipping,
             applink = input.appLink,
             isTokoNow = input.isTokoNow,
-            isPinned = input.isPinned,
+//            isPinned = input.isPinned,
+            isPinned = index++ == 1,
             isRilisanSpesial = sectionType == ProductSectionType.Active || sectionType == ProductSectionType.Upcoming,
         )
     }

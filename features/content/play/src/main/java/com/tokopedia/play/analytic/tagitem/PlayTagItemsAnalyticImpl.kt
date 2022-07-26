@@ -314,7 +314,7 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
     }
 
-    override fun clickBuyPinnedProductInCarousel(
+    override fun buyPinnedProductInCarousel(
         product: PlayProductUiModel.Product,
         cartId: String,
         quantity: Int,
@@ -323,6 +323,41 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
             event = KEY_EVENT_ADD_TO_CART,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = "click buy pinned product",
+            eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
+            list = "",
+            products = listOf(
+                BaseTrackerConst.Product(
+                    productPosition = "",
+                    cartId = cartId,
+                    id = product.id,
+                    name = product.title,
+                    productPrice = product.price.currentPrice.toString(),
+                    brand = "",
+                    category = "",
+                    isFreeOngkir = product.isFreeShipping,
+                    variant = "",
+                    shopId = product.shopId,
+                    quantity = quantity.toString(),
+                )
+            ),
+            buildCustomList = { "/groupchat - featured product" },
+        ).appendUserId(userId)
+            .appendBusinessUnit(VAL_BUSINESS_UNIT)
+            .appendCurrentSite(VAL_CURRENT_SITE)
+            .build()
+
+        if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
+    }
+
+    override fun atcPinnedProductInCarousel(
+        product: PlayProductUiModel.Product,
+        cartId: String,
+        quantity: Int,
+    ) {
+        val trackerMap = BaseTrackerBuilder().constructBasicProductAtcClick(
+            event = KEY_EVENT_ADD_TO_CART,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "click atc pinned product",
             eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
             list = "",
             products = listOf(

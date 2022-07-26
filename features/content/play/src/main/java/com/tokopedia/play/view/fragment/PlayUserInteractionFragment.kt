@@ -83,7 +83,6 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
@@ -1011,6 +1010,7 @@ class PlayUserInteractionFragment @Inject constructor(
             viewLifecycleOwner.lifecycleScope,
             eventBus,
             playViewModel.uiState,
+            playViewModel.uiEvent,
             viewLifecycleOwner.lifecycle,
         )
     }

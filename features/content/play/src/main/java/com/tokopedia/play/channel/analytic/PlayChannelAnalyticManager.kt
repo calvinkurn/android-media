@@ -10,7 +10,11 @@ import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
+import com.tokopedia.play.view.uimodel.event.BuySuccessEvent
+import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -49,8 +53,9 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
 
     fun observe(
         scope: CoroutineScope,
-        event: EventBus<Any>,
-        uiState: Flow<PlayViewerNewUiState>,
+        viewEvent: EventBus<Any>,
+        uiState: StateFlow<PlayViewerNewUiState>,
+        uiEvent: Flow<PlayViewerNewUiEvent>,
         lifecycle: Lifecycle,
     ) {
         scope.launch(dispatchers.computation) {
@@ -64,7 +69,7 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
         }
 
         scope.launch(dispatchers.computation) {
-            event.subscribe().collect {
+            viewEvent.subscribe().collect {
                 when (it) {
                     is ProductCarouselUiComponent.Event.OnClicked -> {
                         onCarouselProductClicked(it.product, it.position)
@@ -83,6 +88,30 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
                 }
             }
         }
+
+        scope.launch {
+            uiEvent.collect {
+                when (it) {
+                    is BuySuccessEvent -> {
+                        if (!it.product.isPinned && uiState.value.isVariantFeaturedOpened) return@collect
+                        analytic2?.buyPinnedProductInCarousel(
+                            product = it.product,
+                            cartId = it.cartId,
+                            quantity = it.product.minQty,
+                        )
+                    }
+                    is AtcSuccessEvent -> {
+                        if (!it.product.isPinned && uiState.value.isVariantFeaturedOpened) return@collect
+                        analytic2?.atcPinnedProductInCarousel(
+                            product = it.product,
+                            cartId = it.cartId,
+                            quantity = it.product.minQty,
+                        )
+                    }
+                    else -> {}
+                }
+            }
+        }
     }
 
     private fun onCarouselProductClicked(product: PlayProductUiModel.Product, position: Int) {
@@ -98,4 +127,11 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
     fun sendPendingTrackers(partnerType: PartnerType) {
         productAnalyticHelper.sendImpressedFeaturedProducts(partnerType)
     }
+
+    /**
+     * Temporary hacky way
+     */
+    private val PlayViewerNewUiState.isVariantFeaturedOpened: Boolean
+        get() = bottomInsets[BottomInsetsType.VariantSheet]?.isShown == true &&
+                bottomInsets[BottomInsetsType.ProductSheet]?.isShown != true
 }
