@@ -32,6 +32,7 @@ import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.MutationAddToCart
 import com.tokopedia.hotel.databinding.FragmentHotelRoomDetailBinding
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
@@ -381,7 +382,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     it.roomDetailButton.isEnabled = false
                     trackingHotelUtil.hotelChooseRoomDetails(context, hotelRoom, roomIndex, addToCartParam,
                         ROOM_DETAIL_SCREEN_NAME)
-                    roomDetailViewModel.addToCart(HotelGqlMutation.ADD_TO_CART, addToCartParam)
+                    roomDetailViewModel.addToCart(MutationAddToCart(), addToCartParam)
                 } else {
                     navigateToLoginPage()
                 }

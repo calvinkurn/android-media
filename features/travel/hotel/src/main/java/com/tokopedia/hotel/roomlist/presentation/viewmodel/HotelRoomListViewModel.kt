@@ -65,7 +65,7 @@ class HotelRoomListViewModel @Inject constructor(
         }
     }
 
-    fun addToCart(rawQuery: String, hotelAddCartParam: HotelAddCartParam) {
+    fun addToCart(rawQuery: GqlQueryInterface, hotelAddCartParam: HotelAddCartParam) {
         launch {
             addCartResponseResult.postValue(addToCartUsecase.execute(rawQuery, hotelAddCartParam))
         }

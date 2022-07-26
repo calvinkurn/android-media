@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -28,8 +27,7 @@ import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlMutation
-import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.common.util.MutationAddToCart
 import com.tokopedia.hotel.common.util.QueryHotelPropertyRoomList
 import com.tokopedia.hotel.databinding.FragmentHotelRoomListBinding
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
@@ -106,7 +104,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             roomListViewModel = viewModelProvider.get(HotelRoomListViewModel::class.java)
         }
 
@@ -420,8 +418,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         val hotelAddCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
         trackingHotelUtil.hotelChooseRoom(context, room, hotelAddCartParam, ROOM_LIST_SCREEN_NAME)
         if (userSessionInterface.isLoggedIn) {
-            roomListViewModel.addToCart(HotelGqlMutation.ADD_TO_CART,
-                    hotelAddCartParam)
+            roomListViewModel.addToCart(MutationAddToCart(), hotelAddCartParam)
         } else {
             navigateToLoginPage()
         }
