@@ -12,6 +12,7 @@ import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search_map.data.model.*
 import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
@@ -105,7 +106,7 @@ class HotelSearchMapViewModel @Inject constructor(
     fun getSelectedFilter(): List<ParamFilterV2> = liveSelectedFilter.value?.first?.toMutableList()
         ?: mutableListOf()
 
-    fun searchProperty(page: Int, searchQuery: String) {
+    fun searchProperty(page: Int, searchQuery: GqlQueryInterface) {
         searchParam.page = page
         searchParam.filters = getSelectedFilter().toMutableList()
         isFilter = searchParam.filters.isNotEmpty()
