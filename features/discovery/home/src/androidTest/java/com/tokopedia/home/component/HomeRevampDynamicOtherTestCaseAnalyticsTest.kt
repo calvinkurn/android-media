@@ -84,6 +84,7 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
         HomeDCCassavaTest {
             login()
             doActivityTestByModelClass(dataModelClass = MissionWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                waitForData()
                 actionOnMissionWidget(viewHolder)
             }
         } validateAnalytics {
