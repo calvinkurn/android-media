@@ -616,7 +616,9 @@ class PlayBottomSheetFragment @Inject constructor(
                                 actionText = toaster,
                                 actionClickListener = {
                                     RouteManager.route(requireContext(), route)
-                                    if (event.product.isPinned) {
+                                    if (event.product.isPinned &&
+                                        !playViewModel.bottomInsets.isProductSheetsShown) {
+
                                         newAnalytic.clickLihatToasterAtcPinnedProductCarousel(
                                             channelId = playViewModel.channelId,
                                             channelType = playViewModel.channelType,
