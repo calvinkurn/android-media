@@ -130,28 +130,15 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.icProductSummaryDelete.setOnClickListener {
                 listener.onProductDeleteClicked(item.product)
             }
-            binding.viewPinProduct.root.showWithCondition(item.product.pinStatus.canPin && item.isDuringLiveStream)
-            binding.viewPinProduct.ivLoaderPin.showWithCondition(item.product.pinStatus.isLoading)
-            binding.viewPinProduct.ivPin.showWithCondition(!item.product.pinStatus.isLoading)
             binding.ivPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
             binding.tvPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
-            binding.viewPinProduct.root.setOnClickListener {
-                listener.onPinProductClicked(item.product)
-            }
             binding.tvPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
             binding.ivPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
 
-            when(item.product.pinStatus.isPinned) {
-                true -> {
-                    binding.viewPinProduct.ivPin.setImage(newIconId = IconUnify.PUSH_PIN, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_RN400), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_RN400))
-                    binding.viewPinProduct.tvPin.text = context.resources.getString(R.string.play_bro_unpin)
-                    binding.viewPinProduct.tvPin.setTextColor(MethodChecker.getColor(context, unifyR.color.Unify_RN400))
-                }
-                false -> {
-                    binding.viewPinProduct.ivPin.setImage(newIconId = IconUnify.PUSH_PIN, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
-                    binding.viewPinProduct.tvPin.text = context.resources.getString(R.string.play_bro_pin)
-                    binding.viewPinProduct.tvPin.setTextColor(MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
-                }
+            binding.viewPinProduct.showWithCondition(item.product.pinStatus.canPin && item.isDuringLiveStream)
+            binding.viewPinProduct.setupPinned(item.product.pinStatus.isPinned, item.product.pinStatus.isLoading)
+            binding.viewPinProduct.setOnClickListener {
+                listener.onPinProductClicked(item.product)
             }
         }
 

@@ -3,10 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/bg_play_pin_product"
-    android:translationZ="@dimen/play_dp_1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:visibility="gone"
     tools:visibility="visible">
 
     <com.tokopedia.unifyprinciples.Typography
