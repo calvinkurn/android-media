@@ -16,13 +16,9 @@ class BannerAdsListenerDelegate(
     private val redirectionListener: RedirectionListener?,
     private val bannerAdsPresenter: BannerAdsPresenter,
     private val userId: String,
-):
-    BannerAdsListener,
+): BannerAdsListener,
     QueryKeyProvider by queryKeyProvider,
     ContextProvider by WeakReferenceContextProvider(context) {
-    companion object {
-        private const val SHOP = "shop"
-    }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
         if (applink == null || data == null) return
@@ -49,5 +45,9 @@ class BannerAdsListenerDelegate(
             TopAdsGtmTracker.eventTopAdsHeadlineProductClick(position, queryKey, data, userId)
             TopAdsGtmTracker.eventSearchResultPromoProductClick(context, data, position)
         }
+    }
+
+    companion object {
+        private const val SHOP = "shop"
     }
 }
