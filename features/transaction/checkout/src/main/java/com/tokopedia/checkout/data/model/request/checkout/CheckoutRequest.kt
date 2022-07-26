@@ -267,18 +267,11 @@ object CheckoutRequestMapper {
                 promos = mapPromos(it.promos)
                 bundle = mapBundle(it.productData)
                 checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
-                orderMetadata = mapOrderMetadata(it)
+                orderMetadata = mapOrderMetadata(it,prescriptionIds)
             })
         }
 
         return shopProductList
-    }
-
-    private fun mapPrescriptionIds(prescriptionIds: ArrayList<String>?) : List<OrderMetadata>{
-        if(prescriptionIds != null && prescriptionIds.isNotEmpty()){
-            return arrayListOf(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, Gson().toJson(prescriptionIds)))
-        }
-        return emptyList()
     }
 
     private fun mapBundle(productDataList: List<ProductDataCheckoutRequest>?): List<Bundle> {
@@ -367,10 +360,13 @@ object CheckoutRequestMapper {
         return listCheckoutGiftingAddOn.toList()
     }
 
-    private fun mapOrderMetadata(shopProductCheckoutRequest: ShopProductCheckoutRequest): List<OrderMetadata> {
+    private fun mapOrderMetadata(shopProductCheckoutRequest: ShopProductCheckoutRequest, prescriptionIds: ArrayList<String>?): List<OrderMetadata> {
         val orderMetadata = arrayListOf<OrderMetadata>()
         if (shopProductCheckoutRequest.freeShippingMetadata.isNotBlank()) {
             orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, shopProductCheckoutRequest.freeShippingMetadata))
+        }
+        if(prescriptionIds != null && prescriptionIds.isNotEmpty()){
+            orderMetadata.add(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, Gson().toJson(prescriptionIds)))
         }
         return orderMetadata
     }
