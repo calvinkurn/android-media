@@ -180,6 +180,8 @@ data class Coupon(
         val isAttempted: Boolean = false,
         @SerializedName("clashing_infos")
         val clashingInfos: List<ClashingInfo> = emptyList(),
+        @SerializedName("bo_clashing_infos")
+        val boClashingInfos: List<ClashingInfo> = emptyList(),
         @SerializedName("currency_details_str")
         val currencyDetailStr: String = "",
         @SerializedName("coachmark")
@@ -193,7 +195,9 @@ data class Coupon(
         @SerializedName("promo_infos")
         val promoInfos: List<PromoInfo> = emptyList(),
         @SerializedName("benefit_details")
-        val benefitDetail: List<BenefitDetail> = emptyList()
+        val benefitDetail: List<BenefitDetail> = emptyList(),
+        @SerializedName("is_bebas_ongkir")
+        val isBebasOngkir: Boolean = false,
 )
 
 data class BenefitDetail(

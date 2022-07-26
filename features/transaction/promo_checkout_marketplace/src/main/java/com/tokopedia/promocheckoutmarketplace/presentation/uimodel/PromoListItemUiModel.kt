@@ -34,6 +34,9 @@ data class PromoListItemUiModel(
             // Store clashing info data from backend.
             // This should not be changed. Initialize once after get data response
             var clashingInfos: List<ClashingInfo> = emptyList(),
+            // Store clashing info with BO
+            // When user choose BO OR choose promo that clashes with BO, info will be shown in bottomsheet
+            var boClashingInfos: List<ClashingInfo> = emptyList(),
             // Store current applied promo causing this promo clash and can't be selected, based on data from #clashingInfo
             var currentClashingPromo: MutableList<String> = mutableListOf(),
             var promoInfos: List<PromoInfo> = emptyList(),
@@ -53,7 +56,8 @@ data class PromoListItemUiModel(
             var isDisabled: Boolean = false,
             var isHighlighted: Boolean = false,
             var isUpdateSelectionStateAction: Boolean = false,
-            var isLastPromoItem: Boolean = false
+            var isLastPromoItem: Boolean = false,
+            var isBebasOngkir: Boolean = false
     )
 
 }

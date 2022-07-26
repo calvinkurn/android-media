@@ -103,7 +103,13 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                     is_recommended
                                     is_selected
                                     is_attempted
+                                    is_bebas_ongkir
                                     clashing_infos {
+                                        code
+                                        message
+                                        icon
+                                    }
+                                    bo_clashing_infos {
                                         code
                                         message
                                         icon
