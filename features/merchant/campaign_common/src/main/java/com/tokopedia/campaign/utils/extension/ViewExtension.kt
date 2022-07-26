@@ -41,38 +41,38 @@ fun View?.showToaster(message: String, ctaText: String = "") {
 
 //region View Visibility Animation
 fun View?.slideUp(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
-    this?.let {
-        val animate = TranslateAnimation(0f, 0f, this.height.toFloat(), 0f)
-        animate.duration = duration.toLong()
-        animate.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {}
+    if (this == null) return
 
-            override fun onAnimationEnd(animation: Animation?) {
-                visible()
-            }
+    val animate = TranslateAnimation(0f, 0f, this.height.toFloat(), 0f)
+    animate.duration = duration.toLong()
+    animate.setAnimationListener(object : Animation.AnimationListener {
+        override fun onAnimationStart(animation: Animation?) {}
 
-            override fun onAnimationRepeat(animation: Animation?) {}
-        })
-        this.startAnimation(animate)
-    }
+        override fun onAnimationEnd(animation: Animation?) {
+            visible()
+        }
+
+        override fun onAnimationRepeat(animation: Animation?) {}
+    })
+    this.startAnimation(animate)
+
 }
 
 fun View?.slideDown(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
-    this?.let {
-        val animate =
-            TranslateAnimation(0f, 0f, 0f, this.height.toFloat())
-        animate.duration = duration.toLong()
-        animate.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {}
+    if (this == null) return
+    val animate =
+        TranslateAnimation(0f, 0f, 0f, this.height.toFloat())
+    animate.duration = duration.toLong()
+    animate.setAnimationListener(object : Animation.AnimationListener {
+        override fun onAnimationStart(animation: Animation?) {}
 
-            override fun onAnimationEnd(animation: Animation?) {
-               gone()
-            }
+        override fun onAnimationEnd(animation: Animation?) {
+            gone()
+        }
 
-            override fun onAnimationRepeat(animation: Animation?) {}
-        })
-        this.startAnimation(animate)
-    }
+        override fun onAnimationRepeat(animation: Animation?) {}
+    })
+    this.startAnimation(animate)
 }
 //endregion
 
