@@ -2644,8 +2644,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun showBalanceWidgetCoachMark(homeBalanceModel: HomeBalanceModel) {
         val balanceSubscriptionCoachmark = homeBalanceModel.getSubscriptionBalanceCoachmark()
-        if (balanceSubscriptionCoachmark == null && coachmarkSubscription?.isShowing == true)
-            coachmarkSubscription?.hideCoachMark()
         showCoachMark(balanceSubscriptionCoachmark)
     }
 }

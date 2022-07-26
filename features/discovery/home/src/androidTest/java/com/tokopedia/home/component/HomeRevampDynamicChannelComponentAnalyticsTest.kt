@@ -105,7 +105,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             }
         } validateAnalytics {
             addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET)
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_LINKED)
         }
     }
 
