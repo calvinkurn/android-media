@@ -38,6 +38,7 @@ class ProductTagViewComponent(
     private val pinnedProductListener = object : ProductCarouselViewHolder.PinnedProduct.Listener{
         override fun onPinProductClicked(product: ProductUiModel) {
             listener.onPinProductClicked(product)
+            hideCoachMark()
         }
     }
 
@@ -117,31 +118,32 @@ class ProductTagViewComponent(
     }
 
     private fun showCoachMark() {
+        if (isCoachMarkShown) return
+
         val holder = rvProductTag.findViewHolderForAdapterPosition(0)
-//        holder?.let {
+
+        holder?.let {
             val coachMarkItem = arrayListOf(
                 CoachMark2Item(
-//                    it.itemView.findViewById(R.id.view_pin_product),
-                    rvProductTag,
+                    it.itemView.findViewById(R.id.view_pin_product),
                     "",
                     getString(R.string.play_bro_pinned_coachmark_desc),
-                    CoachMark2.POSITION_BOTTOM // should be bottom
+                    CoachMark2.POSITION_BOTTOM
                 )
             )
 
             if(!isCoachMarkShown){
                 isCoachMarkShown = true
                 scope.launch {
-                    delay(DELAY_COACH_MARK)
                     coachMark.showCoachMark(coachMarkItem)
                     delay(DELAY_COACH_MARK)
                     hideCoachMark()
                 }
             }
-//        }
+        }
     }
 
-    private fun hideCoachMark(){
+    fun hideCoachMark(){
         coachMark.dismissCoachMark()
     }
 

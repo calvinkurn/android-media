@@ -178,6 +178,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 analytic.onClickInteractiveTool(channelId = parentViewModel.channelId)
                 analytic.onClickGameIconButton(channelId = parentViewModel.channelId, channelTitle = parentViewModel.channelTitle)
                 openSelectInteractiveSheet()
+                productTagView.hideCoachMark()
             }
         })
     }
@@ -277,6 +278,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             gameIconView.cancelCoachMark()
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
+            productTagView.hideCoachMark()
         }
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
             parentViewModel.submitAction(PlayBroadcastAction.EditPinnedMessage)
