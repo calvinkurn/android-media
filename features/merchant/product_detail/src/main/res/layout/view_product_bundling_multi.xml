@@ -13,8 +13,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/product_bundling_image_1"
-            android:layout_width="@dimen/dp_64"
-            android:layout_height="@dimen/dp_64"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:scaleType="fitCenter"
             android:layout_marginStart="@dimen/dp_30"
             android:layout_marginEnd="20dp"
@@ -39,9 +39,9 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/product_bundling_image_2"
-            android:layout_width="@dimen/dp_64"
+            android:layout_width="80dp"
             android:scaleType="fitCenter"
-            android:layout_height="@dimen/dp_64"
+            android:layout_height="80dp"
             android:layout_marginEnd="20dp"
             app:layout_constraintBottom_toBottomOf="@id/product_bundling_image_1"
             app:layout_constraintLeft_toRightOf="@id/product_bundling_icon_add_1"
@@ -63,8 +63,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/product_bundling_image_3"
-            android:layout_width="@dimen/dp_64"
-            android:layout_height="@dimen/dp_64"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:scaleType="fitCenter"
             android:layout_marginEnd="@dimen/dp_30"
             app:layout_constraintBottom_toBottomOf="@id/product_bundling_image_1"
@@ -79,13 +79,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
-            android:maxWidth="@dimen/dp_90"
+            android:maxWidth="80dp"
             android:maxLines="1"
             app:layout_constraintLeft_toLeftOf="@id/product_bundling_image_1"
             app:layout_constraintRight_toRightOf="@id/product_bundling_image_1"
             app:layout_constraintTop_toBottomOf="@id/product_bundling_image_1"
             app:typographyType="display_3"
-            app:typographyWeight="bold"
             tools:text="Rp7.899.000" />
 
         <com.tokopedia.unifycomponents.Label
@@ -125,13 +124,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
-            android:maxWidth="@dimen/dp_90"
+            android:maxWidth="80dp"
             android:maxLines="1"
             app:layout_constraintLeft_toLeftOf="@id/product_bundling_image_2"
             app:layout_constraintRight_toRightOf="@id/product_bundling_image_2"
             app:layout_constraintTop_toBottomOf="@id/product_bundling_image_2"
             app:typographyType="display_3"
-            app:typographyWeight="bold"
             tools:text="Rp95.000" />
 
         <com.tokopedia.unifycomponents.Label
@@ -171,13 +169,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
-            android:maxWidth="@dimen/dp_90"
+            android:maxWidth="80dp"
             android:maxLines="1"
             app:layout_constraintLeft_toLeftOf="@id/product_bundling_image_3"
             app:layout_constraintRight_toRightOf="@id/product_bundling_image_3"
             app:layout_constraintTop_toBottomOf="@id/product_bundling_image_3"
             app:typographyType="display_3"
-            app:typographyWeight="bold"
             tools:text="Rp215.000" />
 
         <com.tokopedia.unifycomponents.Label
