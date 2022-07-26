@@ -58,7 +58,7 @@ class UploadPrescriptionViewModelTest {
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
             null, null,null,"",
             "","",null,
-            arrayListOf(product),0L,"","","",
+            arrayListOf(product),0L,"","","","",
             false,"",""
                 )
             )
@@ -82,7 +82,7 @@ class UploadPrescriptionViewModelTest {
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
                     null, null,null,"",
                     "","",null,
-                    arrayListOf(product),0L,"","","",
+                    arrayListOf(product),0L,"","","","",
                     true,"",""
                 )
             )
@@ -105,7 +105,7 @@ class UploadPrescriptionViewModelTest {
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
             null, null,null,"",
             "","",null,
-            arrayListOf(),0L,"","","",
+            arrayListOf(),0L,"","","","",
             false,"",""
                 )
             )
@@ -146,7 +146,7 @@ class UploadPrescriptionViewModelTest {
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
             null, null,null,"",
             "","",null,
-            arrayListOf(product),0L,"","","",
+            arrayListOf(product),0L,"","","","",
             false,"","")
             )
         )
@@ -169,7 +169,7 @@ class UploadPrescriptionViewModelTest {
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
                     null, null,null,"",
                     "","",null,
-                    arrayListOf(product),0L,"","","",
+                    arrayListOf(product),0L,"","","","",
                     true,"","")
             )
         )
@@ -191,7 +191,7 @@ class UploadPrescriptionViewModelTest {
                 EPharmacyDataResponse.EPharmacyOrderDetailData.EPharmacyDataForm(
                     null, null,null,"",
                     "","",null,
-                    arrayListOf(),0L,"","","",
+                    arrayListOf(),0L,"","","","",
                     false,"",""
                 )
             )
@@ -226,7 +226,7 @@ class UploadPrescriptionViewModelTest {
     @Test
     fun uploadIdsSuccessTestOrder()
     {
-        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.Data(true),"")
+        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.EPharmacyUploadPrescriptionData(true))
         coEvery {
             postPrescriptionIdUseCase.postPrescriptionIdsOrder(any(),any(), any(),any())
         } coAnswers {
@@ -239,7 +239,7 @@ class UploadPrescriptionViewModelTest {
     @Test
     fun `upload prescription ids Order success but condition fail`()
     {
-        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.Data(false),"")
+        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.EPharmacyUploadPrescriptionData(false))
         coEvery {
             postPrescriptionIdUseCase.postPrescriptionIdsOrder(any(), any(), any(),any())
         } coAnswers {
@@ -252,7 +252,7 @@ class UploadPrescriptionViewModelTest {
     @Test
     fun uploadIdsSuccessTestCheckout()
     {
-        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.Data(true),"")
+        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.EPharmacyUploadPrescriptionData(true))
         coEvery {
             postPrescriptionIdUseCase.postPrescriptionIdsCheckout(any(), any(),any(), any())
         } coAnswers {
@@ -265,7 +265,7 @@ class UploadPrescriptionViewModelTest {
     @Test
     fun `upload prescription ids Checkout success but condition fail`()
     {
-        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.Data(false),"")
+        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.EPharmacyUploadPrescriptionData(false))
         coEvery {
             postPrescriptionIdUseCase.postPrescriptionIdsCheckout(any(), any(), any(),any())
         } coAnswers {
