@@ -19,5 +19,3 @@ data class PinProductUiModel(
         val Empty = PinProductUiModel(isPinned = false, canPin = false, isLoading = false)
     }
 }
-
-fun Boolean.switch() : Boolean = !this

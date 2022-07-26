@@ -372,3 +372,5 @@ fun <T: Any> MutableStateFlow<T?>.setValueIfNotNull(fn: T.() -> T) {
     val value = this.value ?: return
     this.value = value.fn()
 }
+
+fun Boolean.switch() : Boolean = !this

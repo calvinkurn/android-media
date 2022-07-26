@@ -855,16 +855,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prevState == state) return
 
+        val sortedList = mutableListOf<ProductUiModel>()
         val newList = state.filterNot { it.campaignStatus.isUpcoming() }
-            .flatMap { it.products }
+            .flatMap { tagSectionUiModel ->
+                tagSectionUiModel.products
+            }
 
-        val pinnedIndex = newList.indexOfFirst { it.pinStatus.isPinned }
-
-        if(newList.isNotEmpty() && pinnedIndex.isMoreThanZero())
-            Collections.swap(newList, pinnedIndex, 0)
+        val pinnedProduct = newList.filter { it.pinStatus.isPinned }
+        if(pinnedProduct.isNotEmpty()) sortedList.add(pinnedProduct.first())
+        sortedList.addAll(newList.filterNot { it.pinStatus.isPinned })
 
         productTagView.setProducts(
-            newList
+            sortedList
         )
     }
 
