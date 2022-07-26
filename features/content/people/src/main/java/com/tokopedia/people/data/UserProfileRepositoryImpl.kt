@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
+import com.tokopedia.feedcomponent.domain.usecase.shopmutation.ShopMutationAction
+import com.tokopedia.feedcomponent.domain.usecase.shopmutation.ShopMutationUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
 import com.tokopedia.people.domains.UserDetailsUseCase
 import com.tokopedia.people.domains.PlayPostContentUseCase
@@ -35,7 +37,8 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
-    private val shopRecomUseCase: ShopRecomUseCase
+    private val shopRecomUseCase: ShopRecomUseCase,
+    private val shopMutationUseCase: ShopMutationUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -99,6 +102,18 @@ class UserProfileRepositoryImpl @Inject constructor(
             setRequestParams(ShopRecomUseCase.createParam())
         }.executeOnBackground()
         return@withContext mapper.mapShopRecom(result)
+    }
+
+    override suspend fun shopFollowUnfollow(
+        shopId: String,
+        action: ShopMutationAction
+    ): MutationUiModel {
+        return withContext(dispatcher.io) {
+            val result = shopMutationUseCase.apply {
+                setRequestParams(ShopMutationUseCase.createParam(shopId, action))
+            }.executeOnBackground()
+            mapper.mapShopMutation(result)
+        }
     }
 
     companion object {
