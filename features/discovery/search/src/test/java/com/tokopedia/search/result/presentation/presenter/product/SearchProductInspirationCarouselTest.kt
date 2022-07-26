@@ -720,22 +720,21 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     }
 
     class CarouselProductListAssertionData(
-            suggestionDataViewCount: Int,
-            firstProductPosition: Int,
-            val inspirationCarouselData: SearchProductModel.InspirationCarouselData,
-            val assertType: (BroadMatchDataView, SearchProductModel.InspirationCarouselData) -> Unit,
+        suggestionDataViewCount: Int,
+        firstProductPosition: Int,
+        val inspirationCarouselData: SearchProductModel.InspirationCarouselData,
+        val assertType: (BroadMatchDataView, SearchProductModel.InspirationCarouselData) -> Unit,
     ) {
-        val hasSuggestionDataView = suggestionDataViewCount > 0
+        private val hasSuggestionDataView = suggestionDataViewCount > 0
         private val topSeparatorPosition = firstProductPosition + inspirationCarouselData.position
         private val bottomSeparatorPosition = topSeparatorPosition +
-                        inspirationCarouselData.inspirationCarouselOptions.size +
-                        suggestionDataViewCount
-        private val inspirationCarouselRangeStart = if(hasSuggestionDataView) {
+                inspirationCarouselData.inspirationCarouselOptions.size +
+                suggestionDataViewCount
+        val suggestionDataViewIndex = if (hasSuggestionDataView) {
             topSeparatorPosition + suggestionDataViewCount - 1
-        } else {
-            topSeparatorPosition
-        }
-        val inspirationCarouselRange = inspirationCarouselRangeStart until bottomSeparatorPosition
+        } else -1
+        val inspirationCarouselRange =
+            (topSeparatorPosition + suggestionDataViewCount) until bottomSeparatorPosition
 
         var inspirationCarouselOptionIndex = 0
     }
@@ -748,9 +747,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         val inspirationCarouselData = assertionData.inspirationCarouselData
         val assertType = assertionData.assertType
 
-        if (assertionData.hasSuggestionDataView
-            && index == assertionData.inspirationCarouselRange.first
-        ) {
+        if (index == assertionData.suggestionDataViewIndex) {
             visitable.assertSuggestionViewModel(inspirationCarouselData)
         } else {
             visitable.assertInspirationCarouselAsBroadMatch(
