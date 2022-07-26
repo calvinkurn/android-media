@@ -22,7 +22,6 @@ import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
