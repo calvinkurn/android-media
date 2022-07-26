@@ -2,7 +2,7 @@ package com.tokopedia.people.views.uimodel.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.feedcomponent.data.pojo.shopmutation.ShopMutationModel
+import com.tokopedia.feedcomponent.data.pojo.shopmutation.ShopFollowModel
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.people.R
@@ -109,7 +109,7 @@ class UserProfileUiMapperImpl @Inject constructor(
         }
     }
 
-    override fun mapShopMutation(response: ShopMutationModel): MutationUiModel {
+    override fun mapShopFollow(response: ShopFollowModel): MutationUiModel {
         return with(response.followShop) {
             if (success) MutationUiModel.Success()
             else MutationUiModel.Error(message)

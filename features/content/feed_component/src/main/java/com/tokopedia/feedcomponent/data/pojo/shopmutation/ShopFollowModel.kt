@@ -2,7 +2,7 @@ package com.tokopedia.feedcomponent.data.pojo.shopmutation
 
 import com.google.gson.annotations.SerializedName
 
-data class ShopMutationModel(
+data class ShopFollowModel(
     @SerializedName("followShop")
     val followShop: FollowShop = FollowShop(),
 )

@@ -1,7 +1,7 @@
 package com.tokopedia.people.domains.repository
 
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
-import com.tokopedia.feedcomponent.domain.usecase.shopmutation.ShopMutationAction
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
@@ -37,7 +37,7 @@ interface UserProfileRepository {
 
     suspend fun shopFollowUnfollow(
         shopId: String,
-        action: ShopMutationAction
+        action: ShopFollowAction
     ): MutationUiModel
 
 }

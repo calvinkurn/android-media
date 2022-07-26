@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
-import com.tokopedia.feedcomponent.domain.usecase.shopmutation.ShopMutationAction.Follow
-import com.tokopedia.feedcomponent.domain.usecase.shopmutation.ShopMutationAction.UnFollow
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
