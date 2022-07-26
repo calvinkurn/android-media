@@ -127,6 +127,7 @@ internal class ProductSummaryViewHolder private constructor() {
             }
             binding.viewPinProduct.root.showWithCondition(item.product.pinStatus.canPin)
             binding.viewPinProduct.ivLoaderPin.showWithCondition(item.product.pinStatus.isLoading)
+            binding.viewPinProduct.ivPin.showWithCondition(!item.product.pinStatus.isLoading)
             binding.viewPinProduct.root.setOnClickListener {
                 listener.onPinProductClicked(item.product)
             }
