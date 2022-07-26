@@ -378,6 +378,7 @@ class ChatItemListViewModel @Inject constructor(
     fun getOperationalInsight(shopId: String) {
         launchCatchError(block = {
             val dataResponse = operationalInsightUseCase(shopId)
+            dataResponse.shopChatTicker?.showTicker = true
             dataResponse.shopChatTicker?.let {
                 _chatOperationalInsight.value = Success(it)
             }

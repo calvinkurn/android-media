@@ -309,6 +309,7 @@
             tools:text="312 menit"/>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_operational_insight_shop_performance"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tv_chat_and_discussion_reply_speed"
@@ -318,7 +319,8 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="14dp"
             app:typographyType="small"
-            android:text="@string/topchat_operational_insight_data_ninety_days"/>
+            android:textColor="@color/Unify_NN600"
+            tools:text="@string/topchat_operational_insight_data_ninety_days"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

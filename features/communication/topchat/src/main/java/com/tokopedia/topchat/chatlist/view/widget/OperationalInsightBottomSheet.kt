@@ -4,7 +4,11 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.text.SpannableString
 import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +16,16 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import java.text.DecimalFormat
+
 
 class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomSheetUnify() {
 
@@ -49,6 +56,8 @@ class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomS
         initPerformanceSummary()
         initActualPerformance()
         initTarget()
+        initUrlShopPerformance()
+        initCtaButton()
     }
 
     private fun initDate() {
@@ -261,7 +270,68 @@ class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomS
         }
     }
 
+    private fun initUrlShopPerformance() {
+        val spannablePerformanceShop = createSpannableWithLink(
+            getString(R.string.topchat_operational_insight_data_ninety_days))
+        val tvOperationalInsightShopPerformance: Typography? = childView?.findViewById(
+            R.id.tv_operational_insight_shop_performance)
+        tvOperationalInsightShopPerformance?.isClickable = true
+        tvOperationalInsightShopPerformance?.linksClickable = true
+        tvOperationalInsightShopPerformance?.movementMethod = LinkMovementMethod.getInstance()
+        tvOperationalInsightShopPerformance?.text = spannablePerformanceShop
+    }
+
+    private fun initCtaButton() {
+        val ctaOperationalInsight: UnifyButton? = childView?.findViewById(R.id.btn_visit_operational_insight)
+        ctaOperationalInsight?.setOnClickListener {
+            context?.let {
+                if (!ticker.applink.isNullOrEmpty()) {
+                    val intent = RouteManager.getIntent(it, ticker.applink)
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
     private fun Float.removeDecimal(): String {
-        return DecimalFormat("#").format(this)
+        return DecimalFormat(DECIMAL_FORMAT).format(this)
+    }
+
+    private fun createSpannableWithLink(completeString: String): SpannableString {
+        val spannableString = SpannableString(completeString)
+        try {
+            val startPosition = completeString.indexOf(SHOP_PERFORMANCE)
+            val endPosition = completeString.lastIndexOf(SHOP_PERFORMANCE) + SHOP_PERFORMANCE.length
+            val clickableSpan = object : ClickableSpan() {
+                override fun onClick(textView: View) {
+                    context?.let {
+                        if (!ticker.url.isNullOrEmpty()) {
+                            val intent = RouteManager.getIntent(it, ticker.url)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                override fun updateDrawState(drawState: TextPaint) {
+                    super.updateDrawState(drawState)
+                    drawState.isUnderlineText = false
+                    drawState.color = MethodChecker.getColor(
+                        context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                }
+            }
+            spannableString.setSpan(
+                clickableSpan,
+                startPosition,
+                endPosition,
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+            )
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
+        return spannableString
+    }
+
+    companion object {
+        private const val DECIMAL_FORMAT = "#"
+        private const val SHOP_PERFORMANCE = "Performa Toko"
     }
 }

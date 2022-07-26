@@ -304,8 +304,7 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             when (it) {
                 is Success -> {
                     onSuccessGetChatList(it.data.data)
-                    if (isTabSeller() && isFirstPage()) {
-//                    if (GlobalConfig.isSellerApp())  {
+                    if (GlobalConfig.isSellerApp())  {
                         chatItemListViewModel.getOperationalInsight(userSession.shopId)
                     }
                 }
@@ -313,17 +312,22 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             }
         }
 
-        chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, { result ->
+        chatItemListViewModel.deleteChat.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     adapter?.deleteItem(itemPositionLongClicked, emptyUiModel)
                     decreaseNotificationCounter()
                 }
                 is Fail -> view?.let {
-                    Toaster.make(it, getString(R.string.delete_chat_default_error_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    Toaster.make(
+                        it,
+                        getString(R.string.delete_chat_default_error_message),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    )
                 }
             }
-        })
+        }
 
         chatItemListViewModel.isChatAdminEligible.observe(viewLifecycleOwner) { result ->
             when (result) {
