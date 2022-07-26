@@ -40,7 +40,7 @@ import com.tokopedia.withdraw.auto_withdrawal.di.component.AutoWithdrawalCompone
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.*
 import com.tokopedia.withdraw.auto_withdrawal.presentation.activity.AutoWithdrawalActivity
 import com.tokopedia.withdraw.auto_withdrawal.presentation.adapter.ScheduleChangeListener
-import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.AutoWDInfoFragment
+import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.AutoWDInfoBottomsheet
 import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.ExclusiveRekPremFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.ScheduleTimingFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.viewModel.AutoWDSettingsViewModel
@@ -143,7 +143,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         autoWDSettingsViewModel.upsertResponseLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data.code == 200) {
+                    if (it.data.code == SUCCESS_DATA_CODE) {
                         onAutoWDUpsertComplete(it.data)
                     } else {
                         onAutoWithdrawalUpsertFailed(it.data.message)
@@ -532,9 +532,9 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     }
 
     private fun openInfoBottomSheet() {
-        activity?.let {
+        activity?.let { activity->
             getInfoAutoWD?.apply {
-                AutoWDInfoFragment.show(context, it.supportFragmentManager, this)
+                AutoWDInfoBottomsheet.show(activity, activity.supportFragmentManager, this)
             }
         }
     }
@@ -694,6 +694,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         private val OTP_TYPE_ADD_BANK_ACCOUNT = 146
         private const val REQUEST_OTP_CODE = 131
         const val BANK_SETTING_REQUEST_CODE = 132
+        const val SUCCESS_DATA_CODE = 200
 
         fun getInstance(bundle: Bundle): AutoWithdrawalSettingsFragment = AutoWithdrawalSettingsFragment()
                 .apply {

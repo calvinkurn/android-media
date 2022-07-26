@@ -35,15 +35,17 @@ object AtcVariantJsonHelper {
                 pageSource = "product detail page",
                 isTokoNow = isTokoNow,
                 variantAggregator = mockResponse.first,
+                showQtyEditor = isTokoNow,
                 miniCartData = if (!isTokoNow || emptyMiniCart) null else mockResponse.second.miniCartItems.mapProductsWithProductId()
         )
     }
 
-    fun generateParamsVariant(productId: String, isTokoNow: Boolean): ProductVariantBottomSheetParams {
+    fun generateParamsVariant(productId: String, isTokoNow: Boolean, showQtyEditor: Boolean): ProductVariantBottomSheetParams {
         return ProductVariantBottomSheetParams(
                 productId = productId,
                 pageSource = "wishlist",
-                isTokoNow = isTokoNow
+                isTokoNow = isTokoNow,
+                showQtyEditor = showQtyEditor
         )
     }
 

@@ -347,6 +347,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         subscribeToInputStatus()
         subscribeToPriceRecommendation()
         subscribeToProductNameValidationFromNetwork()
+        subscribeToMaxStockThreshold()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
@@ -653,7 +654,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
     override fun onNameItemClicked(productName: String) {
         var newProductName = productName
-        val maxLengthKeyword = resources.getInteger(R.integer.max_product_name_length)
+        val maxLengthKeyword = context?.resources?.getInteger(R.integer.max_product_name_length).orZero()
 
         if (productName.trim().length > maxLengthKeyword) {
             newProductName = productName.take(maxLengthKeyword)
@@ -1256,6 +1257,18 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         })
     }
 
+    private fun subscribeToMaxStockThreshold() {
+        viewModel.maxStockThreshold.observe(viewLifecycleOwner) {
+            val productStockInput = productStockField?.getEditableValue().toString()
+            viewModel.validateProductStockInput(productStockInput)
+            viewModel.isProductStockInputError.value?.let { isError ->
+                if (isError) {
+                    productStockField?.requestFocus()
+                }
+            }
+        }
+    }
+
     private fun validateSpecificationList() {
         if (viewModel.validateSelectedSpecificationList()) {
             viewModel.validateProductNameInputFromNetwork(productNameField.getText())
@@ -1442,6 +1455,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             orderQuantityInput?.let { viewModel.validateProductMinOrderInput(productStockInput, it) }
             productStockInput.let { viewModel.validateProductStockInput(it) }
         }
+
+        // max stock as threshold when seller inserts stock
+        viewModel.getMaxStockThreshold(userSession.shopId)
     }
 
     private fun setupWholesaleViews() {
@@ -1821,8 +1837,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         val tooltipBottomSheet = TooltipBottomSheet()
         val tips: ArrayList<NumericWithDescriptionTooltipModel> = ArrayList()
         val tooltipTitle = getString(R.string.title_price_recommendation_bottom_sheet)
-        val contentTitles = resources.getStringArray(R.array.array_price_recommendation_content_titles)
-        val contentDescriptions = resources.getStringArray(R.array.array_price_recommendation_content_descriptions)
+        val contentTitles = context?.resources?.getStringArray(R.array.array_price_recommendation_content_titles).orEmpty()
+        val contentDescriptions = context?.resources?.getStringArray(R.array.array_price_recommendation_content_descriptions).orEmpty()
 
         contentTitles.forEachIndexed { index, title ->
             val description = contentDescriptions.getOrNull(index).orEmpty()

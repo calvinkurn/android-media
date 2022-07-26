@@ -132,31 +132,33 @@ abstract class BaseAtcVariantViewModelTest {
 
     fun decideFailValueHitGqlAggregator() {
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false, any())
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false, any(), any())
         } throws Throwable()
 
         viewModel.decideInitialValue(ProductVariantBottomSheetParams(), true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false, any())
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false, any(), any())
         }
 
         Assert.assertTrue(viewModel.initialData.value is Fail)
         Assert.assertTrue(viewModel.buttonData.value is Fail)
     }
 
-    fun decideSuccessValueHitGqlAggregator(productId: String, isTokoNow: Boolean) {
+    fun decideSuccessValueHitGqlAggregator(productId: String,
+                                           isTokoNow: Boolean,
+                                           showQtyEditor: Boolean) {
         val mockData = AtcVariantJsonHelper.generateAggregatorData(isTokoNow)
-        val aggregatorParams = AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow)
+        val aggregatorParams = AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow, showQtyEditor)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow, any())
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow, any(), any())
         } returns mockData
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow, any())
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow, any(), any())
         }
     }
 
