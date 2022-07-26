@@ -45,6 +45,7 @@ class UserProfileShopRecomViewModelTest {
     private val mockShopRecomIsShown = shopRecomBuilder.buildModelIsShown()
     private val mockShopRecomIsNotShown = shopRecomBuilder.buildModelIsNotShown()
     private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
+    private val mockEmptyItemShopRecom = shopRecomBuilder.buildEmptyItemModel()
     private val mockOwnUserId = "1"
     private val mockOtherUserId = "2"
     private val mockOwnUsername = "fachrizalmrsln"
@@ -307,6 +308,10 @@ class UserProfileShopRecomViewModelTest {
             } recordState {
                 submitAction(UserProfileAction.RemoveShopRecomItem(mockItemId))
             } andThen {
+                val deletedItem = shopRecom.items.findLast {
+                        find -> find.id == mockItemId
+                } ?: mockEmptyItemShopRecom
+                deletedItem equalTo mockEmptyItemShopRecom
                 shopRecom.items.size equalTo 9
             }
         }
