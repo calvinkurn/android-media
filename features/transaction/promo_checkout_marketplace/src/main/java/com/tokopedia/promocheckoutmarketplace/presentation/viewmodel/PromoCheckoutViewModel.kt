@@ -1137,6 +1137,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         break
                     } else {
                         val tmpPromoItem = promoListUiModel.value?.get(index) as PromoListItemUiModel
+                        // todo todo adjust this to include MaximumSelectablePromo
                         if (tmpPromoItem.uiData.promoCode != element.uiData.promoCode && tmpPromoItem.uiState.isSelected) {
                             tmpPromoItem.uiState.isSelected = false
                             if (tmpPromoItem.uiState.isRecommended) {
