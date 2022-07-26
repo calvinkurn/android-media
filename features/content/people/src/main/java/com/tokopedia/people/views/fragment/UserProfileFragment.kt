@@ -154,6 +154,7 @@ class UserProfileFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         feedFloatingButtonManager.setInitialData(this)
+        binding.mainLayout.fabUserProfile.isShrinkOnClick = false
 
         initObserver()
         initListener()
