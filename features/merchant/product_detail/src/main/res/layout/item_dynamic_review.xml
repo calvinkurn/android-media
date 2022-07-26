@@ -29,7 +29,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_separator"
-        app:typographyType="paragraph_1"
+        app:typographyType="display_1"
         app:typographyWeight="bold"
         tools:visibility="visible"/>
 
