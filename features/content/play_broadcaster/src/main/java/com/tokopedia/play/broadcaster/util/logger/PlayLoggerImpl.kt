@@ -37,7 +37,7 @@ class PlayLoggerImpl @Inject constructor(
 
     override fun logPusherState(pusherState: PlayBroadcasterState) {
         collector.collect(
-            Pair("pusher", pusherState.toString())
+            Pair("pusher", pusherState.tag)
         )
     }
 
