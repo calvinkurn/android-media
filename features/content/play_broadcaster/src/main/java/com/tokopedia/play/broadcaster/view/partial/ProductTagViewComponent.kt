@@ -13,6 +13,11 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.carousel.ProductCarouselViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductTagAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * Created By : Jonathan Darwin on November 24, 2021
@@ -60,6 +65,10 @@ class ProductTagViewComponent(
     }
 
     private var isProductInitialized = false
+    private var isCoachMarkShown = false
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
 
     init {
         adapter.registerAdapterDataObserver(adapterObserver)
@@ -108,20 +117,32 @@ class ProductTagViewComponent(
     }
 
     private fun showCoachMark() {
-        //return if empty
         val holder = rvProductTag.findViewHolderForAdapterPosition(0)
-        holder?.let {
+//        holder?.let {
             val coachMarkItem = arrayListOf(
                 CoachMark2Item(
-                    holder.itemView.findViewById(R.id.view_pin_product),
+//                    it.itemView.findViewById(R.id.view_pin_product),
+                    rvProductTag,
                     "",
                     getString(R.string.play_bro_pinned_coachmark_desc),
-                    CoachMark2.POSITION_BOTTOM
+                    CoachMark2.POSITION_BOTTOM // should be bottom
                 )
             )
-         coachMark.showCoachMark(coachMarkItem)
-            //delay dismiss
-        }
+
+            if(!isCoachMarkShown){
+                isCoachMarkShown = true
+                scope.launch {
+                    delay(DELAY_COACH_MARK)
+                    coachMark.showCoachMark(coachMarkItem)
+                    delay(DELAY_COACH_MARK)
+                    hideCoachMark()
+                }
+            }
+//        }
+    }
+
+    private fun hideCoachMark(){
+        coachMark.dismissCoachMark()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -132,6 +153,7 @@ class ProductTagViewComponent(
 
     companion object {
         private const val MAX_PLACEHOLDER = 5
+        private const val DELAY_COACH_MARK = 5000L
     }
 
     interface Listener {
