@@ -46,6 +46,7 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
 
     private var scaleX = 1f
     private var scaleY = 1f
+    private val scaleNormalizeValue get() = min(scaleX, scaleY)
 
     var isRatioRotated = false
     var sliderValue = 0f
@@ -113,7 +114,7 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
         }
 
         rotateBtn.setOnClickListener {
-            cropImageView.postRotate(90f)
+            cropImageView.postRotate(90f * scaleNormalizeValue)
 
             if (isRatioRotated) {
                 cropOverlay.setTargetAspectRatio(originalWidth/originalHeight.toFloat())
@@ -131,8 +132,7 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
     }
 
     fun getFinalRotationDegree(): Float{
-        val scaleNormalizeValue = min(scaleX, scaleY)
-        return ((rotateNumber * ROTATE_BTN_DEGREE) + sliderValue) * scaleNormalizeValue
+        return ((rotateNumber * ROTATE_BTN_DEGREE) + sliderValue)
     }
 
     fun getScale(): Pair<Float, Float>{
@@ -140,7 +140,6 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
     }
 
     private fun updateRotation() {
-        val scaleNormalizeValue = min(scaleX, scaleY)
         listener.onRotateValueChanged(
             sliderValue * scaleNormalizeValue,
             scaleX,

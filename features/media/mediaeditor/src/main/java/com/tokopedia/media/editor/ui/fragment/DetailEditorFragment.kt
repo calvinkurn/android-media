@@ -57,6 +57,7 @@ import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.lang.Exception
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -382,23 +383,34 @@ class DetailEditorFragment @Inject constructor(
         val scaleX = scale.first
         val scaleY = scale.second
 
-        val rotateDegree = rotateComponent.getFinalRotationDegree()
-
-        val scaleNormalizeValue = min(scaleX, scaleY)
+        // matrix scale didn't affect rotation value, positive will always clockwise on matrix
+        val rotateDegree = abs(rotateComponent.getFinalRotationDegree())
 
         val matrix = Matrix()
+
         matrix.preScale(scaleX, scaleY)
-        matrix.postRotate(rotateDegree * scaleNormalizeValue, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
+        matrix.postRotate(rotateDegree, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
+        // if flipping vertically, do rotate 1st
+//        if(scaleY < 0){
+//            matrix.postScale(scaleX, scaleY)
+//            matrix.preRotate(rotateDegree, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
+//        } else {
+//            matrix.preScale(scaleX, scaleY)
+//            matrix.postRotate(rotateDegree, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
+//        }
 
         val rotatedBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalWidth, originalHeight, matrix, true)
 
         // set crop area on data that will be pass to landing pass for state
-        data.rotateData?.let {
-            it.leftRectPos = offsetX
-            it.topRectPos = offsetY
-            it.rightRectPos = imageWidth
-            it.bottomRectPos = imageHeight
-        }
+        data.rotateData = EditorRotateModel(
+            rotateDegree,
+            scaleX,
+            scaleY,
+            offsetX,
+            offsetY,
+            imageWidth,
+            imageHeight
+        )
 
         return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
     }
