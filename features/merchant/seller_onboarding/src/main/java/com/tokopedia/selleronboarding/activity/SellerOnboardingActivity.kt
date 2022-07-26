@@ -54,11 +54,11 @@ class SellerOnboardingActivity : BaseActivity() {
     private val sobAdapter by lazy { SobAdapter() }
     private val slideItems: List<BaseSliderUiModel> by lazy {
         listOf(
-            SobSliderHomeUiModel(R.drawable.bg_sob_slide_header_home),
-            SobSliderMessageUiModel(R.drawable.bg_sob_slide_header_message),
-            SobSliderManageUiModel(R.drawable.bg_sob_slide_header_manage),
-            SobSliderPromoUiModel(R.drawable.bg_sob_slide_header_promo),
-            SobSliderStatisticsUiModel(R.drawable.bg_sob_slide_header_statistics)
+            SobSliderHomeUiModel(null),
+            SobSliderMessageUiModel(null),
+            SobSliderManageUiModel(null),
+            SobSliderPromoUiModel(null),
+            SobSliderStatisticsUiModel(null)
         )
     }
     private var binding: ActivitySobOnboardingBinding? = null
@@ -70,6 +70,9 @@ class SellerOnboardingActivity : BaseActivity() {
 
         handleAppLink()
         setPageBackground()
+        setConfettiAnniv()
+        setBackgroundPattern()
+        setAnnivLogo()
         setWhiteStatusBar()
         setupViewsTopMargin()
         setupSlider()
@@ -92,9 +95,33 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setPageBackground() {
         try {
-            binding?.backgroundSob?.setBackgroundResource(R.drawable.bg_sob_full)
+            binding?.backgroundSob?.setBackgroundResource(R.drawable.bg_sob_full_anniv)
         } catch (e: Resources.NotFoundException) {
             Timber.e(e)
+        }
+    }
+
+    private fun setConfettiAnniv() {
+        try {
+            binding?.confettiSob?.loadImage(R.drawable.bg_sob_confetti_anniv)
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
+    }
+
+    private fun setBackgroundPattern() {
+        try {
+            binding?.patternSob?.setBackgroundResource(R.drawable.bg_sob_pattern_anniv)
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
+    }
+
+    private fun setAnnivLogo() {
+        try {
+            binding?.logoSob?.loadImage(R.drawable.img_sob_logo_anniv)
+        } catch (ex: Exception) {
+            Timber.e(ex)
         }
     }
 
@@ -111,18 +138,8 @@ class SellerOnboardingActivity : BaseActivity() {
                     setSlideIndicator(position)
                     setPreviousButtonVisibility(position)
                     updateNextButtonState(position)
-                    updateHeaderBackground(position)
                 }
             })
-        }
-    }
-
-    private fun updateHeaderBackground(position: Int) {
-        try {
-            val slideItem = slideItems[position]
-            binding?.imgSobHeader?.loadImage(slideItem.headerResBg)
-        } catch (e: Exception) {
-            //do nothing
         }
     }
 
