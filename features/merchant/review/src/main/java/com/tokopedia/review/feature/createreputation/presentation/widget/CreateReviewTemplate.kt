@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.createreputation.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -42,12 +43,10 @@ class CreateReviewTemplate @JvmOverloads constructor(
     }
 
     private fun showLoading() {
-        show()
         binding.layoutTemplateLoading.show()
     }
 
     private fun showTemplate(templates: List<CreateReviewTemplateItemUiModel>) {
-        show()
         binding.layoutTemplateLoading.gone()
         setupTemplate(templates)
     }
@@ -80,10 +79,8 @@ class CreateReviewTemplate @JvmOverloads constructor(
                 })
             }
             is CreateReviewTemplateUiState.Hidden -> {
-                animateHide(onAnimationStart = {
-                    hideTemplate()
-                }, onAnimationEnd = {
-                    gone()
+                hideTemplate()
+                animateHide(onAnimationEnd = {
                     continuation.resume(Unit)
                 })
             }
@@ -95,7 +92,11 @@ class CreateReviewTemplate @JvmOverloads constructor(
     }
 
     fun setMargins(left: Int = Int.ZERO, top: Int = Int.ZERO, right: Int = Int.ZERO, bottom: Int = Int.ZERO) {
-        binding.root.setMargin(left, top, right, bottom)
+        binding.rvTemplate.setMargin(left, top, right, bottom)
+    }
+
+    fun makeWrapContent() {
+        updateRootHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     private inner class CreateReviewTemplateListener: CreateReviewTemplateItemViewHolder.Listener {

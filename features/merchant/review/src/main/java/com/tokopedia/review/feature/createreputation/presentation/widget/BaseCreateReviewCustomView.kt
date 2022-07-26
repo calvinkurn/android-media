@@ -120,8 +120,8 @@ abstract class BaseCreateReviewCustomView<VB: ViewBinding> @JvmOverloads constru
                 *animator,
                 onAnimationStart = onAnimationStart,
                 onAnimationEnd = {
+                    updateRootHeight(calculateWrapHeight())
                     onAnimationEnd?.invoke()
-                    updateRootHeight(LayoutParams.WRAP_CONTENT)
                 }
             )
         }

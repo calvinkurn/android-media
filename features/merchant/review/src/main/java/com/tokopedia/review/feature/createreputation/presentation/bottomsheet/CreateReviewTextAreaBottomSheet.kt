@@ -91,13 +91,14 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setupListeners()
-        binding?.textAreaExpandedCreateReviewBottomSheet?.removeBorder()
     }
 
     private fun setupViews() {
+        binding?.reviewTemplateExpandedCreateReviewBottomSheet?.makeWrapContent()
         binding?.reviewTemplateExpandedCreateReviewBottomSheet?.setMargins(
             bottom = 8.toPx()
         )
+        binding?.textAreaExpandedCreateReviewBottomSheet?.removeBorder()
     }
 
     private fun setupListeners() {
