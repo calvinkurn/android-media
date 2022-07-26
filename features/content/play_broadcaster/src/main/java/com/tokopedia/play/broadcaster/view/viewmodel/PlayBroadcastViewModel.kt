@@ -1589,7 +1589,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun addCoolDown() {
         coolDownTimerJob?.cancel()
-        coolDownTimerJob = viewModelScope.launch(dispatcher.computation) {
+        coolDownTimerJob = viewModelScope.launch {
             delay(COOL_DOWN_TIMER)
         }
     }

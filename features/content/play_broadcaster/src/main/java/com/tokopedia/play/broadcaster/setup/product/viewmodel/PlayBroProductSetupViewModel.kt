@@ -442,7 +442,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     private fun addCoolDown() {
         coolDownTimerJob?.cancel()
-        coolDownTimerJob = viewModelScope.launch(dispatchers.computation) {
+        coolDownTimerJob = viewModelScope.launch {
             delay(COOL_DOWN_TIMER)
         }
     }
