@@ -12,5 +12,5 @@
     <string name="epharmacy_products_title">Obat butuh resep dokter</string>
     <string name="epharmacy_upload_error">Gagal upload foto resep. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="epharmacy_internet_error">Cek koneksi internetmu dan coba lagi, ya.</string>
-    <string name="epharmacy_quantity_weight_text">"%s Barang (%skg)"</string>
+    <string name="epharmacy_quantity_weight_text">"%s Barang (%s)"</string>
 </resources>

@@ -15,6 +15,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import java.math.BigDecimal
 
 class EPharmacyProductViewHolder(view: View) : AbstractViewHolder<EPharmacyProductDataModel>(view) {
 
@@ -29,6 +30,10 @@ class EPharmacyProductViewHolder(view: View) : AbstractViewHolder<EPharmacyProdu
 
     companion object {
         val LAYOUT = R.layout.epharmacy_product_view_item
+        private const val KILOGRAM_DIVIDER = 1000.0f
+        private const val DIGIT_AFTER_COMMA = 2
+        private const val LABEL_KILOGRAM = " kg"
+        private const val LABEL_GRAM = " gr"
     }
 
     override fun bind(element: EPharmacyProductDataModel) {
@@ -39,7 +44,14 @@ class EPharmacyProductViewHolder(view: View) : AbstractViewHolder<EPharmacyProdu
         dataModel.product?.apply {
             productCard.cardType = CardUnify2.TYPE_BORDER
             productText.text = name ?: ""
-            productQuantity.text = itemView.context.getString(R.string.epharmacy_quantity_weight_text, quantity.toString() ,itemWeight)
+            productQuantity.text = java.lang.String.format(
+                itemView.context.getString(R.string.epharmacy_quantity_weight_text),
+                quantity ?: "",
+                getFormattedWeight(
+                    itemWeight ?: 0.0,
+                    quantity ?: 0
+                )
+            )
             productImageUnify.loadImage(productImage)
             shopNameText.displayTextOrHide(shopName ?: "")
             shopLocationText.displayTextOrHide(shopLocation ?: "")
@@ -59,5 +71,25 @@ class EPharmacyProductViewHolder(view: View) : AbstractViewHolder<EPharmacyProdu
 
     private fun renderDivider(isDivider : Boolean){
         if(isDivider) divider.show() else divider.hide()
+    }
+
+    private fun getFormattedWeight(weight: Double, qty: Int): String {
+        val weighTotalFormatted: String
+        var weightTotal = weight * qty
+        if (weightTotal >= KILOGRAM_DIVIDER) {
+            var bigDecimal = BigDecimal(weightTotal / KILOGRAM_DIVIDER)
+            bigDecimal = bigDecimal.setScale(
+                DIGIT_AFTER_COMMA,
+                BigDecimal.ROUND_HALF_UP
+            )
+            weightTotal = bigDecimal.toDouble()
+            weighTotalFormatted =
+                "$weightTotal $LABEL_KILOGRAM"
+        } else {
+            weighTotalFormatted = weightTotal.toInt()
+                .toString() + LABEL_GRAM
+        }
+        return weighTotalFormatted.replace(".0 ", "")
+            .replace("  ", " ")
     }
 }
