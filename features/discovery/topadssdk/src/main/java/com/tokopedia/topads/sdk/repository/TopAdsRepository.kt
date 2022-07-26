@@ -30,6 +30,7 @@ private const val TOP_ADS_BANNER_QUERY =
       banner {
         Name
         Position
+        LayoutType
         Images{
           Dimension {
             Id
@@ -137,6 +138,8 @@ open class TopAdsRepository {
                 bannerId = data.id
                 bannerName = data.banner?.name ?: ""
                 position = data.banner?.position ?: 0
+                ImpressHolder = data.banner?.shop?.shopImage
+                layoutType = data.banner?.layoutType ?: "single"
                 adClickUrl = data.adClickUrl ?: ""
                 adViewUrl = data.adViewUrl ?: ""
                 applink = data.applinks
