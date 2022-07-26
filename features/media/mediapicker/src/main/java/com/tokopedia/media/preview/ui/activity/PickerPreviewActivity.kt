@@ -3,6 +3,7 @@ package com.tokopedia.media.preview.ui.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -22,12 +23,15 @@ import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_RECORDER
 import com.tokopedia.media.preview.analytics.PreviewAnalytics
 import com.tokopedia.media.preview.di.DaggerPreviewComponent
 import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
-import com.tokopedia.picker.common.*
+import com.tokopedia.picker.common.EXTRA_INTENT_PREVIEW
+import com.tokopedia.picker.common.RESULT_INTENT_PREVIEW
+import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
+import com.tokopedia.picker.common.EXTRA_EDITOR_PICKER
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.utils.safeFileDelete
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -94,6 +98,7 @@ class PickerPreviewActivity : BaseActivity()
     override fun onPause() {
         super.onPause()
         binding?.drawerSelector?.removeListener()
+        pickerPager.pauseVideoPlayer()
     }
 
     override fun onCloseClicked() {
@@ -160,7 +165,7 @@ class PickerPreviewActivity : BaseActivity()
                 .distinctUntilChanged()
                 .filter { it.originalPaths.isNotEmpty() }
                 .collectLatest {
-                    val withEditor = param.get().withEditor()
+                    val withEditor = param.get().isEditorEnabled()
 
                     val buttonState = if (withEditor) {
                         PREVIEW_PAGE_LANJUT
@@ -192,7 +197,8 @@ class PickerPreviewActivity : BaseActivity()
     private fun restoreDataState(savedInstanceState: Bundle?) {
         // get data from picker
         intent?.let {
-            val items = it.getParcelableArrayListExtra<MediaUiModel>(EXTRA_INTENT_PREVIEW)?: listOf()
+            val items =
+                it.getParcelableArrayListExtra<MediaUiModel>(EXTRA_INTENT_PREVIEW) ?: listOf()
 
             if (items.isNotEmpty()) {
                 setUiModelData(items)
@@ -224,7 +230,7 @@ class PickerPreviewActivity : BaseActivity()
         showContinueButtonAs(true)
         onToolbarThemeChanged(ToolbarTheme.Solid)
 
-        if (!param.get().withEditor()) {
+        if (!param.get().isEditorEnabled()) {
             navToolbar.setContinueTitle(getString(R.string.picker_button_upload))
         }
     }
@@ -250,10 +256,10 @@ class PickerPreviewActivity : BaseActivity()
     private fun retakeButtonAction(media: MediaUiModel) {
         binding?.btnRetake?.show()
 
-        val retakeState = if (media.isVideo() && media.isFromPickerCamera) {
+        val retakeState = if (media.file?.isVideo() == true && media.isFromPickerCamera) {
             binding?.btnRetake?.videoMode()
             PREVIEW_RETAKE_RECORDER
-        } else if (!media.isVideo() && media.isFromPickerCamera) {
+        } else if (media.file?.isImage() == true && media.isFromPickerCamera) {
             binding?.btnRetake?.photoMode()
             PREVIEW_RETAKE_CAMMERA
         } else {
@@ -268,7 +274,10 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     private fun onCancelOrRetakeMedia(media: MediaUiModel) {
-        if (media.isFromPickerCamera) safeFileDelete(media.path)
+        if (media.isFromPickerCamera) {
+            media.file?.safeDelete()
+        }
+
         cancelIntent()
     }
 
@@ -306,6 +315,15 @@ class PickerPreviewActivity : BaseActivity()
 
     companion object {
         private const val CACHE_LAST_SELECTION = "cache_last_selection"
+
+        fun start(activity: ComponentActivity, medias: ArrayList<MediaUiModel>, reqCode: Int) {
+            activity.startActivityForResult(
+                Intent(activity.applicationContext, PickerPreviewActivity::class.java).apply {
+                    putExtra(EXTRA_INTENT_PREVIEW, medias)
+                },
+                reqCode
+            )
+        }
     }
 
 }

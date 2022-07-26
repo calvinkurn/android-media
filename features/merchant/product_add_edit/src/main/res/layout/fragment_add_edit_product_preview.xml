@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/dp_35"
+                android:layout_marginTop="35dp"
                 android:text="@string/product_subtitle_product_information"
                 android:textColor="@color/Unify_N700"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -104,28 +104,17 @@
                 android:layout_marginStart="@dimen/spacing_lvl4" />
 
             <include
-                android:id="@+id/edit_product_promotion_step_layout"
-                layout="@layout/add_edit_product_promotion_step_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/add_product_shipment_step_layout" />
-
-            <include
                 android:id="@+id/edit_product_status_layout"
                 layout="@layout/edit_product_status_step_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/dp_35"
-                android:visibility="gone"
+                android:layout_marginTop="16dp"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_product_promotion_step_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/add_product_shipment_step_layout" />
 
             <include
                 layout="@layout/add_edit_product_no_variant_preview"
@@ -164,8 +153,8 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loader"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -180,7 +169,7 @@
         android:id="@+id/add_edit_error_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:visibility="gone">
 
         <com.tokopedia.globalerror.GlobalError

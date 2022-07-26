@@ -18,6 +18,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
+import com.tokopedia.minicart.common.widget.viewmodel.utils.ProductUtils.getBundleProductList
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -90,7 +91,7 @@ class DeleteCartTest {
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
         //then
-        assert(viewModel.lastDeletedProductItem != null)
+        assert(viewModel.lastDeletedProductItems != null)
     }
 
     @Test
@@ -111,7 +112,9 @@ class DeleteCartTest {
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
         //then
-        assert(viewModel.lastDeletedProductItem?.productId == productId)
+        viewModel.lastDeletedProductItems?.forEach {
+            assert(it.productId == productId)
+        }
     }
 
     @Test
@@ -345,5 +348,48 @@ class DeleteCartTest {
 
         //then
         assert(slotUnavailableCartIdList.captured.size == 2)
+    }
+
+    @Test
+    fun `WHEN delete multiple cart items success THEN temporary variable to store last deleted item should not be empty`() {
+        //given
+        val bundleId = "36012"
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        val miniCartProductUiModel = miniCartListUiModel.getBundleProductList(bundleId)
+
+        val mockResponse = DataProvider.provideDeleteFromCartSuccess()
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
+        coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.deleteMultipleCartItems(miniCartProductUiModel)
+
+        //then
+        assert(viewModel.lastDeletedProductItems != null)
+    }
+
+    @Test
+    fun `WHEN delete multiple cart items error THEN global event should have throwable with correct error message`() {
+        //given
+        val bundleId = "36012"
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        val miniCartProductUiModel = miniCartListUiModel.getBundleProductList(bundleId)
+
+        val errorMessage = "Error Message"
+        val throwable = ResponseErrorException(errorMessage)
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
+        coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        //when
+        viewModel.deleteMultipleCartItems(miniCartProductUiModel)
+
+        //then
+        assert(viewModel.globalEvent.value?.throwable?.message?.equals(errorMessage) == true)
     }
 }

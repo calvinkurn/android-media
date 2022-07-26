@@ -9,7 +9,7 @@
         android:id="@+id/img_empty"
         android:layout_width="@dimen/unify_space_48"
         android:layout_height="@dimen/unify_space_48"
-        android:layout_marginTop="@dimen/up_error_page_top_margin"
+        android:layout_marginTop="@dimen/user_profile_page_top_margin"
         android:tint="@color/Unify_Static_Black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

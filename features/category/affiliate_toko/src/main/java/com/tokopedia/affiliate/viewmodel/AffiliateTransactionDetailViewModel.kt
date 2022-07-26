@@ -62,6 +62,9 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
                 shimmerVisibility.value = true
                 affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(additionKey, lastItem,pageType)?.let {
                     shimmerVisibility.value = false
+                    it.getAffiliateTrafficCommissionDetailCards?.data?.lastID?.let {lastID ->
+                        lastItem = lastID
+                    }
                     detailList.value = getDetailListOrganize(null,it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail,page)
                 }
             }

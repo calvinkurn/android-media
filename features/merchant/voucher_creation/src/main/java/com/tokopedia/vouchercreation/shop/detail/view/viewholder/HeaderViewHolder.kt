@@ -10,13 +10,14 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ContainerUnify
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.TimerRunnable
+import com.tokopedia.vouchercreation.databinding.ItemMvcVoucherHeaderBinding
 import com.tokopedia.vouchercreation.shop.detail.model.VoucherHeaderUiModel
 import com.tokopedia.vouchercreation.shop.detail.view.component.StartEndVoucher
-import kotlinx.android.synthetic.main.item_mvc_voucher_header.view.*
 
 /**
  * Created By @ilhamsuaib on 30/04/20
@@ -37,22 +38,24 @@ class HeaderViewHolder(
         private const val DEFAULT_RADIUS = 8.0f
     }
 
+    private var binding: ItemMvcVoucherHeaderBinding? by viewBinding()
+
     override fun bind(element: VoucherHeaderUiModel) {
-        with(itemView) {
+        binding?.apply {
             var containerColor: Int? = null
 
             val startDate = DateTimeUtils.reformatUnsafeDateTime(element.startTime, DATE_FORMAT)
             val endDate = DateTimeUtils.reformatUnsafeDateTime(element.finishTime, DATE_FORMAT)
-            val startHour = String.format(context?.getString(R.string.mvc_hour_wib).toBlankOrString(), DateTimeUtils.reformatUnsafeDateTime(element.startTime, HOUR_FORMAT))
-            val endHour = String.format(context?.getString(R.string.mvc_hour_wib).toBlankOrString(), DateTimeUtils.reformatUnsafeDateTime(element.finishTime, HOUR_FORMAT))
+            val startHour = String.format(startEndVoucher.context.getString(R.string.mvc_hour_wib).toBlankOrString(), DateTimeUtils.reformatUnsafeDateTime(element.startTime, HOUR_FORMAT))
+            val endHour = String.format(startEndVoucher.context.getString(R.string.mvc_hour_wib).toBlankOrString(), DateTimeUtils.reformatUnsafeDateTime(element.finishTime, HOUR_FORMAT))
 
             val statusResId: Int
             val textColorResId: Int
 
-            headerContainer?.gone()
-            label_vps.gone()
-            tpg_package_name.gone()
-            label_subsidy.gone()
+            headerContainer.gone()
+            labelVps.gone()
+            tpgPackageName.gone()
+            labelSubsidy.gone()
 
             when(element.status) {
                 VoucherStatusConst.NOT_STARTED -> {
@@ -60,7 +63,7 @@ class HeaderViewHolder(
                     textColorResId = com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
                 }
                 VoucherStatusConst.ONGOING -> {
-                    lblMvcRemainingTime?.visible()
+                    lblMvcRemainingTime.visible()
 
                     val endDateTime = DateTimeUtils.convertUnsafeDateTime(element.finishTime)
 
@@ -69,13 +72,13 @@ class HeaderViewHolder(
                     val timer = TimerRunnable(diffMillis, ::onCountdownTick)
                     timer.start()
 
-                    headerContainer?.visible()
+                    headerContainer.visible()
                     statusResId = R.string.mvc_ongoing
                     containerColor = ContainerUnify.GREEN
                     textColorResId = com.tokopedia.unifyprinciples.R.color.Green_G500
                 }
                 VoucherStatusConst.ENDED -> {
-                    headerContainer?.visible()
+                    headerContainer.visible()
                     statusResId = R.string.mvc_ended
                     containerColor = ContainerUnify.GREY
                     textColorResId = com.tokopedia.unifyprinciples.R.color.Neutral_N700_96
@@ -83,10 +86,10 @@ class HeaderViewHolder(
                 VoucherStatusConst.STOPPED -> {
                     statusResId = R.string.mvc_stopped
                     textColorResId = com.tokopedia.unifyprinciples.R.color.Red_R500
-                    startEndVoucher?.gone()
+                    startEndVoucher.gone()
                     element.cancelTime?.let { time ->
                         val cancelDate = DateTimeUtils.reformatUnsafeDateTime(time, DATE_FORMAT)
-                        canceledDate?.run {
+                        canceledDate.run {
                             text = String.format(context?.getString(R.string.mvc_stopped_at).toBlankOrString(), cancelDate)
                             visible()
                         }
@@ -103,31 +106,31 @@ class HeaderViewHolder(
                 }
             }
 
-            startEndVoucher?.run {
+            startEndVoucher.run {
                 setStartTime(StartEndVoucher.Model(startDate, startHour))
                 setEndTime(StartEndVoucher.Model(endDate, endHour))
             }
 
-            imgMvcVoucherDetail?.loadImageRounded(element.voucherImageUrl, resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)?.toFloat() ?: DEFAULT_RADIUS)
-            voucherStatus?.run {
+            imgMvcVoucherDetail.loadImageRounded(element.voucherImageUrl, imgMvcVoucherDetail.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)?.toFloat() ?: DEFAULT_RADIUS)
+            voucherStatus.run {
                 setTextColor(resources?.run { ResourcesCompat.getColor(this, textColorResId, null) } ?: Color.BLACK)
                 text = context?.getString(statusResId).toBlankOrString()
             }
             containerColor?.run {
-                headerContainer?.setContainerColor(this)
+                headerContainer.setContainerColor(this)
             }
 
             if (element.isVps) {
-                label_vps.visible()
-                tpg_package_name.visible()
-                label_subsidy.gone()
-                tpg_package_name.text = element.packageName
+                labelVps.visible()
+                tpgPackageName.visible()
+                labelSubsidy.gone()
+                tpgPackageName.text = element.packageName
             }
 
             if (!element.isVps && element.isSubsidy) {
-                label_vps.gone()
-                tpg_package_name.gone()
-                label_subsidy.visible()
+                labelVps.gone()
+                tpgPackageName.gone()
+                labelSubsidy.visible()
             }
 
             btnMvcDownload.setOnClickListener {
@@ -137,6 +140,6 @@ class HeaderViewHolder(
     }
 
     private fun onCountdownTick(time: String) {
-        itemView.lblMvcRemainingTime?.text = time
+        binding?.lblMvcRemainingTime?.text = time
     }
 }

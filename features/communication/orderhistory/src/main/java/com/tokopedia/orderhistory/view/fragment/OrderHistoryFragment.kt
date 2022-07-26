@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -38,10 +37,15 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFactory>(),
-        OrderHistoryViewHolder.Listener, WishListActionListener {
+        OrderHistoryViewHolder.Listener, WishListActionListener, WishlistV2ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -157,7 +161,13 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     override fun onClickAddToWishList(product: Product) {
-        viewModel.addToWishList(product.productId, session.userId, this)
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
+                viewModel.addToWishListV2(product.productId, session.userId,  this)
+            } else {
+                viewModel.addToWishList(product.productId, session.userId, this)
+            }
+        }
     }
 
     override fun onClickCardProduct(product: Product, position: Int) {
@@ -168,37 +178,6 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     override fun trackSeenProduct(product: Product, position: Int) {
         analytic.eventSeenProductAttachment(product, session, position)
     }
-
-    override fun onSuccessAddWishlist(productId: String?) {
-        view?.let {
-            val successMessage = it.context.getString(R.string.title_orderhistory_success_atc)
-            val ctaText = it.context.getString(R.string.cta_orderhistory_success_atw)
-            Toaster.make(
-                    it,
-                    successMessage,
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_NORMAL,
-                    ctaText,
-                    View.OnClickListener { goToWishList() }
-            )
-        }
-    }
-
-    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-        if (errorMessage == null) return
-        view?.let {
-            Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
-        }
-    }
-
-    override fun onSuccessRemoveWishlist(productId: String?) {}
-    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
 
     private fun goToWishList() {
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
@@ -234,5 +213,57 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
                 arguments = extra
             }
         }
+    }
+
+    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+        val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+        view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it) }
+    }
+
+    override fun onSuccessAddWishlist(
+        result: AddToWishlistV2Response.Data.WishlistAddV2,
+        productId: String
+    ) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+            }
+        }
+    }
+
+    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+        view?.let {
+            errorMessage?.let { it1 -> Toaster.build(it, it1, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+        }
+    }
+
+    override fun onSuccessAddWishlist(productId: String) {
+        view?.let {
+            val successMessage = it.context.getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            val ctaText = it.context.getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+            Toaster.build(
+                    it,
+                    successMessage,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL,
+                    ctaText
+            ) { goToWishList() }.show()
+        }
+    }
+
+    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
+    override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
+    override fun onSuccessRemoveWishlist(productId: String) {}
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
+        }
+    }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
     }
 }

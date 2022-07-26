@@ -1,5 +1,6 @@
 package com.tokopedia.topupbills.telco.data
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -31,6 +32,7 @@ data class TelcoAttributesProduct(
         @SerializedName("price")
         @Expose
         val price: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price_plain")
         @Expose
         val pricePlain: Int = 0,
@@ -45,9 +47,9 @@ data class TelcoAttributesProduct(
         val productPromo: TelcoProductPromo? = TelcoProductPromo(),
         @SerializedName("category_id")
         @Expose
-        val categoryId: Int = 0,
+        val categoryId: String = "0",
         @SerializedName("operator_id")
         @Expose
-        val operatorId: Int = 0,
+        val operatorId: String = "0",
         var selected: Boolean = false)
     : Parcelable

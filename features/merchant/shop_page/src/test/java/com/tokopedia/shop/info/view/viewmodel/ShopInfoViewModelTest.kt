@@ -239,7 +239,11 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
                 goldOS.isGold,
                 createdInfo.openSince,
                 emptyList(),
-                shopSnippetUrl
+                shopSnippetUrl,
+                isGoApotik,
+                epharmacyInfo.siaNumber,
+                epharmacyInfo.sipaNumber,
+                epharmacyInfo.apj
         )
     }
 

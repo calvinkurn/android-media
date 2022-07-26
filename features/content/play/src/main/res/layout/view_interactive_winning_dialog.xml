@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rc_winning_dialog"
     android:layout_width="@dimen/play_interactive_winning_dialog_width"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_play_interactive"
     app:rcl_cornerRadius="@dimen/play_interactive_common_radius"
     >
 
@@ -14,7 +14,7 @@
         android:layout_height="@dimen/layout_lvl0"
         android:scaleType="fitStart"
         app:cacheStrategy="data"
-        app:imageUrl="https://images.tokopedia.net/img/android/content/play/ic_play_interactive_decor.png"
+        app:imageUrl="@string/img_bg_winning_dialog_decor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +27,7 @@
         android:layout_height="@dimen/layout_lvl0"
         android:scaleType="centerCrop"
         app:cacheStrategy="resource"
-        app:imageUrl="https://images.tokopedia.net/img/android/content/play/ic_play_interactive_confetti_big.png"
+        app:imageUrl="@string/img_bg_interactive_confetti_big"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

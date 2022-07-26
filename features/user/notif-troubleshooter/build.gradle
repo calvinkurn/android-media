@@ -56,7 +56,6 @@ dependencies {
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.viewModelKtx
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 

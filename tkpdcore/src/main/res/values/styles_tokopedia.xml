@@ -129,8 +129,8 @@
         <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Tokopedia
         </item>
         <item name="android:homeAsUpIndicator">@drawable/ic_new_action_back</item>
-        <item name="android:windowBackground">@color/tkpd_bg_color_grery</item>
-        <item name="android:colorBackground">@color/tkpd_bg_color_grery</item>
+        <item name="android:windowBackground">@color/Unify_NN50</item>
+        <item name="android:colorBackground">@color/Unify_NN50</item>
         <!-- Remove shadow from action bar -->
         <item name="android:windowContentOverlay">@null</item>
         <item name="vpiTitlePageIndicatorStyle">@style/CustomTitlePageIndicator</item>

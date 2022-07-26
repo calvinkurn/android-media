@@ -19,15 +19,11 @@
         app:typographyWeight="bold"
         tools:text="1" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcTipsTrickTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:textColor="@color/light_N700_96"
-        android:textSize="@dimen/fontSize_lvl3"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvMvcTipsTrickNumber"
         app:layout_constraintTop_toTopOf="parent"

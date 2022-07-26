@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.video
 
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
-import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
+import com.tokopedia.mediauploader.common.internal.SourcePolicyManager
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.video.data.params.SimpleUploadParam
@@ -13,25 +13,22 @@ import java.io.File
 import javax.inject.Inject
 
 class SimpleUploaderManager @Inject constructor(
-    val simpleUploaderUseCase: GetSimpleUploaderUseCase,
-    val transcodingUseCase: GetTranscodingStatusUseCase,
+    private val policyManager: SourcePolicyManager,
+    private val simpleUploaderUseCase: GetSimpleUploaderUseCase,
+    private val transcodingUseCase: GetTranscodingStatusUseCase,
 ) {
 
     // set max retry of transcoding checker
     private var maxRetryTranscoding = 0
 
-    suspend operator fun invoke(file: File, sourceId: String, policy: SourcePolicy, withTranscode: Boolean): UploadResult {
+    suspend operator fun invoke(file: File, sourceId: String, withTranscode: Boolean): UploadResult {
         val uploader = simpleUploaderUseCase(SimpleUploadParam(
-            timeOut = policy.timeOut.toString(),
+            timeOut = policyManager.policy().timeOutString(),
             sourceId = sourceId,
             file = file
         ))
 
-        val error = if (!uploader.errorMessage.isNullOrBlank()) {
-            uploader.errorMessage
-        } else {
-            UNKNOWN_ERROR
-        }
+        val error = uploader.errorMessage ?: UNKNOWN_ERROR
 
         if (withTranscode) {
             while(true) {
@@ -42,24 +39,27 @@ class SimpleUploaderManager @Inject constructor(
                 }
 
                 if (uploader.uploadId != null) {
-                    if (transcodingUseCase(uploader.uploadId).isCompleted()) {
+                    val transcode = transcodingUseCase(uploader.uploadId)
+
+                    if (transcode.isCompleted()) {
                         break
                     }
                 }
 
                 maxRetryTranscoding++
-                delay(5000)
+                delay(DELAYED_TO_RETRY)
             }
         }
 
-        return if (!uploader.videoUrl.isNullOrBlank()) {
+        // clear the current policy
+        policyManager.clear()
+
+        return uploader.videoUrl?.let {
             UploadResult.Success(
-                videoUrl = uploader.videoUrl,
+                videoUrl = it,
                 uploadId = uploader.uploadId.toString()
             )
-        } else {
-            UploadResult.Error(error)
-        }
+        }?: UploadResult.Error(error)
     }
 
     fun setProgressCallback(progressUploader: ProgressUploader?) {
@@ -72,6 +72,7 @@ class SimpleUploaderManager @Inject constructor(
 
     companion object {
         private const val MAX_RETRY_TRANSCODING = 24
+        private const val DELAYED_TO_RETRY = 5_000L // 5sec
     }
 
 }

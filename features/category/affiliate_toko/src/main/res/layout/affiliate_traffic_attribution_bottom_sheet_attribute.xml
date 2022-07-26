@@ -15,26 +15,22 @@
         app:typographyType="body_2"
         android:layout_marginBottom="@dimen/unify_space_12"
         />
-    <androidx.cardview.widget.CardView
-        android:layout_marginHorizontal="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:id="@+id/affilitate_recylerview_ticker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardElevation="0dp">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/affiliate_filter_announcement_ticker"
+            android:visibility="gone"
+            android:id="@+id/affiliate_metric_announcement_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="@dimen/unify_space_48"
             app:closeButtonVisibility="gone"
             app:descriptionText="@string/affiliate_traffic_hari_ini_ticker"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:tickerType="announcement" />
-    </androidx.cardview.widget.CardView>
+            app:tickerShapeType="loose"
+            app:tickerType="announcement"
+            android:layout_marginBottom="@dimen/unify_space_16"
+            android:layout_marginHorizontal="@dimen/spacing_lvl4"
+            />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:visibility="gone"

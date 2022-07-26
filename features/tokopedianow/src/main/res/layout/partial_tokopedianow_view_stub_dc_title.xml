@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifyprinciples.Typography
-    app:typographyType="heading_4"
+    app:typographyType="display_1"
+    app:typographyWeight="bold"
     android:id="@+id/channel_title"
     android:layout_marginLeft="16dp"
     android:layout_marginStart="16dp"
@@ -8,7 +9,6 @@
     android:layout_height="wrap_content"
     android:layout_centerVertical="true"
     android:maxEms="12"
-    android:textSize="@dimen/sp_16"
     android:lines="1"
     android:ellipsize="end"
     tools:text="Hypebeast Banget Pokoknya"

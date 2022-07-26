@@ -59,7 +59,7 @@ open class SendableUiModel constructor(
         internal var startTime: String = ""
         internal var isRead: Boolean = false
         internal var isDummy: Boolean = false
-        internal var isSender: Boolean = true
+        var isSender: Boolean = true
 
         override fun withResponseFromGQL(reply: Reply): B {
             return super.withResponseFromGQL(reply).also {

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.elyeproj.loaderviewlibrary.LoaderImageView
-    android:layout_width="match_parent"
+<com.tokopedia.unifycomponents.LoaderUnify android:layout_width="match_parent"
     android:layout_height="@dimen/dp_60"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="8dp"
     android:layout_marginTop="8dp"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
+    app:loader_corner_radius="0dp"
+    app:loader_type="rect"
     android:id="@+id/merchantVoucherShimmering"
-    xmlns:android="http://schemas.android.com/apk/res/android"/>
+    xmlns:android="http://schemas.android.com/apk/res/android" />

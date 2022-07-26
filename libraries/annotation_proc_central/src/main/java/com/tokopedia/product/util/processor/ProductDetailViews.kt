@@ -113,7 +113,10 @@ data class ProductDetailViews(
         val attribution: String?,
         @DefaultValueString("")
         @Key("warehouseId")
-        val warehouseId: String?
+        val warehouseId: String?,
+        @DefaultValueString("")
+        @Key("ownerId")
+        val ownerId: String?
 )
 
 object ProductDetailViewsChecker {

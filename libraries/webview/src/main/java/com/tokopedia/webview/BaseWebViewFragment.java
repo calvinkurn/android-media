@@ -1,7 +1,6 @@
 package com.tokopedia.webview;
 
 import static android.app.Activity.RESULT_OK;
-import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
 import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
 import static com.tokopedia.webview.ConstantKt.GOOGLE_DOCS_PDF_URL;
 import static com.tokopedia.webview.ConstantKt.JS_STAGING_TOKOPEDIA;
@@ -23,11 +22,13 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -75,6 +77,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -90,6 +93,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int HALF_PROGRESS = 50;
     private static final int PICTURE_QUALITY = 60;
     private static final String ERR_INTERNET_DISCONNECTED = "ERR_INTERNET_DISCONNECTED";
+    public static final String TOKOPEDIA_COM = ".tokopedia.com";
 
     public TkpdWebView webView;
     ProgressBar progressBar;
@@ -183,8 +187,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         needLogin = args.getBoolean(KEY_NEED_LOGIN, false);
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
-        String host = Uri.parse(url).getHost();
-        isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING) && !host.contains(ZOOM_US_STRING);
+        Uri uri = Uri.parse(url);
+        String host = uri.getHost();
+        if(uri.getUserInfo()!=null) {
+            ErrorHandler.Builder builder = new ErrorHandler.Builder();
+            builder.sendToScalyr(true);
+            builder.setErrorCode(true);
+            Toast.makeText(getActivity(), ErrorHandler.getErrorMessage(getActivity(), new NullPointerException("Unable to open link"), builder ), Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+        }
+
+        isTokopediaUrl = host != null && host.endsWith(TOKOPEDIA_COM) && !host.contains(ZOOM_US_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
@@ -279,10 +292,24 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected void loadWeb() {
+        String url = getUrl();
         if (isTokopediaUrl) {
-            webView.loadAuthUrl(getUrl(), new UserSession(getContext()));
+            webView.loadAuthUrl(url, new UserSession(getContext()));
         } else {
-            webView.loadAuthUrl(getUrl(), null);
+            redirectToNativeBrowser();
+        }
+    }
+
+    private void redirectToNativeBrowser() {
+        try {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(browserIntent);
+            getActivity().finish();
+        } catch (Throwable th) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "browser");
+            messageMap.put("url", url);
+            ServerLogger.log(Priority.P1, "INVALID_WEBVIEW_URL", messageMap);
         }
     }
 
@@ -328,7 +355,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
-            if (imagePath != null) {
+            if (imagePath != null && base64!= null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
                 jsCallbackBuilder.append("javascript:")
                         .append(mJsHciCallbackFuncName)
@@ -394,6 +421,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             hasMoveToNativePage = true;
             startActivity(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN));
         }
+    }
+
+    public static @Nullable String encodeToBase64(String imagePath, int quality) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        if (bm == null) {
+            return null;
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
     class MyWebChromeClient extends WebChromeClient {
@@ -740,7 +778,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             e.printStackTrace();
         }
 
-        if (url.endsWith(".pdf")) {
+        if (url.endsWith(".pdf") && url.startsWith("http")) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse(decode(uri.toString().replace(GOOGLE_DOCS_PDF_URL, "")))
                     , "application/pdf");
@@ -806,8 +844,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
             if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
                 Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalUserPlatform.LOGOUT);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, true);
+                intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, false);
+                intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY, true);
                 startActivityForResult(intent, REQUEST_CODE_LOGOUT);
             } else {
                 startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);

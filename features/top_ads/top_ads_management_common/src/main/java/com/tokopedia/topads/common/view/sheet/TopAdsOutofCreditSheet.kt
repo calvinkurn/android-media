@@ -17,20 +17,27 @@ import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_create_bottom_sheet_insufficient_credit.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 private const val CLICK_TAMBAH_KREDIT_TOPADS = "click-tambah kredit topads"
 private const val TOPADS_OUT_CREDIT_BOTTOMSHEET = "out_of_credit_bottomsheet"
 
 class TopAdsOutofCreditSheet : BottomSheetUnify() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private var contentView: View? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun initChildLayout() {
-        val contentView = View.inflate(context, R.layout.topads_create_bottom_sheet_insufficient_credit, null)
+        contentView =
+            View.inflate(context, R.layout.topads_create_bottom_sheet_insufficient_credit, null)
         setChild(contentView)
         showCloseIcon = false
     }
@@ -41,32 +48,40 @@ class TopAdsOutofCreditSheet : BottomSheetUnify() {
     }
 
     private fun initView() {
-        ic_ilustration.setImageDrawable(view?.context?.getResDrawable(R.drawable.ill_isi_kredit_topads))
-        subtitle?.text = getString(R.string.topads_common_out_of_credit_subtitle)
-        btn_topup?.text = getString(R.string.topads_common_out_of_creadit_btn)
-        btn_topup?.setOnClickListener {
+        contentView?.findViewById<ImageUnify>(R.id.ic_ilustration)
+            ?.setImageDrawable(view?.context?.getResDrawable(R.drawable.ill_isi_kredit_topads))
+        contentView?.findViewById<Typography>(R.id.subtitle)?.text =
+            getString(R.string.topads_common_out_of_credit_subtitle)
+        contentView?.findViewById<UnifyButton>(R.id.btn_topup)?.text =
+            getString(R.string.topads_common_out_of_creadit_btn)
+        contentView?.findViewById<UnifyButton>(R.id.btn_topup)?.setOnClickListener {
             dismiss()
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TAMBAH_KREDIT_TOPADS, "")
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TAMBAH_KREDIT_TOPADS,
+                "")
+            val intent =
+                RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT)
             activity?.finish()
             startActivity(intent)
         }
-        dismissBS?.setOnClickListener {
+        contentView?.findViewById<UnifyButton>(R.id.dismissBS)?.setOnClickListener {
             dismiss()
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
+            val intent = RouteManager.getIntent(context,
+                ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
                 if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
-                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME,
+                        getSellerMigrationFeatureName(activity?.intent?.extras))
+                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA,
+                        getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
                 }
-                putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, TopAdsCommonConstant.PARAM_PRODUK_IKLAN)
+                putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD,
+                    TopAdsCommonConstant.PARAM_PRODUK_IKLAN)
             }
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
     }
 
-    fun show(
-            fragmentManager: FragmentManager, ) {
+    fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TOPADS_OUT_CREDIT_BOTTOMSHEET)
     }
 }

@@ -8,7 +8,7 @@ data class DataUiModel(
 		var globalSuccess: Boolean = false,
 		var success: Boolean = false,
 		var message: MessageUiModel = MessageUiModel(),
-		var promoCodeId: Int = -1,
+		var promoCodeId: String = "-1",
 		var codes: List<String> = emptyList(),
 		var titleDescription: String = "",
 		var discountAmount: Int = -1,

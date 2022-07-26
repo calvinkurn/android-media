@@ -51,7 +51,7 @@ class ThankYouPageAnalytics @Inject constructor(
         if (thanksPageData.pushGtm) {
             when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
                 MarketPlaceThankPage -> sendThankYouPageDataLoadEvent(thanksPageData)
-                else -> sendigitalThankYouPageDataLoadEvent(thanksPageData)
+                else -> senDigitalThankYouPageDataLoadEvent(thanksPageData)
             }
             appsFlyerPurchaseEvent(thanksPageData)
             sendBranchIOEvent(thanksPageData)
@@ -80,11 +80,11 @@ class ThankYouPageAnalytics @Inject constructor(
         })
     }
 
-    fun sendigitalThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
+    private fun senDigitalThankYouPageDataLoadEvent(thanksPageData: ThanksPageData) {
         this.thanksPageData = thanksPageData
         CoroutineScope(mainDispatcher).launchCatchError(block = {
             withContext(bgDispatcher) {
-                thanksPageData.thanksCustomization?.apply {
+                thanksPageData.customDataOther?.apply {
                     trackingData?.let {
                         processDataForGTM(it)
                     }

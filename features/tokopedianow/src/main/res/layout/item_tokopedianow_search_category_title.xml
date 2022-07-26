@@ -46,6 +46,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tokoNowSearchCategoryTitle"
         app:layout_goneMarginEnd="16dp"
         app:typographyType="body_3"
-        tools:text="Tiba dalam 15 menit" />
+        tools:text="Tiba dalam 20 menit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

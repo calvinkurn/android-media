@@ -55,6 +55,8 @@ data class ComponentData(
         val media: List<Media> = listOf(),
         @SerializedName("name")
         val name: String = "",
+        @SerializedName("parentName")
+        val parentName: String = "",
         @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Price = Price(),

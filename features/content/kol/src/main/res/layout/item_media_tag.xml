@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_Background"
     android:padding="16dp">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:ellipsize="end"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
@@ -68,7 +68,7 @@
         android:id="@+id/original_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_44"
+        android:textColor="@color/Unify_N700_44"
         android:singleLine="true"
         android:ellipsize="end"
         android:visibility="gone"
@@ -87,7 +87,7 @@
         android:id="@+id/price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/Yellow_Y500"
+        android:textColor="@color/Unify_Y500"
         android:singleLine="true"
         android:ellipsize="end"
         app:typographyType="heading_5"

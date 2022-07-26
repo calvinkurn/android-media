@@ -45,4 +45,5 @@
     <string name="autocomplete_suggestion_double_line_without_image_title">Cari \"keyword\"</string>
     <string name="autocomplete_suggestion_double_line_without_image_subtitle">di Tokopedia</string>
     <string name="content_desc_curated_campaign_image">image curated campaign</string>
+    <string name="suggestion_ad_text">Ad</string>
 </resources>

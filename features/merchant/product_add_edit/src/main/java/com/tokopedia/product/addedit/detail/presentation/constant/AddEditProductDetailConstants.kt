@@ -12,6 +12,7 @@ class AddEditProductDetailConstants {
         const val REQUEST_CODE_SHOP_LOCATION = 2
         const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 3
         const val REQUEST_CODE_SPECIFICATION = 4
+        const val REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT = 5
         const val REQUEST_CODE_CPL = 5
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_FULL_NAME = "CATEGORY_RESULT_FULL_NAME"
@@ -26,7 +27,6 @@ class AddEditProductDetailConstants {
         const val DEBOUNCE_DELAY_MILLIS = 500L
         const val MIN_PRODUCT_PRICE_LIMIT = 100
         const val MIN_PRODUCT_STOCK_LIMIT = 1
-        const val MAX_PRODUCT_STOCK_LIMIT = 999999
         const val MAX_MIN_ORDER_QUANTITY = 10000
         const val MIN_MIN_ORDER_QUANTITY = 1
         const val MIN_PREORDER_DURATION = 1

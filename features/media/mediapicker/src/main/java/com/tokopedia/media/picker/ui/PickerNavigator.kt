@@ -7,10 +7,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
-import com.tokopedia.picker.common.types.FragmentType
 import com.tokopedia.media.picker.ui.fragment.camera.CameraFragment
 import com.tokopedia.media.picker.ui.fragment.gallery.GalleryFragment
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
+import com.tokopedia.picker.common.types.FragmentType
 
 class PickerNavigator constructor(
     private val context: Context,

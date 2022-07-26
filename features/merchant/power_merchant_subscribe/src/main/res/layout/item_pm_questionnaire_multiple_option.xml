@@ -10,8 +10,9 @@
         android:id="@+id/tvPmQuestionnaireTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700"
-        app:typographyType="heading_4"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="Kenapa Anda ingin berhenti menjadi Power Merchant" />
 
     <androidx.recyclerview.widget.RecyclerView

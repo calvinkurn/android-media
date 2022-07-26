@@ -3,7 +3,7 @@
     <string name="catalog_marketprice">Kisaran Harga</string>
     <string name="catalog_spesification">Spesifikasi</string>
     <string name="catalog_description">Deskripsi</string>
-    <string name="catalog_search_product_count_text">Lihat %s produk pilihan</string>
+    <string name="catalog_search_product_count_text">%d Produk terkait</string>
     <string name="catalog_message_share_catalog">Klik link ini untuk menemukan catalog dari Tokopedia. </string>
     <string name="catalog_share_text_content">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia, Klik </string>
     <string name="catalog_detail_product">Detail Produk</string>
@@ -11,9 +11,9 @@
     <string name="catalog_lihat_selengkapnya_two_lines">Lihat \n Selengkapnya</string>
     <string name="catalog_apply_filter">Terapakan Filter</string>
     <string name="catalog_filter_text">Filter</string>
-    <string name="catalog_search_product_zero_count_text">Tidak ada produk yang sesuai</string>
-    <string name="catalog_no_products_title">Produk tidak ditemukan</string>
-    <string name="catalog_no_products_body">Coba ubah atau kurangi filter yang sedang aktif di ini:</string>
+    <string name="catalog_search_product_zero_count_text">Produk terkait</string>
+    <string name="catalog_no_products_title">Oops, belum ada produk terkait</string>
+    <string name="catalog_no_products_body">Nantikan produk ini di Tokopedia</string>
     <string name="catalog_product_comparasion">Perbandingan produk</string>
     <string name="catalog_video_widget_title">Tonton video ulasannya, yuk!</string>
     <string name="catalog_feature_not_available">tidak tersedia</string>
@@ -36,4 +36,6 @@
     <string name="catalog_cobi_cari_katalog_lain">Coba cari katalog lain,  ya</string>
     <string name="catalog_masih_belum">Masih belum ketemu yang cocok?</string>
     <string name="catalog_lainnya_disini">Cek katalog lainnya disini</string>
+    <string name="catalog_product_count_view_text">%1$d Produk terkait</string>
+    <string name="catalog_product_count_view_text_empty">Produk terkait</string>
 </resources>

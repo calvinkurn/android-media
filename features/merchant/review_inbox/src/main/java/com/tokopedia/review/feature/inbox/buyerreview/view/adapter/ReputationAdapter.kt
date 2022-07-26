@@ -36,8 +36,8 @@ class ReputationAdapter private constructor(
 
     interface ReputationListener {
         fun onReputationSmileyClicked(name: String, value: String)
-        fun onGoToShopDetail(shopId: Long)
-        fun onGoToPeopleProfile(userId: Long)
+        fun onGoToShopDetail(shopId: String)
+        fun onGoToPeopleProfile(userId: String)
     }
 
     inner class ViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {

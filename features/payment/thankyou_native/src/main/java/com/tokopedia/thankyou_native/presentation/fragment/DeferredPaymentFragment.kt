@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -82,11 +81,11 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
                 )
             }
         }
-        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization.customWtvText.isNullOrBlank()) {
+        if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.wtvText.isNullOrBlank()) {
             tvCheckPaymentStatusTitle.text =
                 getString(R.string.thank_processing_payment_check_order)
         } else {
-            tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization.customWtvText
+            tvCheckPaymentStatusTitle.text = thanksPageData.customDataMessage.wtvText
         }
 
 

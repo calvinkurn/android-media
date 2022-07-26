@@ -6,20 +6,22 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/layout_lvl1"
-    android:paddingBottom="@dimen/layout_lvl1">
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icPmBenefitItem"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4" />
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:unify_image_corner_radius="0"
+        tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmBenefitItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
         android:textColor="@color/Unify_N700"
-        app:typographyType="body_2"
+        app:typographyType="body_3"
         tools:text="Akses ke Rekening Premium, Saldo Prioritas, dan akses prioritas ke Modal Toko" />
 </LinearLayout>

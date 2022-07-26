@@ -53,8 +53,9 @@ import kotlin.math.abs
 class MixLeftComponentViewHolder (itemView: View,
                                   val mixLeftComponentListener: MixLeftComponentListener?,
                                   val homeComponentListener: HomeComponentListener?,
-                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null)
-    : AbstractViewHolder<MixLeftDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
+                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
+                                  private val cardInteraction: Boolean = false
+) : AbstractViewHolder<MixLeftDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
 
     private lateinit var adapter: MixLeftAdapter
 
@@ -79,6 +80,8 @@ class MixLeftComponentViewHolder (itemView: View,
         val LAYOUT = R.layout.global_dc_mix_left
         val RECYCLER_VIEW_ID = R.id.rv_product
         private const val FPM_MIX_LEFT = "home_mix_left"
+        private const val DISTANCE_LEFT_RATIO = 0.2f
+        private const val ITEM_WIDTH_RATIO = 0.80f
     }
 
     override fun bind(element: MixLeftDataModel) {
@@ -133,6 +136,7 @@ class MixLeftComponentViewHolder (itemView: View,
         containerMixLeft = itemView.findViewById(R.id.container_mixleft)
     }
 
+    @SuppressLint("ResourcePackage")
     private fun setupBackground(channel: ChannelModel) {
         if (channel.channelBanner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
@@ -177,7 +181,7 @@ class MixLeftComponentViewHolder (itemView: View,
         recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, channel.channelBanner.applink))
         val productDataList = convertDataToProductData(channel)
@@ -227,12 +231,12 @@ class MixLeftComponentViewHolder (itemView: View,
                     val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
                     firstView?.let {
                         val distanceFromLeft = it.left
-                        val translateX = distanceFromLeft * 0.2f
+                        val translateX = distanceFromLeft * DISTANCE_LEFT_RATIO
                         if (translateX <= 0) {
                             image.translationX = translateX
                             if (distanceFromLeft <= 0) {
                                 val itemSize = it.width.toFloat()
-                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.80f)
+                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * ITEM_WIDTH_RATIO)
                                 image.alpha = 1 - alpha
                             }
                         } else {
@@ -249,7 +253,7 @@ class MixLeftComponentViewHolder (itemView: View,
         val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(CarouselProductCardDataModel(
-                    ChannelModelMapper.mapToProductCardModel(element),
+                    ChannelModelMapper.mapToProductCardModel(element, cardInteraction),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,

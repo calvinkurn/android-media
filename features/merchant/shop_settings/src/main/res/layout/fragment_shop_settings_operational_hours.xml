@@ -86,6 +86,7 @@
                         app:typographyWeight="bold"
                         android:text="@string/shop_operational_hour_is_on_holiday"
                         android:layout_marginStart="12dp"
+                        android:translationZ="1dp"
                         android:textColor="@color/Unify_N700_96"
                         app:layout_constraintLeft_toRightOf="@id/img_shop_holiday"
                         app:layout_constraintBottom_toTopOf="@id/tv_holiday_end"
@@ -97,23 +98,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:typographyType="body_3"
-                        android:layout_toEndOf="@id/img_shop_holiday"
-                        android:layout_below="@id/tv_is_on_holiday_text"
                         app:typographyWeight="reguler"
                         android:textColor="@color/Unify_N700_68"
                         tools:text="sampai 10/10/2021"
                         app:layout_constraintLeft_toLeftOf="@id/tv_is_on_holiday_text"
                         app:layout_constraintTop_toBottomOf="@id/tv_is_on_holiday_text"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginBottom="4dp"
                         />
 
                     <com.tokopedia.unifycomponents.ImageUnify
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="132dp"
+                        android:layout_height="48dp"
+                        app:unify_image_corner_radius="0"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:src="@drawable/bg_ongoing_holiday_half"
-                        />
+                        android:src="@drawable/bg_ongoing_holiday_half" />
 
                     <com.tokopedia.unifycomponents.UnifyButton
                         android:id="@+id/btn_open_shop"
@@ -169,7 +169,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
                     android:text="@string/shop_operational_hour_desc_set_hour"
                     app:typographyType="body_3"
                     android:textColor="@color/Unify_N700_68"
@@ -219,7 +219,7 @@
                 android:id="@+id/shop_holiday_schedule_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="22dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp">
 
@@ -235,9 +235,8 @@
                     android:id="@+id/ops_hour_img_schedule_action"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    app:icon_name="MENU_KEBAB_VERTICAL"
                     android:layout_alignParentEnd="true"
-                    />
+                    app:icon_name="MENU_KEBAB_VERTICAL" />
 
             </RelativeLayout>
 

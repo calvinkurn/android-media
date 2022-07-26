@@ -37,7 +37,7 @@ import javax.inject.Inject
 
 class SellerHomeViewModel @Inject constructor(
     private val userSession: Lazy<UserSessionInterface>,
-    private val getTickerUseCase: Lazy<GetTickerUseCase>,
+    private val getTickerUseCase: Lazy<GetSellerHomeTickerUseCase>,
     private val getLayoutUseCase: Lazy<GetLayoutUseCase>,
     private val getShopLocationUseCase: Lazy<GetShopLocationUseCase>,
     private val getCardDataUseCase: Lazy<GetCardDataUseCase>,
@@ -151,9 +151,32 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getTicker() {
         launchCatchError(block = {
-            val params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
-            getTickerUseCase.get().params = params
-            getDataFromUseCase(getTickerUseCase.get(), _homeTicker)
+            val useCase = getTickerUseCase.get()
+            try {
+                _homeTicker.value = Success(
+                    useCase.execute(
+                        shopId = userSession.get().shopId,
+                        page = TICKER_PAGE_NAME,
+                        isFromCache = false
+                    )
+                )
+            } catch (networkException: Exception) {
+                if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
+                    try {
+                        _homeTicker.value = Success(
+                            useCase.execute(
+                                shopId = userSession.get().shopId,
+                                page = TICKER_PAGE_NAME,
+                                isFromCache = true
+                            )
+                        )
+                    } catch (_: Exception) {
+                        throw networkException
+                    }
+                } else {
+                    throw networkException
+                }
+            }
         }, onError = {
             _homeTicker.value = Fail(it)
         })

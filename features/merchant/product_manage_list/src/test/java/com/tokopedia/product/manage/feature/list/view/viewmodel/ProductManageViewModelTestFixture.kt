@@ -5,6 +5,8 @@ import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditSt
 import com.tokopedia.product.manage.common.feature.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
+import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
@@ -17,6 +19,7 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -81,6 +84,15 @@ open class ProductManageViewModelTestFixture {
     @RelaxedMockK
     lateinit var tickerStaticDataProvider: TickerStaticDataProvider
 
+    @RelaxedMockK
+    lateinit var getUploadStatusUseCase: GetUploadStatusUseCase
+
+    @RelaxedMockK
+    lateinit var clearUploadStatusUseCase: ClearUploadStatusUseCase
+
+    @RelaxedMockK
+    lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
+
     protected lateinit var viewModel: ProductManageViewModel
 
     @Before
@@ -104,6 +116,9 @@ open class ProductManageViewModelTestFixture {
                 editProductVariantUseCase,
                 getProductVariantUseCase,
                 getAdminInfoShopLocationUseCase,
+                getUploadStatusUseCase,
+                clearUploadStatusUseCase,
+                getMaxStockThresholdUseCase,
                 tickerStaticDataProvider,
                 CoroutineTestDispatchersProvider
         )

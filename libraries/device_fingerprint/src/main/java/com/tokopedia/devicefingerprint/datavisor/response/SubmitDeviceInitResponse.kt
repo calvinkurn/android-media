@@ -4,7 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class SubmitDeviceInitResponse(
         @SerializedName("subDvcIntlEvent") val subDvcIntlEvent: SubDvcIntlEvent
-)
+) {
+        fun isError() = subDvcIntlEvent.isError
+}
 
 data class SubDvcIntlEvent(
         @SerializedName("is_error") val isError: Boolean,

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-android:layout_marginTop="14dp"
 android:orientation="vertical"
 android:id="@+id/transaction_root"
 android:layout_width="match_parent"
@@ -13,9 +12,8 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         android:layout_width="match_parent"
         android:id="@+id/localload_transaction"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         app:unify_local_load_title="@string/error_state_transaction_title"
         app:unify_local_load_description="@string/error_state_transaction_description"/>
 </LinearLayout>

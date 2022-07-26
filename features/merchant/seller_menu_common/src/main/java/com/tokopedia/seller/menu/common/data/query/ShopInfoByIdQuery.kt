@@ -20,7 +20,7 @@ object ShopInfoByIdQuery: GqlQueryInterface {
               shopInfoByID(
                 input: {
                   shopIDs: [${'$'}shopId]
-                  fields: ["other-goldos", "shopstats-limited", "shop-snippet", "location", "core", "branch-link"]
+                  fields: ["other-goldos", "shopstats-limited", "shop-snippet", "location", "core", "branch-link","status"]
                 }
               ) {
                 result {
@@ -45,6 +45,12 @@ object ShopInfoByIdQuery: GqlQueryInterface {
                     tagLine
                     url
                   }
+                  statusInfo {
+                    statusTitle
+                    statusMessage
+                    tickerType
+                    shopStatus
+                  }                  
                 }
               }
             }

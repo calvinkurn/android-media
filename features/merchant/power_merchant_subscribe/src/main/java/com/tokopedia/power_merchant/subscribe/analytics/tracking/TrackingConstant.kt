@@ -39,11 +39,15 @@ object TrackingConstant {
     const val PM_PRO_ACTIVATION_PAGE = "PM Pro Activation Page"
 
     const val IMPRESSION_PM_PRO_LEARN_MORE = "impression pelajari selengkapnya PM Pro"
+    const val IMPRESSION_FEE_SERVICE = "impression biaya layanan"
+    const val IMPRESSION_DETAIL_KEANGGOTAAN_PAGE = "impression progress bar - detail keanggotaan"
 
     const val ACTION_CLICK_TICKBOX_TNC = "click tickbox term & condition"
     const val ACTION_CLICK_UPGRADE_POWER_MERCHANT_PRO = "click upgrade power merchant pro"
-    const val ACTION_CLICK_INTERESTED_TO_REGISTER = "click interested to register button power merchant pro"
-    const val ACTION_CLICK_LEARN_MORE_SHOP_PERFORMANCE_POP_UP = "pop up learn more on shop performance"
+    const val ACTION_CLICK_INTERESTED_TO_REGISTER =
+        "click interested to register button power merchant pro"
+    const val ACTION_CLICK_LEARN_MORE_SHOP_PERFORMANCE_POP_UP =
+        "pop up learn more on shop performance"
     const val ACTION_CLICK_POP_UP_IMPROVE_NUMBER_OF_ORDER = "pop up improve your number of order"
     const val ACTION_CLICK_POP_UP_IMPROVE_NIV = "pop up improve your TIV"
     const val ACTION_CLICK_ADD_ONE_PRODUCT_POP_UP = "click add 1 product on pop up"
@@ -57,13 +61,27 @@ object TrackingConstant {
     const val ACTION_CLICK_ON_POWER_MERCHANT_BENEFIT = "click on power merchant benefit"
     const val ACTION_CLICK_TIPS_TO_IMPROVE_SHOP_SCORE = "click tips to improve shop score"
     const val ACTION_POPUP_SUCCESS_REGISTER = "pop up success register pm"
-    const val ACTION_POPUP_ADD_NEW_PRODUCT = "pop up add new product"
-    const val ACTION_CLICK_TAB_POWER_MERCHANT_PRO = "click power merchant pro tab"
-    const val ACTION_POPUP_UNABLE_TO_REGISTER_SHOP_MODERATION = "pop up unable to register shop moderation"
+    const val ACTION_POPUP_ADD_NEW_PRODUCT = "click add product on pop up minimum product"
+    const val ACTION_CLICK_TAB_POWER_MERCHANT = "click power merchant tab"
+    const val ACTION_POPUP_UNABLE_TO_REGISTER_SHOP_MODERATION =
+        "pop up unable to register shop moderation"
     const val ACTION_CLICK_ACKNOWLEDGE_SHOP_MODERATION = "click acknowledge shop moderation"
     const val ACTION_CLICK_STOP_PM_BECOME_RM = "click stop power merchant - become rm"
     const val ACTION_CLICK_STOP_PM_BECOME_PM = "click stop power merchant - become pm"
     const val ACTION_CLICK_STOP_PM_CONFIRM_TO_STOP = "stop power merchant - confirm to stop"
+    const val ACTION_CLICK_DETAIL_TERM_MEMBERSHIP = "click lihat detail - syarat keanggotaan"
+    const val ACTION_CLICK_LEARN_MORE_PM_BENEFIT =
+        "click pelajari power merchant selengkapnya - keuntungan"
+    const val ACTION_CLICK_LEARN_MORE_PM = "click pelajari selengkapnya PM Pro"
+    const val ACTION_CLICK_SEE_CATEGORY = "click lihat kategori"
+    const val ACTION_CLICK_PROGRESS_BAR = "click progress bar"
+    const val ACTION_CLICK_FEE_SERVICE = "click biaya layanan"
+    const val ACTION_CLICK_DETAIL_KEANGGOTAAN_PAGE = "click tab progress bar - detail keanggotaan"
+    const val ACTION_CLICK_SHOP_PERFORMANCE = "click performa toko - detail keanggotaan"
+    const val ACTION_CLICK_TOOLTIP_SHOP_LEVEL = "click tooltip level toko"
+
+    const val EVENT_CLICK_PG = "clickPG"
+    const val VIEW_PG_IRIS = "viewPGIris"
 
     fun getPowerMerchantCategory(): String = if (GlobalConfig.isSellerApp()) {
         "$CATEGORY_SELLER_APP - $POWER_MERCHANT_PRO"

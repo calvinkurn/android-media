@@ -36,6 +36,10 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
 
     }
 
+    public void initialize(UserSession mUserSession) {
+        this.userSession = mUserSession;
+    }
+
     @Override
     public void onDestroy() {
         postUpdateDealLikesUseCase.unsubscribe();
@@ -76,12 +80,12 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
                     DataResponse dataResponse = restResponse.getData();
                     LikeUpdateResult updateResult = (LikeUpdateResult) dataResponse.getData();
                     if (updateResult.isLiked()) {
-                        if (!(Utils.getSingletonInstance().containsLikedEvent(updateResult.getProductId()) > 0)) {
+                        if (!(Utils.getSingletonInstance().containsLikedEvent(updateResult.getProductIdInInt()) > 0)) {
                             Utils.getSingletonInstance().addLikedEvent(id, likes);
                         }
                     } else {
-                        if (Utils.getSingletonInstance().containsLikedEvent(updateResult.getProductId()) > 0) {
-                            Utils.getSingletonInstance().removeLikedEvent(updateResult.getProductId());
+                        if (Utils.getSingletonInstance().containsLikedEvent(updateResult.getProductIdInInt()) > 0) {
+                            Utils.getSingletonInstance().removeLikedEvent(updateResult.getProductIdInInt());
                         }
                     }
 

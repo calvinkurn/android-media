@@ -8,6 +8,7 @@ import android.view.WindowManager
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -20,23 +21,30 @@ import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsRecomGroupBsAdapter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_choose_group_insight_bottomsheet.*
+import com.tokopedia.unifycomponents.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.Typography
 
 const val DEBOUNCE_CONST: Long = 200
 
 class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
+
+    private lateinit var contentSwitch: ContentSwitcherUnify
+    private lateinit var groupNameInput: TextFieldUnify
+    private lateinit var search: SearchBarUnify
+    private lateinit var emptyText: Typography
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var submitButton: UnifyButton
+
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
     private lateinit var adapter: TopadsRecomGroupBsAdapter
     var onItemClick: ((groupIdAndType: Pair<String, String>) -> Unit)? = null
     var onNewGroup: ((name: String) -> Unit)? = null
-    var groupList: List<GroupListDataItem> = listOf()
-    val job = SupervisorJob()
-    val coroutineScope = CoroutineScope(Dispatchers.Main + job)
-
+    private var groupList: List<GroupListDataItem> = listOf()
+    private val job = SupervisorJob()
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -44,16 +52,26 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         val childView =
             View.inflate(context, R.layout.topads_choose_group_insight_bottomsheet, null)
         setChild(childView)
+        initView(childView)
         setSheetValues()
         adapter = TopadsRecomGroupBsAdapter(::onGroupSelect)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
+    private fun initView(view: View) {
+        contentSwitch = view.findViewById(R.id.contentSwitch)
+        groupNameInput = view.findViewById(R.id.group_name_input)
+        search = view.findViewById(R.id.search)
+        emptyText = view.findViewById(R.id.emptyText)
+        recyclerView = view.findViewById(R.id.recyclerView)
+        submitButton = view.findViewById(R.id.submit_butt)
+    }
+
     private fun initialState() {
-        group_name_input?.textFieldInput?.text?.clear()
+        groupNameInput?.textFieldInput?.text?.clear()
         setEmptyNameError()
         if (groupList.isEmpty()) {
-            group_name_input.visible()
+            groupNameInput.visible()
             contentSwitch?.gone()
             search.gone()
             recyclerView?.gone()
@@ -74,7 +92,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     }
 
     private fun onGroupSelect() {
-        submit_butt?.isEnabled = true
+        submitButton?.isEnabled = true
     }
 
     fun initInjector() {
@@ -92,17 +110,17 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         setGroupName()
         onButtonSubmit()
         contentSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            group_name_input?.textFieldInput?.text?.clear()
+            groupNameInput?.textFieldInput?.text?.clear()
             setEmptyNameError()
             if (!isChecked) {
-                submit_butt?.isEnabled = adapter.isChecked() != -1
-                group_name_input.gone()
+                submitButton?.isEnabled = adapter.isChecked() != -1
+                groupNameInput.gone()
                 search.visible()
                 recyclerView.visible()
             } else {
-                submit_butt?.isEnabled = false
-                group_name_input?.requestFocus()
-                group_name_input.visible()
+                submitButton?.isEnabled = false
+                groupNameInput?.requestFocus()
+                groupNameInput.visible()
                 search.gone()
                 recyclerView.gone()
             }
@@ -110,11 +128,11 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     }
 
     private fun onButtonSubmit() {
-        submit_butt?.setOnClickListener {
-            submit_butt?.isLoading = true
+        submitButton?.setOnClickListener {
+            submitButton?.isLoading = true
             if (contentSwitch.isChecked || !contentSwitch.isVisible)
                 onNewGroup?.invoke(
-                    group_name_input?.textFieldInput?.text?.toString() ?: ""
+                    groupNameInput?.textFieldInput?.text?.toString() ?: ""
                 ) else
                 onItemClick?.invoke(
                     adapter.getCheckedPosition()
@@ -135,7 +153,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     }
 
     private fun setGroupName() {
-        group_name_input?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        groupNameInput?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {}
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -159,25 +177,25 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     }
 
     fun setEmptyNameError() {
-        group_name_input?.setError(true)
-        submit_butt?.isEnabled = false
-        group_name_input?.setMessage(getString(R.string.topads_dash_name_empty_error))
+        groupNameInput?.setError(true)
+        submitButton?.isEnabled = false
+        groupNameInput?.setMessage(getString(R.string.topads_dash_name_empty_error))
     }
 
     fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName) {
         if (data.errors.isEmpty()) {
-            group_name_input?.setError(false)
-            submit_butt?.isEnabled = true
-            group_name_input?.setMessage("")
+            groupNameInput?.setError(false)
+            submitButton?.isEnabled = true
+            groupNameInput?.setMessage("")
         } else {
             onErrorGroupName(data.errors[0].detail)
         }
     }
 
     private fun onErrorGroupName(error: String) {
-        group_name_input?.setError(true)
-        submit_butt?.isEnabled = false
-        group_name_input?.setMessage(error)
+        groupNameInput?.setError(true)
+        submitButton?.isEnabled = false
+        groupNameInput?.setMessage(error)
     }
 
     private fun getData() {
@@ -190,9 +208,9 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     private fun onSuccessGroupList(groupList: List<GroupListDataItem>) {
         if (groupList.isEmpty()) {
             emptyText.visible()
-            submit_butt?.isEnabled = false
+            submitButton?.isEnabled = false
         } else {
-            submit_butt?.isEnabled = true
+            submitButton?.isEnabled = true
             emptyText.gone()
             val groupIds: List<String> = groupList.map {
                 it.groupId
@@ -207,7 +225,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     }
 
     fun show(
-        fragmentManager: FragmentManager, groupList: List<GroupListDataItem>
+        fragmentManager: FragmentManager, groupList: List<GroupListDataItem>,
     ) {
         this.groupList = groupList
         show(fragmentManager, TOPADS_BOTTOM_SHEET_TAG)

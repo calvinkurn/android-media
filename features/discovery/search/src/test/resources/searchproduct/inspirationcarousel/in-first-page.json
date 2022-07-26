@@ -1096,7 +1096,13 @@
                 "rating": 4,
                 "count_review": 100,
                 "url": "",
-                "applink": "tokopedia://product/12345"
+                "applink": "tokopedia://product/12345",
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                }
               }
             ]
           },
@@ -1114,7 +1120,13 @@
                 "rating": 4,
                 "count_review": 100,
                 "url": "",
-                "applink": "tokopedia://product/12345"
+                "applink": "tokopedia://product/12345",
+                "ads": {
+                  "id": "123456",
+                  "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/",
+                  "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/",
+                  "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/"
+                }
               }
             ]
           },
@@ -1132,7 +1144,13 @@
                 "rating": 4,
                 "count_review": 100,
                 "url": "",
-                "applink": "tokopedia://product/12345"
+                "applink": "tokopedia://product/12345",
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                }
               }
             ]
           }
@@ -1174,6 +1192,12 @@
                 ],
                 "shop": {
                   "city": "Jakarta Pusat"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               },
               {
@@ -1198,6 +1222,12 @@
                 ],
                 "shop": {
                   "city": "Jakarta Pusat"
+                },
+                "ads": {
+                  "id": "123456",
+                  "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/",
+                  "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/",
+                  "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/"
                 }
               },
               {
@@ -1222,6 +1252,12 @@
                 ],
                 "shop": {
                   "city": "Jakarta Pusat"
+                },
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
                 }
               }
             ]
@@ -1251,7 +1287,13 @@
                 "rating": 4,
                 "count_review": 100,
                 "url": "",
-                "applink": "tokopedia://product/12345"
+                "applink": "tokopedia://product/12345",
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                }
               },
               {
                 "id": "12345",
@@ -1262,7 +1304,13 @@
                 "rating": 4,
                 "count_review": 100,
                 "url": "",
-                "applink": "tokopedia://product/12345"
+                "applink": "tokopedia://product/12345",
+                "ads": {
+                  "id": "123456",
+                  "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/",
+                  "productWishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/",
+                  "productViewUrl": "https://ta.tokopedia.com/promo/v1/views/"
+                }
               },
               {
                 "id": "12345",
@@ -1273,7 +1321,13 @@
                 "rating": 4,
                 "count_review": 100,
                 "url": "",
-                "applink": "tokopedia://product/12345"
+                "applink": "tokopedia://product/12345",
+                "ads": {
+                  "id": "",
+                  "productClickUrl": "",
+                  "productWishlistUrl": "",
+                  "productViewUrl": ""
+                }
               }
             ]
           }

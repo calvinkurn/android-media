@@ -136,6 +136,7 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
+        catalogProductCardListener.setLastAttachItemPosition(holder.adapterPosition)
         if (holder is CatalogListProductViewHolder) {
             val position = holder.adapterPosition
             if (!viewMap.containsKey(position)) {
@@ -153,6 +154,11 @@ class CatalogProductNavListAdapter(private val productTypeFactory: CatalogTypeFa
                 catalogProductCardListener.onProductImpressed(item,holder.adapterPosition)
             }
         }
+    }
+
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewDetachedFromWindow(holder)
+        catalogProductCardListener.setLastDetachedItemPosition(holder.adapterPosition)
     }
 
     fun onPause() {

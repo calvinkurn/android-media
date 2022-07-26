@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD_SECURE
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
 import com.tokopedia.chat_common.domain.pojo.Contact
@@ -61,7 +62,7 @@ open class GetExistingChatMapper @Inject constructor() {
         return ChatRoomHeaderUiModel(
                 interlocutor.name,
                 interlocutor.tag,
-                interlocutor.userId.toString(),
+                interlocutor.userId,
                 interlocutor.role,
                 ChatRoomHeaderUiModel.Companion.MODE_DEFAULT_GET_CHAT,
                 "",
@@ -85,7 +86,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 val time = chatItemPojoByDate.time
                 for (chatItemPojoByDateByTime in chatItemPojoByDate.replies) {
                     if (hasAttachment(chatItemPojoByDateByTime)) {
-                        listChat.add(mapAttachment(chatItemPojoByDateByTime))
+                        val attachmentIds = getAttachmentIds(pojo.chatReplies.attachmentIds)
+                        listChat.add(mapAttachment(chatItemPojoByDateByTime, attachmentIds))
                     } else {
                         listChat.add(convertToMessageViewModel(chatItemPojoByDateByTime)
                         )
@@ -96,18 +98,31 @@ open class GetExistingChatMapper @Inject constructor() {
         return listChat
     }
 
+    fun getAttachmentIds(attachmentIds: String): List<String> {
+        return if (attachmentIds.isEmpty()) {
+            listOf()
+        } else {
+            attachmentIds.split(",").toList()
+        }
+    }
+
     open fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return MessageUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .build()
     }
 
-    open fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
-            TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(chatItemPojoByDateByTime)
-            TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
+    open fun mapAttachment(
+        chatItemPojoByDateByTime: Reply,
+        attachmentIds: List<String>
+    ): Visitable<*> {
+        return when (chatItemPojoByDateByTime.attachment.type.toString()) {
+            TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(chatItemPojoByDateByTime, attachmentIds)
+            TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime, TYPE_IMAGE_UPLOAD)
+            TYPE_IMAGE_UPLOAD_SECURE ->
+                convertToImageUpload(chatItemPojoByDateByTime, TYPE_IMAGE_UPLOAD_SECURE)
             TYPE_IMAGE_ANNOUNCEMENT -> convertToImageAnnouncement(chatItemPojoByDateByTime)
-            TYPE_INVOICE_SEND -> convertToInvoiceSent(chatItemPojoByDateByTime)
+            TYPE_INVOICE_SEND -> convertToInvoiceSent(chatItemPojoByDateByTime, attachmentIds)
             else -> convertToFallBackModel(chatItemPojoByDateByTime)
         }
     }
@@ -144,45 +159,61 @@ open class GetExistingChatMapper @Inject constructor() {
             .build()
     }
 
-    private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    private fun convertToImageUpload(
+        chatItemPojoByDateByTime: Reply,
+        attachmentType: String
+    ): Visitable<*> {
         val pojoAttribute = gson.fromJson(
-            chatItemPojoByDateByTime.attachment?.attributes,
+            chatItemPojoByDateByTime.attachment.attributes,
             ImageUploadAttributes::class.java
         )
         return ImageUploadUiModel.Builder()
+            .withAttachmentType(attachmentType)
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .withImageUrl(pojoAttribute.imageUrl)
             .withImageUrlThumbnail(pojoAttribute.thumbnail)
+            .withImageSecureUrl(pojoAttribute.imageUrlSecure)
             .build()
     }
 
-    open fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    open fun convertToProductAttachment(
+        chatItemPojoByDateByTime: Reply,
+        attachmentIds: List<String>
+    ): Visitable<*> {
         val pojoAttribute = gson.fromJson(
-            chatItemPojoByDateByTime.attachment?.attributes,
+            chatItemPojoByDateByTime.attachment.attributes,
             ProductAttachmentAttributes::class.java
         )
         val canShowFooter = canShowFooterProductAttachment(
             chatItemPojoByDateByTime.isOpposite, chatItemPojoByDateByTime.role
         )
+        val needSync = attachmentIds.contains(chatItemPojoByDateByTime.attachment.id)
         if (pojoAttribute.isBannedProduct()) {
             return BannedProductAttachmentUiModel.Builder()
                 .withResponseFromGQL(chatItemPojoByDateByTime)
+                .withNeedSync(needSync)
                 .withProductAttributesResponse(pojoAttribute)
                 .withCanShowFooter(canShowFooter)
                 .build()
         }
         return ProductAttachmentUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withNeedSync(needSync)
             .withProductAttributesResponse(pojoAttribute)
             .withCanShowFooter(canShowFooter)
             .build()
     }
 
-    private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentUiModel {
-        val invoiceAttributes = pojo.attachment?.attributes
+    private fun convertToInvoiceSent(
+        pojo: Reply,
+        attachmentIds: List<String>
+    ): AttachInvoiceSentUiModel {
+        val invoiceAttributes = pojo.attachment.attributes
         val invoiceSentPojo = gson.fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
+        val needSync = attachmentIds.contains(pojo.attachment.id)
         return AttachInvoiceSentUiModel.Builder()
             .withResponseFromGQL(pojo)
+            .withNeedSync(needSync)
             .withInvoiceAttributesResponse(invoiceSentPojo.invoiceLink)
             .build()
     }

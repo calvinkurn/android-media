@@ -8,13 +8,14 @@
     android:visibility="gone"
     tools:visibility="visible">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmerShcTitle"
         android:layout_width="@dimen/shc_dimen_120dp"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_corner_radius="5dp"
+        app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,22 +36,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="@dimen/shc_dimen_80dp"
                 android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/shc_dimen_10dp"
-                app:corners="10"
+                app:loader_corner_radius="5dp"
+                app:loader_type="rect"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="@dimen/shc_dimen_110dp"
                 android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl1"
                 android:layout_marginBottom="@dimen/layout_lvl3"
-                app:corners="10"
+                app:loader_corner_radius="5dp"
+                app:loader_type="rect"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
@@ -71,22 +74,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="@dimen/shc_dimen_80dp"
                 android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/shc_dimen_10dp"
-                app:corners="10"
+                app:loader_corner_radius="5dp"
+                app:loader_type="rect"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:layout_width="@dimen/shc_dimen_110dp"
                 android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginStart="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl1"
                 android:layout_marginBottom="@dimen/layout_lvl3"
-                app:corners="10"
+                app:loader_corner_radius="5dp"
+                app:loader_type="rect"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>

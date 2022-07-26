@@ -1,14 +1,12 @@
 package com.tokopedia.digital_product_detail.presentation.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -22,9 +20,9 @@ import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
-import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
-import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
@@ -37,13 +35,13 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.L
 import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagihanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
-import com.tokopedia.digital_product_detail.domain.model.AutoCompleteModel
-import com.tokopedia.digital_product_detail.domain.model.FavoriteChipModel
-import com.tokopedia.digital_product_detail.domain.model.PrefillModel
-import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
+import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
@@ -64,7 +62,9 @@ import com.tokopedia.recharge_component.listener.ClientNumberSortFilterListener
 import com.tokopedia.recharge_component.listener.RechargeSimplifyWidgetListener
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.InputNumberActionType
-import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -149,7 +149,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 }
 
                 override fun onKeyboardHidden() {
-                    binding?.rechargePdpTagihanListrikClientNumberWidget?.setClearable()
+                    // do nothing
                 }
             })
         }
@@ -212,7 +212,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                         it.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
                         viewModel.operatorData.attributes.name,
-                        it.data.priceProduct
+                        it.data.priceProduct,
+                        it.data.channelId,
                     )
                     navigateToCart(it.data.categoryId)
                 }
@@ -230,11 +231,10 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
                 setLoading(false)
+                showClearIcon()
                 if (msg.first.isEmpty()) {
-                    showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideIndicatorIcon()
                     setErrorInputField(msg.first)
                     if (msg.second) {
                         showErrorToaster(MessageErrorException(msg.first))
@@ -279,7 +279,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
                 inputNumberActionType = InputNumberActionType.NOTHING
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             }
         }
 
@@ -382,11 +382,11 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             } else {
                 if (isInputFieldEmpty()) {
                     setContactName(prefill.clientName)
-                    setInputNumber(prefill.clientNumber, true)
+                    setInputNumber(prefill.clientNumber)
                 }
             }
         }
@@ -659,7 +659,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             setContactName(clientName)
-            setInputNumber(clientNumber, true)
+            setInputNumber(clientNumber)
         }
     }
 
@@ -765,21 +765,16 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     }
 
     override fun isKeyboardShown(): Boolean {
-        context?.let {
-            val inputMethodManager =
-                it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            return inputMethodManager.isAcceptingText
-        }
-        return false
+        return keyboardWatcher.isKeyboardOpened
     }
 
     //endregion
 
     //region AutoCompleteListener
 
-    override fun onClickAutoComplete(isFavoriteContact: Boolean) {
+    override fun onClickAutoComplete(favorite: TopupBillsAutoCompleteContactModel) {
         inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
-        if (isFavoriteContact) {
+        if (favorite.name.isNotEmpty()) {
             digitalPDPAnalytics.clickFavoriteContactAutoComplete(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 viewModel.operatorData.attributes.name,
@@ -815,7 +810,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickFilterChip(isLabeled: Boolean, operatorId: String) {
+    override fun onClickFilterChip(isLabeled: Boolean, favorite: RechargeClientNumberChipModel) {
         inputNumberActionType = InputNumberActionType.CHIP
         if (isLabeled) {
             digitalPDPAnalytics.clickFavoriteContactChips(
@@ -904,7 +899,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                     val scanResult = data.getStringExtra(DigitalPDPConstant.EXTRA_QR_PARAM)
                     if (!scanResult.isNullOrEmpty()) {
                         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
-                            setInputNumber(scanResult, true)
+                            setInputNumber(scanResult)
                         }
                     }
                 }

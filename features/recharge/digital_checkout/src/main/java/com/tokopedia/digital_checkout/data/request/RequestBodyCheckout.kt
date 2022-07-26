@@ -82,9 +82,11 @@ data class RequestBodyCheckout(
             @SerializedName("transaction_type")
             @Expose
             var transactionType: String = "",
+            @SuppressLint("Invalid Data Type")
             @SerializedName("tier_id")
             @Expose
             var tierId: Int = 0,
+            @SuppressLint("Invalid Data Type")
             @SerializedName("user_id")
             @Expose
             var userId: Long = 0,

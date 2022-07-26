@@ -76,15 +76,6 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $
             topContent{
                 topURL
             }
-            address {
-                id
-                name
-                address
-                area
-                email
-                phone
-                fax
-            }
             shopStats {
                 productSold
                 totalTx

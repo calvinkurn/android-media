@@ -25,4 +25,8 @@ interface CatalogProductCardListener {
 
     fun onCatalogForYouImpressed(model : CatalogForYouModel, adapterPosition: Int){}
 
+    fun setLastDetachedItemPosition(adapterPosition: Int) {}
+
+    fun setLastAttachItemPosition(adapterPosition: Int) {}
+
 }

@@ -35,22 +35,7 @@ internal object StockReminderQuery {
             "      product_id\n" +
             "      warehouse_id\n" +
             "      threshold    \n" +
-            "    }\n" +
-            "  }\n" +
-            "}"
-
-    const val UPDATE_QUERY = "mutation imsUpdateStockAlertThreshold(\$input: StockAlertThresholdRequest!){\n" +
-            "  IMSUpdateStockAlertThreshold(input: \$input){\n" +
-            "    header{\n" +
-            "      processTime\n" +
-            "      messages\n" +
-            "      reason\n" +
-            "      error_code\n" +
-            "    }\n" +
-            "    data{\n" +
-            "      product_id\n" +
-            "      warehouse_id\n" +
-            "      threshold    \n" +
+            "      thresholdStatus    \n" +
             "    }\n" +
             "  }\n" +
             "}"

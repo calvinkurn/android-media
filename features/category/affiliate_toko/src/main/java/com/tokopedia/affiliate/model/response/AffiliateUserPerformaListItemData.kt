@@ -73,6 +73,8 @@ data class AffiliateUserPerformaListItemData(
                               data class Tooltip(
                                     @SerializedName("Description")
                                     var description: String?,
+                                    @SerializedName("Ticker")
+                                    var ticker: String?,
                                     @SerializedName("Metrics")
                                     var metrics: List<SubMetrics?>
                               ){

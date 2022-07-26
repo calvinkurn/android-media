@@ -26,6 +26,9 @@ abstract class AddEditProductDraftViewModelTestFixture {
     @RelaxedMockK
     lateinit var getAllProductDraftUseCase: GetAllProductDraftUseCase
 
+    @RelaxedMockK
+    lateinit var getAllProductDraftFlowUseCase: GetAllProductDraftFlowUseCase
+
     protected lateinit var viewModel: AddEditProductDraftViewModel
 
     @Before
@@ -36,7 +39,8 @@ abstract class AddEditProductDraftViewModelTestFixture {
                 CoroutineTestDispatchersProvider,
                 deleteProductDraftUseCase,
                 deleteAllProductDraftUseCase,
-                getAllProductDraftUseCase
+                getAllProductDraftUseCase,
+                getAllProductDraftFlowUseCase
         )
     }
 

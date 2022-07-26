@@ -5,10 +5,14 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.find_native.di.scope.FindNavScope
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 
@@ -43,6 +47,18 @@ class FindNavModule {
     @Provides
     fun getRemoveWishListUseCase(context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @FindNavScope
+    @Provides
+    fun addWishListV2UseCase(@ApplicationContext graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
+    }
+
+    @FindNavScope
+    @Provides
+    fun deleteWishListV2UseCase(@ApplicationContext graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
 }

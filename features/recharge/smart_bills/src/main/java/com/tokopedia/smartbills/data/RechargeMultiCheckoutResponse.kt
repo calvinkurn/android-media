@@ -65,7 +65,7 @@ data class RechargeMultiCheckoutResponse(
             val index: Int = -1,
             @SerializedName("product_id")
             @Expose
-            val productID: Int = 0,
+            val productID: String = "0",
             @SerializedName("error_message")
             @Expose
             val errorMessage: String = ""

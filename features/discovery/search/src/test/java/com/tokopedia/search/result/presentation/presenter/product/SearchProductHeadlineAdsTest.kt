@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
@@ -147,21 +147,12 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
 
         `When load data`()
 
-        val expectedSearchProduct = searchProductModel.searchProduct.header
-        `Then verify CPM at the top of list`(expectedSearchProduct)
+        `Then verify CPM at the top of list`()
     }
 
     private fun `Then verify CPM at the top of list`(
-        expectedSearchProduct: SearchProductModel.SearchProductHeader
     ) {
-        visitableList.first().assertSearchProductCount(expectedSearchProduct)
-    }
-
-    private fun Visitable<*>.assertSearchProductCount(expectedSearchProductCount: SearchProductModel.SearchProductHeader) {
-        this.shouldBeInstanceOf<SearchProductCountDataView>()
-
-        val actualSearchProductCountDataView = this as SearchProductCountDataView
-
-        actualSearchProductCountDataView.productCountString.shouldBe(expectedSearchProductCount.totalDataText)
+        visitableList[0].shouldBeInstanceOf<ChooseAddressDataView>()
+        visitableList[1].shouldBeInstanceOf<CpmDataView>()
     }
 }

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:viewBindingIgnore="true">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/read_review_product_image"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginBottom="@dimen/layout_lvl1"
@@ -22,12 +24,33 @@
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:maxLines="1"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:ellipsize="end"
+        app:layout_constraintBottom_toTopOf="@id/read_review_product_variant_name"
         app:layout_constraintEnd_toStartOf="@id/read_review_product_info_three_dots"
         app:layout_constraintStart_toEndOf="@id/read_review_product_image"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/read_review_product_image"
+        app:layout_constraintVertical_chainStyle="spread"
         app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:text="Apple Iphone 11 Pro Garansi 1 tahun Origina..."
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/read_review_product_variant_name"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@id/read_review_product_image"
+        app:layout_constraintEnd_toStartOf="@id/read_review_product_info_three_dots"
+        app:layout_constraintStart_toEndOf="@id/read_review_product_image"
+        app:layout_constraintTop_toBottomOf="@id/read_review_product_name"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyWeight="reguler"
+        tools:text="Varian: Midnight, 256 GB"
+        />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/read_review_product_info_three_dots"
@@ -38,12 +61,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:background="@color/Unify_N75"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

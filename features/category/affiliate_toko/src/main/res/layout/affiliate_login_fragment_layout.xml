@@ -4,8 +4,18 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/Unify_Background"
     >
-
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/login_progress"
+        android:layout_width="@dimen/unify_space_32"
+        android:layout_height="@dimen/unify_space_32"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/affiliate_login_toolbar"
         android:layout_width="match_parent"
@@ -51,7 +61,7 @@
         android:id="@+id/affiliate_login_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/affiliate_login_ticker_cv"
+        app:layout_constraintBottom_toTopOf="@id/affiliate_login_ticker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -62,32 +72,20 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         />
 
-    <androidx.cardview.widget.CardView
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:id="@+id/affiliate_login_ticker_cv"
-        app:cardCornerRadius="@dimen/spacing_lvl3"
-        app:cardElevation="0dp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/affiliate_login_card"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        >
-        <com.tokopedia.unifycomponents.ticker.Ticker
+    <com.tokopedia.unifycomponents.ticker.Ticker
+         app:tickerShapeType="loose"
+        android:layout_marginBottom="@dimen/unify_space_8"
+         android:layout_marginHorizontal="@dimen/unify_space_16"
+            app:layout_constraintBottom_toTopOf="@id/affiliate_login_card"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/affiliate_login_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tickerType="error"
             app:closeButtonVisibility="gone"
             android:visibility="gone"
-            tools:visibility="visible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-    </androidx.cardview.widget.CardView>
+            tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/affiliate_login_card"
@@ -113,8 +111,8 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/affiliate_user_image"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/unify_space_48"
+                android:layout_height="@dimen/unify_space_48"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 />
@@ -188,4 +186,15 @@
         android:textColor="@color/Unify_GN500"
         />
 
+    <com.tokopedia.globalerror.GlobalError
+        android:visibility="gone"
+        android:id="@+id/login_error"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:globalerrors_type="MAINTENANCE"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/affiliate_login_toolbar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,11 @@
 package com.tokopedia.hotel.destination.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationAvailability
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -88,7 +92,7 @@ class HotelDestinationViewModel @Inject constructor(
         }
     }
 
-        fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient) {
+    fun getLocationFromUpdates(fusedLocationProviderClient: FusedLocationProviderClient) {
         locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         locationRequest.interval = LOCATION_REQUEST_INTERVAL
@@ -113,7 +117,12 @@ class HotelDestinationViewModel @Inject constructor(
                 if (!locationAvailability.isLocationAvailable) longLat.postValue(Fail(Throwable(HotelRecommendationFragment.GPS_FAILED_SHOW_ERROR)))
             }
         }
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
+
+        try {
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null)
+        }catch (e: SecurityException){
+            e.printStackTrace()
+        }
     }
 
     fun onGetLocation(): Function1<DeviceLocation, Unit> {

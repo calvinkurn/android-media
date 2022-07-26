@@ -191,12 +191,28 @@ data class SerializedNotificationData(
     @SerializedName(PayloadExtraDataKey.SESSION_ID)
     var sessionId: String?,
 
+    @Expose
+    @SerializedName(GROUP_ID)
+    var groupId: Int? = 0,
+
+    @Expose
+    @SerializedName(GROUP_NAME)
+    var groupName: String? = null,
+
     @SerializedName(NOTIFICATION_CHANNEL)
     @Expose
     var notificationChannel: String? = null,
 
     @SerializedName(NOTIFICATION_SOUND)
     @Expose
-    var notificationSound: String? = null
+    var notificationSound: String? = null,
+
+    @Expose
+    @SerializedName(IS_REVIEW)
+    var isReviewNotif: Boolean? = false,
+
+    @Expose
+    @SerializedName(REPLY_TYPE)
+    var replyType: String? = null
 
 ) : Parcelable

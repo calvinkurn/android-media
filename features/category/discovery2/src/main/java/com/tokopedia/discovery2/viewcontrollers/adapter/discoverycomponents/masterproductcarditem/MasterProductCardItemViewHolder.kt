@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -12,6 +11,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ProductTemplate.LIST
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -54,6 +54,12 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 openVariantSheet()
             }
             masterProductCardListView?.setAddToCartNonVariantClickListener(this)
+            masterProductCardListView?.setAddToCartWishlistOnClickListener {
+                handleATC(
+                    masterProductCardItemViewModel.getProductDataItem()?.minQuantity ?: 1,
+                    true
+                )
+            }
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
@@ -74,7 +80,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun openVariantSheet() {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATC(masterProductCardItemViewModel.components,masterProductCardItemViewModel.getUserID())
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(masterProductCardItemViewModel.components,masterProductCardItemViewModel.getUserID())
         masterProductCardItemViewModel.getProductDataItem()?.let { dataItem ->
             (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId?:"")
         }
@@ -144,12 +150,25 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         updateNotifyMeState(dataItem?.notifyMe)
 
         setWishlist()
+        set3DotsWishlistWithAtc(dataItem)
+    }
+
+    private fun set3DotsWishlistWithAtc(dataItem: DataItem?) {
+        if (dataItem?.hasThreeDotsWishlist == true)
+            masterProductCardListView?.setThreeDotsWishlistOnClickListener {
+                    masterProductCardItemViewModel.saveProductCardComponent()
+                    showProductCardOptions(
+                        fragment,
+                        masterProductCardItemViewModel.getThreeDotsWishlistOptionsModel()
+                    )
+            }
     }
 
     private fun setWishlist() {
         masterProductCardGridView?.setThreeDotsOnClickListener {
-            showProductCardOptions(itemView.context as FragmentActivity,
-                    masterProductCardItemViewModel.getProductCardOptionsModel()
+            showProductCardOptions(
+                fragment,
+                masterProductCardItemViewModel.getProductCardOptionsModel()
             )
         }
     }
@@ -230,20 +249,32 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     override fun onQuantityChanged(quantity: Int) {
+        handleATC(quantity,false)
+    }
+
+    private fun handleATC(quantity: Int, isGeneralCartATC: Boolean) {
         masterProductCardItemViewModel.updateProductQuantity(quantity)
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATC(
-            masterProductCardItemViewModel.components,
-            masterProductCardItemViewModel.getUserID()
-        )
+        if (!isGeneralCartATC)
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATCTokonow(
+                masterProductCardItemViewModel.components,
+                masterProductCardItemViewModel.getUserID()
+            )
         if (masterProductCardItemViewModel.isUserLoggedIn()) {
             masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
-                if (!productItem.productId.isNullOrEmpty())
-                    (fragment as DiscoveryFragment).addOrUpdateItemCart(
-                        masterProductCardItemViewModel.getParentPositionForCarousel(),
-                        masterProductCardItemViewModel.position,
-                        productItem.productId!!,
-                        quantity
-                    )
+                productItem.productId?.let { productId ->
+                    if (productId.isNotEmpty())
+                        (fragment as DiscoveryFragment).addOrUpdateItemCart(
+                            DiscoATCRequestParams(
+                                parentPosition = masterProductCardItemViewModel.getParentPositionForCarousel(),
+                                position = masterProductCardItemViewModel.position,
+                                productId = productId,
+                                quantity = quantity,
+                                shopId = if (isGeneralCartATC) productItem.shopId else null,
+                                isGeneralCartATC = isGeneralCartATC,
+                                requestingComponent = masterProductCardItemViewModel.components
+                            )
+                        )
+                }
             }
         } else {
             masterProductCardItemViewModel.handleATCFailed()

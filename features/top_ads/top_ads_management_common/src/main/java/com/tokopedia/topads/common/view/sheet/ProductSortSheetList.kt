@@ -1,6 +1,5 @@
 package com.tokopedia.topads.common.view.sheet
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,20 +7,27 @@ import android.view.ViewGroup
 import android.widget.ListView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_0
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_2
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_3
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
-import kotlinx.android.synthetic.main.topads_edit_select_fragment_product_list_sheet_sort.view.*
 import java.util.*
 
-class ProductSortSheetList: BottomSheetUnify() {
+class ProductSortSheetList : BottomSheetUnify() {
 
     var onItemClick: ((sortId: String) -> Unit)? = null
-    var selectedSortText = 0
-    var positionSort = 0
+    private var selectedSortText = 0
+    private var positionSort = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var contentView = View.inflate(context, R.layout.topads_edit_select_fragment_product_list_sheet_sort, null)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val contentView = View.inflate(context,
+            R.layout.topads_edit_select_fragment_product_list_sheet_sort,
+            null)
         setChild(contentView)
         setTitle(getString(R.string.topads_edit_urutkan))
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -32,16 +38,14 @@ class ProductSortSheetList: BottomSheetUnify() {
 
         val sortListItemUnify = mapToItemUnifyList(sortListItems)
 
-        view.sortList.setData(sortListItemUnify)
+        view.findViewById<ListUnify>(R.id.sortList)?.setData(sortListItemUnify)
 
-        view.sortList?.let {
+        view.findViewById<ListUnify>(R.id.sortList)?.let {
             it.onLoadFinish {
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
-                }
+                it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
 
-                it.setOnItemClickListener { adapterView, view, index, l ->
+                it.setOnItemClickListener { _, _, index, _ ->
                     onItemSortClickedBottomSheet(index, sortListItemUnify, it)
                 }
                 sortListItemUnify.forEachIndexed { index, listItemUnify ->
@@ -54,12 +58,12 @@ class ProductSortSheetList: BottomSheetUnify() {
     }
 
 
-    private fun onItemSortClickedBottomSheet(position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify) {
+    private fun onItemSortClickedBottomSheet(
+        position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify,
+    ) {
         try {
             positionSort = position
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
-            }
+            sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             selectedSortText = position
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             onItemClick?.invoke(sortListItemUnify[position].listTitleText)
@@ -70,11 +74,11 @@ class ProductSortSheetList: BottomSheetUnify() {
     }
 
     fun getSelectedSortId(): String {
-        return when(selectedSortText){
-            1 -> TERBARU
-            3 -> TERENDAH
-            0 -> TERLARIS
-            2 -> TERTINGGI
+        return when (selectedSortText) {
+            CONST_1 -> TERBARU
+            CONST_3 -> TERENDAH
+            CONST_0 -> TERLARIS
+            CONST_2 -> TERTINGGI
             else -> TERBARU
         }
     }
@@ -82,15 +86,14 @@ class ProductSortSheetList: BottomSheetUnify() {
 
     private fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
         val clickedItem = this.getItemAtPosition(position) as ListItemUnify
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            when (choiceMode) {
-                ListView.CHOICE_MODE_SINGLE -> {
-                    items.filter {
-                        it.listRightRadiobtn?.isChecked ?: false
-                    }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
+        when (choiceMode) {
+            ListView.CHOICE_MODE_SINGLE -> {
+                items.filter {
+                    it.listRightRadiobtn?.isChecked ?: false
+                }.filterNot { it == clickedItem }
+                    .onEach { it.listRightRadiobtn?.isChecked = false }
 
-                    clickedItem.listRightRadiobtn?.isChecked = true
-                }
+                clickedItem.listRightRadiobtn?.isChecked = true
             }
         }
     }
@@ -106,10 +109,10 @@ class ProductSortSheetList: BottomSheetUnify() {
     }
 
     companion object {
-        val TERBARU = "newest"
-        val TERENDAH = "cheapest"
-        val TERLARIS = "most_sales"
-        val TERTINGGI = "most_expensive"
+        const val TERBARU = "newest"
+        const val TERENDAH = "cheapest"
+        const val TERLARIS = "most_sales"
+        const val TERTINGGI = "most_expensive"
 
         fun newInstance(): ProductSortSheetList {
             return ProductSortSheetList()

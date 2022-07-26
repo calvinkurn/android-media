@@ -11,12 +11,12 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.newrelic.agent.android.NewRelic;
+import com.tokopedia.app.common.SplashScreen;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil;
-import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.keys.Keys;

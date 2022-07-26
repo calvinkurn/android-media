@@ -55,7 +55,6 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.supportLibDependencies.constraintLayout

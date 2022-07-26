@@ -3,8 +3,13 @@ package com.tkpd.atcvariant.util
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
-import com.tokopedia.product.detail.common.data.model.aggregator.*
+import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import java.io.File
 import java.lang.reflect.Type
 
@@ -19,7 +24,7 @@ object AtcVariantJsonHelper {
     fun generateAggregatorData(isTokoNow: Boolean): AggregatorMiniCartUiModel {
         val mockResponse = mockAggregatorMiniCart()
 
-        return AggregatorMiniCartUiModel(mockResponse.first, if (!isTokoNow) null else mockResponse.second.miniCartItems.associateBy({ it.productId }, { it }))
+        return AggregatorMiniCartUiModel(mockResponse.first, if (!isTokoNow) null else mockResponse.second.miniCartItems)
     }
 
     fun generateParamsVariantFulfilled(productId: String, isTokoNow: Boolean, emptyMiniCart: Boolean = false): ProductVariantBottomSheetParams {
@@ -30,15 +35,17 @@ object AtcVariantJsonHelper {
                 pageSource = "product detail page",
                 isTokoNow = isTokoNow,
                 variantAggregator = mockResponse.first,
-                miniCartData = if (!isTokoNow || emptyMiniCart) null else mockResponse.second.miniCartItems.associateBy({ it.productId }, { it })
+                showQtyEditor = isTokoNow,
+                miniCartData = if (!isTokoNow || emptyMiniCart) null else mockResponse.second.miniCartItems.mapProductsWithProductId()
         )
     }
 
-    fun generateParamsVariant(productId: String, isTokoNow: Boolean): ProductVariantBottomSheetParams {
+    fun generateParamsVariant(productId: String, isTokoNow: Boolean, showQtyEditor: Boolean): ProductVariantBottomSheetParams {
         return ProductVariantBottomSheetParams(
                 productId = productId,
                 pageSource = "wishlist",
-                isTokoNow = isTokoNow
+                isTokoNow = isTokoNow,
+                showQtyEditor = showQtyEditor
         )
     }
 

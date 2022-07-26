@@ -15,6 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -24,14 +25,14 @@ class AddEditProductSpecificationViewModelTest: AddEditProductSpecificationViewM
             AnnotationCategoryData(
                     variant = "Merek",
                     data = listOf(
-                            Values(1, "Indomie", true, ""),
-                            Values(2, "Seedap", false, ""))
+                            Values("1", "Indomie", true, ""),
+                            Values("2", "Seedap", false, ""))
             ),
             AnnotationCategoryData(
                     variant = "Rasa",
                     data = listOf(
-                            Values(3, "Soto", false, ""),
-                            Values(4, "Bawang", true, ""))
+                            Values("3", "Soto", false, ""),
+                            Values("4", "Bawang", true, ""))
             )
     )
 
@@ -130,6 +131,22 @@ class AddEditProductSpecificationViewModelTest: AddEditProductSpecificationViewM
 
         val spec = viewModel.productInputModel.getOrAwaitValue().detailInputModel.specifications.orEmpty()
         assert(spec.isEmpty())
+    }
+
+    @Test
+    fun `validateSpecificationInputModel should return validated data`() {
+        viewModel.validateSpecificationInputModel(listOf())
+        val emptyListResult = viewModel.validateSpecificationInputModelResult.getOrAwaitValue()
+
+        viewModel.validateSpecificationInputModel(listOf(SpecificationInputModel(required = true)))
+        val requiredResult = viewModel.validateSpecificationInputModelResult.getOrAwaitValue()
+
+        viewModel.validateSpecificationInputModel(listOf(SpecificationInputModel(required = false)))
+        val notRequiredResult = viewModel.validateSpecificationInputModelResult.getOrAwaitValue()
+
+        assert(emptyListResult.first)
+        assertFalse(requiredResult.first)
+        assert(notRequiredResult.first)
     }
 
     private fun setProductInputModel(specificationInputModel: List<SpecificationInputModel>?) {

@@ -16,11 +16,13 @@
       "layout": "layout:.*;catName:.*;catId:\\d{1,};",
       "component": "comp:.*;temp:.*;elem:.*;cpos:\\d{1,};",
       "warehouseId": ".*",
+      "shopType": ".*",
+      "shop_id": ".*",
       "promotions": [
         {
           "item_id": ".*",
           "creative_url": ".*",
-          "creative_name": "layout:.*;comp:.*;temp:.*;",
+          "creative_name": ".*",
           "category": ".*",
           "item_name": ".*",
           "promo_code": ".*",

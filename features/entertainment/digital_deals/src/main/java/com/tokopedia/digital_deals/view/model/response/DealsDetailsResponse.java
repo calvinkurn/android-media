@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.model.response;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,15 +16,19 @@ import java.util.List;
 
 public class DealsDetailsResponse implements Parcelable {
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
     private int id;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("brand_id")
     @Expose
     private int brandId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("category_id")
     @Expose
     private int categoryId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("provider_id")
     @Expose
     private int providerId;
@@ -51,6 +56,7 @@ public class DealsDetailsResponse implements Parcelable {
     @SerializedName("mrp")
     @Expose
     private int mrp;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("sales_price")
     @Expose
     private int salesPrice;
@@ -234,10 +240,16 @@ public class DealsDetailsResponse implements Parcelable {
         this.appUrl = in.readString();
         this.checkoutBusinessType = in.readInt();
         this.checkoutDataType = in.readString();
+        this.minQty = in.readInt();
+        this.maxQty = in.readInt();
     }
 
     public String getWebUrl() {
         return webUrl;
+    }
+
+    public void setWebUrl(String mWebUrl) {
+        this.webUrl = mWebUrl;
     }
 
     public String getAppUrl() {
@@ -676,6 +688,8 @@ public class DealsDetailsResponse implements Parcelable {
         dest.writeString(appUrl);
         dest.writeInt(checkoutBusinessType);
         dest.writeString(checkoutDataType);
+        dest.writeInt(minQty);
+        dest.writeInt(maxQty);
 
     }
 

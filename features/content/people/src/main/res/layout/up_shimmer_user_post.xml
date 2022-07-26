@@ -14,7 +14,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:corners="@integer/corner_radius_shimmering"
+            app:loader_corner_radius="10dp"
             app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:layout_weight="1"
-            app:corners="@integer/corner_radius_shimmering"
+            app:loader_corner_radius="10dp"
             app:loader_type="rect" />
 
     </LinearLayout>
@@ -63,7 +63,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:layout_weight="1"
-            app:corners="@integer/corner_radius_shimmering"
+            app:loader_corner_radius="10dp"
             app:loader_type="rect" />
 
     </LinearLayout>

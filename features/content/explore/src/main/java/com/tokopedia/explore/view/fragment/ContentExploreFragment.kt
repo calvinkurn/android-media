@@ -37,6 +37,7 @@ import com.tokopedia.explore.view.uimodel.ExploreViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 
 /**
  * @author by milhamj on 19/07/18.
@@ -81,6 +82,8 @@ class ContentExploreFragment :
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var analytics: ContentExploreAnalytics
+    @Inject
+    lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
 
     private lateinit var exploreCategoryRv: RecyclerView
     private lateinit var exploreImageRv: RecyclerView
@@ -167,11 +170,13 @@ class ContentExploreFragment :
                 }
             }
         }
+        exploreImageRv.addOnScrollListener(feedFloatingButtonManager.scrollListener)
         exploreImageRv.layoutManager = gridLayoutManager
         exploreImageRv.addOnScrollListener(onScrollListener(gridLayoutManager))
         val typeFactory = ExploreImageTypeFactoryImpl(this)
         imageAdapter.setTypeFactory(typeFactory)
         exploreImageRv.adapter = imageAdapter
+        feedFloatingButtonManager.setDelayForExpandFab(exploreImageRv)
     }
 
     private fun initVar() {
@@ -182,6 +187,8 @@ class ContentExploreFragment :
             )
             presenter.updateCategoryId(categoryId)
         }
+
+        feedFloatingButtonManager.setInitialData(parentFragment)
     }
 
     private fun loadData() {
@@ -198,6 +205,12 @@ class ContentExploreFragment :
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        exploreImageRv.removeOnScrollListener(feedFloatingButtonManager.scrollListener)
+        feedFloatingButtonManager.cancel()
     }
 
     override fun onSuccessGetExploreData(exploreViewModel: ExploreViewModel, clearData: Boolean) {

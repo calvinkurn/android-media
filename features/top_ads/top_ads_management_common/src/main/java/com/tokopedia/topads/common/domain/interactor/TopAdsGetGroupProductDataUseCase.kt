@@ -1,29 +1,29 @@
 package com.tokopedia.topads.common.domain.interactor
 
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.authentication.HEADER_CONTENT_TYPE
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.CONTENT_TYPE_JSON
 import com.tokopedia.topads.common.data.internal.ParamObject.QUERY_INPUT
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 import kotlin.collections.set
 
 /**
  * Created by Pika on 7/6/20.
  */
 
-const val TOP_ADS_DASHBOARD_GROUP_PRODUCTS_QUERY: String = """
+private const val TOP_ADS_DASHBOARD_GROUP_PRODUCTS_QUERY: String = """
                query topadsDashboardGroupProductsV3(${'$'}queryInput: topadsDashboardGroupProductsInputTypeV2!) {
   topadsDashboardGroupProductsV3(queryInput: ${'$'}queryInput) {
     separate_statistic
@@ -56,27 +56,35 @@ const val TOP_ADS_DASHBOARD_GROUP_PRODUCTS_QUERY: String = """
 """
 
 @GqlQuery("TopadsDashboardGroupProductsQuery", TOP_ADS_DASHBOARD_GROUP_PRODUCTS_QUERY)
-class TopAdsGetGroupProductDataUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase()  {
+class TopAdsGetGroupProductDataUseCase @Inject constructor(
+    private val userSession: UserSessionInterface,
+) {
 
+    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 
-    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
-        val tempRequest = ArrayList<RestRequest>()
-        val token = object : TypeToken<DataResponse<NonGroupResponse>>() {}.type
-        val query = TopadsDashboardGroupProductsQuery.GQL_QUERY
-        val request = GraphqlRequest(query, NonGroupResponse::class.java, requestParams?.parameters)
-        val headers = java.util.HashMap<String, String>()
-        headers["Content-Type"] = "application/json"
-        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
+    suspend fun execute(requestParams: RequestParams?): NonGroupResponse {
+        try {
+            val token = object : TypeToken<DataResponse<NonGroupResponse>>() {}.type
+            val query = TopadsDashboardGroupProductsQuery.GQL_QUERY
+            val request =
+                GraphqlRequest(query, NonGroupResponse::class.java, requestParams?.parameters)
+
+            val restRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
                 .setBody(request)
-                .setHeaders(headers)
+                .setHeaders(mapOf(HEADER_CONTENT_TYPE to CONTENT_TYPE_JSON))
                 .setRequestType(RequestType.POST)
                 .build()
-        tempRequest.add(restReferralRequest)
-        return tempRequest
+            return restRepository.getResponse(restRequest)
+                .getData<DataResponse<NonGroupResponse>>().data
+        } catch (t: Throwable) {
+            throw t
+        }
     }
 
-    fun setParams(groupId: Int?, page: Int,  search: String, sort: String, status: Int?, startDate: String, endDate: String, type: String = "", goalId : Int = 0): RequestParams {
-
+    fun setParams(
+        groupId: Int?, page: Int, search: String, sort: String, status: Int?,
+        startDate: String, endDate: String, type: String = "", goalId: Int = 0,
+    ): RequestParams {
         val requestParams = RequestParams.create()
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.SHOP_id] = userSession.shopId

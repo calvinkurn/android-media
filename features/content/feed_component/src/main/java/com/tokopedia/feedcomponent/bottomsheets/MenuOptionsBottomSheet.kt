@@ -26,6 +26,7 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
     var onEdit: (() -> Unit)? = null
     var onDismiss: (() -> Unit)? = null
     var onClosedClicked: (() -> Unit)? = null
+    var isCommentPage: Boolean = false
     private var dismissedByClosing = false
 
     companion object {
@@ -61,7 +62,8 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
         report.showWithCondition(!canBeDeleted && isReportable)
         follow.showWithCondition(!canBeDeleted && canBeUnFollow)
         delete.showWithCondition(canBeDeleted)
-        edit.showWithCondition(canBeDeleted && shouldShowNewContentCreationFlow && isEditable)
+        edit.showWithCondition(canBeDeleted && shouldShowNewContentCreationFlow && !isCommentPage  && isEditable)
+
 
         if (canBeDeleted && report.isVisible && follow.isVisible) {
             div0.show()
@@ -117,6 +119,10 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
                 onDismiss?.invoke()
         }
     }
+    fun setIsCommentPage(isCommentPage: Boolean){
+        this.isCommentPage = isCommentPage
+    }
+
     private fun enableContentCreationNewFlow(): Boolean {
         val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
         return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)

@@ -52,6 +52,8 @@ class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val sourc
 
     companion object {
         const val DELAY_ADJUST_RECYCLER_VIEW_MARGIN = 200L
+        const val SCROLL_X = 0
+        const val SCROLL_Y = 300
     }
 
     @Inject
@@ -337,7 +339,7 @@ class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val sourc
         measureRecyclerViewPaddingDebounceJob?.cancel()
         delayScrollJob?.cancel()
         activity?.finish()
-        activity?.overridePendingTransition(android.R.anim.fade_in, R.anim.push_down)
+        activity?.overridePendingTransition(android.R.anim.fade_in, R.anim.add_on_selection_push_down)
         super.onDismiss(dialog)
     }
 
@@ -360,7 +362,7 @@ class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val sourc
     }
 
     override fun onNeedToMakeEditTextFullyVisible(view: View) {
-        viewBinding?.rvAddOn?.smoothScrollBy(0, 300)
+        viewBinding?.rvAddOn?.smoothScrollBy(SCROLL_X, SCROLL_Y)
     }
 
 }

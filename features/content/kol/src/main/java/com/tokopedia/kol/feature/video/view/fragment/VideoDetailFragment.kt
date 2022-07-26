@@ -478,7 +478,7 @@ class VideoDetailFragment :
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.design.R.color.tkpd_main_green
+                        com.tokopedia.unifyprinciples.R.color.Unify_G400
                     )
                 )
             }

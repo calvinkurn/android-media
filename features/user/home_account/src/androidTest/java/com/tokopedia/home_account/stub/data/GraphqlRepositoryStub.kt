@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home_account.common.AndroidFileUtil
 import com.tokopedia.home_account.data.model.*
-import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
+import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.test.R
 
 class GraphqlRepositoryStub : GraphqlRepository {
@@ -51,12 +51,12 @@ class GraphqlRepositoryStub : GraphqlRepository {
                         mapOf(),
                         false
                 )
-                it.contains("wallet_app_get_account_balance") && requests.firstOrNull()?.variables!!["partnerCode"] == "OVO" -> GraphqlResponse(
+                it.contains("walletappGetAccountBalance") && requests.firstOrNull()?.variables!!["partnerCode"] == "OVO" -> GraphqlResponse(
                         mapOf(BalanceAndPointDataModel::class.java to provideOvoBalanceAndPointDataModelSuccess()),
                         mapOf(),
                         false
                 )
-                it.contains("wallet_app_get_account_balance") && requests.firstOrNull()?.variables!!["partnerCode"] == "PEMUDA" -> GraphqlResponse(
+                it.contains("walletappGetAccountBalance") && requests.firstOrNull()?.variables!!["partnerCode"] == "PEMUDA" -> GraphqlResponse(
                         mapOf(BalanceAndPointDataModel::class.java to provideGopayBalanceAndPointDataModelSuccess()),
                         mapOf(),
                         false

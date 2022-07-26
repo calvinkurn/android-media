@@ -7,8 +7,10 @@ import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.telemetry.ITelemetryActivity
 
-class ShipmentActivity : BaseCheckoutActivity() {
+class ShipmentActivity : BaseCheckoutActivity(),
+    ITelemetryActivity{
     private var shipmentFragment: ShipmentFragment? = null
 
     override fun setupBundlePass(extras: Bundle?) {
@@ -42,4 +44,6 @@ class ShipmentActivity : BaseCheckoutActivity() {
             super.onBackPressed()
         }
     }
+
+    override fun getTelemetrySectionName() = "checkout"
 }

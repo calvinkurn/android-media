@@ -96,6 +96,20 @@ class KeywordAdsViewModelTest {
     }
 
     @Test
+    fun `getSuggestionKeyword exception check`() {
+        every {
+            suggestionKeywordUseCase.executeQuerySafeMode(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockk())
+        }
+
+        var successCalled = false
+        viewModel.getSuggestionKeyword("", 1, { successCalled = true }, { })
+
+        Assert.assertTrue(!successCalled)
+    }
+
+    @Test
     fun `test searchKeyword if query is not null`() {
 
         every { userSession.shopId } returns "2"

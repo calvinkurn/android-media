@@ -9,12 +9,7 @@ object ReputationBaseURL {
     private const val REPUTATION_VERSION: String = "v1"
     const val PATH_GET_INBOX_REPUTATION: String = ("reputation/api/"
             + REPUTATION_VERSION + "/inbox")
-    const val PATH_GET_DETAIL_INBOX_REPUTATION: String = ("review/api/"
-            + REPUTATION_VERSION + "/list")
 
     // Tome
     const val PATH_IS_FAVORITE_SHOP: String = "v1/user/isfollowing"
-
-    // upload
-    const val V4_ACTION_GENERATE_HOST: String = "v4/action/generate-host/"
 }

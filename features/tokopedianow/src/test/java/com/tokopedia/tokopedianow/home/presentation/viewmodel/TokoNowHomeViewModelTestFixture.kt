@@ -18,6 +18,9 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.ui.PlayWidgetState
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
@@ -32,16 +35,14 @@ import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
-import com.tokopedia.tokopedianow.home.domain.model.GetReferralSenderHomeResponse
-import com.tokopedia.tokopedianow.home.domain.model.ValidateReferralUserResponse
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeReferralUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
-import com.tokopedia.tokopedianow.home.domain.usecase.ValidateReferralUserUseCase
-import com.tokopedia.tokopedianow.home.domain.usecase.GetReferralSenderHomeUseCase
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
+import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
@@ -94,9 +95,9 @@ abstract class TokoNowHomeViewModelTestFixture {
     @RelaxedMockK
     lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
     @RelaxedMockK
-    lateinit var validateReferralUserUseCase: ValidateReferralUserUseCase
+    lateinit var getHomeReferralUseCase: GetHomeReferralUseCase
     @RelaxedMockK
-    lateinit var getReferralSenderHomeUseCase: GetReferralSenderHomeUseCase
+    lateinit var playWidgetTools: PlayWidgetTools
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
@@ -126,8 +127,8 @@ abstract class TokoNowHomeViewModelTestFixture {
                 getRepurchaseWidgetUseCase,
                 getQuestWidgetListUseCase,
                 setUserPreferenceUseCase,
-                validateReferralUserUseCase,
-                getReferralSenderHomeUseCase,
+                getHomeReferralUseCase,
+                playWidgetTools,
                 userSession,
                 CoroutineTestDispatchersProvider
         )
@@ -197,11 +198,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun verifyGetReferralSenderHomeUseCaseCalled(slug: String) {
-        coVerify { getReferralSenderHomeUseCase.execute(slug) }
-    }
-
-    protected fun verifyValidateReferralSenderUseCaseCalled(slug: String) {
-        coVerify { validateReferralUserUseCase.execute(slug) }
+        coVerify { getHomeReferralUseCase.execute(slug) }
     }
 
     protected fun verifyGetHomeLayoutDataUseCaseCalled(
@@ -285,6 +282,16 @@ abstract class TokoNowHomeViewModelTestFixture {
         coEvery { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) } returns layoutResponse
     }
 
+    protected fun onGetPlayWidget_thenReturn(playWidgetState: PlayWidgetState) {
+        coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns PlayWidget()
+        coEvery { playWidgetTools.mapWidgetToModel(any(), any(), any()) } returns playWidgetState
+    }
+
+    protected fun onGetPlayWidget_thenReturn(error: Throwable) {
+        coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } throws error
+        coEvery { playWidgetTools.mapWidgetToModel(any(), any(), any()) } throws error
+    }
+
     protected fun onGetHomeLayoutData_thenReturn(
         error: Throwable,
         localCacheModel: LocalCacheModel = LocalCacheModel()
@@ -344,20 +351,12 @@ abstract class TokoNowHomeViewModelTestFixture {
         coEvery { setUserPreferenceUseCase.execute(any(), any()) } throws error
     }
 
-    protected fun onGetReferralSenderHome_thenReturn(slug: String, getReferralSenderHomeResponse: GetReferralSenderHomeResponse) {
-        coEvery { getReferralSenderHomeUseCase.execute(slug) } returns getReferralSenderHomeResponse
+    protected fun onGetReferralSenderHome_thenReturn(slug: String, referral: HomeReferralDataModel) {
+        coEvery { getHomeReferralUseCase.execute(slug) } returns referral
     }
 
     protected fun onGetReferralSenderHome_thenReturn(slug: String, errorThrowable: Throwable) {
-        coEvery { getReferralSenderHomeUseCase.execute(slug) } throws errorThrowable
-    }
-
-    protected fun onValidateReferralSender_thenReturn(slug: String, validateReferralUserResponse: ValidateReferralUserResponse) {
-        coEvery { validateReferralUserUseCase.execute(slug) } returns validateReferralUserResponse
-    }
-
-    protected fun onValidateReferralSender_thenReturn(slug: String, errorThrowable: Throwable) {
-        coEvery { validateReferralUserUseCase.execute(slug) } throws  errorThrowable
+        coEvery { getHomeReferralUseCase.execute(slug) } throws errorThrowable
     }
 
     protected fun onGetChooseAddress_thenReturn(errorThrowable: Throwable) {
@@ -454,6 +453,10 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetHomeLayoutItemList_returnNull() {
         viewModel.mockPrivateField("homeLayoutItemList", null)
+    }
+
+    protected fun onGetUserSession_returnNull() {
+        viewModel.mockPrivateField("userSession", null)
     }
 
     object UnknownHomeLayout: HomeLayoutUiModel("1") {

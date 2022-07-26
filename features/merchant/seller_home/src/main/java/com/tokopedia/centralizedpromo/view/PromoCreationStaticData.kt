@@ -2,17 +2,22 @@ package com.tokopedia.centralizedpromo.view
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.sellerhome.R
 
 
 object PromoCreationStaticData {
+
+    private const val SELLER_ADMIN_ARTICLE = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
+
     fun provideStaticData(
         resourceProvider: CentralizedPromoResourceProvider,
         broadcastChatExtra: String,
@@ -24,8 +29,26 @@ object PromoCreationStaticData {
         isProductCouponFirstTime: Boolean,
         isTokopediaPlayFirstTime: Boolean,
         isProductCouponEnabled: Boolean,
+        isSlashPriceEnabled: Boolean,
+        isSlashPriceEligible: Boolean
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
+            PromoCreationUiModel(
+                R.drawable.ic_sah_flash_sale_toko,
+                resourceProvider.getPromoCreationTitleFlashSaleToko(),
+                resourceProvider.getPromoCreationDescFlashSaleToko(),
+                resourceProvider.getPromoCreationNewInfoFlashSaleToko(),
+                ApplinkConst.SellerApp.SELLER_SHOP_FLASH_SALE,
+                resourceProvider.getPromoCreationLabelFlashSaleToko(),
+            ),
+            PromoCreationUiModel(
+                R.drawable.ic_sah_tokomember,
+                resourceProvider.getPromoCreationTitleTokoMember(),
+                resourceProvider.getPromoCreationDescriptionTokoMember(),
+                String.EMPTY,
+                ApplinkConst.SellerApp.TOKOMEMBER,
+                resourceProvider.getPromoCreationLabelTokoMember()
+            ),
             PromoCreationUiModel(
                 R.drawable.ic_tokopedia_play,
                 resourceProvider.getPromoCreationTitleTokopediaPlay(),
@@ -36,40 +59,64 @@ object PromoCreationStaticData {
                 } else {
                     ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
                 }
-            ),
-            PromoCreationUiModel(
-                R.drawable.sh_ic_top_ads_color,
-                resourceProvider.getPromoCreationTitleTopAds(),
-                resourceProvider.getPromoCreationDescriptionTopAds(),
-                "",
-                if (isTopAdsOnBoardingEnable){
-                    ApplinkConst.SellerApp.TOPADS_ONBOARDING
-                }else{
-                    ApplinkConst.CustomerApp.TOPADS_DASHBOARD
-                }
+            )
+        )
 
-            ),
-            PromoCreationUiModel(
-                R.drawable.ic_broadcast_chat,
-                resourceProvider.getPromoCreationTitleBroadcastChat(),
-                resourceProvider.getPromoCreationDescriptionBroadcastChat(),
-                broadcastChatExtra,
-                String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
-            ),
-            PromoCreationUiModel(
-                R.drawable.ic_voucher_cashback,
-                resourceProvider.getPromoCreationTitleMerchantVoucher(),
-                resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
-                "",
-                if (isVoucherCashbackEligible) {
-                    if (isVoucherCashbackFirstTime) {
-                        getFirstTimeApplink(SellerHomeApplinkConst.TYPE_VOUCHER_CASHBACK)
-                    } else {
-                        ApplinkConstInternalSellerapp.CREATE_VOUCHER
-                    }
+        if (isSlashPriceEnabled) {
+            val slashPriceApplink =
+                if (isSlashPriceEligible) {
+                    ApplinkConstInternalSellerapp.SHOP_DISCOUNT
                 } else {
-                    ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
+                    getSlashPriceApplink()
                 }
+            promoItems.add(
+                PromoCreationUiModel(
+                    R.drawable.ic_sah_slash_price,
+                    resourceProvider.getPromoCreationTitleSlashPrice(),
+                    resourceProvider.getPromoCreationDescriptionSlashPrice(),
+                    resourceProvider.getPromoCreationNewInfoSlashPrice(),
+                    slashPriceApplink,
+                    resourceProvider.getPromoCreationLabelSlashPrice()
+                )
+            )
+        }
+
+        promoItems.addAll(
+            listOf(
+                PromoCreationUiModel(
+                    R.drawable.sh_ic_top_ads_color,
+                    resourceProvider.getPromoCreationTitleTopAds(),
+                    resourceProvider.getPromoCreationDescriptionTopAds(),
+                    "",
+                    if (isTopAdsOnBoardingEnable){
+                        ApplinkConst.SellerApp.TOPADS_ONBOARDING
+                    }else{
+                        ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+                    }
+
+                ),
+                PromoCreationUiModel(
+                    R.drawable.ic_broadcast_chat,
+                    resourceProvider.getPromoCreationTitleBroadcastChat(),
+                    resourceProvider.getPromoCreationDescriptionBroadcastChat(),
+                    broadcastChatExtra,
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
+                ),
+                PromoCreationUiModel(
+                    R.drawable.ic_voucher_cashback,
+                    resourceProvider.getPromoCreationTitleMerchantVoucher(),
+                    resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
+                    "",
+                    if (isVoucherCashbackEligible) {
+                        if (isVoucherCashbackFirstTime) {
+                            getFirstTimeApplink(SellerHomeApplinkConst.TYPE_VOUCHER_CASHBACK)
+                        } else {
+                            ApplinkConstInternalSellerapp.CREATE_VOUCHER
+                        }
+                    } else {
+                        ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
+                    }
+                )
             )
         )
 
@@ -107,7 +154,6 @@ object PromoCreationStaticData {
                 )
             )
         }
-
         return PromoCreationListUiModel(
             items = promoItems,
             errorMessage = ""
@@ -118,5 +164,14 @@ object PromoCreationStaticData {
         Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME).buildUpon()
             .appendQueryParameter(SellerHomeApplinkConst.PROMO_TYPE, promoType)
             .build().toString()
+
+    private fun getSlashPriceApplink(): String {
+        return UriUtil.buildUriAppendParam(
+            uri = ApplinkConstInternalSellerapp.ADMIN_RESTRICTION,
+            queryParameters = mapOf(
+                ApplinkConstInternalSellerapp.PARAM_ARTICLE_URL to SELLER_ADMIN_ARTICLE
+            )
+        )
+    }
 
 }

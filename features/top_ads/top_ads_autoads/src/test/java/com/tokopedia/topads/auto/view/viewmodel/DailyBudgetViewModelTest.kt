@@ -138,6 +138,18 @@ class DailyBudgetViewModelTest {
     }
 
     @Test
+    fun `test exception in getTopAdsDeposit`() {
+
+        coEvery {
+            topAdsGetShopDepositUseCase.executeOnBackground()
+        } throws Throwable()
+
+        viewModel.getTopAdsDeposit()
+
+        assertEquals(viewModel.getTopAdsDepositLiveData().value, null)
+    }
+
+    @Test
     fun `test exception in topadsStatisticsEstimationPotentialReach`() {
         val t = Exception("my excep")
         val expected = null

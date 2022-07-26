@@ -14,7 +14,7 @@ public class FeedKolRecommendedType {
 
   @SerializedName("userId")
   @Expose
-  private Integer userId;
+  private String userId;
 
   @SerializedName("isFollowed")
   @Expose
@@ -36,7 +36,7 @@ public class FeedKolRecommendedType {
     this.userPhoto = userPhoto;
   }
 
-  public void setUserId(Integer userId) {
+  public void setUserId(String userId) {
     this.userId = userId;
   }
 
@@ -60,7 +60,7 @@ public class FeedKolRecommendedType {
     return this.userPhoto;
   }
 
-  public Integer getUserId() {
+  public String getUserId() {
     return this.userId;
   }
 

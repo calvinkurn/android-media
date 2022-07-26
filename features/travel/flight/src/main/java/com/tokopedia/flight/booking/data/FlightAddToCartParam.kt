@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -20,6 +21,7 @@ data class FlightAddToCartParam (
         @Expose
         var userAgent: String = "",
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("did")
         @Expose
         var did: Int = 0,

@@ -18,7 +18,11 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCamp
 
 object ProductManageVariantMapper {
 
-    fun mapToVariantsResult(response: GetProductV3, access: ProductManageAccess): GetVariantResult {
+    fun mapToVariantsResult(
+        response: GetProductV3,
+        access: ProductManageAccess,
+        maxStock: Int?
+    ): GetVariantResult {
         val variant = response.variant
         val variantSelections = variant.selections
         val variantSizeCharts = variant.sizeCharts
@@ -40,7 +44,8 @@ object ProductManageVariantMapper {
                 it.pictures,
                 isAllStockEmpty,
                 access,
-                it.campaignTypeList
+                it.campaignTypeList,
+                maxStock
             )
         }
 
@@ -76,15 +81,23 @@ object ProductManageVariantMapper {
         return copy(editStock = editStock, editStatus = editStatus)
     }
 
-    fun mapResultToUpdateParam(shopId: String, result: EditVariantResult): UpdateVariantParam {
+    fun mapResultToUpdateParam(shopId: String,
+                               result: EditVariantResult,
+                               shouldSetStock: Boolean = true): UpdateVariantParam {
         val productInput = result.variants.map {
+            val stock =
+                if (shouldSetStock) {
+                    it.stock
+                } else {
+                    null
+                }
             VariantProductInput(
                     it.status,
                     it.combination,
                     it.isPrimary,
                     it.price.toInt().orZero(),
                     it.sku,
-                    it.stock,
+                    stock,
                     it.pictures
             )
         }

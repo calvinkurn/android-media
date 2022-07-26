@@ -1,10 +1,9 @@
 package com.tokopedia.home_account.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.home_account.view.fragment.FundsAndInvestmentFragment
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
-import com.tokopedia.recommendation_widget_common.di.RecommendationModule
-import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
 import com.tokopedia.sessioncommon.di.SessionCommonScope
 import com.tokopedia.sessioncommon.di.SessionModule
 import dagger.Component
@@ -12,7 +11,7 @@ import dagger.Component
 /**
  * @author by nisie on 10/15/18.
  */
-@HomeAccountUserScope
+@ActivityScope
 @SessionCommonScope
 @Component(modules = [HomeAccountUserModules::class,
     HomeAccountUserUsecaseModules::class,

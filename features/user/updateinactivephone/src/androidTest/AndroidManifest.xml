@@ -26,5 +26,9 @@
             android:name=".stub.features.submitnewphone.InactivePhoneSubmitDataActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".stub.features.inputoldphonenumber.InputOldPhoneNumberActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
     </application>
 </manifest>

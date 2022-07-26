@@ -100,7 +100,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="reviewEditableBadSmiley, reviewEditableMediocreSmiley, reviewEditableExcellentSmiley"/>
+        app:constraint_referenced_ids="reviewEditableBadSmiley, reviewEditableMediocreSmiley, reviewEditableExcellentSmiley"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reviewScoreDeadlineLabel"
@@ -117,26 +118,26 @@
         app:typographyType="body_3"
         tools:visibility="visible" />
     
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/reviewScoreLoadingSmiley"
         android:layout_width="@dimen/layout_lvl5"
         android:layout_height="@dimen/layout_lvl5"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:visibility="gone"
-        app:corners="100"
-        app:custom_color="@color/Unify_N50"
+        app:loader_corner_radius="50dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toBottomOf="@id/reviewDetailScoreShopName"
         app:layout_constraintStart_toStartOf="@id/reviewDetailScoreShopName" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/reviewScoreLoadingText"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/dp_56"
         android:visibility="gone"
-        app:corners="8"
-        app:custom_color="@color/Unify_N50"
+        app:loader_corner_radius="4dp"
+        app:loader_type="rect"
         app:layout_constraintTop_toTopOf="@id/reviewScoreLoadingSmiley"
         app:layout_constraintBottom_toBottomOf="@id/reviewScoreLoadingSmiley"
         app:layout_constraintStart_toEndOf="@id/reviewScoreLoadingSmiley"

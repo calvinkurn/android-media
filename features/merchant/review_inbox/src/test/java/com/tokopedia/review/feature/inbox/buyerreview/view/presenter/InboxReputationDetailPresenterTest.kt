@@ -88,7 +88,7 @@ class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFix
             testSubscriber.onNext(expectedResponse)
         }
 
-        presenter.sendSmiley(anyString(), anyString(), anyInt())
+        presenter.sendSmiley(anyString(), anyString(), anyString())
 
         testSubscriber.assertNoErrors()
         testSubscriber.assertValue(expectedResponse)
@@ -110,7 +110,7 @@ class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFix
         }
 
         presenter.attachView(null)
-        presenter.sendSmiley(anyString(), anyString(), anyInt())
+        presenter.sendSmiley(anyString(), anyString(), anyString())
 
         testSubscriber.assertNoErrors()
         testSubscriber.assertValue(expectedResponse)
@@ -132,7 +132,7 @@ class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFix
         }
 
         presenter.attachView(view)
-        presenter.sendSmiley(anyString(), anyString(), anyInt())
+        presenter.sendSmiley(anyString(), anyString(), anyString())
 
         testSubscriber.assertError(expectedResponse)
         testSubscriber.assertCompleted()

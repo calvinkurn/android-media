@@ -6,6 +6,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.linker.LinkerConstants
@@ -19,12 +20,12 @@ import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.ID
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IMPRESSIONS
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.LIST
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
+import com.tokopedia.search.utils.joinActiveOptionsToString
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.Locale
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -828,66 +829,7 @@ object SearchTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(generalSearchShopDataLayer)
     }
 
-    @JvmStatic
-    fun trackEventLastFilterImpression(
-        iris: Iris,
-        keyword: String,
-        filter: String,
-        pageSource: String,
-    ) {
-        val impressionDataLayer = DataLayer.mapOf(
-            SearchTrackingConstant.EVENT, SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
-            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_SAVE_LAST_FILTER,
-            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
-            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-            SearchTrackingConstant.PAGE_SOURCE, pageSource,
-        )
 
-        iris.saveEvent(impressionDataLayer)
-    }
-
-    private fun getLastFilterEventLabel(keyword: String, filter: String): String =
-        SearchEventTracking.Label.KEYWORD_FILTER.format(keyword, filter)
-
-    @JvmStatic
-    fun trackEventLastFilterClickApply(
-        keyword: String,
-        filter: String,
-        pageSource: String,
-    ) {
-        val clickDataLayer = DataLayer.mapOf(
-            SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
-            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_SAVE_LAST_FILTER,
-            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
-            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-            SearchTrackingConstant.PAGE_SOURCE, pageSource,
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(clickDataLayer)
-    }
-
-    @JvmStatic
-    fun trackEventLastFilterClickClose(
-        keyword: String,
-        filter: String,
-        pageSource: String,
-    ) {
-        val clickDataLayer = DataLayer.mapOf(
-            SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
-            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLOSE_SAVE_LAST_FILTER,
-            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
-            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-            SearchTrackingConstant.PAGE_SOURCE, pageSource,
-        )
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(clickDataLayer)
-    }
 
     fun getInspirationCarouselUnificationListName(type: String, componentId: String): String =
         CAROUSEL_UNIFICATION_LIST_NAME.format(type, componentId)
@@ -931,6 +873,32 @@ object SearchTracking {
                         "products", products
                     )
                 )
+            )
+        )
+    }
+
+    fun trackEventClickDropdownQuickFilter(filterTitle: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DROPDOWN_QUICK_FILTER,
+                SearchTrackingConstant.EVENT_LABEL, "$filterTitle",
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            )
+        )
+    }
+
+    fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.APPLY_DROPDOWN_QUICK_FILTER,
+                SearchTrackingConstant.EVENT_LABEL, optionList?.joinActiveOptionsToString(),
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
             )
         )
     }

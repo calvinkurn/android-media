@@ -64,6 +64,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
       error_code
       pop_up_message
       max_char_note
+      placeholder_note
       kero_token
       kero_unix_time
       kero_discom_token

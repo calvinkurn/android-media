@@ -26,12 +26,19 @@ class AddCartToWishlistSubscriber(private val view: ICartListView?,
 
     override fun onNext(data: AddCartToWishlistData) {
         view?.let { view ->
-            if (data.isSuccess) {
-                presenter.processUpdateCartCounter()
-                view.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+            if (data.status == STATUS_OK) {
+                if (data.success == 1) {
+                    view.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+                } else {
+                    view.showToastMessageRed(data.message)
+                }
             } else {
-                view.showToastMessageRed(data.message ?: "")
+                view.showToastMessageRed(data.message)
             }
         }
+    }
+
+    companion object {
+        private const val STATUS_OK = "OK"
     }
 }

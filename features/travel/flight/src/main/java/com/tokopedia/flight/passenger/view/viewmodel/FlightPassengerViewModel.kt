@@ -18,7 +18,6 @@ import javax.inject.Inject
  */
 
 class FlightPassengerViewModel @Inject constructor(private val getContactListUseCase: GetContactListUseCase,
-                                                   private val upsertContactListUseCase: UpsertContactListUseCase,
                                                    private val getPhoneCodeByIdUseCase: TravelCountryCodeByIdUseCase,
                                                    private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.io) {
@@ -40,15 +39,6 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
                         return@map it
                     }.toMutableList()
             )
-        }
-    }
-
-    fun updateContactList(query: String,
-                          updatedContact: TravelUpsertContactModel.Contact) {
-        launch {
-            upsertContactListUseCase.execute(query,
-                    TravelUpsertContactModel(updateLastUsedProduct = UpsertContactListUseCase.PARAM_TRAVEL_FLIGHT,
-                            contacts = listOf(updatedContact)))
         }
     }
 

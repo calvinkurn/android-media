@@ -13,14 +13,10 @@ import com.tokopedia.hotel.roomlist.presentation.fragment.HotelRoomListFragment
 
 class HotelRoomListActivity : HotelBaseActivity(), HasComponent<HotelRoomListComponent> {
 
-    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
-
-    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         toolbar.contentInsetStartWithNavigation = 0
-        supportActionBar?.elevation = 0.3f
+        supportActionBar?.elevation = ELEVATION_ACTION_BAR
     }
 
     override fun getComponent(): HotelRoomListComponent =
@@ -45,6 +41,7 @@ class HotelRoomListActivity : HotelBaseActivity(), HasComponent<HotelRoomListCom
 
     companion object {
 
+        private const val ELEVATION_ACTION_BAR = 0.3f
         const val ROOM_LIST_SCREEN_NAME = "/hotel/roomlist"
 
         fun createInstance(context: Context, propertyId: Long = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",

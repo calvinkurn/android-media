@@ -1,11 +1,9 @@
 package com.tokopedia.people.views
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -16,6 +14,7 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.people.R
+import com.tokopedia.people.listener.FollowerFollowingListener
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowerV2
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
@@ -28,7 +27,7 @@ open class ProfileFollowersAdapter(
     val viewModel: FollowerFollowingViewModel,
     val callback: AdapterCallback,
     val userSession: UserSession,
-    val fragment: FollowerListingFragment
+    val listener: FollowerFollowingListener
 ) : BaseAdapter<ProfileFollowerV2>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
@@ -97,9 +96,16 @@ open class ProfileFollowersAdapter(
             holder.textUsername.hide()
         }
 
-        holder.itemView.setOnClickListener { v ->
+        holder.itemView.setOnClickListener {
             UserProfileTracker().clickUserFollowers(userSession.userId, item.profile.userID == userSession.userId)
-            RouteManager.route(itemContext, item.profile.sharelink.applink)
+            val intent = RouteManager.getIntent(
+                itemContext,
+                item.profile.sharelink.applink
+            )
+            intent.putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
+            listener.callstartActivityFromFragment(
+                intent, UserProfileFragment.REQUEST_CODE_USER_PROFILE
+            )
         }
 
         if (item.profile.userID == this@ProfileFollowersAdapter.userSession.userId) {
@@ -125,9 +131,9 @@ open class ProfileFollowersAdapter(
                         return@setOnClickListener
                     }
 
-                    if (userSession?.isLoggedIn == false) {
-                        fragment.startActivityForResult(
-                            RouteManager.getIntent(fragment.activity, ApplinkConst.LOGIN),
+                    if (!userSession?.isLoggedIn) {
+                        listener.callstartActivityFromFragment(
+                            ApplinkConst.LOGIN,
                             UserProfileFragment.REQUEST_CODE_LOGIN
                         )
                     } else {
@@ -155,9 +161,9 @@ open class ProfileFollowersAdapter(
                         return@setOnClickListener
                     }
 
-                    if (userSession?.isLoggedIn == false) {
-                        fragment.startActivityForResult(
-                            RouteManager.getIntent(fragment.activity, ApplinkConst.LOGIN),
+                    if (!userSession?.isLoggedIn) {
+                        listener.callstartActivityFromFragment(
+                            ApplinkConst.LOGIN,
                             UserProfileFragment.REQUEST_CODE_LOGIN
                         )
                     } else {
@@ -170,17 +176,23 @@ open class ProfileFollowersAdapter(
             }
         }
     }
+    fun updateFollowUnfollow(position: Int, isFollowed: Boolean) {
+        if (position >= 0 && position < items.size) {
+            items[position].isFollow = isFollowed
+            notifyItemChanged(position)
+        }
+    }
 
     private fun updateToFollowUi(btnAction: UnifyButton) {
-        btnAction?.text = btnAction.context.getString(R.string.up_lb_following)
-        btnAction?.buttonVariant = UnifyButton.Variant.GHOST
-        btnAction?.buttonType = UnifyButton.Type.ALTERNATE
+        btnAction.text = btnAction.context.getString(R.string.up_lb_following)
+        btnAction.buttonVariant = UnifyButton.Variant.GHOST
+        btnAction.buttonType = UnifyButton.Type.ALTERNATE
     }
 
     private fun updateToUnFollowUi(btnAction: UnifyButton) {
-        btnAction?.text = btnAction.context.getString(R.string.up_btn_text_follow)
-        btnAction?.buttonVariant = UnifyButton.Variant.FILLED
-        btnAction?.buttonType = UnifyButton.Type.MAIN
+        btnAction.text = btnAction.context.getString(R.string.up_btn_text_follow)
+        btnAction.buttonVariant = UnifyButton.Variant.FILLED
+        btnAction.buttonType = UnifyButton.Type.MAIN
     }
 
     override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {

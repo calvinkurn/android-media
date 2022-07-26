@@ -28,10 +28,13 @@ class ImageReviewGqlResponse {
 
         @SerializedName("imageID")
         @Expose
-        var imageID: Int = 0
+        var imageID: String = "0"
+        @SerializedName("videoID")
+        @Expose
+        var videoID: String = "0"
         @SerializedName("reviewID")
         @Expose
-        var reviewID: Int = 0
+        var reviewID: String = "0"
         @SerializedName("imageSibling")
         @Expose
         var imageSibling: List<Int>? = null
@@ -45,19 +48,25 @@ class ImageReviewGqlResponse {
         @SerializedName("images")
         @Expose
         var images: List<Image>? = null
-        @SerializedName("imageCountFmt")
+        @SerializedName("videos")
         @Expose
-        var imageCountFmt: String = ""
-        @SerializedName("imageCount")
+        var videos: List<Video>? = null
+        @SerializedName("mediaCountFmt")
         @Expose
-        var imageCount: String = ""
+        var mediaCountFmt: String = ""
+        @SerializedName("mediaCount")
+        @Expose
+        var mediaCount: String = ""
+        @SerializedName("mediaCountTitle")
+        @Expose
+        var mediaTitle: String = ""
     }
 
     class Image {
 
         @SerializedName("imageAttachmentID")
         @Expose
-        var imageAttachmentID: Int = 0
+        var imageAttachmentID: String = "0"
         @SerializedName("description")
         @Expose
         var description: String? = null
@@ -69,14 +78,27 @@ class ImageReviewGqlResponse {
         var uriLarge: String? = null
         @SerializedName("reviewID")
         @Expose
-        var reviewID: Int = 0
+        var reviewID: String = ""
+    }
+
+    class Video {
+
+        @SerializedName("attachmentID")
+        @Expose
+        var attachmentID: String = "0"
+        @SerializedName("url")
+        @Expose
+        var url: String? = ""
+        @SerializedName("feedbackID")
+        @Expose
+        var feedbackID: String? = ""
     }
 
     class Review {
 
         @SerializedName("reviewId")
         @Expose
-        var reviewId: Int = 0
+        var reviewId: String = ""
         @SerializedName("message")
         @Expose
         var message: String? = null
@@ -111,7 +133,7 @@ class ImageReviewGqlResponse {
 
         @SerializedName("userID")
         @Expose
-        var userID: Int = 0
+        var userID: String = "0"
         @SerializedName("fullName")
         @Expose
         var fullName: String? = null

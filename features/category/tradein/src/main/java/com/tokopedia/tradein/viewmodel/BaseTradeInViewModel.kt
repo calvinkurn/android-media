@@ -8,7 +8,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 open class BaseTradeInViewModel() : BaseViewModel() {
     protected var progBarVisibility = MutableLiveData<Boolean>()
     protected var warningMessage = MutableLiveData<String>()
-    protected var errorMessage = MutableLiveData<String>()
+    protected var errorMessage = MutableLiveData<Throwable>()
 
     fun getProgBarVisibility(): LiveData<Boolean> {
         return progBarVisibility
@@ -18,7 +18,7 @@ open class BaseTradeInViewModel() : BaseViewModel() {
         return warningMessage
     }
 
-    fun getErrorMessage(): LiveData<String> {
+    fun getErrorMessage(): LiveData<Throwable> {
         return errorMessage
     }
 

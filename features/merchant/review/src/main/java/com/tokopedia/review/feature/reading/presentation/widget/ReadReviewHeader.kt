@@ -3,13 +3,21 @@ package com.tokopedia.review.feature.reading.presentation.widget
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.review.R
+import com.tokopedia.review.databinding.WidgetReadReviewHeaderBinding
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
 import com.tokopedia.review.feature.reading.data.AvailableFilters
 import com.tokopedia.review.feature.reading.data.ProductRating
@@ -19,15 +27,16 @@ import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHead
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHighlightedTopicListener
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
-import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.Typography
+import timber.log.Timber
 
-class ReadReviewHeader : BaseCustomView {
+class ReadReviewHeader @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : BaseCustomView(context, attrs, defStyleAttr) {
 
     companion object {
         const val RATING_STAR_WIDTH = 24
@@ -35,68 +44,88 @@ class ReadReviewHeader : BaseCustomView {
         const val SHOULD_SHOW_TOPIC_COUNT = 2
     }
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
-    }
-
-    private var rating: ReadReviewRating? = null
-    private var satisfactionRate: Typography? = null
-    private var ratingAndReviewCount: Typography? = null
-    private var chevron: IconUnify? = null
-    private var sortFilter: SortFilter? = null
-    private var seeAll: Typography? = null
-    private var topicLeft: ReadReviewHighlightedTopic? = null
-    private var topicRight: ReadReviewHighlightedTopic? = null
+    private val binding = WidgetReadReviewHeaderBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
 
     private var isProductReview: Boolean = true
     private var topicFilterChipIndex: Int = 0
 
-    private fun init() {
-        View.inflate(context, R.layout.widget_read_review_header, this)
-        bindViews()
+    init {
+        setupViews()
     }
 
     fun setIsProductReview(isProductReview: Boolean){
         this.isProductReview = isProductReview
     }
 
-    private fun bindViews() {
-        rating = findViewById(R.id.read_review_header_rating)
-        satisfactionRate = findViewById(R.id.read_review_satisfaction_rate)
-        ratingAndReviewCount = findViewById(R.id.read_review_rating_and_review_count)
-        chevron = findViewById(R.id.read_review_header_chevron_right)
-        sortFilter = findViewById(R.id.read_review_sort_filter)
-        sortFilter?.sortFilterPrefix?.viewTreeObserver?.addOnGlobalLayoutListener {
-            val sortFilterPrefixVisibility = sortFilter?.sortFilterPrefix?.visibility
-            if(sortFilterPrefixVisibility == View.GONE){
+    fun showShopPageReviewHeader() {
+        binding.readReviewHeaderRating.gone()
+        binding.readReviewHeaderChevronRight.gone()
+        binding.readReviewHighlightedTopicLeft.gone()
+        binding.readReviewHighlightedTopicRight.gone()
+        binding.readReviewFilterDivider.gone()
+
+        val dimen8dp =
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+        val dimen12dp =
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+        val dimen16dp =
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+        binding.containerReviewRating.setMargin(dimen16dp, dimen12dp, dimen16dp, dimen12dp)
+        binding.containerReviewRating.setPadding(dimen12dp, dimen8dp, dimen12dp, dimen8dp)
+        binding.readReviewSatisfactionRate.let {
+            it.setMargin(Int.ZERO, Int.ZERO, it.right, it.bottom)
+        }
+        binding.readReviewRatingAndReviewCount?.let {
+            it.setMargin(Int.ZERO, it.top, it.right, Int.ZERO)
+        }
+        binding.readReviewShopChevron.visible()
+
+        showRatingContainerBorderLine()
+    }
+
+    fun hideRatingContainer() {
+        binding.containerReviewRating.gone()
+        binding.readReviewFilterDivider.gone()
+    }
+
+    fun showRatingContainer() {
+        binding.containerReviewRating.visible()
+        binding.readReviewFilterDivider.visible()
+    }
+
+    private fun showRatingContainerBorderLine() {
+        try {
+            binding.containerReviewRating.setBackgroundResource(R.drawable.bg_review_header_bordered)
+        }catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun setupViews() {
+        binding.readReviewSortFilter.sortFilterPrefix.viewTreeObserver?.addOnGlobalLayoutListener {
+            val sortFilterPrefixVisibility = binding.readReviewSortFilter.sortFilterPrefix.visibility
+            if (sortFilterPrefixVisibility == View.GONE) {
                 configPaddingForGoneSortFilterPrefix()
-            }else{
+            } else {
                 configPaddingForVisibleSortFilterPrefix()
             }
         }
-        seeAll = findViewById(R.id.read_review_see_all)
-        topicLeft = findViewById(R.id.read_review_highlighted_topic_left)
-        topicRight = findViewById(R.id.read_review_highlighted_topic_right)
     }
 
     private fun configPaddingForVisibleSortFilterPrefix() {
         val paddingTop = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-        sortFilter?.setPadding(paddingTop, 0, 0, 0)
-        sortFilter?.sortFilterItems?.setPadding(0, 0, 0, 0)
+        binding.readReviewSortFilter.setPadding(paddingTop, 0, 0, 0)
+        binding.readReviewSortFilter.sortFilterItems.setPadding(0, 0, 0, 0)
     }
 
     private fun configPaddingForGoneSortFilterPrefix() {
         val paddingTop = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-        sortFilter?.setPadding(0, 0, 0, 0)
-        sortFilter?.sortFilterItems?.setPadding(paddingTop, 0, 0, 0)
+        binding.readReviewSortFilter.setPadding(0, 0, 0, 0)
+        binding.readReviewSortFilter.sortFilterItems.setPadding(paddingTop, 0, 0, 0)
     }
 
     private fun mapAvailableFiltersToSortFilter(topics: List<ProductTopic>, availableFilters: AvailableFilters, listener: ReadReviewFilterChipsListener): ArrayList<SortFilterItem> {
@@ -121,7 +150,7 @@ class ReadReviewHeader : BaseCustomView {
             filter.add(topicFilter)
             topicFilterChipIndex = filter.indexOf(topicFilter)
         }
-        val sortOption = getSortFilterItem(context.getString(R.string.review_reading_sort_default))
+        val sortOption = getSortFilterItem(getDefaultSortTitle())
         setListenerAndChevronListener(sortOption) { listener.onSortClicked(mapSortTitleToBottomSheetInput(sortOption)) }
         filter.add(sortOption)
         return filter
@@ -156,7 +185,7 @@ class ReadReviewHeader : BaseCustomView {
     }
 
     private fun getIndexOfSortFilter(sortFilterItem: SortFilterItem): Int {
-        return sortFilter?.chipItems?.indexOf(sortFilterItem) ?: 0
+        return binding.readReviewSortFilter.chipItems?.indexOf(sortFilterItem) ?: 0
     }
 
     private fun isChipsActive(chipType: String): Boolean {
@@ -188,33 +217,47 @@ class ReadReviewHeader : BaseCustomView {
     }
 
     private fun mapSortTitleToBottomSheetInput(sortOption: SortFilterItem): String {
-        return if (sortOption.title == context.getString(R.string.review_reading_sort_default)) {
-            if(!isProductReview)
-                SortTypeConstants.LATEST_COPY
-            else
-                SortTypeConstants.MOST_HELPFUL_COPY
+        return if (sortOption.title == getDefaultSortTitle()) {
+            getDefaultSort()
         } else {
             sortOption.title.toString()
         }
     }
 
+    private fun getDefaultSort(): String {
+        return if (isProductReview)
+            SortTypeConstants.MOST_HELPFUL_COPY
+        else
+            SortTypeConstants.LATEST_COPY
+    }
+
+    private fun getDefaultSortTitle(): String {
+        return context.getString(R.string.review_reading_sort_default)
+    }
+
     fun setRatingData(productRating: ProductRating) {
-        rating?.setRating(productRating.ratingScore)
-        this.satisfactionRate?.text = productRating.satisfactionRate
-        this.ratingAndReviewCount?.text = context.getString(R.string.review_reading_rating_and_review_count, productRating.totalRatingFmt, productRating.totalRatingTextAndImageFmt)
+        binding.readReviewHeaderRating.setRating(productRating.ratingScore)
+        binding.readReviewSatisfactionRate.text = productRating.satisfactionRate
+        binding.readReviewRatingAndReviewCount.text = context.getString(R.string.review_reading_rating_and_review_count, productRating.totalRatingFmt, productRating.totalRatingTextAndImageFmt)
     }
 
     fun setListener(readReviewHeaderListener: ReadReviewHeaderListener) {
-        satisfactionRate?.setOnClickListener {
+        binding.readReviewSatisfactionRate.setOnClickListener {
             readReviewHeaderListener.openStatisticsBottomSheet()
         }
-        chevron?.setOnClickListener {
+        binding.readReviewHeaderChevronRight.setOnClickListener {
+            readReviewHeaderListener.openStatisticsBottomSheet()
+        }
+        binding.containerReviewRating.setOnClickListener {
+            readReviewHeaderListener.openStatisticsBottomSheet()
+        }
+        binding.readReviewShopChevron.setOnClickListener {
             readReviewHeaderListener.openStatisticsBottomSheet()
         }
     }
 
     fun setAvailableFilters(topics: List<ProductTopic>, availableFilters: AvailableFilters, listener: ReadReviewFilterChipsListener) {
-        sortFilter?.apply {
+        binding.readReviewSortFilter.apply {
             sortFilterItems.removeAllViews()
             sortFilterPrefix.setOnClickListener {
                 resetAllFilters()
@@ -229,24 +272,21 @@ class ReadReviewHeader : BaseCustomView {
     fun updateFilter(selectedFilter: Set<ListItemUnify>, sortFilterBottomSheetType: SortFilterBottomSheetType, index: Int) {
         if (sortFilterBottomSheetType is SortFilterBottomSheetType.RatingFilterBottomSheet) {
             val titleAndDrawable = getRatingFilterTitleAndDrawableBasedOnCount(selectedFilter)
-            updateFilterChip(sortFilter?.chipItems?.get(index), selectedFilter.isEmpty(), titleAndDrawable.first, titleAndDrawable.second)
+            updateFilterChip(binding.readReviewSortFilter.chipItems?.get(index), selectedFilter.isEmpty(), titleAndDrawable.first, titleAndDrawable.second)
         } else {
-            updateFilterChip(sortFilter?.chipItems?.get(index), selectedFilter.isEmpty(), getTopicFilterTitleBasedOnCount(selectedFilter))
+            updateFilterChip(binding.readReviewSortFilter.chipItems?.get(index), selectedFilter.isEmpty(), getTopicFilterTitleBasedOnCount(selectedFilter))
         }
     }
 
-    fun updateFilterWithImage() {
-        sortFilter?.chipItems?.firstOrNull()?.toggleSelected()
+    fun updateFilterWithMedia() {
+        binding.readReviewSortFilter.chipItems?.firstOrNull()?.toggleSelected()
     }
 
     fun updateSelectedSort(selectedSort: String) {
-        val defaultSelectedSort = if (isProductReview)
-            SortTypeConstants.MOST_HELPFUL_COPY
-        else
-            SortTypeConstants.LATEST_COPY
-        sortFilter?.chipItems?.lastOrNull()?.apply {
+        val defaultSelectedSort = getDefaultSort()
+        binding.readReviewSortFilter.chipItems?.lastOrNull()?.apply {
             if (selectedSort == defaultSelectedSort) {
-                title = context.getString(R.string.review_reading_sort_default)
+                title = getDefaultSortTitle()
                 type = ChipsUnify.TYPE_NORMAL
             } else {
                 title = selectedSort
@@ -255,17 +295,17 @@ class ReadReviewHeader : BaseCustomView {
         }
     }
 
-    fun setSeeAll(listener: ReviewGalleryHeaderListener) {
-        seeAll?.apply {
-            show()
+    fun setSeeAll(show: Boolean, listener: ReviewGalleryHeaderListener? = null) {
+        binding.readReviewSeeAll.apply {
+            showWithCondition(show)
             setOnClickListener {
-                listener.onSeeAllClicked()
+                listener?.onSeeAllClicked()
             }
         }
     }
 
     fun setHighlightedTopics(topics: List<ProductTopic>, listener: ReadReviewHighlightedTopicListener) {
-        val highlightedTopic = listOf(topicLeft, topicRight)
+        val highlightedTopic = listOf(binding.readReviewHighlightedTopicLeft, binding.readReviewHighlightedTopicRight)
         topics.filter { it.shouldShow }.take(SHOULD_SHOW_TOPIC_COUNT).mapIndexed { index, productTopic ->
             highlightedTopic.getOrNull(index)?.apply {
                 setHighlightedTopic(productTopic)
@@ -276,9 +316,17 @@ class ReadReviewHeader : BaseCustomView {
     }
 
     fun updateFilterFromHighlightedTopic(title: String) {
-        sortFilter?.chipItems?.getOrNull(topicFilterChipIndex)?.apply {
+        binding.readReviewSortFilter.chipItems?.getOrNull(topicFilterChipIndex)?.apply {
             this.title = title
             type = ChipsUnify.TYPE_SELECTED
         }
+    }
+
+    fun isSortFilterActive(): Boolean {
+        return binding.readReviewSortFilter.chipItems?.lastOrNull()?.title != getDefaultSortTitle()
+    }
+
+    fun getReviewRatingContainer(): ConstraintLayout {
+        return binding.containerReviewRating
     }
 }

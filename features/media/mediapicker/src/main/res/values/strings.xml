@@ -21,7 +21,7 @@
     <string name="picker_button_cancel">Batal</string>
     <string name="picker_button_retake_common">Pilih Ulang</string>
     <string name="picker_button_retake_video">Rekam Video Ulang</string>
-    <string name="picker_button_retake_image">Ambil Gambar Ulang</string>
+    <string name="picker_button_retake_image">Ambil Foto Ulang</string>
     <string name="picker_button_activation">Aktifkan</string>
 
     <string name="picker_button_delete_confirm">Ya, Hapus</string>
@@ -32,10 +32,10 @@
 
     <string name="picker_permission_camera">Aktifkan akses kamera</string>
     <string name="picker_permission_microphone">Aktifkan akses mikrofon</string>
-    <string name="picker_permission_gallery">Aktifkan akses gallery</string>
+    <string name="picker_permission_gallery">Aktifkan akses galeri</string>
 
 <!--    message-->
-    <string name="picker_page_source_not_found">[Dev] PageSource tidak ditemukan, silahkan tambahkan di PickerParam builder.</string>
+    <string name="picker_page_source_not_found">[Dev] PageSource not found, please add your own on PickerParam builder.</string>
 
     <string name="picker_deletion_message">Kalau dihapus, media yang kamu ambil akan hilang karena belum disimpan di hp-mu.</string>
     <string name="picker_storage_threshold_message">Memori HP-mu kurang dari %1$d MB. Biar bisa rekam &#38; simpan video, hapus beberapa media di galerimu.</string>
@@ -52,7 +52,7 @@
     <string name="picker_capture_limit_photo">Kamu hanya bisa mengambil maksimal %1$d foto.</string>
     <string name="picker_capture_limit_video">Kamu hanya bisa merekam maksimal %1$d video.</string>
 
-    <string name="picker_video_duration_max_limit">Durasi video yang dipilih maksimal %1$s pas.</string>
+    <string name="picker_video_duration_max_limit">Durasi video yang dipilih maksimal %1$s, ya.</string>
     <string name="picker_video_duration_min_limit">Durasi video minimal harus %1$d detik.</string>
     <string name="picker_video_max_size">Ukuran video maksimal %1$d MB.</string>
 
@@ -66,4 +66,13 @@
 
     <string name="picker_video_duration_max_limit_sec">detik</string>
     <string name="picker_video_duration_max_limit_min">menit</string>
+    <string name="picker_video_duration_separator_char">/</string>
+
+<!--    content description-->
+    <string name="picker_cd_flash">flash button</string>
+    <string name="picker_cd_flip">flip button</string>
+    <string name="picker_cd_retake">retake button</string>
+    <string name="picker_cd_thumbnail">gallery image</string>
+    <string name="picker_cd_preview_center_play">center play button</string>
+    <string name="picker_cd_preview_center_pause">center pause button</string>
 </resources>

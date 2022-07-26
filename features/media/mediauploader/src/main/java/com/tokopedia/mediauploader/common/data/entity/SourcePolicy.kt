@@ -11,4 +11,8 @@ data class SourcePolicy(
     @Expose @SerializedName("timeout") val timeOut: Int = 60,
     @Expose @SerializedName("image_policy") val imagePolicy: ImagePolicy? = ImagePolicy(),
     @Expose @SerializedName("vod_policy") val videoPolicy: VideoPolicy? = VideoPolicy()
-)
+) {
+
+    fun timeOutString() = timeOut.toString()
+
+}

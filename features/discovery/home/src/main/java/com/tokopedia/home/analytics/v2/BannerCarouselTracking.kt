@@ -36,6 +36,7 @@ object BannerCarouselTracking : BaseTrackerConst() {
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
+                .appendCampaignCode(channelGrid.campaignCode.ifEmpty { channelModel.trackingAttributionModel.campaignCode })
                 .build()
     }
 
@@ -60,13 +61,13 @@ object BannerCarouselTracking : BaseTrackerConst() {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_ON_BANNER_CAROUEL,
                 eventLabel = Label.NONE,
-                promotions = channel.convertToHomePromotionModelList(position))
+                promotions = channel.convertToHomePromotionModelList())
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .build() as HashMap<String, Any>
     }
 
-    fun sendBannerCarouselSeeAllClick() {
+    fun sendBannerCarouselSeeAllClick(channelModel: ChannelModel) {
         val trackerBuilder = BaseTrackerBuilder()
         trackerBuilder.constructBasicGeneralClick(
                 event = CLICK_HOMEPAGE,
@@ -75,6 +76,7 @@ object BannerCarouselTracking : BaseTrackerConst() {
                 eventLabel = Label.NONE)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendCampaignCode(channelModel.trackingAttributionModel.campaignCode)
         getTracker().sendGeneralEvent(trackerBuilder.build())
     }
 
@@ -85,6 +87,6 @@ object BannerCarouselTracking : BaseTrackerConst() {
             position = (position + 1).toString()
     )
 
-    fun ChannelModel.convertToHomePromotionModelList(position: Int) =
-            this.channelGrids.map { it.convertToHomePromotionModel(this, position) }
+    private fun ChannelModel.convertToHomePromotionModelList() =
+            this.channelGrids.mapIndexed { index, channelGrid -> channelGrid.convertToHomePromotionModel(this, index) }
 }
