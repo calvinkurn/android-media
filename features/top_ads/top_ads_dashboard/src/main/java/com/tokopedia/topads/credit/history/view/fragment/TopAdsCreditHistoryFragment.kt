@@ -55,7 +55,6 @@ class TopAdsCreditHistoryFragment :
     CustomDatePicker.ActionListener {
 
     private var hariIni: ChipsUnify? = null
-    private var currentDate: Typography? = null
     private var cardAutoTopupStatus: CardUnify? = null
     private var autoTopupStatus: Typography? = null
     private var creditAmount: Typography? = null
@@ -168,7 +167,6 @@ class TopAdsCreditHistoryFragment :
     ): View? {
         val view = inflater.inflate(R.layout.fragment_topads_credit_history, container, false)
         hariIni = view.findViewById(R.id.hari_ini)
-        currentDate = view.findViewById(R.id.current_date)
         cardAutoTopupStatus = view.findViewById(R.id.card_auto_topup_status)
         autoTopupStatus = view.findViewById(R.id.auto_topup_status)
         creditAmount = view.findViewById(R.id.creditAmount)
@@ -278,17 +276,12 @@ class TopAdsCreditHistoryFragment :
     }
 
     private fun setDateRangeText(position: Int) {
-        when (position) {
-            CONST_1 -> currentDate?.text =
-                context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
-            CONST_0 -> currentDate?.text = context?.getString(R.string.topads_dash_hari_ini)
-            CONST_2 -> currentDate?.text =
-                context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
-            else -> {
-                val text =
-                    Utils.outputFormat.format(startDate) + " - " + Utils.outputFormat.format(endDate)
-                currentDate?.text = text
-            }
+        hariIni?.chip_text?.text = when (position) {
+            CONST_1 -> context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
+            CONST_0 -> context?.getString(R.string.topads_dash_hari_ini)
+            CONST_2 -> context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
+            else -> Utils.outputFormat.format(startDate ?: Utils.getStartDate()) + " - " +
+                    Utils.outputFormat.format(endDate ?: Utils.getEndDate())
         }
     }
 

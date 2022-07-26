@@ -21,6 +21,13 @@ class RewardPendingInfoBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
+        initListeners()
+    }
+
+    private fun initListeners() {
+        binding.btnOkay.setOnClickListener {
+            dismiss()
+        }
     }
 
     private fun initView() = with(binding) {
