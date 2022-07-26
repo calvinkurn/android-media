@@ -1,5 +1,6 @@
 package com.tokopedia.wishlistcollection.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,7 +14,7 @@ import com.tokopedia.wishlistcommon.util.GQL_DELETE_WISHLIST_COLLECTION
 import javax.inject.Inject
 
 @GqlQuery("DeleteWishlistCollectionMutation", GQL_DELETE_WISHLIST_COLLECTION)
-class DeleteWishlistCollectionUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
+class DeleteWishlistCollectionUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) :
     UseCase<Result<DeleteWishlistCollectionResponse.Data.DeleteWishlistCollection>>() {
     private var params: Map<String, Any?>? = null
     private val collectionId = "collectionID"

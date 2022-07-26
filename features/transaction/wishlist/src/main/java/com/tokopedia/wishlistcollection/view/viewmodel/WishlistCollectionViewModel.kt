@@ -4,13 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
+import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,8 +23,8 @@ class WishlistCollectionViewModel @Inject constructor(
     private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _collections = MutableLiveData<Result<CollectionWishlistResponse.Data.GetWishlistCollections>>()
-    val collections: LiveData<Result<CollectionWishlistResponse.Data.GetWishlistCollections>>
+    private val _collections = MutableLiveData<Result<WishlistCollectionResponse.GetWishlistCollections>>()
+    val collections: LiveData<Result<WishlistCollectionResponse.GetWishlistCollections>>
         get() = _collections
 
     private val _deleteCollectionResult = MutableLiveData<Result<DeleteWishlistCollectionResponse.Data.DeleteWishlistCollection>>()
@@ -30,16 +32,16 @@ class WishlistCollectionViewModel @Inject constructor(
         get() = _deleteCollectionResult
 
     fun getWishlistCollections() {
-        launch(dispatcher.main) {
-            val result =
-                withContext(dispatcher.io) { getWishlistCollectionUseCase.executeOnBackground() }
-            if (result is Success) {
-                _collections.value = result
+        launchCatchError(block = {
+            val result = getWishlistCollectionUseCase(Unit)
+            if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
+                _collections.postValue(Success(result.getWishlistCollections))
             } else {
-                val error = (result as Fail).throwable
-                _collections.value = Fail(error)
+                _collections.postValue(Fail(Throwable()))
             }
-        }
+        }, onError = {
+            _collections.postValue(Fail(it))
+        })
     }
 
     fun deleteWishlistCollection(collectionId: String) {

@@ -35,7 +35,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
-import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
@@ -43,6 +42,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_CREATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
+import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_NEED_REFRESH
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
@@ -281,7 +281,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         }
     }
 
-    private fun mapCollection(data: CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData): List<WishlistCollectionTypeLayoutData> {
+    private fun mapCollection(data: WishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData): List<WishlistCollectionTypeLayoutData> {
         val listCollection = arrayListOf<WishlistCollectionTypeLayoutData>()
         val tickerObject = WishlistCollectionTypeLayoutData(data.ticker, TYPE_COLLECTION_TICKER)
         listCollection.add(tickerObject)

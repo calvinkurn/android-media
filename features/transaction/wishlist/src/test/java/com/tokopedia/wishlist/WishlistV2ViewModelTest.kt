@@ -186,26 +186,6 @@ class WishlistV2ViewModelTest {
         } returns topAdsImageViewModel
 
         coEvery {
-            wishlistV2ViewModel.organizeWishlistV2Data(
-                wishlistV2Response.data.wishlistV2,
-                "",
-                false
-            )
-        } returns listOf()
-
-        coEvery {
-            wishlistV2ViewModel.mapToEmptyState(wishlistV2Response.data.wishlistV2, any(), any())
-        } returns arrayListOf()
-
-        coEvery {
-            wishlistV2ViewModel.mapToRecommendation(any(), any())
-        } returns arrayListOf()
-
-        coEvery {
-            wishlistV2ViewModel.mapToTopads(any(), any())
-        } returns arrayListOf()
-
-        coEvery {
             wishlistV2UseCase.executeSuspend(any())
         } returns wishlistV2Response.data
 

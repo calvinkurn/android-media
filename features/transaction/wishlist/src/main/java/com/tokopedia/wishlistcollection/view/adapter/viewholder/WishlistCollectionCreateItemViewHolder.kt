@@ -3,10 +3,10 @@ package com.tokopedia.wishlistcollection.view.adapter.viewholder
 import android.widget.GridLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
-import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.CollectionWishlistCreateItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.CREATE_NEW_COLLECTION_BG_IMAGE
 import com.tokopedia.wishlist.util.WishlistV2Utils
+import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 
 class WishlistCollectionCreateItemViewHolder(
@@ -14,7 +14,7 @@ class WishlistCollectionCreateItemViewHolder(
     private val actionListener: WishlistCollectionAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: WishlistCollectionTypeLayoutData) {
-            if (item.dataObject is CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData.Placeholder) {
+            if (item.dataObject is WishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Placeholder) {
                 val params: GridLayout.LayoutParams = GridLayout.LayoutParams(binding.rlCreateWishlistCollection.layoutParams)
                 params.width = WishlistV2Utils.toDp(154)
                 params.height = WishlistV2Utils.toDp(154)

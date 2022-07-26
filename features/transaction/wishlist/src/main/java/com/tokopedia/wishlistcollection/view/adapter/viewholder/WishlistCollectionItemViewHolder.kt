@@ -7,11 +7,11 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
-import com.tokopedia.wishlistcollection.data.response.CollectionWishlistResponse
 import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.SPEC_0
 import com.tokopedia.wishlist.util.WishlistV2Consts.SPEC_2
 import com.tokopedia.wishlist.util.WishlistV2Utils
+import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 
 class WishlistCollectionItemViewHolder(
@@ -20,7 +20,7 @@ class WishlistCollectionItemViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
     var isAllWishlist = false
         fun bind(item: WishlistCollectionTypeLayoutData) {
-            if (item.dataObject is CollectionWishlistResponse.Data.GetWishlistCollections.WishlistCollectionResponseData.CollectionsItem) {
+            if (item.dataObject is WishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.CollectionsItem) {
                 binding.root.setOnClickListener {
                     actionListener?.onCollectionItemClicked(item.dataObject.id)
                 }

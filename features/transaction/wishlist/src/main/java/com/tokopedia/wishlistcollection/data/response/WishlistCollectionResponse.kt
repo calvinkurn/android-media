@@ -2,11 +2,7 @@ package com.tokopedia.wishlistcollection.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class CollectionWishlistResponse(
-	@SerializedName("data")
-	val data: Data
-) {
-	data class Data(
+data class WishlistCollectionResponse(
 		@SerializedName("get_wishlist_collections")
 		val getWishlistCollections: GetWishlistCollections = GetWishlistCollections()
 	) {
@@ -148,4 +144,3 @@ data class CollectionWishlistResponse(
 			}
 		}
 	}
-}

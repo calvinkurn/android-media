@@ -1,5 +1,6 @@
 package com.tokopedia.wishlistcollection.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,7 +14,7 @@ import com.tokopedia.wishlistcommon.util.GQL_GET_WISHLIST_COLLECTION_NAMES
 import javax.inject.Inject
 
 @GqlQuery("GetWishlistCollectionNamesQuery", GQL_GET_WISHLIST_COLLECTION_NAMES)
-class GetWishlistCollectionNamesUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
+class GetWishlistCollectionNamesUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) :
     UseCase<Result<GetWishlistCollectionNamesResponse.Data.GetWishlistCollectionNames>>() {
 
     override suspend fun executeOnBackground(): Result<GetWishlistCollectionNamesResponse.Data.GetWishlistCollectionNames> {

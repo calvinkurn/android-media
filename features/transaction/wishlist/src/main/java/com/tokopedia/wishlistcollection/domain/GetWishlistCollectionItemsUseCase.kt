@@ -1,5 +1,6 @@
 package com.tokopedia.wishlistcollection.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,7 +16,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PARAMS
 import javax.inject.Inject
 
 @GqlQuery("GetWishlistCollectionItemsQuery", GQL_GET_WISHLIST_COLLECTION_ITEMS)
-class GetWishlistCollectionItemsUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
+class GetWishlistCollectionItemsUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) :
     UseCase<Result<GetWishlistCollectionItemsResponse.Data.GetWishlistCollectionItems>>() {
     private var params: Map<String, Any?>? = null
 
