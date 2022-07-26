@@ -416,11 +416,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                                 duration = Toaster.LENGTH_INDEFINITE,
                                 actionLabel = getString(R.string.play_broadcast_try_again),
                                 actionListener = {
+                                    showLoading(true)
                                     event.onRetry.invoke()
                                 })
                         }
                     }
                     PlayBroadcastEvent.BroadcastStarted -> {
+                        showLoading(false)
                         openBroadcastLivePage()
                         parentViewModel.startTimer()
                     }
