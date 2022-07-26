@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -8,7 +7,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.domain.model.SetPinnedProduct
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -16,7 +14,6 @@ import javax.inject.Inject
  */
 @GqlQuery(SetPinnedProductUseCase.QUERY_NAME, SetPinnedProductUseCase.QUERY)
 class SetPinnedProductUseCase @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
     graphqlRepository: GraphqlRepository
 ) : RetryableGraphqlUseCase<SetPinnedProduct>(graphqlRepository) {
 
@@ -26,10 +23,6 @@ class SetPinnedProductUseCase @Inject constructor(
             GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(SetPinnedProduct::class.java)
-    }
-
-    override suspend fun executeOnBackground(): SetPinnedProduct = withContext(dispatchers.io) {
-        super.executeOnBackground()
     }
 
     fun createParam(channelId: String, productId: String): Map<String, Any> {
