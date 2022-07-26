@@ -118,7 +118,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         }
     }
 
-    private fun bindParentReplyData(parentReply: ParentReply, message : String, from : String) {
+    private fun bindParentReplyData(parentReply: ParentReply, message : String, from : String?) {
         referTo(parentReply)
         setTitle(from)
         setReplyMsg(message)
@@ -188,7 +188,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     fun composeReplyData(
         referredMsg: BaseChatUiModel,
         text: CharSequence,
-        enableCloseButton: Boolean = false
+        enableCloseButton: Boolean = false,
+        userName: String?
     ) {
         val parentReply = ParentReply(
             attachmentId = referredMsg.attachmentId,
@@ -202,7 +203,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             source = "chat",
             replyId = referredMsg.replyId
         )
-        bindParentReplyData(parentReply, referredMsg.message,referredMsg.from)
+        bindParentReplyData(parentReply, referredMsg.message, userName)
         updateCloseButtonState(enableCloseButton)
         show()
     }

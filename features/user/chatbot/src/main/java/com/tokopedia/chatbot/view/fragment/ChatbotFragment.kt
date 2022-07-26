@@ -90,6 +90,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
+import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
 import com.tokopedia.chatbot.util.SmoothScroller
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
@@ -210,6 +211,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
     private var recyclerView : RecyclerView? = null
     private var isArticleDataSent : Boolean = false
+
+    @Inject
+    lateinit var getUserNameForReplyBubble : GetUserNameForReplyBubble
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -1417,7 +1421,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 REPLY -> {
                     replyBubbleOnBoarding.dismiss()
                     senderNameForReply = messageUiModel.from
-                    replyBubbleContainer?.composeReplyData(messageUiModel,"",true)
+                    replyBubbleContainer.composeReplyData(messageUiModel,"",true, getUserNameForReplyBubble.getUserName(messageUiModel.fromUid))
                     bottomSheetPage.dismiss()
                 }
             }
