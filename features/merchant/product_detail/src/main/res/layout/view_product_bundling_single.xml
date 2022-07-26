@@ -7,8 +7,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/product_bundling_single_image"
-        android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_64"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -44,6 +44,7 @@
         android:layout_marginTop="4dp"
         app:layout_constraintLeft_toLeftOf="@id/product_bundling_single_name"
         app:layout_constraintTop_toBottomOf="@id/product_bundling_single_name"
+        app:typographyType="display_3"
         tools:text="Rp36.000" />
 
     <com.tokopedia.unifycomponents.Label
@@ -53,6 +54,7 @@
         android:layout_marginStart="4dp"
         android:visibility="gone"
         app:labelType="general_light_red"
+        app:layout_constraintBottom_toBottomOf="@id/product_bundling_single_price"
         app:layout_constraintLeft_toRightOf="@id/product_bundling_single_price"
         app:layout_constraintTop_toTopOf="@id/product_bundling_single_price"
         tools:text="10%"
@@ -66,6 +68,7 @@
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@id/product_bundling_single_discount"
         app:layout_constraintLeft_toRightOf="@id/product_bundling_single_discount"
+        app:layout_constraintTop_toTopOf="@id/product_bundling_single_discount"
         app:typographyType="small"
         tools:text="Rp40.000" />
 
