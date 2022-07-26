@@ -76,6 +76,8 @@ interface PlayTagItemsAnalytic {
         quantity: Int,
     )
 
+    fun impressToasterAtcPinnedProductCarousel()
+
     interface Factory {
         fun create(
             trackingQueue: TrackingQueue,

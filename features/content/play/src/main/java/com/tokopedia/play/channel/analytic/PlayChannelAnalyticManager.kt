@@ -10,6 +10,8 @@ import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.isNotChanged
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
@@ -60,7 +62,8 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
     ) {
         scope.launch(dispatchers.computation) {
             uiState.collectLatest {
-                if (analytic2 != null) return@collectLatest
+                if (analytic2 != null || it.channel.channelInfo.id.isBlank()) return@collectLatest
+
                 analytic2 = analytic2Factory.create(
                     trackingQueue = trackingQueue,
                     channelInfo = it.channel.channelInfo,
@@ -107,6 +110,12 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
                             cartId = it.cartId,
                             quantity = it.product.minQty,
                         )
+
+                        /**
+                         * Because Toaster doesn't have any identifier and show listener,
+                         * this is currently the best way to do this
+                         */
+                        analytic2?.impressToasterAtcPinnedProductCarousel()
                     }
                     else -> {}
                 }

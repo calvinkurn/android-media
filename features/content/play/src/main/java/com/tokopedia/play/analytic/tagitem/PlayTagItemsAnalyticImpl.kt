@@ -13,6 +13,7 @@ import com.tokopedia.play.analytic.KEY_TRACK_CLICK
 import com.tokopedia.play.analytic.KEY_TRACK_CLICK_GROUP_CHAT
 import com.tokopedia.play.analytic.KEY_TRACK_CURRENT_SITE
 import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
+import com.tokopedia.play.analytic.KEY_TRACK_VIEW_CONTENT_IRIS
 import com.tokopedia.play.analytic.KEY_USER_ID
 import com.tokopedia.play.analytic.VAL_BUSINESS_UNIT
 import com.tokopedia.play.analytic.VAL_CURRENT_SITE
@@ -382,6 +383,15 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
             .build()
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
+    }
+
+    override fun impressToasterAtcPinnedProductCarousel() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            KEY_TRACK_VIEW_CONTENT_IRIS,
+            KEY_TRACK_GROUP_CHAT_ROOM,
+            "view - pinned lihat keranjang",
+            "$channelId - ${channelType.value}"
+        )
     }
 
     /**
