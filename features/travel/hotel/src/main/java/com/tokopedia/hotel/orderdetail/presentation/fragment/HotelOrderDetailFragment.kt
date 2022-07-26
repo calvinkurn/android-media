@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.data.QueryTravelCrossSelling
 import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
@@ -38,6 +39,7 @@ import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.common.util.QueryHotelOrderDetail
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_ORDER_DETAIL
 import com.tokopedia.hotel.databinding.FragmentHotelOrderDetailBinding
 import com.tokopedia.hotel.evoucher.presentation.activity.HotelEVoucherActivity
@@ -188,12 +190,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         if (userSessionInterface.isLoggedIn) {
             if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) {
                 orderDetailViewModel.getOrderDetail(
-                        HotelGqlQuery.ORDER_DETAILS,
-                        TravelCrossSellingGQLQuery.QUERY_CROSS_SELLING,
+                        QueryHotelOrderDetail(),
+                        QueryTravelCrossSelling(),
                         orderId, orderCategory)
             } else {
                 orderDetailViewModel.getOrderDetail(
-                        HotelGqlQuery.ORDER_DETAILS,
+                        QueryHotelOrderDetail(),
                         null,
                         orderId, orderCategory)
             }
