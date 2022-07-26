@@ -1134,7 +1134,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun checkPinProduct(ifTimerIsOn: () -> Unit, pinStatus: Boolean) {
         if(!parentViewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
         else {
-            showErrorToaster(Throwable("Gagal Pin"))
+           showToaster(
+                message = getString(R.string.play_bro_pin_product_failed),
+                type = Toaster.TYPE_ERROR
+            )
         }
     }
 
