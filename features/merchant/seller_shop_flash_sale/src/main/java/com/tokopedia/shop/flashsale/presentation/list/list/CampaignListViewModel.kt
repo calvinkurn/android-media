@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.flashsale.common.extension.digitsOnly
 import com.tokopedia.shop.flashsale.common.extension.isNumber
@@ -54,9 +53,9 @@ class CampaignListViewModel @Inject constructor(
     val shareComponentMetadata: LiveData<Result<ShareComponentMetadata>>
         get() = _shareComponentMetadata
 
-    private val _sellerEligibility = MutableLiveData<Result<CampaignCreationEligibility>>()
+    private val _creationEligibility = MutableLiveData<Result<CampaignCreationEligibility>>()
     val creationEligibility: LiveData<Result<CampaignCreationEligibility>>
-        get() = _sellerEligibility
+        get() = _creationEligibility
 
     private val _shopDecorStatus = MutableLiveData<Result<String>>()
     val shopDecorStatus: LiveData<Result<String>>
@@ -136,10 +135,10 @@ class CampaignListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val metadata = validateCampaignCreationEligibility.execute()
-                _sellerEligibility.postValue(Success(metadata))
+                _creationEligibility.postValue(Success(metadata))
             },
             onError = { error ->
-                _sellerEligibility.postValue(Fail(error))
+                _creationEligibility.postValue(Fail(error))
             }
         )
 

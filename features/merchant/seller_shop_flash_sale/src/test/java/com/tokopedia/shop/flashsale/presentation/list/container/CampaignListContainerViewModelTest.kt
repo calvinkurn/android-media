@@ -289,11 +289,4 @@ class CampaignListContainerViewModelTest {
         }
 
     //endregion
-
-
-
-
-    private fun buildHistoryCampaignMetadata(): List<TabMeta> {
-        return listOf(TabMeta(id = 2, totalCampaign = 20, "Riwayat Campaign", status = listOf(CampaignStatus.FINISHED.id)))
-    }
 }
