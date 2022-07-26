@@ -22,8 +22,6 @@ class MultiBundle(parent: View) {
     private val viewStub: ViewStub = parent.findViewById(R.id.product_bundling_stub_multi)
     private val view: View = viewStub.inflate()
 
-    private val weakContext: WeakReference<Context> = WeakReference(view.context)
-
     private val image1: ImageUnify = view.findViewById(R.id.product_bundling_image_1)
     private val image2: ImageUnify = view.findViewById(R.id.product_bundling_image_2)
     private val image3: ImageUnify = view.findViewById(R.id.product_bundling_image_3)
