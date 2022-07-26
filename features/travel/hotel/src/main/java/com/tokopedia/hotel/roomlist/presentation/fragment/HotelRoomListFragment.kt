@@ -30,6 +30,7 @@ import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.common.util.QueryHotelPropertyRoomList
 import com.tokopedia.hotel.databinding.FragmentHotelRoomListBinding
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
@@ -325,9 +326,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun loadData(page: Int) {
         showFilterRecyclerView(false)
         if (firstTime) {
-            roomListViewModel.getRoomList(HotelGqlQuery.PROPERTY_ROOM_LIST,
+            roomListViewModel.getRoomList(QueryHotelPropertyRoomList(),
                     hotelRoomListPageModel, false)
-        } else roomListViewModel.getRoomList(HotelGqlQuery.PROPERTY_ROOM_LIST,
+        } else roomListViewModel.getRoomList(QueryHotelPropertyRoomList(),
                 hotelRoomListPageModel, true)
     }
 
