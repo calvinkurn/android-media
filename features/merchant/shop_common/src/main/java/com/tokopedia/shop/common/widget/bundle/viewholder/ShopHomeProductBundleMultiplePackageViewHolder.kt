@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemShopHomeBundleProductMultipleBinding
@@ -42,18 +43,33 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
             bundleProductItem: ShopHomeBundleProductUiModel,
             bundleDetail: ShopHomeProductBundleDetailUiModel,
             bundleParent: ShopHomeProductBundleItemUiModel,
-            bundlePosition: Int
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String
     ) {
         imageBundleProduct?.loadImage(bundleProductItem.productImageUrl)
         typographyBundleProductName?.text = bundleProductItem.productName
-
+        itemView.addOnImpressionListener(bundleProductItem){
+            itemListener.impressionProductItemBundleMultiple(
+                bundleProductItem,
+                bundleDetail,
+                bundleParent.bundleName,
+                bundlePosition,
+                widgetTitle,
+                widgetName,
+                adapterPosition
+            )
+        }
         itemView.setOnClickListener {
             itemListener.onMultipleBundleProductClicked(
-                    bundleProductItem,
-                    bundleDetail,
-                    bundleParent.bundleName,
-                    bundleParent.bundleType,
-                    bundlePosition
+                bundleProductItem,
+                bundleDetail,
+                bundleParent.bundleName,
+                bundleParent.bundleType,
+                bundlePosition,
+                widgetTitle,
+                widgetName,
+                adapterPosition
             )
         }
     }
@@ -65,7 +81,10 @@ interface MultipleProductBundleListener {
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
             bundleType: String,
-            bundlePosition: Int
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            productItemPosition: Int
     )
     fun addMultipleBundleToCart(
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
@@ -82,5 +101,15 @@ interface MultipleProductBundleListener {
             bundleName: String,
             bundleType: String,
             bundlePosition: Int,
+    )
+
+    fun impressionProductItemBundleMultiple(
+        selectedProduct: ShopHomeBundleProductUiModel,
+        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+        bundleName: String,
+        bundlePosition: Int,
+        widgetTitle: String,
+        widgetName: String,
+        productItemPosition: Int
     )
 }

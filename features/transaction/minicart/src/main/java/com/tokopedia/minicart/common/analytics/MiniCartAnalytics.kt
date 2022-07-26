@@ -13,7 +13,7 @@ import javax.inject.Inject
 class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
     enum class Page {
-        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE, DISCOVERY_PAGE, RECOMMENDATION_INFINITE, MVC_PAGE
+        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE, DISCOVERY_PAGE, RECOMMENDATION_INFINITE, MVC_PAGE, SHOP_PAGE
     }
 
     companion object {
@@ -35,10 +35,10 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val KEY_SHOP_ID = "shopId"
         const val KEY_PROMO_CODE = "promoCode"
         const val KEY_PAGE_SOURCE = "pageSource"
+        const val KEY_TRACKER_ID = "trackerId"
         const val KEY_CATEGORY_ID = "category_id"
         const val KEY_CREATIVE_NAME = "creative_name"
         const val KEY_CREATIVE_SLOT = "creative_slot"
-        const val KEY_TRACKER_ID = "trackerId"
         const val KEY_WAREHOUSE_ID = "warehouseId"
         const val KEY_PROMOTIONS = "promotions"
         const val KEY_VIEW_ITEM = "view_item"
@@ -55,10 +55,19 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val VALUE_PROMO_CODE_FULFILLED = "fulfilled"
         const val VALUE_PROMO_CODE_NOT_FULFILLED = "not_fulfilled"
         const val VALUE_PAGE_SOURCE_MVC_PAGE = "mvcpage"
+        const val VALUE_PAGE_SOURCE_SHOP_PAGE = "shoppage"
+        const val VALUE_TRACKER_ID_CLICK_SEE_CART_ON_MINICART = "32052"
+        const val VALUE_TRACKER_ID_CLICK_SIMPLIFIED_SUMMARY_ON_MINICART = "32054"
+        const val VALUE_TRACKER_ID_MINI_CART_GENERAL_WIDGET_IMPRESSION = "32353"
+        const val VALUE_TRACKER_ID_MINI_CART_SUMMARY_IMPRESSION = "32357"
         const val VALUE_SHOP_NAME_TOKOPEDIA_NOW = "Tokopedia NOW!"
         const val VALUE_SHOP_TYPE_TOKOPEDIA_NOW = "official_store"
         const val VALUE_DIMENSION_87 = "shop page"
         const val VALUE_DIMENSION_40 = "/tokonow - product bundling"
+        const val VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_IMPRESSED = "34074"
+        const val VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_CLICKED = "34075"
+        const val VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_ATC = "34076"
+
 
         // EVENT NAME
         const val EVENT_NAME_CLICK_MINICART = "clickMinicart"
@@ -76,6 +85,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_CATEGORY_MINICART = "minicart"
         const val EVENT_CATEGORY_CLICK_BUY = "tokonow %s"
         const val EVENT_CATEGORY_SHOP_PAGE_BUYER = "shop page - buyer"
+        const val EVENT_CATEGORY_SHOP_PAGE_BUYER_DIRECT_PURCHASE = "shop page - buyer - direct purchase"
         const val EVENT_CATEGORY_TOKONOW_MINI_CART = "tokonow - minicart"
 
         // EVENT ACTION
@@ -106,6 +116,9 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_ACTION_CLICK_CHECK_CART = "click check cart"
         const val EVENT_ACTION_MVC_PROGRESS_BAR_IMPRESSION = "mvc progress bar impression"
         const val EVENT_ACTION_CLICK_CHANGE_PRODUCT_BUNDLE = "click ubah in product bundling"
+        const val EVENT_ACTION_CLICK_ARROW_SIMPLIFIED_SUMMARY = "click arrow to ringkasan belanja"
+        const val EVENT_ACTION_MINI_CART_IMPRESSION = "impression - minicart"
+        const val EVENT_ACTION_MINI_CART_SUMMARY_IMPRESSION = "impression - minicart - summary"
         const val EVENT_ACTION_ADD_TO_CART = "click bundling widget - add to cart"
         const val EVENT_ACTION_CLICK_BUNDLING_WIDGET = "click bundling widget"
         const val EVENT_ACTION_VIEW_BUNDLING = "view bundling widget"
@@ -611,16 +624,25 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
     /* MINI CART SIMPLIFIED MVC Page : https://mynakama.tokopedia.com/datatracker/requestdetail/view/2549 */
     // 6
-    fun eventClickCheckCart(basketSize: String, isFulfilled: Boolean, shopId: String,
-                            pageSource: Page?, businessUnit: String, currentSite: String) {
-        val trackingData = TrackAppUtils.gtmData(EVENT_NAME_CLICK_PG, EVENT_CATEGORY_SHOP_PAGE_BUYER,
-                EVENT_ACTION_CLICK_CHECK_CART, basketSize)
+    fun eventClickCheckCart(basketSize: String, isFulfilled: Boolean?, shopId: String,
+                            pageSource: Page?, businessUnit: String, currentSite: String,
+                            trackerId: String?) {
+        val trackingData = TrackAppUtils.gtmData(EVENT_NAME_CLICK_PG, EVENT_CATEGORY_SHOP_PAGE_BUYER, EVENT_ACTION_CLICK_CHECK_CART, basketSize)
         trackingData[KEY_BUSINESS_UNIT] = businessUnit
         trackingData[KEY_CURRENT_SITE] = currentSite
-        trackingData[KEY_PAGE_SOURCE] = if (pageSource == Page.MVC_PAGE) VALUE_PAGE_SOURCE_MVC_PAGE else ""
-        trackingData[KEY_PROMO_CODE] = if (isFulfilled) VALUE_PROMO_CODE_FULFILLED else VALUE_PROMO_CODE_NOT_FULFILLED
+        trackingData[KEY_PAGE_SOURCE] = when (pageSource) {
+            Page.MVC_PAGE -> VALUE_PAGE_SOURCE_MVC_PAGE
+            Page.SHOP_PAGE -> VALUE_PAGE_SOURCE_SHOP_PAGE
+            else -> ""
+        }
+        trackingData[KEY_PROMO_CODE] = when (isFulfilled) {
+            true -> VALUE_PROMO_CODE_FULFILLED
+            false -> VALUE_PROMO_CODE_NOT_FULFILLED
+            else -> ""
+        }
         trackingData[KEY_SHOP_ID] = shopId
         trackingData[KEY_USER_ID] = userSession.userId
+        trackerId?.let { trackingData[KEY_TRACKER_ID] = it }
         sendGeneralEvent(trackingData)
     }
 
@@ -636,6 +658,59 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         sendGeneralEvent(trackingData)
     }
 
+    /* https://mynakama.tokopedia.com/datatracker/requestdetail/view/1552 */
+    // 32054
+    fun eventClickSimplifiedSummaryOnMiniCart() {
+        val trackingData = TrackAppUtils.gtmData(
+            EVENT_NAME_CLICK_PP,
+            EVENT_CATEGORY_SHOP_PAGE_BUYER,
+            EVENT_ACTION_CLICK_ARROW_SIMPLIFIED_SUMMARY,
+            ""
+        )
+        trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
+        trackingData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
+        trackingData[KEY_TRACKER_ID] = VALUE_TRACKER_ID_CLICK_SIMPLIFIED_SUMMARY_ON_MINICART
+        sendGeneralEvent(trackingData)
+    }
+
+    /* https://mynakama.tokopedia.com/datatracker/requestdetail/view/3133 */
+    // 32353
+    fun eventMiniCartGeneralWidgetImpression(shopId: String) {
+        val trackingData = TrackAppUtils.gtmData(
+            EVENT_NAME_VIEW_PG_IRIS,
+            EVENT_CATEGORY_SHOP_PAGE_BUYER_DIRECT_PURCHASE,
+            EVENT_ACTION_MINI_CART_IMPRESSION,
+            ""
+        )
+        trackingData[KEY_SHOP_ID] = shopId
+        trackingData[KEY_USER_ID] = userSession.userId
+        trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
+        trackingData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
+        trackingData[KEY_TRACKER_ID] = VALUE_TRACKER_ID_MINI_CART_GENERAL_WIDGET_IMPRESSION
+        sendGeneralEvent(trackingData)
+    }
+
+    /* https://mynakama.tokopedia.com/datatracker/requestdetail/view/3133 */
+    // 32357
+    fun eventSimplifiedSummaryImpression(shopId: String) {
+        val trackingData = TrackAppUtils.gtmData(
+            EVENT_NAME_VIEW_PG_IRIS,
+            EVENT_CATEGORY_SHOP_PAGE_BUYER_DIRECT_PURCHASE,
+            EVENT_ACTION_MINI_CART_SUMMARY_IMPRESSION,
+            ""
+        )
+        trackingData[KEY_SHOP_ID] = shopId
+        trackingData[KEY_USER_ID] = userSession.userId
+        trackingData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
+        trackingData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE
+        trackingData[KEY_TRACKER_ID] = VALUE_TRACKER_ID_MINI_CART_SUMMARY_IMPRESSION
+        sendGeneralEvent(trackingData)
+    }
+
+    /*
+    * Tracker: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3235
+    * No: 1 - 3
+    */
     fun eventProductBundleRecomImpression (
         shopId: String,
         warehouseId: String,
@@ -645,7 +720,6 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         bundlePosition: Int,
         priceCut: String
     ) {
-        val trackerId = "34074"
         val promotions = arrayListOf(
             Bundle().apply {
                 putString(KEY_CREATIVE_NAME, "")
@@ -662,7 +736,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_MINICART)
             putString(TrackAppUtils.EVENT_ACTION, EVENT_ACTION_VIEW_BUNDLING)
             putString(TrackAppUtils.EVENT_LABEL, "$warehouseId - $bundlePosition - $bundleId - $bundleName - $priceCut")
-            putString(KEY_TRACKER_ID, trackerId)
+            putString(KEY_TRACKER_ID, VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_IMPRESSED)
             putString(KEY_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_PHYSICAL_GOODS)
             putString(KEY_CURRENT_SITE, VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             putParcelableArrayList(KEY_PROMOTIONS, promotions)
@@ -686,7 +760,6 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         bundlePosition: Int,
         priceCut: String
     ) {
-        val trackerId = "34075"
         val promotions = arrayListOf(
             Bundle().apply {
                 putString(KEY_CREATIVE_NAME, "")
@@ -705,7 +778,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_MINICART)
             putString(TrackAppUtils.EVENT_ACTION, EVENT_ACTION_CLICK_BUNDLING_WIDGET)
             putString(TrackAppUtils.EVENT_LABEL, "$warehouseId - $bundlePosition - $bundleId - $bundleName - $priceCut")
-            putString(KEY_TRACKER_ID, trackerId)
+            putString(KEY_TRACKER_ID, VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_CLICKED)
             putString(KEY_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_PHYSICAL_GOODS)
             putString(KEY_CURRENT_SITE, VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             putParcelableArrayList(KEY_PROMOTIONS, promotions)
@@ -731,7 +804,6 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         cartId: String,
         quantity: String
     ) {
-        val trackerId = "34076"
         val items = arrayListOf(
             Bundle().apply {
                 putString(KEY_CATEGORY_ID, "")
@@ -758,7 +830,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_TOKONOW_MINI_CART)
             putString(TrackAppUtils.EVENT_ACTION, EVENT_ACTION_ADD_TO_CART)
             putString(TrackAppUtils.EVENT_LABEL, "$warehouseId - $bundlePosition - $bundleId - $bundleName - $priceCut")
-            putString(KEY_TRACKER_ID, trackerId)
+            putString(KEY_TRACKER_ID, VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_ATC)
             putString(KEY_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_PHYSICAL_GOODS)
             putString(KEY_CURRENT_SITE, VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             putParcelableArrayList(KEY_ITEMS, items)

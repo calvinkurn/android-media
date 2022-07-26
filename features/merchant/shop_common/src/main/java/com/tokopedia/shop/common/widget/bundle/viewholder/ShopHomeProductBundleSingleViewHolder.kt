@@ -82,7 +82,7 @@ class ShopHomeProductBundleSingleViewHolder(
         )
     }
 
-    fun bind(bundle: ShopHomeProductBundleItemUiModel) {
+    fun bind(bundle: ShopHomeProductBundleItemUiModel, widgetTitle: String, widgetName: String) {
         parentSingleBundle = bundle
         singleBundleProduct = parentSingleBundle.bundleProducts.firstOrNull() ?: ShopHomeBundleProductUiModel()
         selectedSingleBundle = parentSingleBundle.bundleDetails.firstOrNull() ?: ShopHomeProductBundleDetailUiModel()
@@ -103,21 +103,27 @@ class ShopHomeProductBundleSingleViewHolder(
         imageBundleProduct?.loadImage(singleBundleProduct.productImageUrl)
         imageBundleProduct?.setOnClickListener {
             singleProductBundleListener.onSingleBundleProductClicked(
-                    singleBundleProduct,
-                    selectedSingleBundle,
-                    parentSingleBundle.bundleName,
-                    parentSingleBundle.bundleType,
-                    parentSingleBundle.bundleProducts.indexOf(singleBundleProduct)
+                singleBundleProduct,
+                selectedSingleBundle,
+                parentSingleBundle.bundleName,
+                parentSingleBundle.bundleProducts.indexOf(singleBundleProduct),
+                widgetTitle,
+                widgetName,
+                adapterPosition,
+                parentSingleBundle.bundleType
             )
         }
         typographyBundleProductName?.text = singleBundleProduct.productName
         typographyBundleProductName?.setOnClickListener {
             singleProductBundleListener.onSingleBundleProductClicked(
-                    singleBundleProduct,
-                    selectedSingleBundle,
-                    parentSingleBundle.bundleName,
-                    parentSingleBundle.bundleType,
-                    parentSingleBundle.bundleProducts.indexOf(singleBundleProduct)
+                singleBundleProduct,
+                selectedSingleBundle,
+                parentSingleBundle.bundleName,
+                parentSingleBundle.bundleProducts.indexOf(singleBundleProduct),
+                widgetTitle,
+                widgetName,
+                adapterPosition,
+                parentSingleBundle.bundleType
             )
         }
 
@@ -130,8 +136,10 @@ class ShopHomeProductBundleSingleViewHolder(
                     selectedSingleBundle,
                     singleBundleProduct,
                     bundle.bundleName,
-                    bundle.bundleType,
-                    adapterPosition
+                    adapterPosition,
+                    widgetTitle,
+                    widgetName,
+                    bundle.bundleType
             )
         }
 
@@ -192,8 +200,11 @@ interface SingleProductBundleListener {
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
-            bundleType: String,
-            bundlePosition: Int
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            productItemPosition: Int,
+            bundleType: String
     )
     fun addSingleBundleToCart(
             selectedBundle: ShopHomeProductBundleDetailUiModel,
@@ -214,7 +225,9 @@ interface SingleProductBundleListener {
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             selectedProduct: ShopHomeBundleProductUiModel,
             bundleName: String,
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
             bundleType: String,
-            bundlePosition: Int
     )
 }

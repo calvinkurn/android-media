@@ -116,9 +116,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     private var productUiModel: ProductUiModel? = null
     private var source: String = String.EMPTY
 
-    override fun getFragmentToolbar(): Toolbar? {
-        return binding?.toolbar
-    }
+    override fun getFragmentToolbar(): Toolbar? = null
 
     override fun getFragmentTitle(): String {
         return ""
@@ -163,7 +161,6 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         super.onViewCreated(view, savedInstanceState)
         setDataFromCacheManagerOrArguments()
         observeUpdateCart()
-        (activity as AppCompatActivity).setSupportActionBar(binding?.toolbar)
 
         val cartId = arguments?.getString(BUNDLE_KEY_CART_ID) ?: ""
         val merchantId = arguments?.getString(BUNDLE_KEY_MERCHANT_ID) ?: ""
@@ -176,7 +173,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
         }
 
         productUiModel?.apply {
-            binding?.tpgProductName?.text = name
+            setupHeaderToolbar(name)
             // set the product quantity based on custom order qty
             customOrderDetails.firstOrNull { it.cartId == cartId }?.let { customOrderDetail ->
                 binding?.qeuProductQtyEditor?.setValue(customOrderDetail.qty)
@@ -272,6 +269,19 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                             variantWrapperUiModel?.position.orZero()
                         )
                     }
+                }
+            }
+        }
+    }
+
+    private fun setupHeaderToolbar(foodName: String) {
+        activity?.let {
+            (it as? AppCompatActivity)?.apply {
+                supportActionBar?.hide()
+                setSupportActionBar(binding?.toolbarOrderCustomization)
+                binding?.toolbarOrderCustomization?.run {
+                    title = foodName
+                    subtitle = it.getString(com.tokopedia.tokofood.R.string.text_header_order_custom)
                 }
             }
         }

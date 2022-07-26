@@ -243,7 +243,10 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
             bundleType: String,
-            bundlePosition: Int
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            productItemPosition: Int
         ) {
             viewModel?.trackProductBundleRecom(
                 bundleId = selectedMultipleBundle.bundleId,
@@ -297,6 +300,16 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             )
         }
 
+        override fun impressionProductItemBundleMultiple(
+            selectedProduct: ShopHomeBundleProductUiModel,
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String,
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            productItemPosition: Int
+        ) { /* nothing to do */ }
+
     }
 
     private fun singleProductBundleCallback() = object : SingleProductBundleListener {
@@ -305,8 +318,11 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
-            bundleType: String,
-            bundlePosition: Int
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            productItemPosition: Int,
+            bundleType: String
         ) {
             viewModel?.trackProductBundleRecom(
                 bundleId = selectedSingleBundle.bundleId,
@@ -344,12 +360,20 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             )
         }
 
+        override fun onTrackSingleVariantChange(
+            selectedProduct: ShopHomeBundleProductUiModel,
+            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String
+        ) { /* nothing to do */ }
+
         override fun impressionProductBundleSingle(
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             selectedProduct: ShopHomeBundleProductUiModel,
             bundleName: String,
-            bundleType: String,
-            bundlePosition: Int
+            bundlePosition: Int,
+            widgetTitle: String,
+            widgetName: String,
+            bundleType: String
         ) {
             viewModel?.trackProductBundleRecom(
                 bundleId = selectedSingleBundle.bundleId,
@@ -360,12 +384,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 state = STATE_PRODUCT_BUNDLE_RECOM_IMPRESSED
             )
         }
-
-        override fun onTrackSingleVariantChange(
-            selectedProduct: ShopHomeBundleProductUiModel,
-            selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleName: String
-        ) { /* nothing to do */ }
     }
 
     private fun initializeTotalAmount(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager, context: Context) {
