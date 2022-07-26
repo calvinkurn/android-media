@@ -95,7 +95,7 @@ class GetUnificationDataUseCase(
                     model.dataKey == it.unificationDataKey
                 }
                 val tab = model.tabs.firstOrNull {
-                    it.data?.dataKey == param?.tabDataKey
+                    it.dataKey == param?.tabDataKey
                 } ?: model.tabs.first()
 
                 val dataKeyModel = TableAndPostDataKey(
@@ -124,8 +124,17 @@ class GetUnificationDataUseCase(
                                 error = e.localizedMessage.orEmpty()
                             )
                         }
-                        tab.data = tableResult
-                        return@async model
+                        return@async model.copy(
+                            tabs = model.tabs.map tab@{
+                                if (tab.dataKey == it.dataKey) {
+                                    it.data = tableResult
+                                    it.isSelected = true
+                                } else {
+                                    it.isSelected = false
+                                }
+                                return@tab it
+                            }
+                        )
                     }
                 }
             }.awaitAll()

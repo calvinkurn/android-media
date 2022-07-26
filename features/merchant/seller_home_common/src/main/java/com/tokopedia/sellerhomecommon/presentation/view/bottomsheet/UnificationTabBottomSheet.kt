@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetUnificationTabBinding
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.UnificationTabAdapter
@@ -40,6 +41,7 @@ class UnificationTabBottomSheet : BaseBottomSheet<ShcBottomSheetUnificationTabBi
     }
 
     override fun setupView() = binding?.run {
+        setTitle(root.context.getString(R.string.shc_select_analysis))
         setupRecyclerView()
     }
 
@@ -52,7 +54,7 @@ class UnificationTabBottomSheet : BaseBottomSheet<ShcBottomSheetUnificationTabBi
         }
     }
 
-    fun setOnTabSelected(action: (UnificationTabUiModel) -> Unit): UnificationTabBottomSheet {
+    fun setOnTabItemSelected(action: (UnificationTabUiModel) -> Unit): UnificationTabBottomSheet {
         this.onTabSelected = action
         return this
     }

@@ -751,10 +751,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun showUnificationTabBottomSheets(element: UnificationWidgetUiModel) {
         val tabs = element.data?.tabs.orEmpty()
-        UnificationTabBottomSheet.createInstance()
-            .setItems(tabs)
-            .setOnTabSelected {
-
+        val bottomSheet = UnificationTabBottomSheet.createInstance()
+        bottomSheet.setItems(tabs)
+            .setOnTabItemSelected { selectedTab ->
+                val prevSelected = tabs.firstOrNull { it.isSelected }
+                if (prevSelected?.dataKey != selectedTab.dataKey) {
+                    applyUnificationTabSelected(element, selectedTab)
+                }
+                bottomSheet.dismiss()
             }
             .show(childFragmentManager)
     }
@@ -799,6 +803,38 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 coachMark.isDismissed = false
                 coachMark.showCoachMark(coachMarkItems)
             }
+        }
+    }
+
+    private fun applyUnificationTabSelected(
+        element: UnificationWidgetUiModel,
+        tab: UnificationTabUiModel
+    ) {
+        val unificationWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+        val widgets = adapter.data.map { widget ->
+            return@map if (widget.dataKey == element.dataKey && widget is UnificationWidgetUiModel) {
+                val unificationWidget = widget.apply unificationWidget@{
+                    val widgetData = widget.data
+                    data = widgetData?.copy(
+                        tabs = widgetData.tabs.map tab@ {
+                            it.isSelected = it.dataKey == tab.dataKey
+                            return@tab it
+                        }
+                    )
+                    impressHolder = ImpressHolder()
+                    showLoadingState = true
+                }.copyWidget()
+                unificationWidgets.add(unificationWidget)
+                unificationWidget
+            } else {
+                widget
+            }
+        }
+
+        getWidgetsData(unificationWidgets)
+
+        notifyWidgetWithSdkChecking {
+            updateWidgets(widgets)
         }
     }
 

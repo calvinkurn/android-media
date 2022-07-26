@@ -33,16 +33,15 @@ class UnificationMapper @Inject constructor(
                 isFromCache = isFromCache,
                 showWidget = data.showWidget,
                 lastUpdated = getLastUpdatedMillis(data.dataKey, isFromCache),
-                tabs = data.tabs.mapIndexed { index, tab ->
-                    getTabUiModel(tab, index == Int.ZERO)
+                tabs = data.tabs.map{ tab ->
+                    getTabUiModel(tab)
                 }
             )
         }
     }
 
     private fun getTabUiModel(
-        tab: UnificationTabModel,
-        isSelected: Boolean
+        tab: UnificationTabModel
     ): UnificationTabUiModel {
         return UnificationTabUiModel(
             data = null,
@@ -53,7 +52,6 @@ class UnificationMapper @Inject constructor(
             widgetType = tab.content.widgetType,
             dataKey = tab.content.dataKey,
             metricParam = tab.content.metricsParam,
-            isSelected = isSelected,
             config = getTabConfig(tab.content.configuration)
         )
     }

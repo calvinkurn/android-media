@@ -3,12 +3,15 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcEmptyStateCommonBinding
 import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetBinding
 import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetErrorBinding
 import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetLoadingBinding
@@ -16,6 +19,7 @@ import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetSuccessBin
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
 
 /**
  * Created by @ilhamsuaib on 06/07/22.
@@ -44,6 +48,9 @@ class UnificationViewHolder(
         val view = binding.stubShcUnificationSuccess.inflate()
         ShcUnificationWidgetSuccessBinding.bind(view)
     }
+    private val emptyStateBinding by lazy {
+        ShcEmptyStateCommonBinding.bind(successStateBinding.root)
+    }
 
     override fun bind(element: UnificationWidgetUiModel) {
         setTitle(element.title)
@@ -64,13 +71,14 @@ class UnificationViewHolder(
     }
 
     private fun showLoadingState() {
+        binding.tvShcUnificationTab.gone()
         successStateBinding.containerShcUnificationSuccess.gone()
         errorStateBinding.containerShcUnificationError.gone()
-        loadingStateBinding.containerShcRecommendationLoading.visible()
+        loadingStateBinding.containerShcUnificationLoading.visible()
     }
 
     private fun showErrorState(element: UnificationWidgetUiModel) {
-        loadingStateBinding.containerShcRecommendationLoading.gone()
+        loadingStateBinding.containerShcUnificationLoading.gone()
         successStateBinding.containerShcUnificationSuccess.gone()
         errorStateBinding.containerShcUnificationError.visible()
 
@@ -85,21 +93,21 @@ class UnificationViewHolder(
         if (element.data?.tabs.isNullOrEmpty()) {
             binding.tvShcUnificationTab.gone()
         } else {
-            binding.tvShcUnificationTab.visible()
             setupDropDownView(element)
         }
     }
 
     private fun showSuccessState(element: UnificationWidgetUiModel) {
-        loadingStateBinding.containerShcRecommendationLoading.gone()
+        loadingStateBinding.containerShcUnificationLoading.gone()
         with(successStateBinding) {
             containerShcUnificationSuccess.visible()
 
             val data = element.data ?: return@with
-            val tab = data.tabs.firstOrNull { it.isSelected }
+            val tab = data.tabs.firstOrNull { it.data != null }
                 ?: data.tabs.firstOrNull() ?: return@with
 
-            if (!tab.data?.error.isNullOrBlank()) {
+            val isError = !tab.data?.error.isNullOrBlank()
+            if (isError) {
                 showErrorState(element)
                 return@with
             }
@@ -108,19 +116,61 @@ class UnificationViewHolder(
             setupDropDownView(element)
             setupWidgetCta(tab)
             setupLastUpdate(element)
+
+            val isEmpty = tab.data?.isWidgetEmpty().orTrue()
+            if (isEmpty) {
+                showEmptyState(tab.config.emptyStateUiModel)
+                setupDropDownView(element)
+            } else {
+                hideEmptyState()
+            }
         }
+    }
+
+    private fun hideEmptyState() {
+        emptyStateBinding.shcViewEmptyStateCommon.gone()
+    }
+
+    private fun showEmptyState(emptyState: WidgetEmptyStateUiModel) {
+        with(emptyStateBinding) {
+            shcViewEmptyStateCommon.visible()
+            imgShcEmptyCommon.loadImage(emptyState.imageUrl)
+            tvShcEmptyTitleCommon.text = emptyState.title
+            tvShcEmptyDescriptionCommon.text = emptyState.description
+
+            val shouldShowCta = emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
+            btnShcEmptyCommon.isVisible = shouldShowCta
+            if (shouldShowCta) {
+                btnShcEmptyCommon.text = emptyState.ctaText
+                btnShcEmptyCommon.setOnClickListener {
+                    openAppLink(emptyState.appLink)
+                }
+            }
+        }
+    }
+
+    private fun openAppLink(appLink: String) {
+        RouteManager.route(itemView.context, appLink)
     }
 
     private fun showTableWidget(tab: UnificationTabUiModel) {
         with(successStateBinding) {
             val tableData = tab.data as? TableDataUiModel ?: return@with
+
+            val shouldShowPageControl = tableData.dataSet.size > Int.ONE
+            shcTableViewPageControl.isVisible = shouldShowPageControl
+            shcTableViewPageControl.setIndicator(tableData.dataSet.size)
+
             tableShcUnification.visible()
             tableShcUnification.showTable(tableData.dataSet)
+            tableShcUnification.resetHeight()
+            tableShcUnification.setPageIndicatorEnabled(false)
             tableShcUnification.addOnSlideImpressionListener { position, maxPosition, isEmpty ->
 
             }
             tableShcUnification.setOnSwipeListener { position, maxPosition, isEmpty ->
 //                listener.sendTableOnSwipeEvent(element, position, maxPosition, isEmpty)
+                shcTableViewPageControl.setCurrentIndicator(position)
             }
             tableShcUnification.addOnHtmlClickListener { url, isEmpty ->
 //                listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
@@ -147,6 +197,7 @@ class UnificationViewHolder(
                     && tab.config.ctaText.isNotBlank()
             if (shouldShowCta) {
                 btnShcUnificationCta.visible()
+                btnShcUnificationCta.text = tab.config.ctaText
                 btnShcUnificationCta.setOnClickListener {
                     setOnCtaClicked(tab.config.appLink)
                 }
@@ -166,6 +217,7 @@ class UnificationViewHolder(
             val tab = data.tabs.firstOrNull { it.isSelected }
                 ?: data.tabs.firstOrNull() ?: return@with
 
+            tvShcUnificationTab.visible()
             tvShcUnificationTab.text = String.format(
                 DROP_DOWN_FORMAT, tab.title, tab.itemCount.toString()
             )
