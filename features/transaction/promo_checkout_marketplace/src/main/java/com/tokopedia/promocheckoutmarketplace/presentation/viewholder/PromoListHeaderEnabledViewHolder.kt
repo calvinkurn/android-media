@@ -32,7 +32,7 @@ class PromoListHeaderEnabledViewHolder(private val viewBinding: PromoCheckoutMar
             if (element.uiState.hasSelectedPromoItem) {
                 labelPromoListHeaderSubTitle.text = itemView.context.getString(R.string.label_subtitle_promo_selected)
             } else {
-                labelPromoListHeaderSubTitle.text = itemView.context.getString(R.string.label_subtitle_only_one_promo)
+                labelPromoListHeaderSubTitle.text = element.uiData.selectablePromoMessage
                 labelPromoListHeaderSubTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN600))
             }
 
