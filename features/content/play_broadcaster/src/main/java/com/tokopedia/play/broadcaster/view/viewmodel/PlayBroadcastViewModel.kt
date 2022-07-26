@@ -1458,13 +1458,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     fun sendBroadcasterLog(metric: BroadcasterMetric) {
-        logger.sendBroadcasterLog(
-            playBroadcastMapper.mapBroadcasterMetric(
-                metric = metric,
-                authorId = userSession.userId,
-                channelId = channelId
-            )
+        val mappedMetric = playBroadcastMapper.mapBroadcasterMetric(
+            metric = metric,
+            authorId = userSession.userId,
+            channelId = channelId
         )
+        logger.sendBroadcasterLog(mappedMetric)
     }
 
     companion object {

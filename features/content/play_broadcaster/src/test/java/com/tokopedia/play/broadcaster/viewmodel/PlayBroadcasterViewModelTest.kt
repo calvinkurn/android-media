@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -9,18 +10,24 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
+import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,6 +48,7 @@ class PlayBroadcasterViewModelTest {
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
     private val mockBroadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
+    private val mockUserSessionInterface: UserSessionInterface = mockk(relaxed = true)
 
     private val uiModelBuilder = UiModelBuilder()
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
@@ -221,6 +229,69 @@ class PlayBroadcasterViewModelTest {
             events
                 .last()
                 .assertEqualTo(PlayBroadcastEvent.ShowLiveEndedDialog)
+        }
+    }
+
+    @Test
+    fun `when user trigger resume livestream and there is no livestream started before, and its before past pause duration, given channel status pause, then its ready to start broadcast`() {
+        val mockChannel = mockChannel.copy(
+            basic = mockChannel.basic.copy(
+                status = GetChannelResponse.ChannelBasicStatus(
+                    id = "3", // channel status pause
+                )
+            )
+        )
+
+        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
+        every { mockBroadcastTimer.isPastPauseDuration } returns false
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            broadcastTimer = mockBroadcastTimer,
+        )
+
+        robot.use {
+            val events = robot.recordEvent {
+                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)))
+            }
+
+            events
+                .last()
+                .assertEqualTo(PlayBroadcastEvent.BroadcastReady(""))
+        }
+    }
+
+    @Test
+    fun `when user trigger resume livestream and there is no livestream started before, but its already past pause duration, given channel status pause, then its ready to start broadcast`() {
+        val mockChannel = mockChannel.copy(
+            basic = mockChannel.basic.copy(
+                status = GetChannelResponse.ChannelBasicStatus(
+                    id = "3", // channel status pause
+                )
+            )
+        )
+
+        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
+        every { mockBroadcastTimer.isPastPauseDuration } returns false
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            broadcastTimer = mockBroadcastTimer,
+        )
+
+        robot.use {
+            val events = robot.recordEvent {
+                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)))
+
+            }
+
+            events
+                .last()
+                .assertEqualTo(PlayBroadcastEvent.BroadcastReady(""))
         }
     }
 
@@ -444,7 +515,6 @@ class PlayBroadcasterViewModelTest {
 
     @Test
     fun `when broadcaster is recovered, given channel error, then it should show error`() {
-
         val errorThrowable = DefaultErrorThrowable()
 
         coEvery { mockGetChannelUseCase.executeOnBackground() } throws errorThrowable
@@ -463,6 +533,114 @@ class PlayBroadcasterViewModelTest {
             event
                 .last()
                 .assertType<PlayBroadcastEvent.ShowError>()
+        }
+    }
+
+    @Test
+    fun `when seller stop live streaming, then isBroadcastStopped should return true`() {
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+        )
+
+        robot.use {
+            it.stopLive()
+
+            it.getViewModel().isBroadcastStopped.assertTrue()
+        }
+    }
+
+    /**
+     * User Session
+     */
+    @Test
+    fun `given user session logged in true, then it should return true`() {
+        every { mockUserSessionInterface.isLoggedIn } returns true
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSessionInterface,
+        )
+
+        robot.use {
+            it.getViewModel().isUserLoggedIn.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given user session shop avatar is empty, then it should return empty`() {
+        every { mockUserSessionInterface.shopAvatar } returns ""
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSessionInterface,
+        )
+
+        robot.use {
+            it.getViewModel().getShopIconUrl().assertEmpty()
+        }
+    }
+
+    @Test
+    fun `given user session shop name is empty, then it should return empty`() {
+        every { mockUserSessionInterface.shopName } returns ""
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSessionInterface,
+        )
+
+        robot.use {
+            it.getViewModel().getShopName().assertEmpty()
+        }
+    }
+
+    /**
+     * Logger
+     */
+    @Test
+    fun `when send broadcaster metrics, then it should call logger sendBroadcasterLog`() {
+        val mockMetric = BroadcasterMetric.Empty
+        val mockLogger: PlayLogger = mockk(relaxed = true)
+
+        val mappedMetric = PlayBroadcasterMetric(
+            authorId = "",
+            channelId = "",
+            videoBitrate = mockMetric.videoBitrate,
+            audioBitrate = mockMetric.audioBitrate,
+            resolution = "${mockMetric.resolutionWidth}x${mockMetric.resolutionHeight}",
+            traffic = mockMetric.traffic,
+            bandwidth = mockMetric.bandwidth,
+            fps = mockMetric.fps,
+            packetLossIncreased = mockMetric.packetLossIncreased,
+            videoBufferTimestamp = mockMetric.videoBufferTimestamp,
+            audioBufferTimestamp = mockMetric.audioBufferTimestamp,
+        )
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            logger = mockLogger,
+        )
+
+        robot.use {
+            it.getViewModel().sendBroadcasterLog(mockMetric)
+
+            verify { mockLogger.sendBroadcasterLog(mappedMetric) }
+        }
+    }
+
+    @Test
+    fun `when send all logs, then it should call logger sendAll`() {
+        val mockLogger: PlayLogger = mockk(relaxed = true)
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            logger = mockLogger,
+        )
+
+        robot.use {
+            it.getViewModel().sendLogs()
+
+            verify { mockLogger.sendAll("") }
         }
     }
 }
