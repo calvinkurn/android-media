@@ -396,7 +396,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun onRefreshWalletApp(position: Int, headerTitle: String, isReload: Boolean = false) {
+    fun onRefreshWalletApp(position: Int, headerTitle: String) {
         if (!userSession.get().isLoggedIn) return
         findWidget<HomeHeaderDataModel> { headerModel, index ->
             launch {
