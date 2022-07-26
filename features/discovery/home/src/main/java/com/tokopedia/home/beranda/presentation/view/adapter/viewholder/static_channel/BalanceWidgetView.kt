@@ -74,7 +74,7 @@ class BalanceWidgetView : FrameLayout {
                         listener?.showBalanceWidgetCoachMark(element)
                     }
                 } else {
-                    balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
+                    balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
                 }
             }
         }

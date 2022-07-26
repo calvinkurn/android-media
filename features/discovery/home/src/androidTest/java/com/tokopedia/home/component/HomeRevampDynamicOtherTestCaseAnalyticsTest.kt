@@ -24,6 +24,7 @@ import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home.util.ViewVisibilityIdlingResource
+import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -39,20 +40,19 @@ private const val TAG = "HomeRevampDynamicChannelComponentOtherTestCaseAnalytics
 @CassavaTest
 class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
     @get:Rule
-    var activityRule = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
+    var activityRuleOtherTestCase = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            disableCoachMark(context)
             setupGraphqlMockResponse(HomeMockResponseConfig(isLinkedBalanceWidget = false))
         }
     }
 
     @get:Rule
-    var cassavaTestRule = CassavaTestRule()
+    var cassavaTestRuleOtherTestCase = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private var visibilityIdlingResource: ViewVisibilityIdlingResource? = null
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
+    private var visibilityIdlingResource: ViewVisibilityIdlingResource? = null
 
     @Before
     fun resetAll() {
@@ -64,7 +64,7 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
             )
         )
         val recyclerView: RecyclerView =
-                activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
+                activityRuleOtherTestCase.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
                 recyclerView = recyclerView
         )
@@ -79,21 +79,34 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
-    //awkward test lab
-//    @Test
-//    fun testGetBalanceWidgetNotLinked() {
-//        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-//        HomeDCCassavaTest {
-//            initTest()
-//            login()
-//            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-//                actionOnBalanceWidget(viewHolder)
-//            }
-//        } validateAnalytics {
-//            addDebugEnd()
-//            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_NOT_LINKED)
-//        }
-//    }
+    @Test
+    fun testMissionWidgetLogin() {
+        HomeDCCassavaTest {
+            login()
+            doActivityTestByModelClass(dataModelClass = MissionWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                waitForData()
+                actionOnMissionWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRuleOtherTestCase, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET)
+        }
+    }
+
+    @Test
+    fun testBalanceWidgetGopayNotLinked() {
+        login()
+        waitForData()
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        HomeDCCassavaTest {
+            doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnBalanceWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRuleOtherTestCase, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_NOT_LINKED)
+        }
+    }
 
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
@@ -102,8 +115,8 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
     }
 
     private fun hideStickyLogin() {
-        activityRule.runOnUiThread {
-            val layout = activityRule.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
+        activityRuleOtherTestCase.runOnUiThread {
+            val layout = activityRuleOtherTestCase.activity.findViewById<ConstraintLayout>(R.id.layout_sticky_container)
             if (layout.visibility == View.VISIBLE) {
                 layout.visibility = View.GONE
             }
@@ -115,7 +128,7 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
         dataModelClass : KClass<T>,
         predicate: (T?) -> Boolean = {true},
         isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int)-> Unit) {
-        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        val homeRecyclerView = activityRuleOtherTestCase.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         val homeRecycleAdapter = homeRecyclerView.adapter as? HomeRecycleAdapter
 
         val visitableList = homeRecycleAdapter?.currentList?: listOf()
@@ -132,23 +145,23 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
     }
 
     private fun endActivityTest() {
-        activityRule.activity.moveTaskToBack(true)
+        activityRuleOtherTestCase.activity.moveTaskToBack(true)
         logTestMessage("Done UI Test")
         waitForLoadCassavaAssert()
     }
 
     private fun login() {
         InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
-        InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
+        InstrumentationAuthHelper.loginToAnUser(activityRuleOtherTestCase.activity.application)
     }
 
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
         val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
-        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
+        activityRuleOtherTestCase.runOnUiThread { layoutManager.scrollToPositionWithOffset   (position, 400) }
     }
 
     private fun logTestMessage(message: String) {
-        TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog(activityRule.activity, message)
+        TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog(activityRuleOtherTestCase.activity, message)
         Log.d(TAG, message)
     }
 }

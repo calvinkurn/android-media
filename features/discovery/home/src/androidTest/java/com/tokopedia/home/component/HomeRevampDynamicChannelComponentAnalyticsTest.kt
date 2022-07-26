@@ -271,6 +271,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = MissionWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                waitForData()
                 actionOnMissionWidget(viewHolder)
             }
         } validateAnalytics {
@@ -436,6 +437,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                waitForData()
                 actionOnMerchantVoucherWidget(viewHolder, i)
             }
         } validateAnalytics {
