@@ -1262,10 +1262,24 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun uncheckSibling(promoItem: PromoListItemUiModel) {
+        var header: PromoListHeaderUiModel? = null
         promoListUiModel.value?.forEach {
-            if (it is PromoListItemUiModel && it.uiData.parentIdentifierId == promoItem.uiData.parentIdentifierId && it.uiState.isSelected) {
-                it.uiState.isSelected = false
-                _tmpUiModel.value = Update(it)
+            if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.identifierId == promoItem.uiData.parentIdentifierId) {
+                header = it
+                return@forEach
+            }
+        }
+
+        header?.let { section ->
+            var totalSelectedPromoInSection = 1
+            promoListUiModel.value?.forEach { promoListUiModel ->
+                if (promoListUiModel is PromoListItemUiModel && promoListUiModel.uiData.parentIdentifierId == promoItem.uiData.parentIdentifierId && promoListUiModel.uiState.isSelected) {
+                    totalSelectedPromoInSection += 1
+                    if (totalSelectedPromoInSection > section.uiData.maximumSelectedPromo) {
+                        promoListUiModel.uiState.isSelected = false
+                        _tmpUiModel.value = Update(promoListUiModel)
+                    }
+                }
             }
         }
     }
