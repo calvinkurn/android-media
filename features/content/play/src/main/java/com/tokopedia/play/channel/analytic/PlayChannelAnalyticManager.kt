@@ -53,6 +53,8 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
     private val trackingQueue = TrackingQueue(context)
     private var analytic2 : PlayAnalytic2? = null
 
+    private var isAtcFeaturedProduct: Boolean = false
+
     fun observe(
         scope: CoroutineScope,
         viewEvent: EventBus<Any>,
@@ -87,6 +89,12 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
                         }
                         productAnalyticHelper.trackImpressedProducts(it.productMap)
                     }
+                    is ProductCarouselUiComponent.Event.OnAtcClicked -> {
+                        isAtcFeaturedProduct = true
+                    }
+                    is ProductCarouselUiComponent.Event.OnBuyClicked -> {
+                        isAtcFeaturedProduct = true
+                    }
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                 }
             }
@@ -96,26 +104,32 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
             uiEvent.collect {
                 when (it) {
                     is BuySuccessEvent -> {
-                        if (!it.product.isPinned && uiState.value.isVariantFeaturedOpened) return@collect
-                        analytic2?.buyPinnedProductInCarousel(
-                            product = it.product,
-                            cartId = it.cartId,
-                            quantity = it.product.minQty,
-                        )
+                        if (!it.product.isPinned) return@collect
+
+                        whenFeatured {
+                            analytic2?.buyPinnedProductInCarousel(
+                                product = it.product,
+                                cartId = it.cartId,
+                                quantity = it.product.minQty,
+                            )
+                        }
                     }
                     is AtcSuccessEvent -> {
-                        if (!it.product.isPinned && uiState.value.isVariantFeaturedOpened) return@collect
-                        analytic2?.atcPinnedProductInCarousel(
-                            product = it.product,
-                            cartId = it.cartId,
-                            quantity = it.product.minQty,
-                        )
+                        if (!it.product.isPinned) return@collect
 
-                        /**
-                         * Because Toaster doesn't have any identifier and show listener,
-                         * this is currently the best way to do this
-                         */
-                        analytic2?.impressToasterAtcPinnedProductCarousel()
+                        whenFeatured {
+                            analytic2?.atcPinnedProductInCarousel(
+                                product = it.product,
+                                cartId = it.cartId,
+                                quantity = it.product.minQty,
+                            )
+
+                            /**
+                             * Because Toaster doesn't have any identifier and show listener,
+                             * this is currently the best way to do this
+                             */
+                            analytic2?.impressToasterAtcPinnedProductCarousel()
+                        }
                     }
                     else -> {}
                 }
@@ -137,10 +151,12 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
         productAnalyticHelper.sendImpressedFeaturedProducts(partnerType)
     }
 
-    /**
-     * Temporary hacky way
-     */
-    private val PlayViewerNewUiState.isVariantFeaturedOpened: Boolean
-        get() = bottomInsets[BottomInsetsType.VariantSheet]?.isShown == true &&
-                bottomInsets[BottomInsetsType.ProductSheet]?.isShown != true
+    private fun whenFeatured(
+        fn: () -> Unit
+    ) {
+        if (!isAtcFeaturedProduct) return
+        isAtcFeaturedProduct = false
+
+        fn()
+    }
 }

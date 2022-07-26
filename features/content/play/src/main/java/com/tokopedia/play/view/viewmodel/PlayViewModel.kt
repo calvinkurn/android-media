@@ -24,7 +24,6 @@ import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -2249,7 +2248,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun handleBuyProduct(
         sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty,
         product: PlayProductUiModel.Product,
-        action: ProductAction
+        action: ProductAction,
     ) {
         if (product.isVariantAvailable) openVariantDetail(product, action, sectionInfo)
         else {
