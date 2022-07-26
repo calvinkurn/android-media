@@ -114,7 +114,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
                 title = "Bubur Kacang Hijau",
                 portion = 1,
                 duration = 15,
-                labels = listOf("Snack", "Santan", "Manis", "Kacang", "Hijau")
+                labels = listOf("Snack", "Santan", "Manis", "Kacang", "Hijau"),
+                thumbnail = "https://matamu.net/wp-content/uploads/2020/03/Foto-Landscpae-Gunung-dan-Padang-Rumput.jpg"
             )
 
             val ingredients = listOf(

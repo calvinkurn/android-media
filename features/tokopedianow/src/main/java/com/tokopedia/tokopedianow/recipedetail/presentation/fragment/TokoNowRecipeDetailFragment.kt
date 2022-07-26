@@ -19,17 +19,25 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.ShareTokonow
+import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOptionRequest
 import com.tokopedia.tokopedianow.common.view.ToolbarHeaderView
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeDetailBinding
 import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailComponent
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapter
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapterTypeFactory
 import com.tokopedia.tokopedianow.recipedetail.presentation.listener.RecipeProductListener
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewmodel.TokoNowRecipeDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -37,6 +45,10 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     companion object {
         private const val KEY_PARAM_RECIPE_ID = "recipe_id"
+
+        private const val PAGE_NAME = "Tokonow"
+        private const val PAGE_TYPE = "Recipe Detail"
+        private const val SHARE_FEATURE_NAME = "Share"
 
         private const val RECIPE_INFO_POSITION = 1
         private const val BOOKMARK_BTN_POSITION = 0
@@ -50,6 +62,9 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     @Inject
     lateinit var viewModel: TokoNowRecipeDetailViewModel
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private val adapter by lazy {
         RecipeDetailAdapter(
             RecipeDetailAdapterTypeFactory(
@@ -62,6 +77,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeDetailBinding>()
 
     private var toolbarHeader: ToolbarHeaderView? = null
+    private var shareBottomSheet: UniversalShareBottomSheet? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -133,7 +149,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
             }
 
             getActionItem(SHARE_BTN_POSITION)?.setOnClickListener {
-                // Implement share recipe here
+                showShareBottomSheet()
             }
 
             setNavButtonClickListener {
@@ -149,6 +165,63 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         }
     }
 
+    private fun setupShareBottomSheet(recipeInfo: RecipeInfoUiModel) {
+        val title = recipeInfo.title
+        val portion = recipeInfo.portion
+        val duration = recipeInfo.duration
+        val imageUrl = recipeInfo.thumbnail
+        val shareUrl = "https://tokopedia.link/aBc123DeF" // To-Do
+        val shareTitle = getString(R.string.tokopedianow_share_recipe_title, title, portion, duration)
+        val shareText = getString(R.string.tokopedianow_share_recipe_text, title, shareUrl)
+
+        val shareData = ShareTokonow(
+            sharingText = shareText,
+            thumbNailImage = imageUrl,
+            ogImageUrl = imageUrl,
+        )
+
+        shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(createShareListener(shareData))
+
+            setUtmCampaignData(
+                pageName = PAGE_NAME,
+                userId = userSession.userId,
+                pageIdConstituents = listOf(PAGE_TYPE),
+                feature = SHARE_FEATURE_NAME
+            )
+
+            setMetaData(
+                tnTitle = shareTitle,
+                tnImage = imageUrl,
+            )
+
+            setOgImageUrl(imgUrl = imageUrl)
+        }
+    }
+
+    private fun createShareListener(data: ShareTokonow): ShareBottomsheetListener {
+        return object : ShareBottomsheetListener {
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                shareOptionRequest(
+                    shareModel = shareModel,
+                    shareTokoNowData = data,
+                    activity = activity,
+                    view = view,
+                    onSuccess = {
+                        shareBottomSheet?.dismiss()
+                    }
+                )
+            }
+
+            override fun onCloseOptionClicked() {
+            }
+        }
+    }
+
+    private fun showShareBottomSheet() {
+        shareBottomSheet?.show(childFragmentManager, this@TokoNowRecipeDetailFragment)
+    }
+
     private fun observeLiveData() {
         observe(viewModel.layoutList) {
             if (it is Success) {
@@ -159,6 +232,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         observe(viewModel.recipeInfo) {
             if(it is Success) {
                 setHeaderTitle(it.data.title)
+                setupShareBottomSheet(it.data)
             }
         }
 

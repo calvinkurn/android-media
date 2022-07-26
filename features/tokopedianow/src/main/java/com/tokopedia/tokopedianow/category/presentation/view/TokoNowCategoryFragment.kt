@@ -251,7 +251,7 @@ class TokoNowCategoryFragment:
 
         TokoNowUniversalShareUtil.shareOptionRequest(
             shareModel = shareModel,
-            shareHomeTokonow = shareCategoryTokonow,
+            shareTokoNowData = shareCategoryTokonow,
             activity = activity,
             view = view,
             onSuccess = {
