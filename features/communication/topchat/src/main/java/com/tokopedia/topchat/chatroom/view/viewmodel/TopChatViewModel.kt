@@ -77,7 +77,6 @@ import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -775,11 +774,6 @@ open class TopChatViewModel @Inject constructor(
         }, onError = {
             _srw.postValue(Resource.error(it, null))
         })
-    }
-
-    private suspend fun delaying() {
-        val delay = 3000L
-        delay(delay)
     }
 
     fun adjustInterlocutorWarehouseId(msgId: String) {

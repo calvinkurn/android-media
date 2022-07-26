@@ -17,6 +17,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestion
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
@@ -286,11 +287,7 @@ class SrwFrameLayout : FrameLayout {
     }
 
     fun setSrwTitleVisibility(shouldShow: Boolean) {
-        if (shouldShow) {
-            titleContainer?.show()
-        } else {
-            titleContainer?.hide()
-        }
+        titleContainer?.showWithCondition(shouldShow)
     }
 
     fun setContentMargin(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0) {
