@@ -214,8 +214,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_merchant_page, menu)
         super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_merchant_page, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -272,11 +272,11 @@ class MerchantPageFragment : BaseMultiFragment(),
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
         )
         applySelectedProducts()
+        setupAppBarLayoutListener()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupAppBarLayoutListener()
         setBackgroundDefaultColor()
         setHeaderBackground()
         setupMerchantLogo()
@@ -371,8 +371,7 @@ class MerchantPageFragment : BaseMultiFragment(),
             override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
                 if (appBarLayout == null) return
                 val offset = abs(verticalOffset)
-                if (offset >= (appBarLayout.totalScrollRange - binding?.toolbar?.height.orZero()) &&
-                    productListAdapter?.getProductListItems()?.isNotEmpty() == true
+                if (offset >= (appBarLayout.totalScrollRange - binding?.toolbar?.height.orZero())
                 ) {
                     // show sticky filter
                     binding?.cardUnifySticky?.show()
