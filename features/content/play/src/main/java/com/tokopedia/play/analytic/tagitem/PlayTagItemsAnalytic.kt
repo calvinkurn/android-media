@@ -64,6 +64,12 @@ interface PlayTagItemsAnalytic {
         position: Int,
     )
 
+    fun clickBuyPinnedProductInCarousel(
+        product: PlayProductUiModel.Product,
+        cartId: String,
+        quantity: Int,
+    )
+
     interface Factory {
         fun create(
             trackingQueue: TrackingQueue,

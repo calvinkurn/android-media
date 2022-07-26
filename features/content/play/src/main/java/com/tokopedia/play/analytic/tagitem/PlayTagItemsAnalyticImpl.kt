@@ -3,6 +3,7 @@ package com.tokopedia.play.analytic.tagitem
 import com.tokopedia.play.analytic.KEY_BUSINESS_UNIT
 import com.tokopedia.play.analytic.KEY_CHANNEL
 import com.tokopedia.play.analytic.KEY_CURRENT_SITE
+import com.tokopedia.play.analytic.KEY_EVENT_ADD_TO_CART
 import com.tokopedia.play.analytic.KEY_EVENT_PRODUCT_CLICK
 import com.tokopedia.play.analytic.KEY_EVENT_PRODUCT_VIEW
 import com.tokopedia.play.analytic.KEY_IS_LOGGED_IN_STATUS
@@ -289,7 +290,7 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         val trackerMap = BaseTrackerBuilder().constructBasicProductClick(
             event = KEY_EVENT_PRODUCT_CLICK,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "click on pinned featured product",
+            eventAction = "click pinned featured product tagging",
             eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
             list = "/groupchat - featured product",
             products = listOf(
@@ -305,6 +306,41 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
                     shopId = product.shopId,
                 )
             ),
+        ).appendUserId(userId)
+            .appendBusinessUnit(VAL_BUSINESS_UNIT)
+            .appendCurrentSite(VAL_CURRENT_SITE)
+            .build()
+
+        if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
+    }
+
+    override fun clickBuyPinnedProductInCarousel(
+        product: PlayProductUiModel.Product,
+        cartId: String,
+        quantity: Int,
+    ) {
+        val trackerMap = BaseTrackerBuilder().constructBasicProductAtcClick(
+            event = KEY_EVENT_ADD_TO_CART,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "click buy pinned product",
+            eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
+            list = "",
+            products = listOf(
+                BaseTrackerConst.Product(
+                    productPosition = "",
+                    cartId = cartId,
+                    id = product.id,
+                    name = product.title,
+                    productPrice = product.price.currentPrice.toString(),
+                    brand = "",
+                    category = "",
+                    isFreeOngkir = product.isFreeShipping,
+                    variant = "",
+                    shopId = product.shopId,
+                    quantity = quantity.toString(),
+                )
+            ),
+            buildCustomList = { "/groupchat - featured product" },
         ).appendUserId(userId)
             .appendBusinessUnit(VAL_BUSINESS_UNIT)
             .appendCurrentSite(VAL_CURRENT_SITE)

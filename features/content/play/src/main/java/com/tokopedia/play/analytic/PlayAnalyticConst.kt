@@ -23,6 +23,7 @@ internal const val KEY_TRACK_CLICK_CONTENT = "clickContent"
 
 internal const val KEY_EVENT_PRODUCT_VIEW = "productView"
 internal const val KEY_EVENT_PRODUCT_CLICK = "productClick"
+internal const val KEY_EVENT_ADD_TO_CART = "addToCart"
 
 internal const val KEY_TRACK_CLICK = "click"
 internal const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
