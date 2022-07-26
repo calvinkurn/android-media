@@ -423,7 +423,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun SavedStateHandle.isDuringLiveStream(): Boolean {
-        return savedStateHandle.contains(KEY_PRODUCT_SECTIONS)
+        return savedStateHandle[KEY_LIVE_STREAM_STATUS] ?: true
     }
 
     private fun handleClickPin(product: ProductUiModel){
