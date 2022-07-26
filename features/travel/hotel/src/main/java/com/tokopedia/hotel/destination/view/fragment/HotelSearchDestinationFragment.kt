@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.QueryHotelDestinationSearch
 import com.tokopedia.hotel.databinding.FragmentHotelSearchDestinationBinding
 import com.tokopedia.hotel.destination.data.model.SearchDestination
