@@ -139,7 +139,11 @@ data class SubSection(
         @SerializedName("coupons")
         val coupons: List<Coupon> = emptyList(),
         @SerializedName("coupon_groups")
-        val couponGroups: List<CouponGroup> = emptyList()
+        val couponGroups: List<CouponGroup> = emptyList(),
+        @SerializedName("selectable_promo_message")
+        val selectablePromoMessage: String = "",
+        @SerializedName("maximum_selectable_promo")
+        val maximumSelectablePromo: Int = 1,
 ) {
     companion object {
         const val ICON_COUPON = "COUPON"

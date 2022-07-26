@@ -1132,21 +1132,25 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             if (headerIndex != -1) {
                 // Un check other item on current header if previously selected
                 val promoListSize = promoListUiModel.value?.size ?: 0
+                var totalSelectedPromoInSection = 1
                 for (index in headerIndex + 1 until promoListSize) {
                     if (promoListUiModel.value?.get(index) !is PromoListItemUiModel) {
                         break
                     } else {
                         val tmpPromoItem = promoListUiModel.value?.get(index) as PromoListItemUiModel
-                        // todo todo adjust this to include MaximumSelectablePromo
                         if (tmpPromoItem.uiData.promoCode != element.uiData.promoCode && tmpPromoItem.uiState.isSelected) {
-                            tmpPromoItem.uiState.isSelected = false
-                            if (tmpPromoItem.uiState.isRecommended) {
-                                resetRecommendedPromo()
+                            totalSelectedPromoInSection += 1
+                            // Un check promo only if number of promo selected in the section exceed maximum selected promo
+                            if (totalSelectedPromoInSection > it.uiData.maximumSelectedPromo) {
+                                tmpPromoItem.uiState.isSelected = false
+                                if (tmpPromoItem.uiState.isRecommended) {
+                                    resetRecommendedPromo()
+                                }
+                                _tmpUiModel.value = Update(tmpPromoItem)
+                                // Calculate clash after uncheck
+                                calculateClash(tmpPromoItem)
+                                break
                             }
-                            _tmpUiModel.value = Update(tmpPromoItem)
-                            // Calculate clash after uncheck
-                            calculateClash(tmpPromoItem)
-                            break
                         }
                     }
                 }

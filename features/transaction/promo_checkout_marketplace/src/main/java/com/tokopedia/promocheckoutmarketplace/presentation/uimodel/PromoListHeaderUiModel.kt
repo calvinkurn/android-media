@@ -17,7 +17,9 @@ class PromoListHeaderUiModel(
             var subTitle: String = "",
             var iconUnify: String = "",
             var identifierId: Int = 0,
-            var tabId: String = ""
+            var tabId: String = "",
+            var selectablePromoMessage: String = "",
+            var maximumSelectedPromo: Int = 1
     )
 
     data class UiState(
