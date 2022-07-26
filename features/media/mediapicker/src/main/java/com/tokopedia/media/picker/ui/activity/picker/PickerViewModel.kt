@@ -31,12 +31,6 @@ class PickerViewModel @Inject constructor(
         .subscriber(viewModelScope)
         .flowOn(dispatchers.computation)
 
-    init {
-        if (param.get().isCommonPageType() || param.get().isGalleryPageType()) {
-            loadLocalGalleryBy(bucketId = AlbumRepository.RECENT_ALBUM_ID)
-        }
-    }
-
     fun isDeviceStorageAlmostFull(): Boolean {
         return deviceInfo.execute(
             param.get().minStorageThreshold()
