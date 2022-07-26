@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.domain.usecase.shopmutation.ShopMutationAction.Follow
+import com.tokopedia.feedcomponent.domain.usecase.shopmutation.ShopMutationAction.UnFollow
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
@@ -124,7 +127,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
-            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
+            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.item)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
         }
     }
@@ -220,21 +223,31 @@ class UserProfileViewModel @AssistedInject constructor(
         _savedReminderData.update { SavedReminderData.NoData }
     }
 
-    private fun handleClickFollowButtonShopRecom(itemID: Long) {
+    private fun handleClickFollowButtonShopRecom(item: ShopRecomUiModelItem) {
+        val typeShop = 2
+        val typeBuyer = 3
         viewModelScope.launchCatchError(block = {
-
             val followInfo = _followInfo.value
-            val currItem = _shopRecom.value.items.find { it.id == itemID } ?: return@launchCatchError
-
-            val result = if (currItem.isFollow) repo.unFollowProfile(currItem.encryptedID)
-            else repo.followProfile(currItem.encryptedID)
+            val result = when (item.type) {
+                typeShop -> {
+                    repo.shopFollowUnfollow(
+                        item.id.toString(),
+                        if (item.isFollow) UnFollow else Follow
+                    )
+                }
+                typeBuyer -> {
+                    if (item.isFollow) repo.unFollowProfile(item.encryptedID)
+                    else repo.followProfile(item.encryptedID)
+                }
+                else -> return@launchCatchError
+            }
 
             when (result) {
                 is MutationUiModel.Success -> {
                     _profileInfo.update { repo.getProfile(followInfo.userID) }
                     _shopRecom.update { data ->
                         data.copy(items = data.items.map {
-                            if (itemID == it.id) it.copy(isFollow = !it.isFollow)
+                            if (item.id == it.id) it.copy(isFollow = !it.isFollow)
                             else it
                         })
                     }
