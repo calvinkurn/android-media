@@ -124,9 +124,9 @@ class OrderPriceSummaryBottomSheetRobot {
             if (llPaymentFee.childCount > 0) {
                 val clPaymentFeeView = (llPaymentFee.getChildAt(index)) as ViewGroup
                 clPaymentFeeView.findViewById<IconUnify>(R.id.img_payment_fee_info).performClick()
-                OrderPriceSummaryBottomSheetRobot().apply(func)
             }
         }
+        OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 
     fun assertPaymentFeeBottomSheetInfo(tooltipTitle: String, tooltipInfo: String) {
