@@ -226,6 +226,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 if (validateUsePromoRevampUiModel != null) {
                     viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
                     viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
+                    viewModel.reloadRates()
                 }
 
                 val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
@@ -240,8 +241,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     viewModel.updatePromoState(PromoUiModel().apply {
                         titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
                     })
-                    // trigger validate to reset BBO benefit
-                    viewModel.validateUsePromo()
+                    //refresh shipping section and calculate total
+                    viewModel.reloadRates()
                 }
             }
         }
