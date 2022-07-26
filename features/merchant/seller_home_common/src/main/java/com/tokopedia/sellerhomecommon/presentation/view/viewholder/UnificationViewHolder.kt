@@ -3,8 +3,10 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -20,6 +22,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
+import com.tokopedia.sellerhomecommon.utils.DP_24
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 
 /**
  * Created by @ilhamsuaib on 06/07/22.
@@ -218,6 +222,11 @@ class UnificationViewHolder(
                 ?: data.tabs.firstOrNull() ?: return@with
 
             tvShcUnificationTab.visible()
+            tvShcUnificationTab.setUnifyDrawableEnd(
+                iconId = IconUnify.CHEVRON_DOWN,
+                width = root.context.dpToPx(DP_24),
+                height = root.context.dpToPx(DP_24)
+            )
             tvShcUnificationTab.text = String.format(
                 DROP_DOWN_FORMAT, tab.title, tab.itemCount.toString()
             )
