@@ -14,6 +14,10 @@ object IconHelper {
         }
     }
 
+    fun shouldShowIcon(dictionary: String): Boolean {
+        return dictionary != PromoInfo.ICON_NONE
+    }
+
     fun getIcon(dictionary: String): Int {
         when (dictionary) {
             PromoInfo.ICON_USER -> {
