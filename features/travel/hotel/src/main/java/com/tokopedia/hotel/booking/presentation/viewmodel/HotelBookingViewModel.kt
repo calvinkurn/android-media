@@ -83,7 +83,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         }
     }
 
-    fun getCartData(rawQuery: String, cartId: String) {
+    fun getCartData(rawQuery: GqlQueryInterface, cartId: String) {
         val requestParams = CartDataParam(cartId)
         val params = mapOf(PARAM_CART_PROPERTY to requestParams)
         launchCatchError(block = {
@@ -98,7 +98,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         }
     }
 
-    fun checkoutCart(rawQuery: String, hotelCheckoutParam: HotelCheckoutParam) {
+    fun checkoutCart(rawQuery: GqlQueryInterface, hotelCheckoutParam: HotelCheckoutParam) {
 
         hotelCheckoutParam.idempotencyKey = generateIdEmpotency(hotelCheckoutParam.cartId)
         val params = mapOf(PARAM_CART_PROPERTY to hotelCheckoutParam)
@@ -114,7 +114,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         }
     }
 
-    fun getTokopointsSumCoupon(rawQuery: String) {
+    fun getTokopointsSumCoupon(rawQuery: GqlQueryInterface) {
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TokopointsSumCoupon.Response::class.java)

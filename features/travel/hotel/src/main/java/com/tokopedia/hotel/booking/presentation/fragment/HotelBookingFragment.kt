@@ -22,7 +22,6 @@ import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -34,7 +33,11 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.booking.data.model.*
+import com.tokopedia.hotel.booking.data.model.HotelBookingPageModel
+import com.tokopedia.hotel.booking.data.model.HotelCart
+import com.tokopedia.hotel.booking.data.model.HotelCartData
+import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
+import com.tokopedia.hotel.booking.data.model.HotelPropertyData
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity.Companion.HOTEL_BOOKING_SCREEN_NAME
 import com.tokopedia.hotel.booking.presentation.activity.HotelPayAtHotelPromoActivity
@@ -45,11 +48,15 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlMutation
-import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.common.util.MutationHotelCheckout
+import com.tokopedia.hotel.common.util.QueryHotelGetCart
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
 import com.tokopedia.hotel.databinding.FragmentHotelBookingBinding
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
@@ -61,7 +68,6 @@ import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAda
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
 import com.tokopedia.travel.passenger.util.QueryGetContactList
-import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -71,7 +77,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
-
 
 class HotelBookingFragment : HotelBaseFragment() {
 
@@ -103,7 +108,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_CHECKOUT)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             bookingViewModel = viewModelProvider.get(HotelBookingViewModel::class.java)
         }
 
@@ -196,7 +201,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         showLoadingBar()
 
         bookingViewModel.fetchTickerData()
-        bookingViewModel.getCartData(HotelGqlQuery.GET_CART, hotelBookingPageModel.cartId)
+        bookingViewModel.getCartData(QueryHotelGetCart(), hotelBookingPageModel.cartId)
         bookingViewModel.getContactList(QueryGetContactList())
     }
 
@@ -655,7 +660,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     promoCode = hotelBookingPageModel.promoCode,
                     specialRequest = hotelBookingPageModel.roomRequest
             )
-            bookingViewModel.checkoutCart(HotelGqlMutation.CHECKOUT, hotelCheckoutParam)
+            bookingViewModel.checkoutCart(MutationHotelCheckout(), hotelCheckoutParam)
         } else {
             progressDialog.dismiss()
         }
@@ -693,9 +698,10 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     override fun onErrorRetryClicked() {
         binding?.containerError?.root?.hide()
-        bookingViewModel.getCartData(HotelGqlQuery.GET_CART, hotelBookingPageModel.cartId)
+        bookingViewModel.getCartData(QueryHotelGetCart(), hotelBookingPageModel.cartId)
     }
 
+    //TODO : need to update on promo module
     private fun getCancelVoucherQuery(): String = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
 
     private fun stopTrace() {
