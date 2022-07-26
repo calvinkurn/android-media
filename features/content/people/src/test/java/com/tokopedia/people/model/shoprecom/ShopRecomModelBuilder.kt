@@ -27,6 +27,8 @@ class ShopRecomModelBuilder {
 
     fun buildEmptyModel() = ShopRecomUiModel()
 
+    fun buildEmptyItemModel() = ShopRecomUiModelItem()
+
     private fun generateShopItem(itemId: Long = mockItemId): List<ShopRecomUiModelItem> {
         val shopRecomItem = mutableListOf<ShopRecomUiModelItem>()
         for (i in 0..9) {
