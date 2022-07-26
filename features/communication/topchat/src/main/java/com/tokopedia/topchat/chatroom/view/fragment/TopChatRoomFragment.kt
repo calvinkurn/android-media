@@ -1524,12 +1524,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun onAttachInvoiceSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
+        topchatViewState?.shouldShowSrw = false
         initInvoicePreview(data.extras)
         viewModel.initAttachmentPreview()
     }
 
     private fun onAttachVoucherSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
+        topchatViewState?.shouldShowSrw = false
         initVoucherPreview(data.extras)
         viewModel.initAttachmentPreview()
     }
@@ -3192,7 +3194,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun isSrwNewDesign(): Boolean {
-        return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
+        return true
+//        return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
     }
 
     companion object {

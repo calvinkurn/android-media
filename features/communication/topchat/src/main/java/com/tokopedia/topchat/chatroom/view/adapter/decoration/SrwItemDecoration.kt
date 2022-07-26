@@ -19,8 +19,7 @@ class SrwItemDecoration(context: Context?) : RecyclerView.ItemDecoration() {
         val right = parent.width - parent.paddingRight
 
         val childCount = parent.childCount
-        for (i in 0 until childCount) {
-            if (i == 0) continue
+        for (i in 1 until childCount) {
             val child: View = parent.getChildAt(i)
             val params = child.layoutParams as RecyclerView.LayoutParams
             val top: Int = child.top - params.topMargin

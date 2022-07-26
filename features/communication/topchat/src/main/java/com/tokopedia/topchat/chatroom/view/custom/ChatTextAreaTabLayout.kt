@@ -56,7 +56,7 @@ class ChatTextAreaTabLayout: ConstraintLayout {
     /**
      * List of tab-layout
      */
-    private var tabList = hashMapOf<View?, Pair<View?, View?>>()
+    private var tabList = hashMapOf<TabLayoutActiveStatus, TabView>()
     private var tabState: TabLayoutActiveStatus = TabLayoutActiveStatus.SRW
 
     constructor(context: Context?) : super(context)
@@ -91,9 +91,23 @@ class ChatTextAreaTabLayout: ConstraintLayout {
         replyEditText = findViewById(R.id.new_comment)
         sendButton = findViewById(R.id.send_but)
 
+        /**
+         * Add new tab here
+         */
         tabList.apply {
-            this[textTabSRW] = (Pair(tabSRW, srwLayout))
-            this[textTabReplyBox] = (Pair(tabReplyBox, replyBoxLayout))
+            val tabSRW = TabView(
+                tabLayout = srwLayout,
+                tabBackground = tabSRW,
+                tabText = textTabSRW
+            )
+            this[TabLayoutActiveStatus.SRW] = tabSRW
+
+            val tabReplyBox = TabView(
+                tabLayout = replyBoxLayout,
+                tabBackground = tabReplyBox,
+                tabText = textTabReplyBox
+            )
+            this[TabLayoutActiveStatus.ReplyBox] = tabReplyBox
         }
     }
 
@@ -134,22 +148,32 @@ class ChatTextAreaTabLayout: ConstraintLayout {
 
     private fun initListener() {
         tabSRW?.setOnClickListener {
-            onTabSrwActive(it)
+            onTabClicked(
+                clickedTab = TabLayoutActiveStatus.SRW,
+                additional = {
+                    chatMenu?.hideKeyboard()
+                }
+            )
         }
         tabReplyBox?.setOnClickListener {
-            tabState = TabLayoutActiveStatus.ReplyBox
-            updateTab(it)
-            replyEditText?.requestFocus()
-            chatMenu?.showKeyboard(replyEditText)
+            onTabClicked(
+                clickedTab = TabLayoutActiveStatus.ReplyBox,
+                additional = {
+                    replyEditText?.requestFocus()
+                    chatMenu?.showKeyboard(replyEditText)
+                }
+            )
         }
     }
 
-    private fun onTabSrwActive(tabSrw: View?) {
-        tabSrw?.let {
-            tabState = TabLayoutActiveStatus.SRW
-            updateTab(it)
-            chatMenu?.hideKeyboard()
-        }
+    private fun onTabClicked(
+        clickedTab: TabLayoutActiveStatus,
+        additional: () -> Unit
+    ) {
+        changeToInactive()
+        tabState = clickedTab
+        updateTab()
+        additional()
     }
 
     fun initSrw(
@@ -187,46 +211,33 @@ class ChatTextAreaTabLayout: ConstraintLayout {
         }
     }
 
-    private fun updateTab(pickedView: View) {
+    private fun updateTab() {
         chatMenu?.hideMenu()
-        changeTabState(pickedView, isActive = true)
-        showTabContent(pickedView)
-        changeToInactive(pickedView)
+        changeTabState(tabList[tabState]?.tabBackground, isActive = true)
+        showTabContent()
     }
 
-    private fun changeTabState(pickedView: View, isActive: Boolean) {
-        if (isActive) {
-            pickedView.background = tabBackgroundActive
-        } else {
-            pickedView.background = tabBackgroundInactive
-        }
-    }
-
-    private fun showTabContent(pickedView: View) {
-        tabList.forEach {
-            val text = it.key
-            val tab = it.value.first
-            val layout = it.value.second
-            if (tab == pickedView) {
-                layout?.show()
-                tab.bringToFront()
-                text?.bringToFront()
-                return@forEach
+    private fun changeTabState(pickedView: View?, isActive: Boolean) {
+        pickedView?.let {
+            if (isActive) {
+                it.background = tabBackgroundActive
+            } else {
+                it.background = tabBackgroundInactive
             }
         }
     }
 
-    private fun changeToInactive(pickedView: View) {
-        tabList.forEach {
-            val tab = it.value.first
-            val layout = it.value.second
-            if (tab != pickedView) {
-                tab?.let { tabView ->
-                    changeTabState(tabView, isActive = false)
-                    layout?.hide()
-                }
-            }
-        }
+    private fun showTabContent() {
+        val tabView = tabList[tabState]
+        tabView?.tabLayout?.show()
+        tabView?.tabBackground?.show()
+        tabView?.tabText?.show()
+    }
+
+    private fun changeToInactive() {
+        val tabView = tabList[tabState]
+        changeTabState(tabView?.tabBackground, isActive = false)
+        tabView?.tabLayout?.hide()
     }
 
     fun onStickerOpened() {
@@ -260,12 +271,23 @@ class ChatTextAreaTabLayout: ConstraintLayout {
     }
 
     fun resetTab() {
-        onTabSrwActive(tabSRW)
+        onTabClicked(
+            clickedTab = TabLayoutActiveStatus.SRW,
+            additional = {
+                chatMenu?.hideKeyboard()
+            }
+        )
     }
 
     internal enum class TabLayoutActiveStatus {
         SRW, ReplyBox
     }
+
+    internal data class TabView(
+        var tabLayout : View? = null,
+        var tabText: Typography? = null,
+        var tabBackground: View? = null,
+    )
 
     companion object {
         private val LAYOUT = R.layout.layout_text_area_tab

@@ -40,7 +40,8 @@
             app:layout_constraintRight_toRightOf="@id/textarea_tab_bg"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="Tulis Pesan"/>
+            app:typographyWeight="bold"
+            android:text="@string/text_area_tab_reply_box_title"/>
 
         <View
             android:id="@+id/srw_tab_bg"
@@ -50,8 +51,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toLeftOf="@id/textarea_tab_bg"
-            app:layout_constraintHorizontal_bias="0"
-            android:text="Smart Reply"/>
+            app:layout_constraintHorizontal_bias="0" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_srw_tab"
@@ -62,7 +62,8 @@
             app:layout_constraintRight_toRightOf="@id/srw_tab_bg"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="Smart Reply"/>
+            app:typographyWeight="bold"
+            android:text="@string/text_area_tab_smart_reply_title"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

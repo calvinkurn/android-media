@@ -111,7 +111,6 @@ open class TopChatViewStateImpl constructor(
             showReplyBox()
         }
 
-
     var roomMenu = LongClickMenu()
 
     override fun getOfflineIndicatorResource() = R.drawable.ic_topchat_status_indicator_offline
@@ -870,6 +869,7 @@ open class TopChatViewStateImpl constructor(
                         chatTextAreaTabLayout?.srwLayout?.renderSrwState()
                     }
                     chatTextAreaTabLayout?.show()
+                    hideKeyboard()
                 }
                 (isAbleToReply == true) && (shouldShowSrw == false) -> {
                     //Hide Shimmer, show comment area, show reply box, hide tab

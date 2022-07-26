@@ -144,7 +144,7 @@
         android:paddingEnd="@dimen/dp_topchat_6"
         android:paddingBottom="@dimen/dp_topchat_6"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_product_name"
         app:layout_constraintLeft_toRightOf="@id/tv_product_name"
         app:srcCompat="@drawable/topchat_ic_close" />
 
