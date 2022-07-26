@@ -10,6 +10,7 @@ import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -66,24 +67,31 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
             event.subscribe().collect {
                 when (it) {
                     is ProductCarouselUiComponent.Event.OnClicked -> {
-                        if (it.product.isPinned) {
-                            analytic2?.clickPinnedProductInCarousel(it.product)
-                        }
-                        else if (it.product.isTokoNow) {
-                            newAnalytic.clickFeaturedProduct(it.product, it.position)
-                        } else {
-                            analytic.clickFeaturedProduct(it.product, it.position)
-                        }
+                        onCarouselProductClicked(it.product, it.position)
                     }
                     is ProductCarouselUiComponent.Event.OnImpressed -> {
                         if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED) ||
-                                it.products.isEmpty()) return@collect
+                                it.productMap.isEmpty()) return@collect
 
-                        productAnalyticHelper.trackImpressedProducts(it.products)
+                        it.productMap.forEach { entry ->
+                            if (!entry.key.isPinned) return@forEach
+                            analytic2?.impressPinnedProductInCarousel(entry.key, entry.value)
+                        }
+                        productAnalyticHelper.trackImpressedProducts(it.productMap)
                     }
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                 }
             }
+        }
+    }
+
+    private fun onCarouselProductClicked(product: PlayProductUiModel.Product, position: Int) {
+        if (product.isPinned) analytic2?.clickPinnedProductInCarousel(product, position)
+
+        if (product.isTokoNow) {
+            newAnalytic.clickFeaturedProduct(product, position)
+        } else {
+            analytic.clickFeaturedProduct(product, position)
         }
     }
 

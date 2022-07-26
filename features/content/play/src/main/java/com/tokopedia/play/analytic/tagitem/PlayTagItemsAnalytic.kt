@@ -54,8 +54,14 @@ interface PlayTagItemsAnalytic {
     /**
      * Carousel
      */
+    fun impressPinnedProductInCarousel(
+        product: PlayProductUiModel.Product,
+        position: Int,
+    )
+
     fun clickPinnedProductInCarousel(
         product: PlayProductUiModel.Product,
+        position: Int,
     )
 
     interface Factory {

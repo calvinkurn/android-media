@@ -32,9 +32,9 @@ class ProductCarouselUiComponent(
         object : ProductCarouselUiView.Listener {
             override fun onProductImpressed(
                 view: ProductCarouselUiView,
-                products: List<Pair<PlayProductUiModel.Product, Int>>
+                productMap: Map<PlayProductUiModel.Product, Int>
             ) {
-                bus.emit(Event.OnImpressed(products))
+                bus.emit(Event.OnImpressed(productMap))
             }
 
             override fun onProductClicked(
@@ -153,7 +153,7 @@ class ProductCarouselUiComponent(
     }
 
     sealed interface Event {
-        data class OnImpressed(val products: List<Pair<PlayProductUiModel.Product, Int>>) : Event
+        data class OnImpressed(val productMap: Map<PlayProductUiModel.Product, Int>) : Event
         data class OnClicked(val product: PlayProductUiModel.Product, val position: Int) : Event
 
         data class OnAtcClicked(val product: PlayProductUiModel.Product) : Event

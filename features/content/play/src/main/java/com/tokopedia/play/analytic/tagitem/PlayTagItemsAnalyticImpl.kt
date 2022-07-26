@@ -4,6 +4,7 @@ import com.tokopedia.play.analytic.KEY_BUSINESS_UNIT
 import com.tokopedia.play.analytic.KEY_CHANNEL
 import com.tokopedia.play.analytic.KEY_CURRENT_SITE
 import com.tokopedia.play.analytic.KEY_EVENT_PRODUCT_CLICK
+import com.tokopedia.play.analytic.KEY_EVENT_PRODUCT_VIEW
 import com.tokopedia.play.analytic.KEY_IS_LOGGED_IN_STATUS
 import com.tokopedia.play.analytic.KEY_SESSION_IRIS
 import com.tokopedia.play.analytic.KEY_TRACK_BUSINESS_UNIT
@@ -253,16 +254,47 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         )
     }
 
-    override fun clickPinnedProductInCarousel(product: PlayProductUiModel.Product) {
-        val trackerMap = BaseTrackerBuilder().constructBasicProductClick(
-            event = KEY_EVENT_PRODUCT_CLICK,
+    override fun impressPinnedProductInCarousel(
+        product: PlayProductUiModel.Product,
+        position: Int
+    ) {
+        val trackerMap = BaseTrackerBuilder().constructBasicProductView(
+            event = KEY_EVENT_PRODUCT_VIEW,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = "view on pinned featured product",
             eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
             list = "/groupchat - featured product",
             products = listOf(
                 BaseTrackerConst.Product(
-                    productPosition = 1.toString(), //because pinned product is always in index 0
+                    productPosition = (position + 1).toString(),
+                    id = product.id,
+                    name = product.title,
+                    productPrice = product.price.currentPrice.toString(),
+                    brand = "",
+                    category = "",
+                    isFreeOngkir = product.isFreeShipping,
+                    variant = "",
+                    shopId = product.shopId,
+                )
+            ),
+        ).appendUserId(userId)
+            .appendBusinessUnit(VAL_BUSINESS_UNIT)
+            .appendCurrentSite(VAL_CURRENT_SITE)
+            .build()
+
+        if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
+    }
+
+    override fun clickPinnedProductInCarousel(product: PlayProductUiModel.Product, position: Int) {
+        val trackerMap = BaseTrackerBuilder().constructBasicProductClick(
+            event = KEY_EVENT_PRODUCT_CLICK,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "click on pinned featured product",
+            eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
+            list = "/groupchat - featured product",
+            products = listOf(
+                BaseTrackerConst.Product(
+                    productPosition = (position + 1).toString(),
                     id = product.id,
                     name = product.title,
                     productPrice = product.price.currentPrice.toString(),

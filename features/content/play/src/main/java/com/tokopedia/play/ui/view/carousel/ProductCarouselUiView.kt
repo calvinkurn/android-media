@@ -139,34 +139,34 @@ class ProductCarouselUiView(
     private fun sendImpression() = synchronized(impressionSet) {
         val products = getVisibleProducts()
         val productsToBeImpressed = products.filter {
-            !impressionSet.contains(it.first.id)
+            !impressionSet.contains(it.key.id)
         }
         listener.onProductImpressed(this, productsToBeImpressed)
         productsToBeImpressed.forEach {
-            impressionSet.add(it.first.id)
+            impressionSet.add(it.key.id)
         }
     }
 
     /**
      * Analytic Helper
      */
-    private fun getVisibleProducts(): List<Pair<PlayProductUiModel.Product, Int>> {
+    private fun getVisibleProducts(): Map<PlayProductUiModel.Product, Int> {
         val products = adapter.getItems()
         if (products.isNotEmpty()) {
-            val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val startPosition = layoutManager.findFirstVisibleItemPosition()
             val endPosition = layoutManager.findLastVisibleItemPosition()
-            if (startPosition > -1 && endPosition < products.size) return products.slice(startPosition..endPosition)
-                .filterIsInstance<PlayProductUiModel.Product>()
-                .mapIndexed { index, item ->
-                    Pair(item, startPosition + index)
-                }
+            if (startPosition > -1 && endPosition < products.size) {
+                return (startPosition..endPosition)
+                    .filter { products[it] is PlayProductUiModel.Product }
+                    .associateBy { products[it] as PlayProductUiModel.Product }
+            }
         }
-        return emptyList()
+        return emptyMap()
     }
 
     interface Listener {
 
-        fun onProductImpressed(view: ProductCarouselUiView, products: List<Pair<PlayProductUiModel.Product, Int>>)
+        fun onProductImpressed(view: ProductCarouselUiView, productMap: Map<PlayProductUiModel.Product, Int>)
         fun onProductClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product, position: Int)
 
         fun onAtcClicked(view: ProductCarouselUiView, product: PlayProductUiModel.Product)
