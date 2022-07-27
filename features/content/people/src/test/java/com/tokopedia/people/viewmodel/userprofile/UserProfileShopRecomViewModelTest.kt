@@ -530,7 +530,7 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
-    fun `when user success remove item`() {
+    fun `when user success remove item from shop carousel`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
@@ -552,7 +552,7 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
-    fun `when user fail remove item`() {
+    fun `when user fail remove item from shop carousel`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
