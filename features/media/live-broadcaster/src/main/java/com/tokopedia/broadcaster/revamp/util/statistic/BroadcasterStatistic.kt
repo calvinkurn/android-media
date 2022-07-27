@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 /**
  * Created by meyta.taliti on 01/03/22.
  */
+@Suppress("MagicNumber")
 class BroadcasterStatistic(
     private val listener: Listener,
 ) {
@@ -19,11 +20,13 @@ class BroadcasterStatistic(
     private var audioPacketsLost: Long = 0
     private var udpPacketsLost: Long = 0
 
+    @Suppress("MagicNumber")
     fun start(connectionId: Int) {
         prevTime = System.currentTimeMillis()
         prevBytes = listener.bytesSent(connectionId).orZero()
     }
 
+    @Suppress("MagicNumber")
     fun update(connectionId: Int) {
         if (!listener.isEligibleQuery()) return
 
