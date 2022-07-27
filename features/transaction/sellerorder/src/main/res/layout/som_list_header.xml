@@ -24,21 +24,23 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
-        app:layout_constraintEnd_toStartOf="@id/barrier_start_som_list_menu_waiting_payment"
+        app:layout_constraintEnd_toStartOf="@id/barrier_start_som_list_menu_plus"
         app:layout_constraintStart_toEndOf="@id/icSomListNavigationBack"
         app:layout_constraintTop_toTopOf="parent"
         app:search_bar_placeholder="@string/som_list_hint_search_product"
         app:search_bar_show_icon="false" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_start_som_list_menu_waiting_payment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="start"
-        app:constraint_referenced_ids="icSomListMenuWaitingPayment,icSomListMenuWaitingPaymentDot,loaderSomListMenuWaitingPayment"
-        tools:layout_constraintEnd_toStartOf="@id/icSomListMenuWaitingPayment"
-        tools:layout_height="0dp"
-        tools:layout_width="0dp" />
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/icSomListMenuPlus"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="14dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/searchBarSomList"
+        app:layout_constraintEnd_toStartOf="@id/barrier_start_som_list_menu_waiting_payment"
+        app:layout_constraintTop_toTopOf="@id/searchBarSomList"
+        app:unify_image_corner_radius="0"
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icSomListMenuWaitingPayment"
@@ -63,6 +65,18 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderSomListMenuPlus"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="14dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/searchBarSomList"
+        app:layout_constraintEnd_toStartOf="@id/barrier_start_som_list_menu_waiting_payment"
+        app:layout_constraintTop_toTopOf="@id/searchBarSomList"
+        app:loader_type="rect"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderSomListMenuWaitingPayment"
         android:layout_width="24dp"
         android:layout_height="24dp"
@@ -80,5 +94,25 @@
         android:layout_height="1dp"
         android:layout_marginTop="5dp"
         app:layout_constraintTop_toBottomOf="@id/searchBarSomList" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_start_som_list_menu_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="icSomListMenuPlus,loaderSomListMenuPlus"
+        tools:layout_constraintEnd_toStartOf="@id/icSomListMenuPlus"
+        tools:layout_height="0dp"
+        tools:layout_width="0dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_start_som_list_menu_waiting_payment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="icSomListMenuWaitingPayment,icSomListMenuWaitingPaymentDot,loaderSomListMenuWaitingPayment"
+        tools:layout_constraintEnd_toStartOf="@id/icSomListMenuWaitingPayment"
+        tools:layout_height="0dp"
+        tools:layout_width="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

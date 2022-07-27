@@ -26,11 +26,11 @@ import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkAcceptOrderUseC
 import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkRequestPickupUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetBulkAcceptOrderStatusUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetFilterListUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetHeaderIconsInfoUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetMultiShippingStatusUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetOrderListUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTickerUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTopAdsCategoryUseCase
-import com.tokopedia.sellerorder.list.domain.usecases.SomListGetWaitingPaymentUseCase
 import com.tokopedia.sellerorder.list.presentation.models.AllFailEligible
 import com.tokopedia.sellerorder.list.presentation.models.AllNotEligible
 import com.tokopedia.sellerorder.list.presentation.models.AllSuccess
@@ -49,8 +49,8 @@ import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrder
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkRequestPickupUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListHeaderIconsInfoUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
-import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
 import com.tokopedia.sellerorder.list.presentation.util.SomListFilterUtil
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
@@ -75,7 +75,7 @@ class SomListViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val somListGetTickerUseCase: SomListGetTickerUseCase,
     private val somListGetFilterListUseCase: SomListGetFilterListUseCase,
-    private val somListGetWaitingPaymentUseCase: SomListGetWaitingPaymentUseCase,
+    private val somListGetHeaderIconsInfoUseCase: SomListGetHeaderIconsInfoUseCase,
     private val somListGetOrderListUseCase: SomListGetOrderListUseCase,
     private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
     private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
@@ -115,9 +115,9 @@ class SomListViewModel @Inject constructor(
     val filterResult: LiveData<Result<SomListFilterUiModel>>
         get() = _filterResult
 
-    private val _waitingPaymentCounterResult = MutableLiveData<Result<WaitingPaymentCounter>>()
-    val waitingPaymentCounterResult: LiveData<Result<WaitingPaymentCounter>>
-        get() = _waitingPaymentCounterResult
+    private val _somListHeaderIconsInfoResult = MutableLiveData<Result<SomListHeaderIconsInfoUiModel>>()
+    val somListHeaderIconsInfoResult: LiveData<Result<SomListHeaderIconsInfoUiModel>>
+        get() = _somListHeaderIconsInfoResult
 
     private val _orderListResult = MutableLiveData<Result<List<SomListOrderUiModel>>>()
     val orderListResult: LiveData<Result<List<SomListOrderUiModel>>>
@@ -546,13 +546,13 @@ class SomListViewModel @Inject constructor(
         })
     }
 
-    fun getWaitingPaymentCounter() {
+    fun getHeaderIconsInfo() {
         launchCatchError(block = {
             if (_canShowOrderData.value == true) {
-                _waitingPaymentCounterResult.postValue(Success(somListGetWaitingPaymentUseCase.executeOnBackground()))
+                _somListHeaderIconsInfoResult.postValue(Success(somListGetHeaderIconsInfoUseCase.executeOnBackground()))
             }
         }, onError = {
-            _waitingPaymentCounterResult.postValue(Fail(it))
+            _somListHeaderIconsInfoResult.postValue(Fail(it))
         })
     }
 
