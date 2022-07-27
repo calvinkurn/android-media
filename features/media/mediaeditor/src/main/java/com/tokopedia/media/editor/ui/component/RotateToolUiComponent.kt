@@ -46,7 +46,7 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
 
     private var scaleX = 1f
     private var scaleY = 1f
-    private val scaleNormalizeValue get() = min(scaleX, scaleY)
+    private val scaleNormalizeValue get() = scaleX * scaleY
 
     var isRatioRotated = false
     var sliderValue = 0f
