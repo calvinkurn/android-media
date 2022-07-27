@@ -23,6 +23,10 @@ import androidx.core.view.drawToBitmap
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
@@ -49,6 +53,7 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.callback.BitmapCropCallback
@@ -83,8 +88,9 @@ class DetailEditorFragment @Inject constructor(
     private val rotateComponent by uiComponent { RotateToolUiComponent(it, this) }
 
     private var data = EditorDetailUiModel()
-
     private var originalBitmap: Bitmap? = null
+
+    private var removeBackgroundRetryLimit = 3
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -115,10 +121,26 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onRemoveBackgroundClicked() {
-        saveImage()
-        data.resultUrl?.let {
-            val uri = Uri.parse(it)
-            uri.path?.let { it1 -> viewModel.setRemoveBackground(it1) }
+        val target = data.resultUrl ?: data.originalUrl
+        val uri = Uri.parse(target)
+        uri.path?.let { it ->
+            viewModel.setRemoveBackground(it) {
+                viewBinding?.let {
+                    Toaster.build(
+                        it.editorFragmentDetailRoot,
+                        getString(R.string.editor_tool_remove_background_failed_normal),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        getString(R.string.editor_tool_remove_background_failed_cta)
+                    ) {
+                        removeBackgroundRetryLimit--
+                        if (removeBackgroundRetryLimit == 0)
+                            activity?.finish()
+                        else
+                            onRemoveBackgroundClicked()
+                    }.show()
+                }
+            }
         }
     }
 
