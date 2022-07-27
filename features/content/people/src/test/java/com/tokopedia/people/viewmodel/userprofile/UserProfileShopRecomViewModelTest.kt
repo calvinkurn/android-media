@@ -56,7 +56,6 @@ class UserProfileShopRecomViewModelTest {
     private val mockOwnUsername = "fachrizalmrsln"
     private val mockOtherUsername = "jonathandarwin"
     private val mockItemId = shopRecomBuilder.mockItemId
-    private val mockEncryptedId = shopRecomBuilder.mockEncryptedId
     private val mockOwnProfile = profileBuilder.buildProfile(userID = mockOwnUserId, username = mockOwnUsername)
     private val mockOtherProfile = profileBuilder.buildProfile(userID = mockOtherUserId, username = mockOtherUsername)
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(
