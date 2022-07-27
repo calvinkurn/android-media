@@ -80,7 +80,6 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
@@ -88,7 +87,6 @@ import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
-import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
@@ -100,13 +98,16 @@ import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewLis
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.ProductListParameterListener
-import com.tokopedia.search.result.product.banner.BannerListenerDelegate
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
+import com.tokopedia.search.result.product.banner.BannerListenerDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
+import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
+import com.tokopedia.search.result.product.lastfilter.LastFilterListener
+import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
@@ -204,6 +205,8 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var recyclerViewUpdater: RecyclerViewUpdater
 
+    lateinit var lastFilterListener: LastFilterListener
+
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -245,6 +248,7 @@ class ProductListFragment: BaseDaggerFragment(),
         loadDataFromArguments()
         initProductCardLifecycleObserver()
         initNetworkMonitor()
+        initLastFilterListenerDelegate()
     }
 
     private fun loadDataFromArguments() {
@@ -281,6 +285,10 @@ class ProductListFragment: BaseDaggerFragment(),
             .performanceMonitoringModule(PerformanceMonitoringModule(performanceMonitoring))
             .build()
             .inject(this)
+    }
+
+    private fun initLastFilterListenerDelegate() {
+        lastFilterListener = LastFilterListenerDelegate(iris, this)
     }
     //endregion
 
@@ -1998,20 +2006,11 @@ class ProductListFragment: BaseDaggerFragment(),
 
     //region Last Filter Widget
     override fun onImpressedLastFilter(lastFilterDataView: LastFilterDataView) {
-        SearchTracking.trackEventLastFilterImpression(
-            iris,
-            queryKey,
-            lastFilterDataView.sortFilterParamsString(),
-            getDimension90()
-        )
+        lastFilterListener.onImpressedLastFilter(lastFilterDataView)
     }
 
     override fun applyLastFilter(lastFilterDataView: LastFilterDataView) {
-        SearchTracking.trackEventLastFilterClickApply(
-            queryKey,
-            lastFilterDataView.sortFilterParamsString(),
-            getDimension90(),
-        )
+        lastFilterListener.applyLastFilter(lastFilterDataView)
 
         filterController.setFilter(lastFilterDataView.filterOptions())
 
@@ -2022,11 +2021,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun closeLastFilter(lastFilterDataView: LastFilterDataView) {
-        SearchTracking.trackEventLastFilterClickClose(
-            queryKey,
-            lastFilterDataView.sortFilterParamsString(),
-            getDimension90(),
-        )
+        lastFilterListener.closeLastFilter(lastFilterDataView)
 
         val searchParameterMap = searchParameter?.getSearchParameterMap() ?: mapOf()
 

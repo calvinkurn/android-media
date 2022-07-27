@@ -61,4 +61,7 @@ object CentralizedPromoConstant {
     const val TRACKER_ID_33774 = "33774"
     const val TRACKER_ID = "trackerId"
     const val BUSINESS_UNIT_TOKOMEMBER = "tokomember"
+
+    //Flash Sale Toko
+    const val CLICK_CARD = "click card"
 }

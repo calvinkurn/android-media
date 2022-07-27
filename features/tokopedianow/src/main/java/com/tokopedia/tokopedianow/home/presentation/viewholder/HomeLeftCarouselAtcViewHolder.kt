@@ -30,6 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class HomeLeftCarouselAtcViewHolder (
@@ -113,6 +114,10 @@ class HomeLeftCarouselAtcViewHolder (
             channelId = uiModel?.id.orEmpty(),
             headerName = uiModel?.header?.title.orEmpty()
         )
+    }
+
+    override fun onChannelExpired() {
+        homeLeftCarouselAtcCallback?.onRemoveLeftCarouselAtc(uiModel?.id.orEmpty())
     }
 
     private fun onLeftCarouselImpressed(element: HomeLeftCarouselAtcUiModel) {
@@ -264,5 +269,6 @@ class HomeLeftCarouselAtcViewHolder (
         fun onSeeMoreClicked(appLink: String, channelId: String, headerName: String)
         fun onLeftCarouselImpressed(channelId: String, headerName: String)
         fun onLeftCarouselLeftImageClicked(appLink: String, channelId: String, headerName: String)
+        fun onRemoveLeftCarouselAtc(channelId: String)
     }
 }
