@@ -1368,7 +1368,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             goToPinpoint(address, false)
         }
 
-        override fun choosePayment(profile: OrderProfile, payment: OrderPayment) {
+        override fun choosePayment(profile: OrderProfile, payment: OrderPayment, products: List<OrderProduct>) {
             val currentGatewayCode = profile.payment.gatewayCode
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = Intent(context, PaymentListingActivity::class.java).apply {
@@ -1380,7 +1380,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, payment.bid)
                 putExtra(PaymentListingActivity.EXTRA_ORDER_METADATA, GoCicilInstallmentRequest(
                         merchantType = viewModel.orderCart.shop.merchantType,
-                        paymentAmount = orderCost.totalPriceWithoutPaymentFees
+                        paymentAmount = orderCost.totalPriceWithoutPaymentFees,
+                        address = profile.address,
+                        products = products.toMutableList()
                 ).orderMetadata)
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)

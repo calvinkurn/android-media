@@ -36,12 +36,14 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     private var profile: OrderProfile = OrderProfile()
     private var shipment: OrderShipment = OrderShipment()
     private var payment: OrderPayment = OrderPayment()
+    private var products: List<OrderProduct> = emptyList()
 
-    fun setPreferenceData(shop: OrderShop, profile: OrderProfile, shipment: OrderShipment, payment: OrderPayment) {
+    fun setPreferenceData(shop: OrderShop, profile: OrderProfile, shipment: OrderShipment, payment: OrderPayment, products: List<OrderProduct>) {
         this.shop = shop
         this.profile = profile
         this.shipment = shipment
         this.payment = payment
+        this.products = products
         showPreference()
     }
 
@@ -579,7 +581,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         tvPaymentErrorMessage.setOnClickListener {
                             if (profile.enable) {
                                 when (payment.errorData.action) {
-                                    OrderPaymentErrorData.ACTION_CHANGE_PAYMENT -> listener.choosePayment(profile, payment)
+                                    OrderPaymentErrorData.ACTION_CHANGE_PAYMENT -> listener.choosePayment(profile, payment, products)
                                     OrderPaymentErrorData.ACTION_CHANGE_CC -> listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
                                 }
                             }
@@ -818,7 +820,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     btnChangePayment.visible()
                     setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
                         if (profile.enable) {
-                            listener.choosePayment(profile, payment)
+                            listener.choosePayment(profile, payment, products)
                         }
                     }
                 }
@@ -850,7 +852,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             dividerCcPayment.visible()
             setMultiViewsOnClickListener(tvPaymentCcName, btnChangePaymentCc) {
                 if (profile.enable) {
-                    listener.choosePayment(profile, payment)
+                    listener.choosePayment(profile, payment, products)
                 }
             }
         }
@@ -943,7 +945,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         fun choosePinpoint(address: OrderProfileAddress)
 
-        fun choosePayment(profile: OrderProfile, payment: OrderPayment)
+        fun choosePayment(profile: OrderProfile, payment: OrderPayment, products: List<OrderProduct>)
 
         fun onCreditCardInstallmentDetailClicked(creditCard: OrderPaymentCreditCard)
 
