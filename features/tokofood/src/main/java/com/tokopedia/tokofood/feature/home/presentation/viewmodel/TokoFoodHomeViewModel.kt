@@ -63,12 +63,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
@@ -87,10 +89,14 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _uiState = MutableStateFlow(TokoFoodHomeUiState())
+    private val _inputState = MutableSharedFlow<TokoFoodHomeUiState>(1)
+
+    init {
+        _inputState.tryEmit(TokoFoodHomeUiState())
+    }
 
     val flowLayoutList: SharedFlow<Result<TokoFoodListUiModel>> =
-        _uiState.flatMapLatest { uiState ->
+        _inputState.flatMapConcat { uiState ->
             flow {
                 when (uiState.uiState) {
                     STATE_LOADING -> emit(getLoadingState())
@@ -101,8 +107,10 @@ class TokoFoodHomeViewModel @Inject constructor(
                                 emit(getLayoutComponentData(it, uiState.localCacheModel))
                             }
                     }
-                    STATE_PROGRESS_BAR -> emit(getProgressBar())
-                    STATE_FETCH_LOAD_MORE -> emit(getMerchantList(uiState.localCacheModel))
+                    STATE_FETCH_LOAD_MORE -> {
+                         emit(getProgressBar())
+                         emit(getMerchantList(uiState.localCacheModel))
+                    }
                 }
             }.catch {
                 when (uiState.uiState) {
@@ -179,7 +187,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     }
 
     fun setLoadingState() {
-        _uiState.tryEmit(TokoFoodHomeUiState(uiState = STATE_LOADING))
+        _inputState.tryEmit(TokoFoodHomeUiState(uiState = STATE_LOADING))
     }
 
     fun getLoadingState(): Result<TokoFoodListUiModel> {
@@ -225,10 +233,6 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    fun setProgressBar() {
-        _uiState.tryEmit(TokoFoodHomeUiState(uiState = STATE_PROGRESS_BAR))
-    }
-
     fun getProgressBar(): Result<TokoFoodListUiModel> {
         homeLayoutItemList.addProgressBar()
         val data = TokoFoodListUiModel(
@@ -253,7 +257,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     }
 
     fun setHomeLayout(localCacheModel: LocalCacheModel) {
-        _uiState.tryEmit(
+        _inputState.tryEmit(
             TokoFoodHomeUiState(
                 uiState = STATE_FETCH_DYNAMIC_CHANNEL_DATA,
                 localCacheModel = localCacheModel
@@ -282,7 +286,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     fun setLayoutComponentData(localCacheModel: LocalCacheModel?) {
         localCacheModel?.let {
-            _uiState.tryEmit(
+            _inputState.tryEmit(
                 TokoFoodHomeUiState(
                     uiState = STATE_FETCH_COMPONENT_DATA,
                     localCacheModel = it
@@ -316,7 +320,6 @@ class TokoFoodHomeViewModel @Inject constructor(
         localCacheModel: LocalCacheModel
     ) {
         if (shouldLoadMore(containsLastItemIndex, itemCount)) {
-            setProgressBar()
             setMerchantList(localCacheModel = localCacheModel)
         }
     }
@@ -335,7 +338,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private fun setMerchantList(localCacheModel: LocalCacheModel?) {
         localCacheModel?.let {
-            _uiState.tryEmit(
+            _inputState.tryEmit(
                 TokoFoodHomeUiState(
                     uiState = STATE_FETCH_LOAD_MORE,
                     localCacheModel = it
@@ -344,7 +347,6 @@ class TokoFoodHomeViewModel @Inject constructor(
         }
     }
     private suspend fun getMerchantList(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
-
         val categoryResponse = withContext(dispatchers.io) {
             tokoFoodMerchantListUseCase.execute(
                 localCacheModel = localCacheModel,
