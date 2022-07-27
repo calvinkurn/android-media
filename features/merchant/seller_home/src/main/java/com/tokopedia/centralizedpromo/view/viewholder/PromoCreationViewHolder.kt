@@ -21,6 +21,7 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
     var onProductCouponClicked: (() -> Unit)? = null
     var onTokoMemberImpression: (() -> Unit)? = null
     var onTokoMemberClicked: (() -> Unit)? = null
+    var onFlashSaleTokoCLicked: ((String) -> Unit)? = null
 
     companion object {
         val RES_LAYOUT = centralized_promo_item_promo_creation
@@ -49,18 +50,26 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
                 tvRecommendedPromoExtra.text = element.extra
                 tvRecommendedPromoExtra.show()
                 tvRecommendedPromoDescription.setPadding(
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl4).toInt()
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl4).toInt()
                 )
             } else {
                 tvRecommendedPromoExtra.text = ""
                 tvRecommendedPromoDescription.setPadding(
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
-                    root.context.resources.getDimension(R.dimen.layout_lvl2).toInt()
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).toInt(),
+                    root.context.resources.getDimension(
+                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()
                 )
             }
 
@@ -103,6 +112,9 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             isProductCouponPromo(title) -> {
                 onProductCouponClicked?.invoke()
             }
+            isFlashSaleToko(title) -> {
+                onFlashSaleTokoCLicked?.invoke(title)
+            }
             isTokoMember(title) -> {
                 onTokoMemberClicked?.invoke()
             }
@@ -122,6 +134,10 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
 
     private fun isTokoMember(title: String): Boolean {
         return title == getString(R.string.centralized_promo_promo_creation_tokomember_title)
+    }
+
+    private fun isFlashSaleToko(title: String): Boolean {
+        return title == getString(R.string.centralized_promo_promo_creation_flash_sale_toko_title)
     }
 
 }

@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
@@ -77,7 +78,10 @@ object LeftCarouselAtcMapper {
                 title = channelModel.channelHeader.name,
                 subTitle = channelModel.channelHeader.subtitle,
                 ctaText = "",
-                ctaTextLink = channelModel.channelHeader.applink
+                ctaTextLink = channelModel.channelHeader.applink,
+                expiredTime = channelModel.channelHeader.expiredTime,
+                serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channelModel.channelHeader.serverTimeUnix),
+                backColor = channelModel.channelHeader.backColor
             ),
             productList = productList,
             backgroundColorArray = channelModel.channelBanner.gradientColor,
