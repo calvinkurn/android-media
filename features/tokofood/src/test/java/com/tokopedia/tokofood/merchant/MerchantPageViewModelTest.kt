@@ -183,7 +183,16 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
         val productListItems = viewModel.mapFoodCategoriesToProductListItems(isShopClosed, testFoodCategories)
         val testData = generateTestCheckoutTokoFoodProduct()
         val actualResult = viewModel.applyProductSelection(productListItems, testData)
-        assertEquals(expectedResult, actualResult)
+        // index 0 is reserved for the header
+        // non variant test
+        assertEquals(expectedResult[1].productUiModel.isAtc, actualResult[1].productUiModel.isAtc)
+        // with variant test
+        assertEquals(expectedResult[2].productUiModel.isAtc, actualResult[2].productUiModel.isAtc)
+        val expectedCustomOrderDetail = expectedResult[2].productUiModel.customOrderDetails.first()
+        val expectedSelectedAddons = expectedCustomOrderDetail.customListItems.first().addOnUiModel?.selectedAddOns
+        val actualCustomOrderDetail = actualResult[2].productUiModel.customOrderDetails.first()
+        val actualSelectedAddons = actualCustomOrderDetail.customListItems.first().addOnUiModel?.selectedAddOns
+        assertEquals(expectedSelectedAddons, actualSelectedAddons)
     }
 
     @Test
