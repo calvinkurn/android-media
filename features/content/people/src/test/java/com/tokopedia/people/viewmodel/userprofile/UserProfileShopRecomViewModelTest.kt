@@ -217,17 +217,10 @@ class UserProfileShopRecomViewModelTest {
 
     @Test
     fun `when user success follow shop`() {
-        val mockShopRecomIsShownBeforeFollow = mockShopRecomIsShown.copy(
-            items = mockShopRecomIsShown.items.map {
-                if (it.id == mockItemId) it.copy(isFollow = false)
-                else it
-            }
-        )
-
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUsername) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
-        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeFollow
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShown
         coEvery { mockRepo.followProfile(mockEncryptedId) } returns mockMutationSuccess
 
         robot.use {
