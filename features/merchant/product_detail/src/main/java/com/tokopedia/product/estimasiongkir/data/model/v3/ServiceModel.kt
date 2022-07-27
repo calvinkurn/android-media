@@ -1,5 +1,6 @@
 package com.tokopedia.product.estimasiongkir.data.model.v3
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -10,7 +11,7 @@ data class ServiceModel(
 
         @SerializedName("service_id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("service_order")
         @Expose
@@ -20,6 +21,7 @@ data class ServiceModel(
         @Expose
         val status: Int = 0,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("range_price")
         @Expose
         val rangePrice: RangePrice = RangePrice(),

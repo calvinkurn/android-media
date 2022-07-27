@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
@@ -22,7 +25,11 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 
 class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
@@ -124,7 +131,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
-            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
+            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.item)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
         }
     }
@@ -220,21 +227,29 @@ class UserProfileViewModel @AssistedInject constructor(
         _savedReminderData.update { SavedReminderData.NoData }
     }
 
-    private fun handleClickFollowButtonShopRecom(itemID: Long) {
+    private fun handleClickFollowButtonShopRecom(item: ShopRecomUiModelItem) {
         viewModelScope.launchCatchError(block = {
-
             val followInfo = _followInfo.value
-            val currItem = _shopRecom.value.items.find { it.id == itemID } ?: return@launchCatchError
-
-            val result = if (currItem.isFollow) repo.unFollowProfile(currItem.encryptedID)
-            else repo.followProfile(currItem.encryptedID)
+            val result = when (item.type) {
+                FOLLOW_TYPE_SHOP -> {
+                    repo.shopFollowUnfollow(
+                        item.id.toString(),
+                        if (item.isFollow) UnFollow else Follow
+                    )
+                }
+                FOLLOW_TYPE_BUYER -> {
+                    if (item.isFollow) repo.unFollowProfile(item.encryptedID)
+                    else repo.followProfile(item.encryptedID)
+                }
+                else -> return@launchCatchError
+            }
 
             when (result) {
                 is MutationUiModel.Success -> {
                     _profileInfo.update { repo.getProfile(followInfo.userID) }
                     _shopRecom.update { data ->
                         data.copy(items = data.items.map {
-                            if (itemID == it.id) it.copy(isFollow = !it.isFollow)
+                            if (item.id == it.id) it.copy(isFollow = !it.isFollow)
                             else it
                         })
                     }
@@ -299,6 +314,11 @@ class UserProfileViewModel @AssistedInject constructor(
         val result = repo.getShopRecom()
         if (result.isShown) _shopRecom.emit(result)
         else _shopRecom.emit(ShopRecomUiModel())
+    }
+
+    companion object {
+        private const val FOLLOW_TYPE_SHOP = 2
+        private const val FOLLOW_TYPE_BUYER = 3
     }
 
 }

@@ -29,14 +29,14 @@
         <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/unify_space_128"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/unify_space_8"
             app:loader_corner_radius="@dimen/unify_space_8"
             app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/unify_space_128"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/unify_space_8"
             app:loader_corner_radius="@dimen/unify_space_8"
             app:loader_type="rect" />
 

@@ -68,12 +68,12 @@ class ProductCustomInfoViewHolder(val view: View,
 
     private fun setupApplink(applink: String, title: String, componentTrackData: ComponentTrackDataModel) = with(binding) {
         if (applink.isNotEmpty()) {
-            customArrow.show()
+            customLabelCheck.show()
             view.setOnClickListener {
                 listener.onBbiInfoClick(applink, title, componentTrackData)
             }
         } else {
-            customArrow.hide()
+            customLabelCheck.hide()
             view.setOnClickListener {}
         }
     }

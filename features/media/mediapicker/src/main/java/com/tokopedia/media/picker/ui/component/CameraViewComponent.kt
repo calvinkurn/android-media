@@ -85,18 +85,24 @@ class CameraViewComponent(
     }
 
     fun onStartTakePicture() {
-        cameraView.set(Mode.PICTURE)
         cameraView.takePicture()
     }
 
     fun onStartTakeVideo() {
-        cameraView.set(Mode.VIDEO)
         cameraView.set(Audio.ON)
 
         cameraView.takeVideoSnapshot(
             FileCamera.createVideo(),
             param.maxVideoDuration()
         )
+    }
+
+    fun onPictureMode() {
+        cameraView.set(Mode.PICTURE)
+    }
+
+    fun onVideoMode() {
+        cameraView.set(Mode.VIDEO)
     }
 
     fun open() {

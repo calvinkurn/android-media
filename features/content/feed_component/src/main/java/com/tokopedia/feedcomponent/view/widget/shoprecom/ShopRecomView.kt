@@ -75,7 +75,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
             )
         }
         imgItemShopClose.setOnClickListener { mListener?.onShopRecomCloseClicked(data.id) }
-        btnItemShop.setOnClickListener { mListener?.onShopRecomFollowClicked(data.id) }
+        btnItemShop.setOnClickListener { mListener?.onShopRecomFollowClicked(data) }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
@@ -28,6 +29,7 @@ object SomNavigator {
     const val REQUEST_CONFIRM_SHIPPING = 997
     const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
     const val REQUEST_CHANGE_COURIER = 995
+    const val REQUEST_RESCHEDULE_PICKUP = 994
 
     fun goToSomOrderDetail(fragment: SomListFragment, orderId: String) {
         fragment.run {
@@ -80,6 +82,13 @@ object SomNavigator {
                 putExtra(SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING, true)
                 startActivityForResult(this, REQUEST_CHANGE_COURIER)
             }
+        }
+    }
+
+    fun goToReschedulePickupPage(fragment: Fragment, orderId: String) {
+        fragment.run {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.RESCHEDULE_PICKUP.replace("{order_id}", orderId))
+            startActivityForResult(intent, REQUEST_RESCHEDULE_PICKUP)
         }
     }
 

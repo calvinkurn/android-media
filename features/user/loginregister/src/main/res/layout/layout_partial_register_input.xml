@@ -53,7 +53,7 @@
             android:text="@string/change_2"
             android:textColor="@color/Unify_G400"
             android:visibility="gone"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold" />
     </RelativeLayout>
 
@@ -66,7 +66,7 @@
         android:gravity="end"
         android:text="@string/default_placeholder"
         android:textColor="@color/Unify_N700_44"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -78,7 +78,7 @@
         android:fontFamily="sans-serif"
         android:gravity="end"
         android:textColor="@color/Unify_R600"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
@@ -108,7 +108,7 @@
         android:text="@string/title_forgot_password"
         android:textColor="@color/Unify_G400"
         android:visibility="gone"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifycomponents.UnifyButton

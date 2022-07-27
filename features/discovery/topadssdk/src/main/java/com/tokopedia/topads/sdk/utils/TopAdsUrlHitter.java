@@ -1,10 +1,15 @@
 package com.tokopedia.topads.sdk.utils;
 
+import static com.tokopedia.topads.sdk.TopAdsConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY;
+import static com.tokopedia.topads.sdk.TopAdsConstants.TopAdsClickUrlTrackerConstant.TOP_ADS_SHARED_PREF_KEY;
+
 import android.content.Context;
+import android.content.SharedPreferences;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
-
-import javax.inject.Inject;
+import com.tokopedia.topads.sdk.listener.TopAdsHeaderResponseListener;
 
 public class TopAdsUrlHitter {
 
@@ -14,6 +19,7 @@ public class TopAdsUrlHitter {
     private ImpresionTask impresionTask;
     private String sourceClassName;
     private Context context;
+    private SharedPreferences sharedPref;
 
     public TopAdsUrlHitter(Context context){
         this.context = context;
@@ -63,5 +69,23 @@ public class TopAdsUrlHitter {
     public void hitImpressionUrl(String className, String url, String productId, String productName, String imageUrl, String componentName) {
         new ImpresionTask(className).execute(url);
         TopAdsLogger.getInstance(context).save(url, TYPE_IMPRESSION, className, productId, productName, imageUrl, componentName);
+    }
+
+    public void hitClickUrlAndStoreHeader(String className, String url, String productId, String productName, String imageUrl, boolean isLoggedIn) {
+        if (sharedPref == null) {
+            sharedPref = context.getSharedPreferences(TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+        }
+
+        new ImpresionTask(className, new TopAdsHeaderResponseListener() {
+            @Override
+            public void onSuccess(@NonNull String header) {
+                if (sharedPref != null && !isLoggedIn) {
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString(RESPONSE_HEADER_KEY, header);
+                    editor.apply();
+                }
+            }
+        }).getHeader(url);
+        TopAdsLogger.getInstance(context).save(url, TYPE_CLICK, className, productId, productName, imageUrl, "");
     }
 }

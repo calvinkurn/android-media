@@ -142,9 +142,8 @@ class DynamicChannelHeaderView: FrameLayout {
             handleSubtitlePosition(channelSubtitleName, channel, channelTitleContainer)
 
             if(channel.style == ChannelStyle.ChannelHome){
-                seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             } else if(channel.style == ChannelStyle.ChannelOS){
-                seeAllButton?.setTypeface(null, Typeface.NORMAL)
                 seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_P600))
             }
 
@@ -276,7 +275,7 @@ class DynamicChannelHeaderView: FrameLayout {
 
             titleContainer.setPadding(
                     titleContainer.paddingLeft,
-                    convertDpToPixel(10f, titleContainer.context),
+                    convertDpToPixel(TITLE_TOP_PADDING, titleContainer.context),
                     titleContainer.paddingRight,
                     titleContainer.paddingBottom)
         }
@@ -293,5 +292,9 @@ class DynamicChannelHeaderView: FrameLayout {
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
         return viewStub?.parent == null
+    }
+
+    companion object {
+        private const val TITLE_TOP_PADDING = 10f
     }
 }

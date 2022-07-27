@@ -57,9 +57,11 @@ class FeedFloatingButton : LinearLayout, View.OnClickListener {
     private var job: Job? = null
     private val scope = CoroutineScope(dispatchers.computation)
 
+    var isShrinkOnClick: Boolean = true
+
     override fun onClick(p0: View?) {
-        shrink()
-        /** TODO: change icon to X */
+        if(isShrinkOnClick) shrink()
+
         mOnClickListener?.onClick(p0)
     }
 

@@ -241,7 +241,7 @@ class RestCloudDataStore(
                 //For success case saving the data into cache
                 cachedData(request, response.body()?:"")
 
-                RestResponse(Gson().fromJson(response.body(), request.typeOfT), response.code(), false)
+                RestResponse(Gson().fromJson(response.body(), request.typeOfT), response.code(), response.headers(), false)
                         .apply {
                             type = request.typeOfT
                             isError = false

@@ -7,7 +7,7 @@
     android:layout_marginVertical="@dimen/unify_space_4"
     app:cardCornerRadius="@dimen/unify_space_8"
     app:cardElevation="0dp"
-    app:layout_constraintCircleRadius="@dimen/unify_space_8">
+    app:card_type="clear">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_item_shop_container"

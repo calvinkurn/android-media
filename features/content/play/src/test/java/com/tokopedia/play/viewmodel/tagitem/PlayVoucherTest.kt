@@ -111,7 +111,7 @@ class PlayVoucherTest {
                 voucherList = mockVoucherList
             )
         )
-        coEvery { repo.getTagItem(any()) } returns mockTagItem
+        coEvery { repo.getTagItem(any(), any()) } returns mockTagItem
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -154,7 +154,7 @@ class PlayVoucherTest {
                 voucherList = mockVoucherList
             )
         )
-        coEvery { repo.getTagItem(any()) } returns mockTagItem
+        coEvery { repo.getTagItem(any(), any()) } returns mockTagItem
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,

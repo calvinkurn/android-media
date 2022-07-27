@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.unifyprinciples.R.dimen
 
 /**
  * created by fachrizalmrsln on 07/07/22
@@ -16,8 +17,8 @@ class ShopRecomItemDecoration(
         private const val FIRST_ITEM = 0
     }
 
-    private val spaceItemEdge = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-    private val spaceItem = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_font_12)
+    private val spaceItemEdge = context.resources.getDimensionPixelOffset(dimen.spacing_lvl4)
+    private val spaceItem = context.resources.getDimensionPixelOffset(dimen.spacing_lvl3)
 
     override fun getItemOffsets(
         outRect: Rect,
