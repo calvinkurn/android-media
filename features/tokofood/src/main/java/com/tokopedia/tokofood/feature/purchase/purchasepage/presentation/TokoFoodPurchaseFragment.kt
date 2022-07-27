@@ -492,9 +492,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                         viewModel.updateNotes(product)
                                     }
 
-                                    val toasterMessage = product.message.takeIf { cartMessage ->
-                                        cartMessage.isNotBlank()
-                                    } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_notes).orEmpty()
+                                    val toasterMessage =
+                                        context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_notes)
+                                            .orEmpty()
                                     showToaster(toasterMessage, getOkayMessage())
                                 }
                             }
