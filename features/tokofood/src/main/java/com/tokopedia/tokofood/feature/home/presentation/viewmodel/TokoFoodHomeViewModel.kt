@@ -340,7 +340,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         val lastItemIndex = itemCount - Int.ONE
         val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
                 && containsLastItemIndex.isMoreThanZero())
-        val hasNextPage = pageKey.isNotEmpty()
+        val hasNextPage = pageKey == "0"
         val layoutList = homeLayoutItemList.toMutableList()
         val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
         val isEmptyStateShown = layoutList.firstOrNull { it.layout is TokoFoodHomeEmptyStateLocationUiModel } != null
