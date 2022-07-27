@@ -1,7 +1,6 @@
 package com.tokopedia.flight.resend_eticket.domain
 
 import com.tokopedia.flight.resend_eticket.data.FlightOrderDetailResendETicketEntity
-import com.tokopedia.flight.resend_eticket.data.FlightOrderGqlConst
 import com.tokopedia.flight.resend_eticket.data.QueryFlightOrder
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
