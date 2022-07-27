@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.view.View
+import android.view.ViewStub
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -23,6 +24,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
 : AbstractViewHolder<HomeHeaderDataModel>(itemView) {
 
     private var binding: HomeHeaderOvoBinding? by viewBinding()
+    private var balanceWidgetView: BalanceWidgetView? = null
 
     companion object {
         @LayoutRes
@@ -67,14 +69,27 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean) {
-        val balanceWidgetView = itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
-        data?.let {
-            if (isUserLogin) {
-                balanceWidgetView.visible()
-                balanceWidgetView.bind(it, listener)
+        val stubBalanceWidget = binding?.viewBalanceWidget
+        if (balanceWidgetView == null) {
+            balanceWidgetView = if (stubBalanceWidget is ViewStub &&
+                    !isViewStubHasBeenInflated(stubBalanceWidget)) {
+                val stubChannelView = stubBalanceWidget.inflate()
+                stubChannelView as BalanceWidgetView
             } else {
-                balanceWidgetView.gone()
+                null
             }
         }
+        data?.let {
+            if (isUserLogin) {
+                balanceWidgetView?.visible()
+                balanceWidgetView?.bind(it, listener)
+            } else {
+                balanceWidgetView?.gone()
+            }
+        }
+    }
+
+    private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
+        return viewStub?.parent == null
     }
 }
