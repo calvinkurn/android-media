@@ -56,7 +56,8 @@ class HomeBalanceWidgetUseCase @Inject constructor(
             } else {
                 homeHeaderDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.clear()
                 var homeBalanceModel = getHomeBalanceModel(homeHeaderDataModel)
-                getHomeBalanceWidget.getHomeBalanceList.balancesList.forEachIndexed { index, getHomeBalanceItem ->
+                var indexDataRegistered = 0
+                getHomeBalanceWidget.getHomeBalanceList.balancesList.forEach { getHomeBalanceItem ->
                     when (getHomeBalanceItem.type) {
                         BALANCE_TYPE_GOPAY -> {
                             val placeHolderLoadingGopay = BalanceDrawerItemModel(
@@ -64,6 +65,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                                 headerTitle = getHomeBalanceItem.title
                             )
                             homeBalanceModel.balanceDrawerItemModels.add(placeHolderLoadingGopay)
+                            indexDataRegistered++
                         }
                         BALANCE_TYPE_REWARDS -> {
                             val placeHolderLoadingRewards = BalanceDrawerItemModel(
@@ -71,6 +73,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                                 headerTitle = getHomeBalanceItem.title
                             )
                             homeBalanceModel.balanceDrawerItemModels.add(placeHolderLoadingRewards)
+                            indexDataRegistered++
                         }
                         BALANCE_TYPE_SUBSCRIPTIONS -> {
                             homeBalanceModel = getSubscriptionsData(
@@ -78,10 +81,12 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                                 getHomeBalanceItem.title,
                                 getHomeBalanceItem.data
                             )
-                            homeBalanceModel.balancePositionSubscriptions = index
+                            homeBalanceModel.balancePositionSubscriptions = indexDataRegistered
+                            indexDataRegistered++
                         }
                     }
                 }
+                indexDataRegistered = 0
 
                 return homeHeaderDataModel.copy(
                     headerDataModel = homeHeaderDataModel.headerDataModel?.copy(

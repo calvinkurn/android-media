@@ -392,7 +392,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
-    private var coachMarkIsShowing = false
     private var subscriptionCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
     private var coachmark: CoachMark2? = null
@@ -2015,10 +2014,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun manageCoachmarkOnFragmentVisible(isVisibleToUser: Boolean) {
         when (isVisibleToUser) {
             false -> {
-                if (coachMarkIsShowing) {
-                    coachmark?.dismissCoachMark()
-                }
-                else if (tokonowCoachmarkIsShowing) {
+                if (tokonowCoachmarkIsShowing) {
                     coachmarkTokonow?.hideCoachMark()
                 }
                 else if (subscriptionCoachmarkIsShowing) {

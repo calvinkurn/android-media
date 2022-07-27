@@ -38,6 +38,10 @@ class BalanceWidgetView : FrameLayout {
         defStyleAttr
     )
 
+    companion object {
+        private const val DEFAULT_POSITION_BALANCE_WIDGET = 0
+    }
+
     init {
         val view =
             LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
@@ -87,7 +91,7 @@ class BalanceWidgetView : FrameLayout {
     }
 
     fun getSubscriptionView(): View? {
-        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(0)
+        val firstViewHolder = rvBalance?.findViewHolderForAdapterPosition(DEFAULT_POSITION_BALANCE_WIDGET)
         firstViewHolder?.let {
             if (it is BalanceWidgetViewHolder) {
                 return it.getSubscriptionView(subscriptionPosition)
