@@ -192,6 +192,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         val uri = Uri.parse(bundle)
         merchantId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID) ?: ""
         productId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_PRODUCT_ID) ?: ""
+        setHasOptionsMenu(true)
         initInjector()
         // handle negative case #1 non-login
         if (!userSession.isLoggedIn) {
@@ -274,7 +275,6 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBackgroundDefaultColor()
-        setHasOptionsMenu(true)
         setupAppBarLayoutListener()
         setHeaderBackground()
         setupMerchantLogo()
