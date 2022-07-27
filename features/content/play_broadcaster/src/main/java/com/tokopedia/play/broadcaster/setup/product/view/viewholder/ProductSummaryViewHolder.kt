@@ -136,7 +136,7 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.ivPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
             binding.tvPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
             binding.viewPinProduct.root.setOnClickListener {
-                listener.onPinProductClicked(item.product)
+                listener.onPinClicked(item.product)
             }
             binding.tvPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
             binding.ivPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
@@ -168,7 +168,7 @@ internal class ProductSummaryViewHolder private constructor() {
 
         interface Listener {
             fun onProductDeleteClicked(product: ProductUiModel)
-            fun onPinProductClicked(product: ProductUiModel)
+            fun onPinClicked(product: ProductUiModel)
         }
     }
 }
