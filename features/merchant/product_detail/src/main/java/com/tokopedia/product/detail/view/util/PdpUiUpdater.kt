@@ -46,6 +46,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -252,19 +253,20 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.SHOPADS_CAROUSEL, loadInitialData) {
                 topAdsProductBundlingData?.run {
-                    this.productId = dataP1?.basic?.productID
+                    this.productId = dataP1.basic.productID
                 }
             }
         }
     }
 
-    fun updateInitialMedia(media: List<Media>) {
+    fun updateInitialMedia(media: List<Media>, containerType: String) {
         updateData(ProductDetailConstant.MEDIA, true) {
-            mediaMap?.run {
-                initialScrollPosition = if (initialScrollPosition == -1) -1 else 0
-                listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(
-                        media.toMutableList()
+            mediaMap?.let {
+                it.initialScrollPosition = if (mediaMap?.initialScrollPosition == -1) -1 else 0
+                it.listOfMedia = DynamicProductDetailMapper.convertMediaToDataModel(
+                    media.toMutableList()
                 )
+                it.containerType = containerType.asMediaContainerType()
             }
         }
     }

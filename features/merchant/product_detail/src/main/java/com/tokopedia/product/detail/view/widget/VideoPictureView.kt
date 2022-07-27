@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ThumbnailDataModel
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
@@ -59,17 +60,20 @@ class VideoPictureView @JvmOverloads constructor(
         }
     }
 
-    fun setup(media: List<MediaDataModel>,
-              listener: DynamicProductDetailListener?,
-              componentTrackDataModel: ComponentTrackDataModel?,
-              initialScrollPosition: Int,
-              shouldAnimateLabel: Boolean) {
+    fun setup(
+        media: List<MediaDataModel>,
+        listener: DynamicProductDetailListener?,
+        componentTrackDataModel: ComponentTrackDataModel?,
+        initialScrollPosition: Int,
+        shouldAnimateLabel: Boolean,
+        containerType: MediaContainerType
+    ) {
         this.mListener = listener
         this.componentTrackDataModel = componentTrackDataModel
 
         if (videoPictureAdapter == null) {
             setupViewPagerCallback()
-            setupViewPager()
+            setupViewPager(containerType = containerType)
             //If first position is video and selected: process the video
         }
 
@@ -166,7 +170,7 @@ class VideoPictureView @JvmOverloads constructor(
         return false
     }
 
-    private fun setupViewPager() {
+    private fun setupViewPager(containerType: MediaContainerType) {
         videoPictureAdapter = VideoPictureAdapter(
                 mListener,
                 componentTrackDataModel)
@@ -180,8 +184,7 @@ class VideoPictureView @JvmOverloads constructor(
         viewPager.post {
             viewPager.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 if (this != null) {
-                    // TODO change from media list response api 
-                    dimensionRatio = "H,1:1"
+                    dimensionRatio = containerType.ratio
                 }
             }
         }

@@ -2714,7 +2714,7 @@ open class DynamicProductDetailFragment :
             })
 
         pdpUiUpdater?.updateDataP1(context, productInfo, true)
-        pdpUiUpdater?.updateInitialMedia(productInfo.data.media)
+        pdpUiUpdater?.updateInitialMedia(productInfo.data.media, productInfo.data.containerType)
         actionButtonView.setButtonP1(productInfo.data.preOrder)
 
         if ((productInfo.basic.category.isAdult && !viewModel.isUserSessionActive) ||
