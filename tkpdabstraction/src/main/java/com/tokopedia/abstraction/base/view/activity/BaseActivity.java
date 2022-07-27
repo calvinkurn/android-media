@@ -13,9 +13,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.TaskStackBuilder;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -44,8 +42,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import kotlin.Unit;
-import kotlin.jvm.Throws;
 import timber.log.Timber;
 
 
@@ -256,8 +252,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
                     ((AbstractionRouter) getApplication()).onForceLogoutV2(BaseActivity.this, REDIRECTION_HOME, url);
                 }
             }
-            @Override
-            public void onDismiss() {}
         });
     }
 

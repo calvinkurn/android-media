@@ -88,11 +88,12 @@ class TkpdAuthenticatorGql(
                         if(tokenResponse.errors?.isNotEmpty() == true) {
                             val forceLogoutInfo = checkForceLogoutInfo()
                             if(forceLogoutInfo?.isForceLogout == true) {
+                                userSession.logoutSession()
                                 broadcastForceLogoutInfo(forceLogoutInfo)
-                                return null
                             } else {
-                                return refreshWithOldMethod(response)
+                                networkRouter.showForceLogoutTokenDialog("/")
                             }
+                            return null
                         } else if (tokenResponse.accessToken?.isEmpty() == true) {
                             logRefreshTokenEvent(
                                 ERROR_GQL_ACCESS_TOKEN_EMPTY,

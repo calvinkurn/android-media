@@ -11,6 +11,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.core.app.TaskStackBuilder;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -232,9 +233,27 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @Override
     public void onForceLogout(Activity activity) {
         forceLogout();
-        Intent intent = new Intent(context, ConsumerSplashScreen.class);
+        Intent intent = new Intent(context, SplashScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
+        forceLogout();
+        if(redirectionType == REDIRECTION_WEBVIEW) {
+            Intent homeIntent = new Intent(context, SplashScreenActivity.class);
+            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent webViewIntent = RouteManager.getIntent(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
+            TaskStackBuilder task = TaskStackBuilder.create(this);
+            task.addNextIntent(homeIntent);
+            task.addNextIntent(webViewIntent);
+            task.startActivities();
+        } else {
+            Intent intent = new Intent(context, SplashScreenActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 
     private void forceLogout() {

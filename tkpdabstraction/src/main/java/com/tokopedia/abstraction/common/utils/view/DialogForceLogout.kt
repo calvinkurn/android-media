@@ -35,7 +35,6 @@ object DialogForceLogout {
         dialog.setPrimaryCTAText(context.getString(com.tokopedia.abstraction.R.string.force_logout_primary_btn_text))
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
-            setIsDialogShown(context, false)
             TrackApp.getInstance().gtm.sendGeneralEvent(
                 "clickLogout",
                 "force logout",
@@ -47,12 +46,11 @@ object DialogForceLogout {
         dialog.setSecondaryCTAText(context.getString(com.tokopedia.abstraction.R.string.force_logout_secondary_btn_text))
         dialog.setSecondaryCTAClickListener {
             dialog.dismiss()
-            setIsDialogShown(context, false)
             listener?.onSecondaryBtnClicked()
         }
         dialog.setOnDismissListener {
             setIsDialogShown(context, false)
-            listener?.onDismiss()
+            listener?.onSecondaryBtnClicked()
         }
         dialog.show()
         setIsDialogShown(context, true)
@@ -69,13 +67,15 @@ object DialogForceLogout {
         dialog.setPrimaryCTAText(context.getString(com.tokopedia.abstraction.R.string.force_logout_general_btn_text))
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
-            setIsDialogShown(context, false)
             TrackApp.getInstance().gtm.sendGeneralEvent(
                 "clickLogout",
                 "force logout",
                 "get session expired pop up",
                 screenName
             )
+        }
+        dialog.setOnDismissListener {
+            setIsDialogShown(context, false)
             listener?.onDialogClicked()
         }
         dialog.setCancelable(false)
@@ -101,7 +101,6 @@ object DialogForceLogout {
     interface UnifyActionListener {
         fun onPrimaryBtnClicked()
         fun onSecondaryBtnClicked()
-        fun onDismiss()
     }
 
 }
