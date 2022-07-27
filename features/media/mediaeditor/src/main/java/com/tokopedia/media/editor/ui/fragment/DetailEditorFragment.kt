@@ -134,9 +134,14 @@ class DetailEditorFragment @Inject constructor(
                         getString(R.string.editor_tool_remove_background_failed_cta)
                     ) {
                         removeBackgroundRetryLimit--
-                        if (removeBackgroundRetryLimit == 0)
+                        if (removeBackgroundRetryLimit == 0) {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.editor_tool_remove_background_failed_normal),
+                                Toast.LENGTH_LONG
+                            ).show()
                             activity?.finish()
-                        else
+                        } else
                             onRemoveBackgroundClicked()
                     }.show()
                 }
