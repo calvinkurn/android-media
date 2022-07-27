@@ -115,7 +115,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_cdp_revamp_page, container, false)
+        return inflater.inflate(R.layout.fragment_content_detail_revamp_page, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -190,12 +190,13 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     }
 
     override fun initInjector() {
-        if (activity != null && activity?.application != null) {
+        activity?.application?.let {
             DaggerKolProfileComponent.builder()
-                    .kolComponent(KolComponentInstance.getKolComponent(activity?.application))
-                    .kolProfileModule(KolProfileModule())
-                    .build()
-                    .inject(this)
+                .kolComponent(KolComponentInstance.getKolComponent(activity?.application))
+                .kolProfileModule(KolProfileModule())
+                .build()
+                .inject(this)
         }
+
     }
 }

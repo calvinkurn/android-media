@@ -33,7 +33,7 @@ class ContentDetailPageRevampAdapter(
         private val dataSource: DataSource,
         private val contentDetailListener: ContentDetailPostViewHolder.CDPListener
     ) : BaseAdapterDelegate<FeedXCard,FeedXCard, ContentDetailPostViewHolder>(
-        R.layout.item_cdp_revamp_view) {
+        R.layout.item_content_detail_revamp_view) {
         override fun onBindViewHolder(item: FeedXCard, holder: ContentDetailPostViewHolder) {
             holder.bind(feedXCard = item)
         }

@@ -31,7 +31,7 @@ class ContentDetailPostViewHolder(
         ) = ContentDetailPostViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(
-                    R.layout.item_cdp_revamp_view,
+                    R.layout.item_content_detail_revamp_view,
                     parent,
                     false,
                 ),

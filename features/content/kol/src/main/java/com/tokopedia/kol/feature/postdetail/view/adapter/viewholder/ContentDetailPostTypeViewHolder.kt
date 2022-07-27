@@ -49,7 +49,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
 
     private val view = LayoutInflater.from(context).inflate(
-        R.layout.cdp_revamp_viewholder_container_item,
+        R.layout.content_detail_revamped_viewholder_container_item,
         this,
         true
     )
