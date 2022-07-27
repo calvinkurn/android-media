@@ -115,7 +115,7 @@ private const val ASGC_NEW_PRODUCTS = "asgc_new_products"
 private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
 private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
 
-private const val FOCUS_TOP_ADS_DELAY = 2000L
+private const val FOCUS_CTA_DELAY = 2000L
 
 
 /**
@@ -1631,7 +1631,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
 
         adapter.removeAllFocus(pageControl.indicatorCurrentPosition)
-        changeTopAdsColorToWhite(mData)
+        changeCTABtnColorToWhite(mData)
     }
     private fun hideTaggingOnDetach(feedXCard: FeedXCard) {
         val cardProducts: List<FeedXProduct> = feedXCard.tags
@@ -1666,8 +1666,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    private fun changeTopAdsColorToRed() {
-        changeTopAdsColor(
+    private fun changeCTABtnColorToRed() {
+        changeCTABtnColor(
             primaryColor = MethodChecker.getColor(
                 context,
                 R.color.feed_dms_asgc_discount_toko_btn_bg_color
@@ -1679,8 +1679,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
     }
 
-    private fun changeTopAdsColorToGreen() {
-        changeTopAdsColor(
+    private fun changeCTABtnColorToGreen() {
+        changeCTABtnColor(
             primaryColor = MethodChecker.getColor(
                 context,
                 unifyPrinciplesR.color.Unify_G500
@@ -1692,10 +1692,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
     }
 
-    private fun changeTopAdsColorToWhite(card: FeedXCard) {
+    private fun changeCTABtnColorToWhite(card: FeedXCard) {
         card.isAsgcColorChangedAsPerWidgetColor = false
 
-        changeTopAdsColor(
+        changeCTABtnColor(
             primaryColor = MethodChecker.getColor(
                 context,
                 unifyPrinciplesR.color.Unify_NN50
@@ -1714,12 +1714,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             card.isAsgcColorChangedAsPerWidgetColor = true
 
-            if (card.isASGCDiscountToko) changeTopAdsColorToRed()
-            else changeTopAdsColorToGreen()
+            if (card.isASGCDiscountToko) changeCTABtnColorToRed()
+            else changeCTABtnColorToGreen()
         }
     }
 
-    private fun changeTopAdsColor(
+    private fun changeCTABtnColor(
         primaryColor: Int,
         secondaryColor: Int,
     ) {
@@ -1792,7 +1792,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     fun bindImage(cardProducts: List<FeedXProduct>, media: FeedXMedia, feedXCard: FeedXCard) {
         adapter.focusItemAt(feedXCard.lastCarouselIndex)
-        changeCTABtnColorAsPerWidget(feedXCard, FOCUS_TOP_ADS_DELAY)
+        changeCTABtnColorAsPerWidget(feedXCard, FOCUS_CTA_DELAY)
+    }
+
+    fun onCTAVisible(feedXCard: FeedXCard) {
+        changeCTABtnColorAsPerWidget(feedXCard, FOCUS_CTA_DELAY)
     }
 
     private fun sendHeaderTopadsEvent(positionInFeed: Int, appLink: String, cpmData: CpmData, isNewVariant: Boolean) {
