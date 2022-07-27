@@ -17,7 +17,7 @@ class ProfileInfoItemViewHolder(
     private val listener: ProfileInfoItemInterface
 ) : AbstractViewHolder<ProfileInfoItemUiModel>(view) {
 
-    private var binding: ProfileItemViewBinding? by viewBinding()
+    var binding: ProfileItemViewBinding? by viewBinding()
 
     override fun bind(element: ProfileInfoItemUiModel?) {
         if (element?.isEnable == true) {
