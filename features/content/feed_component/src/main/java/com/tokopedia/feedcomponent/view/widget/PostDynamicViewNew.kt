@@ -237,6 +237,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
 
             override fun onImageClicked(viewHolder: CarouselImageViewHolder) {
+                changeCTABtnColorAsPerWidget(mData)
                 listener?.onImageClicked(
                     mData.id,
                     mData.typename,
@@ -384,6 +385,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             val position = layoutManager.getPosition(snappedView)
             pageControl.setCurrentIndicator(position)
+
+            if (mData.lastCarouselIndex != position) changeCTABtnColorAsPerWidget(mData)
             mData.lastCarouselIndex = position
         }
     }
