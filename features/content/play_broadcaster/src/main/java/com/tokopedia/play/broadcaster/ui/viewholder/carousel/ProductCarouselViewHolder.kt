@@ -86,7 +86,7 @@ class ProductCarouselViewHolder private constructor() {
             binding.viewPinProduct.ivLoaderPin.showWithCondition(item.pinStatus.isLoading)
             binding.viewPinProduct.ivPin.showWithCondition(!item.pinStatus.isLoading)
             binding.viewPinProduct.root.setOnClickListener {
-                listener.onPinProductClicked(item)
+                listener.onPinClicked(item)
             }
 
             when (item.pinStatus.isPinned) {
@@ -143,7 +143,7 @@ class ProductCarouselViewHolder private constructor() {
         }
 
         interface Listener {
-            fun onPinProductClicked(product: ProductUiModel)
+            fun onPinClicked(product: ProductUiModel)
         }
     }
 
@@ -206,7 +206,7 @@ class ProductCarouselViewHolder private constructor() {
             binding.viewPinProduct.ivLoaderPin.showWithCondition(item.pinStatus.isLoading)
             binding.viewPinProduct.ivPin.showWithCondition(!item.pinStatus.isLoading)
             binding.viewPinProduct.root.setOnClickListener {
-                listener.onPinProductClicked(item)
+                listener.onPinClicked(item)
             }
 
             when (item.pinStatus.isPinned) {
@@ -268,7 +268,7 @@ class ProductCarouselViewHolder private constructor() {
         }
 
         interface Listener {
-            fun onPinProductClicked(product: ProductUiModel)
+            fun onPinClicked(product: ProductUiModel)
         }
     }
 

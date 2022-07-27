@@ -22,7 +22,7 @@ internal class ProductSummaryListViewComponent(
         }
 
         override fun onPinProductClicked(product: ProductUiModel) {
-            listener.onPinProductClicked(product)
+            listener.onPinClicked(product)
         }
     })
 
@@ -51,6 +51,6 @@ internal class ProductSummaryListViewComponent(
 
     interface Listener {
         fun onProductDeleteClicked(product: ProductUiModel)
-        fun onPinProductClicked(product: ProductUiModel)
+        fun onPinClicked(product: ProductUiModel)
     }
 }

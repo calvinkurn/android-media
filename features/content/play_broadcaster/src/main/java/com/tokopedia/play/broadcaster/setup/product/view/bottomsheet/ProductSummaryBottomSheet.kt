@@ -54,7 +54,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         viewModel.submitAction(ProductSetupAction.DeleteSelectedProduct(product))
     }
 
-    override fun onPinProductClicked(product: ProductUiModel) {
+    override fun onPinClicked(product: ProductUiModel) {
         viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
     }
 
