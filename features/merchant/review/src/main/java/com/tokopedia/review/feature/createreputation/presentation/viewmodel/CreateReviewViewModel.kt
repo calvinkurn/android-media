@@ -244,7 +244,10 @@ class CreateReviewViewModel @Inject constructor(
                 "Kesesuaian",
                 "Berfungsi",
                 "Warna",
-                "Penjual"
+                "Penjual",
+                "Ukuran",
+                "Kualitas",
+                "Pengiriman"
             ))
         },
         ::mapTopics
