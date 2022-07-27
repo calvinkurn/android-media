@@ -164,9 +164,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
 
             override fun onPinProductClicked(product: ProductUiModel) {
-                checkPinProduct (
-                    { parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product)) }, product.pinStatus.isPinned
-                )
+                checkPinProduct (product.pinStatus.isPinned){
+                    parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
+                }
             }
         })
     }
@@ -1137,7 +1137,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         ongoingLeaderboardBottomSheet.show(childFragmentManager)
     }
 
-    private fun checkPinProduct(ifTimerIsOn: () -> Unit, pinStatus: Boolean) {
+    private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
         if(!parentViewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
         else {
            showToaster(
