@@ -146,7 +146,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
             when(state) {
                 is UiState.Fail -> { /* nothing to do */ }
                 is UiState.Success -> showMoreWidgets(state.data)
-                is UiState.Loading -> showLoadMoreLoading()
+                is UiState.Loading -> { /* nothing to do */ }
             }
         }
     }
@@ -310,10 +310,6 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
 
     private fun showMoreWidgets(data: List<Visitable<*>>?) {
         showPage(data)
-    }
-
-    private fun showLoadMoreLoading() {
-        viewModel.showLoadMoreLoading()
     }
 
     private fun setupHeader() {

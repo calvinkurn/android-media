@@ -185,6 +185,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      */
     private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
         noNeedLoadMore = !hasNext || recipeBookmarks.size < DEFAULT_PER_PAGE
+        layout.removeRecipeProgressBar()
 
         if (header.success) {
             layout.addAll(recipeBookmarks)
@@ -202,9 +203,16 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      * @see loadRecipeBookmarks - will hide load more loading
      */
     private fun onFailLoadMoreFE() {
+        layout.removeRecipeProgressBar()
+
         _moreRecipeBookmarks.value = UiState.Success(
             data = layout
         )
+    }
+
+    private fun showLoadMoreLoading() {
+        layout.addRecipeProgressBar()
+        _moreRecipeBookmarks.value = UiState.Success(layout)
     }
 
     fun loadFirstPage() {
@@ -296,22 +304,15 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
             if (noNeedLoadMore) {
                 _isOnScrollNotNeeded.value = true
             } else if (isAtTheBottomOfThePage && layout.last() !is RecipeProgressBarUiModel) {
-                _moreRecipeBookmarks.value = UiState.Loading()
+                showLoadMoreLoading()
+
                 val (recipeBookmarks, header, hasNext) = getRecipeBookmarks(pageCounter++)
-                layout.removeRecipeProgressBar()
+
                 onResponseLoadMoreBE(recipeBookmarks, header, hasNext)
             }
         }) {
-            layout.removeRecipeProgressBar()
             onFailLoadMoreFE()
         }
-    }
-
-    fun showLoadMoreLoading() {
-        launchCatchError(block = {
-            layout.addRecipeProgressBar()
-            _moreRecipeBookmarks.value = UiState.Success(layout)
-        }) { /* nothing to do */ }
     }
 
     fun removeToaster() {
