@@ -146,7 +146,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:translationZ="@dimen/play_dp_1"
             app:layout_constraintStart_toStartOf="@+id/iv_product_summary_image"
             app:layout_constraintTop_toTopOf="@+id/iv_product_summary_image" />
 
