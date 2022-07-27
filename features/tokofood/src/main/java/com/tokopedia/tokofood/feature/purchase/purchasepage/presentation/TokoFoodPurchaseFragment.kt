@@ -304,7 +304,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         (pair.first as? CheckoutTokoFood)?.let { response ->
                             (pair.second as? Boolean)?.let { isPreviousPopupPromo ->
                                 shopId = response.data.shop.shopId
-                                activityViewModel?.loadCartList(response)
+                                loadCartData(response)
                                 when {
                                     response.data.popupErrorMessage.isNotEmpty() -> {
                                         showToasterError(response.data.popupErrorMessage, getOkayMessage()) {}
@@ -657,6 +657,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             GlobalError.NO_CONNECTION
         } else {
             GlobalError.SERVER_ERROR
+        }
+    }
+
+    private fun loadCartData(response: CheckoutTokoFood) {
+        if (response.isEnabled() && !response.data.summaryDetail.hideSummary) {
+            activityViewModel?.loadCartList(response)
+        } else {
+            activityViewModel?.loadCartList(SOURCE)
         }
     }
 
