@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.databinding.HomeHeaderOvoBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt.getFullToolbarHeight
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -25,6 +26,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     private var binding: HomeHeaderOvoBinding? by viewBinding()
     private var balanceWidgetView: BalanceWidgetView? = null
+    private var chooseAddressView: ChooseAddressWidget? = null
 
     companion object {
         @LayoutRes
@@ -50,7 +52,17 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
-        val chooseAddressView = binding?.widgetChooseAddress
+        val stubChooseAddressView = binding?.viewChooseAddress
+        if (chooseAddressView == null) {
+            chooseAddressView = if (stubChooseAddressView is ViewStub &&
+                !isViewStubHasBeenInflated(stubChooseAddressView)
+            ) {
+                val stubChannelView = stubChooseAddressView.inflate()
+                stubChannelView as ChooseAddressWidget
+            } else {
+                null
+            }
+        }
         chooseAddressView?.let {
             if (needToShowChooseAddress) {
                 listener.initializeChooseAddressWidget(it, needToShowChooseAddress)
@@ -72,7 +84,8 @@ class HomeHeaderOvoViewHolder(itemView: View,
         val stubBalanceWidget = binding?.viewBalanceWidget
         if (balanceWidgetView == null) {
             balanceWidgetView = if (stubBalanceWidget is ViewStub &&
-                    !isViewStubHasBeenInflated(stubBalanceWidget)) {
+                !isViewStubHasBeenInflated(stubBalanceWidget)
+            ) {
                 val stubChannelView = stubBalanceWidget.inflate()
                 stubChannelView as BalanceWidgetView
             } else {
