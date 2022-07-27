@@ -244,6 +244,35 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
+    fun `when user success unfollow type shop`() {
+        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
+            items = mockShopRecomIsShownTypeShop.items.map {
+                if (it.id == mockItemId) it.copy(isFollow = true)
+                else it
+            }
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
+        coEvery { mockRepo.shopFollowUnfollow(mockItemId.toString(), shopActionUnfollow) } returns mockMutationSuccess
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom.items.forEach { item ->
+                    if (item.id == mockItemId) item.isFollow.assertFalse()
+                    else item.isFollow.assertFalse()
+                }
+            }
+        }
+    }
+
+    @Test
     fun `when user fail follow type shop return mutation error`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
@@ -341,35 +370,6 @@ class UserProfileShopRecomViewModelTest {
                     else item.isFollow.assertFalse()
                 }
                 events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
-            }
-        }
-    }
-
-    @Test
-    fun `when user success unfollow type shop`() {
-        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
-            items = mockShopRecomIsShownTypeShop.items.map {
-                if (it.id == mockItemId) it.copy(isFollow = true)
-                else it
-            }
-        )
-
-        coEvery { mockUserSession.isLoggedIn } returns true
-        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
-        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
-        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
-        coEvery { mockRepo.shopFollowUnfollow(mockItemId.toString(), shopActionUnfollow) } returns mockMutationSuccess
-
-        robot.use {
-            it.setup {
-                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } recordState {
-                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
-            } andThen {
-                shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.isFollow.assertFalse()
-                    else item.isFollow.assertFalse()
-                }
             }
         }
     }
