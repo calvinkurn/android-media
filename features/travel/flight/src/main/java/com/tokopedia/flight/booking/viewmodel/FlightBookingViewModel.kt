@@ -12,7 +12,17 @@ import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.R
-import com.tokopedia.flight.booking.data.*
+import com.tokopedia.flight.booking.data.FlightAddToCartData
+import com.tokopedia.flight.booking.data.FlightAddToCartParam
+import com.tokopedia.flight.booking.data.FlightBookingModel
+import com.tokopedia.flight.booking.data.FlightCart
+import com.tokopedia.flight.booking.data.FlightCartViewEntity
+import com.tokopedia.flight.booking.data.FlightCheckoutData
+import com.tokopedia.flight.booking.data.FlightCheckoutParam
+import com.tokopedia.flight.booking.data.FlightPromoViewEntity
+import com.tokopedia.flight.booking.data.FlightVerify
+import com.tokopedia.flight.booking.data.FlightVerifyParam
+import com.tokopedia.flight.booking.data.FlightVoucher
 import com.tokopedia.flight.booking.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
@@ -265,7 +275,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
-    fun onCancelAppliedVoucher(rawQuery: String) {
+    fun onCancelAppliedVoucher(rawQuery: GqlQueryInterface) {
         launchCatchError(block = {
             val data = withContext(dispatcherProvider.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)

@@ -1246,7 +1246,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any()) } returns gqlResponse
 
         // when
-        viewModel.onCancelAppliedVoucher("")
+        viewModel.onCancelAppliedVoucher(FlightDummyGqlInterfaceImpl())
 
         // then
         coVerify { graphqlRepository.response(any(), any()) }
@@ -1833,7 +1833,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { gqlResponse }
 
         //when
-        viewModel.onCancelAppliedVoucher("")
+        viewModel.onCancelAppliedVoucher(FlightDummyGqlInterfaceImpl())
 
         // then
         assert(viewModel.errorCancelVoucher.value is Int)
@@ -1852,7 +1852,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { gqlResponse }
 
         //when
-        viewModel.onCancelAppliedVoucher("")
+        viewModel.onCancelAppliedVoucher(FlightDummyGqlInterfaceImpl())
 
         // then
         assert(viewModel.errorCancelVoucher.value is Int)
@@ -1866,7 +1866,7 @@ class FlightBookingViewModelTest {
         coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw Throwable() }
 
         //when
-        viewModel.onCancelAppliedVoucher("")
+        viewModel.onCancelAppliedVoucher(FlightDummyGqlInterfaceImpl())
 
         //then
         assert(viewModel.errorCancelVoucher.value is Int)

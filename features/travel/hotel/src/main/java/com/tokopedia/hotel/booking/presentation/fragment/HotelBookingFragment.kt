@@ -32,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.HotelBookingPageModel
 import com.tokopedia.hotel.booking.data.model.HotelCart
@@ -49,6 +50,7 @@ import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.MutationHotelCheckout
+import com.tokopedia.hotel.common.util.QueryHotelCancelVoucher
 import com.tokopedia.hotel.common.util.QueryHotelGetCart
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
 import com.tokopedia.hotel.databinding.FragmentHotelBookingBinding
@@ -59,7 +61,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -701,8 +702,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         bookingViewModel.getCartData(QueryHotelGetCart(), hotelBookingPageModel.cartId)
     }
 
-    //TODO : need to update on promo module
-    private fun getCancelVoucherQuery(): String = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
+    private fun getCancelVoucherQuery(): GqlQueryInterface = QueryHotelCancelVoucher()
 
     private fun stopTrace() {
         if (!isTraceStop) {

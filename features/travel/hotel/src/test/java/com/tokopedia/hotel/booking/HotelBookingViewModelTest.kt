@@ -242,7 +242,7 @@ class HotelBookingViewModelTest {
 
         //when
         hotelBookingViewModel.applyPromoData(expected)
-        hotelBookingViewModel.onCancelAppliedVoucher("")
+        hotelBookingViewModel.onCancelAppliedVoucher(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         hotelBookingViewModel.promoData.verifyValueEquals(expected)
@@ -264,7 +264,7 @@ class HotelBookingViewModelTest {
 
         //when
         hotelBookingViewModel.applyPromoData(expected)
-        hotelBookingViewModel.onCancelAppliedVoucher("")
+        hotelBookingViewModel.onCancelAppliedVoucher(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         hotelBookingViewModel.promoData.verifyValueEquals(expected)
@@ -284,7 +284,7 @@ class HotelBookingViewModelTest {
 
         //when
         hotelBookingViewModel.applyPromoData(expected)
-        hotelBookingViewModel.onCancelAppliedVoucher("")
+        hotelBookingViewModel.onCancelAppliedVoucher(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         hotelBookingViewModel.promoData.verifyValueEquals(expected)

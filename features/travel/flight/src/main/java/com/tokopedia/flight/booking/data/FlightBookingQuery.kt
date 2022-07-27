@@ -2,11 +2,13 @@ package com.tokopedia.flight.booking.data
 
 import com.tokopedia.flight.booking.data.FLightGetProfileQuery.QUERY_GET_PROFILE
 import com.tokopedia.flight.booking.data.FlightAddToCartQuery.QUERY_ADD_TO_CART
+import com.tokopedia.flight.booking.data.FlightCancelVoucherQuery.FLIGHT_CANCEL_VOUCHER
 import com.tokopedia.flight.booking.data.FlightCheckVoucherQuery.QUERY_CHECK_VOUCHER
 import com.tokopedia.flight.booking.data.FlightCheckoutCartQuery.QUERY_CHECKOUT_CART
 import com.tokopedia.flight.booking.data.FlightGetCartQuery.QUERY_GET_CART
 import com.tokopedia.flight.booking.data.FlightVerifyCartQuery.QUERY_VERIFY_CART
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 
 /**
  * @author by furqan on 08/10/2020
@@ -367,4 +369,9 @@ internal object FLightGetProfileQuery{
           }
         }
     """
+}
+
+@GqlQuery("QueryFlightCancelVoucher", FLIGHT_CANCEL_VOUCHER)
+internal object FlightCancelVoucherQuery{
+    const val FLIGHT_CANCEL_VOUCHER = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
 }

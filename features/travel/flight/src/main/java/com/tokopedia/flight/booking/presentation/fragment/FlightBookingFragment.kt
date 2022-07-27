@@ -45,6 +45,7 @@ import com.tokopedia.flight.booking.data.FlightVerify
 import com.tokopedia.flight.booking.data.QueryAddToCart
 import com.tokopedia.flight.booking.data.QueryCheckVoucher
 import com.tokopedia.flight.booking.data.QueryCheckoutCart
+import com.tokopedia.flight.booking.data.QueryFlightCancelVoucher
 import com.tokopedia.flight.booking.data.QueryGetCart
 import com.tokopedia.flight.booking.data.QueryGetProfile
 import com.tokopedia.flight.booking.data.QueryVerifyCart
@@ -76,7 +77,6 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -1353,10 +1353,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun getVerifyCartQuery(): GqlQueryInterface = QueryVerifyCart()
     private fun getCheckoutQuery(): GqlQueryInterface = QueryCheckoutCart()
     private fun getProfileQuery(): GqlQueryInterface = QueryGetProfile()
-
-    //TODO : UPDATE from promo module
-    private fun getCancelVoucherQuery(): String =
-        PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
+    private fun getCancelVoucherQuery(): GqlQueryInterface = QueryFlightCancelVoucher()
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
         binding?.flightBookingTicker?.let {

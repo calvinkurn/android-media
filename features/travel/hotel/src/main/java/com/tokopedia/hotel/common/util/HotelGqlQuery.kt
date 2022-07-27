@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.common.util
 
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.hotel.common.util.HotelCancelVoucherQuery.HOTEL_CANCEL_VOUCHER
 import com.tokopedia.hotel.common.util.HotelDestinationSearchQuery.DESTINATION_SEARCH
 import com.tokopedia.hotel.common.util.HotelGetCancellationQuery.GET_CANCELLATION
 import com.tokopedia.hotel.common.util.HotelGetCartQuery.GET_CART
@@ -14,6 +15,7 @@ import com.tokopedia.hotel.common.util.HotelPropertyReviewQuery.PROPERTY_REVIEW
 import com.tokopedia.hotel.common.util.HotelPropertyRoomListQuery.PROPERTY_ROOM_LIST
 import com.tokopedia.hotel.common.util.HotelPropertySearchQuery.PROPERTY_SEARCH
 import com.tokopedia.hotel.common.util.HotelRecentSearchDataQuery.RECENT_SEARCH_DATA
+import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 
 @GqlQuery("QueryHotelPropertyReview", PROPERTY_REVIEW)
 internal object HotelPropertyReviewQuery{
@@ -882,4 +884,9 @@ internal object HotelGetCancellationQuery{
           }
         }
     """
+}
+
+@GqlQuery("QueryHotelCancelVoucher", HOTEL_CANCEL_VOUCHER)
+internal object HotelCancelVoucherQuery{
+    const val HOTEL_CANCEL_VOUCHER = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
 }
