@@ -20,7 +20,7 @@
             android:id="@+id/floating_invoice"
             android:layout_width="@dimen/dp_chatbot_220"
             android:layout_height="wrap_content"
-            android:background="@color/chatbot_chat_background"
+            android:background="@color/Unify_N50"
             android:visibility="gone" />
 
         <LinearLayout
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_chatbot_3"
                 android:layout_marginRight="@dimen/dp_chatbot_3"
-                android:background="@color/chatbot_chat_background"
+                android:background="@color/Unify_N50"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/spacing_lvl3"
                 android:visibility="gone"
@@ -50,7 +50,7 @@
                 android:id="@+id/reply_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/chatbot_chat_background"
+                android:background="@color/Unify_N50"
                 android:paddingStart="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/spacing_lvl3"
                 android:paddingEnd="@dimen/spacing_lvl4"

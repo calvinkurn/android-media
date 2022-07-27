@@ -5,7 +5,7 @@
     android:id="@+id/rl_container"
     android:layout_width="@dimen/dp_chatbot_220"
     android:layout_height="wrap_content"
-    android:background="#F3F5F8"
+    android:background="@color/Unify_N50"
     app:cardCornerRadius="@dimen/unify_space_8"
     tools:ignore="UselessParent">
 
