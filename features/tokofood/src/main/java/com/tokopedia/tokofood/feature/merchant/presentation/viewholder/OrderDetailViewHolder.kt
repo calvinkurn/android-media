@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodExt.setupEditText
 import com.tokopedia.tokofood.databinding.TokofoodItemOrderInfoLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.AddOnInfoAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.model.CustomOrderDetail
@@ -27,6 +28,7 @@ class OrderDetailViewHolder(
 
     init {
         context = binding.root.context
+        binding.qeuProductQtyEditor.setupEditText()
         binding.tpgEditButton.setOnClickListener {
             val customOrderDetail = binding.root.getTag(R.id.custom_order_detail) as CustomOrderDetail
             clickListener.onEditButtonClicked(cartId = customOrderDetail.cartId)
@@ -57,9 +59,6 @@ class OrderDetailViewHolder(
         binding.notesLabel.isVisible = customOrderDetail.orderNote.isNotBlank()
         binding.tpgOrderNote.text = customOrderDetail.orderNote
         binding.qeuProductQtyEditor.setValue(customOrderDetail.qty)
-
-
-
         addOnInfoAdapter?.setCustomListItems(customOrderDetail.customListItems)
     }
 
