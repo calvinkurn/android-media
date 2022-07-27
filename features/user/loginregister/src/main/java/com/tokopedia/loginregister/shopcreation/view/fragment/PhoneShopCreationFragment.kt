@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.R
@@ -410,7 +411,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
