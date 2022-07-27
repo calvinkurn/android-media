@@ -320,7 +320,9 @@ class UserProfileShopRecomViewModelTest {
             } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
-                state.shopRecom equalTo mockShopRecomIsShown
+                state.shopRecom.items.map { item ->
+                    if (item.id == mockItemId) item.isFollow.assertFalse()
+                }
                 events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
             }
         }
@@ -328,10 +330,16 @@ class UserProfileShopRecomViewModelTest {
 
     @Test
     fun `when user fail unfollow shop then throw exception`() {
+        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShown.copy(
+            items = mockShopRecomIsShown.items.map {
+                if (it.id == mockItemId) it.copy(isFollow = true)
+                else it
+            }
+        )
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUsername) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
-        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShown
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
         coEvery { mockRepo.unFollowProfile(any()) } throws mockException
 
         robot.use {
@@ -340,7 +348,9 @@ class UserProfileShopRecomViewModelTest {
             } recordStateAndEvent  {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
-                state.shopRecom equalTo mockShopRecomIsShown
+                state.shopRecom.items.map { item ->
+                    if (item.id == mockItemId) item.isFollow.assertTrue()
+                }
                 events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
             }
         }
