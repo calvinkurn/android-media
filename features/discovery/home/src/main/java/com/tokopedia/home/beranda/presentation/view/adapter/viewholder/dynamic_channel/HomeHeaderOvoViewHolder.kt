@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewStub
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
@@ -27,6 +28,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
     private var binding: HomeHeaderOvoBinding? by viewBinding()
     private var balanceWidgetView: BalanceWidgetView? = null
     private var chooseAddressView: ChooseAddressWidget? = null
+    private var containerHeaderImage: ConstraintLayout? = null
 
     companion object {
         @LayoutRes
@@ -42,9 +44,23 @@ class HomeHeaderOvoViewHolder(itemView: View,
                 element.headerDataModel?.isUserLogin ?: false
             )
         }
-
+        renderHeader()
         renderChooseAddress(element.needToShowChooseAddress)
         BenchmarkHelper.endSystraceSection()
+    }
+
+    private fun renderHeader() {
+        val stubHeaderImageView = binding?.containerSuperGraphicHeader
+        if (containerHeaderImage == null) {
+            containerHeaderImage = if (stubHeaderImageView is ViewStub &&
+                !isViewStubHasBeenInflated(stubHeaderImageView)
+            ) {
+                val stubChannelView = stubHeaderImageView.inflate()
+                stubChannelView as ConstraintLayout
+            } else {
+                null
+            }
+        }
     }
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
