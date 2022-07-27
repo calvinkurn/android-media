@@ -34,7 +34,6 @@ import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -187,7 +186,9 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                     attributes.status,
                     attributes.statusId,
                     attributes.title,
-                    attributes.amount)
+                    attributes.amount,
+                    attributes.color
+            )
             list.add(attachInvoice)
         }
 

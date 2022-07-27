@@ -12,7 +12,10 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.SendableUiModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
@@ -23,7 +26,6 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
-import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
@@ -67,8 +69,28 @@ import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttribut
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
-import com.tokopedia.chatbot.domain.subscriber.*
-import com.tokopedia.chatbot.domain.usecase.*
+import com.tokopedia.chatbot.domain.subscriber.ChipSubmitChatCsatSubscriber
+import com.tokopedia.chatbot.domain.subscriber.ChipSubmitHelpfullQuestionsSubscriber
+import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
+import com.tokopedia.chatbot.domain.subscriber.LeaveQueueSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SubmitCsatRatingSubscriber
+import com.tokopedia.chatbot.domain.subscriber.TickerDataSubscriber
+import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
+import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
+import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
+import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
+import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_CODE
@@ -94,9 +116,11 @@ import com.tokopedia.websocket.WebSocketSubscriber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import okhttp3.*
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
@@ -104,8 +128,6 @@ import java.io.File
 import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
 
 
@@ -584,7 +606,8 @@ class ChatbotPresenter @Inject constructor(
             status = hashMap[STATUS] ?: "",
             statusId = hashMap[STATUS_ID]!!.toIntOrZero(),
             title = hashMap[TITLE] ?: "",
-            amount = hashMap[TOTAL_AMOUNT] ?: ""
+            amount = hashMap[TOTAL_AMOUNT] ?: "",
+            color = hashMap[STATUS_COLOR] ?: ""
         )
     }
 
