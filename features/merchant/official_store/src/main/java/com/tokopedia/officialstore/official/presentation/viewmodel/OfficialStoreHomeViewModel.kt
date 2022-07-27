@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.discovery.common.Event
 import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
@@ -66,16 +67,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val bestSellerMapper: BestSellerMapper,
         private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
         private val dispatchers: CoroutineDispatchers,
-        private val listener: FeaturedShopListener
 ) : BaseViewModel(dispatchers.main) {
-
-    companion object {
-        private const val BANNER_POSITION = 0
-        private const val BENEFIT_POSITION = 1
-        private const val FEATURE_SHOP_POSITION = 2
-        private const val RECOM_WIDGET_POSITION = 3
-        private const val WIDGET_NOT_FOUND = -1
-    }
 
     var currentSlug: String = ""
         private set
@@ -91,9 +83,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     val officialStoreLiveData: LiveData<OfficialStoreDataModel>
         get() = _officialStoreLiveData
-    private val _officialStoreLiveData: MutableLiveData<OfficialStoreDataModel> = MutableLiveData(OfficialStoreDataModel(
-        dataList = _officialStoreListVisitable
-    ))
+    private val _officialStoreLiveData: MutableLiveData<OfficialStoreDataModel> = MutableLiveData()
 
     val officialStoreError : LiveData<Throwable>
         get() = _officialStoreError
@@ -106,10 +96,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         get() = _featuredShopRemove
     val _featuredShopRemove by lazy { MutableLiveData<FeaturedShopDataModel>() }
 
-    private val _productRecommendation = MutableLiveData<Result<ProductRecommendationWithTopAdsHeadline>>()
-    val productRecommendation: LiveData<Result<ProductRecommendationWithTopAdsHeadline>>
-        get() = _productRecommendation
-
     private val _topAdsWishlistResult by lazy {
         MutableLiveData<Result<WishlistModel>>()
     }
@@ -117,6 +103,12 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private val _recomWidget = MutableLiveData<Result<BestSellerDataModel>>()
     val recomWidget: LiveData<Result<BestSellerDataModel>>
         get() = _recomWidget
+
+    var counterTitleShouldBeRendered = 0
+    var PRODUCT_RECOMMENDATION_TITLE_SECTION = ""
+
+    private val _recomUpdated = MutableLiveData<Event<Boolean>>()
+    val recomUpdated : LiveData<Event<Boolean>> get() = _recomUpdated
 
     fun loadFirstDataRevamp(category: Category?, location: String = "",
                       onBannerCacheStartLoad: () -> Unit = {},
@@ -133,7 +125,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             getOfficialStoreBannersRevamp(currentSlug, false, category?.title, onBannerCloudStopLoad)
             getOfficialStoreBenefitRevamp()
             getOfficialStoreFeaturedShopRevamp(
-                categoryId, category?.title, listener
+                categoryId, category?.title
             )
 
             getOfficialStoreDynamicChannelRevamp(currentSlug, location)
@@ -153,15 +145,17 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     if (isFeaturedShopAllowed && pageNumber == 1 && !recomData.first().isNullOrEmpty()){
                         val topAdsHeadlineData = getTopAdsHeadlineData(pageNumber + 1)
                         val recomDataWithTopAdsHeadlineData = ProductRecommendationWithTopAdsHeadline(recomData.first().first(), topAdsHeadlineData)
-                        _productRecommendation.postValue(Success(recomDataWithTopAdsHeadlineData))
-                    }else{
+                        addRecomTitle(recomDataWithTopAdsHeadlineData.recommendationWidget.title)
+                        addRecomProducts(recomDataWithTopAdsHeadlineData)
+                    } else{
                         val recomDataWithoutTopAdsHeadlineData = ProductRecommendationWithTopAdsHeadline(recomData.first().first(), null)
-                        _productRecommendation.postValue(Success(recomDataWithoutTopAdsHeadlineData))
+                        addRecomTitle(recomDataWithoutTopAdsHeadlineData.recommendationWidget.title)
+                        addRecomProducts(recomDataWithoutTopAdsHeadlineData)
                     }
 
                 }
             } catch (e: Throwable) {
-                _productRecommendation.value = Fail(e)
+                _officialStoreError.postValue(e)
             }
         }
     }
@@ -221,10 +215,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     val isOfficialBannerDataNotExist = _officialStoreListVisitable.indexOfFirst { it is OfficialBannerDataModel } == OfficialHomeMapper.WIDGET_NOT_FOUND
                     if (isOfficialBannerDataNotExist) {
                         // baru to be checked
-                        newList.add(BANNER_POSITION, officialBanner)
+                        newList.add(OfficialHomeMapper.BANNER_POSITION, officialBanner)
                     }
                     _officialStoreListVisitable = newList
-                    _officialStoreLiveData.value = OfficialStoreDataModel(_officialStoreListVisitable)
+                    _officialStoreLiveData.postValue(OfficialStoreDataModel(_officialStoreListVisitable))
                 }
             } catch (t: Throwable) {
                 onCompleteInvokeData.invoke()
@@ -256,16 +250,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     }
                 }
                 _officialStoreListVisitable = newList
-                _officialStoreLiveData.value = OfficialStoreDataModel(_officialStoreListVisitable)
+                _officialStoreLiveData.postValue(OfficialStoreDataModel(_officialStoreListVisitable))
             } catch (t: Throwable) {
-                _officialStoreError.value = t
+                _officialStoreError.postValue(t)
             }
         }
     }
 
-    private suspend fun getOfficialStoreFeaturedShopRevamp(
-        categoryId: Int, categoryName: String?, listener: FeaturedShopListener
-    ) {
+    private suspend fun getOfficialStoreFeaturedShopRevamp(categoryId: Int, categoryName: String?) {
         withContext(dispatchers.io) {
             try {
                 getOfficialStoreFeaturedShopUseCase.params = GetOfficialStoreFeaturedUseCase.createParams(categoryId)
@@ -274,9 +266,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 val officialFeaturedShop = OfficialFeaturedShopDataModel(
                     featuredShop.featuredShops,
                     featuredShop.header,
-                    categoryName.toEmptyStringIfNull(),
-                    listener
-                )
+                    categoryName.toEmptyStringIfNull())
                 _officialStoreListVisitable.forEach {
                     if(it is OfficialFeaturedShopDataModel) {
                         newList.add(officialFeaturedShop)
@@ -293,9 +283,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     newList.add(officialFeaturedShop)
                 }
                 _officialStoreListVisitable = newList
-                _officialStoreLiveData.value = OfficialStoreDataModel(_officialStoreListVisitable)
+                _officialStoreLiveData.postValue(OfficialStoreDataModel(_officialStoreListVisitable))
             } catch (t: Throwable) {
-                _officialStoreError.value = t
+                _officialStoreError.postValue(t)
             }
         }
     }
@@ -319,10 +309,34 @@ class OfficialStoreHomeViewModel @Inject constructor(
             }
 
             _officialStoreListVisitable = newList
-            _officialStoreLiveData.value = OfficialStoreDataModel(_officialStoreListVisitable)
-        }){
-            _officialStoreError.value = it
+            _officialStoreLiveData.postValue(OfficialStoreDataModel(_officialStoreListVisitable))
+        }) {
+            _officialStoreError.postValue(it)
         }
+    }
+
+    private fun addRecomTitle(title: String){
+        if(counterTitleShouldBeRendered == 1){
+            _officialStoreListVisitable.add(ProductRecommendationTitleDataModel(title))
+            _officialStoreLiveData.postValue(OfficialStoreDataModel(_officialStoreListVisitable))
+        }
+    }
+
+    private fun addRecomProducts(
+        productRecommendationWithTopAdsHeadline: ProductRecommendationWithTopAdsHeadline
+    ){
+        val newList = _officialStoreListVisitable.toMutableList()
+        val headlineIndex = productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel?.topAdsHeadlineResponse?.displayAds?.data?.firstOrNull()?.cpm?.position
+        productRecommendationWithTopAdsHeadline.recommendationWidget.recommendationItemList.forEachIndexed { index, recommendationItem ->
+            if (index == headlineIndex) productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel.let {
+                newList.add(it)
+            }
+            newList.add(ProductRecommendationDataModel(recommendationItem))
+        }
+        newList.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
+        _officialStoreListVisitable = newList
+        _officialStoreLiveData.postValue(OfficialStoreDataModel(_officialStoreListVisitable))
+        _recomUpdated.postValue(Event(true))
     }
 
     private suspend fun fetchRecomWidgetData(pageName: String, widgetParam: String, channelId: String) {

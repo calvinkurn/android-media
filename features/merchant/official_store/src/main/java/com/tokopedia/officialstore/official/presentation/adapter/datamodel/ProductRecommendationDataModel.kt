@@ -7,8 +7,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 
 data class ProductRecommendationDataModel(
-        val productItem: RecommendationItem,
-        val listener: RecommendationListener
+        val productItem: RecommendationItem
 ) : OfficialHomeVisitable {
 
     override fun type(typeFactory: OfficialHomeTypeFactory): Int = typeFactory.type(this)

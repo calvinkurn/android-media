@@ -89,7 +89,6 @@ class OfficialHomeFragment :
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
         const val BUNDLE_CATEGORY = "category_os"
-        var PRODUCT_RECOMMENDATION_TITLE_SECTION = ""
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 898
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
@@ -104,7 +103,6 @@ class OfficialHomeFragment :
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
-    private var currentBannerData: OfficialStoreBanners? = null
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
@@ -124,7 +122,6 @@ class OfficialHomeFragment :
     private var adapter: OfficialHomeAdapter? = null
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
-    private var counterTitleShouldBeRendered = 0
     private var isLoadedOnce: Boolean = false
     private var isScrolling = false
     private var remoteConfig: RemoteConfig? = null
@@ -145,7 +142,7 @@ class OfficialHomeFragment :
                     val categories = category?.categories.toString()
                     val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
                     val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
-                    counterTitleShouldBeRendered += 1
+                    viewModel.counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
                     viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
 
@@ -205,7 +202,9 @@ class OfficialHomeFragment :
                 recyclerView?.recycledViewPool,
                 OSMerchantVoucherCallback(this),
                 OSSpecialReleaseComponentCallback(this, userSession.userId),
-                onTopAdsHeadlineClicked)
+                onTopAdsHeadlineClicked,
+                this
+        )
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
         officialHomeMapper.resetState(adapter)
@@ -219,9 +218,10 @@ class OfficialHomeFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeOfficialStoreList()
-//        observeProductRecommendation()
-//        observeFeaturedShopRemoveDC()
-//        observeRecomWidget()
+        observeError()
+        observeRecomUpdated()
+        observeFeaturedShopRemoveDC()
+        observeRecomWidget()
         initLocalChooseAddressData()
         resetData()
         loadData()
@@ -283,7 +283,6 @@ class OfficialHomeFragment :
 
     override fun onDestroy() {
         viewModel.officialStoreLiveData.removeObservers(this)
-        viewModel.productRecommendation.removeObservers(this)
         viewModel.featuredShopRemove.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
@@ -354,7 +353,7 @@ class OfficialHomeFragment :
                 item,
                 isLogin(),
                 category?.title.toString(),
-                PRODUCT_RECOMMENDATION_TITLE_SECTION,
+                viewModel.PRODUCT_RECOMMENDATION_TITLE_SECTION,
                 item.position.toString()
         )
     }
@@ -908,27 +907,42 @@ class OfficialHomeFragment :
         viewModel.loadFirstDataRevamp(category, getLocation())
     }
 
-    private fun observeProductRecommendation() {
-        viewModel.productRecommendation.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.recommendationWidget.title
-                    endlessScrollListener.updateStateAfterGetData()
-                    swipeRefreshLayout?.isRefreshing = false
-                    if (counterTitleShouldBeRendered == 1) {
-                        officialHomeMapper.mappingProductRecommendationTitle(
-                            it.data.recommendationWidget.title,
-                            adapter
-                        )
-                    }
-                    officialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
-                }
+//    private fun observeProductRecommendation() {
+//        viewModel.productRecommendation.observe(viewLifecycleOwner) {
+//            when (it) {
+//                is Success -> {
+//                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.recommendationWidget.title
+//                    endlessScrollListener.updateStateAfterGetData()
+//                    swipeRefreshLayout?.isRefreshing = false
+//                    if (viewModel.counterTitleShouldBeRendered == 1) {
+//                        officialHomeMapper.mappingProductRecommendationTitle(
+//                            it.data.recommendationWidget.title,
+//                            adapter
+//                        )
+//                    }
+//                    officialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
+//                }
+//                is Fail -> {
+//                }
+//            }
+//            productRecommendationPerformanceMonitoring.stopTrace()
+//        }
+//    }
+
+    private fun observeError() {
+        viewModel.officialStoreError.observe(viewLifecycleOwner){
+            swipeRefreshLayout?.isRefreshing = false
+            showErrorNetwork(it)
+        }
+    }
+
+    private fun observeRecomUpdated(){
+        viewModel.recomUpdated.observe(viewLifecycleOwner){
+            val data = it.getContentIfNotHandled()
+            data?.let {
+                endlessScrollListener.updateStateAfterGetData()
+                swipeRefreshLayout?.isRefreshing = false
             }
-            productRecommendationPerformanceMonitoring.stopTrace()
         }
     }
 
@@ -962,7 +976,7 @@ class OfficialHomeFragment :
     private fun setListener() {
         setLoadMoreListener()
         swipeRefreshLayout?.setOnRefreshListener {
-            counterTitleShouldBeRendered = 0
+            viewModel.counterTitleShouldBeRendered = 0
             officialHomeMapper.removeRecommendation(adapter)
             removeRecomWidget()
             officialHomeMapper.removeTopAdsHeadlineWidget(adapter)
@@ -1126,7 +1140,7 @@ class OfficialHomeFragment :
         tracking?.eventClickProductRecommendation(
                 item,
                 position.toString(),
-                PRODUCT_RECOMMENDATION_TITLE_SECTION,
+                viewModel.PRODUCT_RECOMMENDATION_TITLE_SECTION,
                 isLogin(),
                 category?.title.toString()
         )

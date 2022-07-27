@@ -9,7 +9,7 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
 object OfficialHomeMapper {
-    private const val BANNER_POSITION = 0
+    const val BANNER_POSITION = 0
     const val BENEFIT_POSITION = 1
     const val FEATURE_SHOP_POSITION = 2
     const val RECOM_WIDGET_POSITION = 3

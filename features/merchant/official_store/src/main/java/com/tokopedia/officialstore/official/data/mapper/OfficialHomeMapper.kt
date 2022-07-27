@@ -96,8 +96,7 @@ class OfficialHomeMapper (
         val officialFeaturedShop = OfficialFeaturedShopDataModel(
             featuredShop.featuredShops,
             featuredShop.header,
-            categoryName.toEmptyStringIfNull(),
-            listener
+            categoryName.toEmptyStringIfNull()
         )
         listOfficialStore.toMutableList().forEach {
             if(it is OfficialFeaturedShopDataModel) {
@@ -237,7 +236,7 @@ class OfficialHomeMapper (
             if (index == headlineIndex) productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel.let {
                 newList.add(it)
             }
-            newList.add(ProductRecommendationDataModel(recommendationItem, listener))
+            newList.add(ProductRecommendationDataModel(recommendationItem))
         }
         newList.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
         _listOfficialStore = newList
