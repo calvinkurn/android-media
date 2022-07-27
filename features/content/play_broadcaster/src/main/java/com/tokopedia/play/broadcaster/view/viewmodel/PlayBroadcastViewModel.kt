@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
 import android.os.Handler
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -10,6 +11,7 @@ import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -33,6 +35,10 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.switch
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
@@ -409,6 +415,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.DismissQuizDetailBottomSheet -> handleCloseQuizDetailBottomSheet()
             PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet -> handleRefreshQuizDetail()
             PlayBroadcastAction.ClickRefreshQuizOption -> handleRefreshQuizOptionDetail()
+            is PlayBroadcastAction.ClickPinProduct -> handleClickPin(event.product)
         }
     }
 
@@ -1545,6 +1552,36 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun getShopIconUrl(): String = userSession.shopAvatar
 
     fun getShopName(): String = userSession.shopName
+
+
+    private fun handleClickPin(product: ProductUiModel){
+        viewModelScope.launchCatchError(block = {
+            updatePinProduct(isLoading = true, product = product)
+            val result = repo.setPinProduct(channelId, product.id)
+            if(result) {
+                updatePinProduct(product = product)
+            } else {
+                throw MessageErrorException("Gagal pin product")
+            }
+        }){
+            updatePinProduct(product = product)
+            _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
+        }
+    }
+
+    private fun updatePinProduct(product: ProductUiModel, isLoading: Boolean = false) {
+        _productSectionList.update { sectionList ->
+            sectionList.map { sectionUiModel ->
+                sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
+                sectionUiModel.products.map { prod ->
+                    if(prod.id == product.id)
+                        prod.copy(pinStatus = prod.pinStatus.copy(pinStatus = if(isLoading) prod.pinStatus.pinStatus else prod.pinStatus.pinStatus.switch(), isLoading = isLoading))
+                    else
+                        prod
+                })
+            }
+        }
+    }
 
     companion object {
 

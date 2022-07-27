@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
@@ -21,6 +22,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.switch
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
@@ -180,6 +182,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             ProductSetupAction.SaveProducts -> handleSaveProducts()
             ProductSetupAction.RetryFetchProducts -> handleRetryFetchProducts()
             is ProductSetupAction.DeleteSelectedProduct -> handleDeleteProduct(action.product)
+            is ProductSetupAction.ClickPinProduct -> handleClickPin(action.product)
         }
     }
 
@@ -401,6 +404,35 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     private fun SavedStateHandle.hasProductSections(): Boolean {
         return savedStateHandle.contains(KEY_PRODUCT_SECTIONS)
+    }
+
+    private fun handleClickPin(product: ProductUiModel){
+        viewModelScope.launchCatchError(block = {
+            updatePinProduct(isLoading = true, product = product)
+            val result = repo.setPinProduct(channelId, product.id)
+            if(result) {
+                updatePinProduct(product = product)
+            } else {
+                throw MessageErrorException("Gagal pin product")
+            }
+        }){
+            updatePinProduct(product = product)
+            _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
+        }
+    }
+
+    private fun updatePinProduct(product: ProductUiModel, isLoading: Boolean = false) {
+        _productTagSectionList.update { sectionList ->
+            sectionList.map { sectionUiModel ->
+                sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
+                sectionUiModel.products.map { prod ->
+                    if(prod.id == product.id)
+                        prod.copy(pinStatus = prod.pinStatus.copy(pinStatus = if(isLoading) prod.pinStatus.pinStatus else prod.pinStatus.pinStatus.switch(), isLoading = isLoading))
+                    else
+                        prod
+                })
+            }
+        }
     }
 
     companion object {

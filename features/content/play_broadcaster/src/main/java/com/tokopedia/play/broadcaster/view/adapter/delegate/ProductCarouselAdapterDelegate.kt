@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.ui.viewholder.carousel.ProductCarouselView
  */
 internal class ProductCarouselAdapterDelegate private constructor() {
 
-    class Product : TypedAdapterDelegate<
+    class Product(private  val listener: ProductCarouselViewHolder.Product.Listener, ) : TypedAdapterDelegate<
             ProductUiModel, Any, ProductCarouselViewHolder.Product>(commonR.layout.view_play_empty) {
 
         override fun onBindViewHolder(
@@ -26,7 +26,7 @@ internal class ProductCarouselAdapterDelegate private constructor() {
             parent: ViewGroup,
             basicView: View
         ): ProductCarouselViewHolder.Product {
-            return ProductCarouselViewHolder.Product.create(parent)
+            return ProductCarouselViewHolder.Product.create(parent, listener)
         }
     }
 

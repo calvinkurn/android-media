@@ -54,6 +54,10 @@ class ProductSummaryBottomSheet @Inject constructor(
         viewModel.submitAction(ProductSetupAction.DeleteSelectedProduct(product))
     }
 
+    override fun onPinProductClicked(product: ProductUiModel) {
+        viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBottomSheet()
