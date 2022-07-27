@@ -22,6 +22,7 @@ import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.order.DeeplinkMapperOrder;
@@ -123,6 +124,10 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_GCM_LEGACY = "android_async_gcm_legacy";
+
+    private static final int REDIRECTION_HOME = 1;
+    private static final int REDIRECTION_WEBVIEW = 2;
+    private static final int REDIRECTION_DEFAULT= 0;
 
     @Override
     public void onCreate() {
