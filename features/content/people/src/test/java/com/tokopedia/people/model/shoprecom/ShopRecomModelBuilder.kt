@@ -30,6 +30,18 @@ class ShopRecomModelBuilder {
 
     fun buildEmptyItemModel() = ShopRecomUiModelItem()
 
+    fun buildItem(isFollow: Boolean) = ShopRecomUiModelItem(
+        badgeImageURL = "https://images.tokopedia.net/img/official_store_badge.png",
+        encryptedID = mockEncryptedId,
+        id = mockItemId,
+        logoImageURL = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/16/ca4843f9-7b5c-468a-8be1-085d1f2b20c3.png",
+        name = "Miisoo Official Shop",
+        nickname = "miisooid",
+        type = 2,
+        applink = "tokopedia://shop/1353688",
+        isFollow = isFollow,
+    )
+
     private fun generateShopItem(): List<ShopRecomUiModelItem> {
         val shopRecomItem = mutableListOf<ShopRecomUiModelItem>()
         for (i in 0..9) {
