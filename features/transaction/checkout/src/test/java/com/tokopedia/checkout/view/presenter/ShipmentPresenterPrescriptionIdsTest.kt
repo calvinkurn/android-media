@@ -137,4 +137,16 @@ class ShipmentPresenterPrescriptionIdsTest {
         // Then
         verify(inverse = true) { prescriptionIdsUseCase.execute(any()) }
     }
+
+    @Test
+    fun `CHECK upload prescription data`() {
+        // Given
+        val checkoutId = "100"
+        every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(false, "", "",
+            checkoutId = checkoutId, arrayListOf(), 0, ""))
+
+        // Then
+        assert(presenter.uploadPrescriptionUiModel != null)
+    }
 }
