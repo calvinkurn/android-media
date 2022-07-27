@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.post.di;
 
 import com.tokopedia.kol.common.di.KolComponent;
-import com.tokopedia.kol.feature.postdetail.view.fragment.CDPRevampedFragment;
+import com.tokopedia.kol.feature.postdetail.view.fragment.ContentDetailPageRevampedFragment;
 import com.tokopedia.kol.feature.postdetail.view.fragment.KolPostDetailFragment;
 
 import dagger.Component;
@@ -15,5 +15,5 @@ import dagger.Component;
 public interface KolProfileComponent {
 
     void inject(KolPostDetailFragment kolPostDetailFragment);
-    void inject(CDPRevampedFragment cdpRevampedFragment);
+    void inject(ContentDetailPageRevampedFragment contentDetailPageRevampedFragment);
 }

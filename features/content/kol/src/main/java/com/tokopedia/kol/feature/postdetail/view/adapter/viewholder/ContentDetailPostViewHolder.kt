@@ -7,28 +7,28 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.kol.R
-import com.tokopedia.kol.feature.postdetail.view.adapter.CDPRevampAdapter
+import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailPageRevampAdapter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.user.session.UserSession
 
 
-class CDPPostViewHolder(
+class ContentDetailPostViewHolder(
     itemView: View,
-    private val dataSource: CDPRevampAdapter.DataSource,
+    private val dataSource: ContentDetailPageRevampAdapter.DataSource,
     private val cdpListener: CDPListener
 ) : BaseViewHolder(itemView) {
 
     private val cdpView =
-        itemView.findViewById<CDPPostContentTypeViewHolder>(R.id.item_cdp_revamp_view_item)
+        itemView.findViewById<ContentDetailPostTypeViewHolder>(R.id.item_cdp_revamp_view_item)
 
 
     companion object {
 
         fun create(
             parent: ViewGroup,
-            dataSource: CDPRevampAdapter.DataSource,
+            dataSource: ContentDetailPageRevampAdapter.DataSource,
             cdpListener: CDPListener
-        ) = CDPPostViewHolder(
+        ) = ContentDetailPostViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(
                     R.layout.item_cdp_revamp_view,

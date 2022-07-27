@@ -16,7 +16,6 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
-import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
@@ -25,7 +24,7 @@ import retrofit2.Retrofit;
  * @author by milhamj on 12/02/18.
  */
 
-@Module(includes = {FeedComponentModule.class, CDPViewModelModule.class})
+@Module(includes = {FeedComponentModule.class, ContentDetailViewModelModule.class})
 public class KolProfileModule {
 
     @KolProfileScope

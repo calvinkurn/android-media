@@ -9,7 +9,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.CDPRevampDataUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
 import timber.log.Timber
 import javax.inject.Inject
@@ -35,10 +35,10 @@ class GetPostDetailUseCase @Inject constructor(
             throw e
         }
     }
-    suspend fun executeForCDPRevamp(cursor: String = "", limit: Int = 5, detailId: String = "") : CDPRevampDataUiModel{
+    suspend fun executeForCDPRevamp(cursor: String = "", limit: Int = 5, detailId: String = "") : ContentDetailRevampDataUiModel{
         try {
             val feedXData =  getDynamicFeedUseCase.executeForCDP(cursor, limit, detailId)
-            val cdpRevampDataUiModel  = CDPRevampDataUiModel()
+            val cdpRevampDataUiModel  = ContentDetailRevampDataUiModel()
             cdpRevampDataUiModel.postList = feedXData.feedXHome.items
             cdpRevampDataUiModel.cursor = ""
             return cdpRevampDataUiModel

@@ -17,10 +17,10 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent
 import com.tokopedia.kol.feature.post.di.KolProfileModule
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
-import com.tokopedia.kol.feature.postdetail.view.adapter.CDPRevampAdapter
-import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.CDPPostViewHolder
-import com.tokopedia.kol.feature.postdetail.view.datamodel.CDPRevampDataUiModel
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.CPDRevampViewModel
+import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailPageRevampAdapter
+import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailRevampViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,14 +30,14 @@ import javax.inject.Inject
  * Created by shruti agarwal on 15/06/22
  */
 
-class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener{
+class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPostViewHolder.CDPListener{
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
 
-    private val adapter = CDPRevampAdapter(
-        dataSource = object : CDPRevampAdapter.DataSource {
+    private val adapter = ContentDetailPageRevampAdapter(
+        dataSource = object : ContentDetailPageRevampAdapter.DataSource {
             override fun getData(): FeedXCard {
                 TODO("Not yet implemented")
             }
@@ -47,7 +47,7 @@ class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener
             }
 
         },
-        cdpListener = this
+        contentDetailListener = this
     )
 
 
@@ -56,16 +56,16 @@ class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val cdpViewModel: CPDRevampViewModel by lazy {
+    private val cdpViewModel: ContentDetailRevampViewModel by lazy {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
-        viewModelProvider.get(CPDRevampViewModel::class.java)
+        viewModelProvider.get(ContentDetailRevampViewModel::class.java)
     }
 
     companion object {
 
         @JvmStatic
-        fun newInstance(bundle: Bundle?): CDPRevampedFragment {
-            val fragment = CDPRevampedFragment()
+        fun newInstance(bundle: Bundle?): ContentDetailPageRevampedFragment {
+            val fragment = ContentDetailPageRevampedFragment()
             fragment.arguments = bundle
             return fragment
         }
@@ -84,7 +84,7 @@ class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener
         super.onActivityCreated(savedInstanceState)
         val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
         cdpViewModel.run {
-            getCDPPostFirstPostData.observe(viewLifecycleOwner, Observer {
+            getContentDetailPostFirstPostData.observe(viewLifecycleOwner, Observer {
                 when (it) {
                     is Success -> {
                         //TODO add checks
@@ -99,7 +99,7 @@ class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener
             cDPPostRecomData.observe(viewLifecycleOwner, Observer {
                 when (it) {
                     is Success -> {
-                        onSuccessGetCDPRecomData(CDPRevampDataUiModel(postList = it.data.posts))
+                        onSuccessGetCDPRecomData(ContentDetailRevampDataUiModel(postList = it.data.posts))
                     }
                     else -> {
                         //TODO handle
@@ -162,17 +162,17 @@ class CDPRevampedFragment : BaseDaggerFragment() , CDPPostViewHolder.CDPListener
         }
     }
 
-    private fun onSuccessGetFirstPostCDPData(cdpRevampDataUiModel: CDPRevampDataUiModel){
+    private fun onSuccessGetFirstPostCDPData(contentDetailRevampDataUiModel: ContentDetailRevampDataUiModel){
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(cdpViewModel.currentCursor.isNotEmpty())
-        adapter.setItemsAndAnimateChanges(cdpRevampDataUiModel.postList)
+        adapter.setItemsAndAnimateChanges(contentDetailRevampDataUiModel.postList)
         cdpViewModel.getCDPRecomData(postId)
 
     }
-    private fun onSuccessGetCDPRecomData(cdpRevampDataUiModel: CDPRevampDataUiModel){
+    private fun onSuccessGetCDPRecomData(contentDetailRevampDataUiModel: ContentDetailRevampDataUiModel){
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(cdpViewModel.currentCursor.isNotEmpty())
-        adapter.addItemsAndAnimateChanges(cdpRevampDataUiModel.postList)
+        adapter.addItemsAndAnimateChanges(contentDetailRevampDataUiModel.postList)
 
     }
     private fun showToast(message: String, type: Int, actionText: String? = null) {

@@ -42,7 +42,7 @@ import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 
-class CDPPostContentTypeViewHolder  @JvmOverloads constructor(
+class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -77,7 +77,7 @@ class CDPPostContentTypeViewHolder  @JvmOverloads constructor(
     private val addCommentHint: Typography = findViewById(R.id.comment_hint)
     private val followCount: Typography = findViewById(R.id.follow_count)
     private val scrollHostCarousel: NestedScrollableHost = findViewById(R.id.scroll_host_carousel)
-    private var listener: CDPPostViewHolder.CDPListener? = null
+    private var listener: ContentDetailPostViewHolder.CDPListener? = null
 
     private var mData = FeedXCard()
     private var positionInFeed: Int = 0
@@ -299,13 +299,13 @@ class CDPPostContentTypeViewHolder  @JvmOverloads constructor(
         rvCarousel.adapter = adapter
     }
     fun bindData(
-        cdpListener: CDPPostViewHolder.CDPListener,
+        contentDetailListener: ContentDetailPostViewHolder.CDPListener,
         adapterPosition: Int,
         feedXCard: FeedXCard,
         userSession: UserSessionInterface
     ) {
         mData = feedXCard
-        this.listener = cdpListener
+        this.listener = contentDetailListener
         this.positionInFeed = adapterPosition
         bindHeader(feedXCard)
         bindItems(feedXCard)

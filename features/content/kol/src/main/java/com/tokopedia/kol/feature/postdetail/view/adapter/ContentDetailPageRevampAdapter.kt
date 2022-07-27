@@ -7,16 +7,16 @@ import com.tokopedia.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.kol.R
-import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.CDPPostViewHolder
+import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
 
-class CDPRevampAdapter(
+class ContentDetailPageRevampAdapter(
     dataSource: DataSource,
-    cdpListener: CDPPostViewHolder.CDPListener
+    contentDetailListener: ContentDetailPostViewHolder.CDPListener
 ): BaseDiffUtilAdapter<FeedXCard>(true)
 {
     init {
         delegatesManager
-            .addDelegate(CDPPostDelegate(dataSource, cdpListener))
+            .addDelegate(CDPPostDelegate(dataSource, contentDetailListener))
     }
 
     override fun areItemsTheSame(oldItem: FeedXCard, newItem: FeedXCard): Boolean {
@@ -31,16 +31,16 @@ class CDPRevampAdapter(
 
     private class CDPPostDelegate(
         private val dataSource: DataSource,
-        private val cdpListener: CDPPostViewHolder.CDPListener
-    ) : BaseAdapterDelegate<FeedXCard,FeedXCard, CDPPostViewHolder>(
+        private val contentDetailListener: ContentDetailPostViewHolder.CDPListener
+    ) : BaseAdapterDelegate<FeedXCard,FeedXCard, ContentDetailPostViewHolder>(
         R.layout.item_cdp_revamp_view) {
-        override fun onBindViewHolder(item: FeedXCard, holder: CDPPostViewHolder) {
+        override fun onBindViewHolder(item: FeedXCard, holder: ContentDetailPostViewHolder) {
             holder.bind(feedXCard = item)
         }
 
         override fun onBindViewHolderWithPayloads(
             item: FeedXCard,
-            holder: CDPPostViewHolder,
+            holder: ContentDetailPostViewHolder,
             payloads: Bundle
         ) {
             if (payloads.isEmpty) super.onBindViewHolderWithPayloads(item, holder, payloads)
@@ -52,8 +52,8 @@ class CDPRevampAdapter(
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, basicView: View): CDPPostViewHolder {
-            return CDPPostViewHolder.create(parent, dataSource, cdpListener)
+        override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ContentDetailPostViewHolder {
+            return ContentDetailPostViewHolder.create(parent, dataSource, contentDetailListener)
         }
 
         override fun isForViewType(

@@ -6,10 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendation
 import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
-import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationResponse
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationPostUseCase
-import com.tokopedia.kol.feature.postdetail.view.datamodel.CDPRevampDataUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -18,7 +17,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-class CPDRevampViewModel@Inject constructor(
+class ContentDetailRevampViewModel@Inject constructor(
     private val baseDispatcher: CoroutineDispatchers,
     private val getRecommendationPostUseCase: GetRecommendationPostUseCase,
     private val getPostDetailUseCase: GetPostDetailUseCase,
@@ -26,12 +25,12 @@ class CPDRevampViewModel@Inject constructor(
 
     var currentCursor = ""
     private val _getCDPPostRecomData = MutableLiveData<Result<FeedXPostRecommendation>>()
-    private val _getCDPPostFirstPostData = MutableLiveData<Result<CDPRevampDataUiModel>>()
+    private val _getCDPPostFirstPostData = MutableLiveData<Result<ContentDetailRevampDataUiModel>>()
 
     val cDPPostRecomData : LiveData<Result<FeedXPostRecommendation>>
        get() = _getCDPPostRecomData
 
-    val getCDPPostFirstPostData :LiveData<Result<CDPRevampDataUiModel>>
+    val getContentDetailPostFirstPostData :LiveData<Result<ContentDetailRevampDataUiModel>>
         get() = _getCDPPostFirstPostData
 
 
@@ -63,7 +62,7 @@ class CPDRevampViewModel@Inject constructor(
         }
 
     }
-    private suspend fun getFeedDataResult(detailId: String): CDPRevampDataUiModel {
+    private suspend fun getFeedDataResult(detailId: String): ContentDetailRevampDataUiModel {
         try {
             return getPostDetailUseCase.executeForCDPRevamp(cursor = "", detailId = detailId)
         } catch (e: Throwable) {
