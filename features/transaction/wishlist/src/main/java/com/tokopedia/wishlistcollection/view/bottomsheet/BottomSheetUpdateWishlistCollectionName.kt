@@ -26,6 +26,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.BottomsheetCreateNewWishlistCollectionBinding
+import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionNameParams
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
 import com.tokopedia.wishlistcollection.di.*
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
@@ -39,7 +40,7 @@ import javax.inject.Inject
 class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<BottomSheetUpdateWishlistCollectionNameComponent> {
     private var binding by autoClearedNullable<BottomsheetCreateNewWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
-    private var listCollections: List<GetWishlistCollectionNamesResponse.Data.GetWishlistCollectionNames.DataItem> = emptyList()
+    private var listCollections: List<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames.DataItem> = emptyList()
     private var newCollectionName = ""
     private var actionListener: ActionListener? = null
     private val handler = Handler(Looper.getMainLooper())
@@ -140,7 +141,8 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
 
     private fun doUpdateWishlistCollectionName() {
         val collectionId = arguments?.getString(COLLECTION_ID) ?: ""
-        updateCollectionViewModel.updateWishlistCollectionName(collectionId, newCollectionName)
+        val param = UpdateWishlistCollectionNameParams(collectionId = collectionId, collectionName = newCollectionName)
+        updateCollectionViewModel.updateWishlistCollectionName(param)
     }
 
     private fun disableSaveButton() {

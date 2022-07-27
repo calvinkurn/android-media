@@ -42,7 +42,7 @@ import javax.inject.Inject
 class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<BottomSheetCreateWishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetCreateNewWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
-    private var listCollections: List<GetWishlistCollectionNamesResponse.Data.GetWishlistCollectionNames.DataItem> = emptyList()
+    private var listCollections: List<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames.DataItem> = emptyList()
     private var newCollectionName = ""
     private var actionListenerFromPdp: ActionListenerFromPdp? = null
     private var actionListenerFromCollectionPage: ActionListenerFromCollectionPage? = null

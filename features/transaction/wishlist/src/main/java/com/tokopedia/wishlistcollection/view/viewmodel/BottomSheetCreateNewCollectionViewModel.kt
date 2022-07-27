@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -14,6 +15,7 @@ import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNames
 import com.tokopedia.wishlistcollection.domain.AddWishlistCollectionItemsUseCase
 import com.tokopedia.wishlistcollection.domain.CreateWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionNamesUseCase
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -25,8 +27,8 @@ class BottomSheetCreateNewCollectionViewModel @Inject constructor(
     private val createWishlistCollectionUseCase: CreateWishlistCollectionUseCase
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _collectionNames = MutableLiveData<Result<GetWishlistCollectionNamesResponse.Data.GetWishlistCollectionNames>>()
-    val collectionNames: LiveData<Result<GetWishlistCollectionNamesResponse.Data.GetWishlistCollectionNames>>
+    private val _collectionNames = MutableLiveData<Result<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames>>()
+    val collectionNames: LiveData<Result<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames>>
         get() = _collectionNames
 
     private val _addWishlistCollectionItem = MutableLiveData<Result<AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems>>()
@@ -38,16 +40,16 @@ class BottomSheetCreateNewCollectionViewModel @Inject constructor(
         get() = _createWishlistCollectionResult
 
     fun getWishlistCollectionNames() {
-        launch(dispatcher.main) {
-            val result =
-                withContext(dispatcher.io) { getWishlistCollectionNamesUseCase.executeOnBackground() }
-            if (result is Success) {
-                _collectionNames.value = result
+        launchCatchError(block = {
+            val result = getWishlistCollectionNamesUseCase(Unit)
+            if (result.getWishlistCollectionNames.status == WishlistV2CommonConsts.OK && result.getWishlistCollectionNames.errorMessage.isEmpty()) {
+                _collectionNames.postValue(Success(result.getWishlistCollectionNames))
             } else {
-                val error = (result as Fail).throwable
-                _collectionNames.value = Fail(error)
+                _collectionNames.postValue(Fail(Throwable()))
             }
-        }
+        }, onError = {
+            _collectionNames.postValue(Fail(it))
+        })
     }
 
     fun saveNewWishlistCollection(collectionName: String, productIds: List<String>) {

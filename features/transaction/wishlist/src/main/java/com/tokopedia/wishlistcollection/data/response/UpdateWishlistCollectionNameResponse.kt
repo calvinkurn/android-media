@@ -3,33 +3,26 @@ package com.tokopedia.wishlistcollection.data.response
 import com.google.gson.annotations.SerializedName
 
 data class UpdateWishlistCollectionNameResponse(
+	@SerializedName("update_wishlist_collection_name")
+	val updateWishlistCollectionName: UpdateWishlistCollectionName = UpdateWishlistCollectionName()) {
 
-	@SerializedName("data")
-	val data: Data = Data()
-) {
-	data class Data(
+		data class UpdateWishlistCollectionName(
 
-		@SerializedName("update_wishlist_collection_name")
-		val updateWishlistCollectionName: UpdateWishlistCollectionName = UpdateWishlistCollectionName()) {
+			@SerializedName("error_message")
+			val errorMessage: List<String> = emptyList(),
 
-			data class UpdateWishlistCollectionName(
+			@SerializedName("data")
+			val data: DataUpdate = DataUpdate(),
 
-				@SerializedName("error_message")
-				val errorMessage: List<String> = emptyList(),
+			@SerializedName("status")
+			val status: String = ""
+		) {
+			data class DataUpdate(
+				@SerializedName("success")
+				val success: Boolean = false,
 
-				@SerializedName("data")
-				val data: DataUpdate = DataUpdate(),
-
-				@SerializedName("status")
-				val status: String = ""
-			) {
-				data class DataUpdate(
-					@SerializedName("success")
-					val success: Boolean = false,
-
-					@SerializedName("message")
-					val message: String = ""
-				)
-			}
-	}
+				@SerializedName("message")
+				val message: String = ""
+			)
+		}
 }
