@@ -183,31 +183,11 @@ fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
 }
 
 fun SubscriptionsTextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
-    when {
-        //subtitle green color from backend, use g500
-        color.contains("03AC0E") || color.contains("03ac0e") -> {
-            return BalanceTextAttribute(
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_G500,
-                    text = text,
-                    isBold = true)
-        }
-        //title color from backend, use n700
-        color.contains("31353B") || color.contains("31353b")-> {
-            return BalanceTextAttribute(
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700,
-                    text = text,
-                    isBold = true)
-        }
-        //subtitle other than green color from backend (most likely adadad color)
-        //hardcoded to n700 96%
-        else -> {
-            return BalanceTextAttribute(
-                    colour = "",
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
-                    text = text,
-                    isBold = false)
-        }
-    }
+    return BalanceTextAttribute(
+        colour = this.color,
+        colourRef = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+        text = text,
+        isBold = this.isBold)
 }
 
 fun TagAttributes.mapToBalanceTagAttributes(): BalanceTagAttribute {
