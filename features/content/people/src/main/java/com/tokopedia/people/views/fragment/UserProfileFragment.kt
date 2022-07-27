@@ -765,12 +765,12 @@ class UserProfileFragment @Inject constructor(
         submitAction(UserProfileAction.RemoveShopRecomItem(itemID))
     }
 
-    override fun onShopRecomFollowClicked(item: ShopRecomUiModelItem) {
+    override fun onShopRecomFollowClicked(itemId: Long) {
         userProfileTracker.clickFollowProfileRecommendation(
             viewModel.profileUserID,
-            item.id.toString()
+            itemId.toString()
         )
-        submitAction(UserProfileAction.ClickFollowButtonShopRecom(item))
+        submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemId))
     }
 
     override fun onShopRecomItemClicked(

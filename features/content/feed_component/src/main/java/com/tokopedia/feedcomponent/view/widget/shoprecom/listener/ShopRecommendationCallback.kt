@@ -7,7 +7,7 @@ import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
  **/
 interface ShopRecommendationCallback {
     fun onShopRecomCloseClicked(itemID: Long)
-    fun onShopRecomFollowClicked(item: ShopRecomUiModelItem)
+    fun onShopRecomFollowClicked(itemID: Long)
     fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int)
 
     fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int)

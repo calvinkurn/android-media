@@ -131,7 +131,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(action.channelId, action.position, action.isActive)
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
-            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.item)
+            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
         }
     }
@@ -227,19 +227,21 @@ class UserProfileViewModel @AssistedInject constructor(
         _savedReminderData.update { SavedReminderData.NoData }
     }
 
-    private fun handleClickFollowButtonShopRecom(item: ShopRecomUiModelItem) {
+    private fun handleClickFollowButtonShopRecom(itemId: Long) {
         viewModelScope.launchCatchError(block = {
             val followInfo = _followInfo.value
-            val result = when (item.type) {
+            val currentItem = _shopRecom.value.items.find { it.id == itemId } ?: return@launchCatchError
+
+            val result = when (currentItem.type) {
                 FOLLOW_TYPE_SHOP -> {
                     repo.shopFollowUnfollow(
-                        item.id.toString(),
-                        if (item.isFollow) UnFollow else Follow
+                        currentItem.id.toString(),
+                        if (currentItem.isFollow) UnFollow else Follow
                     )
                 }
                 FOLLOW_TYPE_BUYER -> {
-                    if (item.isFollow) repo.unFollowProfile(item.encryptedID)
-                    else repo.followProfile(item.encryptedID)
+                    if (currentItem.isFollow) repo.unFollowProfile(currentItem.encryptedID)
+                    else repo.followProfile(currentItem.encryptedID)
                 }
                 else -> return@launchCatchError
             }
@@ -249,7 +251,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     _profileInfo.update { repo.getProfile(followInfo.userID) }
                     _shopRecom.update { data ->
                         data.copy(items = data.items.map {
-                            if (item.id == it.id) it.copy(isFollow = !it.isFollow)
+                            if (currentItem.id == it.id) it.copy(isFollow = !it.isFollow)
                             else it
                         })
                     }
