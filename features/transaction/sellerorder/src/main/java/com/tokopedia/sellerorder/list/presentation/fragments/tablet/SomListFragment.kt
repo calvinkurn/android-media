@@ -132,10 +132,9 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
             super.loadAllInitialData()
         } else {
             openedOrderId = arguments?.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).orEmpty()
-            viewModel.isMultiSelectEnabled = false
-            resetOrderSelectedStatus()
             isLoadingInitialData = true
             somListLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+            toggleBulkAction(false)
             loadTopAdsCategory()
             loadTickers()
             loadWaitingPaymentOrderCounter()

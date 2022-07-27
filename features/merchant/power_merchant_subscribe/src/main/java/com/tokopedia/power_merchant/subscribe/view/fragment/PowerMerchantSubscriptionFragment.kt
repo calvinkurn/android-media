@@ -774,7 +774,6 @@ open class PowerMerchantSubscriptionFragment :
                         true
                     ),
                     generalBenefits = PMActiveTermHelper.getBenefitList(context),
-                    isPmActive = shopGradeWidgetData.pmStatus,
                     shopGrade = shopGradeWidgetData.shopGrade,
                     nextMonthlyRefreshDate = data.nextMonthlyRefreshDate
                 )

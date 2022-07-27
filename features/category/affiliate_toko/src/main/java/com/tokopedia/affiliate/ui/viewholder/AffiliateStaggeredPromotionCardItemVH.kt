@@ -37,11 +37,9 @@ class AffiliateStaggeredPromotionCardItemVH(itemView: View, private val promotio
             }
             setOnClickListener {
                 promotionClickInterface?.onPromotionClick( element?.product?.productID ?: "",
-                        element?.product?.shopID ?: "",
                         element?.product?.title ?: "",
                         element?.product?.image?.androidURL ?:"",
                         element?.product?.cardUrl?.desktopURL ?: "",
-                        "",
                          adapterPosition,
                          commission
                 )

@@ -4,10 +4,12 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
+import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -26,6 +28,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     lateinit var viewModel: MultipleFragmentsViewModel
 
     var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +52,12 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
 
     override fun viewModel(): MultipleFragmentsViewModel = viewModel
 
-    override fun navigateToNewFragment(fragment: Fragment) {
+    override fun navigateToNewFragment(fragment: Fragment, isFinishCurrent: Boolean) {
         val fragmentName = fragment.javaClass.name
         val existingFragment = supportFragmentManager.findFragmentByTag(fragmentName)
         if (existingFragment == null) {
             // Add new fragment if the same fragment is not found in the back stack
-            addNewFragment(fragment)
+            addNewFragment(fragment, isFinishCurrent = isFinishCurrent)
         } else {
             // Move into existing same fragment in the back stack
             moveToExistedFragment(fragmentName)
@@ -80,7 +83,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
      * @param   fragment        fragment that we want to navigate into
      * @param   isSingleTask    flag to determine either the fragment should be launched with single task or single top
      */
-    fun navigateToNewFragment(fragment: Fragment, isSingleTask: Boolean = false) {
+    fun navigateToNewFragment(fragment: Fragment, isSingleTask: Boolean = false, isFinishCurrent: Boolean = false) {
         val fragmentName = fragment.javaClass.name
         val existingFragment = supportFragmentManager.findFragmentByTag(fragmentName)
         if (isSingleTask && existingFragment != null) {
@@ -89,9 +92,9 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             // Later, this should not add the fragment transaction into backstack, because there will be double fragments in the stack
             val isNavigatingToInitialWithNewFragment =
                 isSingleTask && supportFragmentManager.backStackEntryCount < NAVIGATE_TO_INITIAL_FRAGMENT_COUNT
-            addNewFragment(fragment, true, isNavigatingToInitialWithNewFragment)
+            addNewFragment(fragment, true, isNavigatingToInitialWithNewFragment, isFinishCurrent)
         } else {
-            navigateToNewFragment(fragment)
+            navigateToNewFragment(fragment, isFinishCurrent)
         }
     }
 
@@ -104,7 +107,9 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
      */
     private fun addNewFragment(destinationFragment: Fragment,
                                leftToRightAnim: Boolean = false,
-                               isNavigatingToInitialWithNewFragment: Boolean = false) {
+                               isNavigatingToInitialWithNewFragment: Boolean = false,
+                               isFinishCurrent: Boolean = false
+    ) {
         val destinationFragmentName = destinationFragment.javaClass.name
         val fragmentCount = getFragmentCount()
         val ft = supportFragmentManager.beginTransaction()
@@ -125,14 +130,35 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
                 )
             }
         }
-        ft.replace(
+        if (isFinishCurrent) {
+            supportFragmentManager.popBackStack()
+        }
+        ft.add(
             R.id.frame_content,
             destinationFragment, destinationFragmentName
         )
         val shouldAddBackStack =
             fragmentCount > Int.ZERO && !isNavigatingToInitialWithNewFragment
         if (shouldAddBackStack) {
-            ft.addToBackStack(destinationFragmentName)
+            val fCount = getFragmentCount()
+            if (fCount > 0) {
+                var i = fCount - 1
+                var prevFragment:Fragment
+                var hasChecked = false
+                while (i >= 0) {
+                    prevFragment = supportFragmentManager.fragments[i]
+                    if (!prevFragment.isHidden) {
+                        if (isFinishCurrent && !hasChecked) {
+                            hasChecked = true
+                        } else {
+                            ft.hide(prevFragment)
+                            ft.setMaxLifecycle(prevFragment, Lifecycle.State.STARTED)
+                        }
+                    }
+                    i--
+                }
+                ft.addToBackStack(destinationFragmentName)
+            }
         }
         ft.commit()
     }
