@@ -6,7 +6,6 @@ import com.tokopedia.track.TrackApp
 /**
  * @author by yoasfs on 26/06/20
  */
-
 object BalanceWidgetTracking: BaseTracking() {
     private const val ACTION_CLICK_SUBSCRIPTION = "click on gotoplus section - subscription status"
     private const val ACTION_CLICK_REWARDS = "click tier status"
@@ -14,7 +13,7 @@ object BalanceWidgetTracking: BaseTracking() {
     private const val ACTION_CLICK_GOPAY_POINTS = "click on gopay section - gopaypoints"
     private const val CATEGORY_BALANCE_WIDGET = "homepage-tokopoints"
     private const val SUBSCRIBER = "subscriber"
-    private const val NON_SUBSCRIBER = "non subs"
+    private const val NON_SUBSCRIBER = "non subscriber"
     private const val TRACKER_ID = "trackerId"
     private const val TRACKER_ID_CLICK_SUBSCRIPTION = "33767"
     private const val DEFAULT_VALUE = ""
