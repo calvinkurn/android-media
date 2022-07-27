@@ -32,49 +32,46 @@ class PlayBroPinnedView : ConstraintLayout {
         binding.ivLoaderPin.showWithCondition(isLoading)
         binding.ivPin.showWithCondition(!isLoading)
 
-        when (isPinned) {
-            true -> {
-                binding.ivPin.setImage(
-                    newIconId = IconUnify.PUSH_PIN,
-                    newDarkEnable = MethodChecker.getColor(
-                        context,
-                        unifyR.color.Unify_RN400
-                    ),
-                    newLightEnable = MethodChecker.getColor(
-                        context,
-                        unifyR.color.Unify_RN400
-                    )
+        if (isPinned) {
+            binding.ivPin.setImage(
+                newIconId = IconUnify.PUSH_PIN,
+                newDarkEnable = MethodChecker.getColor(
+                    context,
+                    unifyR.color.Unify_RN400
+                ),
+                newLightEnable = MethodChecker.getColor(
+                    context,
+                    unifyR.color.Unify_RN400
                 )
-                binding.tvPin.text =
-                    context.resources.getString(com.tokopedia.play.broadcaster.R.string.play_bro_unpin)
-                binding.tvPin.setTextColor(
-                    MethodChecker.getColor(
-                        context,
-                        unifyR.color.Unify_RN400
-                    )
+            )
+            binding.tvPin.text =
+                context.resources.getString(com.tokopedia.play.broadcaster.R.string.play_bro_unpin)
+            binding.tvPin.setTextColor(
+                MethodChecker.getColor(
+                    context,
+                    unifyR.color.Unify_RN400
                 )
-            }
-            false -> {
-                binding.ivPin.setImage(
-                    newIconId = IconUnify.PUSH_PIN,
-                    newDarkEnable = MethodChecker.getColor(
-                        context,
-                        unifyR.color.Unify_Static_White
-                    ),
-                    newLightEnable = MethodChecker.getColor(
-                        context,
-                        unifyR.color.Unify_Static_White
-                    )
+            )
+        } else {
+            binding.ivPin.setImage(
+                newIconId = IconUnify.PUSH_PIN,
+                newDarkEnable = MethodChecker.getColor(
+                    context,
+                    unifyR.color.Unify_Static_White
+                ),
+                newLightEnable = MethodChecker.getColor(
+                    context,
+                    unifyR.color.Unify_Static_White
                 )
-                binding.tvPin.text =
-                    context.resources.getString(com.tokopedia.play.broadcaster.R.string.play_bro_pin)
-                binding.tvPin.setTextColor(
-                    MethodChecker.getColor(
-                        context,
-                        unifyR.color.Unify_Static_White
-                    )
+            )
+            binding.tvPin.text =
+                context.resources.getString(com.tokopedia.play.broadcaster.R.string.play_bro_pin)
+            binding.tvPin.setTextColor(
+                MethodChecker.getColor(
+                    context,
+                    unifyR.color.Unify_Static_White
                 )
-            }
+            )
         }
     }
 }
