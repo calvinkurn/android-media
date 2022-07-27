@@ -34,7 +34,6 @@
     <string name="lbl_purchase_protection_price">Total Proteksi Produk</string>
     <string name="lbl_additional_fee">Biaya Layanan</string>
     <string name="occ_lbl_installment_fee">Biaya Cicilan</string>
-    <string name="lbl_platform_fee">Biaya Jasa Aplikasi</string>
     <string name="occ_lbl_transaction_fee">Biaya Transaksi</string>
 
     <string name="lbl_try_again">Coba Lagi</string>
