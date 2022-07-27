@@ -116,10 +116,10 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     private var productUiModel: ProductUiModel? = null
     private var source: String = String.EMPTY
 
-    override fun getFragmentToolbar(): Toolbar? = null
+    override fun getFragmentToolbar(): Toolbar? = binding?.toolbarOrderCustomization
 
-    override fun getFragmentTitle(): String {
-        return ""
+    override fun getFragmentTitle(): String? {
+        return productUiModel?.name
     }
 
     override fun onAttachActivity(context: Context?) {
@@ -277,11 +277,12 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     private fun setupHeaderToolbar(foodName: String) {
         activity?.let {
             (it as? AppCompatActivity)?.apply {
-                supportActionBar?.hide()
-                setSupportActionBar(binding?.toolbarOrderCustomization)
                 binding?.toolbarOrderCustomization?.run {
                     title = foodName
                     subtitle = it.getString(com.tokopedia.tokofood.R.string.text_header_order_custom)
+                    setNavigationOnClickListener {
+                        onBackPressed()
+                    }
                 }
             }
         }

@@ -180,9 +180,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     private var cartDataUpdateJob: Job? = null
     private var uiEventUpdateJob: Job? = null
 
-    override fun getFragmentToolbar(): Toolbar? {
-        return binding?.toolbar
-    }
+    override fun getFragmentToolbar(): Toolbar? = binding?.toolbarMerchantPage
 
     override fun getFragmentTitle(): String {
         return ""
@@ -194,7 +192,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         val uri = Uri.parse(bundle)
         merchantId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID) ?: ""
         productId = uri.getQueryParameter(DeeplinkMapperTokoFood.PARAM_PRODUCT_ID) ?: ""
-        setHasOptionsMenu(true)
         initInjector()
         // handle negative case #1 non-login
         if (!userSession.isLoggedIn) {
@@ -214,8 +211,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_merchant_page, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -272,12 +269,13 @@ class MerchantPageFragment : BaseMultiFragment(),
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
         )
         applySelectedProducts()
-        setupAppBarLayoutListener()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBackgroundDefaultColor()
+        setHasOptionsMenu(true)
+        setupAppBarLayoutListener()
         setHeaderBackground()
         setupMerchantLogo()
         setupMerchantProfileCarousel()
@@ -349,13 +347,13 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setToolbarTransparentColor() {
-        binding?.toolbar?.let {
+        binding?.toolbarMerchantPage?.let {
             it.background = null
         }
     }
 
     private fun setToolbarWhiteColor() {
-        binding?.toolbar?.let {
+        binding?.toolbarMerchantPage?.let {
             it.setBackgroundColor(
                 ContextCompat.getColor(
                     it.context,
@@ -368,10 +366,11 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun setupAppBarLayoutListener() {
         binding?.toolbarParent?.addOnOffsetChangedListener(object :
             AppBarLayout.OnOffsetChangedListener {
+
             override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
                 if (appBarLayout == null) return
                 val offset = abs(verticalOffset)
-                if (offset >= (appBarLayout.totalScrollRange - binding?.toolbar?.height.orZero())
+                if (offset >= (appBarLayout.totalScrollRange - binding?.toolbarMerchantPage?.height.orZero())
                 ) {
                     // show sticky filter
                     binding?.cardUnifySticky?.show()
