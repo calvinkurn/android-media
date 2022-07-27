@@ -37,6 +37,7 @@ class AspectFrameLayout : FrameLayout {
     /**
      * Sets the desired aspect ratio.  The value is `width / height`.
      */
+    @Suppress("MagicNumber")
     fun setAspectRatio(aspectRatio: Double) {
         if (aspectRatio < 0) {
             mTargetAspect = DEFAULT_RATIO_WINDOW_SIZE
@@ -47,6 +48,7 @@ class AspectFrameLayout : FrameLayout {
         }
     }
 
+    @Suppress("MagicNumber")
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         // Target aspect ratio will be < 0 if it hasn't been set yet.  In that case,
         // we just use whatever we've been handed.

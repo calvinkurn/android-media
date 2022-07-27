@@ -11,6 +11,7 @@ import com.tokopedia.config.GlobalConfig
 import java.util.*
 import kotlin.math.ceil
 
+@Suppress("MagicNumber")
 class BroadcasterStatistic : LivePusherStatistic {
 
     private var mStreamer: LarixStreamer? = null

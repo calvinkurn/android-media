@@ -3,6 +3,7 @@ package com.tokopedia.broadcaster.revamp.util.error
 /**
  * Created by meyta.taliti on 06/04/22.
  */
+@Suppress("MagicNumber")
 enum class BroadcasterErrorType(val code: Int, val message: String) {
     InternetUnavailable(10001, "No internet connection"),
     StreamFailed(30002, "Failed to to stream, please try again"),
