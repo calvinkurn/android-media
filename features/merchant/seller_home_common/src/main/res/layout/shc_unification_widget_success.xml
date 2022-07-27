@@ -28,6 +28,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnShcUnificationCta"
         app:layout_constraintHorizontal_bias="1"
@@ -39,7 +40,6 @@
         android:id="@+id/barrierShcUnification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="tableShcUnification, shcViewEmptyStateCommon" />
 
@@ -59,6 +59,7 @@
         android:gravity="end"
         android:paddingStart="0dp"
         android:paddingEnd="4dp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/Unify_G500"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.getResColor
  */
 
 internal const val DP_16 = 16
-internal const val DP_24 = 24
 
 fun TextView.setUnifyDrawableEnd(
     iconId: Int,

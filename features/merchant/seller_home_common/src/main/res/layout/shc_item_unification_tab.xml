@@ -19,6 +19,16 @@
         app:typographyWeight="bold"
         tools:text="Ada pelanggaran (5)" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgShcUnificationTabDot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvShcUnificationTabTitle"
+        app:layout_constraintStart_toEndOf="@+id/tvShcUnificationTabTitle"
+        app:layout_constraintTop_toTopOf="@+id/tvShcUnificationTabTitle"
+        tools:src="@drawable/ic_shc_tooltip_chart_dot" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcUnificationTabDescription"
         android:layout_width="wrap_content"

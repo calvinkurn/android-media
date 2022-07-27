@@ -51,6 +51,16 @@ class GetUnificationDataUseCase(
         }
     }
 
+    fun setParam(
+        shopId: String,
+        widgets: List<UnificationWidgetUiModel>,
+        dynamicParameter: DynamicParameterModel
+    ) {
+        this.shopId = shopId
+        this.widgets = widgets
+        this.dynamicParameter = dynamicParameter
+    }
+
     private suspend fun getExistingWidgetData(): List<UnificationDataUiModel> {
         val unificationDataList = widgets.filter { it.data != null }.map { it.data!! }
         return fetchTabData(
@@ -82,16 +92,6 @@ class GetUnificationDataUseCase(
         } else {
             throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
-    }
-
-    fun setParam(
-        shopId: String,
-        widgets: List<UnificationWidgetUiModel>,
-        dynamicParameter: DynamicParameterModel
-    ) {
-        this.shopId = shopId
-        this.widgets = widgets
-        this.dynamicParameter = dynamicParameter
     }
 
     private fun initRequestParam() {
@@ -151,6 +151,7 @@ class GetUnificationDataUseCase(
                                 if (tab.dataKey == it.dataKey) {
                                     it.data = tableResult
                                     it.isSelected = true
+                                    it.isVisited = true
                                 } else {
                                     it.isSelected = false
                                 }

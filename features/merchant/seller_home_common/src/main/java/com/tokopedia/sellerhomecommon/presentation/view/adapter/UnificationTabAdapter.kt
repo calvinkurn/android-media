@@ -4,9 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemUnificationTabBinding
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 
@@ -60,6 +63,13 @@ class UnificationTabAdapter(
                 )
                 tvShcUnificationTabDescription.text = item.tooltip
                 icShcUnificationTabStatus.isVisible = item.isSelected
+
+                if (item.isVisited) {
+                    imgShcUnificationTabDot.gone()
+                } else {
+                    imgShcUnificationTabDot.visible()
+                    imgShcUnificationTabDot.loadImage(R.drawable.ic_shc_tooltip_chart_dot)
+                }
 
                 val isLastItem = adapterPosition == itemCount.minus(Int.ONE)
                 if (isLastItem) {

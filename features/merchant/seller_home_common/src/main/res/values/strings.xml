@@ -53,4 +53,5 @@
     <string name="shc_last_updated_yesterday">Update terakhir kemarin"</string>
     <string name="shc_last_updated_more_then_yesterday">Update terakhir %1$s</string>
     <string name="shc_last_updated">Update terakhir: %1$s</string>
+    <string name="shc_new">Baru</string>
 </resources>

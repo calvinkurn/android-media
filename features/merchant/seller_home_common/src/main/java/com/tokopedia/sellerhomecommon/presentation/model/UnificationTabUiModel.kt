@@ -18,4 +18,5 @@ data class UnificationTabUiModel(
     val metricParam: String = String.EMPTY,
     var isSelected: Boolean = false,
     val config: WidgetConfigUiModel = WidgetConfigUiModel(),
+    var isVisited: Boolean = false
 )

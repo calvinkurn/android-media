@@ -6,7 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -22,8 +22,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
-import com.tokopedia.sellerhomecommon.utils.DP_24
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.unifycomponents.NotificationUnify
 
 /**
  * Created by @ilhamsuaib on 06/07/22.
@@ -76,6 +76,10 @@ class UnificationViewHolder(
 
     private fun showLoadingState() {
         binding.tvShcUnificationTab.gone()
+        binding.viewShcUnificationTabBg.gone()
+        binding.icShcUnificationTab.gone()
+        binding.shcNotifTagTab.gone()
+
         successStateBinding.containerShcUnificationSuccess.gone()
         errorStateBinding.containerShcUnificationError.gone()
         loadingStateBinding.containerShcUnificationLoading.visible()
@@ -96,6 +100,9 @@ class UnificationViewHolder(
 
         if (element.data?.tabs.isNullOrEmpty()) {
             binding.tvShcUnificationTab.gone()
+            binding.viewShcUnificationTabBg.gone()
+            binding.icShcUnificationTab.gone()
+            binding.shcNotifTagTab.gone()
         } else {
             setupDropDownView(element)
         }
@@ -107,7 +114,7 @@ class UnificationViewHolder(
             containerShcUnificationSuccess.visible()
 
             val data = element.data ?: return@with
-            val tab = data.tabs.firstOrNull { it.data != null }
+            val tab = data.tabs.firstOrNull { it.isSelected }
                 ?: data.tabs.firstOrNull() ?: return@with
 
             val isError = !tab.data?.error.isNullOrBlank()
@@ -200,6 +207,21 @@ class UnificationViewHolder(
             val shouldShowCta = tab.config.appLink.isNotBlank()
                     && tab.config.ctaText.isNotBlank()
             if (shouldShowCta) {
+                val iconWidth = root.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                val iconHeight = root.context.resources.getDimension(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                )
+                val iconColor = root.context.getResColor(
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                )
+                btnShcUnificationCta.setUnifyDrawableEnd(
+                    IconUnify.CHEVRON_RIGHT,
+                    iconColor,
+                    iconWidth,
+                    iconHeight
+                )
                 btnShcUnificationCta.visible()
                 btnShcUnificationCta.text = tab.config.ctaText
                 btnShcUnificationCta.setOnClickListener {
@@ -222,16 +244,30 @@ class UnificationViewHolder(
                 ?: data.tabs.firstOrNull() ?: return@with
 
             tvShcUnificationTab.visible()
-            tvShcUnificationTab.setUnifyDrawableEnd(
-                iconId = IconUnify.CHEVRON_DOWN,
-                width = root.context.dpToPx(DP_24),
-                height = root.context.dpToPx(DP_24)
-            )
+            viewShcUnificationTabBg.visible()
+            icShcUnificationTab.visible()
+
             tvShcUnificationTab.text = String.format(
                 DROP_DOWN_FORMAT, tab.title, tab.itemCount.toString()
             )
-            tvShcUnificationTab.setOnClickListener {
+            viewShcUnificationTabBg.setOnClickListener {
                 listener.showUnificationTabBottomSheets(element)
+            }
+
+            showNewTag(tab)
+        }
+    }
+
+    private fun showNewTag(tab: UnificationTabUiModel) {
+        with(binding) {
+            shcNotifTagTab.isVisible = tab.isNew
+            if (tab.isNew) {
+                val newTag = root.context.getString(R.string.shc_new)
+                shcNotifTagTab.setNotification(
+                    newTag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
             }
         }
     }
