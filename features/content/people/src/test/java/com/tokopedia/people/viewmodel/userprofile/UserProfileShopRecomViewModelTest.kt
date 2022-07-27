@@ -218,7 +218,7 @@ class UserProfileShopRecomViewModelTest {
     @Test
     fun `when user success follow shop`() {
         coEvery { mockUserSession.isLoggedIn } returns true
-        coEvery { mockRepo.getProfile(mockOwnUsername) } returns mockOwnProfile
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShown
         coEvery { mockRepo.followProfile(mockEncryptedId) } returns mockMutationSuccess
@@ -227,7 +227,6 @@ class UserProfileShopRecomViewModelTest {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } recordState {
-                coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.map { item ->
@@ -247,7 +246,7 @@ class UserProfileShopRecomViewModelTest {
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
-        coEvery { mockRepo.getProfile(mockOwnUsername) } returns mockOwnProfile
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
         coEvery { mockRepo.unFollowProfile(mockEncryptedId) } returns mockMutationSuccess
@@ -256,7 +255,6 @@ class UserProfileShopRecomViewModelTest {
             it.setup {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } recordState {
-                coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.map { item ->
