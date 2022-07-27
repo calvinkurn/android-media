@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.databinding.WidgetCreateReviewBadRatingCategoriesBinding
 import com.tokopedia.review.feature.createreputation.presentation.adapter.CreateReviewBadRatingCategoryAdapter
 import com.tokopedia.review.feature.createreputation.presentation.adapter.typefactory.CreateReviewBadRatingCategoriesTypeFactory
-import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewItemAnimator
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewBadRatingCategoryUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBadRatingCategoriesUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewBadRatingCategoryViewHolder
@@ -28,7 +27,6 @@ class CreateReviewBadRatingCategories @JvmOverloads constructor(
 
     private val badRatingCategoryListener = BadRatingCategoryListener()
     private val layoutManager = GridLayoutManager(context, SPAN_COUNT, RecyclerView.VERTICAL, false)
-    private val itemAnimator = CreateReviewItemAnimator()
     private val typeFactory = CreateReviewBadRatingCategoriesTypeFactory(badRatingCategoryListener)
     private val adapter = CreateReviewBadRatingCategoryAdapter(typeFactory)
 
@@ -40,7 +38,6 @@ class CreateReviewBadRatingCategories @JvmOverloads constructor(
 
     init {
         binding.rvBadRatingCategories.layoutManager = layoutManager
-        binding.rvBadRatingCategories.itemAnimator = itemAnimator
         binding.rvBadRatingCategories.adapter = adapter
     }
 
