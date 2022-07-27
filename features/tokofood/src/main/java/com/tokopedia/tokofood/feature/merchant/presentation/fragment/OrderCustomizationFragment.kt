@@ -286,7 +286,6 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                 binding?.toolbarOrderCustomization?.run {
                     title = foodName
                     subtitle = it.getString(com.tokopedia.tokofood.R.string.text_header_order_custom)
-                    setNavigationOnClickListener { parentFragmentManager.popBackStack() }
                 }
             }
         }
