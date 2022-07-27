@@ -76,7 +76,6 @@ class CampaignInformationViewModel @Inject constructor(
     private var selectedColor = defaultGradientColor
     private var selectedStartDate = Date()
     private var selectedEndDate = Date()
-    private var showTeaser = true
     private var paymentType = PaymentType.INSTANT
     private var remainingQuota = Int.ZERO
     private var selection : Selection? = null
@@ -325,6 +324,10 @@ class CampaignInformationViewModel @Inject constructor(
         this.campaignId = campaignId
     }
 
+    fun getCampaignId(): Long {
+        return this.campaignId
+    }
+
     fun setPaymentType(paymentType : PaymentType) {
         this.paymentType = paymentType
     }
@@ -365,9 +368,6 @@ class CampaignInformationViewModel @Inject constructor(
         return remainingQuota
     }
 
-    fun setShowTeaser(showTeaser: Boolean) {
-        this.showTeaser = showTeaser
-    }
 
     fun storeAsDefaultSelection(selection : Selection) {
         this.selection = selection

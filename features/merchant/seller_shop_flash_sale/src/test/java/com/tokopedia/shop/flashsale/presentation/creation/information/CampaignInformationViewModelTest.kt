@@ -1,0 +1,896 @@
+package com.tokopedia.shop.flashsale.presentation.creation.information
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
+import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
+import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
+import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
+import com.tokopedia.shop.flashsale.common.util.DateManager
+import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
+import com.tokopedia.shop.flashsale.domain.entity.CampaignAttribute
+import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
+import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
+import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
+import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.mockito.ArgumentMatchers.anyInt
+import java.util.Date
+
+class CampaignInformationViewModelTest {
+    @RelaxedMockK
+    lateinit var doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase
+    @RelaxedMockK
+    lateinit var getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase
+    @RelaxedMockK
+    lateinit var getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase
+    @RelaxedMockK
+    lateinit var dateManager: DateManager
+    @RelaxedMockK
+    lateinit var tracker: ShopFlashSaleTracker
+
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
+    private val viewModel by lazy {
+        CampaignInformationViewModel(
+            CoroutineTestDispatchersProvider,
+            doSellerCampaignCreationUseCase,
+            getSellerCampaignDetailUseCase,
+            getSellerCampaignAttributeUseCase,
+            dateManager,
+            tracker
+        )
+    }
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
+    }
+
+
+    //region getCampaigns
+    //endregion
+    @Test
+    fun `When campaign name is empty, should return CampaignNameIsEmpty error`() =
+        runBlocking {
+            //Given
+            val campaignName = ""
+            val expected = CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameIsEmpty
+
+            //When
+            val actual = viewModel.validateCampaignName(campaignName)
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When campaign name length is below minimum, should return CampaignNameBelowMinCharacter`() =
+        runBlocking {
+            //Given
+            val campaignName = "cam"
+            val expected = CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameBelowMinCharacter
+
+            //When
+            val actual = viewModel.validateCampaignName(campaignName)
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When campaign name has forbidden words, should return CampaignNameHasForbiddenWords`() =
+        runBlocking {
+            //Given
+            val campaignName = "lazada"
+            val expected = CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameHasForbiddenWords
+
+            //When
+            val actual = viewModel.validateCampaignName(campaignName)
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When campaign name valid, should return valid`() =
+        runBlocking {
+            //Given
+            val campaignName = "Adidas Sale"
+            val expected = CampaignInformationViewModel.CampaignNameValidationResult.Valid
+
+            //When
+            val actual = viewModel.validateCampaignName(campaignName)
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When page mode is create and remaining quota is empty, should return NoRemainingQuota`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 0
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                Date(),
+                Date(),
+                showTeaser = true,
+                Date(),
+                firstColor = "#00FF00",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+            val now = Date()
+            val expected = CampaignInformationViewModel.ValidationResult.NoRemainingQuota
+
+            //When
+            viewModel.validateInput(mode, selection, now)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When page mode is update and has remaining quota, should return Valid`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.UPDATE
+            val remainingQuota = 5
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                Date(),
+                Date(),
+                showTeaser = true,
+                Date(),
+                firstColor = "#00FF00",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+            val now = Date()
+            val expected = CampaignInformationViewModel.ValidationResult.Valid
+
+            //When
+            viewModel.validateInput(mode, selection, now)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When current date is after selected start date, should return LapsedStartDate`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 5
+            val advancedNow = Date().advanceHourBy(hour = 2)
+            val selectedStartDate = Date()
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                selectedStartDate,
+                Date(),
+                showTeaser = true,
+                Date(),
+                firstColor = "#00FF00",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+
+            val expected = CampaignInformationViewModel.ValidationResult.LapsedStartDate
+
+            //When
+            viewModel.validateInput(mode, selection, advancedNow)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When show teaser option is selected and current date is after selected teaser date, should return LapsedTeaserStartDate`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 5
+            val advancedNow = Date().advanceHourBy(1)
+            val tomorrow = Date().advanceDayBy(days = 1)
+
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                startDate = tomorrow,
+                endDate = Date(),
+                showTeaser = true,
+                teaserDate = Date(),
+                firstColor = "#00FF00",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+
+            val expected = CampaignInformationViewModel.ValidationResult.LapsedTeaserStartDate
+
+            //When
+            viewModel.validateInput(mode, selection, advancedNow)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When show teaser option is not selected and current date is after selected teaser date, should return Valid`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 5
+            val advancedNow = Date().advanceHourBy(1)
+            val tomorrow = Date().advanceDayBy(days = 1)
+
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                startDate = tomorrow,
+                endDate = Date(),
+                showTeaser = false,
+                teaserDate = Date(),
+                firstColor = "#00FF00",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+
+            val expected = CampaignInformationViewModel.ValidationResult.Valid
+
+            //When
+            viewModel.validateInput(mode, selection, advancedNow)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When first color length is below minimum length, should return InvalidHexColor`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 5
+            val advancedNow = Date().advanceHourBy(1)
+            val tomorrow = Date().advanceDayBy(days = 1)
+
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                startDate = tomorrow,
+                endDate = Date(),
+                showTeaser = false,
+                teaserDate = Date(),
+                firstColor = "#FF",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+
+            val expected = CampaignInformationViewModel.ValidationResult.InvalidHexColor
+
+            //When
+            viewModel.validateInput(mode, selection, advancedNow)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When second color length is below minimum length, should return InvalidHexColor`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 5
+            val advancedNow = Date().advanceHourBy(1)
+            val tomorrow = Date().advanceDayBy(days = 1)
+
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                startDate = tomorrow,
+                endDate = Date(),
+                showTeaser = false,
+                teaserDate = Date(),
+                firstColor = "#00FF00",
+                secondColor = "#FF",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+
+            val expected = CampaignInformationViewModel.ValidationResult.InvalidHexColor
+
+            //When
+            viewModel.validateInput(mode, selection, advancedNow)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    //region getCurrentMonthRemainingQuota
+    @Test
+    fun `When get current month remaining quota success, observer should successfully receive the data`() =
+        runBlocking {
+            //Given
+            val remainingQuota = 5
+            val campaignAttribute = CampaignAttribute(
+                success = true,
+                errorMessage = "",
+                listOf(),
+                remainingCampaignQuota = remainingQuota
+            )
+            val expected = Success(remainingQuota)
+
+            coEvery { getSellerCampaignAttributeUseCase.execute(month = anyInt(), year = anyInt()) } returns campaignAttribute
+
+            //When
+            viewModel.getCurrentMonthRemainingQuota()
+
+            //Then
+            val actual = viewModel.currentMonthRemainingQuota.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When get current month remaining quota error, observer should receive error result`() =
+        runBlocking {
+            //Given
+            val error = MessageErrorException("Server error")
+            val expected = Fail(error)
+
+            coEvery { getSellerCampaignAttributeUseCase.execute(month = anyInt(), year = anyInt()) }  throws error
+
+            //When
+            viewModel.getCurrentMonthRemainingQuota()
+
+            //Then
+            val actual = viewModel.currentMonthRemainingQuota.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+    //endregion
+
+    //region submit
+    @Test
+    fun `When campaign id is not created yet, should execute create campaign function`() = runBlocking {
+        //Given
+        val campaignIdNotCreated: Long = -1
+        val selection = buildSelectionObject()
+        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Create,
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType
+        )
+
+        //When
+        viewModel.setCampaignId(campaignIdNotCreated)
+        viewModel.submit(selection)
+
+        //Then
+        coVerify { doSellerCampaignCreationUseCase.execute(createCampaignParam) }
+    }
+
+    @Test
+    fun `When already got campaign id, should execute update campaign function`() = runBlocking {
+        //Given
+        val campaignId : Long = 1001
+        val selection = buildSelectionObject()
+        val updateCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Update(campaignId),
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType
+        )
+
+        //When
+        viewModel.setCampaignId(campaignId)
+        viewModel.submit(selection)
+
+        //Then
+        coVerify { doSellerCampaignCreationUseCase.execute(updateCampaignParam) }
+    }
+    //endregion
+
+    //region createCampaign
+    @Test
+    fun `When seller turned off show teaser, show teaser on create campaign param should be turned off`() = runBlocking {
+        //Given
+        val campaignIdNotCreated: Long = -1
+
+        val selection = buildSelectionObject().copy(showTeaser = false)
+        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Create,
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType
+        )
+
+        //When
+        viewModel.setCampaignId(campaignIdNotCreated)
+        viewModel.submit(selection)
+
+        //Then
+        assertEquals(selection.showTeaser, createCampaignParam.showTeaser)
+    }
+
+    @Test
+    fun `When seller turned on show teaser, show teaser on create campaign param should be turned on`() = runBlocking {
+        //Given
+        val campaignIdNotCreated: Long = -1
+
+        val selection = buildSelectionObject().copy(showTeaser = true)
+        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Create,
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType
+        )
+
+        //When
+        viewModel.setCampaignId(campaignIdNotCreated)
+        viewModel.submit(selection)
+
+        //Then
+        assertEquals(selection.showTeaser, createCampaignParam.showTeaser)
+    }
+
+    @Test
+    fun `When create campaign success, observer should successfully receive the data`() = runBlocking {
+        //Given
+        val campaignIdNotCreated: Long = -1
+        val onSubmitSuccessCampaignId: Long = 1001
+        val campaignCreationResult = CampaignCreationResult(
+            campaignId = onSubmitSuccessCampaignId,
+            isSuccess = true,
+            totalProductFailed = 0,
+            errorDescription = "",
+            errorTitle = "",
+            errorMessage = ""
+        )
+        val selection = buildSelectionObject()
+        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Create,
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType
+        )
+        val expected = Success(campaignCreationResult)
+
+        coEvery {  doSellerCampaignCreationUseCase.execute(createCampaignParam) } returns campaignCreationResult
+
+        //When
+        viewModel.setCampaignId(campaignIdNotCreated)
+        viewModel.submit(selection)
+
+        //Then
+        val actual = viewModel.campaignCreation.getOrAwaitValue()
+        assertEquals(expected, actual)
+        assertEquals(campaignCreationResult.campaignId, viewModel.getCampaignId())
+    }
+
+    @Test
+    fun `When create campaign error, observer should receive error`() = runBlocking {
+        //Given
+        val campaignIdNotCreated: Long = -1
+        val error = MessageErrorException("Server error")
+        val expected = Fail(error)
+
+        val selection = buildSelectionObject()
+        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Create,
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType
+        )
+
+        coEvery {  doSellerCampaignCreationUseCase.execute(createCampaignParam) } throws error
+
+        //When
+        viewModel.setCampaignId(campaignIdNotCreated)
+        viewModel.submit(selection)
+
+        //Then
+        val actual = viewModel.campaignCreation.getOrAwaitValue()
+        assertEquals(expected, actual)
+    }
+    //endregion
+
+    //region updateCampaign
+    @Test
+    fun `When seller turned off show teaser, show teaser on update campaign param should be turned off`() = runBlocking {
+        //Given
+        val campaignId: Long = 1001
+
+        val selection = buildSelectionObject().copy(showTeaser = false)
+        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Create,
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType
+        )
+
+        //When
+        viewModel.setCampaignId(campaignId)
+        viewModel.submit(selection)
+
+        //Then
+        assertEquals(selection.showTeaser, createCampaignParam.showTeaser)
+    }
+
+    @Test
+    fun `When seller turned on show teaser, show teaser on update campaign param should be turned on`() = runBlocking {
+        //Given
+        val campaignId: Long = 1001
+
+        val selection = buildSelectionObject().copy(showTeaser = true)
+        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Create,
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType
+        )
+
+        //When
+        viewModel.setCampaignId(campaignId)
+        viewModel.submit(selection)
+
+        //Then
+        assertEquals(selection.showTeaser, createCampaignParam.showTeaser)
+    }
+
+    @Test
+    fun `When update campaign success, observer should successfully receive the data`() = runBlocking {
+//Given
+        val campaignId: Long =  1001
+        val campaignCreationResult = CampaignCreationResult(
+            campaignId = campaignId,
+            isSuccess = true,
+            totalProductFailed = 0,
+            errorDescription = "",
+            errorTitle = "",
+            errorMessage = ""
+        )
+        val selection = buildSelectionObject()
+        val updateCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Update(campaignId),
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType
+        )
+        val expected = Success(campaignCreationResult)
+
+        coEvery {  doSellerCampaignCreationUseCase.execute(updateCampaignParam) } returns campaignCreationResult
+
+        //When
+        viewModel.setCampaignId(campaignId)
+        viewModel.submit(selection)
+
+
+        //Then
+        val actual = viewModel.campaignUpdate.getOrAwaitValue()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When update campaign error, observer should receive error`() = runBlocking {
+        //Given
+        val campaignId: Long = 1001
+        val error = MessageErrorException("Server error")
+        val expected = Fail(error)
+
+        val selection = buildSelectionObject()
+        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Update(campaignId),
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType
+        )
+
+        coEvery {  doSellerCampaignCreationUseCase.execute(createCampaignParam) } throws error
+
+        //When
+        viewModel.setCampaignId(campaignId)
+        viewModel.submit(selection)
+
+        //Then
+        val actual = viewModel.campaignUpdate.getOrAwaitValue()
+        assertEquals(expected, actual)
+    }
+    //endregion
+
+    //region saveDraft
+    //endregion
+
+    //region getCampaignDetail
+    //endregion
+
+    //region getCampaignQuota
+    //endregion
+
+    @Test
+    fun `When get payment type, should return correct values`() {
+        val paymentType = PaymentType.INSTANT
+        viewModel.setPaymentType(paymentType)
+        assertEquals(paymentType, viewModel.getPaymentType())
+    }
+
+    @Test
+    fun `When get selected color, should return correct values`() {
+        val color = Gradient("#FFFFFF", "#E0E0E0", isSelected = true)
+        viewModel.setSelectedColor(color)
+        assertEquals(color, viewModel.getColor())
+    }
+
+    @Test
+    fun `When get remaining quota, should return correct values`() {
+        val remainingQuota = 2
+        viewModel.setRemainingQuota(remainingQuota)
+        assertEquals(remainingQuota, viewModel.getRemainingQuota())
+    }
+
+    @Test
+    fun `When get selected start date, should return correct values`() {
+        val startDate = Date()
+        viewModel.setSelectedStartDate(startDate)
+        assertEquals(startDate, viewModel.getSelectedStartDate())
+    }
+
+    @Test
+    fun `When get selected end date, should return correct values`() {
+        val endDate = Date()
+        viewModel.setSelectedEndDate(endDate)
+        assertEquals(endDate, viewModel.getSelectedEndDate())
+    }
+
+    @Test
+    fun `When get default selection, should return correct values`() {
+        val selection = buildSelectionObject()
+        viewModel.storeAsDefaultSelection(selection)
+        assertEquals(selection, viewModel.getDefaultSelection())
+    }
+
+    @Test
+    fun `When select a color, other color should be unselected`() {
+        //Given
+        val selectedColor = Gradient("#000000", "#e0e0ea", isSelected = false)
+        val availableColors = listOf(
+            Gradient("#000000", "#e0e0ea", isSelected = false),
+            Gradient("#ffffff", "#e0e0e0", isSelected = false)
+        )
+
+        val expected = listOf(
+            Gradient("#000000", "#e0e0ea", isSelected = true),
+            Gradient("#ffffff", "#e0e0e0", isSelected = false)
+        )
+
+        //When
+        val actual = viewModel.markColorAsSelected(selectedColor, availableColors)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When select a color but first color is different, color should be marked as unselected`() {
+        //Given
+        val selectedColor = Gradient("#000000", "#e0e0ea", isSelected = false)
+        val availableColors = listOf(
+            Gradient("#00000f", "#e0e0ea", isSelected = false)
+        )
+
+        val expected = listOf(
+            Gradient("#00000f", "#e0e0ea", isSelected = false)
+        )
+
+        //When
+        val actual = viewModel.markColorAsSelected(selectedColor, availableColors)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+
+
+    @Test
+    fun `When select a color but second color is different, color should be marked as unselected`() {
+        //Given
+        val selectedColor = Gradient("#00000f", "#e0e0ea", isSelected = false)
+        val availableColors = listOf(
+            Gradient("#00000f", "#e0e0ef", isSelected = false)
+        )
+
+        val expected = listOf(
+            Gradient("#00000f", "#e0e0ef", isSelected = false)
+        )
+
+        //When
+        val actual = viewModel.markColorAsSelected(selectedColor, availableColors)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+    @Test
+    fun `When deselect all colors, all color should be unselected`() {
+        //Given
+        val firstColor = Gradient("#000000", "#e0e0e0", isSelected = true)
+        val secondColor = Gradient("#ffffff", "#e0e0e0", isSelected = false)
+        val availableColors = listOf(firstColor, secondColor)
+        val expected = listOf(firstColor.copy(isSelected = false), secondColor.copy(isSelected = false))
+
+        //When
+        val actual = viewModel.deselectAllColor(availableColors)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When end date before start date, should return start date`() {
+        //Given
+        val startDate = Date()
+        val endDate = Date().decreaseHourBy(desiredHourToBeDecreased = 1)
+
+        //When
+        val actual = viewModel.normalizeEndDate(startDate, endDate)
+
+        //Then
+        assertEquals(startDate, actual)
+    }
+
+    @Test
+    fun `When end date after start date, should return end date`() {
+        //Given
+        val startDate = Date()
+        val endDate = Date().advanceDayBy(days = 1)
+
+        //When
+        val actual = viewModel.normalizeEndDate(startDate, endDate)
+
+        //Then
+        assertEquals(endDate, actual)
+    }
+
+    @Test
+    fun `When first color and second color are the same, should return true`() {
+        val actual = viewModel.isUsingHexColor("#0f0f0f", "#0f0f0f")
+        assertEquals(true, actual)
+    }
+
+    @Test
+    fun `When first color and second color is different, should return false`() {
+        val actual = viewModel.isUsingHexColor("#0f0f0a", "#0f0f0f")
+        assertEquals(false, actual)
+    }
+
+    @Test
+    fun `When find hour difference from two date, should return correct values`() {
+        //Given
+        val startDate = Date().decreaseHourBy(desiredHourToBeDecreased = 2)
+        val upcomingDate = Date()
+        val expected = -2
+
+        //When
+        val actual = viewModel.findUpcomingTimeDifferenceInHour(startDate, upcomingDate)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When both data is the same, should return false`() {
+        //Given
+        val previousData = buildSelectionObject()
+        val currentData = previousData
+
+        //When
+        val actual = viewModel.isDataChanged(previousData, currentData)
+
+        //Then
+        assertEquals(false, actual)
+    }
+
+    @Test
+    fun `When both data is different, should return true`() {
+        //Given
+        val previousData = buildSelectionObject()
+        val currentData = previousData.copy(remainingQuota = 20)
+
+        //When
+        val actual = viewModel.isDataChanged(previousData, currentData)
+
+        //Then
+        assertEquals(true, actual)
+    }
+
+
+    private fun buildSelectionObject(): CampaignInformationViewModel.Selection {
+        return CampaignInformationViewModel.Selection(
+            "Adidas Sale",
+            startDate = Date(),
+            endDate = Date(),
+            showTeaser = false,
+            teaserDate = Date(),
+            firstColor = "#FFFFFF",
+            secondColor = "#00FF00",
+            PaymentType.INSTANT,
+            remainingQuota = 5
+        )
+    }
+
+}
