@@ -1,6 +1,7 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.viewholder
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -89,6 +90,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         } else {
             itemView.payLaterActionCta.visible()
             itemView.payLaterStatusTicker.gone()
+            itemView.enableTitleDetail()
             setPayLaterBenefits(element)
         }
     }
@@ -128,9 +130,11 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
                 element.installment_per_month_ceil
                     ?: 0, false
             )
-            if (element.tenure != 1)
+            if (element.tenure != 1) {
+                tvTenureMultiplier.visible()
                 tvTenureMultiplier.text =
                     context.getString(R.string.paylater_x_tenure, element.tenure)
+            }
             else {
                 tvTenureMultiplier.gone()
                 tvInstallmentAmount.text = element.optionalTenureHeader
@@ -171,4 +175,14 @@ private fun View.disableTitleDetail() {
     this.tvTenureMultiplier.setTextColor(ContextCompat.getColor(this.context,
         com.tokopedia.unifyprinciples.R.color.Unify_NN400))
     this.partnerTenureInfo.isEnabled = false
+}
+private fun View.enableTitleDetail() {
+    this.tvTitlePaymentPartner.setTextColor( ContextCompat.getColor(
+        this.context,com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+    this.tvInstallmentAmount.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+    this.tvTenureMultiplier.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+    this.partnerTenureInfo.isEnabled = true
+
 }

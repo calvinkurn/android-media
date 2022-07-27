@@ -84,6 +84,7 @@
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="@+id/tvInstallmentAmount"
                 app:layout_constraintStart_toEndOf="@id/tvInstallmentAmount"
+                app:layout_constraintTop_toTopOf="@+id/tvInstallmentAmount"
                 app:typographyType="body_3"
                 tools:text="x 12" />
 
