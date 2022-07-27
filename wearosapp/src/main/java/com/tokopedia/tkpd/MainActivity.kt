@@ -1,29 +1,22 @@
 package com.tokopedia.tkpd
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.*
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
-import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
-import com.tokopedia.tkpd.DataLayerListenerService.Companion.DATA_CLIENT_MESSAGE_KEY_FROM_WATCH
 import com.tokopedia.tkpd.DataLayerListenerService.Companion.DATA_CLIENT_PATH
-import com.tokopedia.tkpd.DataLayerListenerService.Companion.DATA_CLIENT_PATH_FROM_WATCH
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 
 class MainActivity : ComponentActivity(),
@@ -83,25 +76,25 @@ class MainActivity : ComponentActivity(),
         }
     }
 
-    private fun sendDataToApp(msg: String) {
-        lifecycleScope.launch {
-            try {
-                val request = PutDataMapRequest.create(DATA_CLIENT_PATH_FROM_WATCH).apply {
-                    dataMap.putString(DATA_CLIENT_MESSAGE_KEY_FROM_WATCH, msg)
-                }
-                    .asPutDataRequest()
-                    .setUrgent()
-
-                val result = dataClient.putDataItem(request).await()
-
-                Log.d(TAG, "DataItem saved: $result")
-            } catch (cancellationException: CancellationException) {
-                throw cancellationException
-            } catch (exception: Exception) {
-                Log.d(TAG, "Saving DataItem failed: $exception")
-            }
-        }
-    }
+//    private fun sendDataToApp(msg: String) {
+//        lifecycleScope.launch {
+//            try {
+//                val request = PutDataMapRequest.create(DATA_CLIENT_PATH_FROM_WATCH).apply {
+//                    dataMap.putString(DATA_CLIENT_MESSAGE_KEY_FROM_WATCH, msg)
+//                }
+//                    .asPutDataRequest()
+//                    .setUrgent()
+//
+//                val result = dataClient.putDataItem(request).await()
+//
+//                Log.d(TAG, "DataItem saved: $result")
+//            } catch (cancellationException: CancellationException) {
+//                throw cancellationException
+//            } catch (exception: Exception) {
+//                Log.d(TAG, "Saving DataItem failed: $exception")
+//            }
+//        }
+//    }
 }
 
 
