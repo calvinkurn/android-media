@@ -1,7 +1,6 @@
 package com.tokopedia.pdpsimulation.paylater.presentation.viewholder
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
