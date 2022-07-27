@@ -3,6 +3,7 @@ package com.tokopedia.people.viewmodel.userprofile
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
+import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
 import com.tokopedia.people.model.userprofile.FollowInfoUiModelBuilder
 import com.tokopedia.people.model.userprofile.ProfileUiModelBuilder
 import com.tokopedia.people.model.userprofile.ProfileWhitelistUiModelBuilder
@@ -42,6 +43,7 @@ class UserProfileViewModelTest {
     private val profileBuilder = ProfileUiModelBuilder()
     private val followInfoBuilder = FollowInfoUiModelBuilder()
     private val profileWhitelistBuilder = ProfileWhitelistUiModelBuilder()
+    private val shopRecomBuilder = ShopRecomModelBuilder()
 
     private val mockException = commonBuilder.buildException()
     private val mockUserId = "1"
@@ -51,6 +53,8 @@ class UserProfileViewModelTest {
 
     private val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId)
     private val mockOtherProfile = profileBuilder.buildProfile(userID = mockOtherUserId)
+    private val mockShopRecom = shopRecomBuilder.buildModelIsShown()
+    private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
 
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(userID = mockUserId, encryptedUserID = mockUserId, status = false)
     private val mockOtherFollowed = followInfoBuilder.buildFollowInfo(userID = mockOtherUserId, encryptedUserID = mockOtherUserId, status = true)
@@ -67,6 +71,7 @@ class UserProfileViewModelTest {
         coEvery { mockRepo.getProfile(mockOtherUsername) } returns mockOtherProfile
 
         coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecom
     }
 
     @Test
@@ -90,6 +95,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOwnFollow
                 profileType equalTo ProfileType.NotLoggedIn
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
+                shopRecom equalTo mockEmptyShopRecom
             }
         }
     }
@@ -116,6 +122,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOwnFollow
                 profileType equalTo ProfileType.Self
                 profileWhitelist equalTo mockHasAcceptTnc
+                shopRecom equalTo mockShopRecom
             }
         }
     }
@@ -140,6 +147,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOtherNotFollow
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
+                shopRecom equalTo mockEmptyShopRecom
             }
         }
     }
@@ -164,6 +172,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOtherFollowed
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
+                shopRecom equalTo mockEmptyShopRecom
             }
         }
     }
@@ -189,6 +198,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo mockOtherFollowed
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
+                shopRecom equalTo mockEmptyShopRecom
             }
         }
     }
@@ -214,6 +224,7 @@ class UserProfileViewModelTest {
                 followInfo equalTo FollowInfoUiModel.Empty
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
+                shopRecom equalTo mockEmptyShopRecom
             }
         }
     }

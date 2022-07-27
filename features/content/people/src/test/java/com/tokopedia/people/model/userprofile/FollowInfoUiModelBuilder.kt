@@ -16,4 +16,7 @@ class FollowInfoUiModelBuilder {
         encryptedUserID = encryptedUserID,
         status = status,
     )
+
+    fun buildEmptyFollowInfo() = FollowInfoUiModel.Empty
+
 }
