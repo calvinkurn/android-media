@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:card_type="shadow">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/play_product_pinned_width"
+        android:layout_height="@dimen/play_product_tag_height"
         android:paddingBottom="@dimen/spacing_lvl3">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_pinned_product_carousel"
             android:layout_width="@dimen/play_bro_pinned_img_size"
             android:layout_height="@dimen/play_bro_pinned_img_size"
-            android:adjustViewBounds="true"
-            app:layout_constrainedHeight="true"
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:adjustViewBounds="true"
             android:scaleType="fitCenter"
+            app:layout_constrainedHeight="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintVertical_bias="0.0"
             tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -52,7 +51,7 @@
             android:text="@string/play_bro_product_tag_stock_empty"
             android:textColor="@color/Unify_Static_White"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@id/iv_pinned_product_carousel"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/iv_pinned_product_carousel"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@id/iv_pinned_product_carousel"
@@ -156,4 +155,4 @@
             app:icon_color_night_enable="@color/Unify_B500"
             app:icon_color_night_disabled="@color/Unify_P500" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</com.tokopedia.unifycomponents.CardUnify>
+</com.tokopedia.unifycomponents.CardUnify2>
