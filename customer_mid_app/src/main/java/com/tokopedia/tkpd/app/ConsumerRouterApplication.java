@@ -131,9 +131,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private FirebaseMessagingManager fcmManager;
 
-    private int REDIRECTION_HOME = 1;
-    private int REDIRECTION_WEBVIEW = 2;
-    private int REDIRECTION_DEFAULT= 0;
+    private static final int REDIRECTION_HOME = 1;
+    private static final int REDIRECTION_WEBVIEW = 2;
+    private static final int REDIRECTION_DEFAULT= 0;
 
     @Override
     public void onCreate() {
