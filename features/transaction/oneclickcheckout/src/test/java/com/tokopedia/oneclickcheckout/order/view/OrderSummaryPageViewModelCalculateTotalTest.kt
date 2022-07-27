@@ -1290,7 +1290,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal(skipDynamicFee = true)
 
         // Then
-        assertEquals(OrderTotal(OrderCost(3038.0, 1000.0, 500.0, paymentFee = 38.0,
+        assertEquals(OrderTotal(OrderCost(3045.0, 1000.0, 500.0, paymentFee = 45.0,
             totalItemPriceAndShippingFee = 1500.0, totalPriceWithoutDiscountsAndPaymentFees = 1500.0, totalPriceWithoutPaymentFees = 1500.0, isInstallment = true, orderPaymentFees = helper.paymentFeeDetails),
             OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
