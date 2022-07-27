@@ -303,7 +303,8 @@ class MerchantPageViewModel @Inject constructor(
         )
     }
 
-    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
+    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail? {
+        if (!productUiModel.isCustomizable) return null
         resetMasterData(productUiModel.customListItems)
         return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetail(
                 cartTokoFood = cartTokoFood,
