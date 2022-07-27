@@ -54,9 +54,6 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun empty_chat_list_seller_buyer() {
         // Given
-        (userSession as UserSessionStub).hasShopStub = true
-        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi"
-        (userSession as UserSessionStub).nameStub = "Rifqi MF"
         chatListUseCase.response = exEmptyChatListPojo
         userSession.setIsShopOwner(true)
 
@@ -79,9 +76,6 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun size_5_chat_list_seller_buyer() {
         // Given
-        (userSession as UserSessionStub).hasShopStub = true
-        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi 123"
-        (userSession as UserSessionStub).nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
 
@@ -96,9 +90,6 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun should_show_default_3_filters_when_user_on_seller_tab() {
         // Given
-        (userSession as UserSessionStub).hasShopStub = true
-        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi 123"
-        (userSession as UserSessionStub).nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
 
@@ -114,9 +105,6 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun should_show_4_filters_when_whitelisted_user_on_seller_tab() {
         // Given
-        (userSession as UserSessionStub).hasShopStub = true
-        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi 123"
-        (userSession as UserSessionStub).nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
         chatWhitelistFeatureUseCase.response = ChatWhitelistFeatureResponse().apply {
             this.chatWhitelistFeature.isWhitelist = true
@@ -135,9 +123,6 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun should_show_2_filters_when_user_on_buyer_tab() {
         // Given
-        (userSession as UserSessionStub).hasShopStub = true
-        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi 123"
-        (userSession as UserSessionStub).nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
 

@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.stub.chatlist.di.module
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topchat.chatlist.di.ChatListScope
@@ -10,9 +11,12 @@ import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeature
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListMessageUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatNotificationUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
+import com.tokopedia.topchat.chatlist.domain.usecase.GetOperationalInsightUseCase
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatWhitelistFeatureStub
+import com.tokopedia.topchat.stub.chatlist.usecase.GetOperationalInsightUseCaseStub
+import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 import dagger.Module
 import dagger.Provides
 
@@ -62,4 +66,17 @@ object ChatListUseCaseModuleStub {
     fun provideChatWhiteListFeatureUseCase(
         stubUseCase: GetChatWhitelistFeatureStub
     ): GetChatWhitelistFeature = stubUseCase
+
+    @Provides
+    @ChatListScope
+    fun provideGetOperationalInsightUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetOperationalInsightUseCaseStub = GetOperationalInsightUseCaseStub(repository, dispatchers)
+
+    @Provides
+    @ChatListScope
+    fun provideGetOperationalInsightUseCase(
+        stubUseCase: GetOperationalInsightUseCaseStub
+    ): GetOperationalInsightUseCase = stubUseCase
 }

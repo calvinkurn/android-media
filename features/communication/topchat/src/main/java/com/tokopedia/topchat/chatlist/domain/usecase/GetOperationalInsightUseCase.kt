@@ -7,7 +7,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatMetricResponse
 import javax.inject.Inject
 
-class GetOperationalInsightUseCase @Inject constructor(
+open class GetOperationalInsightUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ): CoroutineUseCase<String, ShopChatMetricResponse>(dispatcher.io) {

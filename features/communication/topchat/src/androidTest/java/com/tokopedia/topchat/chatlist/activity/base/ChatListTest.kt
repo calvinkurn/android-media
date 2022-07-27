@@ -15,6 +15,8 @@ import com.tokopedia.topchat.stub.chatlist.di.ChatListComponentStub
 import com.tokopedia.topchat.stub.chatlist.di.DaggerChatListComponentStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatWhitelistFeatureStub
+import com.tokopedia.topchat.stub.chatlist.usecase.GetOperationalInsightUseCaseStub
+import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.user.session.UserSessionInterface
@@ -43,6 +45,9 @@ open class ChatListTest {
     protected lateinit var chatWhitelistFeatureUseCase: GetChatWhitelistFeatureStub
 
     @Inject
+    protected lateinit var getOperationalInsightUseCase: GetOperationalInsightUseCaseStub
+
+    @Inject
     protected lateinit var userSession: UserSessionInterface
 
     protected lateinit var activity: ChatListActivityStub
@@ -60,6 +65,7 @@ open class ChatListTest {
     @Before
     fun setup() {
         setupDaggerComponent()
+        setUserSessionData()
     }
 
     private fun setupDaggerComponent() {
@@ -90,6 +96,12 @@ open class ChatListTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
+    }
+
+    private fun setUserSessionData() {
+        (userSession as UserSessionStub).hasShopStub = true
+        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi 123"
+        (userSession as UserSessionStub).nameStub = "Rifqi MF 123"
     }
 
     companion object {
