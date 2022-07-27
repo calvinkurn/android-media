@@ -10,12 +10,12 @@ class ShopRecomModelBuilder {
     val typeShop = 2
     val typeBuyer = 3
 
-    fun buildModelIsShown(): ShopRecomUiModel {
+    fun buildModelIsShown(type: Int = typeShop): ShopRecomUiModel {
         return ShopRecomUiModel(
             isShown = true,
             nextCursor = "",
             title = "Toko lain sesuai rekomendasimu",
-            items = generateShopItem()
+            items = generateShopItem(type)
         )
     }
 
@@ -32,19 +32,7 @@ class ShopRecomModelBuilder {
 
     fun buildEmptyItemModel() = ShopRecomUiModelItem()
 
-    fun buildItem(isFollow: Boolean, type: Int) = ShopRecomUiModelItem(
-        badgeImageURL = "https://images.tokopedia.net/img/official_store_badge.png",
-        encryptedID = mockEncryptedId,
-        id = mockItemId,
-        logoImageURL = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/16/ca4843f9-7b5c-468a-8be1-085d1f2b20c3.png",
-        name = "Miisoo Official Shop",
-        nickname = "miisooid",
-        type = type,
-        applink = "tokopedia://shop/1353688",
-        isFollow = isFollow,
-    )
-
-    private fun generateShopItem(): List<ShopRecomUiModelItem> {
+    private fun generateShopItem(type: Int = typeShop): List<ShopRecomUiModelItem> {
         val shopRecomItem = mutableListOf<ShopRecomUiModelItem>()
         for (i in 0..9) {
             shopRecomItem.add(
@@ -55,7 +43,7 @@ class ShopRecomModelBuilder {
                     logoImageURL = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/16/ca4843f9-7b5c-468a-8be1-085d1f2b20c3.png",
                     name = "Miisoo Official Shop",
                     nickname = "miisooid",
-                    type = 2,
+                    type = type,
                     applink = "tokopedia://shop/1353688",
                     isFollow = false
                 )
