@@ -28,34 +28,12 @@ import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
-import com.tokopedia.play.view.type.MerchantVoucherType
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.PlayUpcomingBellStatus
-import com.tokopedia.play.view.type.ProductSectionType
-import com.tokopedia.play.view.type.StockAvailable
-import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
-import com.tokopedia.play.view.uimodel.mapper.PlayCartMapper
-import com.tokopedia.play.view.uimodel.mapper.PlayChannelStatusMapper
-import com.tokopedia.play.view.uimodel.mapper.PlayChatUiMapper
-import com.tokopedia.play.view.uimodel.mapper.PlayMerchantVoucherUiMapper
-import com.tokopedia.play.view.uimodel.mapper.PlayProductTagUiMapper
-import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
-import com.tokopedia.play.view.uimodel.mapper.PlayUserReportReasoningMapper
-import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayChannelReportUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayGeneralVideoPlayerParams
-import com.tokopedia.play.view.uimodel.recom.PlayLikeInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
-import com.tokopedia.play.view.uimodel.recom.PlayPinnedInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
+import com.tokopedia.play.view.uimodel.mapper.*
+import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
@@ -69,6 +47,7 @@ import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
@@ -97,16 +76,18 @@ class PlayViewerIdGenerator {
 
     private val repo: PlayViewerRepository = mockk(relaxed = true)
 
+    private val decodeHtml = DefaultHtmlTextTransformer()
+
     private val mapper = PlayUiModelMapper(
         productTagMapper = PlayProductTagUiMapper(),
         merchantVoucherMapper = PlayMerchantVoucherUiMapper(),
         chatMapper = PlayChatUiMapper(userSession),
         channelStatusMapper = PlayChannelStatusMapper(),
         channelInteractiveMapper = PlayChannelInteractiveMapper(),
-        interactiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(),
+        interactiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(decodeHtml),
         cartMapper = PlayCartMapper(),
         playUserReportMapper = PlayUserReportReasoningMapper(),
-        interactiveMapper = PlayInteractiveMapper(),
+        interactiveMapper = PlayInteractiveMapper(decodeHtml),
     )
 
     private val mockViewModelFactory = TestViewModelFactory(
@@ -144,6 +125,9 @@ class PlayViewerIdGenerator {
                 timerFactory = mockk(relaxed = true),
                 castPlayerHelper = mockk(relaxed = true),
                 playShareExperience = mockk(relaxed = true),
+                playLog = mockk(relaxed = true),
+                chatStreamsFactory = mockk(relaxed = true),
+                liveRoomMetricsCommon = mockk(relaxed = true),
             )
         }
     }
@@ -153,6 +137,7 @@ class PlayViewerIdGenerator {
             PlayFragment::class.java to {
                 PlayFragment(
                     playViewModelFactory,
+                    mockk(relaxed = true),
                     mockk(relaxed = true),
                     mockk(relaxed = true),
                 )
@@ -165,12 +150,15 @@ class PlayViewerIdGenerator {
                     analytic = mockk(relaxed = true),
                     multipleLikesIconCacheStorage = mockk(relaxed = true),
                     castAnalyticHelper = mockk(relaxed = true),
+                    performanceClassConfig = mockk(relaxed = true),
+                    newAnalytic = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {
                 PlayBottomSheetFragment(
                     viewModelFactory = mockViewModelFactory,
                     analytic = mockk(relaxed = true),
+                    newAnalytic = mockk(relaxed = true),
                 )
             },
             PlayVideoFragment::class.java to {
@@ -179,6 +167,7 @@ class PlayViewerIdGenerator {
                     pipAnalytic = mockk(relaxed = true),
                     analytic = mockk(relaxed = true),
                     pipSessionStorage = mockk(relaxed = true),
+                    playLog = mockk(relaxed = true),
                 )
             }
         )
@@ -232,6 +221,7 @@ class PlayViewerIdGenerator {
                                 minQty = 1,
                                 isFreeShipping = false,
                                 applink = "",
+                                isTokoNow = false,
                             )
                         ),
                         config = ProductSectionUiModel.Section.ConfigUiModel(
@@ -272,7 +262,7 @@ class PlayViewerIdGenerator {
         )
 
         val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
-        coEvery { repo.getTagItem(any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any()) } returns tagItem
         every { mockChannelStorage.getChannelList() } returns listOf("12669")
         every { mockChannelStorage.getData(any()) } returns PlayChannelData(
             id = "12669",

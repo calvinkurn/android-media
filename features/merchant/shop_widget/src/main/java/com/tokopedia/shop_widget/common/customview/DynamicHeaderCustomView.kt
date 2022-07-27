@@ -17,6 +17,7 @@ import com.tokopedia.shop_widget.common.util.DateHelper
 import com.tokopedia.shop_widget.common.util.StatusCampaign
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.resources.isDarkMode
 import java.util.Calendar
 import java.util.Date
 
@@ -102,6 +103,11 @@ class DynamicHeaderCustomView: FrameLayout {
             tusCountDown?.apply {
                 isShowClockIcon = false
                 timerFormat = TimerUnifySingle.FORMAT_AUTO
+                timerVariant = if (itemView?.context?.isDarkMode() == true) {
+                    TimerUnifySingle.VARIANT_ALTERNATE
+                } else {
+                    TimerUnifySingle.VARIANT_MAIN
+                }
                 onFinish = {
                     listener?.onTimerFinish()
                 }

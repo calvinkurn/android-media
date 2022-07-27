@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -34,6 +35,7 @@ import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -124,9 +126,15 @@ class TopAdsCreditHistoryFragment :
         cardAutoTopupStatus?.visibility = View.VISIBLE
         autoTopupStatus?.text = data.statusDesc
         if (data.status == ACTIVE_STATUS) {
-            autoTopupStatus?.setTextColor(resources.getColor(com.tokopedia.topads.common.R.color.topads_common_select_color_checked))
+            context?.let {
+                autoTopupStatus?.setTextColor(ContextCompat.getColor(it,
+                    com.tokopedia.topads.common.R.color.topads_common_select_color_checked))
+            }
         } else {
-            autoTopupStatus?.setTextColor(resources.getColor(com.tokopedia.topads.common.R.color.topads_common_text_disabled))
+            context?.let {
+                autoTopupStatus?.setTextColor(ContextCompat.getColor(it,
+                    com.tokopedia.topads.common.R.color.topads_common_text_disabled))
+            }
         }
     }
 
@@ -158,7 +166,10 @@ class TopAdsCreditHistoryFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initialDateSetup()
-        cardAutoTopupStatus?.setOnClickListener { gotoAutoTopUp() }
+        cardAutoTopupStatus?.setOnClickListener {
+            TopadsTopupTracker.clickTambahKreditOtomatis()
+            gotoAutoTopUp()
+        }
         dateImage?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         nextImage?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         hariIni?.setOnClickListener {
@@ -168,6 +179,7 @@ class TopAdsCreditHistoryFragment :
 
         viewModel.getAutoTopUpStatus()
         addCredit?.setOnClickListener {
+            TopadsTopupTracker.clickTambahKreditHistoryPage()
             startActivityForResult(
                 Intent(context, TopAdsAddCreditActivity::class.java),
                 REQUEST_CODE_ADD_CREDIT
@@ -196,6 +208,7 @@ class TopAdsCreditHistoryFragment :
                 startCustomDatePicker()
             }
         }
+        TopadsTopupTracker.clickDateRange()
     }
 
     private fun startCustomDatePicker() {
@@ -281,6 +294,7 @@ class TopAdsCreditHistoryFragment :
 
     override fun loadData(page: Int) {
         adapter.clearAllElements()
+        val resources = context?.resources
         viewModel.getCreditHistory(
             GraphqlHelper.loadRawString(resources, R.raw.gql_query_credit_history),
             startDate, endDate

@@ -6,6 +6,9 @@
     <string name="product_manage_stock_description_information_stock">Produk tidak bisa dilihat calon pembeli karena stoknya kosong.</string>
     <string name="product_manage_stock_info_description">Stock 0 tidak muncul di calon pembeli.</string>
     <string name="product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
+    <string name="product_manage_stock_description_information_stock_reminder">Pengingat Stok sudah diaktifkan dan kamu akan menerima notifikasi saat stok produk ini di bawah %d.</string>
+    <string name="product_manage_stock_description_information_stock_reminder_active">Stok produk di bawah batas min. stok untuk pengingat (%d). Ayo update stok agar pembeli bisa tetap membeli produk ini.</string>
+
     <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
     <string name="product_manage_save">Simpan</string>
     <string name="product_manage_inactive">Nonaktif</string>
@@ -15,6 +18,7 @@
     <string name="product_manage_quick_edit_stock_title">Atur Stok</string>
     <string name="product_manage_quick_edit_stock_total_stock">Jumlah Stok</string>
     <string name="product_manage_quick_edit_stock_active_product">Produk Aktif</string>
+    <string name="product_manage_quick_edit_stock_max_stock">Maks. %s</string>
 
     <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
     <string name="product_manage_quick_edit_price_ticker_info">Kamu akan mengubah harga lokasi utama saja. Untuk mengubah harga lokasi lain, akses Tokopedia Seller melalui desktop.</string>
@@ -34,7 +38,7 @@
     <string name="product_manage_closable_stock_ticker_title">Hanya menampilkan harga dan stok lokasi utama</string>
     <string name="product_manage_single_location_stock_no_access_description">Kamu tidak punya akses untuk atur stok produk.</string>
 
-    <string name="product_manage_campaign_stock_open_campaign">Untuk mengubah stok campaign, pergi ke seller.tokopedia.com melalui laptop, ya.</string>
+    <string name="product_manage_campaign_stock_open_campaign">Lihat detail informasi dan ubah stok campaign lewat Tokopedia versi desktop, ya.</string>
     <string name="product_manage_campaign_label">Campaign</string>
     <string name="product_manage_campaign_count">%d Promosi</string>
     <string name="product_manage_suspend_stock_info_description">Stok dikosongkan karena sering terjadi pembatalan</string>

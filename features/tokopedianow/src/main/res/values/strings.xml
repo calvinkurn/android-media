@@ -49,7 +49,9 @@
     <string name="tokopedianow_search_bar_hint">Cari di Tokopedia NOW!</string>
     <string name="tokopedianow_lihat">Lihat</string>
     <string name="tokopedianow_all_products">Semua Produk</string>
+    <string name="tokopedianow_dynamic_header_subtitle_default_value">Berakhir dalam</string>
 
+    <!-- Educational Information / USP -->
     <string name="tokopedianow_home_sharing_education_title"><![CDATA[<b>Ajak teman & tetanggamu</b>, biar ikut nikmati layanan <b>%1$s tiba</b> dan <b>gratis ongkir!</b>]]></string>
     <string name="tokopedianow_home_sharing_education_button">Bagikan ke Temanmu</string>
     <string name="tokopedianow_home_educational_information_2h_duration">Maks. 2 jam tiba</string>
@@ -59,7 +61,7 @@
     <string name="tokopedianow_home_educational_information_guaranteed_quality">Kualitas terjamin</string>
     <string name="tokopedianow_home_educational_information_2h_duration_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Maks. 2 jam tiba.</b></font> Pesanan langsung dikirim dengan estimasi waktu sesuai alamatmu, maks. 2 jam tiba setelah pembayaran.]]></string>
     <string name="tokopedianow_home_educational_information_20m_duration_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>20 menit tiba.</b></font> Terima pesananmu lebih cepat dan tetap <b>gratis ongkir</b>.]]></string>
-    <string name="tokopedianow_home_educational_information_2h_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Gratis ongkir.</b></font> Belanja min. Rp30.000, langsung gratis ongkir.]]></string>
+    <string name="tokopedianow_home_educational_information_2h_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Gratis ongkir.</b></font> Belanja harian mudah & instan, gratis biaya pengiriman.]]></string>
     <string name="tokopedianow_home_educational_information_20m_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Produk-produk terpilih.</b></font> Khusus menjual produk yang bisa dikirim cepat ke alamatmu. Temukan produk lebih lengkap di layanan 2 jam tiba.]]></string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Kualitas terjamin.</b></font> Kondisi produk dijamin aman & segar, dengan garansi uang kembali.]]></string>
     <string name="tokopedianow_home_educational_information_2h_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Cek detail jam operasional Tokopedia NOW! <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now">di sini.</a></font>]]></string>
@@ -67,6 +69,7 @@
     <string name="tokopedianow_home_educational_information_20m_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Cek detail jam operasional Tokopedia NOW! <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/tokopedia-now-20-menit">di sini.</a></font>]]></string>
     <string name="tokopedianow_home_educational_information_20m_terms_and_conditions_bottomsheet"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now-20-menit-tiba">syarat & ketentuan.</a></font>]]></string>
     <string name="tokopedianow_home_educational_information_title">Untung pakai Tokopedia NOW!</string>
+    <string name="tokopedianow_educational_information_visit_now_button_bottomsheet">Kunjungi Tokopedia NOW!</string>
 
     <string name="tokopedianow_repurchase_empty_state_no_history_title_filter">Tidak ada pembelian sesuai filtermu</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_title_search">Belum ada pembelianmu yang sesuai kata kunci</string>
@@ -122,7 +125,7 @@
 
     <string name="tokopedianow_2h_copy">2 jam</string>
     <string name="tokopedianow_20m_copy">20 menit</string>
-    
+
     <string name="tokopedianow_20m_switcher_title">Butuh pesanan tiba lebih cepat?</string>
     <string name="tokopedianow_20m_switcher_subtitle"><![CDATA[Cari produk di <b>20 menit tiba</b>]]></string>
     <string name="tokopedianow_2h_switcher_title"><![CDATA[Kamu sedang di layanan <b>NOW! 20 menit tiba</b>]]></string>

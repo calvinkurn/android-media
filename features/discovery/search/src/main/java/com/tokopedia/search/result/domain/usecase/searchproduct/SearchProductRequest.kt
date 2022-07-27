@@ -68,6 +68,9 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 additionalParams
                 keywordProcess
                 componentId
+                meta {
+                    productListType
+                }
             }
             data {
                 isQuerySafe
@@ -88,6 +91,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     text
                     applink
                     imageUrl
+                    componentId
+                    trackingOption
                 }
                 related {
                     relatedKeyword
@@ -287,6 +292,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                         title
                         url
                     }
+                    customvideo_url
                 }
                 shop{
                     id

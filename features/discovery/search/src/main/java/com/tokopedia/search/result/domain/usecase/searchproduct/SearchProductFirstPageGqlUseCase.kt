@@ -302,6 +302,7 @@ class SearchProductFirstPageGqlUseCase(
                         tracking_option
                         options {
                             title
+                            subtitle
                             url
                             applink
                             banner_image_url
@@ -352,6 +353,10 @@ class SearchProductFirstPageGqlUseCase(
                                 }
                                 customvideo_url
                             }
+                            card_button {
+                                title
+                                applink
+                            }
                         }
                     }
                 }
@@ -392,12 +397,15 @@ class SearchProductFirstPageGqlUseCase(
                   title
                   description
                   category_id_l2
+                  applink
                   filters {
                     title
                     key
                     name
                     value
                   }
+                  tracking_option
+                  component_id
                 }
               }
             }"""

@@ -94,6 +94,16 @@
     <string name="centralized_promo_promo_creation_tokopedia_play_description">Tingkatkan penjualanmu sambil berinteraksi langsung dengan banyak penonton</string>
     <string name="centralized_promo_promo_creation_slash_price_title">Diskon Toko</string>
     <string name="centralized_promo_promo_creation_slash_price_description">Tarik banyak pembeli dengan pasang diskon menarik. </string>
+    <string name="centralized_promo_promo_creation_tokomember_title">TokoMember</string>
+    <string name="centralized_promo_promo_creation_tokomember_description">Tingkatin pendapatan toko dengan beri keanggotaan eksklusif ke pembeli setia.</string>
+    <string name="centralized_promo_promo_creation_tokomember_tag_label">Baru</string>
+    <string name="centralized_promo_promo_creation_slash_price_new_info">Khusus PM PRO Expert</string>
+    <string name="centralized_promo_promo_creation_slash_price_tag_label">Baru</string>
+
+    <string name="centralized_promo_promo_creation_flash_sale_toko_title">Flash Sale Toko</string>
+    <string name="centralized_promo_promo_creation_flash_sale_toko_description">Buat campaign Flash Sale sendiri khusus di halaman tokomu.</string>
+    <string name="centralized_promo_promo_creation_flash_sale_toko_new_info">Khusus PM PRO dan OS</string>
+    <string name="centralized_promo_promo_creation_flash_sale_toko_tag_label">Baru</string>
 
     <!-- First merchant voucher -->
     <string name="centralized_promo_first_voucher_label">First Voucher</string>
@@ -155,10 +165,8 @@
     <string name="centralized_promo_content_desc_image_recommended_promo">image recommended promo</string>
     <string name="centralized_promo_content_desc_button_lihat_detail_promo">button lihat detail promo</string>
     <string name="sah_content_desc_image_widget_error">image widget error</string>
-    <string name="sah_recommendation_coach_mark_title">Lihat Performa Toko di Home</string>
-    <string name="sah_recommendation_coach_mark_description">Cek semua update dan kendala tokomu di sini dan baca tips untuk meningkatkan Performamu, ya!</string>
-    <string name="sah_other_menu_coach_mark_title">Lihat detail Performamu di sini, ya!</string>
-    <string name="sah_other_menu_coach_mark_description">Cek level, skor, dan status tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.</string>
+    <string name="sah_rebate_coach_mark_title">Sebagai Power Merchant PRO, kamu bisa ikutan Program Reward, lho!</string>
+    <string name="sah_rebate_coach_mark_description">Pantau terus kemajuan tokomu dalam mencapai target di tiap periode dan dapatkan Reward-nya.</string>
     <string name="settings_operational_hour_open">BUKA</string>
     <string name="settings_operational_hour_closed">TUTUP</string>
     <string name="settings_operational_hour_not_set">LIBUR</string>
