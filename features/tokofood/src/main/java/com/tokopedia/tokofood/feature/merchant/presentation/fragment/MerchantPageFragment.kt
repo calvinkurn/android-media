@@ -275,8 +275,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBackgroundDefaultColor()
-        setupAppBarLayoutListener()
         setHeaderBackground()
+        setupAppBarLayoutListener()
         setupMerchantLogo()
         setupMerchantProfileCarousel()
         setupProductList()
