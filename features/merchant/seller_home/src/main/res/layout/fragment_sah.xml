@@ -22,17 +22,17 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:srcCompat="@drawable/ic_sah_ornament_anniv"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- TODO: Load using PNG -->
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:id="@+id/iv_sah_gradient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         android:scaleType="fitXY"
+        app:layout_constraintWidth_percent="0.4"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/bg_sah_gradient_anniv"/>
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"

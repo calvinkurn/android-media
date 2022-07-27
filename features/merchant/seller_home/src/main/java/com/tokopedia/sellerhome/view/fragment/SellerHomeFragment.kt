@@ -30,7 +30,7 @@ import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -100,7 +100,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -132,6 +131,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val DEFAULT_HEIGHT_DP = 720f
         private const val RV_TOP_POSITION = 0
         private const val TICKER_FIRST_INDEX = 0
+
+        private const val ANNIV_GRADIENT_URL = "https://images.tokopedia.net/img/android/seller_home/ic_sah_anniv_13th_gradient.webp"
+        private const val ANNIV_ORNAMENT_URL = "https://images.tokopedia.net/img/android/seller_home/ic_sah_anniv_13th_ornament.webp"
     }
 
     @Inject
@@ -904,7 +906,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
         setViewBackground()
-        setOrnamentImage()
+        loadAnniversaryIllustrations()
     }
 
     private fun setupEmptyState() {
@@ -1618,15 +1620,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         binding?.viewBgShopStatus?.setBackgroundResource(R.drawable.bg_sah_anniv)
     }
 
-    // TODO: Load PNG
-    private fun setOrnamentImage() {
-        try {
-            binding?.ivSahOrnament?.loadImage(R.drawable.ic_sah_ornament_anniv)
-        } catch (ex: Exception) {
-            Timber.e(ex)
-        }
+    private fun loadAnniversaryIllustrations() {
+        binding?.ivSahOrnament?.loadImageWithoutPlaceholder(url = ANNIV_ORNAMENT_URL)
+        binding?.ivSahGradient?.loadImageWithoutPlaceholder(url = ANNIV_GRADIENT_URL)
     }
-
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(
         liveData: LiveData<Result<List<D>>>,
         type: String
