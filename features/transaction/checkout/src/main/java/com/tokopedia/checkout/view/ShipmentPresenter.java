@@ -743,14 +743,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
 
+        setUploadPrescriptionData(new UploadPrescriptionUiModel(
+                cartShipmentAddressFormData.getPrescriptionShowImageUpload(),
+                cartShipmentAddressFormData.getPrescriptionUploadText(),
+                cartShipmentAddressFormData.getPrescriptionLeftIconUrl(),
+                cartShipmentAddressFormData.getPrescriptionCheckoutId(),
+                new ArrayList<>(),0,""
+        ));
         if(cartShipmentAddressFormData.getPrescriptionShowImageUpload()){
-            setUploadPrescriptionData(new UploadPrescriptionUiModel(
-                    cartShipmentAddressFormData.getPrescriptionShowImageUpload(),
-                    cartShipmentAddressFormData.getPrescriptionUploadText(),
-                    cartShipmentAddressFormData.getPrescriptionLeftIconUrl(),
-                    cartShipmentAddressFormData.getPrescriptionCheckoutId(),
-                    new ArrayList<>(),0,""
-                    ));
             fetchPrescriptionIds(cartShipmentAddressFormData.getPrescriptionCheckoutId());
         }
     }
