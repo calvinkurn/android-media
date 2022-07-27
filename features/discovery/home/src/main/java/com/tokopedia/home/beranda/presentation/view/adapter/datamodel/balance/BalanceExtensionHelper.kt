@@ -161,14 +161,14 @@ fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
             return BalanceTextAttribute(
                     colourRef = com.tokopedia.unifyprinciples.R.color.Unify_G500,
                     text = text,
-                    isBold = true)
+                    isBold = this.isBold)
         }
         //title color from backend, use n700
         colour.contains("31353B") || colour.contains("31353b")-> {
             return BalanceTextAttribute(
                     colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700,
                     text = text,
-                    isBold = true)
+                    isBold = this.isBold)
         }
         //subtitle other than green color from backend (most likely adadad color)
         //hardcoded to n700 96%
@@ -177,7 +177,7 @@ fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
                     colour = "",
                     colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
                     text = text,
-                    isBold = false)
+                    isBold = this.isBold)
         }
     }
 }
