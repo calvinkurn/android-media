@@ -91,7 +91,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceCoachmark
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
@@ -225,7 +224,7 @@ import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-import java.util.*
+import java.util.Date
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -392,7 +391,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
-    private var coachMarkIsShowing = false
     private var subscriptionCoachmarkIsShowing = false
     private var tokonowCoachmarkIsShowing = false
     private var coachmark: CoachMark2? = null
@@ -1967,11 +1965,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().getBusinessUnitData(tabId, position, tabName)
     }
 
-    override fun onRetryMembership(position: Int, headerTitle: String, balanceDrawerStatus: Int) {
+    override fun onRetryMembership(position: Int, headerTitle: String) {
         getHomeViewModel().onRefreshMembership(position, headerTitle)
     }
 
-    override fun onRetryWalletApp(position: Int, headerTitle: String, balanceDrawerStatus: Int) {
+    override fun onRetryWalletApp(position: Int, headerTitle: String) {
         getHomeViewModel().onRefreshWalletApp(position, headerTitle)
     }
 
@@ -2015,10 +2013,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun manageCoachmarkOnFragmentVisible(isVisibleToUser: Boolean) {
         when (isVisibleToUser) {
             false -> {
-                if (coachMarkIsShowing) {
-                    coachmark?.dismissCoachMark()
-                }
-                else if (tokonowCoachmarkIsShowing) {
+                if (tokonowCoachmarkIsShowing) {
                     coachmarkTokonow?.hideCoachMark()
                 }
                 else if (subscriptionCoachmarkIsShowing) {

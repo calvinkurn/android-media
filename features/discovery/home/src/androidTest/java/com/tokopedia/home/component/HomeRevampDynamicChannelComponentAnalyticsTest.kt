@@ -267,20 +267,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testMissionWidget() {
-        HomeDCCassavaTest {
-            initTest()
-            doActivityTestByModelClass(dataModelClass = MissionWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                waitForData()
-                actionOnMissionWidget(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET)
-        }
-    }
-
-    @Test
     fun testOpenScreenHomepage() {
         HomeDCCassavaTest {
             initTest()

@@ -80,8 +80,9 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
     }
 
     @Test
-    fun testMissionWidgetLogin() {
+    fun testMissionWidget() {
         HomeDCCassavaTest {
+            initTest()
             login()
             doActivityTestByModelClass(dataModelClass = MissionWidgetListDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 waitForData()
