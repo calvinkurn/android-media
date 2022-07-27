@@ -18,7 +18,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -35,8 +34,7 @@ import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity.Companion.S
 import com.tokopedia.topchat.chatlist.view.adapter.ChatListPagerAdapter
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
-import com.tokopedia.topchat.chatlist.di.ChatListContextModule
-import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
+import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.view.listener.ChatListContract
 import com.tokopedia.topchat.chatlist.view.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.view.uimodel.base.BaseIncomingItemWebSocketModel.Companion.ROLE_BUYER
@@ -150,11 +148,7 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     }
 
     override fun initInjector() {
-        DaggerChatListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .chatListContextModule(context?.let { ChatListContextModule(it) })
-                .build()
-                .inject(this)
+        getComponent(ChatListComponent::class.java).inject(this)
     }
 
     override fun notifyViewCreated() {

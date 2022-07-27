@@ -27,12 +27,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 
 @Module
-class ChatListNetworkModuleStub(
-        private val userSessionInterface: UserSessionInterface
-) {
+class ChatListNetworkModuleStub {
 
     private val NET_READ_TIMEOUT = 60
     private val NET_WRITE_TIMEOUT = 60
@@ -60,12 +57,6 @@ class ChatListNetworkModuleStub(
     @Provides
     fun provideWebSocketStateHandler(): WebSocketStateHandler {
         return DefaultWebSocketStateHandler()
-    }
-
-    @ChatListScope
-    @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-        return userSessionInterface
     }
 
     @ChatListScope

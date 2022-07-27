@@ -1,14 +1,13 @@
 package com.tokopedia.topchat.stub.chatlist.usecase
 
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.GetChatWhitelistFeature
+import javax.inject.Inject
 
-class GetChatWhitelistFeatureStub (
-    gqlUseCase: GraphqlUseCase<ChatWhitelistFeatureResponse> =
-        GraphqlUseCase(GraphqlInteractor.getInstance().graphqlRepository)
+class GetChatWhitelistFeatureStub @Inject constructor(
+    gqlUseCase: GraphqlUseCase<ChatWhitelistFeatureResponse>
 ): GetChatWhitelistFeature(gqlUseCase, CoroutineTestDispatchersProvider) {
 
     var response = ChatWhitelistFeatureResponse()

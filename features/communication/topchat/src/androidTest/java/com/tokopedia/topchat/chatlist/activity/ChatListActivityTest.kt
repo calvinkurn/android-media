@@ -10,6 +10,7 @@ import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withTotalItem
+import com.tokopedia.topchat.stub.common.UserSessionStub
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.not
 import org.junit.Test
@@ -19,7 +20,7 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun empty_chat_list_buyer_only() {
         // Given
-        userSession.hasShopStub = false
+        (userSession as UserSessionStub).hasShopStub = false
         chatListUseCase.response = exEmptyChatListPojo
 
         // When
@@ -39,7 +40,7 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun size_2_chat_list_buyer_only() {
         // Given
-        userSession.hasShopStub = false
+        (userSession as UserSessionStub).hasShopStub = false
         chatListUseCase.response = exSize2ChatListPojo
 
         // When
@@ -53,9 +54,9 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun empty_chat_list_seller_buyer() {
         // Given
-        userSession.hasShopStub = true
-        userSession.shopNameStub = "Toko Rifqi"
-        userSession.nameStub = "Rifqi MF"
+        (userSession as UserSessionStub).hasShopStub = true
+        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi"
+        (userSession as UserSessionStub).nameStub = "Rifqi MF"
         chatListUseCase.response = exEmptyChatListPojo
         userSession.setIsShopOwner(true)
 
@@ -78,9 +79,9 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun size_5_chat_list_seller_buyer() {
         // Given
-        userSession.hasShopStub = true
-        userSession.shopNameStub = "Toko Rifqi 123"
-        userSession.nameStub = "Rifqi MF 123"
+        (userSession as UserSessionStub).hasShopStub = true
+        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi 123"
+        (userSession as UserSessionStub).nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
 
@@ -95,9 +96,9 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun should_show_default_3_filters_when_user_on_seller_tab() {
         // Given
-        userSession.hasShopStub = true
-        userSession.shopNameStub = "Toko Rifqi 123"
-        userSession.nameStub = "Rifqi MF 123"
+        (userSession as UserSessionStub).hasShopStub = true
+        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi 123"
+        (userSession as UserSessionStub).nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
 
@@ -113,9 +114,9 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun should_show_4_filters_when_whitelisted_user_on_seller_tab() {
         // Given
-        userSession.hasShopStub = true
-        userSession.shopNameStub = "Toko Rifqi 123"
-        userSession.nameStub = "Rifqi MF 123"
+        (userSession as UserSessionStub).hasShopStub = true
+        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi 123"
+        (userSession as UserSessionStub).nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
         chatWhitelistFeatureUseCase.response = ChatWhitelistFeatureResponse().apply {
             this.chatWhitelistFeature.isWhitelist = true
@@ -134,9 +135,9 @@ class ChatListActivityTest: ChatListTest() {
     @Test
     fun should_show_2_filters_when_user_on_buyer_tab() {
         // Given
-        userSession.hasShopStub = true
-        userSession.shopNameStub = "Toko Rifqi 123"
-        userSession.nameStub = "Rifqi MF 123"
+        (userSession as UserSessionStub).hasShopStub = true
+        (userSession as UserSessionStub).shopNameStub = "Toko Rifqi 123"
+        (userSession as UserSessionStub).nameStub = "Rifqi MF 123"
         chatListUseCase.response = exSize5ChatListPojo
         userSession.setIsShopOwner(true)
 
@@ -147,9 +148,5 @@ class ChatListActivityTest: ChatListTest() {
 
         // Then
         onView(withId(R.id.rvMenu)).check(withItemCount(equalTo(2)))
-    }
-
-    private fun startChatListActivity() {
-        activity.setupTestFragment(chatListUseCase, chatNotificationUseCase, chatWhitelistFeatureUseCase)
     }
 }
