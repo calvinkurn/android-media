@@ -15,22 +15,23 @@ import javax.inject.Inject
  */
 
 class AddRecipeBookmarkUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
-): GraphqlUseCase<AddRecipeBookmarkResponse>(graphqlRepository) {
+    gqlRepository: GraphqlRepository
+) {
+    private val graphql by lazy { GraphqlUseCase<AddRecipeBookmarkResponse>(gqlRepository) }
 
     init {
-        setGraphqlQuery(AddRecipeBookmarkQuery)
-        setTypeClass(AddRecipeBookmarkResponse::class.java)
+        graphql.setGraphqlQuery(AddRecipeBookmarkQuery)
+        graphql.setTypeClass(AddRecipeBookmarkResponse::class.java)
     }
 
     suspend fun execute(
         userId: String,
         recipeId: String
     ): AddRecipeBookmarkResponse.Data.TokonowAddRecipeBookmark {
-        setRequestParams(RequestParams.create().apply {
+        graphql.setRequestParams(RequestParams.create().apply {
             putString(PARAM_USER_ID, userId)
             putString(PARAM_RECIPE_ID, recipeId)
         }.parameters)
-        return executeOnBackground().data.tokonowAddRecipeBookmark
+        return graphql.executeOnBackground().data.tokonowAddRecipeBookmark
     }
 }

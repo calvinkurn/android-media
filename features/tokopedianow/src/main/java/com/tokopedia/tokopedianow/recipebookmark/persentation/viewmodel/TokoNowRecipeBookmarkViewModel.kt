@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.recipebookmark.persentation.viewmodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -7,12 +8,15 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.recipebookmark.domain.mapper.GetRecipeBookmarksMapper.mapResponseToUiModelList
+import com.tokopedia.tokopedianow.recipebookmark.domain.mapper.addRecipeProgressBar
+import com.tokopedia.tokopedianow.recipebookmark.domain.mapper.removeRecipeProgressBar
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarksResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.GetRecipeBookmarksUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_PAGE
 import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_PER_PAGE
+import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeProgressBarUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
@@ -31,13 +35,13 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {
 
-    private val layout: MutableList<RecipeUiModel> = mutableListOf()
+    private val layout: MutableList<Visitable<*>> = mutableListOf()
     private var pageCounter: Int = DEFAULT_PAGE
     private var noNeedLoadMore: Boolean = true
-    private var tempRecipeRemoved: Pair<Int, RecipeUiModel>? = null
+    private var tempRecipeRemoved: Pair<Int, Visitable<*>>? = null
 
-    private val _loadRecipeBookmarks: MutableStateFlow<UiState<List<RecipeUiModel>>?> = MutableStateFlow(null)
-    private val _moreRecipeBookmarks: MutableStateFlow<UiState<List<RecipeUiModel>>?> = MutableStateFlow(null)
+    private val _loadRecipeBookmarks: MutableStateFlow<UiState<List<Visitable<*>>>?> = MutableStateFlow(null)
+    private val _moreRecipeBookmarks: MutableStateFlow<UiState<List<Visitable<*>>>?> = MutableStateFlow(null)
     private val _toaster: MutableStateFlow<UiState<ToasterUiModel>?> = MutableStateFlow(null)
     private val _isOnScrollNotNeeded: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
@@ -46,9 +50,9 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private val warehouseId: String
         get() = chooseAddressData.warehouse_id
 
-    val loadRecipeBookmarks: StateFlow<UiState<List<RecipeUiModel>>?>
+    val loadRecipeBookmarks: StateFlow<UiState<List<Visitable<*>>>?>
         get() = _loadRecipeBookmarks
-    val moreRecipeBookmarks: StateFlow<UiState<List<RecipeUiModel>>?>
+    val moreRecipeBookmarks: StateFlow<UiState<List<Visitable<*>>>?>
         get() = _moreRecipeBookmarks
     val toaster: StateFlow<UiState<ToasterUiModel>?>
         get() = _toaster
@@ -103,7 +107,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     private fun onSuccessRemoveRecipe(position: Int, recipeId: String, title: String, isSuccess: Boolean) {
         tempRecipeRemoved = Pair(position, layout[position])
 
-        layout.removeFirst { it.id == recipeId }
+        layout.removeFirst { it is RecipeUiModel && it.id == recipeId }
 
         _toaster.value = UiState.Success(ToasterUiModel(
             isRemoving = isSuccess,
@@ -153,9 +157,9 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      */
     private fun onResponseLoadFirstPageBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
         noNeedLoadMore = !hasNext || recipeBookmarks.size < DEFAULT_PER_PAGE
-        layout.addAll(recipeBookmarks)
 
         if (header.success) {
+            layout.addAll(recipeBookmarks)
             _loadRecipeBookmarks.value = UiState.Success(
                 data = layout
             )
@@ -181,15 +185,15 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      */
     private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
         noNeedLoadMore = !hasNext || recipeBookmarks.size < DEFAULT_PER_PAGE
-        layout.addAll(recipeBookmarks)
 
         if (header.success) {
+            layout.addAll(recipeBookmarks)
             _moreRecipeBookmarks.value = UiState.Success(
                 data = layout
             )
         } else {
-            _moreRecipeBookmarks.value = UiState.Fail(
-                errorCode = header.statusCode
+            _moreRecipeBookmarks.value = UiState.Success(
+                data = layout
             )
         }
     }
@@ -197,9 +201,9 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     /**
      * @see loadRecipeBookmarks - will hide load more loading
      */
-    private fun onFailLoadMoreFE(throwable: Throwable) {
-        _moreRecipeBookmarks.value = UiState.Fail(
-            throwable = throwable
+    private fun onFailLoadMoreFE() {
+        _moreRecipeBookmarks.value = UiState.Success(
+            data = layout
         )
     }
 
@@ -286,20 +290,28 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     }
 
     fun loadMore(
-        isAtTheBottomOfThePage: Boolean,
-        isLoadMoreLoading: Boolean,
+        isAtTheBottomOfThePage: Boolean
     ) {
         launchCatchError(block = {
             if (noNeedLoadMore) {
                 _isOnScrollNotNeeded.value = true
-            } else if (isAtTheBottomOfThePage && !isLoadMoreLoading) {
+            } else if (isAtTheBottomOfThePage && layout.last() !is RecipeProgressBarUiModel) {
                 _moreRecipeBookmarks.value = UiState.Loading()
                 val (recipeBookmarks, header, hasNext) = getRecipeBookmarks(pageCounter++)
+                layout.removeRecipeProgressBar()
                 onResponseLoadMoreBE(recipeBookmarks, header, hasNext)
             }
-        }) { throwable ->
-            onFailLoadMoreFE(throwable)
+        }) {
+            layout.removeRecipeProgressBar()
+            onFailLoadMoreFE()
         }
+    }
+
+    fun showLoadMoreLoading() {
+        launchCatchError(block = {
+            layout.addRecipeProgressBar()
+            _moreRecipeBookmarks.value = UiState.Success(layout)
+        }) { /* nothing to do */ }
     }
 
     fun removeToaster() {

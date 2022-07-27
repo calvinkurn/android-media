@@ -17,12 +17,13 @@ import javax.inject.Inject
  */
 
 class GetRecipeBookmarksUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
-): GraphqlUseCase<GetRecipeBookmarksResponse>(graphqlRepository) {
+    gqlRepository: GraphqlRepository
+) {
+    private val graphql by lazy { GraphqlUseCase<GetRecipeBookmarksResponse>(gqlRepository) }
 
     init {
-        setGraphqlQuery(GetRecipeBookmarksQuery)
-        setTypeClass(GetRecipeBookmarksResponse::class.java)
+        graphql.setGraphqlQuery(GetRecipeBookmarksQuery)
+        graphql.setTypeClass(GetRecipeBookmarksResponse::class.java)
     }
 
     suspend fun execute(
@@ -31,12 +32,12 @@ class GetRecipeBookmarksUseCase @Inject constructor(
         page: Int,
         limit: Int
     ): GetRecipeBookmarksResponse {
-        setRequestParams(RequestParams.create().apply {
+        graphql.setRequestParams(RequestParams.create().apply {
             putString(PARAM_USER_ID, userId)
             putString(PARAM_WAREHOUSE_ID, warehouseId)
             putInt(PARAM_PAGE, page)
             putInt(PARAM_PER_PAGE, limit)
         }.parameters)
-        return executeOnBackground()
+        return graphql.executeOnBackground()
     }
 }

@@ -66,9 +66,6 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeBookmarkBinding>()
     private var adapter by autoClearedNullable<RecipeBookmarkAdapter>()
 
-    private val isLoadMoreLoading: Boolean
-        get() = adapter?.isLoadingLoadMore.orFalse()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -147,7 +144,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     private suspend fun collectMoreRecipeBookmarks() {
         viewModel.moreRecipeBookmarks.collect { state ->
             when(state) {
-                is UiState.Fail -> hideLoadMoreLoading()
+                is UiState.Fail -> { /* nothing to do */ }
                 is UiState.Success -> showMoreWidgets(state.data)
                 is UiState.Loading -> showLoadMoreLoading()
             }
@@ -195,7 +192,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
     }
 
     private fun loadMore(isAtTheBottomOfThePage: Boolean) {
-        viewModel.loadMore(isAtTheBottomOfThePage, isLoadMoreLoading)
+        viewModel.loadMore(isAtTheBottomOfThePage)
     }
 
     private fun showRecipeItemLoading(data: ToasterUiModel?) {
@@ -311,17 +308,12 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         }
     }
 
-    private fun hideLoadMoreLoading() {
-        adapter?.hideLoading()
-    }
-
     private fun showMoreWidgets(data: List<Visitable<*>>?) {
-        hideLoadMoreLoading()
         showPage(data)
     }
 
     private fun showLoadMoreLoading() {
-        adapter?.showLoading()
+        viewModel.showLoadMoreLoading()
     }
 
     private fun setupHeader() {
