@@ -136,6 +136,7 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
         }
     }
 
+    @Suppress("MagicNumber")
     private fun setupTextCountAnimator(interval: Long) {
         val multiplier = interval / MILLIS_IN_SECOND
         textAnimatorIn.duration = 225 * multiplier
@@ -148,6 +149,7 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
         val totalCount: Int
     ) {
 
+        @Suppress("MagicNumber")
         class Builder {
             private var textCountDownInterval: Long = MILLIS_IN_SECOND
             private var totalCount: Int = 3

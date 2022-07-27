@@ -351,7 +351,7 @@ class PlayCoverSetupFragment @Inject constructor(
         if (toasterBottomMargin == 0) {
             val coverSetupBottomActionHeight = coverSetupView.getBottomActionView().height
             val bottomActionHeight = if (coverSetupBottomActionHeight != 0) coverSetupBottomActionHeight else coverCropView.getBottomActionView().height
-            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val offset8 = requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             toasterBottomMargin = bottomActionHeight + offset8
         }
 
@@ -596,6 +596,7 @@ class PlayCoverSetupFragment @Inject constructor(
         setupReenterTransition()
     }
 
+    @Suppress("MagicNumber")
     private fun setupEnterTransition() {
         enterTransition = TransitionSet()
                 .addTransition(Slide(Gravity.END))
@@ -609,6 +610,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 .setDuration(450)
     }
 
+    @Suppress("MagicNumber")
     private fun setupReturnTransition() {
         returnTransition = TransitionSet()
                 .addTransition(Slide(Gravity.END))
@@ -621,6 +623,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 .setDuration(450)
     }
 
+    @Suppress("MagicNumber")
     private fun setupExitTransition() {
         exitTransition = TransitionSet()
                 .addTransition(Slide(Gravity.START))
@@ -628,6 +631,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 .setDuration(300)
     }
 
+    @Suppress("MagicNumber")
     private fun setupReenterTransition() {
         reenterTransition = TransitionSet()
                 .addTransition(Slide(Gravity.START))
