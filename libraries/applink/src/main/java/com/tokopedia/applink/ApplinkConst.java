@@ -36,7 +36,7 @@ public interface ApplinkConst {
     String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String PRODUCT_BUNDLE = "tokopedia://product-bundle/{product_id}";
     String GIFTING = "tokopedia://gifting/{addon_id}";
-    String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
+    String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review?review-source={source}";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
     String SHOP_HOME = "tokopedia://shop/{shop_id}/home";
@@ -185,6 +185,9 @@ public interface ApplinkConst {
     String HOWTOPAY = "tokopedia://howtopay";
     String GOLD_MERCHANT_STATISTIC_DASHBOARD = "tokopedia://gold-merchant-statistic-dashboard";
     String SHOP_SCORE_DETAIL = "tokopedia://shop-score-detail";
+    String ADMIN_INVITATION = "tokopedia://shop-admin/invitation-page";
+    String ADMIN_ACCEPTED = "tokopedia://shop-admin/accepted-page";
+    String ADMIN_REDIRECTION = "tokopedia://shop-admin/redirection-page";
     String SHOP_SCORE_DETAIL_ACKNOWLEDGE_INTERRUPT = "tokopedia://shop-score-detail/acknowledge-interrupt";
 
     String EVENTS = "tokopedia://events";
@@ -530,6 +533,10 @@ public interface ApplinkConst {
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
+        String TOKOMEMBER = "sellerapp://tokomember";
+        String ADMIN_INVITATION = "sellerapp://shop-admin/invitation-page";
+        String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
+        String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
     }
 
     interface TokopediaNow {

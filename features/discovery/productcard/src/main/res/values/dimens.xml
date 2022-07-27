@@ -20,8 +20,13 @@
 
     <dimen name="product_card_label_variant_margin_top">4dp</dimen>
     <dimen name="product_card_label_variant_height">20dp</dimen>
+    <dimen name="product_card_label_variant_reposition_margin_right">4dp</dimen>
+    <dimen name="product_card_label_variant_reposition_side_padding">4dp</dimen>
+
+    <dimen name="product_card_label_variant_reposition_color_offset">-2dp</dimen>
 
     <dimen name="product_card_label_discount_margin_top">2dp</dimen>
+    <dimen name="product_card_label_discount_margin_left_fashion">4dp</dimen>
     <dimen name="product_card_label_discount_height">20dp</dimen>
     <dimen name="product_card_flashsale_label_discount_margin_bottom">4dp</dimen>
     <dimen name="product_card_flashsale_label_discount_gone_margin_top">0dp</dimen>
@@ -32,6 +37,7 @@
 
     <dimen name="product_card_label_price_margin_top">2dp</dimen>
     <dimen name="product_card_label_price_height">20dp</dimen>
+    <dimen name="product_card_label_price_reposition_margin_left">4dp</dimen>
 
     <dimen name="product_card_text_view_price_margin_top">4dp</dimen>
     <dimen name="product_card_text_view_price_height">20dp</dimen>
@@ -151,4 +157,6 @@
 
     <dimen name="product_card_button_primary_height">32dp</dimen>
     <dimen name="product_card_button_primary_margin">8dp</dimen>
+
+    <dimen name="product_card_sales_rating_margin_top">3dp</dimen>
 </resources>

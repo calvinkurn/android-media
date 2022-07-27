@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="paragraph_1"
+        app:typographyType="display_1"
         app:typographyWeight="bold"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"

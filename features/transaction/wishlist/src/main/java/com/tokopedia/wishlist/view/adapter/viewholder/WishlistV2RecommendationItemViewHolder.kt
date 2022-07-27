@@ -21,7 +21,6 @@ class WishlistV2RecommendationItemViewHolder(
 
                 setOnClickListener {
                     actionListener?.onRecommendationItemClick(item.recommItem, adapterPosition)
-                    actionListener?.onProductRecommItemClicked(item.recommItem)
                 }
 
                 setImageProductViewHintListener(
