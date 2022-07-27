@@ -78,7 +78,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2UiModel
-import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.FragmentWishlistCollectionDetailBinding
 import com.tokopedia.wishlist.util.WishlistV2Analytics
@@ -380,7 +380,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     }
                 }
                 is Fail -> {
-                    finishDeletionWidget(DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress())
+                    finishDeletionWidget(DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress())
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
 
@@ -915,16 +915,16 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun stopDeletionAndShowToasterError(message: String) {
         showToaster(message, "", Toaster.TYPE_ERROR)
-        finishDeletionWidget(DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress())
+        finishDeletionWidget(DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress())
         doRefresh()
     }
 
-    private fun finishDeletionWidget(data: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+    private fun finishDeletionWidget(data: DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress) {
         isOnProgressDeleteWishlist = false
         stopProgressDeletionHandler()
         // wishlistCollectionDetailViewModel.countDeletionWishlistV2.removeObservers(this)
         if (data.totalItems > 0 && data.toasterMessage.isNotEmpty()) {
-            val finishData = DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress(
+            val finishData = DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress(
                 totalItems = data.totalItems,
                 successfullyRemovedItems = data.totalItems,
                 message = data.message,
@@ -939,7 +939,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         doRefresh()
     }
 
-    private fun updateDeletionWidget(progressData: DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress.DataDeleteWishlistProgress) {
+    private fun updateDeletionWidget(progressData: DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress) {
         var message = getString(Rv2.string.wishlist_v2_default_message_deletion_progress)
         if (progressData.message.isNotEmpty()) message = progressData.message
 

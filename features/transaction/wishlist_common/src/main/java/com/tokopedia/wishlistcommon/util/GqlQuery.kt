@@ -140,95 +140,7 @@ package com.tokopedia.wishlistcommon.util
               }
             }"""
 
-    const val GQL_COUNT_DELETION_WISHLIST_V2 = """
-         query DeleteWishlistProgress() {
-              delete_wishlist_progress() {
-                error_message
-                status
-                data {
-                  total_items
-                  successfully_removed_items
-                  message
-                  ticker_color
-                  success
-                  toaster_message
-                }
-              }
-            }"""
-
-    const val GQL_GET_WISHLIST_COLLECTION = """
-          query GetWishlistCollections {
-              get_wishlist_collections {
-                error_message
-                status
-                data {
-                  ticker {
-                    title
-                    description
-                  }
-                  is_empty_state
-                  empty_wishlist_image_url
-                  empty_state {
-                    messages {
-                      image_url
-                      description
-                    }
-                    buttons {
-                      text
-                      url
-                      action
-                      color
-                    }
-                  }
-                  collections {
-                    id
-                    name
-                    total_item
-                    item_text
-                    images
-                    actions {
-                      text
-                      action
-                      url
-                    }
-                  }
-                  placeholder {
-                    text
-                    image_url
-                    action
-                  }
-                  onboarding_bottomsheet {
-                    image_url
-                    title
-                    description
-                    buttons {
-                      text
-                      url
-                      action
-                      color
-                    }
-                  }
-                  onboarding_coachmark {
-                    skip_button_text
-                    details {
-                      step
-                      title
-                      message
-                      buttons {
-                        text
-                        action
-                      }
-                    }
-                  }
-                  total_collection
-                  max_limit_collection
-                  wording_max_limit_collection
-                }
-              }
-            }
-            """
-
-    const val GQL_GET_WISHLIST_COLLECTIONS_BOTTOMSHEET = """
+const val GQL_GET_WISHLIST_COLLECTIONS_BOTTOMSHEET = """
              query GetWishlistCollectionsBottomsheet(${'$'}params:GetWishlistCollectionBottomsheetParams){
               get_wishlist_collections_bottomsheet(params:${'$'}params){
                 status
@@ -279,19 +191,7 @@ package com.tokopedia.wishlistcommon.util
               }
             }"""
 
-    const val GQL_GET_WISHLIST_COLLECTION_NAMES = """
-             query GetWishlistCollectionNames {
-                  get_wishlist_collection_names{
-                    error_message
-                    status
-                    data{
-                      id
-                      name
-                    }
-                  }
-                }"""
-
-    const val GQL_ADD_WISHLIST_COLLECTION_ITEMS = """
+const val GQL_ADD_WISHLIST_COLLECTION_ITEMS = """
              mutation AddWishlistCollectionItems(${'$'}collection_name: String, ${'$'}product_ids:[SuperInteger]) {
                   add_wishlist_collection_items(collection_name: ${'$'}collection_name, product_ids: ${'$'}product_ids) {
                     status
@@ -304,19 +204,7 @@ package com.tokopedia.wishlistcommon.util
                   }
                 }"""
 
-    const val GQL_UPDATE_WISHLIST_COLLECTION_NAME = """
-             mutation UpdateWishlistCollectionName(${'$'}collectionID: SuperInteger, ${'$'}collectionName: String) {
-                  update_wishlist_collection_name(collectionID: ${'$'}collectionID, collectionName: ${'$'}collectionName) {
-                    status
-                    error_message
-                    data {
-                      success
-                      message
-                    }
-                  }
-                }"""
-
-    const val GQL_CREATE_WISHLIST_COLLECTION = """
+const val GQL_CREATE_WISHLIST_COLLECTION = """
              mutation CreateWishlistCollection(${'$'}name: String) {
                   create_wishlist_collection(name: ${'$'}name) {
                     status
@@ -324,18 +212,6 @@ package com.tokopedia.wishlistcommon.util
                     data {
                       success
                       id
-                      message
-                    }
-                  }
-                }"""
-
-    const val GQL_DELETE_WISHLIST_COLLECTION = """
-             mutation DeleteWishlistCollection(${'$'}collectionID: SuperInteger) {
-                  delete_wishlist_collection(collectionID: ${'$'}collectionID) {
-                    status
-                    error_message
-                    data {
-                      success
                       message
                     }
                   }

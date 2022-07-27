@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -31,6 +32,7 @@ import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItems
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseCase
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -61,16 +63,19 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     val deleteWishlistV2Result: LiveData<Result<com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response.Data.WishlistRemoveV2>>
         get() = _deleteWishlistV2Result
 
-    private val _bulkDeleteWishlistV2Result = MutableLiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>()
+    private val _bulkDeleteWishlistV2Result =
+        MutableLiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>()
     val bulkDeleteWishlistV2Result: LiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>
         get() = _bulkDeleteWishlistV2Result
 
-    private val _deleteCollectionItemsResult = MutableLiveData<Result<DeleteWishlistCollectionItemsResponse.Data.DeleteWishlistCollectionItems>>()
+    private val _deleteCollectionItemsResult =
+        MutableLiveData<Result<DeleteWishlistCollectionItemsResponse.Data.DeleteWishlistCollectionItems>>()
     val deleteCollectionItemsResult: LiveData<Result<DeleteWishlistCollectionItemsResponse.Data.DeleteWishlistCollectionItems>>
         get() = _deleteCollectionItemsResult
 
-    private val _deleteCollectionResult = MutableLiveData<Result<DeleteWishlistCollectionResponse.Data.DeleteWishlistCollection>>()
-    val deleteCollectionResult: LiveData<Result<DeleteWishlistCollectionResponse.Data.DeleteWishlistCollection>>
+    private val _deleteCollectionResult =
+        MutableLiveData<Result<DeleteWishlistCollectionResponse.DeleteWishlistCollection>>()
+    val deleteCollectionResult: LiveData<Result<DeleteWishlistCollectionResponse.DeleteWishlistCollection>>
         get() = _deleteCollectionResult
 
     fun getWishlistCollectionItems(
@@ -172,7 +177,12 @@ class WishlistCollectionDetailViewModel @Inject constructor(
 
     fun bulkDeleteWishlistV2(listProductId: List<String>, userId: String, mode: Int) {
         launch {
-            _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(listProductId, userId, mode, WishlistV2BulkRemoveAdditionalParams())
+            _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(
+                listProductId,
+                userId,
+                mode,
+                WishlistV2BulkRemoveAdditionalParams()
+            )
         }
     }
 
@@ -193,18 +203,15 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     }
 
     fun deleteWishlistCollection(collectionId: String) {
-        launch(dispatcher.main) {
-            val result =
-                withContext(dispatcher.io) {
-                    deleteWishlistCollectionUseCase.setParams(collectionId)
-                    deleteWishlistCollectionUseCase.executeOnBackground()
-                }
-            if (result is Success) {
-                _deleteCollectionResult.value = result
+        launchCatchError(block = {
+            val result = deleteWishlistCollectionUseCase(collectionId)
+            if (result.deleteWishlistCollection.status == WishlistV2CommonConsts.OK && result.deleteWishlistCollection.errorMessage.isEmpty()) {
+                _deleteCollectionResult.postValue(Success(result.deleteWishlistCollection))
             } else {
-                val error = (result as Fail).throwable
-                _deleteCollectionResult.value = Fail(error)
+                _deleteCollectionResult.postValue(Fail(Throwable()))
             }
-        }
+        }, onError = {
+            _deleteCollectionResult.postValue(Fail(it))
+        })
     }
 }

@@ -21,10 +21,10 @@ import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
-import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
-import com.tokopedia.wishlist.domain.CountDeletionWishlistV2UseCase
+import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
@@ -77,7 +77,7 @@ class WishlistV2ViewModelTest {
     lateinit var bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase
 
     @RelaxedMockK
-    lateinit var countDeleteWishlistV2UseCase: CountDeletionWishlistV2UseCase
+    lateinit var deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase
 
     @RelaxedMockK
     lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
@@ -88,11 +88,16 @@ class WishlistV2ViewModelTest {
     @RelaxedMockK
     lateinit var atcUseCase: AddToCartUseCase
 
+    private val deleteWishlistProgressResponse = DeleteWishlistProgressResponse(
+        deleteWishlistProgress = DeleteWishlistProgressResponse.DeleteWishlistProgress(status = "OK")
+    )
+    private val throwable = Fail(Throwable(message = "Error"))
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         wishlistV2ViewModel = spyk(WishlistV2ViewModel(dispatcher, wishlistV2UseCase, deleteWishlistV2UseCase,
-                bulkDeleteWishlistV2UseCase, countDeleteWishlistV2UseCase, topAdsImageViewUseCase, getSingleRecommendationUseCase, atcUseCase))
+                bulkDeleteWishlistV2UseCase, deleteWishlistProgressUseCase, topAdsImageViewUseCase, getSingleRecommendationUseCase, atcUseCase))
 
         val primaryButton1 = WishlistV2Response.Data.WishlistV2.Item.Buttons.PrimaryButton(action = "ADD_TO_CART")
         val primaryButton2 = WishlistV2Response.Data.WishlistV2.Item.Buttons.PrimaryButton(action = "SEE_SIMILAR_PRODUCT")
@@ -568,27 +573,32 @@ class WishlistV2ViewModelTest {
         assert((wishlistV2ViewModel.wishlistV2Data.value as Success).data[5].typeLayout.equals(TYPE_RECOMMENDATION_CAROUSEL))
     }
 
-    /*@Test
-    fun `verify get count delete wishlistV2 returns success`(){
-        val countWishlistV2 = DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress(status = "OK")
+    @Test
+    fun `Execute DeleteWishlistProgress Success`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } returns deleteWishlistProgressResponse
 
-        coEvery { countDeleteWishlistV2UseCase.executeOnBackground() } returns Success(countWishlistV2)
+        //when
+        wishlistV2ViewModel.getDeleteWishlistProgress()
 
-        wishlistV2ViewModel.getCountDeletionWishlistV2()
-
-        coVerify { countDeleteWishlistV2UseCase.executeOnBackground() }
-        // assert(wishlistV2ViewModel.countDeletionWishlistV2.value is Success)
-        // assert((wishlistV2ViewModel.countDeletionWishlistV2.value as Success<DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress>).data.status == "OK")
+        //then
+        assert(wishlistV2ViewModel.deleteWishlistProgressResult.value is Success)
+        assert((wishlistV2ViewModel.deleteWishlistProgressResult.value as Success).data.status == "OK")
     }
 
     @Test
-    fun `verify get count delete wishlistV2 returns fail`(){
-        val mockThrowable = mockk<Throwable>("fail")
+    fun `Execute DeleteWishlistCollections Failed`() {
+        //given
+        coEvery {
+            deleteWishlistProgressUseCase(Unit)
+        } throws throwable.throwable
 
-        coEvery { countDeleteWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+        //when
+        wishlistV2ViewModel.getDeleteWishlistProgress()
 
-        wishlistV2ViewModel.getCountDeletionWishlistV2()
-
-        coVerify { countDeleteWishlistV2UseCase.executeOnBackground() }
-    }*/
+        //then
+        assert(wishlistV2ViewModel.deleteWishlistProgressResult.value is Fail)
+    }
 }

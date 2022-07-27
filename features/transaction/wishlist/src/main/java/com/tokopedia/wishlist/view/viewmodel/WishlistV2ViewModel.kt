@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -19,8 +20,8 @@ import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.data.model.*
-import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressV2Response
-import com.tokopedia.wishlist.domain.CountDeletionWishlistV2UseCase
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
+import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts.EMPTY_WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
@@ -30,8 +31,8 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_SOURCE
 import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlist.util.WishlistV2Utils.convertWishlistV2IntoWishlistUiModel
 import com.tokopedia.wishlist.util.WishlistV2Utils.organizeWishlistV2Data
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -39,7 +40,7 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
                                               private val wishlistV2UseCase: WishlistV2UseCase,
                                               private val deleteWishlistV2UseCase: com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase,
                                               private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
-                                              private val countDeletionWishlistV2UseCase: CountDeletionWishlistV2UseCase,
+                                              private val countDeletionWishlistV2UseCase: DeleteWishlistProgressUseCase,
                                               private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
                                               private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
                                               private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
@@ -65,9 +66,9 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    private val _countDeletionWishlistV2 = MutableLiveData<Result<DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress>>()
-    val countDeletionWishlistV2: LiveData<Result<DeleteWishlistProgressV2Response.Data.DeleteWishlistProgress>>
-        get() = _countDeletionWishlistV2
+    private val _deleteWishlistProgressResult = MutableLiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>()
+    val deleteWishlistProgressResult: LiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>
+        get() = _deleteWishlistProgressResult
 
     fun loadWishlistV2(params: WishlistV2Params, typeLayout: String?, isAutomaticDelete: Boolean) {
         launch {
@@ -113,16 +114,17 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
         }
     }
 
-    fun getCountDeletionWishlistV2() {
-        launch(dispatcher.main) {
-            val result = withContext(dispatcher.io) { countDeletionWishlistV2UseCase.executeOnBackground() }
-            if (result is Success) {
-                _countDeletionWishlistV2.value = result
-            } else  {
-                val error = (result as Fail).throwable
-                _countDeletionWishlistV2.value = Fail(error)
+    fun getDeleteWishlistProgress() {
+        launchCatchError(block = {
+            val result = countDeletionWishlistV2UseCase(Unit)
+            if (result.deleteWishlistProgress.status == WishlistV2CommonConsts.OK && result.deleteWishlistProgress.errorMessage.isEmpty()) {
+                _deleteWishlistProgressResult.postValue(Success(result.deleteWishlistProgress))
+            } else {
+                _deleteWishlistProgressResult.postValue(Fail(Throwable()))
             }
-        }
+        }, onError = {
+            _deleteWishlistProgressResult.postValue(Fail(it))
+        })
     }
 
     fun doAtc(atcParams: AddToCartRequestParams) {

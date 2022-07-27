@@ -1,38 +1,44 @@
 package com.tokopedia.wishlistcollection.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
-import com.tokopedia.wishlistcommon.util.GQL_DELETE_WISHLIST_COLLECTION
 import javax.inject.Inject
 
-@GqlQuery("DeleteWishlistCollectionMutation", GQL_DELETE_WISHLIST_COLLECTION)
-class DeleteWishlistCollectionUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) :
-    UseCase<Result<DeleteWishlistCollectionResponse.Data.DeleteWishlistCollection>>() {
-    private var params: Map<String, Any?>? = null
-    private val collectionId = "collectionID"
+@GqlQuery("DeleteWishlistCollectionMutation", DeleteWishlistCollectionUseCase.query)
+class DeleteWishlistCollectionUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) :
+    CoroutineUseCase<String, DeleteWishlistCollectionResponse>(dispatchers.io) {
 
-    override suspend fun executeOnBackground(): Result<DeleteWishlistCollectionResponse.Data.DeleteWishlistCollection> {
-        return try {
-            val request = GraphqlRequest(
-                DeleteWishlistCollectionMutation(),
-                DeleteWishlistCollectionResponse.Data::class.java, params
-            )
-            val response = gqlRepository.response(listOf(request)).getSuccessData<DeleteWishlistCollectionResponse.Data>()
-            Success(response.deleteWishlistCollection)
-        } catch (e: Exception) {
-            Fail(e)
-        }
+    override suspend fun execute(params: String): DeleteWishlistCollectionResponse {
+        return repository.request(DeleteWishlistCollectionMutation(), toMap(params))
     }
 
-    fun setParams(collectionIdToBeDeleted: String) {
-        params = mapOf(collectionId to collectionIdToBeDeleted)
+    override fun graphqlQuery(): String = ""
+
+    private fun toMap(collectionIdToBeDeleted: String): Map<String, Any> = mapOf(
+        collectionId to collectionIdToBeDeleted
+    )
+
+    companion object {
+        const val query = """
+            mutation DeleteWishlistCollection(${'$'}collectionID: SuperInteger) {
+                  delete_wishlist_collection(collectionID: ${'$'}collectionID) {
+                    status
+                    error_message
+                    data {
+                      success
+                      message
+                    }
+                  }
+                }"""
+
+        const val collectionId = "collectionID"
     }
 }

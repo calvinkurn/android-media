@@ -3,33 +3,26 @@ package com.tokopedia.wishlistcollection.data.response
 import com.google.gson.annotations.SerializedName
 
 data class DeleteWishlistCollectionResponse(
-
-	@SerializedName("data")
-	val data: Data
+	@SerializedName("delete_wishlist_collection")
+	val deleteWishlistCollection: DeleteWishlistCollection
 ) {
-	data class Data(
+	data class DeleteWishlistCollection(
 
-		@SerializedName("delete_wishlist_collection")
-		val deleteWishlistCollection: DeleteWishlistCollection
+		@SerializedName("error_message")
+		val errorMessage: List<String> = emptyList(),
+
+		@SerializedName("data")
+		val data: DataDelete = DataDelete(),
+
+		@SerializedName("status")
+		val status: String = ""
 	) {
-		data class DeleteWishlistCollection(
+		data class DataDelete(
+			@SerializedName("success")
+			val success: Boolean = false,
 
-			@SerializedName("error_message")
-			val errorMessage: List<String> = emptyList(),
-
-			@SerializedName("data")
-			val data: DataDelete = DataDelete(),
-
-			@SerializedName("status")
-			val status: String = ""
-		) {
-			data class DataDelete(
-				@SerializedName("success")
-				val success: Boolean = false,
-
-				@SerializedName("message")
-				val message: String = ""
-			)
-		}
+			@SerializedName("message")
+			val message: String = ""
+		)
 	}
 }
