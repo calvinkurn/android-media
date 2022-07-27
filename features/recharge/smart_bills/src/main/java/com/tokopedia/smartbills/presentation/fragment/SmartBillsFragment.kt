@@ -891,7 +891,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     override fun onClickHighlightCategoryWidget(uiModel: HighlightCategoryUiModel) {
         smartBillsAnalytics.clickHighlightWidget(uiModel.title)
         context?.let {
-            RouteManager.route(it, uiModel.applink)
+            val intent = RouteManager.getIntent(it, uiModel.applink)
+            startActivityForResult(intent, REQUEST_CODE_ADD_BILLS)
         }
     }
 
