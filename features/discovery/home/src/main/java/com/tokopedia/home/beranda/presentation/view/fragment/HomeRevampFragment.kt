@@ -224,7 +224,7 @@ import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-import java.util.*
+import java.util.Date
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
