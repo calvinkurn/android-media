@@ -18,10 +18,10 @@ class BroadcasterAdaptiveBitrateImpl(
     private val mLossHistory: Vector<LossHistory> = Vector<LossHistory>()
     private val mBitrateHistory: Vector<BitrateHistory> = Vector<BitrateHistory>()
 
-    private var mFullBitrate = 0
-    private var mCurrentBitrate = 0
-    private var mCurrentFps = 0.0
-    private var mMaxFps = 30.0
+    private var mFullBitrate = START_BITRATE
+    private var mCurrentBitrate = START_BITRATE
+    private var mCurrentFps = START_FPS
+    private var mMaxFps = MAX_FPS
 
     private val mMode = builder.mode
     private val mSettingsBitrate = builder.bitrate
@@ -29,7 +29,7 @@ class BroadcasterAdaptiveBitrateImpl(
     private val mInterval = builder.interval
     private val mNormalizationDelay = builder.normalizationDelay
 
-    private var mCurrentRange = FpsRange(30, 30)
+    private var mCurrentRange = FpsRange(MAX_FPS.roundToInt(), MAX_FPS.roundToInt())
     private var mFpsRanges: List<FpsRange>? = builder.fpsRanges
 
     private var mConnectionId: Int? = null
@@ -38,14 +38,20 @@ class BroadcasterAdaptiveBitrateImpl(
     private var mStep = 0
     private var mMinBitrate = 0
 
+    @Suppress("MagicNumber")
     private val bandwidthSteps = doubleArrayOf(0.2, 0.25, 1.0 / 3.0, 0.450, 0.600, 0.780, 1.000)
+
+    @Suppress("MagicNumber")
     private val recoveryAttemptIntervals = longArrayOf(15000, 60000, (60000 * 3).toLong())
+
+    @Suppress("MagicNumber")
     private val dropMergeInterval: Int = bandwidthSteps.size * mNormalizationDelay * 2 // period for bitrate drop duration
 
     override fun setListener(listener: BroadcasterAdaptiveBitrate.Listener) {
         this.mListener = listener
     }
 
+    @Suppress("MagicNumber")
     override fun start(connectionId: Int) {
         mFullBitrate = mSettingsBitrate
         mMinBitrate = mSettingsBitrate / 4
@@ -77,8 +83,8 @@ class BroadcasterAdaptiveBitrateImpl(
         if (mCurrentBitrate == 0) return
         
         mCurrentBitrate = mFullBitrate
-        mMaxFps = 30.0
-        mCurrentRange = FpsRange(30, 30)
+        mMaxFps = MAX_FPS
+        mCurrentRange = FpsRange(MAX_FPS.roundToInt(), MAX_FPS.roundToInt())
         mCurrentFps = mMaxFps
         runTask()
         mListener?.changeBitrate(mFullBitrate)
@@ -147,6 +153,7 @@ class BroadcasterAdaptiveBitrateImpl(
         }
     }
 
+    @Suppress("MagicNumber")
     private fun checkLogarithmicDescend(audioLost: Long, videoLost: Long) {
         val curTime = System.currentTimeMillis()
         val prevLost: LossHistory = mLossHistory.lastElement()
@@ -185,6 +192,7 @@ class BroadcasterAdaptiveBitrateImpl(
         mListener?.changeBitrate(newBitrate.toInt())
     }
 
+    @Suppress("MagicNumber")
     private fun countLostForInterval(interval: Long): Long {
         var lostPackets: Long = 0
         val last: LossHistory = mLossHistory.lastElement()
@@ -198,6 +206,7 @@ class BroadcasterAdaptiveBitrateImpl(
         return lostPackets
     }
 
+    @Suppress("MagicNumber")
     private fun canTryToRecover(): Boolean {
         val curTime = System.currentTimeMillis()
         val len = mBitrateHistory.size
@@ -229,6 +238,7 @@ class BroadcasterAdaptiveBitrateImpl(
         return true
     }
 
+    @Suppress("MagicNumber")
     private fun updateFps(newBitrate: Long) {
         val fpsRanges = mFpsRanges ?: return
 
@@ -252,6 +262,7 @@ class BroadcasterAdaptiveBitrateImpl(
     // Find best matching FPS range
     // (fpsMax is much important to be closer to target, so we squared it)
     // In strict mode targetFps will be exact within range, otherwise just as close as possible
+    @Suppress("MagicNumber")
     private fun nearestFpsRange(
         fpsRanges: List<FpsRange>,
         targetFps: Float,
@@ -283,6 +294,11 @@ class BroadcasterAdaptiveBitrateImpl(
     internal class BitrateHistory(val ts: Long, val bitrate: Long)
 
     companion object {
+
+        private const val START_BITRATE = 0
+        private const val START_FPS = 0.0
+        private const val MAX_FPS = 30.0
+
         private const val LOST_TOLERANCE = 4 // maximum acceptable number of lost packets
         private const val RECOVERY_ATTEMPT_INTERVAL = 60000
         private const val LOST_ESTIMATE_INTERVAL = 10000 // period for lost packets count

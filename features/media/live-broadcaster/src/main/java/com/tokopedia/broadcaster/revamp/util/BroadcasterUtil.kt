@@ -16,10 +16,13 @@ import kotlin.math.abs
  */
 object BroadcasterUtil {
 
+    private const val DEFAULT_RESOLUTION_VIDEO_WIDTH = 1280
+    private const val DEFAULT_RESOLUTION_VIDEO_HEIGHT = 720
+    private const val HIGH_RESOLUTION_VIDEO_WIDTH = 1920
+    private const val HIGH_RESOLUTION_VIDEO_HEIGHT = 1080
+
     fun getAudioConfig(): AudioConfig {
         return AudioConfig().apply {
-            sampleRate = 44100
-            channelCount = 1
             audioSource = MediaRecorder.AudioSource.CAMCORDER
             bitRate = AudioConfig.calcBitRate(sampleRate, channelCount, AudioConfig.AAC_PROFILE)
         }
@@ -28,13 +31,11 @@ object BroadcasterUtil {
     fun getVideoConfig(): VideoConfig {
         return VideoConfig().apply {
             type = MediaFormat.MIMETYPE_VIDEO_AVC
-            fps = 30f
-            keyFrameInterval = 2
         }
     }
 
     fun getVideoSize(activeCamera: BroadcasterCamera): Streamer.Size {
-        val recordSizes = activeCamera.recordSizes ?: return Streamer.Size(1280, 720)
+        val recordSizes = activeCamera.recordSizes ?: return Streamer.Size(DEFAULT_RESOLUTION_VIDEO_WIDTH, DEFAULT_RESOLUTION_VIDEO_HEIGHT)
 
         var videoSize = recordSizes.first()
 
@@ -42,9 +43,9 @@ object BroadcasterUtil {
         // https://source.android.com/compatibility/android-cdd.html#5_2_video_encoding
         // Video resolution: 320x240px, 720x480px, 1280x720px, 1920x1080px.
         // If no FullHD support found, leave video size as is.
-        if (videoSize.width > 1920 || videoSize.height > 1088) {
+        if (videoSize.width > HIGH_RESOLUTION_VIDEO_WIDTH || videoSize.height > HIGH_RESOLUTION_VIDEO_HEIGHT) {
             for (size in recordSizes) {
-                if (size.width == 1920 && (size.height == 1080 || size.height == 1088)) {
+                if (size.width == HIGH_RESOLUTION_VIDEO_WIDTH && size.height == HIGH_RESOLUTION_VIDEO_HEIGHT) {
                     videoSize = size
                     break
                 }
@@ -62,7 +63,7 @@ object BroadcasterUtil {
         }
         // 1280x720 should be supported by every device running Android 4.1+
         // https://source.android.com/compatibility/4.1/android-4.1-cdd.pdf [chapter 5.2]
-        return Streamer.Size(1280, 720)
+        return Streamer.Size(DEFAULT_RESOLUTION_VIDEO_WIDTH, DEFAULT_RESOLUTION_VIDEO_HEIGHT)
     }
 
     private fun selectCodec(mimeType: String?): MediaCodecInfo? {
@@ -89,6 +90,7 @@ object BroadcasterUtil {
     // Set the same video size for both cameras
     // If not possible (for example front camera has no FullHD support)
     // try to find video size with the same aspect ratio
+    @Suppress("MagicNumber")
     fun findFlipSize(cameraInfo: BroadcasterCamera, videoSize: Streamer.Size): Streamer.Size? {
         val flipSize = cameraInfo.recordSizes?.firstOrNull { it == videoSize }
 

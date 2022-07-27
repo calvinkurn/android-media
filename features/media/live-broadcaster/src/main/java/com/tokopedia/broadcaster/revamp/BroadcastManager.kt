@@ -54,7 +54,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     private var mAdaptiveBitrate: BroadcasterAdaptiveBitrate? = null
 
     private var mIsStatisticEnabled: Boolean = false
-    private var mStatisticTimerInterval: Long = 3000
+    private var mStatisticTimerInterval: Long = STATISTIC_DEFAULT_INTERVAL
     private var mStatistic: BroadcasterStatistic? = null
     private var mStatisticTimer: Timer? = null
     private var mMetric: BroadcasterMetric = BroadcasterMetric.Empty
@@ -656,5 +656,6 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     companion object {
         private const val STATISTIC_TIMER_DELAY = 1000L
+        private const val STATISTIC_DEFAULT_INTERVAL = 3000L
     }
 }

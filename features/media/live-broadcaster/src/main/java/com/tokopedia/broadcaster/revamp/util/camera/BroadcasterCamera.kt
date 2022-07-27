@@ -1,7 +1,6 @@
 package com.tokopedia.broadcaster.revamp.util.camera
 
 import com.wmspanel.libstream.Streamer
-import java.lang.StringBuilder
 
 /**
  * Created by meyta.taliti on 01/03/22.
@@ -15,7 +14,7 @@ data class BroadcasterCamera(
 ) {
 
     override fun toString(): String {
-        val sb = StringBuilder(1024)
+        val sb = StringBuilder(DEFAULT_STRING_CAPACITY)
             .append("cameraId=").append(cameraId)
 
         when (lensFacing) {
@@ -46,31 +45,11 @@ data class BroadcasterCamera(
         return sb.toString();
     }
 
-    data class CamId(
-        val id: String,
-        val physicalId: String,
-    ) {
-
-        override fun toString(): String {
-            return String.format("id=%s, physicalId=%s", id, physicalId)
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-            if (other == null || this.javaClass != other.javaClass) {
-                return false
-            }
-            val (id1, physicalId1) = other as CamId
-            return (id == id1
-                    && physicalId == physicalId1)
-        }
-    }
-
     companion object {
         const val LENS_FACING_FRONT = 0
         const val LENS_FACING_BACK = 1
         const val LENS_FACING_EXTERNAL = 2
+
+        private const val DEFAULT_STRING_CAPACITY = 1024
     }
 }
