@@ -16,7 +16,7 @@ class BottomSheetWishlistCollectionItemViewHolder(
         item: BottomSheetWishlistCollectionTypeLayoutData,
         actionListener: BottomSheetCollectionWishlistAdapter.ActionListener?
     ) {
-        if (item.dataObject is GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data.MainSection.CollectionsItem) {
+        if (item.dataObject is GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data.MainSection.CollectionsItem) {
             if (item.dataObject.label.isNotEmpty()) {
                 binding.labelCollectionItem.visible()
                 binding.labelCollectionItem.text = item.dataObject.label

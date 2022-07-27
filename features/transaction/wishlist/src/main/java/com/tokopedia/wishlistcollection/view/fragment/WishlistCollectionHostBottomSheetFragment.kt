@@ -63,7 +63,7 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         bottomSheetCollection.saveToCollection(addWishlistParam)
     }
 
-    override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data) {
+    override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {
         if (dataObject.totalCollection < dataObject.maxLimitCollection) {
             showBottomSheetCreateNewCollection(childFragmentManager)
         } else {
@@ -82,7 +82,7 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         bottomSheetCreateCollection.show(fragmentManager)
     }
 
-    override fun onSuccessSaveItemToCollection(data: AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems) {
+    override fun onSuccessSaveItemToCollection(data: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems) {
         val intent = Intent()
         if (data.status == OK && data.dataItem.success) {
             intent.putExtra(BOOLEAN_EXTRA_SUCCESS, data.dataItem.success)

@@ -550,7 +550,7 @@ object WishlistV2Utils {
         )
     }
 
-    fun convertCollectionItemsIntoWishlistUiModel(data: GetWishlistCollectionItemsResponse.Data.GetWishlistCollectionItems): WishlistV2UiModel {
+    fun convertCollectionItemsIntoWishlistUiModel(data: GetWishlistCollectionItemsResponse.GetWishlistCollectionItems): WishlistV2UiModel {
         val newListSortFilters = arrayListOf<WishlistV2UiModel.SortFiltersItem>()
         data.sortFilters.forEach { item ->
             val newListOptions = arrayListOf<WishlistV2UiModel.SortFiltersItem.OptionsItem>()

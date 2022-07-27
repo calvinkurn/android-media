@@ -404,7 +404,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             when (result) {
                 is Success -> {
                     finishRefresh()
-                    result.data.let { collectionDetail ->
+                    result.data.getWishlistCollectionItems.let { collectionDetail ->
                         updateToolbarTitle(collectionDetail.headerTitle)
                         rvScrollListener.setHasNextPage(collectionDetail.hasNextPage)
 
@@ -989,7 +989,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
-    private fun hideSortFilter(sortFilters: List<GetWishlistCollectionItemsResponse.Data.GetWishlistCollectionItems.SortFiltersItem>) {
+    private fun hideSortFilter(sortFilters: List<GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.SortFiltersItem>) {
         var isFilterActive = false
         sortFilters.forEach { filterItem ->
             if (filterItem.isActive) isFilterActive = true
@@ -1018,7 +1018,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
-    private fun mapToSortFilterItem(sortFilters: List<GetWishlistCollectionItemsResponse.Data.GetWishlistCollectionItems.SortFiltersItem>): List<WishlistV2Response.Data.WishlistV2.SortFiltersItem> {
+    private fun mapToSortFilterItem(sortFilters: List<GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.SortFiltersItem>): List<WishlistV2Response.Data.WishlistV2.SortFiltersItem> {
         val arrayListNewSortItem = arrayListOf<WishlistV2Response.Data.WishlistV2.SortFiltersItem>()
         sortFilters.forEach { item ->
             val newListOptionsItem = arrayListOf<WishlistV2Response.Data.WishlistV2.SortFiltersItem.OptionsItem>()

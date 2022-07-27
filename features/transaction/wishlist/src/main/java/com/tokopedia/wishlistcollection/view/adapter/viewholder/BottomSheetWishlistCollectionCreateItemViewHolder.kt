@@ -14,7 +14,7 @@ class BottomSheetWishlistCollectionCreateItemViewHolder(
         item: BottomSheetWishlistCollectionTypeLayoutData,
         actionListener: BottomSheetCollectionWishlistAdapter.ActionListener?
     ) {
-        if (item.dataObject is com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data) {
+        if (item.dataObject is com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {
             binding.createCollectionImage.setImageUrl(IMAGE_URL_SMALL_CREATE_NEW)
             binding.createCollectionLabel.text = HtmlLinkHelper(itemView.context, item.dataObject.placeholder.text).spannedString
             binding.root.setOnClickListener {

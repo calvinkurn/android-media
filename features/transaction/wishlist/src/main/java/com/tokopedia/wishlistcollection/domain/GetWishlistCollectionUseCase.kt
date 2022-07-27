@@ -14,7 +14,7 @@ class GetWishlistCollectionUseCase @Inject constructor(@ApplicationContext priva
     CoroutineUseCase<Unit, WishlistCollectionResponse>(Dispatchers.IO) {
 
     override suspend fun execute(params: Unit): WishlistCollectionResponse {
-            return repository.request(GetWishlistCollectionsQuery(), params)
+        return repository.request(GetWishlistCollectionsQuery(), params)
     }
 
     override fun graphqlQuery(): String = ""

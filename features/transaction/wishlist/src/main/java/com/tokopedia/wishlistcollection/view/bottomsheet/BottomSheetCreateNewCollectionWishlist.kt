@@ -26,6 +26,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.databinding.BottomsheetCreateNewWishlistCollectionBinding
+import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
 import com.tokopedia.wishlistcollection.di.BottomSheetCreateWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.di.BottomSheetCreateWishlistCollectionModule
@@ -157,7 +158,11 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
     }
 
     private fun saveNewCollection(collectionName: String, productIds: List<String>) {
-        createNewCollectionViewModel.saveNewWishlistCollection(collectionName, productIds)
+        val param = AddWishlistCollectionsHostBottomSheetParams(
+            productIds = productIds,
+            collectionName = collectionName
+        )
+        createNewCollectionViewModel.saveNewWishlistCollection(param)
     }
 
     private fun checkIsCollectionNameExists(checkName: String) {

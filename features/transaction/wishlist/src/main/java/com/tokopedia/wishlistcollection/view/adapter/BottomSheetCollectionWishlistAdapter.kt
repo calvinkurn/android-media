@@ -28,7 +28,7 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
 
     interface ActionListener {
         fun onCollectionItemClicked(name: String, id: String)
-        fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data)
+        fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

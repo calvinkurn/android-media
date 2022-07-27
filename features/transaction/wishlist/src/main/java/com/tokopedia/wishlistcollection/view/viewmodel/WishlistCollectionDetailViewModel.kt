@@ -50,8 +50,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.main) {
 
     private val _collectionItems =
-        MutableLiveData<Result<GetWishlistCollectionItemsResponse.Data.GetWishlistCollectionItems>>()
-    val collectionItems: LiveData<Result<GetWishlistCollectionItemsResponse.Data.GetWishlistCollectionItems>>
+        MutableLiveData<Result<GetWishlistCollectionItemsResponse>>()
+    val collectionItems: LiveData<Result<GetWishlistCollectionItemsResponse>>
         get() = _collectionItems
 
     private val _collectionData = MutableLiveData<Result<List<WishlistV2TypeLayoutData>>>()
@@ -83,31 +83,24 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         typeLayout: String?,
         isAutomaticDelete: Boolean
     ) {
-        launch(dispatcher.main) {
-            val result =
-                withContext(dispatcher.io) {
-                    getWishlistCollectionItemsUseCase.setParams(params)
-                    getWishlistCollectionItemsUseCase.executeOnBackground()
-                }
-            if (result is Success) {
-                _collectionItems.value = result
-                _collectionData.value = Success(
-                    organizeWishlistV2Data(
-                        convertCollectionItemsIntoWishlistUiModel(result.data),
-                        typeLayout,
-                        isAutomaticDelete,
-                        getRecommendationWishlistV2(
-                            1, listOf(),
-                            EMPTY_WISHLIST_PAGE_NAME
-                        ),
-                        getTopAdsData(), true
-                    )
+        launchCatchError(block = {
+            val result = getWishlistCollectionItemsUseCase(params)
+            _collectionItems.value = Success(result)
+            _collectionData.value = Success(
+                organizeWishlistV2Data(
+                    convertCollectionItemsIntoWishlistUiModel(result.getWishlistCollectionItems),
+                    typeLayout,
+                    isAutomaticDelete,
+                    getRecommendationWishlistV2(
+                        1, listOf(),
+                        EMPTY_WISHLIST_PAGE_NAME
+                    ),
+                    getTopAdsData(), true
                 )
-            } else {
-                val error = (result as Fail).throwable
-                _collectionItems.value = Fail(error)
-            }
-        }
+            )
+        }, onError = {
+            _collectionItems.value = Fail(it)
+        })
     }
 
     fun loadRecommendation(page: Int) {

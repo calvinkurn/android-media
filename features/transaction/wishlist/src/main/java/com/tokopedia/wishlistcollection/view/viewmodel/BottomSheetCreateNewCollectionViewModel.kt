@@ -31,8 +31,8 @@ class BottomSheetCreateNewCollectionViewModel @Inject constructor(
     val collectionNames: LiveData<Result<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames>>
         get() = _collectionNames
 
-    private val _addWishlistCollectionItem = MutableLiveData<Result<AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems>>()
-    val addWishlistCollectionItem: LiveData<Result<AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems>>
+    private val _addWishlistCollectionItem = MutableLiveData<Result<AddWishlistCollectionItemsResponse.AddWishlistCollectionItems>>()
+    val addWishlistCollectionItem: LiveData<Result<AddWishlistCollectionItemsResponse.AddWishlistCollectionItems>>
         get() = _addWishlistCollectionItem
 
     private val _createWishlistCollectionResult = MutableLiveData<Result<CreateWishlistCollectionResponse.Data.CreateWishlistCollection>>()
@@ -52,19 +52,17 @@ class BottomSheetCreateNewCollectionViewModel @Inject constructor(
         })
     }
 
-    fun saveNewWishlistCollection(collectionName: String, productIds: List<String>) {
-        val addWishlistParam = AddWishlistCollectionsHostBottomSheetParams(collectionName = collectionName, productIds = productIds)
-        addWishlistCollectionItemsUseCase.setParams(addWishlistParam)
-        launch(dispatcher.main) {
-            val result =
-                withContext(dispatcher.io) { addWishlistCollectionItemsUseCase.executeOnBackground() }
-            if (result is Success) {
-                _addWishlistCollectionItem.value = result
+    fun saveNewWishlistCollection(addWishlistParam: AddWishlistCollectionsHostBottomSheetParams) {
+        launchCatchError(block = {
+            val result = addWishlistCollectionItemsUseCase(addWishlistParam)
+            if (result.addWishlistCollectionItems.status == WishlistV2CommonConsts.OK && result.addWishlistCollectionItems.errorMessage.isEmpty()) {
+                _addWishlistCollectionItem.postValue(Success(result.addWishlistCollectionItems))
             } else {
-                val error = (result as Fail).throwable
-                _addWishlistCollectionItem.value = Fail(error)
+                _addWishlistCollectionItem.postValue(Fail(Throwable()))
             }
-        }
+        }, onError = {
+            _addWishlistCollectionItem.postValue(Fail(it))
+        })
     }
 
     fun createNewWishlistCollection(collectionName: String) {

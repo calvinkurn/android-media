@@ -4,15 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
+import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionsBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.domain.AddWishlistCollectionItemsUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionsBottomSheetUseCase
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import javax.inject.Inject
 
 class BottomSheetAddCollectionViewModel @Inject constructor(
@@ -21,39 +22,39 @@ class BottomSheetAddCollectionViewModel @Inject constructor(
     private val addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _collectionsBottomSheet = MutableLiveData<Result<com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet>>()
-    val collectionsBottomSheet: LiveData<Result<com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet>>
+    private val _collectionsBottomSheet =
+        MutableLiveData<Result<com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet>>()
+    val collectionsBottomSheet: LiveData<Result<com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet>>
         get() = _collectionsBottomSheet
 
-    private val _saveItemToCollections = MutableLiveData<Result<AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems>>()
-    val saveItemToCollections: LiveData<Result<AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems>>
+    private val _saveItemToCollections =
+        MutableLiveData<Result<AddWishlistCollectionItemsResponse.AddWishlistCollectionItems>>()
+    val saveItemToCollections: LiveData<Result<AddWishlistCollectionItemsResponse.AddWishlistCollectionItems>>
         get() = _saveItemToCollections
 
-    fun getWishlistCollections(productId: String, source: String) {
-        getWishlistCollectionsBottomSheetUseCase.setParams(productId, source)
-        launch(dispatcher.main) {
-            val result =
-                withContext(dispatcher.io) { getWishlistCollectionsBottomSheetUseCase.executeOnBackground() }
-            if (result is Success) {
-                _collectionsBottomSheet.value = result
+    fun getWishlistCollections(param: GetWishlistCollectionsBottomSheetParams) {
+        launchCatchError(block = {
+            val result = getWishlistCollectionsBottomSheetUseCase(param)
+            if (result.getWishlistCollectionsBottomsheet.status == WishlistV2CommonConsts.OK && result.getWishlistCollectionsBottomsheet.errorMessage.isEmpty()) {
+                _collectionsBottomSheet.postValue(Success(result.getWishlistCollectionsBottomsheet))
             } else {
-                val error = (result as Fail).throwable
-                _collectionsBottomSheet.value = Fail(error)
+                _collectionsBottomSheet.postValue(Fail(Throwable()))
             }
-        }
+        }, onError = {
+            _collectionsBottomSheet.postValue(Fail(it))
+        })
     }
 
     fun saveToWishlistCollection(param: AddWishlistCollectionsHostBottomSheetParams) {
-        addWishlistCollectionItemsUseCase.setParams(param)
-        launch(dispatcher.main) {
-            val result =
-                withContext(dispatcher.io) { addWishlistCollectionItemsUseCase.executeOnBackground() }
-            if (result is Success) {
-                _saveItemToCollections.value = result
+        launchCatchError(block = {
+            val result = addWishlistCollectionItemsUseCase(param)
+            if (result.addWishlistCollectionItems.status == WishlistV2CommonConsts.OK && result.addWishlistCollectionItems.errorMessage.isEmpty()) {
+                _saveItemToCollections.postValue(Success(result.addWishlistCollectionItems))
             } else {
-                val error = (result as Fail).throwable
-                _saveItemToCollections.value = Fail(error)
+                _saveItemToCollections.postValue(Fail(Throwable()))
             }
-        }
+        }, onError = {
+            _saveItemToCollections.postValue(Fail(it))
+        })
     }
 }

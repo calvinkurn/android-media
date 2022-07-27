@@ -26,6 +26,7 @@ import com.tokopedia.wishlist.databinding.BottomsheetAddWishlistCollectionBindin
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
+import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionsBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.di.DaggerBottomSheetWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
@@ -55,7 +56,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     }
 
     interface ActionListener {
-        fun onSuccessSaveItemToCollection(data: AddWishlistCollectionItemsResponse.Data.AddWishlistCollectionItems)
+        fun onSuccessSaveItemToCollection(data: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems)
         fun onFailedSaveItemToCollection(errorMessage: String)
     }
 
@@ -133,7 +134,11 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     private fun loadData() {
         val productId = arguments?.get(PRODUCT_IDs).toString()
         val source = arguments?.get(SOURCE).toString()
-        getCollectionsViewModel.getWishlistCollections(productId, source)
+        val param = GetWishlistCollectionsBottomSheetParams(
+            productIds = productId,
+            source = source
+        )
+        getCollectionsViewModel.getWishlistCollections(param)
     }
 
     private fun initObserver() {
@@ -179,7 +184,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         }
     }
 
-    private fun updateBottomSheet(dataGetBottomSheetCollections: com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data) {
+    private fun updateBottomSheet(dataGetBottomSheetCollections: com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {
         setTitle(dataGetBottomSheetCollections.title)
         setAction(dataGetBottomSheetCollections.titleButton.text) {
             if (dataGetBottomSheetCollections.titleButton.action == OPEN_WISHLIST_COLLECTION) {
@@ -188,7 +193,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         }
     }
 
-    private fun mapDataCollectionsBottomSheet(data: com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet.Data): ArrayList<BottomSheetWishlistCollectionTypeLayoutData> {
+    private fun mapDataCollectionsBottomSheet(data: com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data): ArrayList<BottomSheetWishlistCollectionTypeLayoutData> {
         val listData = arrayListOf<BottomSheetWishlistCollectionTypeLayoutData>()
         listData.add(
             BottomSheetWishlistCollectionTypeLayoutData(

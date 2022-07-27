@@ -1,41 +1,78 @@
 package com.tokopedia.wishlistcollection.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionsBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
-import com.tokopedia.wishlistcommon.util.GQL_GET_WISHLIST_COLLECTIONS_BOTTOMSHEET
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PARAMS
 import javax.inject.Inject
 
-@GqlQuery("GetWishlistCollectionsBottomsheetQuery", GQL_GET_WISHLIST_COLLECTIONS_BOTTOMSHEET)
-class GetWishlistCollectionsBottomSheetUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) :
-    UseCase<Result<GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet>>() {
-    private var params: Map<String, Any?>? = null
+@GqlQuery("GetWishlistCollectionsBottomsheetQuery", GetWishlistCollectionsBottomSheetUseCase.query)
+class GetWishlistCollectionsBottomSheetUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) :
+    CoroutineUseCase<GetWishlistCollectionsBottomSheetParams, GetWishlistCollectionsBottomSheetResponse>(dispatchers.io) {
 
-    override suspend fun executeOnBackground(): Result<GetWishlistCollectionsBottomSheetResponse.Data.GetWishlistCollectionsBottomsheet> {
-        return try {
-            val request = GraphqlRequest(
-                GetWishlistCollectionsBottomsheetQuery(),
-                GetWishlistCollectionsBottomSheetResponse.Data::class.java, params
-            )
-            val response = gqlRepository.response(listOf(request)).getSuccessData<GetWishlistCollectionsBottomSheetResponse.Data>()
-            Success(response.getWishlistCollectionsBottomsheet)
-        } catch (e: Exception) {
-            Fail(e)
-        }
+    override suspend fun execute(params: GetWishlistCollectionsBottomSheetParams): GetWishlistCollectionsBottomSheetResponse {
+        return repository.request(GetWishlistCollectionsBottomsheetQuery(), params.toMap())
     }
 
-    fun setParams(productId: String, source: String) {
-        params = mapOf(PARAMS to mapOf(
-            WishlistV2CommonConsts.PRODUCT_IDs to productId,
-            WishlistV2CommonConsts.SOURCE to source))
+    override fun graphqlQuery(): String = ""
+
+    companion object {
+        const val query = """
+            query GetWishlistCollectionsBottomsheet(${'$'}params:GetWishlistCollectionBottomsheetParams){
+              get_wishlist_collections_bottomsheet(params:${'$'}params){
+                status
+                error_message
+                data{
+                  title
+                  title_button{
+                text
+                    image_url
+                    url
+                    action
+                  }
+                  notification
+                  placeholder{
+                text
+                    image_url
+                    url
+                    action
+                  }
+                  main_section{
+                    text
+                    collections{
+                      id
+                      name
+                      total_item
+                      item_text
+                      label
+                      image_url
+                      is_contain_product
+                    }
+                  }
+                  additional_section{
+                    text
+                    collections{
+                      id
+                      name
+                      total_item
+                      item_text
+                      label
+                      image_url
+                      is_contain_product
+                    }
+                  }
+                  total_collection
+                  max_limit_collection
+                  wording_max_limit_collection
+                }
+              }
+            }"""
     }
 }

@@ -3,34 +3,29 @@ package com.tokopedia.wishlistcollection.data.response
 import com.google.gson.annotations.SerializedName
 
 data class AddWishlistCollectionItemsResponse(
-	@SerializedName("data")
-	val data: Data = Data()
+	@SerializedName("add_wishlist_collection_items")
+	val addWishlistCollectionItems: AddWishlistCollectionItems = AddWishlistCollectionItems()
 ) {
-	data class Data(
-		@SerializedName("add_wishlist_collection_items")
-		val addWishlistCollectionItems: AddWishlistCollectionItems = AddWishlistCollectionItems()
+	data class AddWishlistCollectionItems(
+		@SerializedName("error_message")
+		val errorMessage: List<String> = emptyList(),
+
+		@SerializedName("data")
+		val dataItem: DataItem = DataItem(),
+
+		@SerializedName("status")
+		val status: String = ""
 	) {
-		data class AddWishlistCollectionItems(
-			@SerializedName("error_message")
-			val errorMessage: List<String> = emptyList(),
+		data class DataItem(
 
-			@SerializedName("data")
-			val dataItem: DataItem = DataItem(),
+			@SerializedName("collection_id")
+			val collectionId: String = "",
 
-			@SerializedName("status")
-			val status: String = ""
-		) {
-			data class DataItem(
+			@SerializedName("success")
+			val success: Boolean = false,
 
-				@SerializedName("collection_id")
-				val collectionId: String = "",
-
-				@SerializedName("success")
-				val success: Boolean = false,
-
-				@SerializedName("message")
-				val message: String = ""
-			)
-		}
+			@SerializedName("message")
+			val message: String = ""
+		)
 	}
 }

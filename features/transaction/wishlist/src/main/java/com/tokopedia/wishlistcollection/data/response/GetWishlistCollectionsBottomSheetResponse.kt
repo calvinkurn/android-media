@@ -3,126 +3,120 @@ package com.tokopedia.wishlistcollection.data.response
 import com.google.gson.annotations.SerializedName
 
 data class GetWishlistCollectionsBottomSheetResponse(
-
-	@SerializedName("data")
-	val data: Data
+	@SerializedName("get_wishlist_collections_bottomsheet")
+	val getWishlistCollectionsBottomsheet: GetWishlistCollectionsBottomsheet
 ) {
-	data class Data(
-		@SerializedName("get_wishlist_collections_bottomsheet")
-		val getWishlistCollectionsBottomsheet: GetWishlistCollectionsBottomsheet
+	data class GetWishlistCollectionsBottomsheet(
+
+		@SerializedName("error_message")
+		val errorMessage: List<String> = emptyList(),
+
+		@SerializedName("data")
+		val data: Data = Data(),
+
+		@SerializedName("status")
+		val status: String = ""
 	) {
-		data class GetWishlistCollectionsBottomsheet(
+		data class Data(
 
-            @SerializedName("error_message")
-			val errorMessage: List<String> = emptyList(),
+			@SerializedName("title")
+			val title: String = "",
 
-            @SerializedName("data")
-			val data: Data = Data(),
+			@SerializedName("title_button")
+			val titleButton: TitleButton = TitleButton(),
 
-            @SerializedName("status")
-			val status: String = ""
+			@SerializedName("notification")
+			val notification: String = "",
+
+			@SerializedName("main_section")
+			val mainSection: MainSection = MainSection(),
+
+			@SerializedName("additional_section")
+			val additionalSection: AdditionalSection = AdditionalSection(),
+
+			@SerializedName("placeholder")
+			val placeholder: Placeholder = Placeholder(),
+
+			@SerializedName("total_collection")
+			val totalCollection: Int = 0,
+
+			@SerializedName("max_limit_collection")
+			val maxLimitCollection: Int = 0,
+
+			@SerializedName("wording_max_limit_collection")
+			val wordingMaxLimitCollection: String = ""
 		) {
-			data class Data(
+			data class TitleButton(
 
-                @SerializedName("title")
-				val title: String = "",
+				@SerializedName("image_url")
+				val imageUrl: String = "",
 
-                @SerializedName("title_button")
-				val titleButton: TitleButton = TitleButton(),
+				@SerializedName("action")
+				val action: String = "",
 
-                @SerializedName("notification")
-				val notification: String = "",
+				@SerializedName("text")
+				val text: String = "",
 
-                @SerializedName("main_section")
-				val mainSection: MainSection = MainSection(),
+				@SerializedName("url")
+				val url: String = ""
+			)
 
-                @SerializedName("additional_section")
-				val additionalSection: AdditionalSection = AdditionalSection(),
+			data class MainSection(
 
-                @SerializedName("placeholder")
-				val placeholder: Placeholder = Placeholder(),
+				@SerializedName("collections")
+				val collections: List<CollectionsItem> = emptyList(),
 
-                @SerializedName("total_collection")
-				val totalCollection: Int = 0,
-
-                @SerializedName("max_limit_collection")
-				val maxLimitCollection: Int = 0,
-
-                @SerializedName("wording_max_limit_collection")
-				val wordingMaxLimitCollection: String = ""
+				@SerializedName("text")
+				val text: String = ""
 			) {
-				data class TitleButton(
+				data class CollectionsItem(
+
+					@SerializedName("total_item")
+					val totalItem: Int = 0,
 
 					@SerializedName("image_url")
 					val imageUrl: String = "",
 
-					@SerializedName("action")
-					val action: String = "",
+					@SerializedName("name")
+					val name: String = "",
 
-					@SerializedName("text")
-					val text: String = "",
+					@SerializedName("item_text")
+					val itemText: String = "",
 
-					@SerializedName("url")
-					val url: String = ""
-				)
+					@SerializedName("id")
+					val id: String = "",
 
-				data class MainSection(
+					@SerializedName("label")
+					val label: String = "",
 
-                    @SerializedName("collections")
-					val collections: List<CollectionsItem> = emptyList(),
-
-                    @SerializedName("text")
-					val text: String = ""
-				) {
-					data class CollectionsItem(
-
-						@SerializedName("total_item")
-						val totalItem: Int = 0,
-
-						@SerializedName("image_url")
-						val imageUrl: String = "",
-
-						@SerializedName("name")
-						val name: String = "",
-
-						@SerializedName("item_text")
-						val itemText: String = "",
-
-						@SerializedName("id")
-						val id: String = "",
-
-						@SerializedName("label")
-						val label: String = "",
-
-						@SerializedName("is_contain_product")
-						val isContainProduct: Boolean = false
-					)
-				}
-
-				data class AdditionalSection(
-
-                    @SerializedName("collections")
-					val collections: List<MainSection.CollectionsItem> = emptyList(),
-
-                    @SerializedName("text")
-					val text: String = ""
-				)
-
-				data class Placeholder(
-
-					@SerializedName("image_url")
-					val imageUrl: String = "",
-
-					@SerializedName("action")
-					val action: String = "",
-
-					@SerializedName("text")
-					val text: String = "",
-
-					@SerializedName("url")
-					val url: String = ""
+					@SerializedName("is_contain_product")
+					val isContainProduct: Boolean = false
 				)
 			}
+
+			data class AdditionalSection(
+
+				@SerializedName("collections")
+				val collections: List<MainSection.CollectionsItem> = emptyList(),
+
+				@SerializedName("text")
+				val text: String = ""
+			)
+
+			data class Placeholder(
+
+				@SerializedName("image_url")
+				val imageUrl: String = "",
+
+				@SerializedName("action")
+				val action: String = "",
+
+				@SerializedName("text")
+				val text: String = "",
+
+				@SerializedName("url")
+				val url: String = ""
+			)
 		}
 	}
 }

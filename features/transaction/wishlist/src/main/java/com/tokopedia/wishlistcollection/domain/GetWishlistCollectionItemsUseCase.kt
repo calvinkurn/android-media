@@ -1,39 +1,171 @@
 package com.tokopedia.wishlistcollection.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.util.GQL_GET_WISHLIST_COLLECTION_ITEMS
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PARAMS
 import javax.inject.Inject
 
-@GqlQuery("GetWishlistCollectionItemsQuery", GQL_GET_WISHLIST_COLLECTION_ITEMS)
-class GetWishlistCollectionItemsUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) :
-    UseCase<Result<GetWishlistCollectionItemsResponse.Data.GetWishlistCollectionItems>>() {
-    private var params: Map<String, Any?>? = null
+@GqlQuery("GetWishlistCollectionItemsQuery", GetWishlistCollectionItemsUseCase.query)
+class GetWishlistCollectionItemsUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) :
+    CoroutineUseCase<GetWishlistCollectionItemsParams, GetWishlistCollectionItemsResponse>(
+        dispatchers.io
+    ) {
 
-    override suspend fun executeOnBackground(): Result<GetWishlistCollectionItemsResponse.Data.GetWishlistCollectionItems> {
-        return try {
-            val request = GraphqlRequest(
-                GetWishlistCollectionItemsQuery(),
-                GetWishlistCollectionItemsResponse.Data::class.java, params
-            )
-            val response = gqlRepository.response(listOf(request)).getSuccessData<GetWishlistCollectionItemsResponse.Data>()
-            Success(response.getWishlistCollectionItems)
-        } catch (e: Exception) {
-            Fail(e)
-        }
+    override fun graphqlQuery(): String = ""
+
+    override suspend fun execute(params: GetWishlistCollectionItemsParams): GetWishlistCollectionItemsResponse {
+        return repository.request(GetWishlistCollectionItemsQuery(), params.toMap())
     }
 
-    fun setParams(param: GetWishlistCollectionItemsParams) {
-        params = mapOf(PARAMS to param)
+    companion object {
+        const val query = """
+            query GetWishlistCollectionItems(${'$'}params:GetWishlistCollectionItemsParams) {
+                 get_wishlist_collection_items(params:${'$'}params){
+                    page
+                    limit
+                    offset
+                    query
+                    has_next_page
+                    total_data
+                    count_removable_items
+                    show_empty_state_on_bottomsheet
+                    empty_state {
+                      type
+                      messages{
+                        title
+                        description
+                        image_url
+                      }
+                      buttons {
+                        text
+                        action
+                        url
+                      }
+                    }
+                    ticker {
+                        message
+                        type
+                        button {
+                            text
+                            action
+                        }
+                    }
+                    storage_cleaner_bottomsheet {
+                        title
+                        description
+                        options {
+                            name
+                            description
+                            action
+                        }
+                        button {
+                            text
+                        }
+                    }
+                    show_delete_progress
+                    has_collection
+                    setting {
+                        buttons {
+                            text
+                            action
+                            url
+                        }
+                    }
+                    header_title
+                    sort_filters {
+                      id
+                      name
+                      title
+                      text
+                      is_active
+                      selection_type
+                      options{
+                        option_id
+                        text
+                        description
+                        is_selected
+                      }
+                    }
+                    items {
+                      id
+                      name
+                      url
+                      image_url
+                      price
+                      price_fmt
+                      available
+                      label_status
+                      preorder
+                      rating
+                      sold_count
+                      min_order
+                      shop {
+                        id
+                        name
+                        url
+                        location
+                        fulfillment {
+                          is_fulfillment
+                          text
+                        }
+                        is_tokonow
+                      }
+                      badges {
+                        title
+                        image_url
+                      }
+                      labels
+                      wholesale_price {
+                        minimum
+                        maximum
+                        price
+                      }
+                      default_child_id
+                      original_price
+                      original_price_fmt
+                      discount_percentage
+                      discount_percentage_fmt
+                      label_stock
+                      bebas_ongkir {
+                        type
+                        title
+                        image_url
+                      }
+                      label_group{
+                        position
+                        title
+                        type
+                        url
+                      }
+                      buttons{
+                        primary_button {
+                          text
+                          action
+                          url
+                        }
+                        additional_buttons {
+                          text
+                          action
+                          url
+                        }
+                      }
+                      wishlist_id
+                      variant_name
+                      category {
+                        category_id
+                        category_name
+                      }
+                    }
+                    error_message
+                  }
+                }"""
     }
 }
