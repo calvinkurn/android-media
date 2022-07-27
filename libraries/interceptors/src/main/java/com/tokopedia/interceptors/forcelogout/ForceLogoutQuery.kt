@@ -7,8 +7,8 @@ class ForceLogoutQuery: GqlQueryInterface {
     override fun getOperationNameList(): List<String> = emptyList()
 
     override fun getQuery(): String =  """
-        mutation force_logout(${'$'}userid: String!){
-            force_logout_info(userid: ${'$'}userid) {
+        query force_logout(${'$'}user_id: Int!){
+            force_logout_info(user_id: ${'$'}user_id) {
                 is_force_logout
                 title
                 description

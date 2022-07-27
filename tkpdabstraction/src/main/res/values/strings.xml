@@ -118,9 +118,9 @@
     <string name="force_logout_primary_btn_text">Cek Informasi Lengkap</string>
     <string name="force_logout_secondary_btn_text">Oke</string>
 
-    <string name="force_logout_general_btn_text">Masuk Ulang</string>
+    <string name="force_logout_general_btn_text">Balik ke Home</string>
 
     <string name="force_logout_general_title">Kamu otomatis keluar dari akun ini</string>
-    <string name="force_logout_general_description">Terjadi kesalahan di sistem, untuk menjaga akunmu tetap aman, kamu dikeluarkan dari akun ini dulu. Kamu bisa kembali masuk ulang setelah itu.</string>
+    <string name="force_logout_general_description">Ada kendala saat akses akunmu. Biar akunmu tetap aman, kamu dikeluarkan dari akun ini dulu. Cek info lengkapnya di Tokopedia Care, ya.</string>
 
 </resources>

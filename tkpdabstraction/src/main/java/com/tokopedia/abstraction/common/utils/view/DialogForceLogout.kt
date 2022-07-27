@@ -1,8 +1,6 @@
 package com.tokopedia.abstraction.common.utils.view
 
-import android.app.AlertDialog
 import android.content.Context
-import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.track.TrackApp
@@ -65,7 +63,7 @@ object DialogForceLogout {
         listener: ActionListener?,
         screenName: String?
     ): DialogUnify {
-        val dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(context.getString(com.tokopedia.abstraction.R.string.force_logout_general_title))
         dialog.setDescription(context.getString(com.tokopedia.abstraction.R.string.force_logout_general_description))
         dialog.setPrimaryCTAText(context.getString(com.tokopedia.abstraction.R.string.force_logout_general_btn_text))

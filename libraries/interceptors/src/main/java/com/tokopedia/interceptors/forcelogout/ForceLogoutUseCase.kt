@@ -4,11 +4,10 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.interceptors.RetrofitClientHelper
 import com.tokopedia.interceptors.GqlBaseApi
-import com.tokopedia.interceptors.refreshtoken.RefreshTokenData
+import com.tokopedia.interceptors.RetrofitClientHelper
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.user.session.UserSessionInterface
 
 class ForceLogoutUseCase(
@@ -16,14 +15,14 @@ class ForceLogoutUseCase(
     val userSession: UserSessionInterface,
     val networkRouter: NetworkRouter
 ) {
-    private fun createParams(userId: String): Map<String, String> {
+    private fun createParams(userId: Int): Map<String, Int> {
         return mapOf(
-            "userid" to userId
+            "user_id" to userId
         )
     }
 
     fun execute(): ForceLogoutResponse? {
-        val params = createParams(userSession.userId)
+        val params = createParams(userSession.userId.toIntOrZero())
 
         val gqlQueryInterface = ForceLogoutQuery()
         val requestBody = GraphqlRequest(gqlQueryInterface, ForceLogoutResponse::class.java, params)
