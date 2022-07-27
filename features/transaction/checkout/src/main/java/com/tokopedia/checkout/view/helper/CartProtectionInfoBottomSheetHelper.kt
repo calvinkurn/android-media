@@ -28,7 +28,7 @@ object CartProtectionInfoBottomSheetHelper {
             javaScriptEnabled = true
             domStorageEnabled = true
         }
-        webView?.loadUrl(url)
+        webView?.loadUrl("https://staging.tokopedia.com/asuransi/proteksi/gadget")
         webView?.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
