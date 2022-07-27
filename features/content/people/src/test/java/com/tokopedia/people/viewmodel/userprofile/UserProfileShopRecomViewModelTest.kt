@@ -281,8 +281,7 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.isFollow.assertFalse()
-                    else item.isFollow.assertFalse()
+                    item.isFollow.assertFalse()
                 }
                 events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
             }
@@ -333,8 +332,7 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.isFollow.assertFalse()
-                    else item.isFollow.assertFalse()
+                    item.isFollow.assertFalse()
                 }
                 events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
             }
