@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.data.model.request.checkout
 
 import android.annotation.SuppressLint
-import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
@@ -16,7 +15,6 @@ import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoChecko
 import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.TokopediaCornerData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.promocheckout.common.data.entity.request.Order
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
@@ -366,7 +364,7 @@ object CheckoutRequestMapper {
             orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, shopProductCheckoutRequest.freeShippingMetadata))
         }
         if(prescriptionIds != null && prescriptionIds.isNotEmpty()){
-            orderMetadata.add(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, Gson().toJson(prescriptionIds)))
+            orderMetadata.add(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, prescriptionIds.toString()))
         }
         return orderMetadata
     }
