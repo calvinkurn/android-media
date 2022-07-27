@@ -10,7 +10,9 @@ import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAttribute
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
+import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
@@ -64,7 +66,154 @@ class CampaignInformationViewModelTest {
     }
 
 
-    //region getCampaigns
+    //region getCampaignDetail
+    @Test
+    fun `When get campaign detail success, observer should successfully receive the data`() =
+        runBlocking {
+            //Given
+            val campaignId: Long = 1001
+            val campaign = buildCampaignUiModel(campaignId)
+            val expected = Success(campaign)
+
+            coEvery { getSellerCampaignDetailUseCase.execute(campaignId) } returns campaign
+
+            //When
+            viewModel.getCampaignDetail(campaignId)
+
+            //Then
+            val actual = viewModel.campaignDetail.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When get campaign detail error, observer should receive error result`() =
+        runBlocking {
+            //Given
+            val campaignId: Long = 1001
+            val error = MessageErrorException("Server error")
+            val expected = Fail(error)
+
+            coEvery { getSellerCampaignDetailUseCase.execute(campaignId) }  throws error
+
+            //When
+            viewModel.getCampaignDetail(campaignId)
+
+            //Then
+            val actual = viewModel.campaignDetail.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+    //endregion
+
+    //region getRemainingQuota
+    @Test
+    fun `When get remaining quota success, observer should successfully receive the data`() =
+        runBlocking {
+            //Given
+            val remainingQuota = 5
+            val campaignAttribute = CampaignAttribute(
+                success = true,
+                errorMessage = "",
+                listOf(),
+                remainingCampaignQuota = remainingQuota
+            )
+            val expected = Success(remainingQuota)
+
+            coEvery { getSellerCampaignAttributeUseCase.execute(month = anyInt(), year = anyInt()) } returns campaignAttribute
+
+            //When
+            viewModel.getCampaignQuota(month = anyInt(), year = anyInt())
+
+            //Then
+            val actual = viewModel.campaignQuota.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When get remaining quota error, observer should receive error result`() =
+        runBlocking {
+            //Given
+            val error = MessageErrorException("Server error")
+            val expected = Fail(error)
+
+            coEvery { getSellerCampaignAttributeUseCase.execute(month = anyInt(), year = anyInt()) } throws error
+
+            //When
+            viewModel.getCampaignQuota(month = anyInt(), year = anyInt())
+
+            //Then
+            val actual = viewModel.campaignQuota.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+    //endregion
+
+    //region saveDraft
+    @Test
+    fun `When save draft success, observer should successfully receive the data`() =
+        runBlocking {
+            //Given
+            val campaignId: Long = 1001
+            val campaignCreationResult = CampaignCreationResult(
+                campaignId = campaignId,
+                isSuccess = true,
+                totalProductFailed = 0,
+                errorDescription = "",
+                errorTitle = "",
+                errorMessage = ""
+            )
+            val selection = buildSelectionObject()
+            val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+                CampaignAction.Create,
+                selection.campaignName,
+                selection.startDate,
+                selection.endDate,
+                selection.teaserDate,
+                showTeaser = selection.showTeaser,
+                firstColor = selection.firstColor,
+                secondColor = selection.secondColor,
+                paymentType = selection.paymentType
+            )
+            val expected = Success(campaignCreationResult)
+
+            coEvery {  doSellerCampaignCreationUseCase.execute(createCampaignParam) } returns campaignCreationResult
+
+            //When
+            viewModel.saveDraft(PageMode.CREATE, campaignId, selection)
+
+            //Then
+            val actual = viewModel.saveDraft.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When save draft error, observer should receive error result`() =
+        runBlocking {
+            //Given
+            val campaignId : Long = 1001
+            val error = MessageErrorException("Server error")
+            val expected = Fail(error)
+
+            val selection = buildSelectionObject()
+            val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+                CampaignAction.Create,
+                selection.campaignName,
+                selection.startDate,
+                selection.endDate,
+                selection.teaserDate,
+                showTeaser = selection.showTeaser,
+                firstColor = selection.firstColor,
+                secondColor = selection.secondColor,
+                paymentType = selection.paymentType
+            )
+
+            coEvery { doSellerCampaignCreationUseCase.execute(createCampaignParam) } throws error
+            //When
+            viewModel.saveDraft(PageMode.CREATE, campaignId, selection)
+
+            //Then
+            val actual = viewModel.saveDraft.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
     //endregion
     @Test
     fun `When campaign name is empty, should return CampaignNameIsEmpty error`() =
@@ -481,6 +630,41 @@ class CampaignInformationViewModelTest {
     }
 
     @Test
+    fun `When create campaign failed, campaignId value won't be updated`() = runBlocking {
+        //Given
+        val campaignIdNotCreated: Long = -1
+        val campaignCreationResult = CampaignCreationResult(
+            campaignId = campaignIdNotCreated,
+            isSuccess = false,
+            totalProductFailed = 0,
+            errorDescription = "",
+            errorTitle = "",
+            errorMessage = ""
+        )
+        val selection = buildSelectionObject()
+        val createCampaignParam =  DoSellerCampaignCreationUseCase.Param(
+            CampaignAction.Create,
+            selection.campaignName,
+            selection.startDate,
+            selection.endDate,
+            selection.teaserDate,
+            showTeaser = selection.showTeaser,
+            firstColor = selection.firstColor,
+            secondColor = selection.secondColor,
+            paymentType = selection.paymentType
+        )
+
+        coEvery {  doSellerCampaignCreationUseCase.execute(createCampaignParam) } returns campaignCreationResult
+
+        //When
+        viewModel.setCampaignId(campaignIdNotCreated)
+        viewModel.submit(selection)
+
+        //Then
+        assertEquals(campaignIdNotCreated, viewModel.getCampaignId())
+    }
+
+    @Test
     fun `When create campaign success, observer should successfully receive the data`() = runBlocking {
         //Given
         val campaignIdNotCreated: Long = -1
@@ -683,47 +867,7 @@ class CampaignInformationViewModelTest {
     //region getCampaignQuota
     //endregion
 
-    @Test
-    fun `When get payment type, should return correct values`() {
-        val paymentType = PaymentType.INSTANT
-        viewModel.setPaymentType(paymentType)
-        assertEquals(paymentType, viewModel.getPaymentType())
-    }
-
-    @Test
-    fun `When get selected color, should return correct values`() {
-        val color = Gradient("#FFFFFF", "#E0E0E0", isSelected = true)
-        viewModel.setSelectedColor(color)
-        assertEquals(color, viewModel.getColor())
-    }
-
-    @Test
-    fun `When get remaining quota, should return correct values`() {
-        val remainingQuota = 2
-        viewModel.setRemainingQuota(remainingQuota)
-        assertEquals(remainingQuota, viewModel.getRemainingQuota())
-    }
-
-    @Test
-    fun `When get selected start date, should return correct values`() {
-        val startDate = Date()
-        viewModel.setSelectedStartDate(startDate)
-        assertEquals(startDate, viewModel.getSelectedStartDate())
-    }
-
-    @Test
-    fun `When get selected end date, should return correct values`() {
-        val endDate = Date()
-        viewModel.setSelectedEndDate(endDate)
-        assertEquals(endDate, viewModel.getSelectedEndDate())
-    }
-
-    @Test
-    fun `When get default selection, should return correct values`() {
-        val selection = buildSelectionObject()
-        viewModel.storeAsDefaultSelection(selection)
-        assertEquals(selection, viewModel.getDefaultSelection())
-    }
+    //region markColorAsSelected
 
     @Test
     fun `When select a color, other color should be unselected`() {
@@ -766,7 +910,6 @@ class CampaignInformationViewModelTest {
     }
 
 
-
     @Test
     fun `When select a color but second color is different, color should be marked as unselected`() {
         //Given
@@ -785,6 +928,10 @@ class CampaignInformationViewModelTest {
         //Then
         assertEquals(expected, actual)
     }
+
+    //endregion
+
+    //region deselectAllColor
     @Test
     fun `When deselect all colors, all color should be unselected`() {
         //Given
@@ -799,6 +946,9 @@ class CampaignInformationViewModelTest {
         //Then
         assertEquals(expected, actual)
     }
+    //endregion
+
+    //region normalizeEndDate
 
     @Test
     fun `When end date before start date, should return start date`() {
@@ -825,7 +975,43 @@ class CampaignInformationViewModelTest {
         //Then
         assertEquals(endDate, actual)
     }
+    //endregion
 
+    //region getTeaserQuantityEditorMaxValue
+    @Test
+    fun `When get teaser max value, should return correct values`() {
+        val startDate = Date().advanceHourBy(hour = 4)
+        val now = Date()
+        val actual = viewModel.getTeaserQuantityEditorMaxValue(startDate, now)
+        assertEquals(3, actual)
+    }
+
+    @Test
+    fun `When get teaser max value and difference is bigger than 24 hours, should return 24`() {
+        val startDate = Date().advanceDayBy(days = 2)
+        val now = Date()
+        val actual = viewModel.getTeaserQuantityEditorMaxValue(startDate, now)
+        assertEquals(24, actual)
+    }
+
+    @Test
+    fun `When get teaser max value and difference is less than 0 hours, should return 0`() {
+        val startDate = Date().decreaseHourBy(desiredHourToBeDecreased = 24)
+        val now = Date()
+        val actual = viewModel.getTeaserQuantityEditorMaxValue(startDate, now)
+        assertEquals(0, actual)
+    }
+
+    @Test
+    fun `When get teaser max value and difference is 0 hours, should return 0`() {
+        val startDate = Date().decreaseHourBy(desiredHourToBeDecreased = 1)
+        val now = Date()
+        val actual = viewModel.getTeaserQuantityEditorMaxValue(startDate, now)
+        assertEquals(0, actual)
+    }
+    //endregion
+
+    //region isUsingHexColor
     @Test
     fun `When first color and second color are the same, should return true`() {
         val actual = viewModel.isUsingHexColor("#0f0f0f", "#0f0f0f")
@@ -838,6 +1024,9 @@ class CampaignInformationViewModelTest {
         assertEquals(false, actual)
     }
 
+    //endregion
+
+    //region findUpcomingTimeDifferenceInHour
     @Test
     fun `When find hour difference from two date, should return correct values`() {
         //Given
@@ -851,7 +1040,9 @@ class CampaignInformationViewModelTest {
         //Then
         assertEquals(expected, actual)
     }
+    //endregion
 
+    //region isDataChanged
     @Test
     fun `When both data is the same, should return false`() {
         //Given
@@ -877,7 +1068,49 @@ class CampaignInformationViewModelTest {
         //Then
         assertEquals(true, actual)
     }
+    //endregion
 
+    @Test
+    fun `When get payment type, should return correct values`() {
+        val paymentType = PaymentType.INSTANT
+        viewModel.setPaymentType(paymentType)
+        assertEquals(paymentType, viewModel.getPaymentType())
+    }
+
+    @Test
+    fun `When get selected color, should return correct values`() {
+        val color = Gradient("#FFFFFF", "#E0E0E0", isSelected = true)
+        viewModel.setSelectedColor(color)
+        assertEquals(color, viewModel.getColor())
+    }
+
+    @Test
+    fun `When get remaining quota, should return correct values`() {
+        val remainingQuota = 2
+        viewModel.setRemainingQuota(remainingQuota)
+        assertEquals(remainingQuota, viewModel.getRemainingQuota())
+    }
+
+    @Test
+    fun `When get selected start date, should return correct values`() {
+        val startDate = Date()
+        viewModel.setSelectedStartDate(startDate)
+        assertEquals(startDate, viewModel.getSelectedStartDate())
+    }
+
+    @Test
+    fun `When get selected end date, should return correct values`() {
+        val endDate = Date()
+        viewModel.setSelectedEndDate(endDate)
+        assertEquals(endDate, viewModel.getSelectedEndDate())
+    }
+
+    @Test
+    fun `When get default selection, should return correct values`() {
+        val selection = buildSelectionObject()
+        viewModel.storeAsDefaultSelection(selection)
+        assertEquals(selection, viewModel.getDefaultSelection())
+    }
 
     private fun buildSelectionObject(): CampaignInformationViewModel.Selection {
         return CampaignInformationViewModel.Selection(
@@ -892,5 +1125,33 @@ class CampaignInformationViewModelTest {
             remainingQuota = 5
         )
     }
-
+    private fun buildCampaignUiModel(campaignId: Long): CampaignUiModel {
+        return CampaignUiModel(
+            campaignId,
+            "",
+            "",
+            "",
+            isCancellable = false,
+            isShareable = false,
+            0,
+            "",
+            "",
+            CampaignStatus.ONGOING,
+            false,
+            CampaignUiModel.ProductSummary(0, 0, 0, 0, 0, 0),
+            Date(),
+            Date(),
+            Gradient("", "", false),
+            false,
+            Date(),
+            PaymentType.INSTANT,
+            isUniqueBuyer = false,
+            isCampaignRelation = false,
+            listOf(),
+            isCampaignRuleSubmit = false, 0,
+            CampaignUiModel.ThematicInfo(0, 0, "", 0, ""),
+            Date(),
+            Date()
+        )
+    }
 }
