@@ -224,7 +224,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val totalPaymentFee = payment.getTotalPaymentFee()
             if (!orderPayment.creditCard.isAfpb) {
                 val subTotalWithPaymentFees = cost.totalPriceWithoutDiscountsAndPaymentFees + totalPaymentFee
-                val subsidizeWithPaymentFees = (if (orderCart.shop.isOfficial == 1) cost.totalPriceWithoutPaymentFees else 0.0) + totalPaymentFee
+                val subsidizeWithPaymentFees = if (orderCart.shop.isOfficial == 1) cost.totalPriceWithoutPaymentFees + totalPaymentFee else 0.0
                 payment = calculateInstallmentDetails(payment, subTotalWithPaymentFees, subsidizeWithPaymentFees, cost.totalDiscounts)
             }
             val fee = payment.getRealFee()

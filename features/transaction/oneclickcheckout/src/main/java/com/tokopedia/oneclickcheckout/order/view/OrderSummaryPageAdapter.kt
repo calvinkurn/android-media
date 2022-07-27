@@ -114,7 +114,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                 holder.setData(products[position - productStartIndex], shop, position - productStartIndex)
             }
             is OrderPreferenceCard -> {
-                holder.setPreferenceData(shop, profile, shipment, payment, products)
+                holder.setPreferenceData(shop, profile, shipment, payment)
             }
             is OrderInsuranceCard -> {
                 holder.setupInsurance(shipment, profile)
