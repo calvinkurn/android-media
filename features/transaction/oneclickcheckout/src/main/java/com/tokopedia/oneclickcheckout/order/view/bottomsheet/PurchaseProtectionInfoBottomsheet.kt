@@ -52,7 +52,7 @@ class PurchaseProtectionInfoBottomsheet(private val url: String) {
         binding?.webView?.webViewClient = PurchaseProtectionInfoWebViewClient()
         webSettings?.mediaPlaybackRequiresUserGesture = false
 
-        binding?.webView?.loadUrl(url)
+        binding?.webView?.loadUrl("https://staging.tokopedia.com/asuransi/proteksi/gadget")
     }
 
     inner class PurchaseProtectionInfoWebViewClient : WebViewClient() {
