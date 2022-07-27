@@ -67,6 +67,7 @@ class PartialCentralizedPromoCreationView(
                 SortFilterItem(it.name) {
                     selectedTab = it
                     onSelectedFilter?.invoke(it)
+                    adapter.clearAllElements()
                 }
             }
             if (selectedTab == null) {

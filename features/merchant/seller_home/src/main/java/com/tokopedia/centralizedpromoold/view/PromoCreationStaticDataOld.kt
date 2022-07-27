@@ -6,9 +6,11 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
+import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.centralizedpromoold.common.util.CentralizedPromoResourceProviderOld
 import com.tokopedia.centralizedpromoold.view.model.PromoCreationListUiModelOld
 import com.tokopedia.centralizedpromoold.view.model.PromoCreationUiModelOld
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.sellerhome.R
 
@@ -33,7 +35,23 @@ object PromoCreationStaticDataOld {
     ): PromoCreationListUiModelOld {
         //TODO PULL RELEASE
         val promoItems = mutableListOf(
-                PromoCreationUiModelOld(
+            PromoCreationUiModelOld(
+                R.drawable.ic_sah_flash_sale_toko,
+                resourceProvider.getPromoCreationTitleFlashSaleToko(),
+                resourceProvider.getPromoCreationDescFlashSaleToko(),
+                resourceProvider.getPromoCreationNewInfoFlashSaleToko(),
+                ApplinkConst.SellerApp.SELLER_SHOP_FLASH_SALE,
+                resourceProvider.getPromoCreationLabelFlashSaleToko(),
+            ),
+            PromoCreationUiModelOld(
+                R.drawable.ic_sah_tokomember,
+                resourceProvider.getPromoCreationTitleTokoMember(),
+                resourceProvider.getPromoCreationDescriptionTokoMember(),
+                String.EMPTY,
+                ApplinkConst.SellerApp.TOKOMEMBER,
+                resourceProvider.getPromoCreationLabelTokoMember()
+            ),
+            PromoCreationUiModelOld(
                 R.drawable.ic_tokopedia_play,
                 resourceProvider.getPromoCreationTitleTokopediaPlay(),
                 resourceProvider.getPromoCreationDescriptionTokopediaPlay(),
@@ -72,9 +90,9 @@ object PromoCreationStaticDataOld {
                     resourceProvider.getPromoCreationTitleTopAds(),
                     resourceProvider.getPromoCreationDescriptionTopAds(),
                     "",
-                    if (isTopAdsOnBoardingEnable){
+                    if (isTopAdsOnBoardingEnable) {
                         ApplinkConst.SellerApp.TOPADS_ONBOARDING
-                    }else{
+                    } else {
                         ApplinkConst.CustomerApp.TOPADS_DASHBOARD
                     }
 
