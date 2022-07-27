@@ -6,6 +6,9 @@ import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 class ShopRecomModelBuilder {
 
     val mockItemId: Long = 12345
+    val mockEncryptedId: String = "d7S/L5fmJQMHljR+nbg0iNvBGQ9U/DdZmuzd0bVvtakdXBg="
+    val typeShop = 2
+    val typeBuyer = 3
 
     fun buildModelIsShown(): ShopRecomUiModel {
         return ShopRecomUiModel(
@@ -29,14 +32,14 @@ class ShopRecomModelBuilder {
 
     fun buildEmptyItemModel() = ShopRecomUiModelItem()
 
-    fun buildItem(isFollow: Boolean) = ShopRecomUiModelItem(
+    fun buildItem(isFollow: Boolean, type: Int) = ShopRecomUiModelItem(
         badgeImageURL = "https://images.tokopedia.net/img/official_store_badge.png",
-        encryptedID = "d7S/L5fmJQMHljR+nbg0iNvBGQ9U/DdZmuzd0bVvtakdXBg=",
+        encryptedID = mockEncryptedId,
         id = mockItemId,
         logoImageURL = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/16/ca4843f9-7b5c-468a-8be1-085d1f2b20c3.png",
         name = "Miisoo Official Shop",
         nickname = "miisooid",
-        type = 2,
+        type = type,
         applink = "tokopedia://shop/1353688",
         isFollow = isFollow,
     )
@@ -47,7 +50,7 @@ class ShopRecomModelBuilder {
             shopRecomItem.add(
                 ShopRecomUiModelItem(
                     badgeImageURL = "https://images.tokopedia.net/img/official_store_badge.png",
-                    encryptedID = "d7S/L5fmJQMHljR+nbg0iNvBGQ9U/DdZmuzd0bVvtakdXBg=",
+                    encryptedID = if (i == 0) mockEncryptedId else (i * 1000).toString(),
                     id = if (i == 0) mockItemId else (i * 1000).toLong(),
                     logoImageURL = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2020/11/16/ca4843f9-7b5c-468a-8be1-085d1f2b20c3.png",
                     name = "Miisoo Official Shop",
