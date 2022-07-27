@@ -218,6 +218,7 @@
                     android:layout_marginEnd="@dimen/unify_space_16"
                     android:ellipsize="end"
                     android:gravity="start"
+                    android:visibility="gone"
                     android:textColor="@color/Unify_NN950"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"

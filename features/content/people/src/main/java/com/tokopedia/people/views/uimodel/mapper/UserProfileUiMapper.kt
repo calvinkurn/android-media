@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.uimodel.mapper
 
+import com.tokopedia.feedcomponent.data.pojo.shopmutation.ShopFollowModel
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.people.views.uimodel.MutationUiModel
@@ -28,4 +29,6 @@ interface UserProfileUiMapper {
     fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel
 
     fun mapShopRecom(response: UserShopRecomModel): ShopRecomUiModel
+
+    fun mapShopFollow(response: ShopFollowModel): MutationUiModel
 }
