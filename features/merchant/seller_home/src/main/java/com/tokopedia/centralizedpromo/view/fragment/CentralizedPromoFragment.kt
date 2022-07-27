@@ -64,7 +64,10 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
             ::trackFreeShippingClick,
             ::trackProductCouponImpression,
             ::trackProductCouponClick,
-            ::trackProductCouponOngoingPromoClick
+            ::trackProductCouponOngoingPromoClick,
+            ::trackTokoMemberImpression,
+            ::trackTokoMemberClicked,
+            ::trackFlashSaleTokoClick
         )
     }
 
@@ -272,6 +275,10 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         }, TOAST_DURATION)
     }
 
+    private fun trackFlashSaleTokoClick(cardTitle: String) {
+        CentralizedPromoTracking.sendClickFlashSaleToko(cardTitle, userSession.shopId)
+    }
+
     private fun trackFreeShippingImpression() {
         centralizedPromoViewModel.trackFreeShippingImpression()
     }
@@ -290,6 +297,14 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
 
     private fun trackProductCouponOngoingPromoClick(campaignName: String) {
         CentralizedPromoTracking.sendClickProductCouponOngoingPromo(campaignName, userSession.shopId)
+    }
+
+    private fun trackTokoMemberImpression() {
+        CentralizedPromoTracking.sendViewTokoMember(userSession.shopId)
+    }
+
+    private fun trackTokoMemberClicked() {
+        CentralizedPromoTracking.sendClickTokoMember(userSession.shopId)
     }
 }
 

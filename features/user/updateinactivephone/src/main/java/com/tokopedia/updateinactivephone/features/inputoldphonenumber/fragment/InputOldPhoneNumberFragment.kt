@@ -27,7 +27,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class InputOldPhoneNumberFragment : BaseDaggerFragment() {
+open class InputOldPhoneNumberFragment : BaseDaggerFragment() {
 
     private val binding : FragmentInputOldPhoneNumberBinding? by viewBinding()
 
