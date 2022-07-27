@@ -22,6 +22,7 @@ import com.tokopedia.topchat.chatlist.domain.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.chatblastseller.ChatBlastSellerMetadata
+import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatMetricResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeature
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.domain.usecase.ChatBanedSellerUseCase
@@ -31,8 +32,10 @@ import com.tokopedia.topchat.chatlist.domain.usecase.GetOperationalInsightUseCas
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationPinChatUseCase
 import com.tokopedia.topchat.chatlist.domain.usecase.MutationUnpinChatUseCase
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
+import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.OPERATIONAL_INSIGHT_NEXT_MONDAY
 import com.tokopedia.topchat.chatroom.view.uimodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.util.Utils
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -951,8 +954,127 @@ class ChatItemListViewModelTest {
         assertFalse(result)
     }
 
+    @Test
+    fun should_get_ticker_with_true_show_when_get_operational_insight() {
+        //Given
+        val expectedResponse = ShopChatMetricResponse().apply {
+            this.shopChatTicker?.showTicker = true
+        }
+        coEvery {
+            operationalInsightUseCase(any())
+        } returns expectedResponse
+        every {
+            sharedPref.getLong(any(), any())
+        } returns 0
+
+        //When
+        viewModel.getOperationalInsight(shopId)
+
+        //Then
+        assertTrue((viewModel.chatOperationalInsight.value as Success).data.showTicker?: false)
+    }
+
+    @Test
+    fun should_get_ticker_with_false_show_when_get_operational_insight_but_not_next_monday() {
+        //Given
+        val expectedResponse = ShopChatMetricResponse().apply {
+            this.shopChatTicker?.showTicker = true
+        }
+        coEvery {
+            operationalInsightUseCase(any())
+        } returns expectedResponse
+        every {
+            sharedPref.getLong(any(), any())
+        } returns Long.MAX_VALUE
+
+        //When
+        viewModel.getOperationalInsight(shopId)
+
+        //Then
+        assertFalse((viewModel.chatOperationalInsight.value as Success).data.showTicker?: true)
+    }
+
+    @Test
+    fun should_get_ticker_with_false_show_when_get_operational_insight() {
+        //Given
+        val expectedResponse = ShopChatMetricResponse().apply {
+            this.shopChatTicker?.showTicker = false
+        }
+        coEvery {
+            operationalInsightUseCase(any())
+        } returns expectedResponse
+
+        //When
+        viewModel.getOperationalInsight(shopId)
+
+        //Then
+        assertFalse((viewModel.chatOperationalInsight.value as Success).data.showTicker?: true)
+    }
+
+    @Test
+    fun should_not_get_ticker_when_ticker_data_is_null() {
+        //Given
+        val expectedResponse = ShopChatMetricResponse().apply {
+            this.shopChatTicker = null
+        }
+        coEvery {
+            operationalInsightUseCase(any())
+        } returns expectedResponse
+
+        //When
+        viewModel.getOperationalInsight(shopId)
+
+        //Then
+        assertEquals(
+            null,
+            viewModel.chatOperationalInsight.value
+        )
+    }
+
+    @Test
+    fun should_get_throwable_when_error_get_operational_insight() {
+        //Given
+        val expectedResult = Throwable("Oops!")
+        coEvery {
+            operationalInsightUseCase(any())
+        } throws expectedResult
+
+        //When
+        viewModel.getOperationalInsight(shopId)
+
+        //Then
+        assertEquals(
+            expectedResult.message,
+            (viewModel.chatOperationalInsight.value as Fail).throwable.message
+        )
+    }
+
+    @Test
+    fun should_save_next_monday_date_in_millis() {
+        //Given
+        mockkObject(Utils)
+        val expectedTimeMillis: Long = 1
+        every {
+            sharedPref.getLong(any(), any())
+        } returns expectedTimeMillis
+        every {
+            Utils.getNextParticularDay(any())
+        } returns expectedTimeMillis
+
+        //When
+        viewModel.saveNextMondayDate()
+        val result = sharedPref.getLong(OPERATIONAL_INSIGHT_NEXT_MONDAY, 0)
+
+        //Then
+        assertEquals(
+            expectedTimeMillis,
+            result
+        )
+    }
+
     companion object {
         private const val exMessageId = "190378584"
+        private const val shopId = "testShopId1"
         private val getChatList: ChatListPojo = FileUtil.parse(
                 "/success_get_chat_list.json",
                 ChatListPojo::class.java

@@ -382,11 +382,11 @@ class ChatItemListViewModel @Inject constructor(
     fun getOperationalInsight(shopId: String) {
         launchCatchError(block = {
             val dataResponse = operationalInsightUseCase(shopId)
-            if (dataResponse.shopChatTicker?.showTicker == true) {
-                val shouldShowTicker = shouldShowOperationalInsightTicker()
-                dataResponse.shopChatTicker?.showTicker = shouldShowTicker
-            }
             dataResponse.shopChatTicker?.let {
+                if (it.showTicker == true) {
+                    val shouldShowTicker = shouldShowOperationalInsightTicker()
+                    it.showTicker = shouldShowTicker
+                }
                 _chatOperationalInsight.value = Success(it)
             }
         }, onError = {
@@ -410,7 +410,7 @@ class ChatItemListViewModel @Inject constructor(
     companion object {
         private const val SELLER_FILTER_THRESHOLD = 3
         private const val ONE_MILLION = 1_000_000L
-        private const val OPERATIONAL_INSIGHT_NEXT_MONDAY = "topchat_operational_insight_next_monday"
+        const val OPERATIONAL_INSIGHT_NEXT_MONDAY = "topchat_operational_insight_next_monday"
         val arrayFilterParam = arrayListOf(
                 PARAM_FILTER_ALL,
                 PARAM_FILTER_UNREAD,
