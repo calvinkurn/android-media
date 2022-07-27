@@ -121,9 +121,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private const val KEY_AFFILIATE_USER = "affiliate"
         private var isAffiliateUser: String = KEY_GENERAL_USER
         //Image Type
-        private const val KEY_NO_IMAGE = "no image"
-        private const val KEY_IMAGE = "image"
-        private const val KEY_CONTEXTUAL_IMAGE = "contextual image"
+        const val KEY_NO_IMAGE = "no image"
+        const val KEY_IMAGE = "image"
+        const val KEY_CONTEXTUAL_IMAGE = "contextual image"
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
