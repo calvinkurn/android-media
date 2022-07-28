@@ -52,24 +52,10 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     private fun renderHeader() {
         if (containerHeaderImage == null) {
-            containerHeaderImage = if (binding?.containerSuperGraphicHeader is ViewStub &&
-                !isViewStubHasBeenInflated(binding?.containerSuperGraphicHeader)
-            ) {
-                val stubChannelView = binding?.containerSuperGraphicHeader?.inflate()
-                stubChannelView as ConstraintLayout
-            } else {
-                null
-            }
+            containerHeaderImage = getParentLayout(binding?.containerSuperGraphicHeader)
         }
         if (headerTopRounded == null) {
-            headerTopRounded = if (binding?.headerTopRounded is ViewStub &&
-                !isViewStubHasBeenInflated(binding?.headerTopRounded)
-            ) {
-                val stubChannelView = binding?.headerTopRounded?.inflate()
-                stubChannelView as ConstraintLayout
-            } else {
-                null
-            }
+            headerTopRounded = getParentLayout(binding?.headerTopRounded)
         }
     }
 
@@ -79,14 +65,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
         if (chooseAddressView == null) {
-            chooseAddressView = if (binding?.viewChooseAddress is ViewStub &&
-                !isViewStubHasBeenInflated(binding?.viewChooseAddress)
-            ) {
-                val stubChannelView = binding?.viewChooseAddress?.inflate()
-                stubChannelView as ChooseAddressWidget
-            } else {
-                null
-            }
+            chooseAddressView = getParentLayout(binding?.viewChooseAddress)
         }
         chooseAddressView?.let {
             if (needToShowChooseAddress) {
@@ -107,14 +86,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean) {
         if (balanceWidgetView == null) {
-            balanceWidgetView = if (binding?.viewBalanceWidget is ViewStub &&
-                !isViewStubHasBeenInflated(binding?.viewBalanceWidget)
-            ) {
-                val stubChannelView = binding?.viewBalanceWidget?.inflate()
-                stubChannelView as BalanceWidgetView
-            } else {
-                null
-            }
+            balanceWidgetView = getParentLayout(binding?.viewBalanceWidget)
         }
         data?.let {
             if (isUserLogin) {
@@ -123,6 +95,22 @@ class HomeHeaderOvoViewHolder(itemView: View,
             } else {
                 balanceWidgetView?.gone()
             }
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> getParentLayout(viewStub: ViewStub?) : T? {
+        return if (viewStub is ViewStub &&
+            !isViewStubHasBeenInflated(viewStub)
+        ) {
+            val stubChannelView = viewStub.inflate()
+            try {
+                stubChannelView as T
+            } catch (e: Exception) {
+                null
+            }
+        } else {
+            null
         }
     }
 
