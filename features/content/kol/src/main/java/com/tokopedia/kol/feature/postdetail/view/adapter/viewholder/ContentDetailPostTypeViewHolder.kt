@@ -175,7 +175,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 media: FeedXMedia,
                 isMuted: Boolean
             ) {
-                //TODO
+                //TODO analytics
 //                listener?.muteUnmuteVideo(
 //                    mData.playChannelID,
 //                    isMuted,
@@ -187,7 +187,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             }
 
             override fun onVideoStopTrack(viewHolder: CarouselVideoViewHolder, lastPosition: Long) {
-                //TODO
+                //TODO analytics
 //                videoListener?.onVideoStopTrack(
 //                    mData,
 //                    lastPosition,

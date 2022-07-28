@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
@@ -54,6 +55,7 @@ class ContentDetailRevampViewModel@Inject constructor(
     private val addWishListUseCase: AddWishListUseCase,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val sendReportUseCase: SendReportUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
 
 
     ): BaseViewModel(baseDispatcher.main) {
@@ -67,6 +69,8 @@ class ContentDetailRevampViewModel@Inject constructor(
     private val _trackVODViewsData = MutableLiveData<Result<ViewsKolModel>>()
     private val _atcResp = MutableLiveData<Result<AtcViewModel>>()
     private val _reportResponse = MutableLiveData<Result<DeletePostViewModel>>()
+    private val _deletePostResp = MutableLiveData<Result<DeletePostViewModel>>()
+
 
 
 
@@ -95,6 +99,10 @@ class ContentDetailRevampViewModel@Inject constructor(
 
     val reportResponse: LiveData<Result<DeletePostViewModel>>
          get() = _reportResponse
+
+    val deletePostResp: LiveData<Result<DeletePostViewModel>>
+         get() = _deletePostResp
+
 
 
     private val userId: String
@@ -385,5 +393,28 @@ class ContentDetailRevampViewModel@Inject constructor(
                 _reportResponse.value = Fail(it)
             }
         )
+    }
+    fun doDeletePost(id: Int, rowNumber: Int) {
+        launchCatchError(block = {
+            val results = withContext(baseDispatcher.io) {
+                deletePost(id, rowNumber)
+            }
+            _deletePostResp.value = Success(results)
+        }) {
+            _deletePostResp.value = Fail(it)
+        }
+    }
+    private fun deletePost(id: Int, rowNumber: Int): DeletePostViewModel {
+        try {
+            val data = DeletePostViewModel()
+            data.id = id
+            data.rowNumber = rowNumber
+            val params = DeletePostUseCase.createRequestParams(id.toString())
+            val isSuccess = deletePostUseCase.createObservable(params).toBlocking().first()
+            data.isSuccess = isSuccess
+            return data
+        } catch (e: Throwable) {
+            throw e
+        }
     }
 }

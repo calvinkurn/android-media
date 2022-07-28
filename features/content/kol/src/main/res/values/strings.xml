@@ -33,6 +33,7 @@
 
     <!--Kol Post Detail-->
     <string name="kol_title_post_detail">Post Detail</string>
+    <string name="cdp_title_new">Postingan</string>
     <string name="add_your_comment">Masukan komen kamu</string>
     <string name="see_all_comment">Lihat Semua Comments (%d)</string>
     <string name="post_detail_follow_success_toast">Cek Feeds mu sekarang untuk melihat update TopProfile ini</string>

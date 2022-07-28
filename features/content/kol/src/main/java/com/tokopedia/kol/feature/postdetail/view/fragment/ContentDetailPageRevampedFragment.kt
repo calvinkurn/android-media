@@ -30,6 +30,7 @@ import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent
@@ -140,11 +141,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             getCDPPostFirstPostData.observe(viewLifecycleOwner, {
                 when (it) {
                     is Success -> {
-                        //TODO add checks
                         onSuccessGetFirstPostCDPData(it.data)
                     }
                     else -> {
-                        //TODO handle
                         showToast(getString(feedComponentR.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
                     }
                 }
@@ -155,7 +154,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                         onSuccessGetCDPRecomData(ContentDetailRevampDataUiModel(postList = it.data.posts))
                     }
                     else -> {
-                        //TODO handle
                         showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
                     }
                 }
@@ -297,6 +295,24 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     is Success -> {
                         reportBottomSheet.setFinalView()
                         onSuccessDeletePost(it.data.rowNumber)
+                    }
+                }
+            })
+
+            deletePostResp.observe(viewLifecycleOwner,  {
+                when (it) {
+                    is Success -> {
+                        val data = it.data
+                        if (data.isSuccess) {
+                            onSuccessDeletePost(data.rowNumber)
+                        } else {
+                            data.errorMessage = getString(kolR.string.default_request_error_unknown)
+                            onErrorDeletePost(data)
+                        }
+                    }
+                    is Fail -> {
+                        val message = getString(kolR.string.default_request_error_unknown)
+                        showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
             })
@@ -731,7 +747,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             sheet.onDelete = {
                 val media =
                     if (feedXCard.media.size > feedXCard.lastCarouselIndex) feedXCard.media[feedXCard.lastCarouselIndex] else null
-                createDeleteDialog()
+                createDeleteDialog(postPosition)
 
             }
             sheet.onDismiss = {
@@ -860,8 +876,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         activity?.startActivity(Intent.createChooser(intent, shareData.name))
     }
 
-    private fun createDeleteDialog(
-    ) {
+    private fun createDeleteDialog(rowNumber: Int) {
         val dialog =
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(kolR.string.feed_delete_post))
@@ -872,7 +887,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {
-            //TODO feedViewModel.doDeletePost(id, rowNumber)
+          cdpViewModel.doDeletePost(id, rowNumber)
             dialog.dismiss()
         }
         dialog.show()
@@ -1140,6 +1155,18 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 //            onRefresh()
         }
     }
+    private fun onErrorDeletePost(data: DeletePostViewModel) {
+        Toaster.build(
+            requireView(),
+            data.errorMessage,
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            getString(com.tokopedia.abstraction.R.string.title_try_again),
+            View.OnClickListener {
+                cdpViewModel.doDeletePost(data.id, data.rowNumber)
+            })
+    }
+
 
 
 

@@ -42,7 +42,7 @@
         </activity>
         <activity
             android:name=".feature.postdetail.view.activity.KolPostDetailActivity"
-            android:label="@string/kol_title_post_detail"
+            android:label="@string/cdp_title_new"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden"
