@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import androidx.cardview.widget.CardView
 import com.tokopedia.chat_common.data.BaseChatUiModel
@@ -10,8 +9,6 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
-import com.tokopedia.chatbot.ChatbotConstant
-import com.tokopedia.chatbot.ChatbotConstant.REPLY_AGENT_NAME
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
@@ -52,11 +49,8 @@ abstract class ChatbotMessageUnifyViewHolder(
         }
     }
 
-    //Requirement from BE
-    protected open fun mapSenderName(parentReply: ParentReply): String {
-        if (userSession.userId == parentReply.senderId)
-            return userSession.name
-        return ChatbotConstant.TOKOPEDIA_CARE
+    protected fun mapSenderName(parentReply: ParentReply): String {
+        return parentReply.name
     }
 
     protected fun verifyReplyTime(chat: MessageUiModel) {

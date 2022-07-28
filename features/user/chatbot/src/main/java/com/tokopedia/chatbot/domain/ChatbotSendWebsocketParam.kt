@@ -2,7 +2,6 @@ package com.tokopedia.chatbot.domain
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import com.tokopedia.applink.teleporter.Teleporter.gson
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.parentreply.ParentReply
@@ -99,6 +98,7 @@ object ChatbotSendWebsocketParam {
         request.addProperty("sender_id",referredMsg.senderId.toLongOrZero())
         request.addProperty("reply_time",referredMsg.replyTime.toLongOrZero())
         request.addProperty("main_text",referredMsg.mainText)
+        request.addProperty("name", referredMsg.name)
         return request
     }
 

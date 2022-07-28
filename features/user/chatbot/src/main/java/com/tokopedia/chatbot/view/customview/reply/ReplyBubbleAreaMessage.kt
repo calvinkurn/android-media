@@ -201,7 +201,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             imageUrl = referredMsg.getReferredImageUrl(),
             localId = referredMsg.localId,
             source = "chat",
-            replyId = referredMsg.replyId
+            replyId = referredMsg.replyId,
+            name = userName ?: ""
         )
         bindParentReplyData(parentReply, referredMsg.message, userName)
         updateCloseButtonState(enableCloseButton)
