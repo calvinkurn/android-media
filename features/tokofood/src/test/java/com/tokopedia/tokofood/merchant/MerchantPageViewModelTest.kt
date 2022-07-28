@@ -259,11 +259,11 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
         val testData = generateTestCartTokoFood()
         val productUiModel = generateTestProductUiModelWithVariant()
         val actualResult = viewModel.mapCartTokoFoodToCustomOrderDetail(testData, productUiModel)
-        assertEquals(expectedResult.cartId, actualResult.cartId)
-        assertEquals(expectedResult.subTotal, actualResult.subTotal, 0.0)
-        assertEquals(expectedResult.subTotalFmt, actualResult.subTotalFmt)
-        assertEquals(expectedResult.qty, actualResult.qty)
-        assertEquals(expectedResult.customListItems.first(), actualResult.customListItems.first())
+        assertEquals(expectedResult.cartId, actualResult?.cartId)
+        assertEquals(expectedResult.subTotal, actualResult?.subTotal ?: 0.0, 0.0)
+        assertEquals(expectedResult.subTotalFmt, actualResult?.subTotalFmt)
+        assertEquals(expectedResult.qty, actualResult?.qty)
+        assertEquals(expectedResult.customListItems.first(), actualResult?.customListItems?.first())
     }
 
     @Test
