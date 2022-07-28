@@ -67,7 +67,7 @@
                     android:paddingEnd="@dimen/unify_space_4"
                     android:paddingRight="@dimen/unify_space_2"
                     android:text="@string/up_btn_text_live"
-                    android:textColor="@color/white"
+                    android:textColor="@color/Unify_N0"
                     android:textSize="@dimen/fontSize_lvl10"
                     android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="@+id/view_profile_outer_ring"
