@@ -428,6 +428,23 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         orderShipment.value = logisticProcessor.resetBbo(orderShipment.value)
     }
 
+    fun validateBboStacking() {
+        //if bo red promo green unaply bo
+        validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.let {
+            for (voucherOrderUiModel in it) {
+                if (voucherOrderUiModel.messageUiModel.state == "red") {
+                    unApplyBbo()
+                }
+            }
+        }
+    }
+
+    private fun unApplyBbo() {
+        resetBbo()
+        promoProcessor.clearAllPromoFromLastRequest(lastValidateUsePromoRequest)
+        calculateTotal()
+    }
+
     fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
         val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, orderShipment.value)
         newOrderShipment?.let {
