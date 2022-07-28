@@ -288,6 +288,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                     putLong(EXTRA_SHOP_ID, extra.getLong(EXTRA_SHOP_ID))
                     putLong(EXTRA_PRODUCT_ID, extra.getLong(EXTRA_PRODUCT_ID))
                     putBoolean(EXTRA_CPL_ACTIVATED, extra.getBoolean(EXTRA_CPL_ACTIVATED))
+                    putIntegerArrayList(EXTRA_SHIPPER_SERVICES, extra.getIntegerArrayList(EXTRA_SHIPPER_SERVICES))
                 }
             }
         }

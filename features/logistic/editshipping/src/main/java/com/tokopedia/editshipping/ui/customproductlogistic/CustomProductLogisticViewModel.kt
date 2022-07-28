@@ -28,7 +28,7 @@ class CustomProductLogisticViewModel @Inject constructor(
             try {
                 val cplList = repo.getCPLList(shopId, productId)
                 _cplList.value = Success(mapper.mapCPLData(cplList.response.data).apply {
-                    shipperServicesIds?.apply {
+                    shipperServicesIds?.takeIf { it.isNotEmpty() }?.apply {
                         updateCplProduct(this)
                     }
                 })
