@@ -16,13 +16,19 @@ const val defaultActivationCta = "Sambungkan"
 private const val ERROR_GOPAY_EMPTY = "Wallet app is linked but gopay balance return empty"
 private const val ERROR_GOPAY_POINTS_EMPTY = "Wallet app is linked but gopay points return empty"
 private const val WALLET_PEMUDA_POINTS_THRESHOLD = 10000
+private const val FIRST_WALLET_DATA = 0
+private const val TEXT_ATTRIBUTE_FIRST = 0
+private const val TEXT_ATTRIBUTE_SECOND = 1
+private const val TAG_ATTRIBUTE_FIRST = 0
+private const val TAG_ATTRIBUTE_SECOND = 1
+private const val EMPTY_AMOUNT_RESERVE_BALANCE = 0
 
 fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconRes: Int? = null, state: Int, headerTitle: String): BalanceDrawerItemModel {
-    val balanceTitleTextAttribute = sectionContent.getOrNull(0)?.textAttributes?.mapToBalanceTextAttributes()
-    val balanceSubTitleTextAttribute = sectionContent.getOrNull(1)?.textAttributes?.mapToBalanceTextAttributes()
+    val balanceTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_FIRST)?.textAttributes?.mapToBalanceTextAttributes()
+    val balanceSubTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_SECOND)?.textAttributes?.mapToBalanceTextAttributes()
 
-    val balanceTitleTagAttribute = sectionContent.getOrNull(0)?.tagAttributes?.mapToBalanceTagAttributes()
-    val balanceSubTitleTagAttribute = sectionContent.getOrNull(1)?.tagAttributes?.mapToBalanceTagAttributes()
+    val balanceTitleTagAttribute = sectionContent.getOrNull(TAG_ATTRIBUTE_FIRST)?.tagAttributes?.mapToBalanceTagAttributes()
+    val balanceSubTitleTagAttribute = sectionContent.getOrNull(TAG_ATTRIBUTE_SECOND)?.tagAttributes?.mapToBalanceTagAttributes()
 
     return BalanceDrawerItemModel(
             applinkContainer = redirectAppLink,
@@ -42,7 +48,7 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
 }
 
 fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String): BalanceDrawerItemModel? {
-    val selectedBalance = walletappGetBalance.balances.getOrNull(0)
+    val selectedBalance = walletappGetBalance.balances.getOrNull(FIRST_WALLET_DATA)
     var pemudaPointsReserveBalance = ""
 
     selectedBalance?.let { balances ->
@@ -82,7 +88,7 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String): Ba
                 text = if (selectedBalance.activationCta.isNotEmpty()) selectedBalance.activationCta else defaultActivationCta,
             )
             val pemudaReserveBalance = balances.reserveBalance.find { it.walletCode == WALLET_CODE_GOPAY_POINTS }
-            if (pemudaReserveBalance?.amount?:0 >= WALLET_PEMUDA_POINTS_THRESHOLD) {
+            if (pemudaReserveBalance?.amount?: EMPTY_AMOUNT_RESERVE_BALANCE >= WALLET_PEMUDA_POINTS_THRESHOLD) {
                 pemudaPointsReserveBalance = pemudaReserveBalance?.amountFmt?:""
                 pemudaPointsReserveBalance+=" "
             }
@@ -100,11 +106,11 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String): Ba
 }
 
 fun SubscriptionsDrawerList.mapToHomeBalanceItemModel(state: Int, headerTitle: String, isSubscriber: Boolean, drawerItemType: Int): BalanceDrawerItemModel {
-    val balanceTitleTextAttribute = sectionContent.getOrNull(0)?.subscriptionsTextAttributes?.mapToBalanceTextAttributes()
-    val balanceSubTitleTextAttribute = sectionContent.getOrNull(1)?.subscriptionsTextAttributes?.mapToBalanceTextAttributes()
+    val balanceTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_FIRST)?.subscriptionsTextAttributes?.mapToBalanceTextAttributes()
+    val balanceSubTitleTextAttribute = sectionContent.getOrNull(TEXT_ATTRIBUTE_SECOND)?.subscriptionsTextAttributes?.mapToBalanceTextAttributes()
 
-    val balanceTitleTagAttribute = sectionContent.getOrNull(0)?.tagAttributes?.mapToBalanceTagAttributes()
-    val balanceSubTitleTagAttribute = sectionContent.getOrNull(1)?.tagAttributes?.mapToBalanceTagAttributes()
+    val balanceTitleTagAttribute = sectionContent.getOrNull(TAG_ATTRIBUTE_FIRST)?.tagAttributes?.mapToBalanceTagAttributes()
+    val balanceSubTitleTagAttribute = sectionContent.getOrNull(TAG_ATTRIBUTE_SECOND)?.tagAttributes?.mapToBalanceTagAttributes()
 
     return BalanceDrawerItemModel(
         applinkContainer = redirectAppLink,
@@ -161,7 +167,7 @@ fun SubscriptionsTextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribu
 
 fun TagAttributes.mapToBalanceTagAttributes(): BalanceTagAttribute {
     return BalanceTagAttribute(
-            text = text,
-            backgroundColour = backgroundColour
+        text = text,
+        backgroundColour = backgroundColour
     )
 }
