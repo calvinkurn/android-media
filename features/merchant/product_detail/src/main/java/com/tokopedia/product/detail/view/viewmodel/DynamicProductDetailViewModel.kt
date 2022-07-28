@@ -76,7 +76,6 @@ import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_E
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_GENERAL_ERROR
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_DYNAMIC_SLOTTING
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_TIMEOUT_EXCEEDED
-import com.tokopedia.product.detail.usecase.CreateAffiliateCookieUseCase
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -161,9 +160,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
                                                              private val playWidgetTools: PlayWidgetTools,
                                                              private val remoteConfig: RemoteConfig,
-                                                             private val createAffiliateCookieUseCase: Lazy<CreateAffiliateCookieUseCase>,
                                                              val userSessionInterface: UserSessionInterface,
-                                                             private val affiliateCookieHelper: AffiliateCookieHelper) : BaseViewModel(dispatcher.main) {
+                                                             private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>) : BaseViewModel(dispatcher.main) {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
@@ -1040,7 +1038,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun hitAffiliateCookie(productInfo: DynamicProductInfoP1,
-                           deviceId: String,
                            affiliateUuid: String,
                            uuid: String,
                            affiliateChannel:String) {
@@ -1058,7 +1055,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     )
                 )
             )
-            affiliateCookieHelper.initCookie(
+            affiliateCookieHelper.get().initCookie(
                 affiliateUUID = affiliateUuid,
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = affiliatePageDetail,
@@ -1067,31 +1064,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }, onError = {
             _affiliateCookie.postValue(it.asFail())
         })
-
-//        if (affiliateUuid.isEmpty()) return
-
-//        launchCatchError(block = {
-//            val affiliateParam = DynamicProductDetailMapper.generateAffiliateCookieRequest(
-//                    productInfo = productInfo,
-//                    affiliateUuid = affiliateUuid,
-//                    deviceId = deviceId,
-//                    uuid = uuid,
-//                    affiliateChannel = affiliateChannel
-//            )
-//            val result = createAffiliateCookieUseCase
-//                    .get()
-//                    .executeOnBackground(CreateAffiliateCookieUseCase.createParams(affiliateParam))
-//
-//            if (result.isSuccess()) {
-//                _affiliateCookie.postValue(true.asSuccess())
-//            } else {
-//                _affiliateCookie.postValue(
-//                        Throwable(result.response.data.error.errorMessage).asFail()
-//                )
-//            }
-//        }) {
-//            _affiliateCookie.postValue(it.asFail())
-//        }
     }
 
     private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean = false, recomItem: RecommendationItem = RecommendationItem()) {
