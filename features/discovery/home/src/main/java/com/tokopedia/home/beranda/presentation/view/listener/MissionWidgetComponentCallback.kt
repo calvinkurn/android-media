@@ -19,6 +19,10 @@ class MissionWidgetComponentCallback(
     val homeRevampViewModel: HomeRevampViewModel
 ) :
     MissionWidgetComponentListener {
+    companion object {
+        private const val ZERO_PRODUCT_ID = "0"
+    }
+
     override fun refreshMissionWidget(missionWidgetListDataModel: MissionWidgetListDataModel) {
         homeRevampViewModel.getMissionWidgetRefresh()
     }
@@ -27,7 +31,11 @@ class MissionWidgetComponentCallback(
         element: CarouselMissionWidgetDataModel,
         horizontalPosition: Int
     ) {
-        MissionWidgetTracking.sendMissionWidgetClicked(element, horizontalPosition, homeCategoryListener.userId)
+        if (element.productID.isNotBlank() && element.productID != ZERO_PRODUCT_ID) {
+            MissionWidgetTracking.sendMissionWidgetClickedToPdp(element, horizontalPosition, homeCategoryListener.userId)
+        } else {
+            MissionWidgetTracking.sendMissionWidgetClicked(element, horizontalPosition, homeCategoryListener.userId)
+        }
         homeCategoryListener.onDynamicChannelClicked(element.appLink)
     }
 
