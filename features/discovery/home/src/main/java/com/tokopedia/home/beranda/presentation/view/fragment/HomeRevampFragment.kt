@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.provider.Settings
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -304,7 +303,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val SPACE_CHAR = "%20"
         private const val QUERY_CHAR_1 = "?"
         private const val QUERY_CHAR_2 = "%3F"
-        private const val SCHEME_PACKAGE = "package"
         private const val POSITION_ARRAY_CONTAINER_SIZE = 2
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
@@ -658,32 +656,29 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     ) {
         context?.let { ctx ->
             if (!isSubscriptionCoachmarkShown(ctx) && subscriptionBalanceCoachMark != null) {
-                showSubscriptionEligibleCoachmark(subscriptionBalanceCoachMark)
+                showSubscriptionEligibleCoachMark(subscriptionBalanceCoachMark)
             } else if (!isHomeTokonowCoachmarkShown(ctx)) {
                 showTokonowCoachmark()
             }
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
-    private fun showSubscriptionEligibleCoachmark(
-        subscriptionBalanceCoachmark: BalanceCoachmark? = null) {
+    private fun showSubscriptionEligibleCoachMark(subscriptionBalanceCoachMark: BalanceCoachmark) {
         context?.let {
-            subscriptionBalanceCoachmark?.let { subscriptionBalanceCoachmark ->
-                coachMarkItemSubscription.buildSubscriptionCoachMark(subscriptionBalanceCoachmark)
-                coachmarkSubscription?.let { subscriptionCoachmark ->
+            subscriptionBalanceCoachMark.let { subscriptionBalanceCoachMark ->
+                coachMarkItemSubscription.buildSubscriptionCoachMark(subscriptionBalanceCoachMark)
+                coachmarkSubscription?.let { subscriptionCoachMark ->
                     try {
                         if (coachMarkItemSubscription.isNotEmpty() && isValidToShowCoachMark() && !subscriptionCoachmarkIsShowing) {
-                            subscriptionCoachmark.onDismissListener = {
+                            subscriptionCoachMark.onDismissListener = {
                                 setSubscriptionCoachmarkShown(it)
                                 showTokonowCoachmark()
                             }
-                            subscriptionCoachmark.showCoachMark(step = coachMarkItemSubscription, index = COACHMARK_FIRST_INDEX)
+                            subscriptionCoachMark.showCoachMark(step = coachMarkItemSubscription, index = COACHMARK_FIRST_INDEX)
                             subscriptionCoachmarkIsShowing = true
                         }
                     } catch (e: Exception) {
                         subscriptionCoachmarkIsShowing = false
-                        e.printStackTrace()
                     }
                 }
             }
@@ -722,15 +717,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     ?: VIEW_DEFAULT_HEIGHT) > VIEW_DEFAULT_HEIGHT)
             )
                 return balanceWidgetSubscriptionView
-        }
-        return null
-    }
-
-    private fun getBalanceWidgetView(): BalanceWidgetView? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let { it ->
-            val balanceWidgetView = it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
-            balanceWidgetView?.let { balanceWidget -> return balanceWidget }
         }
         return null
     }
@@ -2244,15 +2230,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 refreshLayout.setCanChildScrollUp(false)
             }
         })
-    }
-
-    private fun getSnackBar(text: String, duration: Int): Snackbar {
-        if (homeSnackbar != null) {
-            homeSnackbar?.dismiss()
-            homeSnackbar = null
-        }
-        homeSnackbar = Snackbar.make(root, text, duration)
-        return homeSnackbar!!
     }
 
     override fun onPromoDragStart() {}

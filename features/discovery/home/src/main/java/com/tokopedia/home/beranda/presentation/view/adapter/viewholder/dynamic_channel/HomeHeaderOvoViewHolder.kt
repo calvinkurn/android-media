@@ -103,8 +103,8 @@ class HomeHeaderOvoViewHolder(itemView: View,
         return if (viewStub is ViewStub &&
             !isViewStubHasBeenInflated(viewStub)
         ) {
-            val stubChannelView = viewStub.inflate()
             try {
+                val stubChannelView = viewStub.inflate()
                 stubChannelView as T
             } catch (e: Exception) {
                 null

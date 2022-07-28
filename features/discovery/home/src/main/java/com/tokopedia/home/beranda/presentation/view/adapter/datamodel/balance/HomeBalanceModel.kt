@@ -86,7 +86,6 @@ data class HomeBalanceModel(
     private fun getDefaultGopayErrorState(headerTitle: String): BalanceDrawerItemModel {
         return BalanceDrawerItemModel(
             drawerItemType = TYPE_WALLET_APP_LINKED,
-            defaultIconRes = R.drawable.ic_gopay_default,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
             balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
             state = STATE_ERROR,
@@ -97,7 +96,6 @@ data class HomeBalanceModel(
     private fun getDefaultTokopointsErrorState(headerTitle: String): BalanceDrawerItemModel {
         return BalanceDrawerItemModel(
             drawerItemType = TYPE_REWARDS,
-            defaultIconRes = R.drawable.ic_new_tokopoints,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
             balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute(),
             state = STATE_ERROR,
@@ -151,7 +149,6 @@ data class HomeBalanceModel(
             it.mapToHomeBalanceItemModel(
                     drawerItemType = type,
                     state = STATE_SUCCESS,
-                    defaultIconRes = mapTokopointDefaultIconRes(type),
                     headerTitle = headerTitle
             )
         }
@@ -215,11 +212,6 @@ data class HomeBalanceModel(
                 }
             }
         }
-    }
-
-    private fun mapTokopointDefaultIconRes(type: Int) = when (type) {
-        TYPE_REWARDS -> R.drawable.ic_new_points
-        else -> null
     }
 
     private fun mapWalletApp(
