@@ -12,19 +12,13 @@
       "item_list": "/groupchat - featured product",
       "items": [
         {
-          "index": ".*",
+          "index": "\\d+(.\\d+)?",
           "item_brand": ".*",
           "item_category": ".*",
           "item_id": "\\d+",
           "item_name": ".*",
           "item_variant": ".*",
-          "price": ".*",
-          "shopName": ".*",
-          "dimension83": ".*",
-          "category_id": ".*",
-          "dimension40": ".*",
-          "shopId": ".*",
-          "shopType": ".*"
+          "price": ".*"
         }
       ],
       "sessionIris": ".*",
@@ -40,19 +34,13 @@
       "item_list": "/groupchat - featured product",
       "items": [
         {
-          "index": ".*",
+          "index": "\\d+(.\\d+)?",
           "item_brand": ".*",
           "item_category": ".*",
           "item_id": "\\d+",
           "item_name": ".*",
           "item_variant": ".*",
-          "price": ".*",
-          "shopName": ".*",
-          "dimension83": ".*",
-          "category_id": ".*",
-          "dimension40": ".*",
-          "shopId": ".*",
-          "shopType": ".*"
+          "price": ".*"
         }
       ],
       "sessionIris": ".*",
@@ -75,8 +63,8 @@
           "item_id": "\\d+",
           "item_name": ".*",
           "item_variant": ".*",
-          "price": ".*",
-          "quantity": "\\d+",
+          "price": "\\d+(.\\d+)?",
+          "quantity": "\\d+(.\\d+)?",
           "shop_id": "\\d+",
           "shop_name": ".*",
           "shop_type": ".*"
@@ -102,9 +90,9 @@
           "item_id": "\\d+",
           "item_name": ".*",
           "item_variant": ".*",
-          "price": ".*",
-          "quantity": "\\d+",
-          "shop_id": ".*",
+          "price": "\\d+(.\\d+)?",
+          "quantity": "\\d+(.\\d+)?",
+          "shop_id": "\\d+",
           "shop_name": ".*",
           "shop_type": ".*"
         }
@@ -118,7 +106,8 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     },
     {
       "event": "clickContent",
@@ -126,7 +115,8 @@
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
       "businessUnit": "play",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     }
   ]
 }

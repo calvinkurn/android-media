@@ -1,13 +1,37 @@
 package com.tokopedia.play.analytic.tagitem
 
+import com.tokopedia.play.analytic.KEY_ADD
 import com.tokopedia.play.analytic.KEY_BUSINESS_UNIT
+import com.tokopedia.play.analytic.KEY_CATEGORY_ID
 import com.tokopedia.play.analytic.KEY_CHANNEL
+import com.tokopedia.play.analytic.KEY_CLICK
+import com.tokopedia.play.analytic.KEY_CURRENCY_CODE
 import com.tokopedia.play.analytic.KEY_CURRENT_SITE
+import com.tokopedia.play.analytic.KEY_DIMENSION_40
+import com.tokopedia.play.analytic.KEY_DIMENSION_45
+import com.tokopedia.play.analytic.KEY_ECOMMERCE
+import com.tokopedia.play.analytic.KEY_EVENT
+import com.tokopedia.play.analytic.KEY_EVENT_ACTION
 import com.tokopedia.play.analytic.KEY_EVENT_ADD_TO_CART
+import com.tokopedia.play.analytic.KEY_EVENT_CATEGORY
+import com.tokopedia.play.analytic.KEY_EVENT_LABEL
 import com.tokopedia.play.analytic.KEY_EVENT_PRODUCT_CLICK
 import com.tokopedia.play.analytic.KEY_EVENT_PRODUCT_VIEW
+import com.tokopedia.play.analytic.KEY_IMPRESSIONS
+import com.tokopedia.play.analytic.KEY_INDEX
 import com.tokopedia.play.analytic.KEY_IS_LOGGED_IN_STATUS
+import com.tokopedia.play.analytic.KEY_ITEM_BRAND
+import com.tokopedia.play.analytic.KEY_ITEM_CATEGORY
+import com.tokopedia.play.analytic.KEY_ITEM_ID
+import com.tokopedia.play.analytic.KEY_ITEM_NAME
+import com.tokopedia.play.analytic.KEY_ITEM_VARIANT
+import com.tokopedia.play.analytic.KEY_PRICE
+import com.tokopedia.play.analytic.KEY_PRODUCTS
+import com.tokopedia.play.analytic.KEY_QUANTITY
 import com.tokopedia.play.analytic.KEY_SESSION_IRIS
+import com.tokopedia.play.analytic.KEY_SHOP_ID
+import com.tokopedia.play.analytic.KEY_SHOP_NAME
+import com.tokopedia.play.analytic.KEY_SHOP_TYPE
 import com.tokopedia.play.analytic.KEY_TRACK_BUSINESS_UNIT
 import com.tokopedia.play.analytic.KEY_TRACK_CLICK
 import com.tokopedia.play.analytic.KEY_TRACK_CLICK_GROUP_CHAT
@@ -16,6 +40,7 @@ import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
 import com.tokopedia.play.analytic.KEY_TRACK_VIEW_CONTENT_IRIS
 import com.tokopedia.play.analytic.KEY_USER_ID
 import com.tokopedia.play.analytic.VAL_BUSINESS_UNIT
+import com.tokopedia.play.analytic.VAL_CURRENCY_CODE
 import com.tokopedia.play.analytic.VAL_CURRENT_SITE
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.DiscountedPrice
@@ -30,8 +55,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_PRODUCT_ID
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.builder.BaseTrackerBuilder
-import com.tokopedia.track.builder.util.BaseTrackerConst
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -70,6 +94,9 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
 
     private val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else "0"
+
+    private val irisSessionId: String
+        get() = TrackApp.getInstance().gtm.irisSessionId
 
     override fun impressBottomSheetProducts(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
@@ -260,57 +287,35 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         product: PlayProductUiModel.Product,
         position: Int
     ) {
-        val trackerMap = BaseTrackerBuilder().constructBasicProductView(
-            event = KEY_EVENT_PRODUCT_VIEW,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "view on pinned featured product",
-            eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
-            list = "/groupchat - featured product",
-            products = listOf(
-                BaseTrackerConst.Product(
-                    productPosition = (position + 1).toString(),
-                    id = product.id,
-                    name = product.title,
-                    productPrice = product.price.currentPrice.toString(),
-                    brand = "",
-                    category = "",
-                    isFreeOngkir = product.isFreeShipping,
-                    variant = "",
-                    shopId = product.shopId,
-                )
-            ),
-        ).appendUserId(userId)
-            .appendBusinessUnit(VAL_BUSINESS_UNIT)
-            .appendCurrentSite(VAL_CURRENT_SITE)
-            .build()
+        val trackerMap = mapOf(
+            KEY_EVENT to KEY_EVENT_PRODUCT_VIEW,
+            KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+            KEY_EVENT_ACTION to "view on pinned featured product",
+            KEY_EVENT_LABEL to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
+            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+            KEY_ITEM_LIST to "/groupchat - featured product",
+            KEY_SESSION_IRIS to irisSessionId,
+            KEY_USER_ID to userId,
+            KEY_ECOMMERCE to getNewImpressionsEcommerce(product, position)
+        )
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
     }
 
     override fun clickPinnedProductInCarousel(product: PlayProductUiModel.Product, position: Int) {
-        val trackerMap = BaseTrackerBuilder().constructBasicProductClick(
-            event = KEY_EVENT_PRODUCT_CLICK,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "click pinned featured product tagging",
-            eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
-            list = "/groupchat - featured product",
-            products = listOf(
-                BaseTrackerConst.Product(
-                    productPosition = (position + 1).toString(),
-                    id = product.id,
-                    name = product.title,
-                    productPrice = product.price.currentPrice.toString(),
-                    brand = "",
-                    category = "",
-                    isFreeOngkir = product.isFreeShipping,
-                    variant = "",
-                    shopId = product.shopId,
-                )
-            ),
-        ).appendUserId(userId)
-            .appendBusinessUnit(VAL_BUSINESS_UNIT)
-            .appendCurrentSite(VAL_CURRENT_SITE)
-            .build()
+        val trackerMap = mapOf(
+            KEY_EVENT to KEY_EVENT_PRODUCT_CLICK,
+            KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+            KEY_EVENT_ACTION to "click pinned featured product tagging",
+            KEY_EVENT_LABEL to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
+            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+            KEY_ITEM_LIST to "/groupchat - featured product",
+            KEY_SESSION_IRIS to irisSessionId,
+            KEY_USER_ID to userId,
+            KEY_ECOMMERCE to getNewClickEcommerce(product, position)
+        )
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
     }
@@ -320,32 +325,22 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         cartId: String,
         quantity: Int,
     ) {
-        val trackerMap = BaseTrackerBuilder().constructBasicProductAtcClick(
-            event = KEY_EVENT_ADD_TO_CART,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "click buy pinned product",
-            eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
-            list = "",
-            products = listOf(
-                BaseTrackerConst.Product(
-                    productPosition = "",
-                    cartId = cartId,
-                    id = product.id,
-                    name = product.title,
-                    productPrice = product.price.currentPrice.toString(),
-                    brand = "",
-                    category = "",
-                    isFreeOngkir = product.isFreeShipping,
-                    variant = "",
-                    shopId = product.shopId,
-                    quantity = quantity.toString(),
-                )
-            ),
-            buildCustomList = { "/groupchat - featured product" },
-        ).appendUserId(userId)
-            .appendBusinessUnit(VAL_BUSINESS_UNIT)
-            .appendCurrentSite(VAL_CURRENT_SITE)
-            .build()
+        val trackerMap = mapOf(
+            KEY_EVENT to KEY_EVENT_ADD_TO_CART,
+            KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+            KEY_EVENT_ACTION to "click buy pinned product",
+            KEY_EVENT_LABEL to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
+            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+            KEY_SESSION_IRIS to irisSessionId,
+            KEY_USER_ID to userId,
+            KEY_ECOMMERCE to getNewAtcEcommerce(
+                product = product,
+                cartId = cartId,
+                quantity = quantity,
+                dimension40 = "/groupchat - featured product"
+            )
+        )
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
     }
@@ -355,43 +350,36 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         cartId: String,
         quantity: Int,
     ) {
-        val trackerMap = BaseTrackerBuilder().constructBasicProductAtcClick(
-            event = KEY_EVENT_ADD_TO_CART,
-            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-            eventAction = "click atc pinned product",
-            eventLabel = "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
-            list = "",
-            products = listOf(
-                BaseTrackerConst.Product(
-                    productPosition = "",
-                    cartId = cartId,
-                    id = product.id,
-                    name = product.title,
-                    productPrice = product.price.currentPrice.toString(),
-                    brand = "",
-                    category = "",
-                    isFreeOngkir = product.isFreeShipping,
-                    variant = "",
-                    shopId = product.shopId,
-                    quantity = quantity.toString(),
-                )
-            ),
-            buildCustomList = { "/groupchat - featured product" },
-        ).appendUserId(userId)
-            .appendBusinessUnit(VAL_BUSINESS_UNIT)
-            .appendCurrentSite(VAL_CURRENT_SITE)
-            .build()
+        val trackerMap = mapOf(
+            KEY_EVENT to KEY_EVENT_ADD_TO_CART,
+            KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+            KEY_EVENT_ACTION to "click atc pinned product",
+            KEY_EVENT_LABEL to "$channelId - ${product.id} - ${channelType.value} - is rilisan spesial ${product.isRilisanSpesial}",
+            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+            KEY_SESSION_IRIS to irisSessionId,
+            KEY_USER_ID to userId,
+            KEY_ECOMMERCE to getNewAtcEcommerce(
+                product = product,
+                cartId = cartId,
+                quantity = quantity,
+                dimension40 = "/groupchat - featured product"
+            )
+        )
 
         if (trackerMap is HashMap<String, Any>) trackingQueue.putEETracking(trackerMap)
     }
 
     override fun impressToasterAtcPinnedProductCarousel() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_VIEW_CONTENT_IRIS,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "view - pinned lihat keranjang",
-            "$channelId - ${channelType.value}"
-        )
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
+            .setEventAction("view - pinned lihat keranjang")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel("$channelId - ${channelType.value}")
+            .setBusinessUnit(VAL_BUSINESS_UNIT)
+            .setCurrentSite(VAL_CURRENT_SITE)
+            .build()
+            .send()
     }
 
     /**
@@ -597,6 +585,71 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
             "shop_type" to shopInfo.type.value
         )
     }
+
+    private fun getNewImpressionsEcommerce(
+        product: PlayProductUiModel.Product,
+        position: Int,
+    ): Map<String, Any> {
+        return mapOf(
+            KEY_CURRENCY_CODE to VAL_CURRENCY_CODE,
+            KEY_IMPRESSIONS to listOf(getNewProductEcommerce(product, position))
+        )
+    }
+
+    private fun getNewClickEcommerce(
+        product: PlayProductUiModel.Product,
+        position: Int,
+    ): Map<String, Any> {
+        return mapOf(
+            KEY_CURRENCY_CODE to VAL_CURRENCY_CODE,
+            KEY_CLICK to mapOf(
+                KEY_PRODUCTS to listOf(getNewProductEcommerce(product, position))
+            )
+        )
+    }
+
+    private fun getNewAtcEcommerce(
+        product: PlayProductUiModel.Product,
+        cartId: String,
+        quantity: Int,
+        dimension40: String,
+    ): Map<String, Any> {
+        return mapOf(
+            KEY_CURRENCY_CODE to VAL_CURRENCY_CODE,
+            KEY_ADD to mapOf(
+                KEY_PRODUCTS to listOf(
+                    mapOf(
+                        KEY_CATEGORY_ID to "",
+                        KEY_DIMENSION_40 to dimension40,
+                        KEY_DIMENSION_45 to cartId,
+                        KEY_ITEM_BRAND to "",
+                        KEY_ITEM_CATEGORY to "",
+                        KEY_ITEM_ID to product.id,
+                        KEY_ITEM_NAME to product.title,
+                        KEY_ITEM_VARIANT to "",
+                        KEY_PRICE to product.price.currentPrice.toString(),
+                        KEY_QUANTITY to quantity.toString(),
+                        KEY_SHOP_ID to product.shopId,
+                        KEY_SHOP_NAME to "",
+                        KEY_SHOP_TYPE to "",
+                    )
+                )
+            )
+        )
+    }
+
+    private fun getNewProductEcommerce(
+        product: PlayProductUiModel.Product,
+        position: Int,
+    ) = mapOf(
+        KEY_INDEX to (position + 1).toString(),
+        KEY_ITEM_BRAND to "",
+        KEY_ITEM_CATEGORY to "",
+        KEY_ITEM_ID to product.id,
+        KEY_ITEM_NAME to product.title,
+        KEY_ITEM_VARIANT to "",
+        KEY_PRICE to product.price.currentPrice.toString()
+    )
 
     private val ProductPrice.currentPrice
         get() = when (this) {

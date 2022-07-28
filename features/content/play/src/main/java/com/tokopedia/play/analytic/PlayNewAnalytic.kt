@@ -8,7 +8,7 @@ import com.tokopedia.play.analytic.socket.PlaySocketAnalytic
 import com.tokopedia.play.analytic.tokonow.PlayTokoNowAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
 import javax.inject.Inject
 
 /**
@@ -34,11 +34,14 @@ class PlayNewAnalytic @Inject constructor(
         channelId: String,
         channelType: PlayChannelType,
     ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            KEY_TRACK_CLICK_CONTENT,
-            KEY_TRACK_GROUP_CHAT_ROOM,
-            "click - pinned lihat keranjang",
-            "$channelId - ${channelType.value}"
-        )
+        Tracker.Builder()
+            .setEvent(KEY_TRACK_CLICK_CONTENT)
+            .setEventAction("click - pinned lihat keranjang")
+            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+            .setEventLabel("$channelId - ${channelType.value}")
+            .setBusinessUnit(VAL_BUSINESS_UNIT)
+            .setCurrentSite(VAL_CURRENT_SITE)
+            .build()
+            .send()
     }
 }
