@@ -2,16 +2,15 @@ package com.tokopedia.shop.flashsale.presentation.creation.manage
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.ProductErrorStatusHandler
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest.*
-import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
+import com.tokopedia.shop.flashsale.domain.entity.*
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel.*
-import com.tokopedia.shop.flashsale.domain.entity.Gradient
-import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
-import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList.*
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
@@ -190,7 +189,7 @@ class ManageProductViewModelTest {
     }
 
     @Test
-    fun `when product info completion status is set, the product info completion status will be set accordingly` () {
+    fun `when product info completion status is set, the product info completion status will be set accordingly`() {
         with(viewModel) {
             val expected = true
             val productList = generateCompleteProduct()
@@ -201,58 +200,60 @@ class ManageProductViewModelTest {
     }
 
     @Test
-    fun `when productList data is containing error, observer will successfully receive the data accordingly` () {
+    fun `when productList data is containing error, observer will successfully receive the data accordingly`() {
         with(viewModel) {
             val expected = ERROR_BANNER
             val productList = generateErrorProduct()
             getBannerType(productList)
             val actual = bannerType.getOrAwaitValue()
-            assertEquals(expected,actual)
+            assertEquals(expected, actual)
         }
     }
 
     @Test
-    fun `when productList data is not filled, observer will successfully receive the data accordingly` () {
+    fun `when productList data is not filled, observer will successfully receive the data accordingly`() {
         with(viewModel) {
             val expected = EMPTY_BANNER
             val productList = generateIncompleteProduct()
             getBannerType(productList)
             val actual = bannerType.getOrAwaitValue()
-            assertEquals(expected,actual)
+            assertEquals(expected, actual)
         }
     }
 
     @Test
-    fun `when productList data is complete, observer will successfully receive the data accordingly` () {
+    fun `when productList data is complete, observer will successfully receive the data accordingly`() {
         with(viewModel) {
             val expected = HIDE_BANNER
             val productList = generateCompleteProduct()
             getBannerType(productList)
             val actual = bannerType.getOrAwaitValue()
-            assertEquals(expected,actual)
+            assertEquals(expected, actual)
         }
     }
 
     @Test
-    fun `when discountedPrice value is 0, isProductInfoComplete will return false` () {
+    fun `when discountedPrice value is 0, isProductInfoComplete will return false`() {
         with(viewModel) {
             val expected = false
-            val actual = isProductInfoComplete(generateIncompleteProduct().productList[0].productMapData)
+            val actual =
+                isProductInfoComplete(generateIncompleteProduct().productList[0].productMapData)
             assertEquals(expected, actual)
         }
     }
 
     @Test
-    fun `when product list data is complete, isProductInfoComplete will return true` () {
+    fun `when product list data is complete, isProductInfoComplete will return true`() {
         with(viewModel) {
             val expected = true
-            val actual = isProductInfoComplete(generateCompleteProduct().productList[0].productMapData)
+            val actual =
+                isProductInfoComplete(generateCompleteProduct().productList[0].productMapData)
             assertEquals(expected, actual)
         }
     }
 
     @Test
-    fun `when removeProducts is success, observer will successfully receive the data` () {
+    fun `when removeProducts is success, observer will successfully receive the data`() {
         runBlocking {
             with(viewModel) {
                 val campaignId: Long = 1001
@@ -280,6 +281,86 @@ class ManageProductViewModelTest {
         }
     }
 
+    @Test
+    fun `when removeProducts is error, observer will receive error result`() {
+        runBlocking {
+            with(viewModel) {
+                val dummyThrowable = MessageErrorException("Error")
+                val campaignId: Long = 1001
+                val productList = generateCompleteProduct().productList
+                val action = ProductionSubmissionAction.DELETE
+                val expected = Fail(dummyThrowable)
+
+                coEvery {
+                    doSellerCampaignProductSubmissionUseCase.execute(
+                        campaignId = campaignId.toString(),
+                        productData = ManageProductMapper.mapToProductDataList(productList),
+                        action = action
+                    )
+                } throws dummyThrowable
+
+                removeProducts(campaignId, productList)
+
+                val actual = removeProductsStatus.getOrAwaitValue()
+                assertEquals(expected, actual)
+            }
+        }
+    }
+
+    @Test
+    fun `when getShopStatus is success, observer will successfully receive the data`() {
+        runBlocking {
+            with(viewModel) {
+                val result = ShopInfo()
+                val expected = Success(result.statusInfo.shopStatus)
+                val shopId = userSessionInterface.shopId.toIntOrZero()
+                gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId))
+                gqlGetShopInfoUseCase.isFromCacheFirst = true
+
+                coEvery {
+                    gqlGetShopInfoUseCase.executeOnBackground()
+                } returns result
+
+                getShopStatus()
+
+                val actual = shopStatus.getOrAwaitValue()
+                assertEquals(expected, actual)
+            }
+        }
+    }
+
+    @Test
+    fun `when getShopStatus is error, observer will successfully receive error result`() {
+        runBlocking {
+            with(viewModel) {
+                val dummyThrowable = MessageErrorException("Error")
+                val expected = Fail(dummyThrowable)
+                val shopId = userSessionInterface.shopId.toIntOrZero()
+                gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId))
+                gqlGetShopInfoUseCase.isFromCacheFirst = true
+
+                coEvery {
+                    gqlGetShopInfoUseCase.executeOnBackground()
+                } throws dummyThrowable
+
+                getShopStatus()
+
+                val actual = shopStatus.getOrAwaitValue()
+                assertEquals(expected, actual)
+            }
+        }
+    }
+
+    @Test
+    fun `when isCoachMarkShown value is set, the value will be set with the correct value accordingly` () {
+        with(viewModel) {
+            setIsCoachMarkShown(true)
+            val expected = true
+            val actual = getIsCoachMarkShown()
+            assertEquals(expected, actual)
+        }
+    }
+
     private fun generateCompleteProduct() = SellerCampaignProductList(
         productList = listOf(
             Product(
@@ -290,6 +371,7 @@ class ManageProductViewModelTest {
                     customStock = 90,
                     originalCustomStock = 90,
                     originalStock = 100,
+                    campaignSoldCount = 10,
                     maxOrder = 90
                 )
             )
@@ -332,10 +414,10 @@ class ManageProductViewModelTest {
         "",
         CampaignStatus.READY,
         true,
-        ProductSummary(0,0,0,0,0,0),
+        ProductSummary(0, 0, 0, 0, 0, 0),
         Date(),
         Date(),
-        Gradient("","",true),
+        Gradient("", "", true),
         true,
         Date(),
         PaymentType.REGULAR,
@@ -344,7 +426,7 @@ class ManageProductViewModelTest {
         relatedCampaigns = emptyList(),
         isCampaignRuleSubmit = true,
         relativeTimeDifferenceInMinute = 100,
-        thematicInfo = ThematicInfo(0,0,"",0,""),
+        thematicInfo = ThematicInfo(0, 0, "", 0, ""),
         reviewStartDate = Date(),
         reviewEndDate = Date()
     )
