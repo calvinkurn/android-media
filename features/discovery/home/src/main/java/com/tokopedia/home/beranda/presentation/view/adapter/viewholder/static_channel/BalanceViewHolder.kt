@@ -90,7 +90,6 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                 if (
                     (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus)
                     || element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
-                    || (element.drawerItemType == TYPE_REWARDS && element.balanceSubTitleTextAttribute?.isBold == true)
                 ) {
                     binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
                     binding?.homeTvReserveBalance?.setTextColor(
