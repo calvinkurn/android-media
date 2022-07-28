@@ -28,6 +28,8 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R
@@ -40,6 +42,7 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.BrightnessToolUiComponent
 import com.tokopedia.media.editor.ui.component.ContrastToolsUiComponent
+import com.tokopedia.media.editor.ui.component.CropToolUiComponent
 import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
@@ -59,6 +62,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.util.RectUtils
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.FileOutputStream
 import java.lang.Exception
 import javax.inject.Inject
@@ -86,6 +90,7 @@ class DetailEditorFragment @Inject constructor(
     private val contrastComponent by uiComponent { ContrastToolsUiComponent(it, this) }
     private val watermarkComponent by uiComponent { WatermarkToolUiComponent(it, this) }
     private val rotateComponent by uiComponent { RotateToolUiComponent(it, this) }
+    private val cropComponent by uiComponent { CropToolUiComponent(it, 0) }
 
     private var data = EditorDetailUiModel()
     private var originalBitmap: Bitmap? = null
@@ -255,6 +260,14 @@ class DetailEditorFragment @Inject constructor(
             EditorToolType.ROTATE -> {
                 rotateComponent.setupView(data)
                 viewBinding?.imgPreview?.visibility = View.GONE
+            }
+            EditorToolType.CROP -> {
+                val uri = Uri.fromFile(File(data.originalUrl))
+                viewBinding?.imgUcropPreview?.initialize(null, uri)
+                cropComponent.setupView()
+
+                viewBinding?.imgPreview?.hide()
+                viewBinding?.imgUcropPreview?.show()
             }
         }
     }

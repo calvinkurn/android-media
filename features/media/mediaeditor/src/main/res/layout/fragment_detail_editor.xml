@@ -20,6 +20,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintDimensionRatio="H,1:1" />
 
+    <com.tokopedia.media.editor.ui.component.EditorDetailPreviewImage
+        android:id="@+id/img_ucrop_preview"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/uc_tool_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ldr_preview"
         android:layout_width="56dp"
@@ -31,45 +39,61 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible"/>
 
-<!--    Brightness Tool-->
-    <include
-        layout="@layout/ui_component_tool_brightness"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        app:layout_constraintTop_toBottomOf="@+id/img_preview" />
-
-<!--    Remove Background-->
-    <include
-        layout="@layout/ui_component_tool_remove_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        app:layout_constraintTop_toBottomOf="@+id/img_preview" />
-
-<!--    Contrast Tool-->
-    <include
-        layout="@layout/ui_component_tool_contrast"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        app:layout_constraintTop_toBottomOf="@+id/img_preview" />
-
-<!--    Contrast Tool-->
-    <include
-        layout="@layout/ui_component_tool_watermark"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        app:layout_constraintTop_toBottomOf="@+id/img_preview" />
-
-<!--    Rotate Tool-->
-    <include
-        layout="@layout/ui_component_tool_rotate"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+    <LinearLayout
+        android:id="@+id/uc_tool_container"
         app:layout_constraintBottom_toTopOf="@id/action_btn_container"
-        app:layout_constraintTop_toBottomOf="@+id/img_preview" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--    Brightness Tool-->
+        <include
+            layout="@layout/ui_component_tool_brightness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            app:layout_constraintTop_toBottomOf="@+id/img_preview" />
+
+        <!--    Remove Background-->
+        <include
+            layout="@layout/ui_component_tool_remove_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            app:layout_constraintTop_toBottomOf="@+id/img_preview" />
+
+        <!--    Contrast Tool-->
+        <include
+            layout="@layout/ui_component_tool_contrast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            app:layout_constraintTop_toBottomOf="@+id/img_preview" />
+
+        <!--    Contrast Tool-->
+        <include
+            layout="@layout/ui_component_tool_watermark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            app:layout_constraintTop_toBottomOf="@+id/img_preview" />
+
+        <!--    Rotate Tool-->
+        <include
+            layout="@layout/ui_component_tool_rotate"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/action_btn_container"
+            app:layout_constraintTop_toBottomOf="@+id/img_preview" />
+
+        <!--    Crop Tool-->
+        <include
+            layout="@layout/ui_component_tool_crop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/action_btn_container" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/action_btn_container"
