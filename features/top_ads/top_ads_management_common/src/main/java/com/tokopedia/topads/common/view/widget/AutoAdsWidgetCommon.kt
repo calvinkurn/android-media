@@ -34,6 +34,7 @@ import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.di.DaggerTopAdsCommonComponent
 import com.tokopedia.topads.common.di.TopAdsCommonComponent
 import com.tokopedia.topads.common.di.module.TopAdsCommonModule
+import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
 import com.tokopedia.topads.common.utils.TopadsCommonUtil.showErrorAutoAds
 import com.tokopedia.topads.common.view.AutoAdsWidgetViewModelCommon
 import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
@@ -101,16 +102,19 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
 
     }
 
+    private fun successAutoAdsData(data: TopAdsAutoAdsModel) {
+        currentBudget = data.dailyBudget
+        if (data.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
+            widgetViewModel.getNotDeliveredReason(userSession.shopId)
+        } else
+            setUiComponent(data.status, data.dailyUsage)
+    }
+
     private fun renderUI() {
         widgetViewModel.autoAdsData.observe(context as BaseActivity, {
             when(it) {
                 is Success -> {
-                    val data = it.data
-                    currentBudget = data.dailyBudget
-                    if (data.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
-                        widgetViewModel.getNotDeliveredReason(userSession.shopId)
-                    } else
-                        setUiComponent(data.status, data.dailyUsage)
+                    successAutoAdsData(it.data)
                 }
                 is Fail -> it.throwable.message?.let { errorMessage ->
                     showErrorAutoAds(errorMessage)

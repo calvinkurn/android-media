@@ -95,6 +95,28 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun moveToDashboard() {
+        val intent = RouteManager.getIntent(
+            context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+        ).apply {
+            putExtra(TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED, TopAdsCommonConstant.PARAM_AUTOADS_BUDGET)
+            putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD, TopAdsCommonConstant.PARAM_PRODUK_IKLAN)
+        }
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
+    private fun successAutoAdsData() {
+        if (!isEditFlow) {
+            if (topAdsDeposit <= 0) {
+                insufficientCredit()
+            } else
+                eligible()
+        } else {
+            moveToDashboard()
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         showLoading()
@@ -105,25 +127,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
         })
         budgetViewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> {
-                    if (!isEditFlow) {
-                        if (topAdsDeposit <= 0) {
-                            insufficientCredit()
-                        } else
-                            eligible()
-                    } else {
-                        val intent = RouteManager.getIntent(context,
-                            ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
-                            putExtra(TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED,
-                                TopAdsCommonConstant.PARAM_AUTOADS_BUDGET)
-                            putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD,
-                                TopAdsCommonConstant.PARAM_PRODUK_IKLAN)
-                        }
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                    }
-                }
+                is Success -> successAutoAdsData()
                 is Fail -> it.throwable.message?.let { errorMessage ->
                     view?.showErrorAutoAds(errorMessage)
                 }
