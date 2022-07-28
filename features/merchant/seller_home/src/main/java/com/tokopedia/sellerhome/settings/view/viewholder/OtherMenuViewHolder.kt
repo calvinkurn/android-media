@@ -55,6 +55,8 @@ class OtherMenuViewHolder(
 
     companion object {
         const val SCROLLVIEW_INITIAL_POSITION = 0
+
+        private const val ANNIVERSARY_ORNAMENT_URL = "https://images.tokopedia.net/img/android/sellerhome/ic_sah_anniv_13th_other_ornament.png"
     }
 
     private val otherMenuAdapter by lazy {
@@ -76,6 +78,7 @@ class OtherMenuViewHolder(
     private var headerShopNextButton: IconUnify? = null
     private var headerShopShareButton: IconUnify? = null
     private var shopStatusCurvedImage: AppCompatImageView? = null
+    private var anniversaryOrnamentImage: ImageUnify? = null
     private var shopAvatarImage: ImageUnify? = null
     private var shopNameTextView: Typography? = null
     private var shopNextButton: IconUnify? = null
@@ -228,6 +231,7 @@ class OtherMenuViewHolder(
             headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
             headerShopShareButton = findViewById(R.id.ic_sah_new_other_header_share)
             shopStatusCurvedImage = findViewById(R.id.iv_sah_new_other_curved_header)
+            anniversaryOrnamentImage = findViewById(R.id.iv_sah_other_ornament_anniv)
             shopAvatarImage = findViewById(R.id.iv_sah_new_other_shop_avatar)
             shopNameTextView = findViewById(R.id.tv_sah_new_other_shop_name)
             shopNextButton = findViewById(R.id.iv_sah_new_other_shop_name)
@@ -250,6 +254,7 @@ class OtherMenuViewHolder(
         setupScrollHeaderAnimator()
         setupShareButtonAnimator()
         setupContentAnimator()
+        setupAnniversaryIllustration()
     }
 
     private fun setupRecyclerView() {
@@ -290,6 +295,13 @@ class OtherMenuViewHolder(
         shareButtonAnimator = OtherMenuShareButtonAnimator(shareButtonImage).also {
             it.setInitialButtonState()
         }
+    }
+
+    private fun setupAnniversaryIllustration() {
+        anniversaryOrnamentImage?.setImageUrl(
+            url = ANNIVERSARY_ORNAMENT_URL,
+            placeholderHeight = Int.ZERO
+        )
     }
 
     private fun setupSecondaryInfoAdapter() {

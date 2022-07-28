@@ -45,14 +45,14 @@
                         app:layout_constraintVertical_bias="0"
                         app:srcCompat="@drawable/bg_sah_other_pattern_anniv"/>
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/tv_sah_other_ornament_anniv"
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/iv_sah_other_ornament_anniv"
                         android:layout_width="140dp"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:srcCompat="@drawable/ic_sah_other_ornament_anniv"/>
+                        app:layout_constraintEnd_toEndOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
