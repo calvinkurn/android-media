@@ -28,9 +28,7 @@ class CustomProductLogisticViewModel @Inject constructor(
             try {
                 val cplList = repo.getCPLList(shopId, productId)
                 _cplList.value = Success(mapper.mapCPLData(cplList.response.data).apply {
-                    shipperServicesIds?.takeIf { it.isNotEmpty() }?.apply {
-                        updateCplProduct(this)
-                    }
+                    updateCplProduct(shipperServicesIds)
                 })
             } catch (e: Throwable) {
                 _cplList.value = Fail(e)
@@ -38,9 +36,9 @@ class CustomProductLogisticViewModel @Inject constructor(
         }
     }
 
-    private fun CustomProductLogisticModel.updateCplProduct(shipperServicesIds: ArrayList<Int>) {
-        cplProduct.firstOrNull()?.apply {
-                shipperServices = shipperServicesIds.map { it.toLong() }
+    private fun CustomProductLogisticModel.updateCplProduct(shipperServicesIds: ArrayList<Int>?) {
+        if (shipperServicesIds != null && shipperServicesIds.size > 0) {
+            cplProduct.first().shipperServices = shipperServicesIds.map { it.toLong() }
         }
     }
 }

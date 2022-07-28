@@ -54,9 +54,6 @@ class AddEditProductShipmentViewModel @Inject constructor(
     val cplList: LiveData<Result<CustomProductLogisticModel>>
         get() = _cplList
 
-    private val shipmentServicesIds: ArrayList<Long>?
-        get() =  _productInputModel.value?.shipmentInputModel?.cplModel?.shipmentServicesIds
-
     private fun getWeight(weight: String) = weight.replace(".", "").toIntOrZero()
 
     fun setProductInputModel(productInputModel: ProductInputModel) {
@@ -109,12 +106,12 @@ class AddEditProductShipmentViewModel @Inject constructor(
 
     private fun CustomProductLogisticModel.updateCplProduct() {
         cplProduct.firstOrNull()?.apply {
-            shipmentServicesIds?.let {
-                shipperServices = it
-                cplStatus = if (it.isEmpty()) {
-                    CPL_STANDARD_SHIPMENT_STATUS
-                } else {
+            productInputModel?.shipmentInputModel?.cplModel?.shipmentServicesIds?.let { shipmentServicesIds ->
+                shipperServices = shipmentServicesIds
+                cplStatus = if (shipmentServicesIds.isNotEmpty()) {
                     CPL_CUSTOM_SHIPMENT_STATUS
+                } else {
+                    CPL_STANDARD_SHIPMENT_STATUS
                 }
             }
         }
