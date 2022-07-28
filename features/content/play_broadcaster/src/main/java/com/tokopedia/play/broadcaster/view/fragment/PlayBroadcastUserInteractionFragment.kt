@@ -883,7 +883,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             prevConfig == config &&
             prevOnboarding?.firstInteractive == onboarding.firstInteractive) return
 
-        if (state !is InteractiveUiModel.Unknown || config.isNoGameActive()) {
+        if (state !is InteractiveUiModel.Unknown || config.isNoGameActive() || config.availableGameList().isEmpty()) {
             gameIconView.hide()
         }
         else {
