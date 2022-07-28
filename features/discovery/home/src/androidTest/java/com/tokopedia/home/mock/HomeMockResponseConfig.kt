@@ -5,13 +5,16 @@ import com.tokopedia.home.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
-internal open class HomeMockResponseConfig : MockModelConfig() {
+internal open class HomeMockResponseConfig(
+    private val isUsingQueryV2: Boolean = true
+) : MockModelConfig() {
     companion object {
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_1 = "\"param\": \"channel_ids=65312\""
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_2 = "\"param\": \"channel_ids=45397\""
 
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY = "getDynamicChannel"
+        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_V2 = "getHomeChannelV2"
         const val KEY_QUERY_DYNAMIC_POSITION = "dynamicPosition"
         const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
         const val KEY_QUERY_DYNAMIC_POSITION_TICKER = "homeTicker"
@@ -82,11 +85,19 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
             FIND_BY_CONTAINS
         )
 
-        addMockResponse(
-            KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
-            getRawString(context, R.raw.response_mock_data_dynamic_home_channel_screenshot),
-            FIND_BY_CONTAINS
-        )
+        if(isUsingQueryV2){
+            addMockResponse(
+                KEY_QUERY_DYNAMIC_HOME_CHANNEL_V2,
+                getRawString(context, R.raw.response_mock_data_dynamic_home_channel_screenshot_v2),
+                FIND_BY_CONTAINS
+            )
+        } else {
+            addMockResponse(
+                KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
+                getRawString(context, R.raw.response_mock_data_dynamic_home_channel_screenshot),
+                FIND_BY_CONTAINS
+            )
+        }
 
         addMockResponse(
             KEY_CONTAINS_DYNAMIC_HOME_RECOM_FEED,
