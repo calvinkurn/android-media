@@ -35,15 +35,14 @@
                         app:layout_constraintTop_toTopOf="parent"
                         tools:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
 
-                    <androidx.appcompat.widget.AppCompatImageView
+                    <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/iv_sah_other_pattern_anniv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintVertical_bias="0"
-                        app:srcCompat="@drawable/bg_sah_other_pattern_anniv"/>
+                        app:layout_constraintVertical_bias="0"/>
 
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/iv_sah_other_ornament_anniv"

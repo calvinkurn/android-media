@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
@@ -49,6 +50,11 @@ class SellerOnboardingActivity : BaseActivity() {
 
         private const val PARAM_COACH_MARK = "coachmark"
         private const val DISABLED = "disabled"
+
+        // TODO: Put Corrent image url
+        private const val ANNIVERSARY_CONFETTI_IMAGE = ""
+        private const val ANNIVERSARY_PATTERN_IMAGE = ""
+        private const val ANNIVERSARY_LOGO_IMAGE = ""
     }
 
     private val sobAdapter by lazy { SobAdapter() }
@@ -70,9 +76,7 @@ class SellerOnboardingActivity : BaseActivity() {
 
         handleAppLink()
         setPageBackground()
-        setConfettiAnniv()
-        setBackgroundPattern()
-        setAnnivLogo()
+        setAnniversaryComponents()
         setWhiteStatusBar()
         setupViewsTopMargin()
         setupSlider()
@@ -101,28 +105,31 @@ class SellerOnboardingActivity : BaseActivity() {
         }
     }
 
+    private fun setAnniversaryComponents() {
+        setConfettiAnniv()
+        setBackgroundPattern()
+        setAnnivLogo()
+    }
+
     private fun setConfettiAnniv() {
-        try {
-            binding?.confettiSob?.loadImage(R.drawable.bg_sob_confetti_anniv)
-        } catch (e: Resources.NotFoundException) {
-            Timber.e(e)
-        }
+        binding?.confettiSob?.setImageUrl(
+            url = ANNIVERSARY_CONFETTI_IMAGE,
+            placeholderHeight = Int.ZERO
+        )
     }
 
     private fun setBackgroundPattern() {
-        try {
-            binding?.patternSob?.setBackgroundResource(R.drawable.bg_sob_pattern_anniv)
-        } catch (e: Resources.NotFoundException) {
-            Timber.e(e)
-        }
+        binding?.patternSob?.setImageUrl(
+            url = ANNIVERSARY_PATTERN_IMAGE,
+            placeholderHeight = Int.ZERO
+        )
     }
 
     private fun setAnnivLogo() {
-        try {
-            binding?.logoSob?.loadImage(R.drawable.img_sob_logo_anniv)
-        } catch (ex: Exception) {
-            Timber.e(ex)
-        }
+        binding?.logoSob?.setImageUrl(
+            url = ANNIVERSARY_LOGO_IMAGE,
+            placeholderHeight = Int.ZERO
+        )
     }
 
     @SuppressLint("WrongConstant")
