@@ -7,10 +7,8 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
-import com.tokopedia.usercomponents.explicit.ExplicitCassava.validateTracker
 import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.di.FakeExplicitModule
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugActivity
@@ -29,9 +27,6 @@ class ExplicitInstrumentationTest {
     var activityTestRule = IntentsTestRule(
         ExplicitDebugActivity::class.java, false, false
     )
-
-    @get:Rule
-    var cassavaRule = CassavaTestRule()
 
     private val applicationContext: Context
         get() = InstrumentationRegistry
@@ -61,7 +56,6 @@ class ExplicitInstrumentationTest {
 
         //THEN
         initQuestionDisplayed()
-        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31560)
     }
 
     @Test
@@ -78,7 +72,7 @@ class ExplicitInstrumentationTest {
 
     //failed in this case caused response not match with question model
     @Test
-    fun first_time_launch_then_failed() {
+    fun first_time_launch_then_shown_failed_view() {
         //GIVEN
         repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
@@ -91,7 +85,7 @@ class ExplicitInstrumentationTest {
 
     //failed in this case caused response not match with submit answer model
     @Test
-    fun submit_positive_answer_then_failed() {
+    fun submit_positive_answer_then_shown_failed_view() {
         //GIVEN
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
@@ -101,12 +95,11 @@ class ExplicitInstrumentationTest {
 
         //THEN
         isFailedDisplayed()
-        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31561)
     }
 
     //failed in this case caused response not match with submit answer model
     @Test
-    fun submit_negative_answer_then_failed() {
+    fun submit_negative_answer_then_shown_failed_view() {
         //GIVEN
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
@@ -116,7 +109,6 @@ class ExplicitInstrumentationTest {
 
         //THEN
         isFailedDisplayed()
-        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31562)
     }
 
     @Test
@@ -131,7 +123,6 @@ class ExplicitInstrumentationTest {
 
         //THEN
         isSuccessDisplayed()
-        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31561)
     }
 
     @Test
@@ -146,7 +137,6 @@ class ExplicitInstrumentationTest {
 
         //THEN
         isSuccessDisplayed()
-        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31562)
     }
 
     @Test
@@ -160,7 +150,6 @@ class ExplicitInstrumentationTest {
 
         //THEN
         isHideQuestion()
-        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31563)
     }
 
     @Test

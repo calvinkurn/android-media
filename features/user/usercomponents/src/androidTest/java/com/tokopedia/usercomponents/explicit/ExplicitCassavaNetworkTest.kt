@@ -57,9 +57,9 @@ class ExplicitCassavaNetworkTest {
         //WHEN
         first_time_launch_then_show_question()
         first_time_launch_then_hide_question()
-        first_time_launch_then_failed()
-        submit_positive_answer_then_failed()
-        submit_negative_answer_then_failed()
+        first_time_launch_then_shown_failed_view()
+        submit_positive_answer_then_shown_failed_view()
+        submit_negative_answer_then_shown_failed_view()
         submit_positive_answer_then_success()
         submit_negative_answer_then_success()
         click_dismiss_when_question_show_then_widget_gone()
@@ -94,8 +94,8 @@ class ExplicitCassavaNetworkTest {
         activityTestRule.finishActivity()
     }
 
-    //error in this case caused response not match with question model
-    private fun first_time_launch_then_failed() {
+    //failed in this case caused response not match with question model
+    private fun first_time_launch_then_shown_failed_view() {
         //GIVEN
         repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
@@ -106,8 +106,8 @@ class ExplicitCassavaNetworkTest {
         activityTestRule.finishActivity()
     }
 
-    //error in this case caused response not match with submit answer model
-    private fun submit_positive_answer_then_failed() {
+    //failed in this case caused response not match with submit answer model
+    private fun submit_positive_answer_then_shown_failed_view() {
         //GIVEN
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
@@ -119,8 +119,8 @@ class ExplicitCassavaNetworkTest {
         activityTestRule.finishActivity()
     }
 
-    //error in this case caused response not match with submit answer model
-    private fun submit_negative_answer_then_failed() {
+    //failed in this case caused response not match with submit answer model
+    private fun submit_negative_answer_then_shown_failed_view() {
         //GIVEN
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
