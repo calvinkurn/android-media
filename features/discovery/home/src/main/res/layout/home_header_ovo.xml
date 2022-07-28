@@ -14,12 +14,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ViewStub
         android:id="@+id/header_top_rounded"
+        android:inflatedId="@+id/header_top_rounded"
+        android:layout="@layout/view_stub_rounded_header"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/container_super_graphic_header"
-        android:background="@drawable/bg_rounded_header"/>
+        app:layout_constraintBottom_toBottomOf="@id/container_super_graphic_header" />
 
     <FrameLayout
         android:id="@+id/view_empty"

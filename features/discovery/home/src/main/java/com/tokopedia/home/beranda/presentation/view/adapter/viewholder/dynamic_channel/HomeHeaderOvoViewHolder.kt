@@ -29,6 +29,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
     private var balanceWidgetView: BalanceWidgetView? = null
     private var chooseAddressView: ChooseAddressWidget? = null
     private var containerHeaderImage: ConstraintLayout? = null
+    private var headerTopRounded: ConstraintLayout? = null
 
     companion object {
         @LayoutRes
@@ -50,12 +51,21 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderHeader() {
-        val stubHeaderImageView = binding?.containerSuperGraphicHeader
         if (containerHeaderImage == null) {
-            containerHeaderImage = if (stubHeaderImageView is ViewStub &&
-                !isViewStubHasBeenInflated(stubHeaderImageView)
+            containerHeaderImage = if (binding?.containerSuperGraphicHeader is ViewStub &&
+                !isViewStubHasBeenInflated(binding?.containerSuperGraphicHeader)
             ) {
-                val stubChannelView = stubHeaderImageView.inflate()
+                val stubChannelView = binding?.containerSuperGraphicHeader?.inflate()
+                stubChannelView as ConstraintLayout
+            } else {
+                null
+            }
+        }
+        if (headerTopRounded == null) {
+            headerTopRounded = if (binding?.headerTopRounded is ViewStub &&
+                !isViewStubHasBeenInflated(binding?.headerTopRounded)
+            ) {
+                val stubChannelView = binding?.headerTopRounded?.inflate()
                 stubChannelView as ConstraintLayout
             } else {
                 null
@@ -68,12 +78,11 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
-        val stubChooseAddressView = binding?.viewChooseAddress
         if (chooseAddressView == null) {
-            chooseAddressView = if (stubChooseAddressView is ViewStub &&
-                !isViewStubHasBeenInflated(stubChooseAddressView)
+            chooseAddressView = if (binding?.viewChooseAddress is ViewStub &&
+                !isViewStubHasBeenInflated(binding?.viewChooseAddress)
             ) {
-                val stubChannelView = stubChooseAddressView.inflate()
+                val stubChannelView = binding?.viewChooseAddress?.inflate()
                 stubChannelView as ChooseAddressWidget
             } else {
                 null
@@ -97,12 +106,11 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean) {
-        val stubBalanceWidget = binding?.viewBalanceWidget
         if (balanceWidgetView == null) {
-            balanceWidgetView = if (stubBalanceWidget is ViewStub &&
-                !isViewStubHasBeenInflated(stubBalanceWidget)
+            balanceWidgetView = if (binding?.viewBalanceWidget is ViewStub &&
+                !isViewStubHasBeenInflated(binding?.viewBalanceWidget)
             ) {
-                val stubChannelView = stubBalanceWidget.inflate()
+                val stubChannelView = binding?.viewBalanceWidget?.inflate()
                 stubChannelView as BalanceWidgetView
             } else {
                 null
