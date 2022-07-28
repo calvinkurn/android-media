@@ -549,11 +549,13 @@ class PlayBottomSheetFragment @Inject constructor(
             playViewModel.uiEvent.collect { event ->
                 when (event) {
                         is BuySuccessEvent -> {
+                            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+
+
                             val bottomInsetsType = if (event.isVariant) {
                                 BottomInsetsType.VariantSheet
                             } else BottomInsetsType.ProductSheet //TEMPORARY
 
-                            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
                             val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
 
                             if(sectionInfo.config.type == ProductSectionType.TokoNow)
@@ -563,7 +565,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
                                     sectionInfo = sectionInfo,
                                 )
-                            else
+                            else if (playViewModel.bottomInsets.isProductSheetsShown) {
                                 analytic.clickProductAction(
                                     product = event.product,
                                     cartId = event.cartId,
@@ -571,7 +573,8 @@ class PlayBottomSheetFragment @Inject constructor(
                                     bottomInsetsType = bottomInsetsType,
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
                                     sectionInfo = sectionInfo,
-                            )
+                                )
+                            }
                         }
                         is ShowInfoEvent -> {
                             doShowToaster(
@@ -645,7 +648,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
                                     sectionInfo = sectionInfo,
                                 )
-                            else
+                            else if (playViewModel.bottomInsets.isProductSheetsShown) {
                                 analytic.clickProductAction(
                                     product = event.product,
                                     cartId = event.cartId,
@@ -654,6 +657,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
                                     sectionInfo = sectionInfo,
                                 )
+                            }
                         }
                         else -> {}
                     }
