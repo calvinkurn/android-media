@@ -235,7 +235,7 @@ class ManageHighlightedProductViewModel @Inject constructor(
                 disabled = true,
                 disabledReason = HighlightableProduct.DisabledReason.OTHER_PRODUCT_WITH_SAME_PARENT_ID_ALREADY_SELECTED
             )
-        } else if (product.isVariant() && product.parentId in selectedParentProductIds && product.id in selectedProductsIds) {
+        } else if (product.isVariant() && product.parentId in selectedParentProductIds) {
             product.copy(
                 isSelected = true,
                 disabled = false,
