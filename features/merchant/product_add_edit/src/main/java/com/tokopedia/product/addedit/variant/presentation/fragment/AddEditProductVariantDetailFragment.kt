@@ -147,6 +147,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         setupViews(view)
         viewModel.setupMultiLocationValue()
+
+        // max stock as threshold when seller inserts stock
+        viewModel.getMaxStockThreshold(userSession.shopId)
+
         multiLocationTicker?.showWithCondition(viewModel.isMultiLocationShop)
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
@@ -180,6 +184,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         observeSelectedVariantSize()
         observeHasWholesale()
+        observeMaxStockThreshold()
+
 
         enableSku()
         setupToolbarActions()
@@ -365,6 +371,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             variantDetailFieldsAdapter?.updatePriceEditingStatus(!it)
             tickerVariantWholesale?.isVisible = it
         })
+    }
+
+    private fun observeMaxStockThreshold() {
+        viewModel.maxStockThreshold.observe(viewLifecycleOwner) {
+            variantDetailFieldsAdapter?.updateMaxStockThreshold(it)
+        }
     }
 
     private fun enableSku() {
