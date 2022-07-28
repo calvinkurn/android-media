@@ -26,7 +26,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -132,8 +131,8 @@ class ManageProductViewModelTest {
 
                 getProducts(campaignId, listType)
 
-                val result = products.getOrAwaitValue()
-                assertEquals(expected, result)
+                val actual = products.getOrAwaitValue()
+                assertEquals(expected, actual)
             }
         }
     }
@@ -176,6 +175,25 @@ class ManageProductViewModelTest {
                 coEvery {
                     getSellerCampaignDetailUseCase.execute(campaignId)
                 } returns generateCampaignUiModel()
+
+                getCampaignDetail(campaignId)
+
+                val actual = campaignName
+                assertEquals(expected, actual)
+            }
+        }
+    }
+
+    @Test
+    fun `when getCampaignDetail error, campaignName variable should not be updated`() {
+        runBlocking {
+            with(viewModel) {
+                val dummyThrowable = MessageErrorException("Error")
+                val campaignId: Long = 1001
+                val expected = ""
+                coEvery {
+                    getSellerCampaignDetailUseCase.execute(campaignId)
+                } throws dummyThrowable
 
                 getCampaignDetail(campaignId)
 
@@ -233,8 +251,128 @@ class ManageProductViewModelTest {
     fun `when discountedPrice value is 0, isProductInfoComplete will return false`() {
         with(viewModel) {
             val expected = false
+            val product = SellerCampaignProductList(
+                productList = listOf(
+                    Product(
+                        productMapData = ProductMapData(
+                            originalPrice = 100000,
+                            discountedPrice = 0,
+                            discountPercentage = 20,
+                            customStock = 90,
+                            originalCustomStock = 90,
+                            originalStock = 100,
+                            campaignSoldCount = 10,
+                            maxOrder = 90
+                        )
+                    )
+                )
+            )
             val actual =
-                isProductInfoComplete(generateIncompleteProduct().productList[0].productMapData)
+                isProductInfoComplete(product.productList[0].productMapData)
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `when discountedPercentage value is 0, isProductInfoComplete will return false`() {
+        with(viewModel) {
+            val expected = false
+            val product = SellerCampaignProductList(
+                productList = listOf(
+                    Product(
+                        productMapData = ProductMapData(
+                            originalPrice = 100000,
+                            discountedPrice = 80000,
+                            discountPercentage = 0,
+                            customStock = 90,
+                            originalCustomStock = 90,
+                            originalStock = 100,
+                            campaignSoldCount = 10,
+                            maxOrder = 90
+                        )
+                    )
+                )
+            )
+            val actual =
+                isProductInfoComplete(product.productList[0].productMapData)
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `when originalCustomStock value is 0, isProductInfoComplete will return false`() {
+        with(viewModel) {
+            val expected = false
+            val product = SellerCampaignProductList(
+                productList = listOf(
+                    Product(
+                        productMapData = ProductMapData(
+                            originalPrice = 100000,
+                            discountedPrice = 80000,
+                            discountPercentage = 20,
+                            customStock = 90,
+                            originalCustomStock = 0,
+                            originalStock = 100,
+                            campaignSoldCount = 10,
+                            maxOrder = 90
+                        )
+                    )
+                )
+            )
+            val actual =
+                isProductInfoComplete(product.productList[0].productMapData)
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `when custom stock value is 0, isProductInfoComplete will return false`() {
+        with(viewModel) {
+            val expected = false
+            val product = SellerCampaignProductList(
+                productList = listOf(
+                    Product(
+                        productMapData = ProductMapData(
+                            originalPrice = 100000,
+                            discountedPrice = 80000,
+                            discountPercentage = 20,
+                            customStock = 0,
+                            originalCustomStock = 90,
+                            originalStock = 100,
+                            campaignSoldCount = 10,
+                            maxOrder = 90
+                        )
+                    )
+                )
+            )
+            val actual =
+                isProductInfoComplete(product.productList[0].productMapData)
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `when maxOrder value is 0, isProductInfoComplete will return false`() {
+        with(viewModel) {
+            val expected = false
+            val product = SellerCampaignProductList(
+                productList = listOf(
+                    Product(
+                        productMapData = ProductMapData(
+                            originalPrice = 100000,
+                            discountedPrice = 0,
+                            discountPercentage = 20,
+                            customStock = 90,
+                            originalCustomStock = 90,
+                            originalStock = 100,
+                            campaignSoldCount = 10,
+                            maxOrder = 0
+                        )
+                    )
+                )
+            )
+            val actual =
+                isProductInfoComplete(product.productList[0].productMapData)
             assertEquals(expected, actual)
         }
     }
@@ -349,7 +487,7 @@ class ManageProductViewModelTest {
     }
 
     @Test
-    fun `when isCoachMarkShown value is set, the value will be set with the correct value accordingly` () {
+    fun `when isCoachMarkShown value is set, the value will be set with the correct value accordingly`() {
         with(viewModel) {
             setIsCoachMarkShown(true)
             val expected = true
