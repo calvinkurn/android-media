@@ -379,15 +379,20 @@ class ChatItemListViewModel @Inject constructor(
         coroutineContext.cancelChildren()
     }
 
+    //DELETE AFTER TESTING
+    private var REFRESH = false
     fun getOperationalInsight(shopId: String) {
         launchCatchError(block = {
             val dataResponse = operationalInsightUseCase(shopId)
+            dataResponse.shopChatTicker?.showTicker = true
+            dataResponse.shopChatTicker?.isMaintain = REFRESH
             dataResponse.shopChatTicker?.let {
                 if (it.showTicker == true) {
                     val shouldShowTicker = shouldShowOperationalInsightTicker()
                     it.showTicker = shouldShowTicker
                 }
                 _chatOperationalInsight.value = Success(it)
+                REFRESH = !REFRESH
             }
         }, onError = {
             _chatOperationalInsight.value = Fail(it)
@@ -397,7 +402,8 @@ class ChatItemListViewModel @Inject constructor(
     private fun shouldShowOperationalInsightTicker(): Boolean {
         val nextMonday = sharedPref.getLong(OPERATIONAL_INSIGHT_NEXT_MONDAY, 0)
         val todayTimeMillis = System.currentTimeMillis()
-        return todayTimeMillis > nextMonday
+//        return todayTimeMillis > nextMonday
+        return true
     }
 
     fun saveNextMondayDate() {

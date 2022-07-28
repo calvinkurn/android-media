@@ -26,7 +26,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import java.text.DecimalFormat
 
-
 class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomSheetUnify() {
 
     private var childView: View? = null
@@ -34,6 +33,8 @@ class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomS
     init {
         showKnob = true
         showCloseIcon = false
+        showHeader = false
+        isHideable = true
     }
 
     override fun onCreateView(
