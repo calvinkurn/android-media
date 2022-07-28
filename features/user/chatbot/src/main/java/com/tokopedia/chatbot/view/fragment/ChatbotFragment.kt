@@ -379,6 +379,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 disableSendButton()
                 isFloatingSendButton = true
                 val labelType = getLabelType(hashMap.get(STATUS_COLOR))
+
                 floatingInvoice.setUpInvoiceData(
                     invoiceTitle = hashMap.get(CODE).toBlankOrString(),
                     invoiceIconURL = hashMap.get(IMAGE_URL).toBlankOrString(),
