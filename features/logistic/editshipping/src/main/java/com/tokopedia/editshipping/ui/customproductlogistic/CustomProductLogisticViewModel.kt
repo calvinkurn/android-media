@@ -41,16 +41,6 @@ class CustomProductLogisticViewModel @Inject constructor(
     private fun CustomProductLogisticModel.updateCplProduct(shipperServicesIds: ArrayList<Int>) {
         cplProduct.firstOrNull()?.apply {
                 shipperServices = shipperServicesIds.map { it.toLong() }
-                cplStatus = if (shipperServicesIds.isEmpty()) {
-                    CPL_STANDARD_SHIPMENT_STATUS
-                } else {
-                    CPL_CUSTOM_SHIPMENT_STATUS
-                }
         }
-    }
-
-    companion object {
-        const val CPL_STANDARD_SHIPMENT_STATUS = 0
-        const val CPL_CUSTOM_SHIPMENT_STATUS = 1
     }
 }
