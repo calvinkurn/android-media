@@ -154,10 +154,6 @@ class ProductManageListDiffutilAdapter(
         }
     }
 
-    override fun updateCashBack(productId: String, cashback: Int) {
-        submitList(productId) { it.copy(cashBack = cashback) }
-    }
-
     override fun deleteProduct(productId: String) {
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         items.findIndex(productId)?.takeIf { it > RecyclerView.NO_POSITION }?.let { index ->

@@ -32,8 +32,6 @@ abstract class BaseProductManageAdapter<T, F: AdapterTypeFactory>(
 
     abstract fun updateStock(productId: String, stock: Int?, status: ProductStatus?)
 
-    abstract fun updateCashBack(productId: String, cashback: Int)
-
     abstract fun deleteProduct(productId: String)
 
     abstract fun deleteProducts(productIds: List<String>)
