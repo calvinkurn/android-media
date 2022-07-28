@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductTagItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -119,25 +120,28 @@ class ProductTagViewComponent(
 
     private fun showCoachMark() {
         if (isCoachMarkShown) return
+        if(rvProductTag.childCount < 1) return
 
-        val holder = rvProductTag.findViewHolderForAdapterPosition(0)
+        rvProductTag.addOneTimeGlobalLayoutListener {
+            val holder = rvProductTag.findViewHolderForAdapterPosition(0)
 
-        holder?.let {
-            val coachMarkItem = arrayListOf(
-                CoachMark2Item(
-                    it.itemView.findViewById(R.id.view_pin_product),
-                    "",
-                    getString(R.string.play_bro_pinned_coachmark_desc),
-                    CoachMark2.POSITION_BOTTOM
+            holder?.let {
+                val coachMarkItem = arrayListOf(
+                    CoachMark2Item(
+                        it.itemView.findViewById(R.id.view_pin_product),
+                        "",
+                        getString(R.string.play_bro_pinned_coachmark_desc),
+                        CoachMark2.POSITION_BOTTOM
+                    )
                 )
-            )
 
-            if(!isCoachMarkShown){
-                isCoachMarkShown = true
-                scope.launch {
-                    coachMark.showCoachMark(coachMarkItem)
-                    delay(DELAY_COACH_MARK)
-                    hideCoachMark()
+                if(!isCoachMarkShown){
+                    isCoachMarkShown = true
+                    scope.launch {
+                        coachMark.showCoachMark(coachMarkItem)
+                        delay(DELAY_COACH_MARK)
+                        hideCoachMark()
+                    }
                 }
             }
         }
