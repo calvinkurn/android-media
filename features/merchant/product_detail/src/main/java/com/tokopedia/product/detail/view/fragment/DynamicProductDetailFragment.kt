@@ -1,16 +1,21 @@
 package com.tokopedia.product.detail.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
 import android.view.View
+import android.view.WindowManager
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -62,6 +67,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
@@ -130,6 +136,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -231,6 +238,8 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
@@ -2734,6 +2743,7 @@ open class DynamicProductDetailFragment :
         setupProductVideoCoordinator()
         submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList() ?: listOf())
         showWarehouseChangeBs(productInfo.basic.productMultilocation)
+        setupToolbarTransparent(productInfo.data.containerType)
     }
 
     private fun showWarehouseChangeBs(productMultiloc: ProductMultilocation) {
@@ -3697,6 +3707,72 @@ open class DynamicProductDetailFragment :
             setNavToolbarSearchHint(getString(R.string.pdp_search_hint, ""))
             setToolbarPageName(ProductTrackingConstant.Category.PDP)
             show()
+        }
+    }
+
+    private val scrollListener: NavRecyclerViewScrollListener by lazy {
+        NavRecyclerViewScrollListener(
+            navToolbar = navToolbar!!,
+            startTransitionPixel = 200,
+            toolbarTransitionRangePixel = 50,
+            navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                override fun onAlphaChanged(offsetAlpha: Float) {
+                }
+
+                override fun onSwitchToDarkToolbar() {
+                    requestStatusBarLight()
+                }
+
+                override fun onSwitchToLightToolbar() {
+                    requestStatusBarDark()
+                }
+
+                override fun onYposChanged(yOffset: Int) {
+                }
+            }
+        )
+    }
+
+    private fun setupToolbarTransparent(containerType: String) {
+        activity?.let {
+            val shouldTransparent = containerType == MediaContainerType.Portrait.type
+            binding?.pdpSpaceList?.isVisible = !shouldTransparent
+
+            if (shouldTransparent) {
+                navToolbar?.setupToolbarWithStatusBar(it, NavToolbar.Companion.StatusBar.STATUS_BAR_DARK)
+                getRecyclerView()?.addOnScrollListener(scrollListener)
+                binding?.pdpGradiance?.setBackgroundResource(R.drawable.bg_pdp_toolbar_gradient)
+                binding?.pdpGradiance?.isVisible = true
+            } else {
+                navToolbar?.setupToolbarWithStatusBar(it, NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT)
+                getRecyclerView()?.removeOnScrollListener(scrollListener)
+                binding?.pdpGradiance?.isVisible = false
+            }
+        }
+    }
+
+    @SuppressLint("DeprecatedMethod")
+    open fun requestStatusBarDark() {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            //to trigger white text when tokopedia darkmode not on top page
+            requestStatusBarLight()
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requireActivity().window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                StatusBarUtil.setWindowFlag(requireActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+                requireActivity().window.statusBarColor = Color.TRANSPARENT
+            }
+        }
+    }
+
+    @SuppressLint("DeprecatedMethod")
+    open fun requestStatusBarLight() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requireActivity().window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            StatusBarUtil.setWindowFlag(requireActivity(), WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+            requireActivity().window.statusBarColor = Color.TRANSPARENT
         }
     }
 
