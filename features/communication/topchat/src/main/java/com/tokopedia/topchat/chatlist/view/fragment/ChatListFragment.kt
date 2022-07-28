@@ -526,7 +526,19 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun initInjector() {
-        getComponent(ChatListComponent::class.java).inject(this)
+        if (activity is ChatListActivity) {
+            getComponent(ChatListComponent::class.java).inject(this)
+        } else {
+            initInjectorSellerApp()
+        }
+    }
+
+    private fun initInjectorSellerApp() {
+        DaggerChatListComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .chatListContextModule(context?.let { ChatListContextModule(it) })
+            .build()
+            .inject(this)
     }
 
     override fun loadData(page: Int) {
