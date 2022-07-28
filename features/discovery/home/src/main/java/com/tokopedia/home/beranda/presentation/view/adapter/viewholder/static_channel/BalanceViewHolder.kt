@@ -54,98 +54,110 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
         )
         when (element?.state) {
             BalanceDrawerItemModel.STATE_SUCCESS -> {
-                binding?.shimmerItemBalanceWidget?.root?.invisible()
-                binding?.homeContainerBalance?.show()
-                if (totalItems == BALANCE_WIDGET_2_ITEMS && adapterPosition == POSITION_2) {
-                    binding?.homeContainerBalance?.setPadding(
-                        paddingLeftPosition2Size2,
-                        paddingBalanceWidget,
-                        paddingBalanceWidget,
-                        paddingBalanceWidget
-                    )
-                } else  {
-                    binding?.homeContainerBalance?.setPadding(
-                        paddingBalanceWidget,
-                        paddingBalanceWidget,
-                        paddingBalanceWidget,
-                        paddingBalanceWidget
-                    )
-                }
-                element.defaultIconRes?.let {
-                    binding?.homeIvLogoBalance?.setImageDrawable(itemView.context.getDrawable(it))
-                }
-                element.iconImageUrl?.let {
-                    if (it.isNotEmpty()) binding?.homeIvLogoBalance?.setImageUrl(it)
-                }
-
-                //Load Text
-                val balanceText = element.balanceTitleTextAttribute?.text ?: ""
-                binding?.homeTvBalance?.setWeight(Typography.BOLD)
-                binding?.homeTvBalance?.text = balanceText
-                binding?.homeHeaderTitleBalance?.text = element.headerTitle
-
-                //load reserve balance
-                val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
-                binding?.homeTvReserveBalance?.text = reserveBalance
-                if (
-                    (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus)
-                    || element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
-                ) {
-                    binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
-                    binding?.homeTvReserveBalance?.setTextColor(
-                        ContextCompat.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                        )
-                    )
-                } else {
-                    binding?.homeTvReserveBalance?.setWeight(Typography.REGULAR)
-                    binding?.homeTvReserveBalance?.setTextColor(
-                        ContextCompat.getColor(
-                            itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                        )
-                    )
-                }
-                handleClickSuccess(element, reserveBalance)
+                renderItemSuccess(element)
             }
             BalanceDrawerItemModel.STATE_LOADING -> {
-                binding?.shimmerItemBalanceWidget?.root?.show()
-                binding?.homeContainerBalance?.invisible()
-                if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
-                    listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
-                } else if (element.drawerItemType == TYPE_REWARDS) {
-                    listener?.onRetryMembership(adapterPosition, element.headerTitle)
-                }
+                renderItemLoading(element)
             }
             BalanceDrawerItemModel.STATE_ERROR -> {
-                binding?.shimmerItemBalanceWidget?.root?.invisible()
-                binding?.homeContainerBalance?.show()
-                binding?.homeIvLogoBalance?.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N75
-                    )
-                )
-                binding?.homeHeaderTitleBalance?.text = element.headerTitle
-                binding?.homeTvBalance?.text =
-                    itemView.context.getString(com.tokopedia.home.R.string.balance_widget_failed_to_load)
-                binding?.homeTvReserveBalance?.setTextColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                    )
-                )
-                binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
-                binding?.homeTvReserveBalance?.text =
-                    itemView.context.getString(com.tokopedia.home.R.string.text_reload)
-                binding?.homeContainerBalance?.handleItemClickType(
-                    element = element,
-                    rewardsAction = { showLoading(element) },
-                    walletAppAction = { showLoading(element) }
-                )
+                renderItemError(element)
             }
         }
+    }
+
+    private fun renderItemError(element: BalanceDrawerItemModel) {
+        binding?.shimmerItemBalanceWidget?.root?.invisible()
+        binding?.homeContainerBalance?.show()
+        binding?.homeIvLogoBalance?.setImageDrawable(
+            ContextCompat.getDrawable(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_N75
+            )
+        )
+        binding?.homeHeaderTitleBalance?.text = element.headerTitle
+        binding?.homeTvBalance?.text =
+            itemView.context.getString(com.tokopedia.home.R.string.balance_widget_failed_to_load)
+        binding?.homeTvReserveBalance?.setTextColor(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            )
+        )
+        binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
+        binding?.homeTvReserveBalance?.text =
+            itemView.context.getString(com.tokopedia.home.R.string.text_reload)
+        binding?.homeContainerBalance?.handleItemClickType(
+            element = element,
+            rewardsAction = { showLoading(element) },
+            walletAppAction = { showLoading(element) }
+        )
+    }
+
+    private fun renderItemLoading(element: BalanceDrawerItemModel) {
+        binding?.shimmerItemBalanceWidget?.root?.show()
+        binding?.homeContainerBalance?.invisible()
+        if (element.drawerItemType == TYPE_WALLET_APP_LINKED) {
+            listener?.onRetryWalletApp(adapterPosition, element.headerTitle)
+        } else if (element.drawerItemType == TYPE_REWARDS) {
+            listener?.onRetryMembership(adapterPosition, element.headerTitle)
+        }
+    }
+
+    private fun renderItemSuccess(element: BalanceDrawerItemModel) {
+        binding?.shimmerItemBalanceWidget?.root?.invisible()
+        binding?.homeContainerBalance?.show()
+        if (totalItems == BALANCE_WIDGET_2_ITEMS && adapterPosition == POSITION_2) {
+            binding?.homeContainerBalance?.setPadding(
+                paddingLeftPosition2Size2,
+                paddingBalanceWidget,
+                paddingBalanceWidget,
+                paddingBalanceWidget
+            )
+        } else {
+            binding?.homeContainerBalance?.setPadding(
+                paddingBalanceWidget,
+                paddingBalanceWidget,
+                paddingBalanceWidget,
+                paddingBalanceWidget
+            )
+        }
+        element.defaultIconRes?.let {
+            binding?.homeIvLogoBalance?.setImageDrawable(itemView.context.getDrawable(it))
+        }
+        element.iconImageUrl?.let {
+            if (it.isNotEmpty()) binding?.homeIvLogoBalance?.setImageUrl(it)
+        }
+
+        //Load Text
+        val balanceText = element.balanceTitleTextAttribute?.text ?: ""
+        binding?.homeTvBalance?.setWeight(Typography.BOLD)
+        binding?.homeTvBalance?.text = balanceText
+        binding?.homeHeaderTitleBalance?.text = element.headerTitle
+
+        //load reserve balance
+        val reserveBalance = element.balanceSubTitleTextAttribute?.text ?: ""
+        binding?.homeTvReserveBalance?.text = reserveBalance
+        if (
+            (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus)
+            || element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
+        ) {
+            binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
+            binding?.homeTvReserveBalance?.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
+            )
+        } else {
+            binding?.homeTvReserveBalance?.setWeight(Typography.REGULAR)
+            binding?.homeTvReserveBalance?.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                )
+            )
+        }
+        handleClickSuccess(element, reserveBalance)
     }
 
     private fun showLoading(element: BalanceDrawerItemModel) {

@@ -51,7 +51,6 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String): Ba
         if (selectedBalance.isLinked) {
             val gopayBalance = balances.balance.find { it.walletCode == WALLET_CODE_GOPAY }
             val gopayPointsBalance = balances.balance.find { it.walletCode == WALLET_CODE_GOPAY_POINTS }
-
             if (gopayBalance?.amountFmt?.isEmpty() == true) {
                 HomeServerLogger.logWarning(
                     type = HomeServerLogger.TYPE_WALLET_BALANCE_EMPTY,
@@ -71,32 +70,23 @@ fun WalletAppData.mapToHomeBalanceItemModel(state: Int, headerTitle: String): Ba
             }
             balanceTitle = BalanceTextAttribute(
                     text = gopayBalance?.amountFmt?:"",
-                    isBold = true,
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
             )
             balanceSubtitle = BalanceTextAttribute(
                     text = gopayPointsBalance?.amountFmt?:"",
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
             )
         } else {
             balanceTitle = BalanceTextAttribute(
                 text = balances.walletName,
-                isBold = true,
-                colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
             )
             balanceSubtitle = BalanceTextAttribute(
                 text = if (selectedBalance.activationCta.isNotEmpty()) selectedBalance.activationCta else defaultActivationCta,
-                colourRef = com.tokopedia.unifyprinciples.R.color.Unify_G500,
-                isBold = true
             )
-
             val pemudaReserveBalance = balances.reserveBalance.find { it.walletCode == WALLET_CODE_GOPAY_POINTS }
             if (pemudaReserveBalance?.amount?:0 >= WALLET_PEMUDA_POINTS_THRESHOLD) {
                 pemudaPointsReserveBalance = pemudaReserveBalance?.amountFmt?:""
                 pemudaPointsReserveBalance+=" "
             }
         }
-
         return buildWalletAppBalanceDrawerModel(
             selectedBalance = balances,
             balanceTitleTextAttribute = balanceTitle,
@@ -132,12 +122,11 @@ fun SubscriptionsDrawerList.mapToHomeBalanceItemModel(state: Int, headerTitle: S
     )
 }
 
-private fun WalletAppData.buildWalletAppBalanceDrawerModel(
+private fun buildWalletAppBalanceDrawerModel(
     selectedBalance: Balances,
     balanceTitleTextAttribute: BalanceTextAttribute,
     balanceSubTitleTextAttribute: BalanceTextAttribute,
     state: Int,
-    walletCode: String = "",
     pemudaPointsReserveBalance: String = "",
     headerTitle: String
 ) = BalanceDrawerItemModel(
@@ -149,37 +138,17 @@ private fun WalletAppData.buildWalletAppBalanceDrawerModel(
     balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
     drawerItemType = if (selectedBalance.isLinked) BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED else BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED,
     state = state,
-    trackingAttribute = walletCode,
     reserveBalance = pemudaPointsReserveBalance,
     headerTitle = headerTitle
 )
 
 fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
-    when {
-        //subtitle green color from backend, use g500
-        colour.contains("03AC0E") || colour.contains("03ac0e") -> {
-            return BalanceTextAttribute(
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_G500,
-                    text = text,
-                    isBold = this.isBold)
-        }
-        //title color from backend, use n700
-        colour.contains("31353B") || colour.contains("31353b")-> {
-            return BalanceTextAttribute(
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700,
-                    text = text,
-                    isBold = this.isBold)
-        }
-        //subtitle other than green color from backend (most likely adadad color)
-        //hardcoded to n700 96%
-        else -> {
-            return BalanceTextAttribute(
-                    colour = "",
-                    colourRef = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
-                    text = text,
-                    isBold = this.isBold)
-        }
-    }
+    return BalanceTextAttribute(
+        colour = this.colour,
+        colourRef = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
+        text = text,
+        isBold = this.isBold
+    )
 }
 
 fun SubscriptionsTextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {
