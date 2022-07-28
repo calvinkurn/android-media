@@ -308,7 +308,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val POSITION_ARRAY_CONTAINER_SIZE = 2
         private const val DEFAULT_MARGIN_VALUE = 0
         private const val POSITION_ARRAY_Y = 1
-        private var counterBypassFirstNetworkHomeData = 0
         private const val isPageRefresh = true
 
         @JvmStatic
@@ -953,14 +952,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun startShimmeringBalanceWidget() {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val balanceWidgetView = getBalanceWidgetView()
-            balanceWidgetView?.showLoading()
-        }
-    }
-
     private fun conditionalViewModelRefresh() {
         if (!validateChooseAddressWidget()) {
             getHomeViewModel().refreshWithThreeMinsRules(isFirstInstall = isFirstInstall())
@@ -1200,11 +1191,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeSearchHint()
-    }
-
-    private fun adjustHomeBackgroundHeight() {
-        context?.run {
-        }
     }
 
     private fun setData(data: List<Visitable<*>>, isCache: Boolean) {
@@ -2267,14 +2253,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         homeSnackbar = Snackbar.make(root, text, duration)
         return homeSnackbar!!
-    }
-
-    private fun goToApplicationDetailActivity() {
-        val intent = Intent()
-        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        val uri = Uri.fromParts(SCHEME_PACKAGE, requireActivity().packageName, null)
-        intent.data = uri
-        activity?.startActivity(intent)
     }
 
     override fun onPromoDragStart() {}
