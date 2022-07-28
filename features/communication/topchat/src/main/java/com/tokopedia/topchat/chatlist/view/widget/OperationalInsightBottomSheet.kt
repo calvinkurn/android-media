@@ -309,6 +309,7 @@ class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomS
                         if (!ticker.url.isNullOrEmpty()) {
                             val intent = RouteManager.getIntent(it, ticker.url)
                             startActivity(intent)
+                            dismiss()
                         }
                     }
                 }
