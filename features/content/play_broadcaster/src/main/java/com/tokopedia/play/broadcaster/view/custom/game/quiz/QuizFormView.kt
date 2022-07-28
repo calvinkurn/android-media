@@ -113,7 +113,7 @@ class QuizFormView : ConstraintLayout {
         }
 
         timePickerBinding.puTimer.onValueChanged = { _, index ->
-            val selectedDuration = quizConfig.availableStartTimeInMs.getOrNull(index) ?: 5000
+            val selectedDuration = quizConfig.availableStartTimeInMs.getOrNull(index) ?: 180000
             eventBus.emit(Event.SelectDuration(selectedDuration))
         }
 
