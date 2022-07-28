@@ -15,7 +15,7 @@ import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
-import com.tokopedia.chatbot.view.util.AttachedInvoiceColor
+import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -132,22 +132,12 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
 
         private fun setStatus(status: String, statusColor: String?) {
             if (status.isNotEmpty() == true) {
-                val labelType = getLabelType(statusColor)
+                val labelType = InvoiceStatusLabelHelper.getLabelType(statusColor)
                 invoiceStatus.text = status
                 invoiceStatus.setLabelType(labelType)
                 invoiceStatus.show()
             } else {
                 invoiceStatus.invisible()
-            }
-        }
-
-        private fun getLabelType(statusColor: String?): Int {
-            if(statusColor == null)
-                return Label.HIGHLIGHT_LIGHT_ORANGE
-            return when(AttachedInvoiceColor.mapTextToInvoiceLabel(statusColor)) {
-                AttachedInvoiceColor.InvoiceLabelGreen -> Label.HIGHLIGHT_LIGHT_GREEN
-                AttachedInvoiceColor.InvoiceLabelRed -> Label.HIGHLIGHT_LIGHT_RED
-                AttachedInvoiceColor.InvoiceLabelYellow -> Label.HIGHLIGHT_LIGHT_ORANGE
             }
         }
 

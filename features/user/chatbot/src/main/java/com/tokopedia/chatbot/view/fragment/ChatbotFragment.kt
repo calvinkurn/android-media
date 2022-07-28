@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -119,7 +118,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
-import com.tokopedia.chatbot.view.util.AttachedInvoiceColor
+import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
@@ -132,7 +131,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -378,7 +376,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
                 disableSendButton()
                 isFloatingSendButton = true
-                val labelType = getLabelType(hashMap.get(STATUS_COLOR))
+                val labelType = InvoiceStatusLabelHelper.getLabelType(hashMap.get(STATUS_COLOR))
 
                 floatingInvoice.setUpInvoiceData(
                     invoiceTitle = hashMap.get(CODE).toBlankOrString(),
@@ -461,17 +459,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun emptyReplyEditText(){
         replyEditText.setText("")
     }
-
-    private fun getLabelType(statusColor: String?): Int {
-        if(statusColor == null)
-            return Label.HIGHLIGHT_LIGHT_ORANGE
-        return when(AttachedInvoiceColor.mapTextToInvoiceLabel(statusColor)) {
-            AttachedInvoiceColor.InvoiceLabelGreen -> Label.HIGHLIGHT_LIGHT_GREEN
-            AttachedInvoiceColor.InvoiceLabelRed -> Label.HIGHLIGHT_LIGHT_RED
-            AttachedInvoiceColor.InvoiceLabelYellow -> Label.HIGHLIGHT_LIGHT_ORANGE
-        }
-    }
-
 
     private fun setChatBackground() {
         activity?.window?.setBackgroundDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.layered_chatbot_background) })
@@ -1306,13 +1293,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun disableSendButton() {
         isSendButtonActivated = false
         sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
-        Log.d("FATAL", "disableSendButton: ")
     }
 
     override fun enableSendButton() {
         isSendButtonActivated = true
         sendButton.setImageResource(R.drawable.ic_chatbot_send)
-        Log.d("FATAL", "enableSendButton: ")
     }
 
     override fun isInvoiceRemoved(isRemoved: Boolean) {

@@ -13,7 +13,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.util.ViewUtil
-import com.tokopedia.chatbot.view.util.AttachedInvoiceColor
+import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -71,7 +71,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
 
     private fun setStatus(invoice: AttachInvoiceSentUiModel) {
         if (invoice.status.isNotEmpty()) {
-            val labelType = getLabelType(invoice.color)
+            val labelType = InvoiceStatusLabelHelper.getLabelType(invoice.color)
             status?.text = invoice.status
             status?.setLabelType(labelType)
         }else{
@@ -87,16 +87,6 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
             pricePrefix?.show()
             price?.text = totalAmount
             price?.show()
-        }
-    }
-
-    private fun getLabelType(statusColor: String?): Int {
-        if(statusColor == null)
-            return Label.HIGHLIGHT_LIGHT_ORANGE
-        return when(AttachedInvoiceColor.mapTextToInvoiceLabel(statusColor)) {
-            AttachedInvoiceColor.InvoiceLabelGreen -> Label.HIGHLIGHT_LIGHT_GREEN
-            AttachedInvoiceColor.InvoiceLabelRed -> Label.HIGHLIGHT_LIGHT_RED
-            AttachedInvoiceColor.InvoiceLabelYellow -> Label.HIGHLIGHT_LIGHT_ORANGE
         }
     }
 
