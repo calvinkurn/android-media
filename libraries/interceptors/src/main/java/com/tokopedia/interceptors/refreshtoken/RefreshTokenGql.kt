@@ -19,7 +19,7 @@ import java.util.*
 class RefreshTokenGql {
 
     private fun randomChar(): String =
-        UUID.randomUUID().toString().replace("-", "").substring(0, 4)
+        UUID.randomUUID().toString().replace(DASH_SYMBOL, "").substring(TRIM_LENGTH_START_IDX, TRIM_LENGTH_LAST_IDX)
 
     private fun encode(type: String): String {
         return if (type.isNotBlank()) {
@@ -118,5 +118,10 @@ class RefreshTokenGql {
         private const val ACCESS_TOKEN = "access_token"
         private const val GRANT_TYPE = "grant_type"
         private const val REFRESH_TOKEN = "refresh_token"
+
+        private const val DASH_SYMBOL = "-"
+
+        private const val TRIM_LENGTH_START_IDX = 0
+        private const val TRIM_LENGTH_LAST_IDX = 4
     }
 }
