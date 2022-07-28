@@ -304,7 +304,7 @@ class OtherMenuViewHolder(
     private fun setupAnniversaryIllustration() {
         anniversaryPatternImage?.setImageUrl(
             url = ANNIVERSARY_PATTERN_URL,
-            placeholderHeight = 0
+            placeholderHeight = Int.ZERO
         )
         anniversaryOrnamentImage?.setImageUrl(
             url = ANNIVERSARY_ORNAMENT_URL,

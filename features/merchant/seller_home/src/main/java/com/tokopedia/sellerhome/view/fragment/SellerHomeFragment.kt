@@ -1625,15 +1625,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun loadAnniversaryIllustrations() {
         binding?.ivSahPattern?.setImageUrl(
             url = ANNIV_PATTERN_URL,
-            placeholderHeight = 0
+            placeholderHeight = Int.ZERO
         )
         binding?.ivSahOrnament?.setImageUrl(
             url = ANNIV_ORNAMENT_URL,
-            placeholderHeight = 0
+            placeholderHeight = Int.ZERO
         )
         binding?.ivSahGradient?.setImageUrl(
             url = ANNIV_GRADIENT_URL,
-            placeholderHeight = 0
+            placeholderHeight = Int.ZERO
         )
     }
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(
