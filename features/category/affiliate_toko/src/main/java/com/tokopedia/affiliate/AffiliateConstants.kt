@@ -163,3 +163,7 @@ const val NO_UI_METRICS = 0
 const val TOTAL_ITEMS_METRIC_TYPE = "totalItems"
 
 const val AFFILIATE_SHOP_ADP = "aff_shop_adp"
+
+const val PAGE_TYPE_PDP = "pdp"
+
+const val PAGE_TYPE_SHOP = "shop"

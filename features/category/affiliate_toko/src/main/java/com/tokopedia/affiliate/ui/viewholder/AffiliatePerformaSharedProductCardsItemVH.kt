@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.PAGE_TYPE_PDP
+import com.tokopedia.affiliate.PAGE_TYPE_SHOP
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -40,6 +42,8 @@ class AffiliatePerformaSharedProductCardsItemVH(
 
         const val PRODUCT_ACTIVE = 1
         const val SPAN_COUNT = 3
+        private const val PRODUCT_ITEM = 0
+
     }
 
     override fun bind(element: AffiliatePerformaSharedProductCardsModel?) {
@@ -97,7 +101,8 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 productClickInterface?.onProductClick(
                     product.itemID!!, product.itemTitle ?: "", product.image?.androidURL
                         ?: "", product.defaultLinkURL ?: "",
-                    product.itemID!!, product.status ?: 0
+                    product.itemID!!, product.status ?: 0,
+                    if (product.itemType == PRODUCT_ITEM) PAGE_TYPE_PDP else PAGE_TYPE_SHOP
                 )
             }
         }
