@@ -92,7 +92,7 @@ object ShopPageHomeMapper {
                 it.labelGroupList =
                     labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 it.minimumOrder = minimumOrder
-                it.maximumOrder = stock
+                it.maximumOrder = getMaximumOrder(stock, maximumOrder)
                 it.stock = stock
                 it.isEnableDirectPurchase = isEnableDirectPurchase
                 it.isVariant = hasVariant

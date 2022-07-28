@@ -82,7 +82,7 @@ object ShopPageProductListMapper {
                     it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                     it.etalaseType = etalaseType
                     it.stock = stock.toLong()
-                    it.maximumOrder = stock
+                    it.maximumOrder = getMaximumOrder(stock, shopProduct.maximumOrder)
                     when (it.etalaseType) {
                         ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
                             it.isUpcoming  = campaign.isUpcoming
@@ -135,7 +135,7 @@ object ShopPageProductListMapper {
     ) {
         shopProductUiModel.stock = shopProduct.campaign.customStock.toLongOrZero().takeIf {!it.isZero()} ?: shopProduct.stock.toLong()
         shopProductUiModel.isSoldOut = shopProductUiModel.stock.isZero()
-        shopProductUiModel.maximumOrder = shopProduct.campaign.maxOrder
+        shopProductUiModel.maximumOrder = getMaximumOrder(shopProductUiModel.stock.toInt(), shopProduct.campaign.maxOrder)
     }
 
     private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupUiModel {
@@ -339,5 +339,9 @@ object ShopPageProductListMapper {
             }
         }
         return stringBuilder.toString()
+    }
+
+    private fun getMaximumOrder(stock: Int, maximumOrder: Int): Int {
+        return maximumOrder.takeIf { !it.isZero() } ?: stock
     }
 }
