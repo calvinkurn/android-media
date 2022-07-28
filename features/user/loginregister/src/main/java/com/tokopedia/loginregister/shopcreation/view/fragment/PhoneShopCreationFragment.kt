@@ -119,8 +119,10 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                         }
                     }
                     LoginConstants.Request.REQUEST_REGISTER_PHONE -> {
-                        if (phone.isNotEmpty())
-                            goToRegisterAddNamePage(phone.replace("-", ""))
+                        if (phone.isNotEmpty()) {
+                            val validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+                            goToRegisterAddNamePage(phone.replace("-", ""), validateToken)
+                        }
                     }
                     REQUEST_NAME_SHOP_CREARION -> {
                         activity?.let {
@@ -130,7 +132,8 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                     REQUEST_COTP_PHONE_VERIFICATION -> {
                         if (phone.isNotEmpty()) {
-                            shopCreationViewModel.addPhone(phone.replace("-", ""))
+                            val validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+                            shopCreationViewModel.addPhone(phone.replace("-", ""), validateToken)
                         } else {
                             toastError(getString(R.string.please_fill_phone_number))
                         }
@@ -402,9 +405,10 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
-    private fun goToRegisterAddNamePage(phone: String) {
+    private fun goToRegisterAddNamePage(phone: String, validateToken: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.NAME_SHOP_CREATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
 
         startActivityForResult(intent, REQUEST_NAME_SHOP_CREARION)
     }
