@@ -1248,7 +1248,7 @@ class CreateReviewViewModel @Inject constructor(
         when(val currentMediaPickerUiState = mediaPickerUiState.value) {
             is CreateReviewMediaPickerUiState.FailedUpload -> enqueueErrorUploadMediaToaster(currentMediaPickerUiState.errorCode)
             is CreateReviewMediaPickerUiState.Uploading -> enqueueWaitForUploadMediaToaster()
-            else ->sendingReview.value = true
+            else -> sendingReview.value = true
         }
     }
 
