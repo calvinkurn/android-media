@@ -16,6 +16,7 @@ import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
@@ -96,6 +97,23 @@ class DailyBudgetViewModelTest {
         }
         viewModel.getBudgetInfo("reqType", "source", onSuccess)
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `test exception in postAutoAds`() {
+        val param = AutoAdsParam(AutoAdsParam.Input(TOGGLE_OFF, CHANNEL, 1000,
+            "123", AutoAdsBaseBudgetFragment.SOURCE))
+        val data = Fail(throwable = Throwable())
+
+        every {
+            queryPostAutoadsUseCase.executeQuery(param,captureLambda())
+        } answers {
+            secondArg<(Result<TopAdsAutoAdsModel>) -> Unit>().invoke(data)
+        }
+
+        viewModel.postAutoAds(param)
+
+        assertEquals(data, viewModel.autoAdsData.value)
     }
 
     @Test

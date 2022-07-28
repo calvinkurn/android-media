@@ -14,6 +14,7 @@ import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.topads.data.response.AdCreationOption
 import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -90,6 +91,22 @@ class AdChooserViewModelTest {
 
         Assert.assertEquals(null, actual)
     }
+
+    @Test
+    fun `test exception in postAutoAds`() {
+        val data = Fail(throwable = Throwable())
+
+        every {
+            queryPostAutoadsUseCase.executeQuery(any(),captureLambda())
+        } answers {
+            secondArg<(Result<TopAdsAutoAdsModel>) -> Unit>().invoke(data)
+        }
+
+        viewModel.postAutoAds("toggle_status", budget = 1000)
+
+        Assert.assertEquals(data, viewModel.autoAdsData.value)
+    }
+
 
     @Test
     fun `test result in postAutoAds`() {
