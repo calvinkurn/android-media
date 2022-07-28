@@ -313,7 +313,7 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     private fun setTitleTab(title: String, counter: String): CharSequence? {
         if (counter.toLongOrZero() > 0) {
             val counterFormatted: String =
-                    if (counter.toLongOrZero() > 99) {
+                    if (counter.toLongOrZero() > MAX_COUNTER) {
                         COUNTER_NINETY_NINE_PLUS
                     } else {
                         counter
@@ -574,6 +574,7 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     companion object {
         private val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
         private const val COUNTER_NINETY_NINE_PLUS = "99+"
+        private const val MAX_COUNTER = 99
         private const val MAX_TITLE_LENGTH = 10
         private const val LIMIT_TITLE_TAKE = 9
 
