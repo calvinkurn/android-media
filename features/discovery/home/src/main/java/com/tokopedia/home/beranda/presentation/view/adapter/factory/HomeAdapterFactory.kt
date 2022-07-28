@@ -98,6 +98,7 @@ import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.listener.ReminderWidgetListener
 import com.tokopedia.home_component.listener.SpecialReleaseComponentListener
 import com.tokopedia.home_component.listener.VpsWidgetListener
+import com.tokopedia.home_component.listener.MissionWidgetComponentListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.CampaignWidgetViewHolder
 import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
@@ -117,6 +118,7 @@ import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHo
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
+import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
 import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
@@ -137,6 +139,7 @@ import com.tokopedia.home_component.visitable.RecommendationListCarouselDataMode
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
@@ -182,7 +185,9 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
                          private val cueWidgetCategoryListener: CueWidgetCategoryListener,
                          private val vpsWidgetListener: VpsWidgetListener,
-                         private val categoryWidgetV2Listener: CategoryWidgetV2Listener) :
+                         private val categoryWidgetV2Listener: CategoryWidgetV2Listener,
+                         private val missionWidgetComponentListener: MissionWidgetComponentListener
+                         ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
         RechargeComponentTypeFactory {
@@ -417,6 +422,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return VpsWidgetViewHolder.LAYOUT
     }
 
+    override fun type(missionWidgetListDataModel: MissionWidgetListDataModel): Int {
+        return MissionWidgetViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -609,6 +618,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 view, homePayLaterWidgetListener)
             CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
             VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
+            MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener, cardInteraction = true)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }

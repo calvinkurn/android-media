@@ -7,6 +7,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCamp
 
 class TotalStockEditorUiModel(
     val totalStock: Int,
+    val maxStock: Int?,
     val access: ProductManageAccess?,
     val campaignTypeList: List<ProductCampaignType>?,
     val productId: String?

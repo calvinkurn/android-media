@@ -814,7 +814,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
     }
 
-    override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
+    override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
 
         activity?.let {
 
@@ -887,16 +887,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun getFilters(data: Intent?, reasonList: List<String?>?): String? {
-        val selectedOption = data?.getStringExtra(SELECTED_ITEMS)?.split(";")
-        var filters = ""
-        if (!selectedOption.isNullOrEmpty()) {
-            for (filter in selectedOption) {
-                if(filter.isNotEmpty())
-                    filters += reasonList?.get(filter.toInt()) + ","
+        try {
+            val selectedOption = data?.getStringExtra(SELECTED_ITEMS)?.split(";")
+            var filters = ""
+            if (!selectedOption.isNullOrEmpty()) {
+                for (filter in selectedOption) {
+                    if (filter.isNotEmpty())
+                        filters += reasonList?.get(filter.toInt()) + ","
+                }
+                return filters.substring(0, filters.length - 1)
             }
-            return filters.substring(0, filters.length - 1)
+            return ""
+        } catch (e : Exception) {
+            return ""
         }
-        return ""
     }
 
     private fun onSuccessSubmitCsatRating(): (String) -> Unit {

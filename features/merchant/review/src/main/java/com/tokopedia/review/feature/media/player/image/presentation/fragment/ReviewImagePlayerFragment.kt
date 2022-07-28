@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.image_gallery.ImagePreview
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -158,22 +157,15 @@ class ReviewImagePlayerFragment : BaseDaggerFragment() {
     }
 
     private fun setupLayout() {
-        binding?.imagePreviewReviewMediaImagePlayer?.imagePreviewUnifyListener = object: ImagePreview.ImagePreviewUnifyListener {
-            override fun onZoom(scaleFactor: Float) {}
-
-            override fun onZoomEnd(scaleFactor: Float) {
-                reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(scaleFactor == UNZOOM_SCALE_FACTOR)
-            }
-
-            override fun onZoomStart(scaleFactor: Float) {
-                reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(scaleFactor == UNZOOM_SCALE_FACTOR)
-            }
-        }
         binding?.imagePreviewReviewMediaImagePlayer?.onImageDoubleClickListener = {
-            if (binding?.imagePreviewReviewMediaImagePlayer?.mScaleFactor == UNZOOM_SCALE_FACTOR) {
-                binding?.imagePreviewReviewMediaImagePlayer?.setScaleFactor(ZOOM_SCALE_FACTOR)
-            } else {
-                binding?.imagePreviewReviewMediaImagePlayer?.setScaleFactor(UNZOOM_SCALE_FACTOR)
+            if (isAdded) {
+                if (binding?.imagePreviewReviewMediaImagePlayer?.mScaleFactor == UNZOOM_SCALE_FACTOR) {
+                    reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(false)
+                    binding?.imagePreviewReviewMediaImagePlayer?.setScaleFactor(ZOOM_SCALE_FACTOR)
+                } else {
+                    reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(true)
+                    binding?.imagePreviewReviewMediaImagePlayer?.setScaleFactor(UNZOOM_SCALE_FACTOR)
+                }
             }
         }
         binding?.btnReviewMediaImagePlayerSeeMore?.setOnClickListener {

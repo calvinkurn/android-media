@@ -17,10 +17,6 @@ class TopAdsAuthInterceptor(
         userSessionInterface: UserSessionInterface?
 ) : TkpdAuthInterceptor(context, networkRouter, userSessionInterface) {
 
-    companion object {
-        var VERSION_NAME = "1.0"
-    }
-
     override fun getHeaderMap(
             path: String,
             strParam: String,
@@ -48,7 +44,7 @@ class TopAdsAuthInterceptor(
         val date = dateFormat.format(Date())
         val headerAuth = headerMap[HEADER_AUTHORIZATION]
         headerMap["X-Date"] = date
-        headerMap["X-Device"] = "android-$VERSION_NAME"
+        headerMap["X-Device"] = "android-${GlobalConfig.VERSION_NAME}"
         headerMap["X-Tkpd-Authorization"] = headerAuth ?: ""
         headerMap["Authorization"] = "Bearer " + userSession.accessToken
         headerMap[HEADER_RELEASE_TRACK] = GlobalConfig.VERSION_NAME_SUFFIX

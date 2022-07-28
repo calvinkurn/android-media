@@ -10,5 +10,6 @@ data class ReviewMediaPlayerControllerUiState(
     val orientationUiState: OrientationUiState,
     val overlayVisibility: Boolean,
     val currentGalleryPosition: Int,
-    val totalMedia: Int
+    val totalMedia: Int,
+    val videoDurationMillis: Long
 )
