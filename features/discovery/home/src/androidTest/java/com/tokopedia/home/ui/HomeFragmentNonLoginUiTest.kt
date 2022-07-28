@@ -146,7 +146,7 @@ class HomeFragmentNonLoginUiTest {
         /**
          * Assert choose address widget
          */
-        onView(withId(R.id.widget_choose_address)).check(matches(isDisplayed()))
+        onView(withId(R.id.view_choose_address)).check(matches(isDisplayed()))
     }
 
     /**

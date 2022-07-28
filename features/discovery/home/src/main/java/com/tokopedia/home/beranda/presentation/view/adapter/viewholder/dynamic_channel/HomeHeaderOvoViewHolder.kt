@@ -1,8 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.view.View
+import android.view.ViewStub
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
@@ -14,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.databinding.HomeHeaderOvoBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt.getFullToolbarHeight
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -23,6 +26,10 @@ class HomeHeaderOvoViewHolder(itemView: View,
 : AbstractViewHolder<HomeHeaderDataModel>(itemView) {
 
     private var binding: HomeHeaderOvoBinding? by viewBinding()
+    private var balanceWidgetView: BalanceWidgetView? = null
+    private var chooseAddressView: ChooseAddressWidget? = null
+    private var containerHeaderImage: ConstraintLayout? = null
+    private var headerTopRounded: ConstraintLayout? = null
 
     companion object {
         @LayoutRes
@@ -38,9 +45,32 @@ class HomeHeaderOvoViewHolder(itemView: View,
                 element.headerDataModel?.isUserLogin ?: false
             )
         }
-
+        renderHeader()
         renderChooseAddress(element.needToShowChooseAddress)
         BenchmarkHelper.endSystraceSection()
+    }
+
+    private fun renderHeader() {
+        if (containerHeaderImage == null) {
+            containerHeaderImage = if (binding?.containerSuperGraphicHeader is ViewStub &&
+                !isViewStubHasBeenInflated(binding?.containerSuperGraphicHeader)
+            ) {
+                val stubChannelView = binding?.containerSuperGraphicHeader?.inflate()
+                stubChannelView as ConstraintLayout
+            } else {
+                null
+            }
+        }
+        if (headerTopRounded == null) {
+            headerTopRounded = if (binding?.headerTopRounded is ViewStub &&
+                !isViewStubHasBeenInflated(binding?.headerTopRounded)
+            ) {
+                val stubChannelView = binding?.headerTopRounded?.inflate()
+                stubChannelView as ConstraintLayout
+            } else {
+                null
+            }
+        }
     }
 
     override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
@@ -48,7 +78,16 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
-        val chooseAddressView = binding?.widgetChooseAddress
+        if (chooseAddressView == null) {
+            chooseAddressView = if (binding?.viewChooseAddress is ViewStub &&
+                !isViewStubHasBeenInflated(binding?.viewChooseAddress)
+            ) {
+                val stubChannelView = binding?.viewChooseAddress?.inflate()
+                stubChannelView as ChooseAddressWidget
+            } else {
+                null
+            }
+        }
         chooseAddressView?.let {
             if (needToShowChooseAddress) {
                 listener.initializeChooseAddressWidget(it, needToShowChooseAddress)
@@ -67,14 +106,27 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderBalanceLayout(data: HomeBalanceModel?, isUserLogin: Boolean) {
-        val balanceWidgetView = itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
-        data?.let {
-            if (isUserLogin) {
-                balanceWidgetView.visible()
-                balanceWidgetView.bind(it, listener)
+        if (balanceWidgetView == null) {
+            balanceWidgetView = if (binding?.viewBalanceWidget is ViewStub &&
+                !isViewStubHasBeenInflated(binding?.viewBalanceWidget)
+            ) {
+                val stubChannelView = binding?.viewBalanceWidget?.inflate()
+                stubChannelView as BalanceWidgetView
             } else {
-                balanceWidgetView.gone()
+                null
             }
         }
+        data?.let {
+            if (isUserLogin) {
+                balanceWidgetView?.visible()
+                balanceWidgetView?.bind(it, listener)
+            } else {
+                balanceWidgetView?.gone()
+            }
+        }
+    }
+
+    private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
+        return viewStub?.parent == null
     }
 }

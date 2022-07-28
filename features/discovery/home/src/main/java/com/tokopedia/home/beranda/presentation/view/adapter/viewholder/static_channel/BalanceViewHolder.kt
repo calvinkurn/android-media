@@ -15,7 +15,6 @@ import com.tokopedia.home.databinding.ItemBalanceWidgetNewBinding
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -39,7 +38,6 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
         listener: HomeCategoryListener?
     ) {
         this.listener = listener
-        binding?.homeTvBalance?.setWeight(Typography.BOLD)
         renderDrawerItem(drawerItem)
         this.itemView.tag = String.format(
             itemView.context.getString(R.string.tag_balance_widget),
@@ -58,7 +56,6 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
             BalanceDrawerItemModel.STATE_SUCCESS -> {
                 binding?.shimmerItemBalanceWidget?.root?.invisible()
                 binding?.homeContainerBalance?.show()
-                //load image
                 if (totalItems == BALANCE_WIDGET_2_ITEMS && adapterPosition == POSITION_2) {
                     binding?.homeContainerBalance?.setPadding(
                         paddingLeftPosition2Size2,
@@ -78,12 +75,12 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                     binding?.homeIvLogoBalance?.setImageDrawable(itemView.context.getDrawable(it))
                 }
                 element.iconImageUrl?.let {
-                    binding?.homeIvLogoBalance?.visible()
                     if (it.isNotEmpty()) binding?.homeIvLogoBalance?.setImageUrl(it)
                 }
 
                 //Load Text
                 val balanceText = element.balanceTitleTextAttribute?.text ?: ""
+                binding?.homeTvBalance?.setWeight(Typography.BOLD)
                 binding?.homeTvBalance?.text = balanceText
                 binding?.homeHeaderTitleBalance?.text = element.headerTitle
 
@@ -93,7 +90,6 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                 if (
                     (element.drawerItemType == TYPE_SUBSCRIPTION && !element.isSubscriberGoToPlus)
                     || element.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
-                    || (element.drawerItemType == TYPE_REWARDS && element.balanceSubTitleTextAttribute?.isBold == true)
                 ) {
                     binding?.homeTvReserveBalance?.setWeight(Typography.BOLD)
                     binding?.homeTvReserveBalance?.setTextColor(
@@ -169,6 +165,9 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
             element = element,
             rewardsAction = {
                 //handle click for type rewards
+                BalanceWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(
+                    listener?.userId ?: ""
+                )
                 listener?.actionTokoPointClicked(
                     element.applinkContainer,
                     element.redirectUrl,
@@ -176,9 +175,6 @@ class BalanceViewHolder(v: View, private val totalItems: Int) : RecyclerView.Vie
                         TITLE_HEADER_WEBSITE
                     else
                         element.mainPageTitle
-                )
-                BalanceWidgetTracking.sendClickOnRewardsBalanceWidgetTracker(
-                    listener?.userId ?: ""
                 )
             },
             walletAppAction = { isLinked ->
