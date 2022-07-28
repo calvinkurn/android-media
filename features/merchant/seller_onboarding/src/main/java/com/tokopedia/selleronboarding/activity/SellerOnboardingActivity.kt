@@ -262,30 +262,29 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setupViewsTopMargin() {
         val statusBarHeight = OnboardingUtils.getStatusBarHeight(this)
+
+        val ivAnnivLogo = binding?.logoSob?.layoutParams as? ViewGroup.MarginLayoutParams
+        ivAnnivLogo?.setTopMargin(statusBarHeight)
+
         val btnSkipLp = binding?.tvSobSkip?.layoutParams as? ViewGroup.MarginLayoutParams
-        btnSkipLp?.let { lp ->
-            val btnSkipTopMargin = lp.topMargin.plus(statusBarHeight)
-            lp.setMargins(
-                lp.leftMargin,
-                btnSkipTopMargin,
-                lp.rightMargin,
-                lp.bottomMargin
-            )
-        }
+        btnSkipLp?.setTopMargin(statusBarHeight)
 
         val viewPagerLp = binding?.sobViewPager?.layoutParams as? ViewGroup.MarginLayoutParams
-        viewPagerLp?.let { lp ->
-            val viewPagerTopMargin = lp.topMargin.plus(statusBarHeight)
-            lp.setMargins(
-                lp.leftMargin,
-                viewPagerTopMargin,
-                lp.rightMargin,
-                lp.bottomMargin
-            )
-        }
+        viewPagerLp?.setTopMargin(statusBarHeight)
     }
 
     private fun getPositionViewPager(): Int {
         return binding?.sobViewPager?.currentItem.orZero() + ADDITIONAL_INDEX
     }
+
+    private fun ViewGroup.MarginLayoutParams.setTopMargin(statusBarHeight: Int) {
+        val topMargin = topMargin.plus(statusBarHeight)
+        setMargins(
+            leftMargin,
+            topMargin,
+            rightMargin,
+            bottomMargin
+        )
+    }
+
 }
