@@ -19,6 +19,7 @@ import com.tokopedia.review.databinding.WidgetReviewCredibilityFooterBinding
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityFooterUiModel
 import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredibilityFooterUiState
+import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class ReviewCredibilityFooterWidget @JvmOverloads constructor(
@@ -70,9 +71,11 @@ class ReviewCredibilityFooterWidget @JvmOverloads constructor(
         footerBinding.root.show()
     }
 
-    private fun setupFooter(description: String) {
+    private fun setupFooter(description: StringRes) {
         footerBinding.tvReviewCredibilityFooterDescription.apply {
-            text = context?.let { HtmlLinkHelper(it, description).spannedString } ?: description
+            text = context?.let {
+                HtmlLinkHelper(it, description.getStringValueWithDefaultParam(context)).spannedString
+            } ?: description.getStringValueWithDefaultParam(context)
             movementMethod = object : LinkMovementMethod() {
                 override fun onTouchEvent(
                     widget: TextView, buffer: Spannable, event: MotionEvent

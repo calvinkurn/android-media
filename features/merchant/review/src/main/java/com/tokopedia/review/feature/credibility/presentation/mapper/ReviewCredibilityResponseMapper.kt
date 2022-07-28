@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.credibility.presentation.mapper
 
+import com.tokopedia.review.R
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityLabel
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityStat
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityStatsWrapper
@@ -7,6 +8,7 @@ import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredi
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityFooterUiModel
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityHeaderUiModel
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityStatisticBoxUiModel
+import com.tokopedia.reviewcommon.uimodel.StringRes
 
 object ReviewCredibilityResponseMapper {
 
@@ -95,10 +97,17 @@ object ReviewCredibilityResponseMapper {
         response: ReviewerCredibilityStatsWrapper
     ): ReviewCredibilityFooterUiModel {
         return ReviewCredibilityFooterUiModel(
-            description = response.label.footer,
+            description = composeFooterDescription(response),
             button = toReviewCredibilityFooterButtonUiModel(
                 response.label
             )
+        )
+    }
+
+    private fun composeFooterDescription(response: ReviewerCredibilityStatsWrapper): StringRes {
+        return StringRes(
+            R.string.review_credibility_footer_format,
+            listOf(response.label.footer, response.label.infoText)
         )
     }
 }

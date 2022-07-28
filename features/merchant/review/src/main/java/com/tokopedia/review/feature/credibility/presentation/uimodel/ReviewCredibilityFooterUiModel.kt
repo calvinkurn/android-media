@@ -1,5 +1,7 @@
 package com.tokopedia.review.feature.credibility.presentation.uimodel
 
-data class ReviewCredibilityFooterUiModel(val description: String, val button: Button) {
+import com.tokopedia.reviewcommon.uimodel.StringRes
+
+data class ReviewCredibilityFooterUiModel(val description: StringRes, val button: Button) {
     data class Button(val text: String, val appLink: String)
 }

@@ -416,6 +416,7 @@
 
     <!-- Credibility   -->
     <string name="review_credibility_learn_more">Pelajari Selengkapnya</string>
+    <string name="review_credibility_footer_format">%1$s %2$s</string>
 
     <!--  media  -->
     <string name="review_media_gallery_item_counter_format">%1$d/%2$d</string>
