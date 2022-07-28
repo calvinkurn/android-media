@@ -48,6 +48,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private var shopId: Long = 0
     private var productId: Long = 0
     private var isCPLActivated: Boolean = false
+    private var shipperServicesIds: ArrayList<Int>? = null
 
     private var binding by autoCleared<FragmentCustomProductLogisticBinding>()
 
@@ -65,6 +66,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             shopId = it.getLong(EXTRA_SHOP_ID)
             productId = it.getLong(EXTRA_PRODUCT_ID)
             isCPLActivated = it.getBoolean(EXTRA_CPL_ACTIVATED)
+            shipperServicesIds = it.getIntegerArrayList(EXTRA_SHIPPER_SERVICES)
         }
     }
 
@@ -86,7 +88,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun initViews() {
         binding.swipeRefresh.isRefreshing = true
-        viewModel.getCPLList(shopId, productId.toString())
+        viewModel.getCPLList(shopId, productId.toString(), shipperServicesIds)
 
         binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
     }
@@ -264,7 +266,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         binding.globalError.setType(type)
         binding.globalError.setActionClickListener {
             context?.let {
-                viewModel.getCPLList(shopId, productId.toString())
+                viewModel.getCPLList(shopId, productId.toString(), shipperServicesIds)
             }
         }
         binding.globalError.visible()

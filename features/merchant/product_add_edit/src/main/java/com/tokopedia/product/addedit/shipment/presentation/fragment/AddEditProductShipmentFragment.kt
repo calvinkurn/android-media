@@ -454,8 +454,13 @@ class AddEditProductShipmentFragment:
                     putExtra(EXTRA_PRODUCT_ID, shipmentViewModel.productInputModel?.productId)
                 }
                 putExtra(EXTRA_CPL_ACTIVATED, isCPLActivated)
+                putIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES, shipperServicesIds.convertToIntArray())
             }, REQUEST_CODE_CPL
         )
+    }
+
+    private fun List<Long>?.convertToIntArray(): ArrayList<Int> {
+        return this?.let { ArrayList(this.map { it.toInt() }) } ?: arrayListOf()
     }
 
     private fun setupShipmentRadios() {

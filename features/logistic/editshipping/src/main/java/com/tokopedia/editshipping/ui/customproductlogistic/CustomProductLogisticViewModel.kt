@@ -23,14 +23,34 @@ class CustomProductLogisticViewModel @Inject constructor(
     val cplList: LiveData<Result<CustomProductLogisticModel>>
         get() = _cplList
 
-    fun getCPLList(shopId: Long, productId: String) {
+    fun getCPLList(shopId: Long, productId: String, shipperServicesIds: ArrayList<Int>?) {
         viewModelScope.launch {
             try {
                 val cplList = repo.getCPLList(shopId, productId)
-                _cplList.value = Success(mapper.mapCPLData(cplList.response.data))
+                _cplList.value = Success(mapper.mapCPLData(cplList.response.data).apply {
+                    shipperServicesIds?.apply {
+                        updateCplProduct(this)
+                    }
+                })
             } catch (e: Throwable) {
                 _cplList.value = Fail(e)
             }
         }
+    }
+
+    private fun CustomProductLogisticModel.updateCplProduct(shipperServicesIds: ArrayList<Int>) {
+        cplProduct.firstOrNull()?.apply {
+                shipperServices = shipperServicesIds.map { it.toLong() }
+                cplStatus = if (shipperServicesIds.isEmpty()) {
+                    CPL_STANDARD_SHIPMENT_STATUS
+                } else {
+                    CPL_CUSTOM_SHIPMENT_STATUS
+                }
+        }
+    }
+
+    companion object {
+        const val CPL_STANDARD_SHIPMENT_STATUS = 0
+        const val CPL_CUSTOM_SHIPMENT_STATUS = 1
     }
 }

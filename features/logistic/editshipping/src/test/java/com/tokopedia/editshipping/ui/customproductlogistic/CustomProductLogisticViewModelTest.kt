@@ -53,14 +53,14 @@ class CustomProductLogisticViewModelTest {
     @Test
     fun `Get CPL List success`() {
         coEvery { repo.getCPLList(any(), any()) } returns OngkirGetCPLQGLResponse()
-        customProductLogisticViewModel.getCPLList(1234, "9876")
+        customProductLogisticViewModel.getCPLList(1234, "9876", null)
         verify { cplListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get CPL List failed`() {
         coEvery { repo.getCPLList(any(), any()) } throws defaultThrowable
-        customProductLogisticViewModel.getCPLList(1234, "9876")
+        customProductLogisticViewModel.getCPLList(1234, "9876", null)
         verify { cplListObserver.onChanged(match { it is Fail }) }
     }
 }
