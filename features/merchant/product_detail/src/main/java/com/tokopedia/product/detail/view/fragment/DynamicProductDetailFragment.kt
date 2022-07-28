@@ -258,7 +258,8 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
