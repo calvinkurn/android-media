@@ -1,38 +1,44 @@
 package com.tokopedia.wishlistcollection.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
-import com.tokopedia.wishlistcommon.util.GQL_CREATE_WISHLIST_COLLECTION
 import javax.inject.Inject
 
-@GqlQuery("CreateWishlistCollectionMutation", GQL_CREATE_WISHLIST_COLLECTION)
-class CreateWishlistCollectionUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) :
-    UseCase<Result<CreateWishlistCollectionResponse.Data.CreateWishlistCollection>>() {
-    private var params: Map<String, Any?>? = null
+@GqlQuery("CreateWishlistCollectionMutation", CreateWishlistCollectionUseCase.query)
+class CreateWishlistCollectionUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) :
+    CoroutineUseCase<String, CreateWishlistCollectionResponse>(dispatchers.io) {
     private val paramName = "name"
 
-    override suspend fun executeOnBackground(): Result<CreateWishlistCollectionResponse.Data.CreateWishlistCollection> {
-        return try {
-            val request = GraphqlRequest(
-                CreateWishlistCollectionMutation(),
-                CreateWishlistCollectionResponse.Data::class.java, params
-            )
-            val response = gqlRepository.response(listOf(request)).getSuccessData<CreateWishlistCollectionResponse.Data>()
-            Success(response.createWishlistCollection)
-        } catch (e: Exception) {
-            Fail(e)
-        }
+    override suspend fun execute(params: String): CreateWishlistCollectionResponse {
+        return repository.request(CreateWishlistCollectionMutation(), toMap(params))
     }
 
-    fun setParams(name: String) {
-        params = mapOf(paramName to name)
+    private fun toMap(name: String): Map<String, Any> = mapOf(
+        paramName to name
+    )
+
+    companion object {
+        const val query = """
+            mutation CreateWishlistCollection(${'$'}name: String) {
+                  create_wishlist_collection(name: ${'$'}name) {
+                    status
+                    error_message
+                    data {
+                      success
+                      id
+                      message
+                    }
+                  }
+                }"""
     }
+
+    override fun graphqlQuery(): String = ""
 }

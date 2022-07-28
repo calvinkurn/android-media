@@ -34,7 +34,6 @@ import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -69,8 +68,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         get() = _bulkDeleteWishlistV2Result
 
     private val _deleteCollectionItemsResult =
-        MutableLiveData<Result<DeleteWishlistCollectionItemsResponse.Data.DeleteWishlistCollectionItems>>()
-    val deleteCollectionItemsResult: LiveData<Result<DeleteWishlistCollectionItemsResponse.Data.DeleteWishlistCollectionItems>>
+        MutableLiveData<Result<DeleteWishlistCollectionItemsResponse.DeleteWishlistCollectionItems>>()
+    val deleteCollectionItemsResult: LiveData<Result<DeleteWishlistCollectionItemsResponse.DeleteWishlistCollectionItems>>
         get() = _deleteCollectionItemsResult
 
     private val _deleteCollectionResult =
@@ -180,19 +179,16 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     }
 
     fun deleteWishlistCollectionItems(listProductId: List<String>) {
-        launch(dispatcher.main) {
-            val result =
-                withContext(dispatcher.io) {
-                    deleteCollectionItemsUseCase.setParams(listProductId)
-                    deleteCollectionItemsUseCase.executeOnBackground()
-                }
-            if (result is Success) {
-                _deleteCollectionItemsResult.value = result
+        launchCatchError(block = {
+            val result = deleteCollectionItemsUseCase(listProductId)
+            if (result.deleteWishlistCollectionItems.status == WishlistV2CommonConsts.OK && result.deleteWishlistCollectionItems.errorMessage.isEmpty()) {
+                _deleteCollectionItemsResult.postValue(Success(result.deleteWishlistCollectionItems))
             } else {
-                val error = (result as Fail).throwable
-                _deleteCollectionItemsResult.value = Fail(error)
+                _deleteCollectionItemsResult.postValue(Fail(Throwable()))
             }
-        }
+        }, onError = {
+            _deleteCollectionItemsResult.postValue(Fail(it))
+        })
     }
 
     fun deleteWishlistCollection(collectionId: String) {
