@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -146,7 +145,7 @@ class GiveawayFormView : ConstraintLayout {
             this,
             Data(
                 title = binding.viewGiveaway.getHeader().title,
-                durationInMs = mEligibleDurations[timePickerBinding.puTimer.activeIndex],
+                durationInMs = mEligibleDurations.getOrNull(timePickerBinding.puTimer.activeIndex) ?: 0,
             ),
         )
     }
