@@ -414,6 +414,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun clearReferredMsg() {
         replyCompose?.clearReferredComposedMsg()
+        if (isSrwNewDesign()) {
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isForceToHide = false
+        }
     }
 
     override fun notifyPreviewRemoved(model: SendablePreview) {
@@ -2713,6 +2716,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         viewModel.srwTickerReminder.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTickerReminder(it.data)
+                else -> {}
             }
         }
 
@@ -3098,15 +3102,27 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    /**
+     * Show SRW Tab Design & Hide Template
+     */
     override fun onCloseReplyBubble() {
-        if (isSrwNewDesign() && shouldShowSrw()) {
-            topchatViewState?.shouldShowSrw = true
+        if (isSrwNewDesign()) {
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isForceToHide = false
+            if (shouldShowSrw()) {
+                topchatViewState?.shouldShowSrw = true
+                topchatViewState?.hideTemplateChat()
+            }
         }
     }
 
+    /**
+     * Hide SRW Tab Design & Show Template
+     */
     override fun onShowReplyBubble() {
         if (isSrwNewDesign() && shouldShowSrw()) {
+            topchatViewState?.chatTextAreaTabLayout?.srwLayout?.isForceToHide = true
             topchatViewState?.shouldShowSrw = false
+            showTemplateChatIfReady()
         }
     }
 

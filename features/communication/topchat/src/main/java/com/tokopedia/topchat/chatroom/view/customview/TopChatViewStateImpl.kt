@@ -864,8 +864,11 @@ open class TopChatViewStateImpl constructor(
                     chatTextAreaShimmer?.hide()
                     actionBox.show()
                     replyBox.hide()
-                    //Render SRW only when succes get the questions
-                    if (chatTextAreaTabLayout?.srwLayout?.isSuccessState() == true) {
+                    //Render SRW only when success get the questions & active tab is SRW
+                    if (chatTextAreaTabLayout?.srwLayout?.isSuccessState() == true
+                        && chatTextAreaTabLayout?.tabState ==
+                        ChatTextAreaTabLayout.TabLayoutActiveStatus.SRW
+                    ) {
                         chatTextAreaTabLayout?.srwLayout?.renderSrwState()
                     }
                     chatTextAreaTabLayout?.show()

@@ -48,6 +48,7 @@ class SrwFrameLayout : FrameLayout {
     private var bgExpanded: Drawable? = null
     private var onBoarding = SrwOnBoarding()
     private var hasShownOnBoarding = false
+    private var itemDecoration = SrwItemDecoration(context)
 
     /**
      * To differentiate the SRW Tab and Bubble
@@ -56,7 +57,13 @@ class SrwFrameLayout : FrameLayout {
         set(value) {
             field = value
             initBackground()
+            itemDecoration.source = getSrwSource()
         }
+
+    /**
+     * Force to hide, used when reply to specific bubble shown
+     */
+    var isForceToHide = false
 
     /**
      * Default state would be expanded
@@ -114,7 +121,7 @@ class SrwFrameLayout : FrameLayout {
     }
 
     fun isAllowToShow(): Boolean {
-        return chatSmartReplyQuestion.hasQuestion
+        return chatSmartReplyQuestion.hasQuestion && !isForceToHide
     }
 
     fun updateStatus(latestState: Resource<ChatSmartReplyQuestionResponse>) {
@@ -193,6 +200,14 @@ class SrwFrameLayout : FrameLayout {
         }
     }
 
+    private fun getSrwSource(): SrwItemDecoration.SrwItemSource {
+        return if (isSrwBubble) {
+            SrwItemDecoration.SrwItemSource.SRW_BUBBLE
+        } else {
+            SrwItemDecoration.SrwItemSource.TAB_LAYOUT
+        }
+    }
+
     private fun initViewBind() {
         title = findViewById(R.id.tp_srw_partial)
         titleContainer = findViewById(R.id.tp_srw_container_partial)
@@ -224,7 +239,7 @@ class SrwFrameLayout : FrameLayout {
         rvSrw?.apply {
             setHasFixedSize(true)
             adapter = rvAdapter
-            addItemDecoration(SrwItemDecoration(context))
+            addItemDecoration(itemDecoration)
         }
     }
 

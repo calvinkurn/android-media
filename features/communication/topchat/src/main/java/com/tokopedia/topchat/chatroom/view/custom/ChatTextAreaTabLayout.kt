@@ -57,7 +57,7 @@ class ChatTextAreaTabLayout: ConstraintLayout {
      * List of tab-layout
      */
     private var tabList = hashMapOf<TabLayoutActiveStatus, TabView>()
-    private var tabState: TabLayoutActiveStatus = TabLayoutActiveStatus.SRW
+    var tabState: TabLayoutActiveStatus = TabLayoutActiveStatus.SRW
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -279,7 +279,7 @@ class ChatTextAreaTabLayout: ConstraintLayout {
         )
     }
 
-    internal enum class TabLayoutActiveStatus {
+    enum class TabLayoutActiveStatus {
         SRW, ReplyBox
     }
 
