@@ -314,13 +314,13 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
         if (counter.toLongOrZero() > 0) {
             val counterFormatted: String =
                     if (counter.toLongOrZero() > 99) {
-                        "99+"
+                        COUNTER_NINETY_NINE_PLUS
                     } else {
                         counter
                     }
 
-            return if (title.length > 10) {
-                title.take(9) + ".. ($counterFormatted)"
+            return if (title.length > MAX_TITLE_LENGTH) {
+                title.take(LIMIT_TITLE_TAKE) + ".. ($counterFormatted)"
             } else {
                 "$title ($counterFormatted)"
             }
@@ -573,6 +573,9 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
 
     companion object {
         private val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
+        private const val COUNTER_NINETY_NINE_PLUS = "99+"
+        private const val MAX_TITLE_LENGTH = 10
+        private const val LIMIT_TITLE_TAKE = 9
 
         @JvmStatic
         fun create(): ChatTabListFragment {
