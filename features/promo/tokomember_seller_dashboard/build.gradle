@@ -16,6 +16,7 @@ buildscript {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.networkDependencies.glide
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.unifyDependencies.principles
