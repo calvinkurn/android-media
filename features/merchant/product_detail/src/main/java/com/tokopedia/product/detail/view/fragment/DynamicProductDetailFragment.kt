@@ -15,6 +15,8 @@ import android.util.Log
 import android.util.SparseIntArray
 import android.view.View
 import android.view.WindowManager
+import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -64,6 +66,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
@@ -265,8 +268,7 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -3717,6 +3719,7 @@ open class DynamicProductDetailFragment :
             toolbarTransitionRangePixel = 50,
             navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                 override fun onAlphaChanged(offsetAlpha: Float) {
+                    navToolbar?.setSearchBarAlpha(alpha = offsetAlpha)
                 }
 
                 override fun onSwitchToDarkToolbar() {
@@ -3731,6 +3734,12 @@ open class DynamicProductDetailFragment :
                 }
             }
         )
+    }
+
+    private fun NavToolbar.setSearchBarAlpha(alpha: Float) {
+        findViewById<IconUnify>(R.id.search_magnify_icon).alpha = alpha / 255
+        findViewById<EditText>(R.id.et_search).alpha = alpha / 255
+        findViewById<LinearLayout>(R.id.layout_search).alpha = alpha / 255
     }
 
     private fun setupToolbarTransparent(containerType: String) {

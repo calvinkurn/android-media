@@ -33,6 +33,7 @@ import com.tokopedia.product.detail.data.model.affiliate.AffiliateShopDetail
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
@@ -243,7 +244,7 @@ object DynamicProductDetailMapper {
         val newDataWithMedia = contentData?.copy(
             media = mediaData.media,
             youtubeVideos = mediaData.youtubeVideos,
-            containerType = mediaData.containerType
+            containerType = MediaContainerType.Portrait.type
         ) ?: ComponentData()
 
         assignIdToMedia(newDataWithMedia.media)
