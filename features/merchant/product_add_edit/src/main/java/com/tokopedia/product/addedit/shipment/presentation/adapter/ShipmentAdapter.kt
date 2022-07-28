@@ -97,6 +97,7 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
         private val shipmentItemCategory = itemView.findViewById<Typography>(R.id.shipment_category)
 
         fun bindData(data: ShipperCPLModel) {
+            data.isActive = false
             data.shipperProduct.forEach {
                 if (it.isActive) {
                     data.isActive = true
