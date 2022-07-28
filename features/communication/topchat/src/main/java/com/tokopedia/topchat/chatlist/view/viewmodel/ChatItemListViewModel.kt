@@ -398,8 +398,7 @@ class ChatItemListViewModel @Inject constructor(
     private fun shouldShowOperationalInsightTicker(): Boolean {
         val nextMonday = sharedPref.getLong(OPERATIONAL_INSIGHT_NEXT_MONDAY, 0)
         val todayTimeMillis = System.currentTimeMillis()
-//        return todayTimeMillis > nextMonday
-        return true
+        return todayTimeMillis > nextMonday
     }
 
     fun saveNextMondayDate() {
