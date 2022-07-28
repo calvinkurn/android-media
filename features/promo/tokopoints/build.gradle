@@ -17,12 +17,15 @@ buildscript {
 }
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
+    implementation projectOrAar(rootProject.ext.features.promoGamificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.features.tokopointsNotification)
@@ -31,8 +34,10 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.pin
     implementation projectOrAar(rootProject.ext.features.promoUiCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
     implementation projectOrAar(rootProject.ext.features.questWidget)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -44,13 +49,16 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation rootProject.ext.unifyDependencies.dialog
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.miscDependencies.lottie
 
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     kapt rootProject.ext.miscDependencies.daggerCompiler
