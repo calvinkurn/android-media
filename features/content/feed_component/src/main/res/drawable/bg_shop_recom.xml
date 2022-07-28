@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="@dimen/unify_space_8" />
     <stroke
-        android:width="@dimen/feed_component_dp_1"
+        android:width="@dimen/feed_shop_recom_item_stroke"
         android:color="@color/Unify_NN200" />
 </shape>
