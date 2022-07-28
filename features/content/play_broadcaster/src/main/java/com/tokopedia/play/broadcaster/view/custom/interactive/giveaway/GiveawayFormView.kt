@@ -145,7 +145,7 @@ class GiveawayFormView : ConstraintLayout {
             this,
             Data(
                 title = binding.viewGiveaway.getHeader().title,
-                durationInMs = mEligibleDurations.getOrNull(timePickerBinding.puTimer.activeIndex) ?: 0,
+                durationInMs = mEligibleDurations.getOrNull(timePickerBinding.puTimer.activeIndex) ?: 300000,
             ),
         )
     }
