@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.domain.interactor.usecase
 
 import com.google.gson.Gson
+import com.google.gson.JsonParseException
 import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeWalletAppRepository
@@ -52,7 +53,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
         try {
             val getHomeBalanceWidget = getHomeBalanceWidgetRepository.getRemoteData()
             if (getHomeBalanceWidget.getHomeBalanceList.error.isNotBlank()) {
-                throw Exception(getHomeBalanceWidget.getHomeBalanceList.error)
+                throw MessageErrorException(getHomeBalanceWidget.getHomeBalanceList.error)
             } else {
                 homeHeaderDataModel.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.clear()
                 var homeBalanceModel = getHomeBalanceModel(homeHeaderDataModel)
@@ -196,7 +197,7 @@ class HomeBalanceWidgetUseCase @Inject constructor(
                 throwable = MessageErrorException(e.localizedMessage),
                 reason = ERROR_UNABLE_TO_PARSE_BALANCE_WIDGET_SUBSCRIPTION
             )
-            throw Exception(e)
+            throw JsonParseException(e)
         }
         return homeBalanceModel
     }
