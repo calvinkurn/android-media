@@ -870,7 +870,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 addressId = address.address_id)
         }
         var inCollection = ""
-        if (collectionId != "0") {
+        if (collectionId.isNotEmpty() && collectionId != "0") {
             inCollection = "inside"
         }
         paramGetCollectionItems.inCollection = inCollection
@@ -1693,7 +1693,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             wishlistCollectionDetailSortFilter.run {
                 resetAllFilters()
                 paramGetCollectionItems = GetWishlistCollectionItemsParams()
-                wishlistCollectionDetailNavtoolbar.clearSearchbarText()
             }
         }
         doRefresh()
