@@ -49,29 +49,27 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUiSt
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_ERROR
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_COMPONENT_DATA
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_DYNAMIC_CHANNEL_DATA
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_LOAD_MORE
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_LOADING
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_PROGRESS_BAR
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_NO_ADDRESS
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_NO_PIN_POINT
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_REMOVE_TICKER
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 
@@ -90,34 +88,48 @@ class TokoFoodHomeViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     private val _inputState = MutableSharedFlow<TokoFoodHomeUiState>(1)
+    private val _updatePinPoin = MutableSharedFlow<Boolean>(1)
 
     init {
         _inputState.tryEmit(TokoFoodHomeUiState())
+        _updatePinPoin.tryEmit(false)
     }
 
     val flowLayoutList: SharedFlow<Result<TokoFoodListUiModel>> =
-        _inputState.flatMapConcat { uiState ->
+        _inputState.flatMapConcat { inputState ->
             flow {
-                when (uiState.uiState) {
+                when (inputState.uiState) {
                     STATE_LOADING -> emit(getLoadingState())
-                    STATE_FETCH_DYNAMIC_CHANNEL_DATA -> emit(getHomeLayout(uiState.localCacheModel))
+                    STATE_FETCH_DYNAMIC_CHANNEL_DATA -> emit(getHomeLayout(inputState.localCacheModel))
                     STATE_FETCH_COMPONENT_DATA -> {
                         homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }
                             .forEach {
-                                emit(getLayoutComponentData(it, uiState.localCacheModel))
+                                emit(getLayoutComponentData(it, inputState.localCacheModel))
                             }
                     }
                     STATE_FETCH_LOAD_MORE -> {
-                         emit(getProgressBar())
-                         emit(getMerchantList(uiState.localCacheModel))
+                        emit(getProgressBar())
+                        emit(getMerchantList(inputState.localCacheModel))
+                    }
+                    STATE_NO_ADDRESS -> emit(getNoAddressState())
+                    STATE_NO_PIN_POINT -> emit(getNoPinPointState())
+                    STATE_ERROR -> {
+                        inputState.throwable?.let {
+                            emit(getErrorState(it))
+                        }
+                    }
+                    STATE_REMOVE_TICKER -> {
+                        inputState.visitableId?.let {
+                            emit(getRemovalTickerWidget(it))
+                        }
                     }
                 }
             }.catch {
-                when (uiState.uiState) {
+                when (inputState.uiState) {
                     STATE_FETCH_DYNAMIC_CHANNEL_DATA -> emit(Fail(it))
                     STATE_FETCH_LOAD_MORE -> {
                         removeMerchantMainTitle()
-                        emit(removeProgressBar())
+                        emit(getRemovalProgressBar())
                     }
                 }
             }
@@ -127,8 +139,6 @@ class TokoFoodHomeViewModel @Inject constructor(
             replay = Int.ONE
         )
 
-    val layoutList: LiveData<Result<TokoFoodListUiModel>>
-        get() = _homeLayoutList
     val updatePinPointState: LiveData<Boolean>
         get() = _updatePinPointState
     val errorMessage: LiveData<String>
@@ -138,7 +148,6 @@ class TokoFoodHomeViewModel @Inject constructor(
     val eligibleForAnaRevamp: LiveData<Result<EligibleForAddressFeature>>
         get() = _eligibleForAnaRevamp
 
-    private val _homeLayoutList = MutableLiveData<Result<TokoFoodListUiModel>>()
     private val _updatePinPointState = MutableLiveData<Boolean>()
     private val _errorMessage = MutableLiveData<String>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
@@ -190,6 +199,53 @@ class TokoFoodHomeViewModel @Inject constructor(
         _inputState.tryEmit(TokoFoodHomeUiState(uiState = STATE_LOADING))
     }
 
+    fun setNoPinPointState() {
+        _inputState.tryEmit(TokoFoodHomeUiState(uiState = STATE_NO_PIN_POINT))
+    }
+
+    fun setNoAddressState() {
+        _inputState.tryEmit(TokoFoodHomeUiState(uiState = STATE_NO_ADDRESS))
+    }
+
+    fun setErrorState(throwable: Throwable) {
+        _inputState.tryEmit(TokoFoodHomeUiState(uiState = STATE_ERROR, throwable = throwable))
+    }
+
+    fun setRemoveTicker(id: String) {
+        _inputState.tryEmit(TokoFoodHomeUiState(uiState = STATE_REMOVE_TICKER, visitableId = id))
+    }
+
+    fun setLayoutComponentData(localCacheModel: LocalCacheModel?) {
+        localCacheModel?.let {
+            _inputState.tryEmit(
+                TokoFoodHomeUiState(
+                    uiState = STATE_FETCH_COMPONENT_DATA,
+                    localCacheModel = it
+                )
+            )
+        }
+    }
+
+    fun setMerchantList(localCacheModel: LocalCacheModel?) {
+        localCacheModel?.let {
+            _inputState.tryEmit(
+                TokoFoodHomeUiState(
+                    uiState = STATE_FETCH_LOAD_MORE,
+                    localCacheModel = it
+                )
+            )
+        }
+    }
+
+    fun setHomeLayout(localCacheModel: LocalCacheModel) {
+        _inputState.tryEmit(
+            TokoFoodHomeUiState(
+                uiState = STATE_FETCH_DYNAMIC_CHANNEL_DATA,
+                localCacheModel = localCacheModel
+            )
+        )
+    }
+
     fun getLoadingState(): Result<TokoFoodListUiModel> {
         setPageKey(INITIAL_PAGE_KEY_MERCHANT)
         homeLayoutItemList.clear()
@@ -203,34 +259,40 @@ class TokoFoodHomeViewModel @Inject constructor(
         return data
     }
 
-    fun showNoPinPointState() {
+    fun getNoPinPointState(): Result<TokoFoodListUiModel> {
         homeLayoutItemList.clear()
         homeLayoutItemList.addNoPinPointState()
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.HIDE
+        val data = Success(
+            TokoFoodListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoFoodLayoutState.HIDE
+            )
         )
-        _homeLayoutList.postValue(Success(data))
+        return data
     }
 
-    fun showNoAddressState() {
+    fun getNoAddressState(): Result<TokoFoodListUiModel> {
         homeLayoutItemList.clear()
         homeLayoutItemList.addNoAddressState()
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.HIDE
+        val data = Success(
+            TokoFoodListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoFoodLayoutState.HIDE
+            )
         )
-        _homeLayoutList.postValue(Success(data))
+        return data
     }
 
-    fun showErrorState(throwable: Throwable) {
+    fun getErrorState(throwable: Throwable): Result<TokoFoodListUiModel> {
         homeLayoutItemList.clear()
         homeLayoutItemList.addErrorState(throwable)
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.HIDE
+        val data = Success(
+            TokoFoodListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoFoodLayoutState.HIDE
+            )
         )
-        _homeLayoutList.postValue(Success(data))
+        return data
     }
 
     fun getProgressBar(): Result<TokoFoodListUiModel> {
@@ -242,27 +304,18 @@ class TokoFoodHomeViewModel @Inject constructor(
         return Success(data)
     }
 
-    fun removeTickerWidget(id: String) {
-        launch(block = {
-            hasTickerBeenRemoved = true
-            homeLayoutItemList.removeItem(id)
+    fun getRemovalTickerWidget(id: String): Result<TokoFoodListUiModel> {
+        hasTickerBeenRemoved = true
+        homeLayoutItemList.removeItem(id)
 
-            val data = TokoFoodListUiModel(
+        val data = Success(
+            TokoFoodListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoFoodLayoutState.UPDATE
             )
-
-            _homeLayoutList.postValue(Success(data))
-        })
-    }
-
-    fun setHomeLayout(localCacheModel: LocalCacheModel) {
-        _inputState.tryEmit(
-            TokoFoodHomeUiState(
-                uiState = STATE_FETCH_DYNAMIC_CHANNEL_DATA,
-                localCacheModel = localCacheModel
-            )
         )
+
+        return data
     }
 
     suspend fun getHomeLayout(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
@@ -284,17 +337,6 @@ class TokoFoodHomeViewModel @Inject constructor(
         return Success(data)
     }
 
-    fun setLayoutComponentData(localCacheModel: LocalCacheModel?) {
-        localCacheModel?.let {
-            _inputState.tryEmit(
-                TokoFoodHomeUiState(
-                    uiState = STATE_FETCH_COMPONENT_DATA,
-                    localCacheModel = it
-                )
-            )
-        }
-    }
-
     suspend fun getLayoutComponentData(
         uiModel: TokoFoodItemUiModel,
         localCacheModel: LocalCacheModel?
@@ -311,6 +353,37 @@ class TokoFoodHomeViewModel @Inject constructor(
             state = TokoFoodLayoutState.UPDATE
         )
 
+        return Success(data)
+    }
+
+    private suspend fun getMerchantList(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
+        val categoryResponse = withContext(dispatchers.io) {
+            tokoFoodMerchantListUseCase.execute(
+                localCacheModel = localCacheModel,
+                pageKey = pageKey
+            )
+        }
+
+        if (isInitialPageKey()) {
+            homeLayoutItemList.addMerchantTitle()
+        }
+
+        setPageKey(categoryResponse.data.nextPageKey)
+        homeLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
+        homeLayoutItemList.removeProgressBar()
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.LOAD_MORE
+        )
+        return Success(data)
+    }
+
+    private fun getRemovalProgressBar(): Result<TokoFoodListUiModel> {
+        homeLayoutItemList.removeProgressBar()
+        val data = TokoFoodListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodLayoutState.LOAD_MORE
+        )
         return Success(data)
     }
 
@@ -334,47 +407,6 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     fun setPageKey(pageNew: String) {
         pageKey = pageNew
-    }
-
-    private fun setMerchantList(localCacheModel: LocalCacheModel?) {
-        localCacheModel?.let {
-            _inputState.tryEmit(
-                TokoFoodHomeUiState(
-                    uiState = STATE_FETCH_LOAD_MORE,
-                    localCacheModel = it
-                )
-            )
-        }
-    }
-    private suspend fun getMerchantList(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
-        val categoryResponse = withContext(dispatchers.io) {
-            tokoFoodMerchantListUseCase.execute(
-                localCacheModel = localCacheModel,
-                pageKey = pageKey
-            )
-        }
-
-        if (isInitialPageKey()) {
-            homeLayoutItemList.addMerchantTitle()
-        }
-
-        setPageKey(categoryResponse.data.nextPageKey)
-        homeLayoutItemList.mapCategoryLayoutList(categoryResponse.data.merchants)
-        homeLayoutItemList.removeProgressBar()
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.LOAD_MORE
-        )
-        return Success(data)
-    }
-
-    private fun removeProgressBar(): Result<TokoFoodListUiModel> {
-        homeLayoutItemList.removeProgressBar()
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.LOAD_MORE
-        )
-        return Success(data)
     }
 
     private suspend fun getTokoFoodHomeComponent(
@@ -435,16 +467,6 @@ class TokoFoodHomeViewModel @Inject constructor(
         if (isInitialPageKey()) {
             homeLayoutItemList.removeItem(MERCHANT_TITLE)
         }
-    }
-
-    private fun merchantListUpdate() {
-        homeLayoutItemList.removeProgressBar()
-        val data = TokoFoodListUiModel(
-            items = getHomeVisitableList(),
-            state = TokoFoodLayoutState.LOAD_MORE
-        )
-
-        _homeLayoutList.postValue(Success(data))
     }
 
     private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {

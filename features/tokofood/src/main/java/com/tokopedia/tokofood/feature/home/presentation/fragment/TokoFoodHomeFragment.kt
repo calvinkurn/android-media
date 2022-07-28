@@ -348,7 +348,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onTickerDismissed(id: String) {
-        viewModel.removeTickerWidget(id)
+        viewModel.setRemoveTicker(id)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -409,20 +409,18 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun getLayoutComponentData() {
         viewModel.setLayoutComponentData(localCacheModel)
-        //viewModel.getLayoutComponentData(localCacheModel)
     }
 
     private fun loadLayout() {
-        //viewModel.showLoadingState()
         viewModel.setLoadingState()
     }
 
     private fun showNoPinPoin() {
-        viewModel.showNoPinPointState()
+        viewModel.setNoPinPointState()
     }
 
     private fun showNoAddress() {
-        viewModel.showNoAddressState()
+        viewModel.setNoAddressState()
     }
 
     private fun getChooseAddress() {
@@ -512,27 +510,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 }
             }
         }
-//        viewLifecycleOwner.observe(viewModel.layoutList) {
-//            removeAllScrollListener()
-//            when (it) {
-//                is Success -> {
-//                    onSuccessGetHomeLayout(it.data)
-//                }
-//                is Fail -> {
-//                    logExceptionTokoFoodHome(
-//                        it.throwable,
-//                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
-//                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
-//                    )
-//                    onErrorGetHomeLayout(it.throwable)
-//                }
-//            }
-//
-//            rvHome?.post {
-//                addScrollListener()
-//                resetSwipeLayout()
-//            }
-//        }
 
         viewLifecycleOwner.observe(viewModel.updatePinPointState) { isSuccess ->
             if (isSuccess) {
@@ -628,7 +605,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorGetHomeLayout(throwable: Throwable) {
-        viewModel.showErrorState(throwable)
+        viewModel.setErrorState(throwable)
     }
 
     private fun onHideHomeLayout(data: TokoFoodListUiModel) {
