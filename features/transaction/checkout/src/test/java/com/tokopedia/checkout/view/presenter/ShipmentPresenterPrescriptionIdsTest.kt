@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse
 import com.tokopedia.checkout.domain.usecase.*
@@ -96,6 +97,10 @@ class ShipmentPresenterPrescriptionIdsTest {
 
     private var gson = Gson()
 
+    companion object {
+        const val CHECKOUT_ID = "100"
+    }
+
     @Before
     fun before() {
         MockKAnnotations.init(this)
@@ -113,16 +118,16 @@ class ShipmentPresenterPrescriptionIdsTest {
     @Test
     fun `WHEN upload prescription then should hit upload prescription use case with checkout id`() {
         // Given
-        val checkoutId = "100"
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
         presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(false, "", "",
-            checkoutId = checkoutId, arrayListOf(), 0, ""))
+            checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""))
 
         // When
-        presenter.fetchPrescriptionIds(checkoutId)
+        presenter.fetchPrescriptionIds(true, CHECKOUT_ID)
 
         // Then
-        verify { prescriptionIdsUseCase.execute(checkoutId) }
+        verify { prescriptionIdsUseCase.execute(CHECKOUT_ID) }
+        verify(exactly = 1) { view.updatePrescriptionIds(any()) }
     }
 
     @Test
@@ -132,19 +137,46 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.setUploadPrescriptionData(null)
 
         // When
-        presenter.fetchPrescriptionIds("")
+        presenter.fetchPrescriptionIds(true, "")
 
         // Then
         verify(inverse = true) { prescriptionIdsUseCase.execute(any()) }
     }
 
     @Test
-    fun `CHECK upload prescription data`() {
+    fun `GIVEN upload false item WHEN upload prescription THEN should not hit upload prescription use case`() {
         // Given
-        val checkoutId = "100"
+        every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
+        presenter.setUploadPrescriptionData(null)
+
+        // When
+        presenter.fetchPrescriptionIds(false, CHECKOUT_ID)
+
+        // Then
+        verify(inverse = true) { prescriptionIdsUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `GIVEN error item WHEN upload prescription THEN should not hit upload prescription use case`() {
+        // Given
+        every { prescriptionIdsUseCase.execute(any()) } returns Observable.error(Throwable())
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(false, "", "",
+            checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""))
+
+        // When
+        presenter.fetchPrescriptionIds(true, CHECKOUT_ID)
+
+        // Then
+        verify { prescriptionIdsUseCase.execute(CHECKOUT_ID) }
+        verify(exactly = 0) { view.updatePrescriptionIds(any()) }
+    }
+
+    @Test
+    fun `CHECK upload prescription data initialization`() {
+        // Given
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
         presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(false, "", "",
-            checkoutId = checkoutId, arrayListOf(), 0, ""))
+            checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""))
 
         // Then
         assert(presenter.uploadPrescriptionUiModel != null)

@@ -750,9 +750,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 cartShipmentAddressFormData.getPrescriptionCheckoutId(),
                 new ArrayList<>(),0,""
         ));
-        if(cartShipmentAddressFormData.getPrescriptionShowImageUpload()){
-            fetchPrescriptionIds(cartShipmentAddressFormData.getPrescriptionCheckoutId());
-        }
+        fetchPrescriptionIds(cartShipmentAddressFormData.getPrescriptionShowImageUpload(), cartShipmentAddressFormData.getPrescriptionCheckoutId());
     }
 
     public void setPurchaseProtection(boolean isPurchaseProtectionPage) {
@@ -2229,8 +2227,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void fetchPrescriptionIds(String checkoutId) {
-        if(!checkoutId.isEmpty()){
+    public void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId) {
+        if(!checkoutId.isEmpty() && isUploadPrescriptionNeeded){
             compositeSubscription.add(prescriptionIdsUseCase
                     .execute(checkoutId)
                     .subscribe(new Subscriber<GetPrescriptionIdsResponse>(){
@@ -2238,7 +2236,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         public void onCompleted() { }
 
                         @Override
-                        public void onError(Throwable e) { }
+                        public void onError(Throwable e) {
+                            Timber.d(e);
+                        }
 
                         @Override
                         public void onNext(GetPrescriptionIdsResponse getPrescriptionIdsResponse) {
