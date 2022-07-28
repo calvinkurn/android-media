@@ -37,6 +37,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         const val CLICK_ON_KEMBALI_BLACKLIST_PAGE = "click on button kembali"
         const val VIEW_SUCCES_PAGE = "view on success terverifikasi"
         const val CLICK_BACK_SUCCESS_PAGE = "click on back success terverfikasi"
+        const val CLICK_RETRY_VERIFICATION = "click on button verifikasi ulang"
         const val CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE = "click on syarat dan ketentuan sukses terverfikasi"
     }
 
@@ -161,6 +162,13 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_NEXT_REJECTED_PAGE,
+                "click - $projectID - ${getKycType(projectID.toString())}"
+        ))
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_ONBOARDING_PAGE,
+                Action.CLICK_RETRY_VERIFICATION,
                 "click - $projectID - ${getKycType(projectID.toString())}"
         ))
     }

@@ -36,14 +36,14 @@ public class UserIdentificationCommonAnalytics {
         private static final String VIEW_OPEN_CAMERA_KTP = "view on open camera KTP";
         private static final String CLICK_BACK_CAMERA_KTP = "click on close ambil foto KTP";
         private static final String CLICK_SHUTTER_CAMERA_KTP = "click on foto KTP";
-        private static final String CLICK_ON_BUTTON_CAPTURE_CAMERA_KTP = "click on button capture";
+        private static final String CLICK_ON_BUTTON_CAPTURE_CAMERA = "click on button capture";
         private static final String CLICK_FLIP_CAMERA_KTP = "click on change camera foto KTP";
         private static final String VIEW_IMAGE_PREVIEW_KTP = "view on take foto KTP";
         private static final String CLICK_CLOSE_IMAGE_PREVIEW_KTP = "click on close take foto KTP";
         private static final String CLICK_RECAPTURE_KTP = "click on foto ulang KTP";
-        private static final String CLICK_BUTTON_RECAPTURE_KTP = "click on button foto ulang";
+        private static final String CLICK_BUTTON_RECAPTURE = "click on button foto ulang";
         private static final String CLICK_NEXT_IMAGE_PREVIEW_KTP = "click on lanjut take foto KTP";
-        private static final String CLICK_ON_BUTTON_LANJUT_PREVIEW_KTP = "click on button lanjut";
+        private static final String CLICK_ON_BUTTON_LANJUT_PREVIEW = "click on button lanjut";
 
         private static final String VIEW_SELFIE_PAGE = "view on panduan selfie KTP";
         private static final String CLICK_NEXT_SELFIE_PAGE = "click on ambil foto diri bersama KTP";
@@ -54,6 +54,7 @@ public class UserIdentificationCommonAnalytics {
         private static final String VIEW_OPEN_CAMERA_SELFIE = "view on open camera selfie bersama KTP";
         private static final String CLICK_BACK_CAMERA_SELFIE = "click on back selfie bersama KTP";
         private static final String CLICK_SHUTTER_CAMERA_SELFIE = "click on foto selfie bersama KTP";
+        private static final String CLICK_ON_BUTTON_SHUTTER_CAMERA_SELFIE = "click on button ambil foto selfie";
         private static final String CLICK_FLIP_CAMERA_SELFIE = "click on change camera selfie bersama KTP";
         private static final String VIEW_IMAGE_PREVIEW_SELFIE = "view on take foto selfie bersama KTP";
         private static final String CLICK_CLOSE_IMAGE_PREVIEW_SELFIE = "click on back take selfie KTP";
@@ -79,6 +80,7 @@ public class UserIdentificationCommonAnalytics {
     private static class Category {
         private static final String KYC_PAGE = "kyc page";
         private static final String KYC_KTP_PAGE = "kyc ktp page";
+        private static final String KYC_SELFIE_PAGE = "kyc ktp page";
         private static final String KYC_LIVENESS_PAGE = "kyc liveness page";
         private static final String KYC_SUBMISSION_PAGE = "kyc submission page";
         private static final String KYC_PAGE_TRADEIN = "kyc trade in page";
@@ -102,13 +104,22 @@ public class UserIdentificationCommonAnalytics {
         return new UserIdentificationCommonAnalytics(projectID);
     }
 
-    public void eventClickBackSelfiePage() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_LIVENESS_PAGE,
-                Action.CLICK_ON_BUTTON_BACK,
-                Label.labelOne + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
-        ));
+    public void eventClickBackSelfiePage(Boolean isLiveness) {
+        if (isLiveness) {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_ACCOUNT,
+                    Category.KYC_LIVENESS_PAGE,
+                    Action.CLICK_ON_BUTTON_BACK,
+                    Label.labelOne + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
+            ));
+        } else  {
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                    Event.CLICK_ACCOUNT,
+                    Category.KYC_SELFIE_PAGE,
+                    Action.CLICK_ON_BUTTON_BACK,
+                    Label.labelOne + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
+            ));
+        }
     }
 
     public void eventViewSelfiePage() {
@@ -194,7 +205,7 @@ public class UserIdentificationCommonAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
-                Action.CLICK_ON_BUTTON_CAPTURE_CAMERA_KTP,
+                Action.CLICK_ON_BUTTON_CAPTURE_CAMERA,
                 "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
@@ -209,6 +220,20 @@ public class UserIdentificationCommonAnalytics {
                 Category.KYC_PAGE,
                 Action.CLICK_SHUTTER_CAMERA_SELFIE,
                 "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
+        ));
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_SELFIE_PAGE,
+                Action.CLICK_ON_BUTTON_SHUTTER_CAMERA_SELFIE,
+                projectID + " - " + getKycType(String.valueOf(projectID))
+        ));
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_SELFIE_PAGE,
+                Action.CLICK_ON_BUTTON_CAPTURE_CAMERA,
+                projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -287,7 +312,7 @@ public class UserIdentificationCommonAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
-                Action.CLICK_BUTTON_RECAPTURE_KTP,
+                Action.CLICK_BUTTON_RECAPTURE,
                 "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
@@ -303,6 +328,13 @@ public class UserIdentificationCommonAnalytics {
                 Action.CLICK_RECAPTURE_SELFIE,
                 "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_SELFIE_PAGE,
+                Action.CLICK_BUTTON_RECAPTURE,
+                projectID + " - " + getKycType(String.valueOf(projectID))
+        ));
     }
 
     public void eventClickNextImagePreviewKtp() {
@@ -313,7 +345,7 @@ public class UserIdentificationCommonAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
-                Action.CLICK_ON_BUTTON_LANJUT_PREVIEW_KTP,
+                Action.CLICK_ON_BUTTON_LANJUT_PREVIEW,
                 "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
@@ -328,6 +360,13 @@ public class UserIdentificationCommonAnalytics {
                 Category.KYC_PAGE,
                 Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE,
                 "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
+        ));
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_SELFIE_PAGE,
+                Action.CLICK_ON_BUTTON_LANJUT_PREVIEW,
+                projectID + " - " + getKycType(String.valueOf(projectID))
         ));
     }
 
@@ -374,6 +413,13 @@ public class UserIdentificationCommonAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
+                Action.CLICK_RETAKE_SELFIE_FINAL_FORM_PAGE,
+                "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
+        ));
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_SELFIE_PAGE,
                 Action.CLICK_RETAKE_SELFIE_FINAL_FORM_PAGE,
                 "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ));

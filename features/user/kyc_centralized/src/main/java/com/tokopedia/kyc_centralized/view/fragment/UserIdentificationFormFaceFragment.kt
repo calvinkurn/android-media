@@ -170,7 +170,7 @@ class UserIdentificationFormFaceFragment :
 
     override fun trackOnBackPressed() {
         FileUtil.deleteFile(stepperModel?.ktpFile)
-        analytics?.eventClickBackSelfiePage()
+        analytics?.eventClickBackSelfiePage(isKycSelfie)
     }
 
     companion object {
