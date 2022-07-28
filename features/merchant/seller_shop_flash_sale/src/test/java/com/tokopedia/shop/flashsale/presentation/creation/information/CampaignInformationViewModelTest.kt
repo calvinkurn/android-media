@@ -66,6 +66,274 @@ class CampaignInformationViewModelTest {
         MockKAnnotations.init(this)
     }
 
+    //region validateCampaignName
+    @Test
+    fun `When campaign name is empty, should return CampaignNameIsEmpty error`() =
+        runBlocking {
+            //Given
+            val campaignName = ""
+            val expected = CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameIsEmpty
+
+            //When
+            val actual = viewModel.validateCampaignName(campaignName)
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When campaign name length is below minimum, should return CampaignNameBelowMinCharacter`() =
+        runBlocking {
+            //Given
+            val campaignName = "cam"
+            val expected = CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameBelowMinCharacter
+
+            //When
+            val actual = viewModel.validateCampaignName(campaignName)
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When campaign name has forbidden words, should return CampaignNameHasForbiddenWords`() =
+        runBlocking {
+            //Given
+            val campaignName = "lazada"
+            val expected = CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameHasForbiddenWords
+
+            //When
+            val actual = viewModel.validateCampaignName(campaignName)
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When campaign name valid, should return valid`() =
+        runBlocking {
+            //Given
+            val campaignName = "Adidas Sale"
+            val expected = CampaignInformationViewModel.CampaignNameValidationResult.Valid
+
+            //When
+            val actual = viewModel.validateCampaignName(campaignName)
+
+            //Then
+            assertEquals(expected, actual)
+        }
+    //endregion
+    //region validateInput
+    @Test
+    fun `When page mode is create and remaining quota is empty, should return NoRemainingQuota`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 0
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                Date(),
+                Date(),
+                showTeaser = true,
+                Date(),
+                firstColor = "#00FF00",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+            val now = Date()
+            val expected = CampaignInformationViewModel.ValidationResult.NoRemainingQuota
+
+            //When
+            viewModel.validateInput(mode, selection, now)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When page mode is update and has remaining quota, should return Valid`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.UPDATE
+            val remainingQuota = 5
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                Date(),
+                Date(),
+                showTeaser = true,
+                Date(),
+                firstColor = "#00FF00",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+            val now = Date()
+            val expected = CampaignInformationViewModel.ValidationResult.Valid
+
+            //When
+            viewModel.validateInput(mode, selection, now)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When current date is after selected start date, should return LapsedStartDate`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 5
+            val advancedNow = Date().advanceHourBy(hour = 2)
+            val selectedStartDate = Date()
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                selectedStartDate,
+                Date(),
+                showTeaser = true,
+                Date(),
+                firstColor = "#00FF00",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+
+            val expected = CampaignInformationViewModel.ValidationResult.LapsedStartDate
+
+            //When
+            viewModel.validateInput(mode, selection, advancedNow)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When show teaser option is selected and current date is after selected teaser date, should return LapsedTeaserStartDate`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 5
+            val advancedNow = Date().advanceHourBy(1)
+            val tomorrow = Date().advanceDayBy(days = 1)
+
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                startDate = tomorrow,
+                endDate = Date(),
+                showTeaser = true,
+                teaserDate = Date(),
+                firstColor = "#00FF00",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+
+            val expected = CampaignInformationViewModel.ValidationResult.LapsedTeaserStartDate
+
+            //When
+            viewModel.validateInput(mode, selection, advancedNow)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When show teaser option is not selected and current date is after selected teaser date, should return Valid`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 5
+            val advancedNow = Date().advanceHourBy(1)
+            val tomorrow = Date().advanceDayBy(days = 1)
+
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                startDate = tomorrow,
+                endDate = Date(),
+                showTeaser = false,
+                teaserDate = Date(),
+                firstColor = "#00FF00",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+
+            val expected = CampaignInformationViewModel.ValidationResult.Valid
+
+            //When
+            viewModel.validateInput(mode, selection, advancedNow)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When first color length is below minimum length, should return InvalidHexColor`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 5
+            val advancedNow = Date().advanceHourBy(1)
+            val tomorrow = Date().advanceDayBy(days = 1)
+
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                startDate = tomorrow,
+                endDate = Date(),
+                showTeaser = false,
+                teaserDate = Date(),
+                firstColor = "#FF",
+                secondColor = "#00FF00",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+
+            val expected = CampaignInformationViewModel.ValidationResult.InvalidHexColor
+
+            //When
+            viewModel.validateInput(mode, selection, advancedNow)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When second color length is below minimum length, should return InvalidHexColor`() =
+        runBlocking {
+            //Given
+            val mode = PageMode.CREATE
+            val remainingQuota = 5
+            val advancedNow = Date().advanceHourBy(1)
+            val tomorrow = Date().advanceDayBy(days = 1)
+
+            val selection = CampaignInformationViewModel.Selection(
+                "Adidas Sale",
+                startDate = tomorrow,
+                endDate = Date(),
+                showTeaser = false,
+                teaserDate = Date(),
+                firstColor = "#00FF00",
+                secondColor = "#FF",
+                PaymentType.INSTANT,
+                remainingQuota = remainingQuota
+            )
+
+            val expected = CampaignInformationViewModel.ValidationResult.InvalidHexColor
+
+            //When
+            viewModel.validateInput(mode, selection, advancedNow)
+            val actual = viewModel.areInputValid.getOrAwaitValue()
+
+            //Then
+            assertEquals(expected, actual)
+        }
+    //endregion
 
     //region getCampaignDetail
     @Test
@@ -680,21 +948,13 @@ class CampaignInformationViewModelTest {
 
     @Test
     fun `When update campaign after previously get campaign detail, should get correct values`() {
-
+        //Given
         val campaignId : Long= 1001
         val campaignRuleSubmit = true
         val relatedCampaign = listOf(RelatedCampaign(1, "Shoes Flash Sale"))
         val relatedCampaignId = listOf<Long>(1)
         val campaign = buildCampaignUiModel(campaignId).copy(relatedCampaigns = relatedCampaign, isCampaignRuleSubmit = campaignRuleSubmit)
         val selection = buildSelectionObject()
-
-        coEvery { getSellerCampaignDetailUseCase.execute(campaignId) } returns campaign
-
-        viewModel.getCampaignDetail(campaignId)
-
-        viewModel.setCampaignId(campaignId)
-        viewModel.submit(selection)
-
         val params = DoSellerCampaignCreationUseCase.Param(
             CampaignAction.Update(campaignId),
             selection.campaignName,
@@ -708,6 +968,15 @@ class CampaignInformationViewModelTest {
             campaignRelation = relatedCampaignId,
             isCampaignRuleSubmit = campaignRuleSubmit
         )
+
+        coEvery { getSellerCampaignDetailUseCase.execute(campaignId) } returns campaign
+
+        //When
+        viewModel.setCampaignId(campaignId)
+        viewModel.getCampaignDetail(campaignId)
+        viewModel.submit(selection)
+
+        //Then
         coVerify { doSellerCampaignCreationUseCase.execute(params) }
     }
     //endregion
@@ -957,272 +1226,6 @@ class CampaignInformationViewModelTest {
         viewModel.storeAsDefaultSelection(selection)
         assertEquals(selection, viewModel.getDefaultSelection())
     }
-
-    @Test
-    fun `When campaign name is empty, should return CampaignNameIsEmpty error`() =
-        runBlocking {
-            //Given
-            val campaignName = ""
-            val expected = CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameIsEmpty
-
-            //When
-            val actual = viewModel.validateCampaignName(campaignName)
-
-            //Then
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `When campaign name length is below minimum, should return CampaignNameBelowMinCharacter`() =
-        runBlocking {
-            //Given
-            val campaignName = "cam"
-            val expected = CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameBelowMinCharacter
-
-            //When
-            val actual = viewModel.validateCampaignName(campaignName)
-
-            //Then
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `When campaign name has forbidden words, should return CampaignNameHasForbiddenWords`() =
-        runBlocking {
-            //Given
-            val campaignName = "lazada"
-            val expected = CampaignInformationViewModel.CampaignNameValidationResult.CampaignNameHasForbiddenWords
-
-            //When
-            val actual = viewModel.validateCampaignName(campaignName)
-
-            //Then
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `When campaign name valid, should return valid`() =
-        runBlocking {
-            //Given
-            val campaignName = "Adidas Sale"
-            val expected = CampaignInformationViewModel.CampaignNameValidationResult.Valid
-
-            //When
-            val actual = viewModel.validateCampaignName(campaignName)
-
-            //Then
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `When page mode is create and remaining quota is empty, should return NoRemainingQuota`() =
-        runBlocking {
-            //Given
-            val mode = PageMode.CREATE
-            val remainingQuota = 0
-            val selection = CampaignInformationViewModel.Selection(
-                "Adidas Sale",
-                Date(),
-                Date(),
-                showTeaser = true,
-                Date(),
-                firstColor = "#00FF00",
-                secondColor = "#00FF00",
-                PaymentType.INSTANT,
-                remainingQuota = remainingQuota
-            )
-            val now = Date()
-            val expected = CampaignInformationViewModel.ValidationResult.NoRemainingQuota
-
-            //When
-            viewModel.validateInput(mode, selection, now)
-            val actual = viewModel.areInputValid.getOrAwaitValue()
-
-            //Then
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `When page mode is update and has remaining quota, should return Valid`() =
-        runBlocking {
-            //Given
-            val mode = PageMode.UPDATE
-            val remainingQuota = 5
-            val selection = CampaignInformationViewModel.Selection(
-                "Adidas Sale",
-                Date(),
-                Date(),
-                showTeaser = true,
-                Date(),
-                firstColor = "#00FF00",
-                secondColor = "#00FF00",
-                PaymentType.INSTANT,
-                remainingQuota = remainingQuota
-            )
-            val now = Date()
-            val expected = CampaignInformationViewModel.ValidationResult.Valid
-
-            //When
-            viewModel.validateInput(mode, selection, now)
-            val actual = viewModel.areInputValid.getOrAwaitValue()
-
-            //Then
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `When current date is after selected start date, should return LapsedStartDate`() =
-        runBlocking {
-            //Given
-            val mode = PageMode.CREATE
-            val remainingQuota = 5
-            val advancedNow = Date().advanceHourBy(hour = 2)
-            val selectedStartDate = Date()
-            val selection = CampaignInformationViewModel.Selection(
-                "Adidas Sale",
-                selectedStartDate,
-                Date(),
-                showTeaser = true,
-                Date(),
-                firstColor = "#00FF00",
-                secondColor = "#00FF00",
-                PaymentType.INSTANT,
-                remainingQuota = remainingQuota
-            )
-
-            val expected = CampaignInformationViewModel.ValidationResult.LapsedStartDate
-
-            //When
-            viewModel.validateInput(mode, selection, advancedNow)
-            val actual = viewModel.areInputValid.getOrAwaitValue()
-
-            //Then
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `When show teaser option is selected and current date is after selected teaser date, should return LapsedTeaserStartDate`() =
-        runBlocking {
-            //Given
-            val mode = PageMode.CREATE
-            val remainingQuota = 5
-            val advancedNow = Date().advanceHourBy(1)
-            val tomorrow = Date().advanceDayBy(days = 1)
-
-            val selection = CampaignInformationViewModel.Selection(
-                "Adidas Sale",
-                startDate = tomorrow,
-                endDate = Date(),
-                showTeaser = true,
-                teaserDate = Date(),
-                firstColor = "#00FF00",
-                secondColor = "#00FF00",
-                PaymentType.INSTANT,
-                remainingQuota = remainingQuota
-            )
-
-            val expected = CampaignInformationViewModel.ValidationResult.LapsedTeaserStartDate
-
-            //When
-            viewModel.validateInput(mode, selection, advancedNow)
-            val actual = viewModel.areInputValid.getOrAwaitValue()
-
-            //Then
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `When show teaser option is not selected and current date is after selected teaser date, should return Valid`() =
-        runBlocking {
-            //Given
-            val mode = PageMode.CREATE
-            val remainingQuota = 5
-            val advancedNow = Date().advanceHourBy(1)
-            val tomorrow = Date().advanceDayBy(days = 1)
-
-            val selection = CampaignInformationViewModel.Selection(
-                "Adidas Sale",
-                startDate = tomorrow,
-                endDate = Date(),
-                showTeaser = false,
-                teaserDate = Date(),
-                firstColor = "#00FF00",
-                secondColor = "#00FF00",
-                PaymentType.INSTANT,
-                remainingQuota = remainingQuota
-            )
-
-            val expected = CampaignInformationViewModel.ValidationResult.Valid
-
-            //When
-            viewModel.validateInput(mode, selection, advancedNow)
-            val actual = viewModel.areInputValid.getOrAwaitValue()
-
-            //Then
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `When first color length is below minimum length, should return InvalidHexColor`() =
-        runBlocking {
-            //Given
-            val mode = PageMode.CREATE
-            val remainingQuota = 5
-            val advancedNow = Date().advanceHourBy(1)
-            val tomorrow = Date().advanceDayBy(days = 1)
-
-            val selection = CampaignInformationViewModel.Selection(
-                "Adidas Sale",
-                startDate = tomorrow,
-                endDate = Date(),
-                showTeaser = false,
-                teaserDate = Date(),
-                firstColor = "#FF",
-                secondColor = "#00FF00",
-                PaymentType.INSTANT,
-                remainingQuota = remainingQuota
-            )
-
-            val expected = CampaignInformationViewModel.ValidationResult.InvalidHexColor
-
-            //When
-            viewModel.validateInput(mode, selection, advancedNow)
-            val actual = viewModel.areInputValid.getOrAwaitValue()
-
-            //Then
-            assertEquals(expected, actual)
-        }
-
-    @Test
-    fun `When second color length is below minimum length, should return InvalidHexColor`() =
-        runBlocking {
-            //Given
-            val mode = PageMode.CREATE
-            val remainingQuota = 5
-            val advancedNow = Date().advanceHourBy(1)
-            val tomorrow = Date().advanceDayBy(days = 1)
-
-            val selection = CampaignInformationViewModel.Selection(
-                "Adidas Sale",
-                startDate = tomorrow,
-                endDate = Date(),
-                showTeaser = false,
-                teaserDate = Date(),
-                firstColor = "#00FF00",
-                secondColor = "#FF",
-                PaymentType.INSTANT,
-                remainingQuota = remainingQuota
-            )
-
-            val expected = CampaignInformationViewModel.ValidationResult.InvalidHexColor
-
-            //When
-            viewModel.validateInput(mode, selection, advancedNow)
-            val actual = viewModel.areInputValid.getOrAwaitValue()
-
-            //Then
-            assertEquals(expected, actual)
-        }
     //endregion
 
     private fun buildSelectionObject(): CampaignInformationViewModel.Selection {
