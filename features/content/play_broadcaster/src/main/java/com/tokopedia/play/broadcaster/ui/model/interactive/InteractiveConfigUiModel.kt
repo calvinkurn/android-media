@@ -12,6 +12,8 @@ data class InteractiveConfigUiModel(
 
     fun isNoGameActive(): Boolean = !giveawayConfig.isActive && !quizConfig.isActive
 
+    fun isEligibleDurationEmpty(): Boolean = giveawayConfig.availableStartTimeInMs.isEmpty() || quizConfig.availableStartTimeInMs.isEmpty()
+
     @OptIn(ExperimentalStdlibApi::class)
     fun availableGameList(): List<GameType> {
         return buildList {
