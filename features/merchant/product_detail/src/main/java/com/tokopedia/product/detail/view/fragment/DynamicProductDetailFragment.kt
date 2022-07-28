@@ -2485,11 +2485,10 @@ open class DynamicProductDetailFragment :
                 )
 
                 viewModel.hitAffiliateCookie(
-                    productInfo = p1,
-                    deviceId = viewModel.deviceId,
-                    affiliateUuid = affiliateUniqueId,
-                    uuid = uuid,
-                    affiliateChannel = affiliateChannel
+                        productInfo = p1,
+                        affiliateUuid = affiliateUniqueId,
+                        uuid = uuid,
+                        affiliateChannel = affiliateChannel
                 )
             }
 
