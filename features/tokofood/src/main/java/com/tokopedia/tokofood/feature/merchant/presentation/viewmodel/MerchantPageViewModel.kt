@@ -131,9 +131,8 @@ class MerchantPageViewModel @Inject constructor(
         return listOf(ratingData, distanceData, estimationData, opsHoursData)
     }
 
-    fun mapOpsHourDetailsToMerchantOpsHours(opsHourDetails: List<TokoFoodMerchantOpsHour>): List<MerchantOpsHour> {
+    fun mapOpsHourDetailsToMerchantOpsHours(today: Int, opsHourDetails: List<TokoFoodMerchantOpsHour>): List<MerchantOpsHour> {
         return opsHourDetails.mapIndexed { index, opsHourDetail ->
-            val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
             // response data from be always start from monday with index 0
             // monday index from be = 0 ; Calendar.MONDAY = 2
             var day = index + DAYS_INCREASE
@@ -303,7 +302,8 @@ class MerchantPageViewModel @Inject constructor(
         )
     }
 
-    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail {
+    fun mapCartTokoFoodToCustomOrderDetail(cartTokoFood: CartTokoFood, productUiModel: ProductUiModel): CustomOrderDetail? {
+        if (!productUiModel.isCustomizable) return null
         resetMasterData(productUiModel.customListItems)
         return TokoFoodMerchantUiModelMapper.mapCartTokoFoodToCustomOrderDetail(
                 cartTokoFood = cartTokoFood,

@@ -241,17 +241,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun initializeToolbar() {
         activity?.let {
-            viewBinding?.toolbarPurchase?.removeAllViews()
-            val tokoFoodPurchaseToolbar = TokoFoodPurchaseToolbar(it).apply {
-                listener = this@TokoFoodPurchaseFragment
-            }
-
-            toolbar = tokoFoodPurchaseToolbar
-
+            toolbar = viewBinding?.toolbarPurchase
             toolbar?.let { toolbar ->
-                viewBinding?.toolbarPurchase?.addView(toolbar)
+                toolbar.listener = this@TokoFoodPurchaseFragment
                 toolbar.setContentInsetsAbsolute(Int.ZERO, Int.ZERO);
-                (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbarPurchase)
+                (activity as AppCompatActivity).setSupportActionBar(toolbar)
             }
 
             setToolbarShadowVisibility(false)

@@ -1,13 +1,17 @@
 package com.tokopedia.tokofood.common.util
 
+import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.Toaster
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -95,4 +99,20 @@ object TokofoodExt {
         }
     }
 
+    fun QuantityEditorUnify.setupEditText() {
+        editText.imeOptions = EditorInfo.IME_ACTION_DONE
+        editText.setOnEditorActionListener { view, actionId, _ ->
+            try {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    view.clearFocus()
+                    val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                    true
+                } else false
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+    }
 }

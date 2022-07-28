@@ -578,7 +578,7 @@ public class FeedAnalytics {
         trackEnhancedEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_CLICK,
-                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
+                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE_BOTTOM_SHEET,
                         EVENT_ACTION, eventAction,
                         EVENT_LABEL, activityId+" - "+shopId+" - "+product.getProductId(),
                         KEY_USER_ID, userId,

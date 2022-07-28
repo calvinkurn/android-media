@@ -1,17 +1,19 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp
 
 import android.Manifest
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
+import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
 import com.tokopedia.logisticaddaddress.test.R
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
+import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,7 +24,7 @@ import org.junit.runner.RunWith
 class AddNewAddressRevampNegativeTest {
 
     @get:Rule
-    var mActivityTestRule = ActivityTestRule(SearchPageActivity::class.java, false, false)
+    var mActivityTestRule = IntentsTestRule(SearchPageActivity::class.java, false, false)
 
     @get:Rule
     var permissionRule: GrantPermissionRule =
@@ -33,14 +35,21 @@ class AddNewAddressRevampNegativeTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
+    private val logisticInterceptor = AddAddressInterceptor.logisticInterceptor
+
     @Before
     fun setup() {
-        setupGraphqlMockResponse {
-            addMockResponse(GET_DISTRICT_RECCOM, InstrumentationMockHelper.getRawString(context, R.raw.district_recommendation_jakarta), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(ADD_ADDRESS_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_address_success), MockModelConfig.FIND_BY_CONTAINS)
-        }
+        AddAddressInterceptor.resetAllCustomResponse()
+        AddAddressInterceptor.setupGraphqlMockResponse(context)
+        logisticInterceptor.getDistrictRecommendationResponsePath = getRawString(context, R.raw.district_recommendation_jakarta)
+        logisticInterceptor.saveAddressResponsePath = getRawString(context, R.raw.save_address_success)
+        IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
     }
 
+    @After
+    fun tear() {
+        IdlingRegistry.getInstance().unregister(SimpleIdlingResource.countingIdlingResource)
+    }
 
     @Test
     fun addAddress_fromAddressList() {
@@ -105,15 +114,10 @@ class AddNewAddressRevampNegativeTest {
         }
     }
 
-
     companion object {
         const val KEYWORD = "Jakarta"
         const val ADDRESS = "Jalan Prof. Dr Satrio 123"
         const val RECEIVER = "Anonymous"
         const val PHONE = "081299875432"
-
-        const val AUTOCOMPLETE_KEY = "KeroMapsAutoComplete"
-        const val GET_DISTRICT_RECCOM = "GetDistrictRecommendation"
-        const val ADD_ADDRESS_KEY = "kero_add_address"
     }
 }

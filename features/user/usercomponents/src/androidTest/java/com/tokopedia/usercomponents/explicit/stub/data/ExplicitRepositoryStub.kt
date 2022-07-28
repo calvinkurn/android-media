@@ -4,9 +4,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.usercomponents.common.utils.FileUtils.createResponseFromJson
 import com.tokopedia.usercomponents.explicit.domain.model.AnswerDataModel
 import com.tokopedia.usercomponents.explicit.domain.model.QuestionDataModel
-import com.tokopedia.usercomponents.utils.FileUtils.createResponseFromJson
 import com.tokopedia.usercomponents.test.R
 import javax.inject.Inject
 

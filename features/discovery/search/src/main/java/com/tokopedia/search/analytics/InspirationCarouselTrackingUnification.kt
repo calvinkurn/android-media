@@ -6,10 +6,10 @@ import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option.Product
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import timber.log.Timber
 import javax.inject.Inject
-import com.tokopedia.remoteconfig.RollenceKey.SEARCH_CAROUSEL_CONTENT_TRACKER_UNIFICATION as ROLLENCE_KEY
 
 class InspirationCarouselTrackingUnification @Inject constructor() {
 
@@ -25,52 +25,33 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
             get() = product.asUnificationObjectDataLayer(filterSortParams)
     }
 
-    private fun isUseUnification(): Boolean {
-        return try {
-            val remoteConfig = RemoteConfigInstance.getInstance().abTestPlatform ?: return false
-
-            remoteConfig.getString(ROLLENCE_KEY, "") == ROLLENCE_KEY
-        } catch (throwable: Throwable) {
-            Timber.w(throwable)
-            false
-        }
-    }
-
     fun trackCarouselImpression(
         trackingQueue: TrackingQueue,
         data: Data,
-        fallback: () -> Unit,
     ) {
-        if (isUseUnification())
             SearchTracking.trackEventImpressionInspirationCarouselUnification(
                 trackingQueue,
                 data.eventLabel,
                 arrayListOf(data.productDataLayer)
             )
-        else
-            fallback()
     }
 
-    fun trackCarouselClick(data: Data, fallback: () -> Unit) {
-        if (isUseUnification())
+    fun trackCarouselClick(data: Data) {
             SearchTracking.trackEventClickInspirationCarouselUnification(
                 data.eventLabel,
                 data.product.inspirationCarouselType,
                 data.product.componentId,
                 arrayListOf(data.productDataLayer),
             )
-        else
-            fallback()
     }
 
     fun trackCarouselClickSeeAll(
         keyword: String,
         option: Option,
-        fallback: () -> Unit,
     ) {
         val searchComponentTracking = option.asSearchComponentTracking(keyword)
 
-        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY, fallback)
+        searchComponentTracking.click(TrackApp.getInstance().gtm)
     }
 
     private fun Option.asSearchComponentTracking(keyword: String): SearchComponentTracking =
