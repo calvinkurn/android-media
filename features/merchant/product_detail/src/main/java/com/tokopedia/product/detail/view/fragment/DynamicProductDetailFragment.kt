@@ -3596,7 +3596,7 @@ open class DynamicProductDetailFragment :
      * @param url : linkUrl for insurance partner to be rendered in web-view
      */
     private fun openFtInsuranceWebView(url: String) {
-        val semalessUrl = generateURLSessionLogin("https://staging.tokopedia.com/asuransi/proteksi/gadget", viewModel.deviceId, viewModel.userId)
+        val semalessUrl = generateURLSessionLogin(url, viewModel.deviceId, viewModel.userId)
         val webViewUrl = String.format(
             Locale.getDefault(),
             "%s?titlebar=true&url=%s",

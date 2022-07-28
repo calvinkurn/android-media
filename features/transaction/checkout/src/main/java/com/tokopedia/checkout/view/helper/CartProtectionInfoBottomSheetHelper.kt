@@ -44,7 +44,7 @@ object CartProtectionInfoBottomSheetHelper {
         }
         webView?.loadAuthUrl(
             URLGenerator.generateURLSessionLogin(
-                "https://staging.tokopedia.com/asuransi/proteksi/gadget".encodeOnce(),
+                url.encodeOnce(),
                 userSessionInterface.deviceId,
                 userSessionInterface.userId
             ),userSessionInterface,false
