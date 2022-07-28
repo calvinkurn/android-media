@@ -26,6 +26,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -360,7 +361,7 @@ class ManageProductViewModelTest {
                     Product(
                         productMapData = ProductMapData(
                             originalPrice = 100000,
-                            discountedPrice = 0,
+                            discountedPrice = 80000,
                             discountPercentage = 20,
                             customStock = 90,
                             originalCustomStock = 90,
@@ -482,6 +483,19 @@ class ManageProductViewModelTest {
 
                 val actual = shopStatus.getOrAwaitValue()
                 assertEquals(expected, actual)
+            }
+        }
+    }
+
+    @Test
+    fun `when buttton proceed is tapped, tracker will be sent` () {
+        runBlocking {
+            with(viewModel) {
+                onButtonProceedTapped()
+
+                coVerify {
+                    tracker.sendClickButtonProceedOnManageProductPage()
+                }
             }
         }
     }
