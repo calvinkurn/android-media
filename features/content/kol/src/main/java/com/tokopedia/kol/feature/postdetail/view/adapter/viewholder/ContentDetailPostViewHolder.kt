@@ -6,15 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.kol.R
-import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailPageRevampAdapter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.user.session.UserSession
 
 
 class ContentDetailPostViewHolder(
     itemView: View,
-    private val dataSource: ContentDetailPageRevampAdapter.DataSource,
     private val cdpListener: CDPListener
 ) : BaseViewHolder(itemView) {
 
@@ -23,10 +22,14 @@ class ContentDetailPostViewHolder(
 
 
     companion object {
+        const val IMAGE_POST_LIKED_UNLIKED = "image_liked_unliked"
+        const val IMAGE_POST_FOLLOW_UNFOLLOW = "image_follow_unfollow"
+        const val IMAGE_ITEM_IMPRESSED = "image_item_impressed"
+        const val VOD_ITEM_IMPRESSED = "vod_item_impressed"
+
 
         fun create(
             parent: ViewGroup,
-            dataSource: ContentDetailPageRevampAdapter.DataSource,
             cdpListener: CDPListener
         ) = ContentDetailPostViewHolder(
             LayoutInflater.from(parent.context)
@@ -35,7 +38,6 @@ class ContentDetailPostViewHolder(
                     parent,
                     false,
                 ),
-            dataSource,
             cdpListener
         )
     }
@@ -47,15 +49,54 @@ class ContentDetailPostViewHolder(
             itemView.hide()
             return
         }
-        if (feedXCard.media.size > feedXCard.lastCarouselIndex) {
-            val media = feedXCard.media[feedXCard.lastCarouselIndex]
-            if (feedXCard.isTypeVOD|| feedXCard.isTypeLongVideo)
-                cdpView.playVOD(feedXCard)
-            else if (media.isVideo || media.isImage)
-                cdpView.bindImageOnImpress()
+        if (payloads.containsKey(IMAGE_ITEM_IMPRESSED) || payloads.containsKey(VOD_ITEM_IMPRESSED)) {
+            if (feedXCard.media.size > feedXCard.lastCarouselIndex) {
+                val media = feedXCard.media[feedXCard.lastCarouselIndex]
+                if (feedXCard.isTypeVOD || feedXCard.isTypeLongVideo)
+                    cdpView.playVOD(feedXCard)
+                else if (media.isVideo || media.isImage)
+                    cdpView.bindImageOnImpress()
+            }
+        } else if(payloads.containsKey(IMAGE_POST_LIKED_UNLIKED)){
+            cdpView.bindLike(feedXCard)
+        } else if (payloads.containsKey(IMAGE_POST_FOLLOW_UNFOLLOW)) {
+            if (payloads.getBoolean(IMAGE_POST_FOLLOW_UNFOLLOW)) {
+                cdpView.bindHeader(feedXCard)
+            }
         }
     }
     interface CDPListener {
+        fun onLikeClicked(feedXCard: FeedXCard, postPosition: Int)
+        fun onCommentClicked(feedXCard: FeedXCard, postPosition: Int)
+        fun onSharePostClicked(feedXCard: FeedXCard, postPosition: Int)
+        fun onFollowUnfollowClicked(feedXCard: FeedXCard, postPosition: Int)
+        fun onClickOnThreeDots(feedXCard: FeedXCard, postPosition: Int)
+        fun onFullScreenButtonClicked(
+            feedXCard: FeedXCard,
+            postPosition: Int,
+            currentTime: Long,
+            shouldTrack: Boolean
+        )
+
+        fun onShopHeaderItemClicked(link: String)
+        fun addViewsToVOD(
+            feedXCard: FeedXCard,
+            rowNumber: Int,
+            time: Long,
+            hitTrackerApi: Boolean
+        )
+
+        fun onLihatProdukClicked(
+            feedXCard: FeedXCard,
+            postPosition: Int,
+            products: List<FeedXProduct>
+        )
+
+        fun onCekSekarangButtonClicked(
+            feedXCard: FeedXCard,
+            postPosition: Int
+        )
+
 
     }
 

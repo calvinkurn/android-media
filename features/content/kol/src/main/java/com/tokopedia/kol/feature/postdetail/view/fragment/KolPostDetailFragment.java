@@ -999,20 +999,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPostTagItemBSClick(int positionInFeed, @NotNull String redirectUrl, @NotNull FeedXProduct postTagItem, int itemPosition,@NotNull String mediaType ) {
-
-    }
-
-    @Override
     public void onReadMoreClicked(@NotNull String postId, @NotNull String shopId, @NotNull String postType, boolean isFollowed, @NotNull String mediaType) {
 
     }
-
-    @Override
-    public void onBottomSheetMenuClicked(@NotNull ProductPostTagViewModelNew item, @NotNull Context context, @NotNull String shopId) {
-
-    }
-
 
     @Override
     public void userProductImpression(int positionInFeed, @NotNull String activityId, @NotNull String postType, @NotNull String shopId, @NotNull List<FeedXProduct> productList) {
@@ -1034,10 +1023,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     }
 
-    @Override
-    public void onPostTagItemBSImpression(@NotNull String activityId, @NotNull List<FeedXProduct> postTagItemList, @NotNull String type, @NotNull String shopId, boolean isFollowed,  @NotNull String mediaType) {
-
-    }
 
     @Override
     public void onLikeClick(int positionInFeed, int id, boolean isLiked, @NotNull String postType, boolean isFollowed, boolean type, @NotNull String shopId, @NotNull String mediaType, @NotNull String playChannelId) {

@@ -15,5 +15,5 @@ import dagger.Component;
 public interface KolProfileComponent {
 
     void inject(KolPostDetailFragment kolPostDetailFragment);
-    void inject(ContentDetailPageRevampedFragment contentDetailPageRevampedFragment);
+    void inject(ContentDetailPageRevampedFragment ContentDetailPageRevampedFragment);
 }

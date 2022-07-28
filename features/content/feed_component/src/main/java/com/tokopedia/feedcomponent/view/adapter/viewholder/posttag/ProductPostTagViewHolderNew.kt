@@ -1,15 +1,17 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.posttag
 
 import android.graphics.Paint
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -23,7 +25,7 @@ private const val RATING_FORMAT = 20.0
 
 class ProductPostTagViewHolderNew(
     val mainView: View,
-    val listener: DynamicPostViewHolder.DynamicPostListener
+    val listener: ProductItemInfoBottomSheet.Listener
 ) : AbstractViewHolder<ProductPostTagViewModelNew>(mainView) {
 
     private lateinit var productLayout: FrameLayout
@@ -91,7 +93,7 @@ class ProductPostTagViewHolderNew(
             )
         )
         menuBtn.setOnClickListener {
-            listener.onBottomSheetMenuClicked(item, mainView.context)
+            listener.onBottomSheetThreeDotsClicked(item, mainView.context)
         }
         rating.text = String.format("%.1f", item.rating.toDouble() / RATING_FORMAT)
         val soldInfoText = getString(R.string.feed_common_terjual) + " " + item.totalSold.toString()
@@ -103,18 +105,31 @@ class ProductPostTagViewHolderNew(
     }
 
     private fun getItemClickNavigationListener(
-        listener: DynamicPostViewHolder.DynamicPostListener,
+        listener: ProductItemInfoBottomSheet.Listener,
         positionInFeed: Int,
         item: FeedXProduct, itemPosition: Int,
         mediaType: String
     ): View.OnClickListener {
         return View.OnClickListener {
-            listener.onPostTagItemBSClick(positionInFeed, item.appLink, item, itemPosition+1, mediaType = mediaType)
+            listener.onTaggedProductCardClicked(positionInFeed, item.appLink, item, itemPosition+1, mediaType = mediaType)
         }
     }
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_producttag_list_new
+
+        fun create(
+            parent: ViewGroup,
+            listener: ProductItemInfoBottomSheet.Listener
+        ) = ProductPostTagViewHolderNew(
+            LayoutInflater.from(parent.context)
+                .inflate(
+                    R.layout.item_producttag_list_new,
+                    parent,
+                    false,
+                ),
+            listener
+        )
     }
 }

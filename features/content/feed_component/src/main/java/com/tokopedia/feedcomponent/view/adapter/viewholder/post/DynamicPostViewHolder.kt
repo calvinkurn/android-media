@@ -680,13 +680,6 @@ open class DynamicPostViewHolder(v: View,
 
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
-        fun onPostTagItemBSClick(
-            positionInFeed: Int,
-            redirectUrl: String,
-            postTagItem: FeedXProduct,
-            itemPosition: Int,
-            mediaType: String
-        )
         fun onFullScreenCLick(
                 feedXCard: FeedXCard,
                 positionInFeed: Int,
@@ -707,14 +700,6 @@ open class DynamicPostViewHolder(v: View,
                 redirectUrl: String,
                 postTagItem: FeedXProduct,
                 adClickUrl: String
-        )
-        fun onPostTagItemBSImpression(
-            activityId: String,
-            postTagItemList: List<FeedXProduct>,
-            type: String,
-            shopId: String,
-            isFollowed: Boolean,
-            mediaType: String
         )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
@@ -752,11 +737,6 @@ open class DynamicPostViewHolder(v: View,
             mediaType: String
         )
 
-        fun onBottomSheetMenuClicked(
-            item: ProductPostTagViewModelNew,
-            context: Context,
-            shopId: String = ""
-        )
 
         fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String)
 

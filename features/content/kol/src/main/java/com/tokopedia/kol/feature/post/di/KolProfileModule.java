@@ -15,6 +15,7 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,6 +39,13 @@ public class KolProfileModule {
     ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context) {
         return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
+
+    @KolProfileScope
+    @Provides
+    public AddWishListUseCase provideAddWishListUseCase(@ApplicationContext Context context){
+        return new AddWishListUseCase(context);
+    }
+
 
     @KolProfileScope
     @Provides
