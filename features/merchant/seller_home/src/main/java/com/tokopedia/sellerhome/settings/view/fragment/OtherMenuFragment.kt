@@ -481,7 +481,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         NewOtherMenuTracking.sendEventClickTokoPlus()
         RouteManager.route(
             context, ApplinkConstInternalGlobal.WEBVIEW,
-            SellerMenuFreeShippingUrl.URL_FREE_SHIPPING_INTERIM_PAGE
+            SellerMenuFreeShippingUrl.URL_PLUS_PAGE
         )
     }
 
