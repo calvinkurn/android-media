@@ -34,7 +34,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tooltip"
-        app:layout_constraintBottom_toBottomOf="@id/tooltip"
+        app:layout_constraintBottom_toBottomOf="@id/tooltip_hyperlink_text"
         app:icon_name="INFORMATION"
         />
 
@@ -44,14 +44,30 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/foto_resep_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tooltip_hyperlink_text"
+        android:layout_marginStart="@dimen/spacing_lvl6"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textColor="@color/light_N700_68"
+        app:typographyType="display_3"
+        tools:text="Dengan klik “Foto Resep” kamu setuju dengan"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tooltip_hyperlink_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/foto_resep_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/foto_resep_button"
         android:layout_marginStart="@dimen/spacing_lvl6"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:textColor="@color/light_N700_68"
+        android:textColor="@color/Unify_G500"
         app:typographyType="display_3"
-        tools:text="Dengan klik “Foto Resep” kamu setuju dengan
-Syarat dan Ketentuan."
+        app:typographyWeight="bold"
+        tools:text="Syarat dan Ketentuan."
         android:visibility="gone"
         tools:visibility="visible"
         />
@@ -90,7 +106,7 @@ Syarat dan Ketentuan."
         android:id="@+id/tooltip_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="info_icon,tooltip"
+        app:constraint_referenced_ids="info_icon,tooltip,tooltip_hyperlink_text"
         android:visibility="gone"
         />
 

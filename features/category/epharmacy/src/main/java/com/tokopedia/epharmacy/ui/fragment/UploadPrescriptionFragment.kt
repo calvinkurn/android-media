@@ -55,6 +55,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.BaseSimpleWebViewActivity
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -62,6 +63,7 @@ import javax.inject.Inject
 class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private var ePharmacyToolTipText : Typography? = null
+    private var ePharmacyToolTipHyperLinkText : Typography? = null
     private var ePharmacyToolTipGroup : Group? = null
     private var ePharmacyRecyclerView : RecyclerView? = null
     private var ePharmacyUploadPhotoButton : UnifyButton? = null
@@ -133,6 +135,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     private fun initViews(view: View) {
         view.apply {
             ePharmacyToolTipText = findViewById(R.id.tooltip)
+            ePharmacyToolTipHyperLinkText = findViewById(R.id.tooltip_hyperlink_text)
             ePharmacyRecyclerView = findViewById(R.id.epharmacy_rv)
             ePharmacyUploadPhotoButton = findViewById(R.id.foto_resep_button)
             ePharmacyDoneButton = findViewById(R.id.done_button)
@@ -165,22 +168,11 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun renderToolTip() {
-        val terms = getString(R.string.epharmacy_terms)
-        val spannableString = SpannableString(terms)
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                showTnC()
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-                ds.isUnderlineText = false
-                ds.typeface = Typeface.DEFAULT_BOLD
-            }
+        ePharmacyToolTipText?.text = context?.resources?.getString(R.string.epharmacy_terms)
+        ePharmacyToolTipHyperLinkText?.text = context?.resources?.getString(R.string.epharmacy_terms_hyper_text)
+        ePharmacyToolTipHyperLinkText?.setOnClickListener {
+            showTnC()
         }
-        spannableString.setSpan(clickableSpan, 44, 65, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-        ePharmacyToolTipText?.text = spannableString
-        ePharmacyToolTipText?.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun renderButtons() {
@@ -204,7 +196,9 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun showTnC() {
-        EPharmacyWebViewBottomSheet.newInstance("", EPHARMACY_TNC_LINK).show(childFragmentManager,EPharmacyWebViewBottomSheet.TAG)
+        context?.let { safeContext ->
+            startActivity(BaseSimpleWebViewActivity.getStartIntent(safeContext,EPHARMACY_TNC_LINK))
+        }
     }
 
     private fun onClickUploadPhotoButton() {
