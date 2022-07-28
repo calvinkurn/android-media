@@ -32,13 +32,16 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <View
-        android:id="@+id/pdp_gradiance"
+    <ImageView
+        android:id="@+id/pdp_toolbar_shadow"
         android:layout_width="0dp"
         android:layout_height="84dp"
+        android:scaleType="fitXY"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="pdp_toolbar_shadow"
+        tools:ignore="HardcodedText" />
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/pdp_navtoolbar"

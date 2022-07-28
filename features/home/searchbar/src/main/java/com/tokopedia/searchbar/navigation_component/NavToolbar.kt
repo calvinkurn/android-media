@@ -54,6 +54,7 @@ import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -115,7 +116,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private var lifecycleOwner: LifecycleOwner? = null
     private var useCentralizedIconNotification = mapOf<Int, Boolean>()
     private var searchbarType: Int? = null
-    
+    private var darkIconColor: Int? = getDarkIconColor()
+    private var lightIconColor: Int? = getLightIconColor()
+
     private val navIconRecyclerView : RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.rv_icon_list)
     }
@@ -283,6 +286,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 navToolbar.updatePadding(bottom = pB)
             }
         }
+    }
+
+    /**
+     * Call this method first before another method
+     */
+    fun setIconCustomColor(darkColor: Int?, lightColor: Int?) {
+        darkIconColor = darkColor
+        lightIconColor = lightColor
     }
 
     /**
@@ -673,14 +684,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         when (backType) {
             BACK_TYPE_CLOSE -> {
                 toolbarThemeCondition(
-                        lightCondition = { navIconBack.setImage(newIconId = IconUnify.CLOSE, newLightEnable = getDarkIconColor()) },
-                        darkCondition = { navIconBack.setImage(newIconId = IconUnify.CLOSE, newLightEnable = getLightIconColor()) }
+                    lightCondition = { navIconBack.setImage(newIconId = IconUnify.CLOSE, newLightEnable = darkIconColor) },
+                    darkCondition = { navIconBack.setImage(newIconId = IconUnify.CLOSE, newLightEnable = lightIconColor) }
                 )
             }
             BACK_TYPE_BACK -> {
                 toolbarThemeCondition(
-                        lightCondition = { navIconBack.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getDarkIconColor()) },
-                        darkCondition = { navIconBack.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getLightIconColor()) }
+                    lightCondition = { navIconBack.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = darkIconColor) },
+                    darkCondition = { navIconBack.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = lightIconColor) }
                 )
             }
         }
@@ -704,7 +715,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         showToolbarContent(showCustomContent = true)
     }
 
-    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
+    private fun getDarkIconColor(): Int {
+        val unifyColor = if (context.isDarkMode()) {
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        } else {
+            R.color.searchbar_dms_state_light_icon
+        }
+        return ContextCompat.getColor(context, unifyColor)
+    }
 
     private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
 

@@ -260,6 +260,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
@@ -290,6 +291,13 @@ open class DynamicProductDetailFragment :
     ScreenShotListener, PlayWidgetListener {
 
     companion object {
+        // for set transparent searchbar on toolbar
+        private const val ALPHA_MAX = 255
+        // start transition for toolbar transparent
+        private const val START_TRANSITION_PIXEL = 200
+        // start range transition for toolbar transparent
+        private const val TOOLBAR_TRANSITION_RANGE_PIXEL = 50
+
         fun newInstance(
             productId: String? = null,
             warehouseId: String? = null,
@@ -476,6 +484,32 @@ open class DynamicProductDetailFragment :
     }
 
     private val compositeSubscription by lazy { CompositeSubscription() }
+
+    private val scrollListener by lazy {
+        navToolbar?.let {
+            NavRecyclerViewScrollListener(
+                navToolbar = it,
+                startTransitionPixel = START_TRANSITION_PIXEL,
+                toolbarTransitionRangePixel = TOOLBAR_TRANSITION_RANGE_PIXEL,
+                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                    override fun onAlphaChanged(offsetAlpha: Float) {
+                        navToolbar?.setSearchBarAlpha(alpha = offsetAlpha)
+                    }
+
+                    override fun onSwitchToDarkToolbar() {
+                        requestStatusBarLight()
+                    }
+
+                    override fun onSwitchToLightToolbar() {
+                        requestStatusBarDark()
+                    }
+
+                    override fun onYposChanged(yOffset: Int) {
+                    }
+                }
+            )
+        } ?: run { null }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -2286,15 +2320,10 @@ open class DynamicProductDetailFragment :
             val totalStockAtcVariant =
                 viewModel.p2Data.value?.getTotalStockMiniCartByParentId(it.data.variant.parentID)
 
-            val shouldShowTokoNow = if (it.basic.isTokoNow &&
+            val shouldShowTokoNow = it.basic.isTokoNow &&
                 cartTypeData?.availableButtons?.firstOrNull()
                     ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
-            ) {
-                true
-            } else {
-                false
-            }
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
                 TokoNowButtonData(
@@ -2520,7 +2549,7 @@ open class DynamicProductDetailFragment :
                 if (it.data.recommendationItemList.isNotEmpty()) {
                     val enableComparisonWidget = remoteConfig.getBoolean(
                         RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true
-                    ) ?: true
+                    )
                     if (enableComparisonWidget) {
                         if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
                             pdpUiUpdater?.updateComparisonDataModel(it.data)
@@ -3336,7 +3365,7 @@ open class DynamicProductDetailFragment :
         val enablePdpCustomSharing = remoteConfig.getBoolean(
             REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
             REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
-        ) ?: REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
+        )
         if (UniversalShareBottomSheet.isCustomSharingEnabled(context) && enablePdpCustomSharing) {
             val description = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)
                 ?.replace("(\r\n|\n)".toRegex(), " ")
@@ -3567,7 +3596,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun getLcaWarehouseId(): String {
-        return viewModel.getUserLocationCache().warehouse_id ?: ""
+        return viewModel.getUserLocationCache().warehouse_id
     }
 
     private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
@@ -3697,6 +3726,9 @@ open class DynamicProductDetailFragment :
     private fun initToolbarMainApp() {
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
+
+            setIconCustomColor(darkColor = getLightIconColor(), lightColor = getDarkIconColor())
+
             setIcon(
                 IconBuilder()
                     .addIcon(IconList.ID_SHARE) {
@@ -3712,50 +3744,52 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private val scrollListener: NavRecyclerViewScrollListener by lazy {
-        NavRecyclerViewScrollListener(
-            navToolbar = navToolbar!!,
-            startTransitionPixel = 200,
-            toolbarTransitionRangePixel = 50,
-            navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                override fun onAlphaChanged(offsetAlpha: Float) {
-                    navToolbar?.setSearchBarAlpha(alpha = offsetAlpha)
-                }
+    private fun getDarkIconColor(): Int = ContextCompat.getColor(
+        requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+    )
 
-                override fun onSwitchToDarkToolbar() {
-                    requestStatusBarLight()
-                }
-
-                override fun onSwitchToLightToolbar() {
-                    requestStatusBarDark()
-                }
-
-                override fun onYposChanged(yOffset: Int) {
-                }
-            }
-        )
+    private fun getLightIconColor(): Int {
+        val unifyColor = if (requireContext().isDarkMode()) {
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        } else {
+            com.tokopedia.searchbar.R.color.searchbar_dms_state_light_icon
+        }
+        return ContextCompat.getColor(requireContext(), unifyColor)
     }
 
+    /**
+     * Set search bar alpha on toolbar when recyclerview on scroll
+     */
     private fun NavToolbar.setSearchBarAlpha(alpha: Float) {
-        findViewById<IconUnify>(R.id.search_magnify_icon).alpha = alpha / 255
-        findViewById<EditText>(R.id.et_search).alpha = alpha / 255
-        findViewById<LinearLayout>(R.id.layout_search).alpha = alpha / 255
+        findViewById<IconUnify>(R.id.search_magnify_icon).alpha = alpha / ALPHA_MAX
+        findViewById<EditText>(R.id.et_search).alpha = alpha / ALPHA_MAX
+        findViewById<LinearLayout>(R.id.layout_search).alpha = alpha / ALPHA_MAX
     }
 
+    /**
+     * Setup Toolbar Transparent
+     */
     private fun setupToolbarTransparent(containerType: String) {
-        activity?.let {
+        activity?.let { activity ->
             val shouldTransparent = containerType == MediaContainerType.Portrait.type
             binding?.pdpSpaceList?.isVisible = !shouldTransparent
 
             if (shouldTransparent) {
-                navToolbar?.setupToolbarWithStatusBar(it, NavToolbar.Companion.StatusBar.STATUS_BAR_DARK)
-                getRecyclerView()?.addOnScrollListener(scrollListener)
-                binding?.pdpGradiance?.setBackgroundResource(R.drawable.bg_pdp_toolbar_gradient)
-                binding?.pdpGradiance?.isVisible = true
+                navToolbar?.setupToolbarWithStatusBar(
+                    activity,
+                    NavToolbar.Companion.StatusBar.STATUS_BAR_DARK
+                )
+                scrollListener?.let { getRecyclerView()?.addOnScrollListener(it) }
+
+                binding?.pdpToolbarShadow?.setImageResource(R.drawable.bg_pdp_toolbar_gradient)
+                binding?.pdpToolbarShadow?.isVisible = true
             } else {
-                navToolbar?.setupToolbarWithStatusBar(it, NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT)
-                getRecyclerView()?.removeOnScrollListener(scrollListener)
-                binding?.pdpGradiance?.isVisible = false
+                binding?.pdpToolbarShadow?.isVisible = false
+                navToolbar?.setupToolbarWithStatusBar(
+                    activity,
+                    NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT
+                )
+                scrollListener?.let { getRecyclerView()?.removeOnScrollListener(it) }
             }
         }
     }
@@ -4793,7 +4827,7 @@ open class DynamicProductDetailFragment :
                     ?: ""
             )
         }
-        sendIntentResultWishlistChange(productId ?: "", isWishlisted)
+        sendIntentResultWishlistChange(productId, isWishlisted)
         if (isProductOos()) {
             refreshPage()
         }
