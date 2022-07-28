@@ -24,7 +24,7 @@ fun initQuestionDisplayed() {
     )
 }
 
-fun isErrorDisplayed() {
+fun isFailedDisplayed() {
     isDisplayed(R.id.container_local_load)
     isTextDisplayed(
         "Konten gagal ditampilkan",

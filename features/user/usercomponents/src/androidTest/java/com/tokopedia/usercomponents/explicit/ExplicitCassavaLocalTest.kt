@@ -8,7 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
 import com.tokopedia.usercomponents.explicit.ExplicitCassava.validateTracker
 import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
@@ -21,9 +21,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@UiTest
+@CassavaTest
 @RunWith(AndroidJUnit4::class)
-class ExplicitTest {
+class ExplicitCassavaLocalTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
@@ -60,33 +60,7 @@ class ExplicitTest {
         activityTestRule.launchActivity(Intent())
 
         //THEN
-        initQuestionDisplayed()
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31560)
-    }
-
-    @Test
-    fun first_time_launch_then_hide_question() {
-        //GIVEN
-        repositoryStub.setState(TestState.HIDE_QUESTION)
-
-        //WHEN
-        activityTestRule.launchActivity(Intent())
-
-        //THEN
-        isHideQuestion()
-    }
-
-    //error in this case caused response not match with question model
-    @Test
-    fun first_time_launch_then_failed() {
-        //GIVEN
-        repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
-
-        //WHEN
-        activityTestRule.launchActivity(Intent())
-
-        //THEN
-        isErrorDisplayed()
     }
 
     //error in this case caused response not match with submit answer model
@@ -100,7 +74,6 @@ class ExplicitTest {
         clickButtonAnswer(isPositive = true)
 
         //THEN
-        isErrorDisplayed()
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31561)
     }
 
@@ -115,7 +88,6 @@ class ExplicitTest {
         clickButtonAnswer(isPositive = false)
 
         //THEN
-        isErrorDisplayed()
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31562)
     }
 
@@ -130,7 +102,6 @@ class ExplicitTest {
         clickButtonAnswer(isPositive = true)
 
         //THEN
-        isSuccessDisplayed()
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31561)
     }
 
@@ -145,7 +116,6 @@ class ExplicitTest {
         clickButtonAnswer(isPositive = false)
 
         //THEN
-        isSuccessDisplayed()
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31562)
     }
 
@@ -159,23 +129,7 @@ class ExplicitTest {
         clickOnDismiss(onQuestionPage = true)
 
         //THEN
-        isHideQuestion()
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31563)
-    }
-
-    @Test
-    fun click_dismiss_when_success_show_then_widget_gone() {
-        //GIVEN
-        repositoryStub.setState(TestState.SHOW_QUESTION)
-        activityTestRule.launchActivity(Intent())
-        repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
-
-        //WHEN
-        clickButtonAnswer(isPositive = true)
-        clickOnDismiss(onQuestionPage = false)
-
-        //THEN
-        isHideQuestion()
     }
 
 }

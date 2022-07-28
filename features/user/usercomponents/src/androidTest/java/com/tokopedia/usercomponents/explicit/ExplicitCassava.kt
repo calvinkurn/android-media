@@ -6,24 +6,41 @@ import com.tokopedia.cassavatest.hasAllSuccess
 
 object ExplicitCassava {
 
-    private const val PAGE_NAME = "discovery page"
-    private const val PAGE_PATH = "discovery path"
-    private const val PAGE_TYPE = "discovery type"
-    private const val TEMPLATE_NAME = "halal_single"
+    private const val VALUE_PAGE_NAME = "discovery page"
+    private const val VALUE_PAGE_PATH = "discovery path"
+    private const val VALUE_PAGE_TYPE = "discovery type"
+    private const val VALUE_TEMPLATE_NAME = "halal_single"
+    private const val VALUE_EXPLICIT_WIDGET = "explicit widget"
+    private const val VALUE_USER_PLATFORM = "user platform"
+    private const val VALUE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+    private const val VALUE_EVENT_CLICK_ACCOUNT = "clickAccount"
+    private const val VALUE_EVENT_CLICK_ACCOUNT_IRIS = "viewAccountIris"
+    private const val VALUE_ACTION_TRACKER_ID_31560 = "impression - explicit widget"
+    private const val VALUE_ACTION_TRACKER_ID_31561 = "click on yes button - explicit widget"
+    private const val VALUE_ACTION_TRACKER_ID_31562 = "click on no button - explicit widget"
+    private const val VALUE_ACTION_TRACKER_ID_31563 = "click on close button - explicit widget"
+    private const val KEY_EVENT = "event"
+    private const val KEY_EVENT_CATEGORY = "eventCategory"
+    private const val KEY_EVENT_ACTION = "eventAction"
+    private const val KEY_EVENT_LABEL = "eventLabel"
+    private const val KEY_PAGE_PATH = "pagePath"
+    private const val KEY_PAGE_TYPE = "pageType"
+    private const val KEY_BUSINESS_UNIT = "businessUnit"
+    private const val KEY_CURRENT_SITE = "currentSite"
 
     private fun generateTrackerQuery(
         event: String,
         action: String
     ): Map<String, String> {
         return mapOf(
-            "event" to event,
-            "eventCategory" to "$PAGE_NAME - explicit widget",
-            "eventAction" to action,
-            "eventLabel" to "$PAGE_NAME - $TEMPLATE_NAME",
-            "pagePath" to PAGE_PATH,
-            "pageType" to PAGE_TYPE,
-            "businessUnit" to "user platform",
-            "currentSite" to "tokopediamarketplace"
+            KEY_EVENT to event,
+            KEY_EVENT_CATEGORY to "$VALUE_PAGE_NAME - $VALUE_EXPLICIT_WIDGET",
+            KEY_EVENT_ACTION to action,
+            KEY_EVENT_LABEL to "$VALUE_PAGE_NAME - $VALUE_TEMPLATE_NAME",
+            KEY_PAGE_PATH to VALUE_PAGE_PATH,
+            KEY_PAGE_TYPE to VALUE_PAGE_TYPE,
+            KEY_BUSINESS_UNIT to VALUE_USER_PLATFORM,
+            KEY_CURRENT_SITE to VALUE_TOKOPEDIA_MARKETPLACE
         )
     }
 
@@ -31,10 +48,22 @@ object ExplicitCassava {
         state: ExplicitCassavaState
     ) {
         val query = when (state) {
-            ExplicitCassavaState.TRACKER_ID_31560 -> generateTrackerQuery("viewAccountIris", "impression - explicit widget")
-            ExplicitCassavaState.TRACKER_ID_31561 -> generateTrackerQuery("clickAccount", "click on yes button - explicit widget")
-            ExplicitCassavaState.TRACKER_ID_31562 -> generateTrackerQuery("clickAccount", "click on no button - explicit widget")
-            ExplicitCassavaState.TRACKER_ID_31563 -> generateTrackerQuery("clickAccount", "click on close button - explicit widget")
+            ExplicitCassavaState.TRACKER_ID_31560 -> generateTrackerQuery(
+                VALUE_EVENT_CLICK_ACCOUNT_IRIS,
+                VALUE_ACTION_TRACKER_ID_31560
+            )
+            ExplicitCassavaState.TRACKER_ID_31561 -> generateTrackerQuery(
+                VALUE_EVENT_CLICK_ACCOUNT,
+                VALUE_ACTION_TRACKER_ID_31561
+            )
+            ExplicitCassavaState.TRACKER_ID_31562 -> generateTrackerQuery(
+                VALUE_EVENT_CLICK_ACCOUNT,
+                VALUE_ACTION_TRACKER_ID_31562
+            )
+            ExplicitCassavaState.TRACKER_ID_31563 -> generateTrackerQuery(
+                VALUE_EVENT_CLICK_ACCOUNT,
+                VALUE_ACTION_TRACKER_ID_31563
+            )
         }
 
         val queryMatcher = this.validate(

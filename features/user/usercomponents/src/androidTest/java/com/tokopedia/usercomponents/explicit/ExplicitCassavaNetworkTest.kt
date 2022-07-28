@@ -5,10 +5,12 @@ import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
 import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.di.FakeExplicitModule
@@ -18,8 +20,11 @@ import com.tokopedia.usercomponents.explicit.stub.data.TestState
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
-class ExplicitCassavaTest {
+@CassavaTest
+@RunWith(AndroidJUnit4::class)
+class ExplicitCassavaNetworkTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
