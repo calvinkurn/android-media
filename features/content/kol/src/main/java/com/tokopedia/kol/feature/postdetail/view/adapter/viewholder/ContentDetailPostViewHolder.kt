@@ -97,6 +97,8 @@ class ContentDetailPostViewHolder(
             postPosition: Int
         )
 
+        fun onPostTagBubbleClicked(redirectUrl: String)
+
 
     }
 

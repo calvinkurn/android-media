@@ -119,6 +119,9 @@ dari Feed.</string>
     <string name="feed_added_to_cart">Barang berhasil ditambahkan.</string>
     <string name="feed_go_to_cart">Lihat Keranjang</string>
     <string name="feed_post_deleted">Post Kamu Berhasil di Hapus</string>
+    <!--Follower-->
+    <string name="feed_header_follow_count_text">%s Followers</string>
+
 
 
 

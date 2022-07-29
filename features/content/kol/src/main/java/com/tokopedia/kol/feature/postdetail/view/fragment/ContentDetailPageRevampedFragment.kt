@@ -857,6 +857,10 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
     }
 
+    override fun onPostTagBubbleClicked(redirectUrl: String) {
+        onGoToLink(redirectUrl)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         if (::productTagBS.isInitialized) {

@@ -48,7 +48,7 @@ class PostTagView @JvmOverloads constructor(
     private var productViewPrice: Typography
     private var productViewSlashedPrice: Typography
     private var constraintLayout: ConstraintLayout
-    private var listener: DynamicPostViewHolder.DynamicPostListener? = null
+    private var listener: TagBubbleListener? = null
     private var bubbleMarginStart: Int = 0
     private var dotMarginStart: Int = 0
     private var dotMarginTop: Int = 0
@@ -86,14 +86,14 @@ class PostTagView @JvmOverloads constructor(
     }
 
     fun bindData(
-        dynamicPostListener: DynamicPostViewHolder.DynamicPostListener?,
+        tagBubbleListener: TagBubbleListener?,
         products: List<FeedXProduct>,
         width: Int,
         height: Int,
         positionInFeed: Int,
         bitmap: Bitmap?
     ) {
-        this.listener = dynamicPostListener
+        this.listener = tagBubbleListener
         this.dotMarginStart = (width * (feedXTag.posX)).toInt()
         this.dotMarginTop = (height * (feedXTag.posY)).toInt()
         this.postImageHeight = height
@@ -285,6 +285,14 @@ class PostTagView @JvmOverloads constructor(
                 0
         }
         return 0
+    }
+    interface TagBubbleListener{
+        fun onPostTagBubbleClick(
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+            adClickUrl: String
+        )
     }
 }
 

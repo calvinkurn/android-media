@@ -34,6 +34,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAda
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
 import com.tokopedia.feedcomponent.view.widget.FeedVODViewHolder
+import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kol.R
 import com.tokopedia.kotlin.extensions.view.*
@@ -43,6 +44,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.URLEncoder
 import com.tokopedia.feedcomponent.R as feedComponentR
+import com.tokopedia.kol.R as kolR
 
 class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     context: Context,
@@ -91,8 +93,19 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 return mData
             }
 
-            override fun getDynamicPostListener(): DynamicPostViewHolder.DynamicPostListener? {
-                return null
+            override fun getTagBubbleListener(): PostTagView.TagBubbleListener? {
+                return object : PostTagView.TagBubbleListener{
+                    override fun onPostTagBubbleClick(
+                        positionInFeed: Int,
+                        redirectUrl: String,
+                        postTagItem: FeedXProduct,
+                        adClickUrl: String
+                    ) {
+                        listener?.onPostTagBubbleClicked(
+                            redirectUrl
+                        )
+                    }
+                }
             }
 
             override fun getPositionInFeed(): Int {
@@ -287,15 +300,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         if (count >= FOLLOW_COUNT_THRESHOLD) {
             followCount.text =
                 String.format(
-                    context.getString(feedComponentR.string.feed_header_follow_count_text),
+                    context.getString(kolR.string.feed_header_follow_count_text),
                     count.productThousandFormatted()
                 )
-        } else {
-            followCount.text =
-                context.getString(feedComponentR.string.feed_header_follow_count_less_text)
         }
 
-        followCount.showWithCondition(!isFollowed || followers.transitionFollow)
         if (feedXCard.isTypeProductHighlight) {
             if (feedXCard.type == ASGC_NEW_PRODUCTS)
                 followCount.text =
@@ -303,6 +312,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             else if (feedXCard.type == ASGC_RESTOCK_PRODUCTS)
                 followCount.text = context.getString(feedComponentR.string.feeds_asgc_restock_text)
             followCount.show()
+        } else {
+            followCount.showWithCondition((!isFollowed || followers.transitionFollow) && count >= FOLLOW_COUNT_THRESHOLD)
         }
 
         shopImage.setImageUrl(author.logoURL)

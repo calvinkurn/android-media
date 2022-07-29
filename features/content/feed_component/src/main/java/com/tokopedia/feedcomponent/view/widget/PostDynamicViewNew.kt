@@ -183,8 +183,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 return mData
             }
 
-            override fun getDynamicPostListener(): DynamicPostViewHolder.DynamicPostListener? {
-                return this@PostDynamicViewNew.listener
+            override fun getTagBubbleListener(): PostTagView.TagBubbleListener? {
+                return object : PostTagView.TagBubbleListener{
+                    override fun onPostTagBubbleClick(
+                        positionInFeed: Int,
+                        redirectUrl: String,
+                        postTagItem: FeedXProduct,
+                        adClickUrl: String
+                    ) {
+                        listener?.onPostTagBubbleClick(
+                            positionInFeed,
+                            redirectUrl,
+                            postTagItem,
+                            adClickUrl
+                        )
+                    }
+
+                }
             }
 
             override fun getPositionInFeed(): Int {
