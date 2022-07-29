@@ -55,7 +55,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private var deferredAttachment: DeferredViewHolderAttachment? = null
 
     private var recyclerView: RecyclerView? = null
-    private val adapter = MultipleBundlingItemAdapter()
+    private var adapter: MultipleBundlingItemAdapter? = null
     private var itemDecorationProductAttachment: BundleSpaceItemDecoration? = null
     private var itemDecorationBroadcastAttachment: BroadcastBundleSpaceItemDecoration? = null
     private var source: BundlingSource? = null
@@ -216,7 +216,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindBundleItemList(list : List<BundleItem>) {
-        adapter.bundlingList = list
+        adapter?.bundlingList = list
     }
 
     private fun addItemDecoration() {
@@ -263,6 +263,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         this.searchListener = searchListener
         this.commonListener = commonListener
         this.deferredAttachment = deferredAttachment
+        adapter = MultipleBundlingItemAdapter(listener)
     }
 
     private fun bindLoading(element: ProductBundlingUiModel) {
@@ -274,8 +275,13 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindImage(item: BundleItem?) {
-        item?.imageUrl?.let {
-            image?.setImageUrl(it)
+        item?.let { bundleItem ->
+            image?.apply {
+                this.setImageUrl(bundleItem.imageUrl)
+                this.setOnClickListener {
+                    listener?.onClickProductBundlingImage(bundleItem)
+                }
+            }
         }
     }
 
