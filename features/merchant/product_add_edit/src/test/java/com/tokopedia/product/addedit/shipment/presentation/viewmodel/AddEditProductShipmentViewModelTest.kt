@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
-import com.tokopedia.logisticCommon.data.model.CPLProductModel
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticRepository
 import com.tokopedia.logisticCommon.data.response.customproductlogistic.OngkirGetCPLQGLResponse
@@ -13,7 +12,6 @@ import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.IMSResourceProvider
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.presentation.model.CPLModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
@@ -118,9 +116,9 @@ class AddEditProductShipmentViewModelTest {
             customProductLogisticRepository.getCPLList(any(), any())
         } returns OngkirGetCPLQGLResponse()
         every {
-            customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data)
+            customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data, any())
         } returns testData
-        viewModel.getCPLList(1234, "9876")
+        viewModel.getCPLList(1234, "9876", null)
         verify { cplListObserver.onChanged(Success(testData)) }
     }
 
@@ -130,7 +128,7 @@ class AddEditProductShipmentViewModelTest {
         coEvery {
             customProductLogisticRepository.getCPLList(any(), any())
         } throws testError
-        viewModel.getCPLList(1234, "9876")
+        viewModel.getCPLList(1234, "9876", null)
         verify {
             cplListObserver.onChanged(Fail(testError))
             customProductLogisticMapper wasNot Called
@@ -181,44 +179,5 @@ class AddEditProductShipmentViewModelTest {
         assertEquals("out range", resultOutRange)
         assertEquals("", resultInRange)
         assertEquals("", resultHasVariant)
-    }
-
-    @Test
-    fun `verify when get cpl list custom shipment status is correctly`() {
-        val shipmentServicesId = 1L
-        val shipmentServicesIds = arrayListOf(shipmentServicesId)
-        val cplProduct = spyk(CPLProductModel(shipperServices = shipmentServicesIds))
-        val cplProducts = arrayListOf(cplProduct)
-        val customProductLogistic = spyk(CustomProductLogisticModel(cplProduct = cplProducts))
-        val cplModel = spyk(CPLModel(shipmentServicesIds = shipmentServicesIds))
-        val shipmentInputModel = spyk(ShipmentInputModel(cplModel = cplModel))
-        val productInputModel = spyk(ProductInputModel(shipmentInputModel = shipmentInputModel))
-
-        coEvery { customProductLogisticRepository.getCPLList(any(), any()) } returns OngkirGetCPLQGLResponse()
-        every { customProductLogisticMapper.mapCPLData(any()) } returns customProductLogistic
-
-        viewModel.setProductInputModel(productInputModel)
-        viewModel.getCPLList(1234, "9876")
-
-        verify { cplListObserver.onChanged(Success(customProductLogistic)) }
-    }
-
-    @Test
-    fun `verify when get cpl list standard shipment status is correctly`() {
-        val shipmentServicesIds = arrayListOf<Long>()
-        val cplProduct = spyk(CPLProductModel(shipperServices = shipmentServicesIds))
-        val cplProducts = arrayListOf(cplProduct)
-        val customProductLogistic = spyk(CustomProductLogisticModel(cplProduct = cplProducts))
-        val cplModel = spyk(CPLModel(shipmentServicesIds = shipmentServicesIds))
-        val shipmentInputModel = spyk(ShipmentInputModel(cplModel = cplModel))
-        val productInputModel = spyk(ProductInputModel(shipmentInputModel = shipmentInputModel))
-
-        coEvery { customProductLogisticRepository.getCPLList(any(), any()) } returns OngkirGetCPLQGLResponse()
-        every { customProductLogisticMapper.mapCPLData(any()) } returns customProductLogistic
-
-        viewModel.setProductInputModel(productInputModel)
-        viewModel.getCPLList(1234, "9876")
-
-        verify { cplListObserver.onChanged(Success(customProductLogistic)) }
     }
 }

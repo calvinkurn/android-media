@@ -63,7 +63,7 @@ class CustomProductLogisticViewModelTest {
         val mockResponse = spyk(OngkirGetCPLQGLResponse(response = mockOngkirGetCPLResponse))
 
         coEvery { repo.getCPLList(any(), any()) } returns mockResponse
-        customProductLogisticViewModel.getCPLList(1234, "9876", arrayListOf(shipperServicesId.toInt()))
+        customProductLogisticViewModel.getCPLList(1234, "9876", arrayListOf(shipperServicesId))
         verify { cplListObserver.onChanged(match { it is Success }) }
     }
 

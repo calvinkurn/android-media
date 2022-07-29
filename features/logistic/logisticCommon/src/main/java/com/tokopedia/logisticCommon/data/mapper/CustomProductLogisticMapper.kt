@@ -6,20 +6,28 @@ import javax.inject.Inject
 
 class CustomProductLogisticMapper @Inject constructor() {
 
-    fun mapCPLData(response: GetCPLData): CustomProductLogisticModel {
+    fun mapCPLData(response: GetCPLData, draftShipperServices: List<Long>? = null): CustomProductLogisticModel {
         return CustomProductLogisticModel().apply {
-            cplProduct = mapCPLProduct(response.cplProduct)
+            cplProduct = mapCPLProduct(response.cplProduct, draftShipperServices)
             shipperList = mapShipperList(response.shipperList)
         }
     }
 
-    fun mapCPLProduct(response: List<CPLProduct>): List<CPLProductModel> {
+    private fun mapCPLProduct(response: List<CPLProduct>, draftShipperServices: List<Long>? = null): List<CPLProductModel> {
         return response.map {
             CPLProductModel(
-                it.productId,
-                it.cplStatus,
-                it.shipperServices
+                productId = it.productId,
+                cplStatus = draftShipperServices?.getCplStatus() ?: it.cplStatus,
+                shipperServices = draftShipperServices ?: it.shipperServices
             )
+        }
+    }
+
+    private fun List<Long>.getCplStatus(): Int {
+        return if (isNotEmpty()) {
+            CPL_CUSTOM_SHIPMENT_STATUS
+        } else {
+            CPL_STANDARD_SHIPMENT_STATUS
         }
     }
 
@@ -52,5 +60,10 @@ class CustomProductLogisticMapper @Inject constructor() {
                 it.uiHidden
             )
         }
+    }
+
+    companion object {
+        const val CPL_STANDARD_SHIPMENT_STATUS = 0
+        const val CPL_CUSTOM_SHIPMENT_STATUS = 1
     }
 }

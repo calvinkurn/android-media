@@ -23,22 +23,15 @@ class CustomProductLogisticViewModel @Inject constructor(
     val cplList: LiveData<Result<CustomProductLogisticModel>>
         get() = _cplList
 
-    fun getCPLList(shopId: Long, productId: String, shipperServicesIds: ArrayList<Int>?) {
+    fun getCPLList(shopId: Long, productId: String, shipperServicesIds: List<Long>?) {
         viewModelScope.launch {
             try {
                 val cplList = repo.getCPLList(shopId, productId)
-                _cplList.value = Success(mapper.mapCPLData(cplList.response.data).apply {
-                    updateCplProduct(shipperServicesIds)
-                })
+                _cplList.value =
+                    Success(mapper.mapCPLData(cplList.response.data, shipperServicesIds))
             } catch (e: Throwable) {
                 _cplList.value = Fail(e)
             }
-        }
-    }
-
-    private fun CustomProductLogisticModel.updateCplProduct(shipperServicesIds: ArrayList<Int>?) {
-        if (shipperServicesIds != null && shipperServicesIds.size > 0) {
-            cplProduct.first().shipperServices = shipperServicesIds.map { it.toLong() }
         }
     }
 }

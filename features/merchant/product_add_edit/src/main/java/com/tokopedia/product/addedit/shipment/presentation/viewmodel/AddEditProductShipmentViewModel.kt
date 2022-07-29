@@ -17,8 +17,6 @@ import com.tokopedia.product.addedit.common.util.getValueOrDefault
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_CUSTOM_SHIPMENT_STATUS
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_STANDARD_SHIPMENT_STATUS
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants
 import com.tokopedia.usecase.coroutines.Fail
@@ -91,28 +89,13 @@ class AddEditProductShipmentViewModel @Inject constructor(
         })
     }
 
-    fun getCPLList(shopId: Long, productId: String) {
+    fun getCPLList(shopId: Long, productId: String, shipmentServicesIds: List<Long>?) {
         viewModelScope.launch {
             try {
                 val cplList = customProductLogisticRepository.getCPLList(shopId, productId)
-                _cplList.value = Success(customProductLogisticMapper.mapCPLData(cplList.response.data).apply {
-                    updateCplProduct()
-                })
+                _cplList.value = Success(customProductLogisticMapper.mapCPLData(cplList.response.data, shipmentServicesIds))
             } catch (e: Throwable) {
                 _cplList.value = Fail(e)
-            }
-        }
-    }
-
-    private fun CustomProductLogisticModel.updateCplProduct() {
-        cplProduct.firstOrNull()?.apply {
-            productInputModel?.shipmentInputModel?.cplModel?.shipmentServicesIds?.let { shipmentServicesIds ->
-                shipperServices = shipmentServicesIds
-                cplStatus = if (shipmentServicesIds.isNotEmpty()) {
-                    CPL_CUSTOM_SHIPMENT_STATUS
-                } else {
-                    CPL_STANDARD_SHIPMENT_STATUS
-                }
             }
         }
     }

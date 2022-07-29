@@ -341,10 +341,18 @@ class AddEditProductShipmentFragment:
 
     private fun initShipmentData() {
         if (shipmentViewModel.isAddMode) {
-            shipmentViewModel.getCPLList(shopId.toLong(), "")
+            getCplList("")
         } else {
-            shipmentViewModel.getCPLList(shopId.toLong(), shipmentViewModel.productInputModel?.productId.toString())
+            getCplList(shipmentViewModel.productInputModel?.productId.toString())
         }
+    }
+
+    private fun getCplList(productId: String) {
+        shipmentViewModel.getCPLList(
+            shopId = shopId.toLong(),
+            productId = productId,
+            shipmentServicesIds = shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.shipmentServicesIds
+        )
     }
 
     private fun initObservers() {
