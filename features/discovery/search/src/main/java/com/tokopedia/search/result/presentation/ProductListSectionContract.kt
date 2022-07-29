@@ -145,6 +145,7 @@ interface ProductListSectionContract {
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
+        fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView)
         fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
         fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)

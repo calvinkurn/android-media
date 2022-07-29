@@ -20,6 +20,7 @@ import rx.Subscriber
 
 private const val broadMatchResponseCode0Page1Position1 = "searchproduct/broadmatch/response-code-0-page-1-position-1.json"
 private const val dynamicProductCarousel = "searchproduct/inspirationcarousel/dynamic-product.json"
+private const val dealsCarouselWithCardButton = "searchproduct/inspirationcarousel/deals-with-card-button.json"
 
 internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtures() {
 
@@ -190,6 +191,38 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
 
         verify(exactly = 0) {
             productListView.modifyApplinkToSearchResult(any())
+            productListView.trackEventClickSeeMoreBroadMatch(any())
+        }
+    }
+
+    @Test
+    fun `Click broad match view all card`() {
+        val searchProductModel = dealsCarouselWithCardButton.jsonToObject<SearchProductModel>()
+        `Given View already load data with broad match`(searchProductModel)
+
+        val broadMatchDataView = findBroadMatchDataViewFromVisitableList()
+        `When broad match view all card click`(broadMatchDataView)
+
+        `Then verify view interaction for click view all card dynamic carousel`(broadMatchDataView)
+    }
+
+    private fun `When broad match view all card click`(broadMatchDataView: BroadMatchDataView) {
+        productListPresenter.onBroadMatchViewAllCardClicked(broadMatchDataView)
+    }
+
+    private fun `Then verify view interaction for click view all card dynamic carousel`(dynamicProductCarousel: BroadMatchDataView) {
+        verify {
+            val carouselOptionType = dynamicProductCarousel.carouselOptionType as DynamicCarouselOption
+            productListView.trackEventClickSeeMoreDynamicProductCarousel(
+                dynamicProductCarousel,
+                carouselOptionType.option.inspirationCarouselType,
+                carouselOptionType.option,
+            )
+            productListView.modifyApplinkToSearchResult(any())
+            productListView.redirectionStartActivity(any(), any())
+        }
+
+        verify(exactly = 0) {
             productListView.trackEventClickSeeMoreBroadMatch(any())
         }
     }
