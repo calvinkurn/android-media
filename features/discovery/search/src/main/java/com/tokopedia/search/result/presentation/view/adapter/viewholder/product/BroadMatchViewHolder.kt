@@ -125,7 +125,7 @@ class BroadMatchViewHolder(
             carouselViewAllCardData = viewAllCardData,
             carouselViewAllCardClickListener = object: CarouselProductCardListener.OnViewAllCardClickListener {
                 override fun onViewAllCardClick() {
-                    broadMatchListener.onBroadMatchSeeMoreClicked(dataView)
+                    broadMatchListener.onBroadMatchViewAllCardClicked(dataView)
                 }
             }
         )
