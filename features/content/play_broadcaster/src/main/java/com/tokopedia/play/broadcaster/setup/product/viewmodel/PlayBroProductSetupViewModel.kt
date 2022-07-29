@@ -429,7 +429,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     private fun handleClickPin(product: ProductUiModel){
         viewModelScope.launchCatchError(block = {
             updatePinProduct(isLoading = true, product = product)
-            val result = repo.setPinProduct(channelId, product.id)
+            val id = if(product.pinStatus.isPinned) "0" else product.id
+            val result = repo.setPinProduct(channelId, id)
             if(result) {
                 updatePinProduct(product = product)
                 addCoolDown()
