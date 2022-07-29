@@ -52,14 +52,13 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_order_detail_free_shipping_badge"
         android:layout_width="wrap_content"
-        android:layout_height="18dp"
+        android:layout_height="12dp"
         android:layout_marginStart="4dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_shipping_name"
         app:layout_constraintEnd_toStartOf="@+id/tv_chevron"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_shipping_name"
-        app:layout_constraintTop_toTopOf="@+id/tv_shipping_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_shipping_name"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -69,11 +68,11 @@
         android:layout_marginStart="4dp"
         android:text="@string/som_detail_shipment_name_chevron_right"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_order_detail_free_shipping_badge"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_shipping_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/iv_order_detail_free_shipping_badge"
-        app:layout_constraintTop_toTopOf="@+id/iv_order_detail_free_shipping_badge"
+        app:layout_constraintTop_toTopOf="@+id/tv_shipping_name"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text=">"
