@@ -1184,9 +1184,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(viewModel.topAdsImageView.value is Success)
 
         val p1Result = (viewModel.productLayout.value as Success).data
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 1)
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO })
+        // update: palugada unused component wholesales_info
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO })
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
