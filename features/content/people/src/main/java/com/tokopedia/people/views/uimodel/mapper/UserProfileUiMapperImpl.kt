@@ -59,10 +59,12 @@ class UserProfileUiMapperImpl @Inject constructor(
     }
 
     override fun mapUserWhitelist(response: WhitelistQuery): ProfileWhitelistUiModel {
+        val authorUgc = response.whitelist.authors.find { it.type == Author.TYPE_USER }
+
         return ProfileWhitelistUiModel(
-            isWhitelist = response.whitelist.isWhitelist,
-            hasUsername = response.whitelist.authors.find { it.type == Author.TYPE_USER }?.post?.hasUsername ?: false,
-            hasAcceptTnc = response.whitelist.authors.find { it.type == Author.TYPE_USER }?.post?.hasAcceptTnc ?: false,
+            isWhitelist = authorUgc != null,
+            hasUsername = authorUgc?.post?.hasUsername ?: false,
+            hasAcceptTnc = authorUgc?.post?.hasAcceptTnc ?: false,
         )
     }
 
