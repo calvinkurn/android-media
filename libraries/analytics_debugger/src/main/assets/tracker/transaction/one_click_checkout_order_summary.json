@@ -10,7 +10,7 @@
       "event": "begin_checkout",
       "sessionIris": ".*",
       "userId": "\\d+",
-      "paymentType": ".*",
+      "paymentMethod": ".*",
       "items": [
         {
           "dimension81": ".*",
@@ -59,7 +59,7 @@
       "event": "checkout_progress",
       "sessionIris": ".*",
       "userId": "\\d+",
-      "paymentType": ".*",
+      "paymentMethod": ".*",
       "items": [
         {
           "dimension81": ".+",

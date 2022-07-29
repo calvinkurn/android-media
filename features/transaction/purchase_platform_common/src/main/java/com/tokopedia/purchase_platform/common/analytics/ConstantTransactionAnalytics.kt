@@ -436,7 +436,7 @@ object ConstantTransactionAnalytics {
         const val USER_ID = "userId"
         const val CART_ID = "cartId"
         const val PROMO_CODE = "promoCode"
-        const val PAYMENT_TYPE = "paymentType"
+        const val PAYMENT_METHOD = "paymentMethod"
         const val BUSINESS_UNIT = "businessUnit"
         const val CURRENT_SITE = "currentSite"
         const val PAGE_TYPE = "pageType"
