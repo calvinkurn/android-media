@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
@@ -301,20 +302,8 @@ class OtherMenuViewHolder(
     }
 
     private fun setupAnniversaryIllustration() {
-        anniversaryPatternImage?.run {
-            disableShimmeringPlaceholder = true
-            setImageUrl(
-                url = ANNIVERSARY_PATTERN_URL,
-                placeholderHeight = Int.ZERO
-            )
-        }
-        anniversaryOrnamentImage?.run {
-            disableShimmeringPlaceholder = true
-            setImageUrl(
-                url = ANNIVERSARY_ORNAMENT_URL,
-                placeholderHeight = Int.ZERO
-            )
-        }
+        anniversaryPatternImage?.loadImageWithoutPlaceholder(ANNIVERSARY_PATTERN_URL)
+        anniversaryOrnamentImage?.loadImageWithoutPlaceholder(ANNIVERSARY_ORNAMENT_URL)
     }
 
     private fun setupSecondaryInfoAdapter() {

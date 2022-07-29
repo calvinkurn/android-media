@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SobAdapter
 import com.tokopedia.selleronboarding.analytic.SellerOnboardingV2Analytic
@@ -111,33 +112,15 @@ class SellerOnboardingActivity : BaseActivity() {
     }
 
     private fun setConfettiAnniv() {
-        binding?.confettiSob?.run {
-            disableShimmeringPlaceholder = true
-            setImageUrl(
-                url = ANNIVERSARY_CONFETTI_IMAGE,
-                placeholderHeight = Int.ZERO
-            )
-        }
+        binding?.confettiSob?.loadImageWithoutPlaceholder(ANNIVERSARY_CONFETTI_IMAGE)
     }
 
     private fun setBackgroundPattern() {
-        binding?.patternSob?.run {
-            disableShimmeringPlaceholder = true
-            setImageUrl(
-                url = ANNIVERSARY_PATTERN_IMAGE,
-                placeholderHeight = Int.ZERO
-            )
-        }
+        binding?.patternSob?.loadImageWithoutPlaceholder(ANNIVERSARY_PATTERN_IMAGE)
     }
 
     private fun setAnnivLogo() {
-        binding?.logoSob?.run {
-            disableShimmeringPlaceholder = true
-            setImageUrl(
-                url = ANNIVERSARY_LOGO_IMAGE,
-                placeholderHeight = Int.ZERO
-            )
-        }
+        binding?.logoSob?.loadImageWithoutPlaceholder(ANNIVERSARY_LOGO_IMAGE)
     }
 
     @SuppressLint("WrongConstant")

@@ -1622,27 +1622,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun loadAnniversaryIllustrations() {
-        binding?.ivSahPattern?.run {
-            disableShimmeringPlaceholder = true
-            setImageUrl(
-                url = ANNIV_PATTERN_URL,
-                placeholderHeight = Int.ZERO
-            )
-        }
-        binding?.ivSahOrnament?.run {
-            disableShimmeringPlaceholder = true
-            setImageUrl(
-                url = ANNIV_ORNAMENT_URL,
-                placeholderHeight = Int.ZERO
-            )
-        }
-        binding?.ivSahGradient?.run {
-            disableShimmeringPlaceholder = true
-            setImageUrl(
-                url = ANNIV_GRADIENT_URL,
-                placeholderHeight = Int.ZERO
-            )
-        }
+        binding?.ivSahPattern?.loadImageWithoutPlaceholder(ANNIV_PATTERN_URL)
+        binding?.ivSahOrnament?.loadImageWithoutPlaceholder(ANNIV_ORNAMENT_URL)
+        binding?.ivSahGradient?.loadImageWithoutPlaceholder(ANNIV_GRADIENT_URL)
     }
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(
         liveData: LiveData<Result<List<D>>>,
