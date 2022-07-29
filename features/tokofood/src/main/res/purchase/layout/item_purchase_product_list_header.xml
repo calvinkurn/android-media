@@ -21,9 +21,10 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/addAnotherProductButton"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_GN500"
+        android:textAlignment="textEnd"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"

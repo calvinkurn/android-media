@@ -30,6 +30,7 @@ object ShopPageTrackingConstant {
     const val VIEW_ITEM = "view_item"
     const val VIEW_ITEM_LIST = "view_item_list"
     const val SELECT_CONTENT = "select_content"
+    const val BUNDLING_ADD_TO_CART = "add_to_cart"
 
     //category
     const val SHOP_PAGE_SELLER = "shop page - seller"
@@ -41,6 +42,7 @@ object ShopPageTrackingConstant {
     const val MEMBERSHIP_SHOP_PAGE = "membership - shop page"
     const val SETTING_PAGE_SELLER = "setting page - seller"
     const val SHOP_PROFILE_PAGE_BUYER = "shop profile page - buyer"
+    const val SHOP_CAMPAIGN_TAB_EVENT_CATEGORY = "shop page - buyer - campaign tab"
 
     //ACTION
     const val TOP_SECTION = "top section"
@@ -155,6 +157,10 @@ object ShopPageTrackingConstant {
     const val MULTIPLE_TYPE = "multiple"
     const val SINGLE_TYPE = "single"
     const val BUNDLE_ADD_TO_CART = "add to cart"
+    const val IMPRESSION_SHOP_BANNER = "impression shop banner"
+    const val CLICK_SHOP_BANNER = "click shop banner"
+    const val CAMPAIGN_TAB_PRODUCT_IMPRESSION_EVENT_ACTION = "product impression"
+    const val CAMPAIGN_TAB_PRODUCT_CLICK_EVENT_ACTION = "click product card"
 
     //label
     const val CLICK_SHARE = "click share"
@@ -247,13 +253,14 @@ object ShopPageTrackingConstant {
     const val CLICK_REMINDER_FLASH_SALE_WIDGET = "click reminder button on $FLASH_SALE"
     const val CLICK_VIEW_ALL_BUTTON_FLASH_SALE_WIDGET = "click view all on $FLASH_SALE"
     const val CLICK_TNC_BUTTON_FLASH_SALE_WIDGET = "click information icon"
-    const val IMPRESSION_TAB = "impression - %1s Tab"
-    const val LABEL_CLICK_TAB = "click - %1s Tab"
+    const val IMPRESSION_TAB = "impression - %1s"
+    const val LABEL_CLICK_TAB = "click - %1s"
     const val LABEL_CLICK_GLOBAL_HEADER_SHARE_BUTTON = "click - global header - share button"
     const val LABEL_CLICK_GLOBAL_HEADER_CHOOSE_SHARE_BUTTON = "click - global header - choose share button - %1s"
     const val LABEL_CLICK_GLOBAL_HEADER_CART_BUTTON = "click - global header -cart"
     const val LABEL_CLICK_GLOBAL_HEADER_SHOP_NOTES = "click - global header - shop info - catatan toko"
     const val LABEL_IMPRESSION_PRODUCT_LIST = "impression - product list - %1s Tab - %2s"
+    const val LABEL_CLICK_PRODUCT_LIST = "click - product card - %1s Tab - %2s"
     const val LABEL_IMPRESSION_SHOP_ALL_SHOWCASE_LIST = "impression - etalase toko - %1s - %2s"
     const val LABEL_CLICK_SHOP_SHOWCASE_LIST = "click etalase toko - %1s - %2s"
     const val LABEL_APPLY_SHOP_MEMBER = "apply as shop member"
@@ -262,6 +269,8 @@ object ShopPageTrackingConstant {
     const val LABEL_CLICK_APPLY_FILTER_CHIP = "click - filter chip"
     const val LABEL_SHOP_DECOR_IMPRESSION = "impression - shop decor - %1s - %2s"
     const val LABEL_SHOP_DECOR_CLICK = "click - shop decor - %1s - %2s"
+    const val IMPRESSION_SHOP_BANNER_LABEL = "impression - shop banner - campaign tab - %1s - %2s"
+    const val CLICK_SHOP_BANNER_LABEL = "click - shop banner - campaign tab - %1s - %2s"
 
     //key
     const val EVENT = "event"
@@ -270,7 +279,10 @@ object ShopPageTrackingConstant {
     const val EVENT_LABEL = "eventLabel"
     const val EVENT_PROMO_ID = "promoId"
     const val EVENT_PRODUCT_ID = "productId"
+    const val TRACKER_ID = "trackerId"
     const val SHOP_ID = "shopId"
+    const val ITEMS_SHOP_ID = "shop_id"
+    const val ITEMS_SHOP_TYPE = "shop_type"
     const val USER_ID = "userId"
     const val SHOP_NAME = "shop_name"
     const val PAGE_TYPE = "pageType"
@@ -377,6 +389,13 @@ object ShopPageTrackingConstant {
     const val VALUE_SHOP_DECOR_PLAY = "Play"
     const val VALUE_STRING_ZERO = "0"
     const val VALUE_SHOP_PAGE_THEMATIC = "/shoppagethematic"
+    const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
+    const val VALUE_SINGLE_BUNDLING = "single bundling"
+
+    //trackerId
+    const val TRACKER_ID_CLICK_MULTIPLE_BUNDLE = "25998"
+    const val TRACKER_ID_CLICK_SINGLE_BUNDLE = "25999"
+
 
     //dimension83
     const val BOE = "BoE"
@@ -389,6 +408,7 @@ object ShopPageTrackingConstant {
     const val SRP_SHOPNAME = "srp-%s"
     const val VERTICAL_POSITION = "p%1d"
     const val HOME_TAB = "home"
+    const val CAMPAIGN_TAB = "campaign"
     const val HOME_FEATURED_PRODUCT = "featured product"
     const val ETALASE_WIDGET = "etalase widget"
     const val ALL_PRODUCT = "all product"
@@ -407,5 +427,29 @@ object ShopPageTrackingConstant {
 
     const val SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME = "Shop"
     const val SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME = "share"
+    const val SHOP_PRODUCT_ATC_QUANTITY_INCREASE = "increase"
+    const val SHOP_PRODUCT_ATC_QUANTITY_DECREASE = "decrease"
+    object Event {
+        const val DIRECT_PURCHASE_ADD_TO_CART = "add_to_cart"
+    }
 
+    object EventAction {
+        const val IMPRESSION_PRODUCT_ATC = "impression - product - add to cart"
+        const val CLICK_PRODUCT_ATC = "click - product - add to cart"
+        const val CLICK_PRODUCT_ATC_QUANTITY = "click - product - quantity"
+        const val CLICK_PRODUCT_ATC_RESET = "click - product - quantity reset"
+    }
+
+    object EventCategory {
+        const val SHOP_PAGE_BUYER_DIRECT_PURCHASE = "shop page - buyer - direct purchase"
+    }
+
+    object TrackerId {
+        const val IMPRESSION_SHOP_BANNER = "33827"
+        const val CLICK_SHOP_BANNER = "33828"
+        const val TRACKER_ID_ATC_IMPRESSION = "32348"
+        const val TRACKER_ID_ATC_CLICK = "32349"
+        const val TRACKER_ID_ATC_CLICK_QUANTITY = "32350"
+        const val TRACKER_ID_ATC_CLICK_DELETE = "32352"
+    }
 }

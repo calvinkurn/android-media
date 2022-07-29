@@ -127,6 +127,10 @@ internal class PlayBroadcastViewModelRobot(
         viewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
     }
 
+    suspend fun inputQuizOption(order: Int, text: String) = act {
+        viewModel.submitAction(PlayBroadcastAction.InputQuizOption(order, text))
+    }
+
     private suspend fun act(fn: () -> Unit) {
         fn()
         yield()

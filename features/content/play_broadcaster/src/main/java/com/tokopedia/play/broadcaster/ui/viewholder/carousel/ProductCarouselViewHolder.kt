@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.gone
@@ -22,7 +20,6 @@ import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.view.loadImage
-import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created by kenny.hadisaputra on 09/02/22
@@ -84,7 +81,7 @@ class ProductCarouselViewHolder private constructor() {
             binding.viewPinProduct.showWithCondition(item.pinStatus.canPin)
             binding.viewPinProduct.setupPinned(item.pinStatus.isPinned, item.pinStatus.isLoading)
             binding.viewPinProduct.setOnClickListener {
-                listener.onPinProductClicked(item)
+                listener.onPinClicked(item)
             }
         }
 
@@ -102,7 +99,7 @@ class ProductCarouselViewHolder private constructor() {
         }
 
         interface Listener {
-            fun onPinProductClicked(product: ProductUiModel)
+            fun onPinClicked(product: ProductUiModel)
         }
     }
 
@@ -164,7 +161,7 @@ class ProductCarouselViewHolder private constructor() {
             binding.viewPinProduct.showWithCondition(item.pinStatus.canPin)
             binding.viewPinProduct.setupPinned(item.pinStatus.isPinned, item.pinStatus.isLoading)
             binding.viewPinProduct.setOnClickListener {
-                listener.onPinProductClicked(item)
+                listener.onPinClicked(item)
             }
         }
 
@@ -181,7 +178,7 @@ class ProductCarouselViewHolder private constructor() {
         }
 
         interface Listener {
-            fun onPinProductClicked(product: ProductUiModel)
+            fun onPinClicked(product: ProductUiModel)
         }
     }
 

@@ -55,14 +55,14 @@ class ProductSummaryBottomSheet @Inject constructor(
         viewModel.submitAction(ProductSetupAction.DeleteSelectedProduct(product))
     }
 
-    override fun onPinProductClicked(product: ProductUiModel) {
+    override fun onPinClicked(product: ProductUiModel) {
         checkPinProduct(product.pinStatus.isPinned){
             viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
         }
     }
 
     private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
-        if(!viewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
+        if (!viewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
         else {
             toaster.showToaster(
                 message = getString(R.string.play_bro_pin_product_failed),

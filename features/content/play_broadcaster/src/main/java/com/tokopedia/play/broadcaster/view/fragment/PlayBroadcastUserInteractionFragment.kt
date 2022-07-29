@@ -163,7 +163,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
             }
 
-            override fun onPinProductClicked(product: ProductUiModel) {
+            override fun onPinClicked(product: ProductUiModel) {
                 checkPinProduct (product.pinStatus.isPinned){
                     parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
                 }

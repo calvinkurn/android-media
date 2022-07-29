@@ -98,6 +98,7 @@ class CustomOrderDetailBottomSheet :
     private fun setupView(binding: BottomsheetOrderInfoLayoutBinding?) {
         binding?.buttonAddCustom?.setOnClickListener {
             productUiModel?.let { productUiModel ->
+                dismiss()
                 clickListener?.onNavigateToOrderCustomizationPage(
                     cartId = "", productUiModel = productUiModel,
                     Pair(productPosition.orZero(), adapterPosition.orZero())
@@ -134,6 +135,7 @@ class CustomOrderDetailBottomSheet :
 
     override fun onEditButtonClicked(cartId: String) {
         productUiModel?.let {
+            dismiss()
             clickListener?.onNavigateToOrderCustomizationPage(
                 cartId = cartId,
                 productUiModel = it,

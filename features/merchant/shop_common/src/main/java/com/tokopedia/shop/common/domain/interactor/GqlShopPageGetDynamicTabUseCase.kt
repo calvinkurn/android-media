@@ -19,6 +19,15 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
         setupUseCase()
     }
 
+    fun setParams(shopId: Int, extParam: String) {
+        setRequestParams(
+            mapOf<String, Any>(
+                PARAM_SHOP_ID to shopId,
+                PARAM_EXT_PARAM to extParam
+            )
+        )
+    }
+
     @GqlQuery(QUERY_NAME, QUERY)
     private fun setupUseCase() {
         setGraphqlQuery(ShopPageGetDynamicTabQuery())
@@ -46,7 +55,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                 extParam: ${'$'}extParam
               ){
                 tabData {
-                   name
+                  name
                   isActive
                   isFocus
                   isDefault
@@ -55,6 +64,8 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                   icon
                   iconFocus
                   type
+                  bgColors
+                  textColor
                   shopLayoutFeatures {
                     name
                     isActive
@@ -85,6 +96,28 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                           }
                         }
                       }
+                    }
+                    ... on CampaignTabData {
+                       widgetIDList {
+                         widgetID
+                         widgetMasterID
+                         widgetType
+                         widgetName
+                         header {
+                           title
+                           ctaText
+                           ctaLink
+                           cover
+                           ratio
+                           sizeOption
+                           isATC
+                           isActive
+                           isBrokenLink
+                           errMsgBrokenLink
+                           etalaseID
+                           isShowEtalaseName
+                         }
+                       }
                     }
                   }
                 }
