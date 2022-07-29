@@ -74,7 +74,7 @@
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension14": "\\d+",
           "dimension58": "true|false",
-          "dimension57": "true|false",
+          "dimension67": "true|false",
           "dimension79": "\\d+",
           "shop_id": "\\d+",
           "item_variant": "none / other",
