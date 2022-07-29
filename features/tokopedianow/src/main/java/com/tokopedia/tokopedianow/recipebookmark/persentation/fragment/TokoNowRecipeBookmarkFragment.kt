@@ -91,7 +91,8 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         viewModel.removeRecipeBookmark(
             title = title,
             position = position,
-            recipeId = recipeId
+            recipeId = recipeId,
+            isRemoving = true
         )
     }
 
@@ -199,15 +200,6 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         data?.apply {
             if (adapter?.data?.size == REMAINING_RECIPES_SIZE) {
                 showRecipesList()
-                adapter?.showItemLoading(
-                    position = position.orZero(),
-                    isRemoving = true
-                )
-            } else {
-                adapter?.showItemLoading(
-                    position = position.orZero(),
-                    isRemoving = isRemoving.orFalse()
-                )
             }
         }
     }
@@ -219,7 +211,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 isSuccess = isSuccess,
                 cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel),
                 clickListener = {
-                    viewModel.addRecipeBookmark(recipeId)
+                    viewModel.addRecipeBookmark(recipeId, false)
                 }
             )
         }
@@ -233,9 +225,9 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
                 clickListener = {
                     if (data.isRemoving) {
-                        viewModel.removeRecipeBookmark(title, data.position.orZero(), recipeId)
+                        viewModel.removeRecipeBookmark(title, data.position.orZero(), recipeId, data.isRemoving)
                     } else {
-                        viewModel.addRecipeBookmark(recipeId)
+                        viewModel.addRecipeBookmark(recipeId, data.isRemoving)
                     }
                 }
             )

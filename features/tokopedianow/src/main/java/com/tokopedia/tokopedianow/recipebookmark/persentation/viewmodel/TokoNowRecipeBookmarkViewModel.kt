@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.recipebookmark.domain.mapper.GetRecipeBookmarksMapper.mapResponseToUiModelList
 import com.tokopedia.tokopedianow.recipebookmark.domain.mapper.addRecipeProgressBar
@@ -17,11 +16,13 @@ import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBook
 import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_PAGE
 import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment.Companion.DEFAULT_PER_PAGE
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeProgressBarUiModel
+import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeShimmeringUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.recipebookmark.util.UiState
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -78,20 +79,55 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      * @see toaster - failed toaster will be shown with capability to retry the event
      * @see loadRecipeBookmarks - layout will be updated with latest layout
      */
-    private fun onResponseAddRemoveRecipeBE(isRemoving: Boolean, position: Int, recipeId: String, errorMessage: String, isSuccess: Boolean,  onSuccess: () -> Unit) {
+    private fun onResponseAddRecipeBE(position: Int, isRemoving: Boolean, recipeId: String, errorMessage: String, isSuccess: Boolean) {
         if (isSuccess) {
-            onSuccess.invoke()
+            restoreRecipeRemoved()
         } else {
-            _toaster.value = UiState.Fail(
-                data = ToasterUiModel(
-                    isRemoving = isRemoving,
-                    position = position,
-                    model = ToasterModel(
-                        message = errorMessage,
-                        recipeId = recipeId,
-                        isSuccess = isSuccess
-                    )
+            onFailAddRecipe(
+                isRemoving = isRemoving,
+                position = position,
+                recipeId = recipeId,
+                isSuccess = isSuccess,
+                errorMessage = errorMessage,
+            )
+        }
+
+        _loadRecipeBookmarks.value = UiState.Success(
+            data = layout
+        )
+    }
+
+    private fun onFailAddRecipe(isRemoving: Boolean, position: Int, recipeId: String, isSuccess: Boolean, errorMessage: String) {
+        layout.removeAt(position)
+
+        _toaster.value = UiState.Fail(
+            data = ToasterUiModel(
+                isRemoving = isRemoving,
+                position = position,
+                model = ToasterModel(
+                    message = errorMessage,
+                    recipeId = recipeId,
+                    isSuccess = isSuccess
                 )
+            )
+        )
+    }
+
+    private fun onResponseRemoveRecipeBE(isRemoving: Boolean, title: String, position: Int, recipeId: String, errorMessage: String, isSuccess: Boolean) {
+        if (isSuccess) {
+            onSuccessRemoveRecipe(
+                position = position,
+                recipeId = recipeId,
+                title = title,
+                isSuccess = isSuccess
+            )
+        } else {
+            onFailRemoveRecipe(
+                isRemoving = isRemoving,
+                position = position,
+                recipeId = recipeId,
+                isSuccess = isSuccess,
+                errorMessage = errorMessage
             )
         }
 
@@ -105,9 +141,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
      * @see toaster - success toaster will be shown with capability to add recipe back
      */
     private fun onSuccessRemoveRecipe(position: Int, recipeId: String, title: String, isSuccess: Boolean) {
-        tempRecipeRemoved = Pair(position, layout[position])
-
-        layout.removeFirst { it is RecipeUiModel && it.id == recipeId }
+        layout.removeAt(position)
 
         _toaster.value = UiState.Success(ToasterUiModel(
             isRemoving = isSuccess,
@@ -120,12 +154,32 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         ))
     }
 
+    private fun onFailRemoveRecipe(isRemoving: Boolean, position: Int, recipeId: String, isSuccess: Boolean, errorMessage: String) {
+        tempRecipeRemoved?.apply {
+            layout.removeAt(first)
+            layout.add(first, second)
+        }
+
+        _toaster.value = UiState.Fail(
+            data = ToasterUiModel(
+                isRemoving = isRemoving,
+                position = position,
+                model = ToasterModel(
+                    message = errorMessage,
+                    recipeId = recipeId,
+                    isSuccess = isSuccess
+                )
+            )
+        )
+    }
+
     /**
      * @see tempRecipeRemoved - restore recipe back to layout
      * @see layout - will be updated by restoring recipe back
      */
-    private fun onSuccessAddRecipe() {
+    private fun restoreRecipeRemoved() {
         tempRecipeRemoved?.apply {
+            layout.removeAt(first)
             layout.add(first, second)
         }
     }
@@ -181,7 +235,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
 
     /**
      * @see noNeedLoadMore - if true no need to load widgets more
-     * @see loadRecipeBookmarks - layout will be updated with latest layout or just hide load more loading
+     * @see moreRecipeBookmarks - layout will be updated with latest layout or just hide load more loading
      */
     private fun onResponseLoadMoreBE(recipeBookmarks: List<RecipeUiModel>, header: GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Header, hasNext: Boolean) {
         noNeedLoadMore = !hasNext || recipeBookmarks.size < DEFAULT_PER_PAGE
@@ -200,7 +254,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     }
 
     /**
-     * @see loadRecipeBookmarks - will hide load more loading
+     * @see moreRecipeBookmarks - will hide load more loading
      */
     private fun onFailLoadMoreFE() {
         layout.removeRecipeProgressBar()
@@ -210,9 +264,38 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         )
     }
 
+    /**
+     * @see moreRecipeBookmarks - will show load more loading
+     */
     private fun showLoadMoreLoading() {
         layout.addRecipeProgressBar()
-        _moreRecipeBookmarks.value = UiState.Success(layout)
+
+        _moreRecipeBookmarks.value = UiState.Success(
+            data = layout
+        )
+    }
+
+    /**
+     * @see loadRecipeBookmarks - item will be changed to shimmering or just add shimmering model
+     */
+    private fun showItemLoading(isRemoving: Boolean, position: Int) {
+        if (isRemoving) {
+            layout.removeAt(position)
+            layout.add(position, RecipeShimmeringUiModel())
+        } else {
+            layout.add(position, RecipeShimmeringUiModel())
+        }
+        _loadRecipeBookmarks.value = UiState.Success(
+            data = layout
+        )
+    }
+
+    private fun updateLayoutWithTempRecipeRemoved(isRemoving: Boolean) {
+        if (isRemoving) {
+            restoreRecipeRemoved()
+        } else {
+            layout.removeAt(tempRecipeRemoved?.first.orZero())
+        }
     }
 
     fun loadFirstPage() {
@@ -225,14 +308,15 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         })
     }
 
-    fun removeRecipeBookmark(title: String, position: Int, recipeId: String) {
-        val isRemoving = true
+    fun removeRecipeBookmark(title: String, position: Int, recipeId: String, isRemoving: Boolean) {
         launchCatchError(block = {
-            _toaster.value = UiState.Loading(
-                ToasterUiModel(
-                    position = position,
-                    isRemoving = isRemoving
-                )
+            _toaster.value = UiState.Loading()
+
+            tempRecipeRemoved = Pair(position, layout[position])
+
+            showItemLoading(
+                isRemoving = isRemoving,
+                position = position
             )
 
             val response = removeRecipeBookmarkUseCase.execute(
@@ -240,21 +324,19 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
                 recipeId = recipeId
             )
 
-            onResponseAddRemoveRecipeBE(
+            onResponseRemoveRecipeBE(
                 isRemoving = isRemoving,
+                title = title,
                 position = position,
                 recipeId = recipeId,
                 errorMessage = response.header.message,
                 isSuccess = response.header.success
-            ) {
-                onSuccessRemoveRecipe(
-                    position = position,
-                    recipeId = recipeId,
-                    title = title,
-                    isSuccess = response.header.success
-                )
-            }
+            )
         }, onError = { throwable ->
+            updateLayoutWithTempRecipeRemoved(
+                isRemoving = isRemoving
+            )
+
             onFailAddRemoveRecipeFE(
                 isRemoving = isRemoving,
                 position = position,
@@ -264,13 +346,14 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         })
     }
 
-    fun addRecipeBookmark(recipeId: String) {
-        val isRemoving = false
+    fun addRecipeBookmark(recipeId: String, isRemoving: Boolean) {
+        val position = tempRecipeRemoved?.first.orZero()
         launchCatchError(block = {
-            _toaster.value = UiState.Loading(
-                ToasterUiModel(
-                    position = tempRecipeRemoved?.first
-                )
+            _toaster.value = UiState.Loading()
+
+            showItemLoading(
+                isRemoving = isRemoving,
+                position = position
             )
 
             val response = addRecipeBookmarkUseCase.execute(
@@ -278,19 +361,21 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
                 recipeId = recipeId
             )
 
-            onResponseAddRemoveRecipeBE(
+            onResponseAddRecipeBE(
+                position = position,
                 isRemoving = isRemoving,
-                position = tempRecipeRemoved?.first.orZero(),
                 recipeId = recipeId,
                 errorMessage = response.header.message,
                 isSuccess = response.header.success
-            ) {
-                onSuccessAddRecipe()
-            }
+            )
         }, onError = { throwable ->
+            updateLayoutWithTempRecipeRemoved(
+                isRemoving = isRemoving
+            )
+
             onFailAddRemoveRecipeFE(
                 isRemoving = isRemoving,
-                position = tempRecipeRemoved?.first.orZero(),
+                position = position,
                 recipeId = recipeId,
                 throwable = throwable
             )
