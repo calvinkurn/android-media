@@ -44,8 +44,8 @@ import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.ProductIconView
@@ -83,7 +83,6 @@ import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import java.util.Collections
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -164,7 +163,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
 
             override fun onPinProductClicked(product: ProductUiModel) {
-                checkPinProduct (product.pinStatus.isPinned){
+                analytic.onClickPinProductLiveRoom(parentViewModel.channelId, product.id)
+                checkPinProduct(product.pinStatus.isPinned) {
                     parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
                 }
             }
@@ -862,7 +862,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
 
         val pinnedProduct = newList.filter { it.pinStatus.isPinned }
-        if(pinnedProduct.isNotEmpty()) sortedList.add(pinnedProduct.first())
+        if (pinnedProduct.isNotEmpty()) {
+            analytic.onImpressPinProductLiveRoom(
+                parentViewModel.channelId,
+                pinnedProduct.first().id
+            )
+            sortedList.add(pinnedProduct.first())
+        }
         sortedList.addAll(newList.filterNot { it.pinStatus.isPinned })
 
         productTagView.setProducts(
@@ -1138,9 +1144,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
-        if(!parentViewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
+        if (!parentViewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
         else {
-           showToaster(
+            if (pinStatus) analytic.onImpressFailUnPinProductLiveRoom(parentViewModel.channelId)
+            else analytic.onImpressFailPinProductLiveRoom(parentViewModel.channelId)
+            showToaster(
                 message = getString(R.string.play_bro_pin_product_failed),
                 type = Toaster.TYPE_ERROR
             )
