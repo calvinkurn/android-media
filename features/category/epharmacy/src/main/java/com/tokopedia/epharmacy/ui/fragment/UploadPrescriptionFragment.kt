@@ -56,6 +56,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -197,7 +198,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private fun showTnC() {
         context?.let { safeContext ->
-            startActivity(BaseSimpleWebViewActivity.getStartIntent(safeContext,EPHARMACY_TNC_LINK))
+            startActivity(Intent(Intent(safeContext, BaseSimpleWebViewActivity::class.java)).putExtra(KEY_URL,EPHARMACY_TNC_LINK))
         }
     }
 
