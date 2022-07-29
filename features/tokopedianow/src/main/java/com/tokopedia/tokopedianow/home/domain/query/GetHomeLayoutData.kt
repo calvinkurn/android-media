@@ -76,6 +76,7 @@ internal object GetHomeLayoutData: GqlQueryInterface {
                 impression
                 cashback
                 isTopads
+                ratingAverage
                 freeOngkir {
                   isActive
                   imageUrl
