@@ -85,7 +85,6 @@ class BalanceWidgetView : FrameLayout {
             subscriptionPosition = element.balancePositionSubscriptions
             if (previousState == HomeBalanceModel.STATUS_LOADING) {
                 balanceWidgetAdapter = BalanceWidgetAdapter(BalanceWidgetTypeFactoryImpl(listener))
-                rvBalance?.layoutManager = layoutManager
                 rvBalance?.adapter = balanceWidgetAdapter
             }
             balanceWidgetAdapter?.setVisitables(listOf(element))

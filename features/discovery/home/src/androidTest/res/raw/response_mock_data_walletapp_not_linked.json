@@ -11,7 +11,7 @@
             "is_linked": false,
             "masked_phone": "**********455",
             "message": "Success",
-            "redirect_url": "https://staging.tokopedia.com/gopay",
+            "redirect_url": "",
             "type": "PEMUDA",
             "wallet_name": "GoPay",
             "global_menu_text": {
