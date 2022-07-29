@@ -58,7 +58,6 @@ class TokoFoodCategoryViewModel @Inject constructor(
                    STATE_LOADING -> emit(getLoadingState())
                    STATE_ERROR -> inputState.throwable?.let { emit(getErrorState(it)) }
                    STATE_FETCH_MERCHANT_LIST_DATA -> {
-                       emit(getProgressBar())
                        emit(getCategoryLayout(inputState.localCacheModel, inputState.merchantListParamsModel))
                    }
                    STATE_FETCH_LOAD_MORE -> {
