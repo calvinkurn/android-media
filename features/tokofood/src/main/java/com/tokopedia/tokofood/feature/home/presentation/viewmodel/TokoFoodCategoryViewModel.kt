@@ -55,9 +55,9 @@ class TokoFoodCategoryViewModel @Inject constructor(
         _inputState.flatMapConcat { inputState ->
             flow {
                 when (inputState.uiState) {
-                   STATE_LOADING -> emit(getLoadingState())
                    STATE_ERROR -> inputState.throwable?.let { emit(getErrorState(it)) }
                    STATE_FETCH_MERCHANT_LIST_DATA -> {
+                       emit(getLoadingState())
                        emit(getCategoryLayout(inputState.localCacheModel, inputState.merchantListParamsModel))
                    }
                    STATE_FETCH_LOAD_MORE -> {
@@ -83,10 +83,6 @@ class TokoFoodCategoryViewModel @Inject constructor(
     companion object {
         private const val INITIAL_PAGE_KEY_MERCHANT = "0"
         private const val SHARED_FLOW_STOP_TIMEOUT_MILLIS = 5000L
-    }
-
-    fun setLoadingState() {
-        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_LOADING))
     }
 
     fun getLoadingState(): Pair<Result<TokoFoodListUiModel>, Boolean> {

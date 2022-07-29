@@ -372,7 +372,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun onLoadingCategorylayout(data: TokoFoodListUiModel) {
         showCategoryLayout(data)
-        getCategoryLayout()
     }
 
     private fun showCategoryLayout(data: TokoFoodListUiModel) {
@@ -382,7 +381,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
 
     private fun loadLayout() {
-        viewModel.setLoadingState()
+        getCategoryLayout()
     }
 
     private fun onRenderCategoryPage() {
