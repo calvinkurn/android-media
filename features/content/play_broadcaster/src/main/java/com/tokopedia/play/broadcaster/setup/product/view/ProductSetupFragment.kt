@@ -139,7 +139,7 @@ class ProductSetupFragment @Inject constructor(
                     return productSetupViewModelFactory.create(
                         mDataSource?.getProductSectionList().orEmpty(),
                         handle,
-                        mDataSource?.isDuringLiveStream() ?: true,
+                        mDataSource?.isEligibleForPin() ?: true,
                     ) as T
                 }
             }
@@ -155,6 +155,6 @@ class ProductSetupFragment @Inject constructor(
     interface DataSource {
 
         fun getProductSectionList(): List<ProductTagSectionUiModel>
-        fun isDuringLiveStream(): Boolean //TODO(): find better approach
+        fun isEligibleForPin(): Boolean //TODO(): find better approach
     }
 }

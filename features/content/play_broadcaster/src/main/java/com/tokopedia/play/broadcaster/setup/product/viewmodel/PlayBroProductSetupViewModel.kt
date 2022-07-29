@@ -26,7 +26,6 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
-import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.util.extension.combine
 import com.tokopedia.play_common.util.extension.switch
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,7 +52,7 @@ import kotlinx.coroutines.launch
 class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val savedStateHandle: SavedStateHandle,
-    @Assisted isDuringLiveStream: Boolean,
+    @Assisted isEligibleForPin: Boolean,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     userSession: UserSessionInterface,
@@ -73,7 +72,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         if (!savedStateHandle.hasProductSections()) {
             savedStateHandle.setProductSections(productSectionList)
         }
-        savedStateHandle.setLiveStreamStatus(isDuringLiveStream)
+        savedStateHandle.setEligiblePinStatus(isEligibleForPin)
     }
 
     val channelId: String
@@ -83,7 +82,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         get() = configStore.getMaxProduct()
 
     val isLiveStream: Boolean
-        get() = savedStateHandle.isDuringLiveStream()
+        get() = savedStateHandle.isEligibleForPin()
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
     private val _selectedProductList = MutableStateFlow(
@@ -412,18 +411,18 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         savedStateHandle[KEY_PRODUCT_SECTIONS] = productSectionList
     }
 
-    private fun SavedStateHandle.setLiveStreamStatus(
-        isDuringLiveStream: Boolean
+    private fun SavedStateHandle.setEligiblePinStatus(
+        isEligibleForPin: Boolean
     ) {
-        savedStateHandle[KEY_LIVE_STREAM_STATUS] = isDuringLiveStream
+        savedStateHandle[KEY_ELIGIBLE_PIN] = isEligibleForPin
     }
 
     private fun SavedStateHandle.hasProductSections(): Boolean {
         return savedStateHandle.contains(KEY_PRODUCT_SECTIONS)
     }
 
-    private fun SavedStateHandle.isDuringLiveStream(): Boolean {
-        return savedStateHandle[KEY_LIVE_STREAM_STATUS] ?: true
+    private fun SavedStateHandle.isEligibleForPin(): Boolean {
+        return savedStateHandle[KEY_ELIGIBLE_PIN] ?: true
     }
 
     private fun handleClickPin(product: ProductUiModel){
@@ -468,7 +467,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     companion object {
         private const val KEY_PRODUCT_SECTIONS = "product_sections"
-        private const val KEY_LIVE_STREAM_STATUS = "live_stream_status"
+        private const val KEY_ELIGIBLE_PIN = "eligible_pin_status"
 
         private const val COOL_DOWN_TIMER = 5000L
     }

@@ -238,7 +238,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         else emptyList()
                     }
 
-                    override fun isDuringLiveStream(): Boolean = true
+                    override fun isEligibleForPin(): Boolean = true
                 })
             }
             is InteractiveSetupDialogFragment -> {
