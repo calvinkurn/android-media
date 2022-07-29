@@ -4,10 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.data.request.DoSellerCampaignProductSubmissionRequest
+import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.HighlightableProduct
 import com.tokopedia.shop.flashsale.domain.entity.ProductSubmissionResult
+import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignProductListUseCase
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.mapper.HighlightProductUiMapper
 import com.tokopedia.shop.flashsale.presentation.creation.highlight.mapper.HighlightableProductRequestMapper
@@ -27,6 +30,13 @@ import org.junit.Test
 
 class ManageHighlightedProductViewModelTest {
 
+    companion object {
+        private const val CAMPAIGN_ID: Long = 1001
+        private const val PAGE_SIZE = 10
+        private const val OFFSET = 0
+        private const val PRODUCT_LIST_TYPE_ID = 0
+        private const val PRODUCT_NAME = ""
+    }
     @RelaxedMockK
     lateinit var getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase
 
@@ -63,6 +73,168 @@ class ManageHighlightedProductViewModelTest {
 
 
     //region getProducts
+    @Test
+    fun `When get products and already have 5 selected products, the first 5 products should be selected`() {
+
+        //Given
+        val firstProduct = buildHighlightableProduct().copy(id = 100, parentId = 1, isSelected = false, highlightProductWording = "Teaser #1")
+        val secondProduct = buildHighlightableProduct().copy(id = 200,  parentId = 2, isSelected = false, highlightProductWording = "Teaser #2")
+        val thirdProduct = buildHighlightableProduct().copy(id = 300,  parentId = 3, isSelected = false, highlightProductWording = "Teaser #3")
+        val fourthProduct = buildHighlightableProduct().copy(id = 400, parentId = 4,  isSelected = false, highlightProductWording = "Teaser #4")
+        val fifthProduct = buildHighlightableProduct().copy(id = 500,  parentId = 5, isSelected = false, highlightProductWording = "Teaser #5")
+        val sixthProduct = buildHighlightableProduct().copy(id = 600, parentId = 6,  isSelected = false, highlightProductWording = "")
+        val response = SellerCampaignProductList()
+
+        val expected = Success(listOf(
+            buildHighlightableProduct().copy(id = 100, isSelected = true, parentId = 1, highlightProductWording = "Teaser #1", position = 1),
+            buildHighlightableProduct().copy(id = 200, isSelected = true, parentId = 2, highlightProductWording = "Teaser #2", position = 2),
+            buildHighlightableProduct().copy(id = 300, isSelected = true, parentId = 3, highlightProductWording = "Teaser #3", position = 3),
+            buildHighlightableProduct().copy(id = 400, isSelected = true, parentId = 4, highlightProductWording = "Teaser #4", position = 4),
+            buildHighlightableProduct().copy(id = 500, isSelected = true, parentId = 5, highlightProductWording = "Teaser #5", position = 5),
+            buildHighlightableProduct().copy(id = 600, isSelected = false, parentId = 6, disabled = true, disabledReason = HighlightableProduct.DisabledReason.MAX_PRODUCT_REACHED, highlightProductWording = "", position = 0),
+        ))
+
+        coEvery {
+            getSellerCampaignProductListUseCase.execute(
+                campaignId = CAMPAIGN_ID,
+                productName = PRODUCT_NAME,
+                listType = PRODUCT_LIST_TYPE_ID,
+                pagination = GetSellerCampaignProductListRequest.Pagination(PAGE_SIZE, OFFSET)
+            )
+        } returns response
+
+        val mappedProductsResponse = listOf(firstProduct, secondProduct, thirdProduct, fourthProduct, fifthProduct, sixthProduct)
+        coEvery { highlightProductUiMapper.map(response) } returns mappedProductsResponse
+
+        viewModel.setIsFirstLoad(true)
+
+        //When
+        viewModel.getProducts(CAMPAIGN_ID, PRODUCT_NAME, PAGE_SIZE, OFFSET)
+
+        //Then
+        val actual = viewModel.products.getOrAwaitValue()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get products and selected products less than 5 product, should enable all product`() {
+
+        //Given
+        val firstProduct = buildHighlightableProduct().copy(id = 100, parentId = 1, isSelected = false, highlightProductWording = "Teaser #1")
+        val secondProduct = buildHighlightableProduct().copy(id = 200,  parentId = 2, isSelected = false, highlightProductWording = "Teaser #2")
+        val thirdProduct = buildHighlightableProduct().copy(id = 300,  parentId = 3, isSelected = false, highlightProductWording = "Teaser #3")
+        val fourthProduct = buildHighlightableProduct().copy(id = 400, parentId = 4,  isSelected = false, highlightProductWording = "")
+        val fifthProduct = buildHighlightableProduct().copy(id = 500,  parentId = 5, isSelected = false, highlightProductWording = "")
+        val sixthProduct = buildHighlightableProduct().copy(id = 600, parentId = 6,  isSelected = false, highlightProductWording = "")
+        val response = SellerCampaignProductList()
+
+        val expected = Success(listOf(
+            buildHighlightableProduct().copy(id = 100, isSelected = true, parentId = 1, highlightProductWording = "Teaser #1", position = 1),
+            buildHighlightableProduct().copy(id = 200, isSelected = true, parentId = 2, highlightProductWording = "Teaser #2", position = 2),
+            buildHighlightableProduct().copy(id = 300, isSelected = true, parentId = 3, highlightProductWording = "Teaser #3", position = 3),
+            buildHighlightableProduct().copy(id = 400, isSelected = false, parentId = 4, highlightProductWording = "", position = 0),
+            buildHighlightableProduct().copy(id = 500, isSelected = false, parentId = 5, highlightProductWording = "", position = 0),
+            buildHighlightableProduct().copy(id = 600, isSelected = false, parentId = 6, highlightProductWording = "", position = 0)
+        ))
+
+        coEvery {
+            getSellerCampaignProductListUseCase.execute(
+                campaignId = CAMPAIGN_ID,
+                productName = PRODUCT_NAME,
+                listType = PRODUCT_LIST_TYPE_ID,
+                pagination = GetSellerCampaignProductListRequest.Pagination(PAGE_SIZE, OFFSET)
+            )
+        } returns response
+
+        val mappedProductsResponse = listOf(firstProduct, secondProduct, thirdProduct, fourthProduct, fifthProduct, sixthProduct)
+        coEvery { highlightProductUiMapper.map(response) } returns mappedProductsResponse
+
+        viewModel.setIsFirstLoad(true)
+
+        //When
+        viewModel.getProducts(CAMPAIGN_ID, PRODUCT_NAME, PAGE_SIZE, OFFSET)
+
+        //Then
+        val actual = viewModel.products.getOrAwaitValue()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When load next page and seller already select products, isSelected should be true for the selected products`() {
+
+        //Given
+        val firstProduct = buildHighlightableProduct().copy(id = 100, parentId = 1, isSelected = false, highlightProductWording = "Teaser #1")
+        val secondProduct = buildHighlightableProduct().copy(id = 200,  parentId = 2, isSelected = false, highlightProductWording = "Teaser #2")
+        val thirdProduct = buildHighlightableProduct().copy(id = 300,  parentId = 3, isSelected = false, highlightProductWording = "Teaser #3")
+        val fourthProduct = buildHighlightableProduct().copy(id = 400, parentId = 4,  isSelected = false, highlightProductWording = "")
+        val fifthProduct = buildHighlightableProduct().copy(id = 500,  parentId = 5, isSelected = false, highlightProductWording = "")
+        val sixthProduct = buildHighlightableProduct().copy(id = 600, parentId = 6,  isSelected = false, highlightProductWording = "")
+        val response = SellerCampaignProductList()
+
+        viewModel.addProductIdToSelection(firstProduct)
+        viewModel.addProductIdToSelection(secondProduct)
+        viewModel.addProductIdToSelection(thirdProduct)
+        viewModel.addProductIdToSelection(fourthProduct)
+        viewModel.addProductIdToSelection(fifthProduct)
+
+        val expected = Success(listOf(
+            buildHighlightableProduct().copy(id = 100, isSelected = true, parentId = 1, highlightProductWording = "Teaser #1", position = 1),
+            buildHighlightableProduct().copy(id = 200, isSelected = true, parentId = 2, highlightProductWording = "Teaser #2", position = 2),
+            buildHighlightableProduct().copy(id = 300, isSelected = true, parentId = 3, highlightProductWording = "Teaser #3", position = 3),
+            buildHighlightableProduct().copy(id = 400, isSelected = true, parentId = 4, highlightProductWording = "", position = 4),
+            buildHighlightableProduct().copy(id = 500, isSelected = true, parentId = 5, highlightProductWording = "", position = 5),
+            buildHighlightableProduct().copy(id = 600, isSelected = false, disabled = true, disabledReason = HighlightableProduct.DisabledReason.MAX_PRODUCT_REACHED, parentId = 6, highlightProductWording = "", position = 0)
+        ))
+
+        coEvery {
+            getSellerCampaignProductListUseCase.execute(
+                campaignId = CAMPAIGN_ID,
+                productName = PRODUCT_NAME,
+                listType = PRODUCT_LIST_TYPE_ID,
+                pagination = GetSellerCampaignProductListRequest.Pagination(PAGE_SIZE, OFFSET)
+            )
+        } returns response
+
+        val mappedProductsResponse = listOf(firstProduct, secondProduct, thirdProduct, fourthProduct, fifthProduct, sixthProduct)
+        coEvery { highlightProductUiMapper.map(response) } returns mappedProductsResponse
+
+        viewModel.setIsFirstLoad(false)
+
+        //When
+        viewModel.getProducts(CAMPAIGN_ID, PRODUCT_NAME, PAGE_SIZE, OFFSET)
+
+        //Then
+        val actual = viewModel.products.getOrAwaitValue()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get products error, observer should receive error result`() {
+        //Given
+        val response = SellerCampaignProductList()
+        val error = MessageErrorException("Server error")
+        val expected = Fail(error)
+
+        coEvery {
+            getSellerCampaignProductListUseCase.execute(
+                campaignId = CAMPAIGN_ID,
+                productName = PRODUCT_NAME,
+                listType = PRODUCT_LIST_TYPE_ID,
+                pagination = GetSellerCampaignProductListRequest.Pagination(PAGE_SIZE, OFFSET)
+            )
+        } returns response
+
+        coEvery { highlightProductUiMapper.map(response) } throws  error
+        viewModel.setIsFirstLoad(true)
+
+        //When
+
+        viewModel.getProducts(CAMPAIGN_ID, PRODUCT_NAME, PAGE_SIZE, OFFSET)
+
+        //Then
+        val actual = viewModel.products.getOrAwaitValue()
+        assertEquals(expected, actual)
+    }
     //endregion
 
     //region submitHighlightedProducts
@@ -362,8 +534,6 @@ class ManageHighlightedProductViewModelTest {
         assertEquals(expected, actual)
     }
     //endregion
-
-
 
     //region markAsUnselected
     @Test
