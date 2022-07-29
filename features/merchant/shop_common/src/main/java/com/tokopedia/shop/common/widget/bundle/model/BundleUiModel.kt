@@ -2,8 +2,9 @@ package com.tokopedia.shop.common.widget.bundle.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
 
-data class BundleGroupUiModel(
-        var groupName: String = "",
+data class BundleUiModel(
+        var bundleName: String = "",
+        var bundleType: String = "",
         var shopInfo: BundleShopUiModel? = null,
-        var bundles: List<ShopHomeProductBundleDetailUiModel> = listOf()
+        var bundles: List<BundleDetailUiModel> = listOf()
 ): ImpressHolder()

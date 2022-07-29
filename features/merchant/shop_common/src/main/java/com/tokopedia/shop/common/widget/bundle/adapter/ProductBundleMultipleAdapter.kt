@@ -3,9 +3,7 @@ package com.tokopedia.shop.common.widget.bundle.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.common.widget.bundle.model.*
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleMultiplePackageViewHolder
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
@@ -13,9 +11,9 @@ import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 class ProductBundleMultipleAdapter: RecyclerView.Adapter<ShopHomeProductBundleMultiplePackageViewHolder>(),
     MultipleProductBundleListener {
 
-    private var bundleProducts: List<ShopHomeBundleProductUiModel> = listOf()
-    private var multipleBundleDetail: ShopHomeProductBundleDetailUiModel = ShopHomeProductBundleDetailUiModel()
-    private var multipleBundleParent: ShopHomeProductBundleItemUiModel = ShopHomeProductBundleItemUiModel()
+    private var bundleProducts: List<BundleProductUiModel> = listOf()
+    private var multipleBundleDetail: BundleDetailUiModel = BundleDetailUiModel()
+    private var multipleBundleParent: BundleUiModel = BundleUiModel()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopHomeProductBundleMultiplePackageViewHolder {
         return ShopHomeProductBundleMultiplePackageViewHolder(
@@ -29,7 +27,7 @@ class ProductBundleMultipleAdapter: RecyclerView.Adapter<ShopHomeProductBundleMu
     }
 
     override fun onBindViewHolder(holder: ShopHomeProductBundleMultiplePackageViewHolder, position: Int) {
-        val bundleProduct = bundleProducts.getOrNull(position) ?: ShopHomeBundleProductUiModel()
+        val bundleProduct = bundleProducts.getOrNull(position) ?: BundleProductUiModel()
         holder.bind(
                 bundleProduct,
                 multipleBundleDetail,
@@ -45,9 +43,9 @@ class ProductBundleMultipleAdapter: RecyclerView.Adapter<ShopHomeProductBundleMu
     }
 
     fun updateDataSet(
-            newList: List<ShopHomeBundleProductUiModel>,
-            bundleDetail: ShopHomeProductBundleDetailUiModel,
-            bundleParent: ShopHomeProductBundleItemUiModel
+        newList: List<BundleProductUiModel>,
+        bundleDetail: BundleDetailUiModel,
+        bundleParent: BundleUiModel
     ) {
         bundleProducts = newList
         multipleBundleDetail = bundleDetail

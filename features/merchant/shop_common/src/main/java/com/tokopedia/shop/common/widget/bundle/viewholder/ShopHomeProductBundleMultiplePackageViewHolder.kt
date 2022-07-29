@@ -8,9 +8,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemShopHomeBundleProductMultipleBinding
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.common.widget.bundle.model.*
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -71,6 +69,40 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
                 adapterPosition
             )
         }
+    }
+
+    fun bind(
+        bundleProductItem: BundleProductUiModel,
+        bundleDetail: BundleDetailUiModel,
+        bundleParent: BundleUiModel,
+        bundlePosition: Int,
+        widgetTitle: String,
+        widgetName: String
+    ) {
+        imageBundleProduct?.loadImage(bundleProductItem.productImageUrl)
+        typographyBundleProductName?.text = bundleProductItem.productName
+        /*itemView.addOnImpressionListener(bundleProductItem){
+            itemListener.impressionProductItemBundleMultiple(
+                bundleProductItem,
+                bundleDetail,
+                bundleParent.bundleName,
+                bundlePosition,
+                widgetTitle,
+                widgetName,
+                adapterPosition
+            )
+        }
+        itemView.setOnClickListener {
+            itemListener.onMultipleBundleProductClicked(
+                bundleProductItem,
+                bundleDetail,
+                bundleParent.bundleName,
+                bundlePosition,
+                widgetTitle,
+                widgetName,
+                adapterPosition
+            )
+        }*/
     }
 }
 

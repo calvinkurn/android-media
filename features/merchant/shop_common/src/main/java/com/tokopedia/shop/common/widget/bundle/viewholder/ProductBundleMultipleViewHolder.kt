@@ -13,8 +13,8 @@ import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemProductBundleMultipleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleMultipleAdapter
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
@@ -22,7 +22,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductBundleMultipleViewHolder(
-        itemView: View
+    itemView: View,
+    private val containerWidgetParams: Int
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -55,8 +56,8 @@ class ProductBundleMultipleViewHolder(
         }
     }
 
-    fun bind(bundle: ShopHomeProductBundleItemUiModel) {
-        val multipleBundleItem = bundle.bundleDetails.firstOrNull() ?: ShopHomeProductBundleDetailUiModel()
+    fun bind(bundle: BundleUiModel, size: Int) {
+        val multipleBundleItem = bundle.bundles.firstOrNull() ?: BundleDetailUiModel()
 
         // bundle card item details
         typographyBundleName?.text = bundle.bundleName
@@ -74,19 +75,19 @@ class ProductBundleMultipleViewHolder(
         buttonAtc?.text = if (multipleBundleItem.isPreOrder) {
             itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
         } else {
-            itemView.context.getString(R.string.shop_page_product_bundle_atc_button_text)
+            itemView.context.getString(R.string.product_bundle_action_button_text)
         }
 
         // bundle products list
-        initBundleProductsRecyclerView(bundle.bundleProducts.size, bundle.bundleDetails.size)
+        initBundleProductsRecyclerView(multipleBundleItem.products.size)
         (rvBundleProducts?.adapter as ProductBundleMultipleAdapter).updateDataSet(
-                newList = bundle.bundleProducts,
+                newList = multipleBundleItem.products,
                 bundleDetail = multipleBundleItem,
                 bundleParent = bundle
         )
     }
 
-    private fun initBundleProductsRecyclerView(spanSize: Int, bundleListSize: Int) {
+    private fun initBundleProductsRecyclerView(spanSize: Int) {
         rvBundleProducts?.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, spanSize, GridLayoutManager.VERTICAL, false)
@@ -94,15 +95,6 @@ class ProductBundleMultipleViewHolder(
         }
 
         val constraintSet = ConstraintSet()
-        val containerWidgetParams = if (2 == ShopHomeProductBundleWidgetAdapter.SINGLE_SIZE_WIDGET) {
-            ConstraintLayout.LayoutParams.MATCH_PARENT
-        } else {
-            TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    ShopHomeProductBundleWidgetAdapter.BUNDLE_WIDGET_DEFAULT_WIDTH,
-                    itemView.resources.displayMetrics
-            ).toInt()
-        }
         widgetContainer?.layoutParams?.width = containerWidgetParams
         constraintSet.clone(widgetContainer)
         constraintSet.applyTo(widgetContainer)

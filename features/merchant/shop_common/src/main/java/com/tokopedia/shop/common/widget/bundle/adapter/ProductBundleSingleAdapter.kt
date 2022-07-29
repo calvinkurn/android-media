@@ -5,14 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleSinglePackageViewHolder
 
-class ProductBundleSingleAdapter(
-        private val singleBundleVariantSelectedListener: SingleBundleVariantSelectedListener
-): RecyclerView.Adapter<ShopHomeProductBundleSinglePackageViewHolder>() {
+class ProductBundleSingleAdapter: RecyclerView.Adapter<ShopHomeProductBundleSinglePackageViewHolder>() {
 
-    private var bundleDetails: List<ShopHomeProductBundleDetailUiModel> = listOf()
+    private var bundleDetails: List<BundleDetailUiModel> = listOf()
     private var lastSelectedPosition = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopHomeProductBundleSinglePackageViewHolder {
@@ -26,12 +24,12 @@ class ProductBundleSingleAdapter(
     }
 
     override fun onBindViewHolder(holder: ShopHomeProductBundleSinglePackageViewHolder, position: Int) {
-        val currentBundle = bundleDetails.getOrNull(position) ?: ShopHomeProductBundleDetailUiModel()
+        val currentBundle = bundleDetails.getOrNull(position) ?: BundleDetailUiModel()
         holder.bind(currentBundle)
         holder.itemView.apply {
             setOnClickListener {
                 // deselect last selected bundle
-                val lastSelectedBundle = bundleDetails.getOrNull(lastSelectedPosition) ?: ShopHomeProductBundleDetailUiModel()
+                val lastSelectedBundle = bundleDetails.getOrNull(lastSelectedPosition) ?: BundleDetailUiModel()
                 lastSelectedBundle.isSelected = false
                 notifyItemChanged(lastSelectedPosition)
 
@@ -39,7 +37,6 @@ class ProductBundleSingleAdapter(
                 currentBundle.isSelected = !currentBundle.isSelected
                 lastSelectedPosition = position
                 notifyItemChanged(position)
-                singleBundleVariantSelectedListener.onSingleVariantSelected(currentBundle)
             }
         }
     }
@@ -48,19 +45,9 @@ class ProductBundleSingleAdapter(
         return bundleDetails.size
     }
 
-    fun updateDataSet(newList: List<ShopHomeProductBundleDetailUiModel>) {
-        bundleDetails = newList
-
-        // set first bundle as default selected
+    private fun setDefaultSelected() {
         if (bundleDetails.isNotEmpty()) {
-
-            val lastSelectedPackagePosition = bundleDetails.withIndex().filter {
-                // filter to check if the package list has previous selected package
-                it.value.isSelected
-            }.map {
-                // get the index of filtered selected package
-                it.index
-            }.firstOrNull().orZero()
+            val lastSelectedPackagePosition = getLastSelectedPackagePosition()
 
             // check if the previous selected package is not the first element or no selected package at all
             if (lastSelectedPackagePosition.isMoreThanZero()) {
@@ -73,8 +60,24 @@ class ProductBundleSingleAdapter(
             bundleDetails.firstOrNull()?.isSelected = true
             lastSelectedPosition = 0
             notifyItemChanged(lastSelectedPosition)
-
         }
+    }
+
+    private fun getLastSelectedPackagePosition(): Int {
+        return bundleDetails.withIndex().filter {
+            // filter to check if the package list has previous selected package
+            it.value.isSelected
+        }.map {
+            // get the index of filtered selected package
+            it.index
+        }.firstOrNull().orZero()
+    }
+
+    fun updateDataSet(newList: List<BundleDetailUiModel>) {
+        bundleDetails = newList
+
+        // set first bundle as default selected
+        setDefaultSelected()
         notifyDataSetChanged()
     }
 

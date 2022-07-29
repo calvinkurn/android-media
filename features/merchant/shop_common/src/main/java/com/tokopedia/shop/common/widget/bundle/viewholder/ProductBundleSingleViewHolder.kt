@@ -1,7 +1,6 @@
 package com.tokopedia.shop.common.widget.bundle.viewholder
 
 import android.graphics.Paint
-import android.util.TypedValue
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -13,11 +12,9 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemProductBundleSingleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleSingleAdapter
-import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
-import com.tokopedia.shop.common.widget.bundle.adapter.SingleBundleVariantSelectedListener
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -26,8 +23,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductBundleSingleViewHolder(
-    itemView: View
-): RecyclerView.ViewHolder(itemView), SingleBundleVariantSelectedListener {
+    itemView: View,
+    private val containerWidgetParams: Int
+): RecyclerView.ViewHolder(itemView) {
 
     companion object {
         @LayoutRes
@@ -46,9 +44,8 @@ class ProductBundleSingleViewHolder(
     private var imageBundleProduct: ImageUnify? = null
     private var rvBundleDetails: RecyclerView? = null
     private var widgetContainer: ConstraintLayout? = null
-    private var selectedSingleBundle: ShopHomeProductBundleDetailUiModel = ShopHomeProductBundleDetailUiModel()
-    private var singleBundleProduct: ShopHomeBundleProductUiModel = ShopHomeBundleProductUiModel()
-    private var parentSingleBundle: ShopHomeProductBundleItemUiModel = ShopHomeProductBundleItemUiModel()
+    private var selectedSingleBundle: BundleDetailUiModel = BundleDetailUiModel()
+    private var parentSingleBundle: BundleUiModel = BundleUiModel()
 
     init {
         viewBinding?.apply {
@@ -67,15 +64,10 @@ class ProductBundleSingleViewHolder(
         initBundleDetailsRecyclerView()
     }
 
-    override fun onSingleVariantSelected(selectedBundle: ShopHomeProductBundleDetailUiModel) {
-        selectedSingleBundle = selectedBundle
-        renderBundlePriceDetails(selectedBundle)
-    }
-
-    fun bind(bundle: ShopHomeProductBundleItemUiModel) {
+    fun bind(bundle: BundleUiModel) {
         parentSingleBundle = bundle
-        singleBundleProduct = parentSingleBundle.bundleProducts.firstOrNull() ?: ShopHomeBundleProductUiModel()
-        selectedSingleBundle = parentSingleBundle.bundleDetails.firstOrNull() ?: ShopHomeProductBundleDetailUiModel()
+        selectedSingleBundle = parentSingleBundle.bundles.firstOrNull() ?: BundleDetailUiModel()
+        val product = selectedSingleBundle.products.firstOrNull() ?: BundleProductUiModel()
 
         // bundle card item details
         renderBundlePriceDetails(selectedSingleBundle)
@@ -90,38 +82,28 @@ class ProductBundleSingleViewHolder(
         }
 
         // single bundle product detail
-        imageBundleProduct?.loadImage(singleBundleProduct.productImageUrl)
-        typographyBundleProductName?.text = singleBundleProduct.productName
+        imageBundleProduct?.loadImage(product.productImageUrl)
+        typographyBundleProductName?.text = product.productName
 
         // bundle variant package list
-        (rvBundleDetails?.adapter as ProductBundleSingleAdapter).updateDataSet(parentSingleBundle.bundleDetails)
+        (rvBundleDetails?.adapter as ProductBundleSingleAdapter).updateDataSet(parentSingleBundle.bundles)
     }
 
     private fun initBundleDetailsRecyclerView() {
         rvBundleDetails?.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = ProductBundleSingleAdapter(
-                    singleBundleVariantSelectedListener = this@ProductBundleSingleViewHolder
-            )
+            adapter = ProductBundleSingleAdapter()
         }
 
         val constraintSet = ConstraintSet()
-        val containerWidgetParams = if (2 == ShopHomeProductBundleWidgetAdapter.SINGLE_SIZE_WIDGET) {
-            ConstraintLayout.LayoutParams.MATCH_PARENT
-        } else {
-            TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    ShopHomeProductBundleWidgetAdapter.BUNDLE_WIDGET_DEFAULT_WIDTH,
-                    itemView.resources.displayMetrics
-            ).toInt()
-        }
+
         widgetContainer?.layoutParams?.width = containerWidgetParams
         constraintSet.clone(widgetContainer)
         constraintSet.applyTo(widgetContainer)
     }
 
-    private fun renderBundlePriceDetails(bundle: ShopHomeProductBundleDetailUiModel) {
+    private fun renderBundlePriceDetails(bundle: BundleDetailUiModel) {
         itemView.context?.let { ctx ->
             labelBundleDiscount?.setLabel("${bundle.discountPercentage}%")
             typographyBundleProductDisplayPrice?.text = bundle.displayPrice

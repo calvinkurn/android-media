@@ -6,17 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <!--ignored UnifyComponentUsage because if we use ImageUnify will resulting blurry vector image-->
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="wrap_content"
-        android:layout_height="32.5dp"
-        android:scaleType="fitXY"
-        tools:ignore="UnifyComponentUsage"
-        app:srcCompat="@drawable/ic_bg_bundle_widget_ribbon_tail"
-        app:layout_constraintBottom_toBottomOf="@+id/guideline_tail_ribbon_horizontal"
-        app:layout_constraintRight_toLeftOf="@id/guideline_tail_ribbon"
-        />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_tail_ribbon"
         android:layout_width="wrap_content"
@@ -124,6 +113,17 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.unifycomponents.CardUnify>
+
+    <!--ignored UnifyComponentUsage because if we use ImageUnify will resulting blurry vector image-->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="32.5dp"
+        android:scaleType="fitXY"
+        tools:ignore="UnifyComponentUsage"
+        app:srcCompat="@drawable/ic_bg_bundle_widget_ribbon_tail"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline_tail_ribbon_horizontal"
+        app:layout_constraintRight_toLeftOf="@id/guideline_tail_ribbon"
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/saving_amount_container"
