@@ -69,6 +69,19 @@
                 tools:text="Banana Indonesia" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_bundle_name_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Home Care Ramadhan"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                android:layout_marginStart="12dp"
+                android:visibility="gone"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_bundle_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,28 +97,24 @@
                 android:id="@+id/tv_bundle_preorder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@id/tv_bundle_name"
-                app:layout_constraintBottom_toBottomOf="@id/tv_bundle_name"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:typographyType="display_3"
-                app:typographyWeight="reguler"
                 android:layout_marginEnd="12dp"
                 android:textColor="@color/Unify_NN600"
-                android:visibility="gone"
-                tools:visibility="visible"
-                tools:text="Terjual 100 paket"
-                />
+                app:layout_constraintBottom_toBottomOf="@id/tv_bundle_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_bundle_name"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="Terjual 100 paket" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_multiple_bundle_products"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="13dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_bundle_name"
-                tools:listitem="@layout/item_shop_home_bundle_product_multiple"
+                app:layout_constraintTop_toBottomOf="@+id/tv_bundle_preorder"
                 tools:itemCount="1"
-                />
+                tools:listitem="@layout/item_shop_home_bundle_product_multiple" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_bundle_display_price"

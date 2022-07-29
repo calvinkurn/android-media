@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
@@ -70,14 +71,6 @@ class ProductBundleSingleViewHolder(
         // bundle card item details
         renderBundlePriceDetails(bundleDetail)
         typographyBundleName?.text = bundle.bundleName
-        typographyBundlePreOrder?.shouldShowWithAction(bundleDetail.isPreOrder) {
-            typographyBundlePreOrder?.text = bundleDetail.preOrderInfo
-        }
-        buttonAtc?.text = if (bundleDetail.isPreOrder) {
-            itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
-        } else {
-            itemView.context.getString(R.string.product_bundle_action_button_text)
-        }
 
         // single bundle product detail
         imageBundleProduct?.loadImage(product.productImageUrl)
@@ -86,14 +79,32 @@ class ProductBundleSingleViewHolder(
         // bundle variant package list
         (rvBundleDetails?.adapter as ProductBundleSingleAdapter).updateDataSet(bundle.bundleDetails)
 
-        initShopInfo(bundleDetail.shopInfo)
+        initPreorderAndSoldItem(bundleDetail)
+        initShopInfo(bundleDetail.shopInfo, bundle.bundleName)
+        initActionButton(bundleDetail.isPreOrder)
     }
 
-    private fun initShopInfo(shopInfo: BundleShopUiModel?) {
-        if (shopInfo != null) {
-            viewBinding?.apply {
-                iconShop.loadImage(shopInfo.shopIconUrl)
-                tvShopName.text = shopInfo.shopName
+    private fun initPreorderAndSoldItem(bundleDetail: BundleDetailUiModel) {
+        if (bundleDetail.isPreOrder) {
+            typographyBundlePreOrder?.text = bundleDetail.preOrderInfo
+        } else {
+            typographyBundlePreOrder?.text =
+                itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
+        }
+    }
+
+    private fun initShopInfo(shopInfo: BundleShopUiModel?, bundleName: String) {
+        val hasShopInfo = shopInfo != null
+        viewBinding?.apply {
+            iconShop.isVisible = hasShopInfo
+            tvShopName.isVisible = hasShopInfo
+            tvBundleName.isVisible = hasShopInfo
+            tvBundleNameLarge.isVisible = !hasShopInfo
+            if (hasShopInfo) {
+                iconShop.loadImage(shopInfo?.shopIconUrl)
+                tvShopName.text = shopInfo?.shopName
+            } else {
+                tvBundleNameLarge.text = bundleName
             }
         }
     }
@@ -109,6 +120,14 @@ class ProductBundleSingleViewHolder(
         widgetContainer?.layoutParams?.width = containerWidgetParams
         constraintSet.clone(widgetContainer)
         constraintSet.applyTo(widgetContainer)
+    }
+
+    private fun initActionButton(isPreOrder: Boolean) {
+        buttonAtc?.text = if (isPreOrder) {
+            itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
+        } else {
+            itemView.context.getString(R.string.product_bundle_action_button_text)
+        }
     }
 
     private fun renderBundlePriceDetails(bundle: BundleDetailUiModel) {
