@@ -109,7 +109,7 @@ class AtcVariantHeaderViewHolder(private val view: View,
 
     private fun loadImage(imgUrl: String) {
 
-        iconEnlarge.setBackgroundResource(R.drawable.bg_circle_grey)
+        iconEnlarge.setBackgroundResource(com.tokopedia.product.detail.common.R.drawable.bg_circle_grey)
 
         productImage?.run {
             setImageUrl(imgUrl)
