@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.databinding.ItemDynamicCustomInfoBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 /**
  * Created by Yehezkiel on 13/08/20
@@ -140,12 +141,15 @@ class ProductCustomInfoViewHolder(
      * render widget and set content with condition
      */
     private fun setWidgetContent(element: ProductCustomInfoDataModel) = with(binding) {
-        customDesc.shouldShowWithAction(element.description.isNotEmpty()) {
-            customDesc.text = HtmlLinkHelper(view.context, element.description).spannedString
+        val isDarkModel = binding.root.context.isDarkMode()
+        val iconUrl = element.getIconUrl(isDarkModel = isDarkModel)
+
+        customImage.shouldShowWithAction(iconUrl.isNotBlank()) {
+            customImage.loadIcon(iconUrl)
         }
 
-        customImage.shouldShowWithAction(element.icon.isNotEmpty()) {
-            customImage.loadIcon(element.icon)
+        customDesc.shouldShowWithAction(element.description.isNotEmpty()) {
+            customDesc.text = HtmlLinkHelper(view.context, element.description).spannedString
         }
 
         customTitle.shouldShowWithAction(element.title.isNotEmpty()) {

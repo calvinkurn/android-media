@@ -362,7 +362,9 @@ object DynamicProductDetailMapper {
                 icon = componentData.icon,
                 separator = componentData.separator,
                 labelColor = label?.color ?: "",
-                labelValue = label?.value ?: ""
+                labelValue = label?.value ?: "",
+                lightIcon = componentData.lightIcon,
+                darkIcon = componentData.darkIcon
         )
     }
 
