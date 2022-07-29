@@ -12,7 +12,11 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.booking.data.model.*
+import com.tokopedia.hotel.booking.data.model.CartDataParam
+import com.tokopedia.hotel.booking.data.model.HotelCart
+import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
+import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
+import com.tokopedia.hotel.booking.data.model.TokopointsSumCoupon
 import com.tokopedia.hotel.common.util.HotelMapper
 import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -34,11 +38,13 @@ import javax.inject.Inject
  * @author by resakemal on 13/05/19
  */
 
-class HotelBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                private val getContactListUseCase: GetContactListUseCase,
-                                                private val upsertContactListUseCase: UpsertContactListUseCase,
-                                                private val travelTickerUseCase: TravelTickerCoroutineUseCase,
-                                                val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
+class HotelBookingViewModel @Inject constructor(
+    private val graphqlRepository: GraphqlRepository,
+    private val getContactListUseCase: GetContactListUseCase,
+    private val upsertContactListUseCase: UpsertContactListUseCase,
+    private val travelTickerUseCase: TravelTickerCoroutineUseCase,
+    val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
     val hotelCartResult = MutableLiveData<Result<HotelCart.Response>>()
