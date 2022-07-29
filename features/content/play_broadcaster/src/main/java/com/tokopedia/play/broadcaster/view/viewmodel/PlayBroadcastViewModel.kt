@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -35,9 +34,6 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinStatus
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.switch
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
@@ -67,6 +63,7 @@ import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.util.extension.combine
 import com.tokopedia.play_common.util.extension.setValue
+import com.tokopedia.play_common.util.extension.switch
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
@@ -1575,7 +1572,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
                 sectionUiModel.products.map { prod ->
                     if(prod.id == product.id)
-                        prod.copy(pinStatus = prod.pinStatus.copy(pinStatus = if(isLoading) prod.pinStatus.pinStatus else prod.pinStatus.pinStatus.switch(), isLoading = isLoading))
+                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isLoading) prod.pinStatus.isPinned else prod.pinStatus.isPinned.switch(), isLoading = isLoading))
                     else
                         prod
                 })

@@ -8,11 +8,13 @@ import com.tokopedia.play.broadcaster.view.adapter.delegate.ProductCarouselAdapt
 /**
  * Created By : Jonathan Darwin on November 24, 2021
  */
-internal class PlayProductTagAdapter(private val listener: ProductCarouselViewHolder.Product.Listener, ): BaseDiffUtilAdapter<Any>() {
+internal class PlayProductTagAdapter(productListener: ProductCarouselViewHolder.Product.Listener,
+                                     pinnedProductListener: ProductCarouselViewHolder.PinnedProduct.Listener): BaseDiffUtilAdapter<Any>() {
 
     init {
         delegatesManager
-            .addDelegate(ProductCarouselAdapterDelegate.Product(listener))
+            .addDelegate(ProductCarouselAdapterDelegate.Product(productListener))
+            .addDelegate(ProductCarouselAdapterDelegate.PinnedProduct(pinnedProductListener))
             .addDelegate(ProductCarouselAdapterDelegate.Loading())
     }
 

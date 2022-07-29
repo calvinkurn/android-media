@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductTagItemDecoration
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.carousel.ProductCarouselViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductTagAdapter
@@ -23,13 +22,19 @@ class ProductTagViewComponent(
 
     private val rvProductTag: RecyclerView = findViewById(R.id.rv_bro_product_tag)
 
-    private val viewHolderListener = object : ProductCarouselViewHolder.Product.Listener{
-        override fun onPinProductClicked(product: ProductUiModel) {
-            listener.onPinProductClicked(product)
+    private val productListener = object : ProductCarouselViewHolder.Product.Listener{
+        override fun onPinClicked(product: ProductUiModel) {
+            listener.onPinClicked(product)
         }
     }
 
-    private val adapter = PlayProductTagAdapter(viewHolderListener)
+    private val pinnedProductListener = object : ProductCarouselViewHolder.PinnedProduct.Listener{
+        override fun onPinClicked(product: ProductUiModel) {
+            listener.onPinClicked(product)
+        }
+    }
+
+    private val adapter = PlayProductTagAdapter(productListener = productListener, pinnedProductListener = pinnedProductListener)
 
     private val layoutManager = object : LinearLayoutManager(rvProductTag.context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
@@ -101,6 +106,6 @@ class ProductTagViewComponent(
     interface Listener {
         fun impressProductTag(view: ProductTagViewComponent)
         fun scrollProductTag(view: ProductTagViewComponent, product: ProductUiModel, position: Int)
-        fun onPinProductClicked(product: ProductUiModel)
+        fun onPinClicked(product: ProductUiModel)
     }
 }

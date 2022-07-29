@@ -83,6 +83,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import java.util.Collections
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -162,7 +163,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
             }
 
-            override fun onPinProductClicked(product: ProductUiModel) {
+            override fun onPinClicked(product: ProductUiModel) {
                 parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
             }
         })
@@ -848,9 +849,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prevState == state) return
 
+        val sortedList = mutableListOf<ProductUiModel>()
+        val newList = state.filterNot { it.campaignStatus.isUpcoming() }
+            .flatMap { tagSectionUiModel ->
+                tagSectionUiModel.products
+            }
+
+        val pinnedProduct = newList.filter { it.pinStatus.isPinned }
+        if(pinnedProduct.isNotEmpty()) sortedList.add(pinnedProduct.first())
+        sortedList.addAll(newList.filterNot { it.pinStatus.isPinned })
+
         productTagView.setProducts(
-            state.filterNot { it.campaignStatus.isUpcoming() }
-                .flatMap { it.products }
+            sortedList
         )
     }
 
