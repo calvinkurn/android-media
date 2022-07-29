@@ -73,15 +73,18 @@ import kotlin.math.min
 class DetailEditorFragment @Inject constructor(
     viewModelFactory: ViewModelProvider.Factory,
 ) : BaseEditorFragment(), BrightnessToolUiComponent.Listener, ContrastToolsUiComponent.Listener,
-    RemoveBackgroundToolUiComponent.Listener, WatermarkToolUiComponent.Listener, RotateToolUiComponent.Listener {
+    RemoveBackgroundToolUiComponent.Listener, WatermarkToolUiComponent.Listener,
+    RotateToolUiComponent.Listener {
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
 
     @Inject
     lateinit var contrastFilterRepositoryImpl: ContrastFilterRepositoryImpl
+
     @Inject
     lateinit var watermarkFilterRepositoryImpl: WatermarkFilterRepositoryImpl
+
     @Inject
     lateinit var rotateFilterRepositoryImpl: RotateFilterRepositoryImpl
 
@@ -159,18 +162,20 @@ class DetailEditorFragment @Inject constructor(
         data.watermarkMode = value
     }
 
-    override fun onRotateValueChanged(value: Float, scaleX: Float, scaleY: Float) {
-        rotateFilterRepositoryImpl.rotate(rotateComponent.cropImageView, value)
+    override fun onRotateValueChanged(value: Float) {
+        rotateFilterRepositoryImpl.rotate(viewBinding?.imgUcropPreview, value, false)
+    }
 
-//        if (data.rotateData == null)
-//            data.rotateData = EditorRotateModel(value, scaleX, scaleY)
-//        else {
-//            data.rotateData!!.rotateDegree = value
-//            data.rotateData!!.scaleX = scaleX
-//            data.rotateData!!.scaleY = scaleY
-//        }
+    override fun onImageMirror() {
+        rotateFilterRepositoryImpl.mirror(viewBinding?.imgUcropPreview)
+    }
 
-        Log.d("kodok","$value - $scaleX - $scaleY Y")
+    override fun onImageRotate(rotateDegree: Float) {
+        rotateFilterRepositoryImpl.rotate(
+            viewBinding?.imgUcropPreview,
+            RotateToolUiComponent.ROTATE_BTN_DEGREE,
+            true
+        )
     }
 
     override fun initObserver() {
@@ -258,8 +263,15 @@ class DetailEditorFragment @Inject constructor(
             )
             EditorToolType.WATERMARK -> watermarkComponent.setupView()
             EditorToolType.ROTATE -> {
+                val uri = Uri.fromFile(File(data.resultUrl ?: data.originalUrl))
+                viewBinding?.imgUcropPreview?.apply {
+                    initialize(null, uri)
+                    disabledTouchEvent()
+                }
                 rotateComponent.setupView(data)
-                viewBinding?.imgPreview?.visibility = View.GONE
+
+                viewBinding?.imgPreview?.hide()
+                viewBinding?.imgUcropPreview?.show()
             }
             EditorToolType.CROP -> {
                 val uri = Uri.fromFile(File(data.originalUrl))
@@ -283,25 +295,47 @@ class DetailEditorFragment @Inject constructor(
                         imageView.setImageBitmap(resource)
                         imageView.post {
                             if (data.brightnessValue != null
-                                && data.editorToolType != EditorToolType.BRIGHTNESS) viewModel.setBrightness(data.brightnessValue!!)
+                                && data.editorToolType != EditorToolType.BRIGHTNESS
+                            ) viewModel.setBrightness(data.brightnessValue!!)
                             if (data.contrastValue != null
-                                && data.editorToolType != EditorToolType.CONTRAST) viewModel.setContrast(data.contrastValue!!)
+                                && data.editorToolType != EditorToolType.CONTRAST
+                            ) viewModel.setContrast(data.contrastValue!!)
                             if (data.watermarkMode != null
-                                && data.editorToolType != EditorToolType.WATERMARK) viewModel.setWatermark(data.watermarkMode!!)
+                                && data.editorToolType != EditorToolType.WATERMARK
+                            ) viewModel.setWatermark(data.watermarkMode!!)
                             if (data.rotateData != null
-                                && data.editorToolType != EditorToolType.ROTATE) rotateFilterRepositoryImpl.rotate(rotateComponent.cropImageView, data.rotateData?.rotateDegree ?: 0f)
+                                && data.editorToolType != EditorToolType.ROTATE
+                            ) {
+                                val imgUcropPreview = viewBinding?.imgUcropPreview
+                                imgUcropPreview?.let {
+                                    rotateFilterRepositoryImpl.rotate(
+                                        imgUcropPreview,
+                                        data.rotateData?.rotateDegree ?: 0f,
+                                        false
+                                    )
+                                }
+                            }
 
                             originalBitmap = it.drawToBitmap()
 
-                            when(data.editorToolType){
+                            when (data.editorToolType) {
                                 EditorToolType.WATERMARK -> viewModel.setWatermark(data.watermarkMode)
                                 EditorToolType.BRIGHTNESS -> viewModel.setBrightness(data.brightnessValue)
                                 EditorToolType.CONTRAST -> viewModel.setContrast(data.contrastValue)
-                                EditorToolType.ROTATE -> rotateFilterRepositoryImpl.rotate(rotateComponent.cropImageView, data.rotateData?.rotateDegree ?: 0f)
+                                EditorToolType.ROTATE -> {
+                                    val imgUcropPreview = viewBinding?.imgUcropPreview
+                                    imgUcropPreview?.let {
+                                        rotateFilterRepositoryImpl.rotate(
+                                            imgUcropPreview,
+                                            data.rotateData?.rotateDegree ?: 0f,
+                                            false
+                                        )
+                                    }
+                                }
                             }
 
                             // render result for watermark drawer item
-                            if(data.editorToolType == EditorToolType.WATERMARK) setWatermarkDrawerItem()
+                            if (data.editorToolType == EditorToolType.WATERMARK) setWatermarkDrawerItem()
                         }
                     }
                 )
@@ -309,7 +343,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun setWatermarkDrawerItem(){
+    private fun setWatermarkDrawerItem() {
         originalBitmap?.let { bitmap ->
             val text = "Toko Maju Jaya Perkasa Abadi Bangunan"
             val resultBitmap1 = watermarkFilterRepositoryImpl.watermark(
@@ -329,7 +363,8 @@ class DetailEditorFragment @Inject constructor(
             )
 
             watermarkComponent.getButtonRef().apply {
-                val roundedCorner = context?.resources?.getDimension(R.dimen.editor_watermark_rounded) ?: 0f
+                val roundedCorner =
+                    context?.resources?.getDimension(R.dimen.editor_watermark_rounded) ?: 0f
                 this.first.loadImageRounded(resultBitmap1, roundedCorner)
                 this.second.loadImageRounded(resultBitmap2, roundedCorner)
             }
@@ -349,65 +384,68 @@ class DetailEditorFragment @Inject constructor(
     private fun editingSave() {
         val intent = Intent()
 
-        if(data.editorToolType == EditorToolType.REMOVE_BACKGROUND) data.clearValue()
+        if (data.editorToolType == EditorToolType.REMOVE_BACKGROUND) data.clearValue()
 
         intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
         activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)
         activity?.finish()
     }
 
-    private fun crop(): Bitmap?{
-        val rotateCropImageView = rotateComponent.cropImageView
+    private fun crop(): Bitmap? {
+        val rotateCropImageView = viewBinding?.imgUcropPreview
 
-        if(rotateCropImageView.currentAngle % 90f == 0f){
-            val bitmap = rotateCropImageView.drawable.toBitmap()
+        rotateCropImageView?.let {
+            val cropImageView = it.cropImageView
+            if (cropImageView.currentAngle % 90f == 0f) {
+                val bitmap = cropImageView.drawable.toBitmap()
 
-            val scale = rotateComponent.getScale()
-            val scaleX = scale.first
-            val scaleY = scale.second
+                val scale = it.getScale()
+                val scaleX = scale.first
+                val scaleY = scale.second
 
-            val matrix = Matrix()
-            matrix.preScale(
-                scaleX,
-                scaleY
-            )
+                val matrix = Matrix()
+                matrix.preScale(
+                    scaleX,
+                    scaleY
+                )
 
-            matrix.postRotate(abs(rotateComponent.getFinalRotationDegree()))
+                matrix.postRotate(abs(it.getFinalRotationDegree()))
 
-            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-        }
-        rotateCropImageView.cropAndSaveImage(
-            Bitmap.CompressFormat.PNG,
-            100,
-            object : BitmapCropCallback {
-                override fun onBitmapCropped(
-                    resultUri: Uri,
-                    offsetX: Int,
-                    offsetY: Int,
-                    imageWidth: Int,
-                    imageHeight: Int
-                ) {
-                    loadImageWithEmptyTarget(requireContext(),
-                        data.originalUrl,
-                        {},
-                        MediaBitmapEmptyTarget(
-                            onReady = { loadedOriginalBitmap ->
-                                getProcessedBitmap(
-                                    loadedOriginalBitmap,
-                                    offsetX, offsetY, imageWidth, imageHeight
-                                ).let {
-                                    saveImage(it)
-                                }
-                            }
-                        )
-                    )
-                }
-
-                override fun onCropFailure(t: Throwable) {
-                    Toast.makeText(context, "Crop Error", Toast.LENGTH_LONG).show()
-                }
+                return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
             }
-        )
+            cropImageView.cropAndSaveImage(
+                Bitmap.CompressFormat.PNG,
+                100,
+                object : BitmapCropCallback {
+                    override fun onBitmapCropped(
+                        resultUri: Uri,
+                        offsetX: Int,
+                        offsetY: Int,
+                        imageWidth: Int,
+                        imageHeight: Int
+                    ) {
+                        loadImageWithEmptyTarget(requireContext(),
+                            data.originalUrl,
+                            {},
+                            MediaBitmapEmptyTarget(
+                                onReady = { loadedOriginalBitmap ->
+                                    getProcessedBitmap(
+                                        loadedOriginalBitmap,
+                                        offsetX, offsetY, imageWidth, imageHeight
+                                    ).let {
+                                        saveImage(it)
+                                    }
+                                }
+                            )
+                        )
+                    }
+
+                    override fun onCropFailure(t: Throwable) {
+                        Toast.makeText(context, "Crop Error", Toast.LENGTH_LONG).show()
+                    }
+                }
+            )
+        }
         return null
     }
 
@@ -421,18 +459,23 @@ class DetailEditorFragment @Inject constructor(
         val originalWidth = originalBitmap.width
         val originalHeight = originalBitmap.height
 
-        val scale = rotateComponent.getScale()
-        val scaleX = scale.first
-        val scaleY = scale.second
+        viewBinding?.imgUcropPreview?.let {
+            val scale = it.getScale()
+            val scaleX = scale.first
+            val scaleY = scale.second
 
-        // matrix scale didn't affect rotation value, positive will always clockwise on matrix
-        val rotateDegree = abs(rotateComponent.getFinalRotationDegree())
+            // matrix scale didn't affect rotation value, positive will always clockwise on matrix
+            val rotateDegree = abs(it.getFinalRotationDegree())
 
-        val matrix = Matrix()
+            val matrix = Matrix()
 
-        matrix.preScale(scaleX, scaleY)
-        matrix.postRotate(rotateDegree, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
-        // if flipping vertically, do rotate 1st
+            matrix.preScale(scaleX, scaleY)
+            matrix.postRotate(
+                rotateDegree,
+                (originalWidth / 2).toFloat(),
+                (originalHeight / 2).toFloat()
+            )
+            // if flipping vertically, do rotate 1st
 //        if(scaleY < 0){
 //            matrix.postScale(scaleX, scaleY)
 //            matrix.preRotate(rotateDegree, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
@@ -441,20 +484,30 @@ class DetailEditorFragment @Inject constructor(
 //            matrix.postRotate(rotateDegree, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
 //        }
 
-        val rotatedBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalWidth, originalHeight, matrix, true)
+            val rotatedBitmap = Bitmap.createBitmap(
+                originalBitmap,
+                0,
+                0,
+                originalWidth,
+                originalHeight,
+                matrix,
+                true
+            )
 
-        // set crop area on data that will be pass to landing pass for state
-        data.rotateData = EditorRotateModel(
-            rotateDegree,
-            scaleX,
-            scaleY,
-            offsetX,
-            offsetY,
-            imageWidth,
-            imageHeight
-        )
+            // set crop area on data that will be pass to landing pass for state
+            data.rotateData = EditorRotateModel(
+                rotateDegree,
+                scaleX,
+                scaleY,
+                offsetX,
+                offsetY,
+                imageWidth,
+                imageHeight
+            )
 
-        return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
+            return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
+        }
+        return null
     }
 
     private fun saveImage(bitmapParam: Bitmap? = null, filename: String? = null) {

@@ -40,9 +40,9 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
     private val rotateSlider = findViewById<MediaEditorSlider>(R.id.slider_rotate)
     private val flipBtn = findViewById<IconUnify>(R.id.flip_btn)
     private val rotateBtn = findViewById<IconUnify>(R.id.rotate_btn)
-    private val uCropView = findViewById<UCropView>(R.id.ucrop_rotate)
-    val cropImageView = uCropView.cropImageView
-    val cropOverlay = uCropView.overlayView
+//    private val uCropView = findViewById<UCropView>(R.id.ucrop_rotate)
+//    val cropImageView = uCropView.cropImageView
+//    val cropOverlay = uCropView.overlayView
 
     private var scaleX = 1f
     private var scaleY = 1f
@@ -69,93 +69,94 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
 
         rotateSlider.listener = this
 
-        val sourceUri = Uri.fromFile(File(paramData.originalUrl))
-        val destinationUri = getDestinationUri(context)
-        cropImageView.setImageUri(sourceUri, destinationUri)
+//        val sourceUri = Uri.fromFile(File(paramData.originalUrl))
+//        val destinationUri = getDestinationUri(context)
+//        cropImageView.setImageUri(sourceUri, destinationUri)
+//
+//        cropImageView.setTransformImageListener(object: TransformImageView.TransformImageListener{
+//            override fun onLoadComplete() {
+//                initializePreviousValue(paramData.rotateData)
+//                val drawable = cropImageView.drawable
+//                originalWidth = drawable.intrinsicWidth
+//                originalHeight = drawable.intrinsicHeight
+//                Log.d("asdasd","${drawable.intrinsicWidth} | ${drawable.intrinsicHeight}")
+//            }
+//
+//            override fun onLoadFailure(e: Exception) {}
+//
+//            override fun onRotate(currentAngle: Float) {
+//                val drawable = cropImageView.drawable
+//                Log.d("asdasd","${drawable.intrinsicWidth} | ${drawable.intrinsicHeight}")
+//            }
+//
+//            override fun onScale(currentScale: Float) {
+//                Log.d("asdasd","scale = $currentScale")
+//            }
+//        })
+//
+//        cropImageView.setOnTouchListener { _, _ -> true }
 
-        cropImageView.setTransformImageListener(object: TransformImageView.TransformImageListener{
-            override fun onLoadComplete() {
-                initializePreviousValue(paramData.rotateData)
-                val drawable = cropImageView.drawable
-                originalWidth = drawable.intrinsicWidth
-                originalHeight = drawable.intrinsicHeight
-                Log.d("asdasd","${drawable.intrinsicWidth} | ${drawable.intrinsicHeight}")
-            }
-
-            override fun onLoadFailure(e: Exception) {}
-
-            override fun onRotate(currentAngle: Float) {
-                val drawable = cropImageView.drawable
-                Log.d("asdasd","${drawable.intrinsicWidth} | ${drawable.intrinsicHeight}")
-            }
-
-            override fun onScale(currentScale: Float) {
-                Log.d("asdasd","scale = $currentScale")
-            }
-        })
-
-        cropImageView.setOnTouchListener { _, _ -> true }
-
-        cropOverlay.setShowCropGrid(false)
-        cropOverlay.setDimmedColor(Color.WHITE)
+//        cropOverlay.setShowCropGrid(false)
+//        cropOverlay.setDimmedColor(Color.WHITE)
 
         flipBtn.setOnClickListener {
-            if (!isRatioRotated) {
-                scaleX = -scaleX
-            } else {
-                scaleY = -scaleY
-            }
+//            if (!isRatioRotated) {
+//                scaleX = -scaleX
+//            } else {
+//                scaleY = -scaleY
+//            }
+//
+//            cropImageView.scaleX = -cropImageView.scaleX
+//
+//            updateRotation()
 
-            cropImageView.scaleX = -cropImageView.scaleX
-
-            updateRotation()
+            listener.onImageMirror()
         }
 
         rotateBtn.setOnClickListener {
-            cropImageView.postRotate(90f * scaleNormalizeValue)
+//            cropImageView.postRotate(90f * scaleNormalizeValue)
+//
+//            if (isRatioRotated) {
+//                cropOverlay.setTargetAspectRatio(originalWidth/originalHeight.toFloat())
+//            } else {
+//                cropOverlay.setTargetAspectRatio(originalHeight/originalWidth.toFloat())
+//            }
+//
+//            cropImageView.zoomOutImage(0.01f)
+//
+//            isRatioRotated = !isRatioRotated
+//            rotateNumber++
+//
+//            updateRotation()
 
-            if (isRatioRotated) {
-                cropOverlay.setTargetAspectRatio(originalWidth/originalHeight.toFloat())
-            } else {
-                cropOverlay.setTargetAspectRatio(originalHeight/originalWidth.toFloat())
-            }
-
-            cropImageView.zoomOutImage(0.01f)
-
-            isRatioRotated = !isRatioRotated
-            rotateNumber++
-
-            updateRotation()
+            listener.onImageRotate(ROTATE_BTN_DEGREE)
         }
     }
 
-    fun getFinalRotationDegree(): Float{
-        return ((rotateNumber * ROTATE_BTN_DEGREE) + sliderValue)
-    }
+//    fun getFinalRotationDegree(): Float{
+//        return ((rotateNumber * ROTATE_BTN_DEGREE) + sliderValue)
+//    }
 
-    fun getScale(): Pair<Float, Float>{
-        return Pair(scaleX, scaleY)
-    }
+//    fun getScale(): Pair<Float, Float>{
+//        return Pair(scaleX, scaleY)
+//    }
 
     private fun updateRotation() {
         listener.onRotateValueChanged(
-            sliderValue * scaleNormalizeValue,
-            scaleX,
-            scaleY
+            sliderValue * scaleNormalizeValue
         )
     }
 
-    private fun initializePreviousValue(rotateData: EditorRotateModel?){
-        if (rotateData == null) return
-
-        val cropView = uCropView.cropImageView
-        cropView.post {
-            cropView.scaleX = rotateData.scaleX
-//            cropView.targetAspectRatio = rotateData.imageRatio
-            cropView.postRotate(rotateData.rotateDegree)
-            cropView.setImageToWrapCropBounds(false)
-        }
-    }
+//    private fun initializePreviousValue(rotateData: EditorRotateModel?){
+//        if (rotateData == null) return
+//
+//        val cropView = uCropView.cropImageView
+//        cropView.post {
+//            cropView.scaleX = rotateData.scaleX
+//            cropView.postRotate(rotateData.rotateDegree)
+//            cropView.setImageToWrapCropBounds(false)
+//        }
+//    }
 
     override fun valueUpdated(step: Int, value: Float) {
         sliderValue = value
@@ -163,10 +164,12 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
     }
 
     interface Listener {
-        fun onRotateValueChanged(rotateValue: Float, scaleX: Float, scaleY: Float)
+        fun onRotateValueChanged(rotateValue: Float)
+        fun onImageMirror()
+        fun onImageRotate(rotateDegree: Float)
     }
 
     companion object {
-        private const val ROTATE_BTN_DEGREE = 90
+        const val ROTATE_BTN_DEGREE = 90f
     }
 }

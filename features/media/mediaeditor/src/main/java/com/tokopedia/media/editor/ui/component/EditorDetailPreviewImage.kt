@@ -15,6 +15,13 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
 
     private var listener: Listener? = null
 
+    private var tempScaleX = 1f
+    private var tempScaleY = 1f
+
+    private val scaleNormalizeValue get() = scaleX * scaleY
+    private var rotateNumber = 0
+    var sliderValue = 0f
+
     fun initialize(listener: Listener?, uri: Uri) {
         cropImageView.setImageUri(uri, Uri.parse(TEMP_OUTPUT_FILE))
     }
@@ -28,6 +35,24 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         cropImageView.setOnTouchListener { _, _ ->
             true
         }
+    }
+
+    fun mirrorImage(isMirrorXAxis: Boolean, isMirrorYAxis: Boolean){
+        if(isMirrorXAxis){
+            scaleX = -scaleX
+        }
+
+        if(isMirrorYAxis){
+            scaleY = -scaleY
+        }
+    }
+
+    fun getFinalRotationDegree(): Float{
+        return ((rotateNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + sliderValue)
+    }
+
+    fun getScale(): Pair<Float, Float>{
+        return Pair(scaleX, scaleY)
     }
 
     fun hideOverlay(){
