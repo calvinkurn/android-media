@@ -29,7 +29,7 @@ class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraph
         roomListParam.guest.adult = hotelRoomListPageModel.adult
         val childAge = IntArray(hotelRoomListPageModel.child)
         for (i in 0 until hotelRoomListPageModel.child) {
-            childAge[i] = 4
+            childAge[i] = CHILD_AGE
         }
         roomListParam.guest.childAge = childAge.toList()
         roomListParam.room = hotelRoomListPageModel.room
@@ -70,6 +70,8 @@ class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraph
 
     companion object {
         const val PARAM_ROOM_LIST_PROPERTY = "data"
+
+        private const val CHILD_AGE = 4
     }
 
 }

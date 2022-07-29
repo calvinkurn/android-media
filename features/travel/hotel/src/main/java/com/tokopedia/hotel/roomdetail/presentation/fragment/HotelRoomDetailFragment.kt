@@ -214,7 +214,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             val roomImageUrls300 = hotelRoom.roomInfo.roomImages.map { it.url300 }
             val roomImageUrls = hotelRoom.roomInfo.roomImages.map { it.urlOriginal }
 
-            if (roomImageUrls300.size >= 5) binding?.roomDetailImages?.setImages(roomImageUrls300.subList(0, 5))
+            if (roomImageUrls300.size >= ROOM_IMAGE_URL_MIN_SIZE) binding?.roomDetailImages?.setImages(roomImageUrls300.subList(0, ROOM_IMAGE_URL_MIN_SIZE))
             else binding?.roomDetailImages?.setImages(roomImageUrls300)
 
             binding?.roomDetailImages?.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
@@ -270,7 +270,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     + "\n" + hotelRoom.creditCardInfo.creditCardInfo)
             spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.header.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableString.setSpan(LeadingMarginSpan.Standard(50, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(LeadingMarginSpan.Standard(FIRST_LEADING_MARGIN_SPAN, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             binding?.payAtHotelTitle?.text = hotelRoom.isDirectPaymentString
             binding?.payAtHotelDesc?.text = spannableString
         }
@@ -452,6 +452,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         const val MINIMUM_ROOM_COUNT = 3
         const val ROOM_FACILITY_DEFAULT_COUNT = 6
         const val REQ_CODE_LOGIN = 1345
+
+        private const val ROOM_IMAGE_URL_MIN_SIZE = 5
+        private const val FIRST_LEADING_MARGIN_SPAN = 50
 
         fun getInstance(savedInstanceId: String, roomIndex: Int): HotelRoomDetailFragment =
                 HotelRoomDetailFragment().also {

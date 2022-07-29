@@ -406,7 +406,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 context?.run {
                     val policyView = InfoTextView(this)
                     policyView.setTitleAndDescription(policy.longTitle, policy.longDesc)
-                    policyView.rootView.info_title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                    policyView.rootView.info_title.setTextSize(TypedValue.COMPLEX_UNIT_SP, POLICY_VIEW_TEXT_SIZE)
                     policyView.rootView.info_container.setMargin(0, 0, 0, policyView.rootView.info_container.getDimens(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
                     hotelCancellationPolicyBottomSheets.addContentView(policyView)
                 }

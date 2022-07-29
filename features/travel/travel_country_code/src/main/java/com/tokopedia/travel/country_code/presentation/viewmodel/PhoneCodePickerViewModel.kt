@@ -20,6 +20,11 @@ class PhoneCodePickerViewModel @Inject constructor(
         private val useCase: TravelCountryCodeUseCase,
         dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
+    private companion object{
+        const val MIN_LENGTH_KEYWORD = 2
+        const val DELAY_TIME = 250L
+    }
+
     private val _countryList = MutableLiveData<Result<List<TravelCountryPhoneCode>>>()
     val countryList: LiveData<Result<List<TravelCountryPhoneCode>>>
         get() = _countryList
@@ -36,9 +41,9 @@ class PhoneCodePickerViewModel @Inject constructor(
     }
 
     fun filterCountryList(keyword: String) {
-        if (keyword.length >= 2 && _countryList.value is Success) {
+        if (keyword.length >= MIN_LENGTH_KEYWORD && _countryList.value is Success) {
             launch {
-                delay(250)
+                delay(DELAY_TIME)
                 val filteredData = (_countryList.value as Success<List<TravelCountryPhoneCode>>).data.filter {
                     it.countryName.toLowerCase().contains(keyword.toLowerCase()) || it.countryId.toLowerCase().contains(keyword.toLowerCase()) || it.countryPhoneCode == convertKeywordToInt(keyword)
                 }

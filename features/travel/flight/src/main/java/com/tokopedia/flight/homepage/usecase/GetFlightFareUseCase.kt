@@ -24,6 +24,10 @@ import javax.inject.Inject
 class GetFlightFareUseCase @Inject constructor(private val gqlRepository: GraphqlRepository)
     : UseCase<ArrayList<FlightFareAttributes>>(){
 
+    private companion object{
+        const val EXPIRED_CACHE_TIME = 10
+    }
+
     var params: HashMap<String, Any> = hashMapOf()
     var minDate: Date = Date()
     var maxDate: Date = Date()
@@ -44,7 +48,7 @@ class GetFlightFareUseCase @Inject constructor(private val gqlRepository: Graphq
             val graphqlRequest = GraphqlRequest(QueryFlightFareCalendar(), FlightFareData::class.java, params)
             val gqlResponse = gqlRepository.response(listOf(graphqlRequest),
                     GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXPIRED_CACHE_TIME).build())
 
             val errors = gqlResponse.getError(FlightFareData::class.java)
             if (!errors.isNullOrEmpty()) {
