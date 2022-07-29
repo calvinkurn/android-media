@@ -64,7 +64,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         fun create(
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
-            isDuringLiveStream: Boolean,
+            isEligibleForPin: Boolean,
         ): PlayBroProductSetupViewModel
     }
 
@@ -81,7 +81,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     val maxProduct: Int
         get() = configStore.getMaxProduct()
 
-    val isLiveStream: Boolean
+    val isEligibleForPin: Boolean
         get() = savedStateHandle.isEligibleForPin()
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)

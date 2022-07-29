@@ -132,7 +132,7 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.ivPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
             binding.tvPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
 
-            binding.viewPinProduct.showWithCondition(item.product.pinStatus.canPin && item.isDuringLiveStream)
+            binding.viewPinProduct.showWithCondition(item.product.pinStatus.canPin && item.isEligibleForPin)
             binding.viewPinProduct.setupPinned(item.product.pinStatus.isPinned, item.product.pinStatus.isLoading)
             binding.viewPinProduct.setOnClickListener {
                 listener.onPinClicked(item.product)
