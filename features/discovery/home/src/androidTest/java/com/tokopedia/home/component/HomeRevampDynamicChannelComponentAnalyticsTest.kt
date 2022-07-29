@@ -98,7 +98,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testBalanceWidgetLogin() {
         onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
-            initTest()
             login()
             doActivityTestByModelClass(dataModelClass = HomeHeaderDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
                 actionOnBalanceWidget(viewHolder)
