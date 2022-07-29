@@ -4,6 +4,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 data class TokoFoodUiState(
     var uiState: Int = -1,
+    var isLoggedIn: Boolean = false,
     var visitableId: String? = null,
     val localCacheModel: LocalCacheModel = LocalCacheModel(),
     val throwable: Throwable? = null,

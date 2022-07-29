@@ -397,30 +397,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         return TokoFoodHomeCategoryWidgetV2ComponentCallback(this, userSession, analytics)
     }
 
-    private fun showLayout() {
-        getHomeLayout()
-    }
-
-    private fun getHomeLayout() {
-        localCacheModel?.let {
-            viewModel.setHomeLayout(it)
-        }
-    }
-
     private fun getLayoutComponentData() {
         viewModel.setLayoutComponentData(localCacheModel)
     }
 
     private fun loadLayout() {
-        viewModel.setLoadingState()
-    }
-
-    private fun showNoPinPoin() {
-        viewModel.setNoPinPointState()
-    }
-
-    private fun showNoAddress() {
-        viewModel.setNoAddressState()
+        viewModel.setHomeLayout(localCacheModel, userSession.isLoggedIn)
     }
 
     private fun getChooseAddress() {
@@ -713,24 +695,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun checkAddressDataAndServiceArea(){
         checkIfChooseAddressWidgetDataUpdated()
-        when {
-            hasNoAddress() -> {
-                if (isAddressManuallyUpdate()){
-                    showNoAddress()
-                } else {
-                    getChooseAddress()
-                }
-
-            }
-            hasNoPinPoin() -> {
-                if (isAddressManuallyUpdate()){
-                    showNoPinPoin()
-                } else {
-                    getChooseAddress()
-                }
-            }
-            else -> showLayout()
-        }
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -755,19 +719,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         context?.let {
             localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
         }
-    }
-
-    private fun isAddressManuallyUpdate(): Boolean = viewModel.isAddressManuallyUpdated
-
-    private fun hasNoAddress(): Boolean {
-        return userSession.isLoggedIn && (localCacheModel?.address_id.isNullOrEmpty() || localCacheModel?.address_id == "0")
-    }
-
-    private fun hasNoPinPoin(): Boolean {
-        return userSession.isLoggedIn &&
-                (!localCacheModel?.address_id.isNullOrEmpty() || localCacheModel?.address_id != "0")
-                && (localCacheModel?.lat.isNullOrEmpty() || localCacheModel?.long.isNullOrEmpty() ||
-                localCacheModel?.lat.equals(EMPTY_LOCATION) || localCacheModel?.long.equals(EMPTY_LOCATION))
     }
 
     private fun navigateToSetPinpoint() {

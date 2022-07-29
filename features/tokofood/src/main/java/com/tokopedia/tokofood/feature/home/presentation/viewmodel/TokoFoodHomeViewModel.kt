@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.feature.home.presentation.viewmodel
 
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -69,6 +70,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 
@@ -87,6 +89,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     private val _inputState = MutableSharedFlow<TokoFoodUiState>(Int.ONE)
+    private val _inputActionAddress = MutableSharedFlow<Boolean>(Int.ONE)
     private val _flowUpdatePinPointState = MutableSharedFlow<Boolean>(Int.ONE)
     private val _flowErrorMessage = MutableSharedFlow<String?>(Int.ONE)
     private val _flowChooseAddress = MutableSharedFlow<Result<GetStateChosenAddressResponse>>(Int.ONE)
@@ -100,8 +103,27 @@ class TokoFoodHomeViewModel @Inject constructor(
         _inputState.flatMapConcat { inputState ->
             flow {
                 when (inputState.uiState) {
-                    STATE_LOADING -> emit(getLoadingState())
-                    STATE_FETCH_DYNAMIC_CHANNEL_DATA -> emit(getHomeLayout(inputState.localCacheModel))
+                    STATE_FETCH_DYNAMIC_CHANNEL_DATA -> {
+                        emit(getLoadingState())
+                        when {
+                            hasNoAddress(inputState.isLoggedIn, inputState.localCacheModel) -> {
+                                if (isAddressManuallyUpdate()){
+                                    emit(getNoAddressState())
+                                } else {
+                                    getChooseAddress(SOURCE)
+                                }
+
+                            }
+                            hasNoPinPoin(inputState.isLoggedIn, inputState.localCacheModel) -> {
+                                if (isAddressManuallyUpdate()){
+                                    emit(getNoPinPointState())
+                                } else {
+                                    getChooseAddress(SOURCE)
+                                }
+                            }
+                            else -> emit(getHomeLayout(inputState.localCacheModel))
+                        }
+                    }
                     STATE_FETCH_COMPONENT_DATA -> {
                         homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }
                             .forEach {
@@ -139,10 +161,29 @@ class TokoFoodHomeViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
             replay = Int.ONE
         )
+
+    val flowEligibleForAnaRevamp: SharedFlow<Result<EligibleForAddressFeature>> = _inputActionAddress.flatMapConcat {
+        flow {
+            eligibleForAddressUseCase.eligibleForAddressFeature(
+                {
+                    emit(Success(it.eligibleForRevampAna))
+                },
+                {
+                    emit(Fail(it))
+                },
+                AddressConstant.ANA_REVAMP_FEATURE_ID
+            )
+        }.flowOn(dispatchers.io)
+    }.shareIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
+        replay = Int.ONE
+    )
+
     val flowUpdatePinPointState: SharedFlow<Boolean> = _flowUpdatePinPointState
     val flowErrorMessage: SharedFlow<String?> = _flowErrorMessage
     val flowChooseAddress: SharedFlow<Result<GetStateChosenAddressResponse>> = _flowChooseAddress
-    val flowEligibleForAnaRevamp: SharedFlow<Result<EligibleForAddressFeature>> = _flowEligibleForAnaRevamp
+
 
     private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
@@ -151,7 +192,9 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     companion object {
         private const val INITIAL_PAGE_KEY_MERCHANT = "0"
+        private const val EMPTY_LOCATION = "0.0"
         private const val SHARED_FLOW_STOP_TIMEOUT_MILLIS = 5000L
+        private const val SOURCE = "tokofood"
     }
 
     fun updatePinPoin(addressId: String, latitude: String, longitude: String) {
@@ -186,18 +229,6 @@ class TokoFoodHomeViewModel @Inject constructor(
         }, source)
     }
 
-    fun setLoadingState() {
-        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_LOADING))
-    }
-
-    fun setNoPinPointState() {
-        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_NO_PIN_POINT))
-    }
-
-    fun setNoAddressState() {
-        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_NO_ADDRESS))
-    }
-
     fun setErrorState(throwable: Throwable) {
         _inputState.tryEmit(TokoFoodUiState(uiState = STATE_ERROR, throwable = throwable))
     }
@@ -228,13 +259,16 @@ class TokoFoodHomeViewModel @Inject constructor(
         }
     }
 
-    fun setHomeLayout(localCacheModel: LocalCacheModel) {
-        _inputState.tryEmit(
-            TokoFoodUiState(
-                uiState = STATE_FETCH_DYNAMIC_CHANNEL_DATA,
-                localCacheModel = localCacheModel
+    fun setHomeLayout(localCacheModel: LocalCacheModel?, isLoggedIn: Boolean) {
+        localCacheModel?.let {
+            _inputState.tryEmit(
+                TokoFoodUiState(
+                    uiState = STATE_FETCH_DYNAMIC_CHANNEL_DATA,
+                    isLoggedIn = isLoggedIn,
+                    localCacheModel = localCacheModel
+                )
             )
-        )
+        }
     }
 
     fun getLoadingState(): Result<TokoFoodListUiModel> {
@@ -497,4 +531,17 @@ class TokoFoodHomeViewModel @Inject constructor(
             _flowEligibleForAnaRevamp.emit(Fail(throwable))
         }
     }
+
+    private fun hasNoAddress(isLoggedIn: Boolean, localCacheModel: LocalCacheModel?): Boolean {
+        return isLoggedIn && (localCacheModel?.address_id.isNullOrEmpty() || localCacheModel?.address_id == "0")
+    }
+
+    private fun hasNoPinPoin(isLoggedIn: Boolean, localCacheModel: LocalCacheModel?): Boolean {
+        return isLoggedIn &&
+                (!localCacheModel?.address_id.isNullOrEmpty() || localCacheModel?.address_id != "0")
+                && (localCacheModel?.lat.isNullOrEmpty() || localCacheModel?.long.isNullOrEmpty() ||
+                localCacheModel?.lat.equals(EMPTY_LOCATION) || localCacheModel?.long.equals(EMPTY_LOCATION))
+    }
+
+    private fun isAddressManuallyUpdate(): Boolean = isAddressManuallyUpdated
 }
