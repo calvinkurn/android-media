@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.Menu
@@ -254,6 +256,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onStart() {
         super.onStart()
+        initializeMiniCartWidget()
         cartDataUpdateJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             collectCartDataFlow()
         }
@@ -264,7 +267,6 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onResume() {
         super.onResume()
-        initializeMiniCartWidget()
         merchantPageAnalytics.openMerchantPage(
             merchantId,
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
@@ -298,8 +300,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                 // setup merchant info bottom sheet
                 val name = merchantProfile.name
                 val address = merchantProfile.address
-                val merchantOpsHours =
-                    viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
+                val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+                val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(today, merchantProfile.opsHourDetail)
                 setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
             }
             renderProductList(viewModel.productListItems)
@@ -411,6 +413,24 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private fun setCategoryPlaceholder(filterNameSelected: String) {
         binding?.tvCategoryPlaceholder?.text = filterNameSelected
+    }
+
+    private fun openSharedProductDetail(sharedProductId: String) {
+        if (sharedProductId.isBlank()) return
+        else {
+            val productListItem = productListAdapter?.getProductListItems()?.find { productList -> productList.productUiModel.id == sharedProductId }
+            val position = productListAdapter?.getProductListItems()?.indexOf(productListItem)
+            if (position != null && position != RecyclerView.NO_POSITION) {
+                // post delayed runnable using the main looper; allowing rv to have enough data to be scrolled
+                Handler(Looper.getMainLooper()).postDelayed({
+                    scrollToCategorySection(position)
+                    productListItem?.run {
+                        // adapter dataset position should be the same at the start
+                        onProductCardClicked(productListItem, position to position)
+                    }
+                }, DELAY_TIME_HUNDRED_MILLIS)
+            }
+        }
     }
 
     private fun fetchMerchantData() {
@@ -579,8 +599,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                         // setup merchant info bottom sheet
                         val name = merchantProfile.name
                         val address = merchantProfile.address
-                        val merchantOpsHours =
-                            viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
+                        val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+                        val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(today, merchantProfile.opsHourDetail)
                         setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
                         // render product list
                         val isShopClosed = merchantProfile.opsHourFmt.isWarning
@@ -598,6 +618,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                         )
                         renderProductList(finalProductListItems)
                         setCategoryPlaceholder(viewModel.filterNameSelected)
+                        openSharedProductDetail(sharedProductId = productId)
                     } else {
                         navigateToNewFragment(
                             ManageLocationFragment.createInstance(
@@ -630,9 +651,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private suspend fun collectCartDataFlow() {
         activityViewModel?.cartDataFlow?.collect { cartData ->
-            cartData?.availableSection?.products?.let { products ->
-                viewModel.selectedProducts = products
-            }
+            viewModel.selectedProducts = cartData?.availableSection?.products.orEmpty()
         }
     }
 
@@ -685,12 +704,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                                                 cardPositions?.run {
                                                     productListAdapter?.updateProductUiModel(
                                                         cartTokoFood = cartTokoFood,
-                                                        dataSetPosition = viewModel.getDataSetPosition(
-                                                            this
-                                                        ),
-                                                        adapterPosition = viewModel.getAdapterPosition(
-                                                            this
-                                                        )
+                                                        dataSetPosition = viewModel.getDataSetPosition(this),
+                                                        adapterPosition = viewModel.getAdapterPosition(this)
                                                     )
                                                 }
                                             }
@@ -713,29 +728,20 @@ class MerchantPageFragment : BaseMultiFragment(),
                             (pair.first as? String)?.let { cartId ->
                                 (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()
                                     ?.let { product ->
-                                        val cardPositions =
-                                            viewModel.productMap[product.productId]
+                                        val cardPositions = viewModel.productMap[product.productId]
                                         cardPositions?.run {
-                                            val dataSetPosition =
-                                                viewModel.getDataSetPosition(this)
-                                            val productUiModel =
-                                                productListAdapter?.getProductUiModel(
-                                                    dataSetPosition
-                                                )
+                                            val dataSetPosition = viewModel.getDataSetPosition(this)
+                                            val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
                                             if (productUiModel?.isCustomizable == true) {
                                                 productListAdapter?.removeCustomOrder(
                                                     cartId = cartId,
                                                     dataSetPosition = dataSetPosition,
-                                                    adapterPosition = viewModel.getAdapterPosition(
-                                                        this
-                                                    )
+                                                    adapterPosition = viewModel.getAdapterPosition(this)
                                                 )
                                             } else {
                                                 productListAdapter?.resetProductUiModel(
                                                     dataSetPosition = dataSetPosition,
-                                                    adapterPosition = viewModel.getAdapterPosition(
-                                                        this
-                                                    )
+                                                    adapterPosition = viewModel.getAdapterPosition(this)
                                                 )
                                             }
                                             view?.let { view ->
@@ -1011,6 +1017,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onProductCardClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>) {
         if (viewModel.isProductDetailBottomSheetVisible) return
         val productUiModel = productListItem.productUiModel
+        // update product id - card positions map
+        viewModel.productMap[productUiModel.id] = cardPositions
         // track click product card event
         merchantPageAnalytics.clickProductCard(
             getProductItemList(),
@@ -1509,6 +1517,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         private const val SOURCE_ADDESS = "tokofood"
         private const val EMPTY_COORDINATE = "0.0"
         private const val EMPTY_ADDRESS_ID = "0"
+        private const val DELAY_TIME_HUNDRED_MILLIS = 100L
 
         private const val REQUEST_CODE_LOGIN = 123
         private const val SOURCE = "merchant_page"
