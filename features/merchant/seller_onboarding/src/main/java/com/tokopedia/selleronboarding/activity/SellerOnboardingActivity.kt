@@ -51,10 +51,9 @@ class SellerOnboardingActivity : BaseActivity() {
         private const val PARAM_COACH_MARK = "coachmark"
         private const val DISABLED = "disabled"
 
-        // TODO: Put Corrent image url
-        private const val ANNIVERSARY_CONFETTI_IMAGE = ""
-        private const val ANNIVERSARY_PATTERN_IMAGE = ""
-        private const val ANNIVERSARY_LOGO_IMAGE = ""
+        private const val ANNIVERSARY_CONFETTI_IMAGE = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_confetti.png"
+        private const val ANNIVERSARY_PATTERN_IMAGE = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_lines_large.png"
+        private const val ANNIVERSARY_LOGO_IMAGE = "https://images.tokopedia.net/img/android/sellerhome/ic_anniv_13th_logo.png"
     }
 
     private val sobAdapter by lazy { SobAdapter() }
@@ -112,24 +111,24 @@ class SellerOnboardingActivity : BaseActivity() {
     }
 
     private fun setConfettiAnniv() {
-        binding?.confettiSob?.setImageUrl(
-            url = ANNIVERSARY_CONFETTI_IMAGE,
-            placeholderHeight = Int.ZERO
-        )
+        binding?.confettiSob?.run {
+            disableShimmeringPlaceholder = true
+            setImageUrl(url = ANNIVERSARY_CONFETTI_IMAGE)
+        }
     }
 
     private fun setBackgroundPattern() {
-        binding?.patternSob?.setImageUrl(
-            url = ANNIVERSARY_PATTERN_IMAGE,
-            placeholderHeight = Int.ZERO
-        )
+        binding?.patternSob?.run {
+            disableShimmeringPlaceholder = true
+            setImageUrl(url = ANNIVERSARY_PATTERN_IMAGE)
+        }
     }
 
     private fun setAnnivLogo() {
-        binding?.logoSob?.setImageUrl(
-            url = ANNIVERSARY_LOGO_IMAGE,
-            placeholderHeight = Int.ZERO
-        )
+        binding?.logoSob?.run {
+            disableShimmeringPlaceholder = true
+            setImageUrl(url = ANNIVERSARY_LOGO_IMAGE)
+        }
     }
 
     @SuppressLint("WrongConstant")

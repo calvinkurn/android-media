@@ -132,8 +132,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val RV_TOP_POSITION = 0
         private const val TICKER_FIRST_INDEX = 0
 
-        // TODO: Add correct URL
-        private const val ANNIV_PATTERN_URL = ""
+        private const val ANNIV_PATTERN_URL = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_checkered.png"
         private const val ANNIV_GRADIENT_URL = "https://images.tokopedia.net/img/android/seller_home/ic_sah_anniv_13th_gradient.webp"
         private const val ANNIV_ORNAMENT_URL = "https://images.tokopedia.net/img/android/seller_home/ic_sah_anniv_13th_ornament.webp"
     }
@@ -1623,18 +1622,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun loadAnniversaryIllustrations() {
-        binding?.ivSahPattern?.setImageUrl(
-            url = ANNIV_PATTERN_URL,
-            placeholderHeight = Int.ZERO
-        )
-        binding?.ivSahOrnament?.setImageUrl(
-            url = ANNIV_ORNAMENT_URL,
-            placeholderHeight = Int.ZERO
-        )
-        binding?.ivSahGradient?.setImageUrl(
-            url = ANNIV_GRADIENT_URL,
-            placeholderHeight = Int.ZERO
-        )
+        binding?.ivSahPattern?.run {
+            disableShimmeringPlaceholder = true
+            setImageUrl(url = ANNIV_PATTERN_URL)
+        }
+        binding?.ivSahOrnament?.run {
+            disableShimmeringPlaceholder = true
+            setImageUrl(url = ANNIV_ORNAMENT_URL)
+        }
+        binding?.ivSahGradient?.run {
+            disableShimmeringPlaceholder = true
+            setImageUrl(url = ANNIV_GRADIENT_URL)
+        }
     }
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(
         liveData: LiveData<Result<List<D>>>,

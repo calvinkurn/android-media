@@ -56,8 +56,7 @@ class OtherMenuViewHolder(
     companion object {
         const val SCROLLVIEW_INITIAL_POSITION = 0
 
-        // TODO: Put correct Url
-        private const val ANNIVERSARY_PATTERN_URL = ""
+        private const val ANNIVERSARY_PATTERN_URL = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_lines.png"
         private const val ANNIVERSARY_ORNAMENT_URL = "https://images.tokopedia.net/img/android/sellerhome/ic_sah_anniv_13th_other_ornament.png"
     }
 
@@ -302,14 +301,14 @@ class OtherMenuViewHolder(
     }
 
     private fun setupAnniversaryIllustration() {
-        anniversaryPatternImage?.setImageUrl(
-            url = ANNIVERSARY_PATTERN_URL,
-            placeholderHeight = Int.ZERO
-        )
-        anniversaryOrnamentImage?.setImageUrl(
-            url = ANNIVERSARY_ORNAMENT_URL,
-            placeholderHeight = Int.ZERO
-        )
+        anniversaryPatternImage?.run {
+            disableShimmeringPlaceholder = true
+            setImageUrl(url = ANNIVERSARY_PATTERN_URL)
+        }
+        anniversaryOrnamentImage?.run {
+            disableShimmeringPlaceholder = true
+            setImageUrl(url = ANNIVERSARY_ORNAMENT_URL)
+        }
     }
 
     private fun setupSecondaryInfoAdapter() {
