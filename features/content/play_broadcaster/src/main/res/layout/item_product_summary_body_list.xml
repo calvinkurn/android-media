@@ -69,7 +69,7 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Stok 10"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_summary_name"
@@ -83,7 +83,7 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_product_summary_image"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pinned_product_carousel_info"
+            app:layout_constraintTop_toBottomOf="@+id/tv_product_summary_stock"
             app:typographyType="body_3"
             tools:text="2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP" />
 
