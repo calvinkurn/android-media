@@ -11,18 +11,18 @@ object GetRecipeBookmarksMapper {
     private fun mapTag(tags: List<GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Data.Recipe.Tag>?): List<TagUiModel> {
         if (tags.isNullOrEmpty()) return emptyList()
 
-        val newTags: MutableList<TagUiModel> = mutableListOf()
+        val tagList: MutableList<TagUiModel> = mutableListOf()
         for ((index, tag) in tags.withIndex()) {
             if (tags.size > MAX_TAGS_DISPLAYED) {
                 if (index < TAGS_DISPLAYED) {
-                    newTags.add(
+                    tagList.add(
                         TagUiModel(
                             tag = tag.name,
                             shouldFormatTag = false
                         )
                     )
                 } else {
-                    newTags.add(
+                    tagList.add(
                         TagUiModel(
                             tag = (tags.size - TAGS_DISPLAYED).toString(),
                             shouldFormatTag = true
@@ -31,7 +31,7 @@ object GetRecipeBookmarksMapper {
                     break
                 }
             } else {
-                newTags.add(
+                tagList.add(
                     TagUiModel(
                         tag = tag.name,
                         shouldFormatTag = false
@@ -39,7 +39,7 @@ object GetRecipeBookmarksMapper {
                 )
             }
         }
-        return newTags
+        return tagList
     }
 
     fun List<GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Data.Recipe>.mapResponseToUiModelList(): List<RecipeUiModel> {
