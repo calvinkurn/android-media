@@ -46,6 +46,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.loader_dialog
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.multiDex
 
     kaptTest rootProject.ext.miscDependencies.daggerCompiler
     testImplementation rootProject.ext.testDependencies.junit
