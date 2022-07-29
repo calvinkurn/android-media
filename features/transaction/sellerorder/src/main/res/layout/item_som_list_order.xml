@@ -98,6 +98,7 @@
                 android:textColor="@color/Unify_NN950"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintEnd_toStartOf="@id/tvSomListResponseLabel"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toEndOf="@id/checkBoxSomListMultiSelect"
                 app:layout_constraintTop_toTopOf="parent"

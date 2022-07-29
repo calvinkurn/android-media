@@ -83,13 +83,15 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvSomListOrderStatus"
-                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/som_list_order_item_padding_right_left_bottom"
                     android:paddingTop="@dimen/spacing_lvl1"
                     android:paddingBottom="@dimen/spacing_lvl1"
                     android:textColor="@color/Unify_N700_96"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toStartOf="@id/tvSomListResponseLabel"
+                    app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"
                     app:layout_constraintStart_toEndOf="@id/checkBoxSomListMultiSelect"
                     app:layout_constraintTop_toTopOf="parent"
@@ -98,10 +100,12 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvSomListInvoice"
-                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Unify_N700_68"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toStartOf="@id/layout_som_list_deadline"
+                    app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="@id/tvSomListOrderStatus"
                     app:layout_constraintTop_toBottomOf="@id/tvSomListOrderStatus"
                     app:typographyType="small"
@@ -109,11 +113,13 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvSomListBuyerName"
-                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="1dp"
                     android:textColor="@color/Unify_N700_68"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toStartOf="@id/layout_som_list_deadline"
+                    app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="@id/tvSomListOrderStatus"
                     app:layout_constraintTop_toBottomOf="@id/tvSomListInvoice"
                     app:typographyType="small"
@@ -141,7 +147,6 @@
                     android:layout_marginEnd="@dimen/som_list_order_item_padding_right_left_bottom"
                     app:layout_constraintBottom_toBottomOf="@id/tvSomListBuyerName"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tvSomListBuyerName"
                     app:layout_constraintTop_toBottomOf="@id/tvSomListResponseLabel"
                     tools:background="@drawable/bg_order_deadline">
 
