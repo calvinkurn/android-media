@@ -52,7 +52,7 @@ data class ProductShopCredibilityDataModel(
         return typeFactory.type(this)
     }
 
-    fun getTwoShopInfoHieararchy(context: Context, shopSpeed: Long, shopChatSpeed: Long, shopActiveProduct: Long, shopCreated: String, shopRating: Float): List<ShopCredibilityUiData> {
+    fun getTwoShopInfoHieararchy(context: Context, shopSpeed: Long, shopChatSpeed: Long, shopActiveProduct: Long, shopCreated: String, shopRating: Float, shopFinishRate: String): List<ShopCredibilityUiData> {
         val createdDated = try {
             SimpleDateFormat("yyyy-MM-dd", getIdLocale()).parse(shopCreated).toFormattedString("MMM yyyy", getIdLocale())
         } catch (e: Throwable) {
@@ -60,8 +60,9 @@ data class ProductShopCredibilityDataModel(
         }
 
         val listOfData = mutableListOf(
-                ShopCredibilityUiData(if (shopRating == 0F) "" else shopRating.toString(), context.getString(R.string.product_shop_rating), com.tokopedia.iconunify.IconUnify.STAR),
+                ShopCredibilityUiData(if (shopRating == 0F) "" else shopRating.toString(), context.getString(R.string.product_average_review), com.tokopedia.iconunify.IconUnify.STAR),
                 ShopCredibilityUiData(shopSpeed.getRelativeDateByHours(context), context.getString(R.string.product_shop_process_product), com.tokopedia.iconunify.IconUnify.CLOCK),
+                ShopCredibilityUiData(shopFinishRate, context.getString(R.string.product_shop_finish_rate_product), com.tokopedia.iconunify.IconUnify.BILL_CHECK),
                 ShopCredibilityUiData(shopChatSpeed.getRelativeDateByMinute(context), context.getString(R.string.product_shop_chat_reply), com.tokopedia.iconunify.IconUnify.CHAT),
                 ShopCredibilityUiData(shopActiveProduct.productThousandFormatted(0), context.getString(R.string.product_shop_total_product), com.tokopedia.iconunify.IconUnify.PRODUCT),
                 ShopCredibilityUiData(createdDated, context.getString(R.string.product_shop_start_sell), com.tokopedia.iconunify.IconUnify.SHOP)

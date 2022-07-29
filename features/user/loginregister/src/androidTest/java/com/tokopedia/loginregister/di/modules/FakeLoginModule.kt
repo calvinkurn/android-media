@@ -18,6 +18,7 @@ object FakeLoginModule: LoginModule() {
         return mockk {
             every { fetchByType(any()) } just Runs
             every { getString(LoginEmailPhoneFragment.ROLLENCE_KEY_INACTIVE_PHONE_NUMBER, any()) } returns "true"
+            every { getString(LoginEmailPhoneFragment.ROLLENCE_KEY_GOTO_SEAMLESS, any()) } returns "true"
             every { getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, any()) } returns "true"
         }
     }

@@ -31,14 +31,14 @@ class ProductTagViewComponent(
     private val rvProductTag: RecyclerView = findViewById(R.id.rv_bro_product_tag)
 
     private val productListener = object : ProductCarouselViewHolder.Product.Listener{
-        override fun onPinProductClicked(product: ProductUiModel) {
-            listener.onPinProductClicked(product)
+        override fun onPinClicked(product: ProductUiModel) {
+            listener.onPinClicked(product)
         }
     }
 
     private val pinnedProductListener = object : ProductCarouselViewHolder.PinnedProduct.Listener{
-        override fun onPinProductClicked(product: ProductUiModel) {
-            listener.onPinProductClicked(product)
+        override fun onPinClicked(product: ProductUiModel) {
+            listener.onPinClicked(product)
             hideCoachMark()
         }
     }
@@ -165,6 +165,6 @@ class ProductTagViewComponent(
     interface Listener {
         fun impressProductTag(view: ProductTagViewComponent)
         fun scrollProductTag(view: ProductTagViewComponent, product: ProductUiModel, position: Int)
-        fun onPinProductClicked(product: ProductUiModel)
+        fun onPinClicked(product: ProductUiModel)
     }
 }

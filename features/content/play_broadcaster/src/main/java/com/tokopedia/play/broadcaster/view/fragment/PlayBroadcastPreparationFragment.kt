@@ -194,7 +194,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         else emptyList()
                     }
 
-                    override fun isDuringLiveStream(): Boolean = false
+                    override fun isEligibleForPin(): Boolean = false
                 })
             }
             is PlayBroadcastSetupBottomSheet -> {

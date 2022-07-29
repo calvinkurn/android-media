@@ -8,6 +8,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
@@ -28,6 +29,8 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
     private val lblOutOfStock: Label = itemView.findViewById(R.id.label_out_of_stock)
     private val shadowOutOfStock: View = itemView.findViewById(R.id.shadow_out_of_stock)
     private val tvOutOfStock: TextView = itemView.findViewById(R.id.tv_product_out_of_stock)
+    private val ivNow: IconUnify = itemView.findViewById(R.id.iv_now)
+    private val tvNow: TextView = itemView.findViewById(R.id.tv_now)
 
     override fun bind(item: PlayProductUiModel.Product) {
         super.bind(item)
@@ -68,6 +71,8 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
         btnProductAtc.setOnClickListener {
             listener.onAtcProduct(item)
         }
+        tvNow.showWithCondition(item.isTokoNow)
+        ivNow.showWithCondition(item.isTokoNow)
     }
 
     companion object {

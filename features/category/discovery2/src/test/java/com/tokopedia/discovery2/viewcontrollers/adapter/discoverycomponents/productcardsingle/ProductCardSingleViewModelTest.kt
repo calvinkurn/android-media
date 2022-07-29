@@ -9,7 +9,6 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.PRODUCT_PER_PAGE
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher

@@ -26,5 +26,8 @@ data class Config(
     val peekProductCount: Int = 0,
 
     @SerializedName("title_bottomsheet")
-    val bottomSheetTitle: String = ""
+    val bottomSheetTitle: String = "",
+
+    @SerializedName("is_show_product_tagging")
+    val showProductTag: Boolean = false,
 )

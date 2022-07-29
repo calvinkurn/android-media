@@ -18,7 +18,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_title_strike"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
         tools:text="Ongkir cuma Rp10.000" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -26,11 +27,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN300"
         app:layout_constraintBottom_toBottomOf="@id/pdp_shipment_title"
         app:layout_constraintLeft_toRightOf="@id/pdp_shipment_title"
         app:layout_constraintRight_toLeftOf="@id/pdp_shipment_icon"
-        app:typographyType="display_2"
+        app:typographyType="display_3"
         tools:text="Rp30.000" />
 
     <com.tokopedia.unifycomponents.ImageUnify

@@ -229,7 +229,7 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[3].extra == "200 kuota gratis")
+                (result.data as PromoCreationListUiModel).items[5].extra == "200 kuota gratis")
     }
 
     @Test
@@ -352,7 +352,7 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[2].applink == ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+                (result.data as PromoCreationListUiModel).items[4].applink == ApplinkConst.CustomerApp.TOPADS_DASHBOARD
         )
     }
 
@@ -434,7 +434,7 @@ class CentralizedPromoViewModelTest {
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
         val expectedApplink = "tokopedia-android-internal://sellerapp/create-voucher"
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(4)?.applink == expectedApplink)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(6)?.applink == expectedApplink)
     }
 
     @Test
@@ -518,7 +518,7 @@ class CentralizedPromoViewModelTest {
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
         val expectedApplink = "sellerapp://create-voucher-product"
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(6)?.applink == expectedApplink)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(8)?.applink == expectedApplink)
     }
 
     @Test
@@ -559,7 +559,7 @@ class CentralizedPromoViewModelTest {
 
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(9) == false)
     }
 
     @Test
@@ -600,7 +600,7 @@ class CentralizedPromoViewModelTest {
 
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(9) == false)
     }
 
     @Test
@@ -641,7 +641,7 @@ class CentralizedPromoViewModelTest {
 
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(9) == false)
     }
 
     @Test
@@ -682,7 +682,7 @@ class CentralizedPromoViewModelTest {
 
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(7) == false)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(9) == false)
     }
 
 

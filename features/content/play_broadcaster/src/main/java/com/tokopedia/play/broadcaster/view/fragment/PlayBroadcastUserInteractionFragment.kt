@@ -44,8 +44,8 @@ import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.ProductIconView
@@ -162,7 +162,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
             }
 
-            override fun onPinProductClicked(product: ProductUiModel) {
+            override fun onPinClicked(product: ProductUiModel) {
                 analytic.onClickPinProductLiveRoom(parentViewModel.channelId, product.id)
                 checkPinProduct(product.pinStatus.isPinned) {
                     parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
@@ -238,7 +238,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         else emptyList()
                     }
 
-                    override fun isDuringLiveStream(): Boolean = true
+                    override fun isEligibleForPin(): Boolean = true
                 })
             }
             is InteractiveSetupDialogFragment -> {

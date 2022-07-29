@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.core.text.buildSpannedString
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -136,7 +135,7 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.viewPinProduct.showWithCondition(item.product.pinStatus.canPin && item.isDuringLiveStream)
             binding.viewPinProduct.setupPinned(item.product.pinStatus.isPinned, item.product.pinStatus.isLoading)
             binding.viewPinProduct.setOnClickListener {
-                listener.onPinProductClicked(item.product)
+                listener.onPinClicked(item.product)
             }
         }
 
@@ -153,7 +152,7 @@ internal class ProductSummaryViewHolder private constructor() {
 
         interface Listener {
             fun onProductDeleteClicked(product: ProductUiModel)
-            fun onPinProductClicked(product: ProductUiModel)
+            fun onPinClicked(product: ProductUiModel)
         }
     }
 }
