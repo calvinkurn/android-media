@@ -1,13 +1,11 @@
 package com.tokopedia.wishlist.view.adapter.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.wishlist.data.model.WishlistV2UiModel
-import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistV2ThreeDotsMenuItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_ADD_ITEM_TO_COLLECTION
 import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_CHECK_SHOP

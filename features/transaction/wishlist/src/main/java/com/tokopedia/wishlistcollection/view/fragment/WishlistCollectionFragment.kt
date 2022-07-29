@@ -49,6 +49,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CO
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollectionItem
+import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetOnboardingWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewModel
@@ -57,13 +58,17 @@ import javax.inject.Inject
 
 class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener,
     BottomSheetKebabMenuWishlistCollectionItem.ActionListener, ActionListenerFromCollectionPage,
-    BottomSheetUpdateWishlistCollectionName.ActionListener {
+    BottomSheetUpdateWishlistCollectionName.ActionListener,
+    BottomSheetOnboardingWishlistCollection.ActionListener {
     private var onlyAllCollection: Boolean = false
     private var binding by autoClearedNullable<FragmentCollectionWishlistBinding>()
     private lateinit var collectionAdapter: WishlistCollectionAdapter
     private var activityWishlistCollection = ""
     private var isEligibleAddNewCollection = false
     private var wordingMaxLimitCollection = ""
+    private var bottomSheetOnboarding = BottomSheetOnboardingWishlistCollection()
+    private var _allCollectionView: View? = null
+    private var _createCollectionView: View? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -329,13 +334,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onCreateNewCollectionClicked() {
         if (isEligibleAddNewCollection && wordingMaxLimitCollection.isEmpty()) {
-            showBottomSheetCreateNewCollection(childFragmentManager)
+            showBottomSheetCreateNewCollection()
         } else {
             showToaster(wordingMaxLimitCollection, getString(R.string.wishlist_oke_label), Toaster.TYPE_ERROR)
         }
     }
 
-    private fun showBottomSheetCreateNewCollection(fragmentManager: FragmentManager) {
+    private fun showBottomSheetCreateNewCollection() {
         val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance("")
         bottomSheetCreateCollection.setListener(this@WishlistCollectionFragment)
         if (bottomSheetCreateCollection.isAdded || childFragmentManager.isStateSaved) return
@@ -376,8 +381,17 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST)
             && onlyAllCollection
         ) {
-            showWishlistCollectionCoachMark(allCollectionView, createCollectionView)
+            _allCollectionView = allCollectionView
+            _createCollectionView = createCollectionView
+            showBottomSheetOnboarding()
         }
+    }
+
+    private fun showBottomSheetOnboarding() {
+        bottomSheetOnboarding = BottomSheetOnboardingWishlistCollection.newInstance()
+        bottomSheetOnboarding.setListener(this@WishlistCollectionFragment)
+        if (bottomSheetOnboarding.isAdded || childFragmentManager.isStateSaved) return
+        bottomSheetOnboarding.show(childFragmentManager)
     }
 
     private fun showWishlistCollectionCoachMark(view1: View, view2: View) {
@@ -404,7 +418,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
         coachMark?.let {
             it.onFinishListener = {
-                showBottomSheetCreateNewCollection(childFragmentManager)
+                showBottomSheetCreateNewCollection()
             }
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_try_create_wishlist)
@@ -466,5 +480,17 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 }
             }
         }
+    }
+
+    override fun onClickShowCoachmarkButton() {
+        bottomSheetOnboarding.dismiss()
+        _allCollectionView?.let { v1 ->
+            _createCollectionView?.let { v2 ->
+                showWishlistCollectionCoachMark(v1, v2) }
+        }
+    }
+
+    override fun onClickSkipOnboardingButton() {
+        bottomSheetOnboarding.dismiss()
     }
 }
