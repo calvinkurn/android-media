@@ -397,12 +397,15 @@ class SearchProductFirstPageGqlUseCase(
                   title
                   description
                   category_id_l2
+                  applink
                   filters {
                     title
                     key
                     name
                     value
                   }
+                  tracking_option
+                  component_id
                 }
               }
             }"""

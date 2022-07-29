@@ -11,4 +11,9 @@ interface ShopProductImpressionListener {
     fun onProductImpression(shopProductUiModel: ShopProductUiModel, shopTrackType: Int, productPosition: Int)
 
     fun getSelectedEtalaseName(): String
+
+    fun onImpressionProductAtc(
+        shopProductUiModel: ShopProductUiModel,
+        position: Int,
+    )
 }

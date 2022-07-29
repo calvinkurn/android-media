@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Static_White"
+    android:paddingHorizontal="@dimen/unify_space_12"
+    android:paddingTop="@dimen/spacing_lvl4">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/spacing_lvl2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/spacing_lvl2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtTitleRiwayatKredit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_credit_history"
+        app:layout_constraintBottom_toBottomOf="@id/hari_ini"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toTopOf="@id/hari_ini"
+        app:typographyType="display_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/hari_ini"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:chipText="@string/topads_hari_ini"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/totalKredit"
+        layout="@layout/topads_credit_partial_total_value"
+        android:layout_width="@dimen/top_ads_common_dp_150"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintStart_toStartOf="@id/leftGuide"
+        app:layout_constraintTop_toBottomOf="@id/hari_ini" />
+
+    <include
+        android:id="@+id/totalTerpakai"
+        layout="@layout/topads_credit_partial_total_value"
+        android:layout_width="@dimen/top_ads_common_dp_150"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/rightGuide"
+        app:layout_constraintTop_toTopOf="@id/totalKredit" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@id/totalKredit"
+        tools:listitem="@layout/item_credit_history" />
+</androidx.constraintlayout.widget.ConstraintLayout>

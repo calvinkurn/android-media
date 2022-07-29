@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:viewBindingIgnore="true"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:viewBindingIgnore="true">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="circular"/>
+        app:loader_type="circular" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/card_auto_topup_status"
@@ -29,24 +29,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:padding="@dimen/spacing_lvl4">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:layout_width="@dimen/top_ads_common_dp_20"
+                android:layout_height="@dimen/top_ads_common_dp_20"
+                android:tint="@color/Unify_NN950"
+                app:srcCompat="@drawable/iconunify_auto_debit" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginStart="@dimen/spacing_lvl2"
                 android:text="@string/label_topads_automatic_topup"
-                android:textColor="@color/light_secondary"
-                app:typographyType="body_3" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/activeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/topads_common_select_color_checked"
-                app:typographyType="body_3"
-                tools:text="@string/topads_active" />
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="display_2"
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
                 android:id="@+id/auto_topup_status"
@@ -54,9 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 app:typographyType="body_2" />
-
         </LinearLayout>
-
     </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -78,9 +77,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/topads_dash_pengaturan"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_5" />
+                app:typographyType="display_2"
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/chooseCreditText"
@@ -88,16 +89,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/topads_dash_choose_credit"
-                android:textColor="@color/topads_common_select_color_unchecked"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/settingsTxt"
-                app:typographyType="body_3" />
+                app:typographyType="display_3"
+                app:typographyWeight="bold" />
 
             <LinearLayout
                 android:id="@+id/creditDropMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 android:background="@drawable/topads_common_border"
                 android:orientation="horizontal"
                 android:padding="10dp"
@@ -109,14 +111,16 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    app:typographyType="body_3"
+                    android:textColor="@color/Unify_NN950"
+                    app:typographyType="display_2"
                     app:typographyWeight="reguler"
                     tools:text="Rp 1000.0" />
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_dropdown_arrow" />
+                    android:src="@drawable/iconunify_chevron_down"
+                    android:tint="@color/Unify_NN950" />
             </LinearLayout>
 
             <com.tokopedia.unifyprinciples.Typography
@@ -124,29 +128,40 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textColor="@color/topads_light_shadow"
+                android:textColor="@color/Unify_NN600"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/creditDropMenu"
-                app:typographyType="body_3"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="bold"
                 tools:text="@string/topads_dash_auto_topup_bonus_amount" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintTop_toBottomOf="@id/bonusText" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/deductionTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:text="@string/topads_dash_when_credit_is_down"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/bonusText"
+                app:layout_constraintTop_toBottomOf="@id/divider"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/tooltip"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_marginStart="5dp"
-                android:src="@drawable/topads_dash_info_tooltip"
+                android:layout_width="@dimen/unify_space_12"
+                android:layout_height="@dimen/unify_space_12"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:src="@drawable/iconunify_information"
+                android:tint="@color/Unify_NN950"
                 app:layout_constraintBottom_toBottomOf="@id/deductionTitle"
                 app:layout_constraintStart_toEndOf="@id/deductionTitle"
                 app:layout_constraintTop_toTopOf="@id/deductionTitle" />
@@ -155,25 +170,24 @@
                 android:id="@+id/dedAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/spacing_lvl2"
                 android:text="Rp 500"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/deductionTitle"
-                app:typographyType="body_2" />
+                app:typographyType="paragraph_2" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/tickerInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 app:closeButtonVisibility="gone"
                 app:descriptionText="@string/topads_dash_auto_topup_ticker_desc"
                 app:layout_constraintTop_toBottomOf="@id/dedAmount"
                 app:tickerShapeType="loose"
-                app:tickerType="information"
+                app:tickerType="announcement"
                 tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.tokopedia.unifycomponents.CardUnify>
 
     <include
@@ -181,7 +195,7 @@
         layout="@layout/topads_dash_auto_topup_off_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/card_auto_topup_status" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
