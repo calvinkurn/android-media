@@ -6,12 +6,20 @@ import android.content.res.Resources
 import android.net.http.SslError
 import android.os.Build
 import android.view.View
-import android.webkit.*
+import android.webkit.SslErrorHandler
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ViewFlipper
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentFragment
+import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.ext.encodeOnce
+import java.util.*
 
 object CartProtectionInfoBottomSheetHelper {
 
@@ -19,7 +27,13 @@ object CartProtectionInfoBottomSheetHelper {
     var failedLoading = false
 
     @JvmStatic
-    fun openWebviewInBottomSheet(fragment: ShipmentFragment, context: Context, url: String, title: String) {
+    fun openWebviewInBottomSheet(
+        fragment: ShipmentFragment,
+        context: Context,
+        userSessionInterface: UserSessionInterface,
+        url: String,
+        title: String
+    ) {
         val view = View.inflate(context, R.layout.checkout_protection_more, null)
         webView = view.findViewById(R.id.proteksi_webview)
         val viewflipper = view.findViewById<ViewFlipper>(R.id.container_webview)
@@ -28,7 +42,14 @@ object CartProtectionInfoBottomSheetHelper {
             javaScriptEnabled = true
             domStorageEnabled = true
         }
-        webView?.loadUrl(url)
+        webView?.loadAuthUrl(
+            URLGenerator.generateURLSessionLogin(
+                url.encodeOnce(),
+                userSessionInterface.deviceId,
+                userSessionInterface.userId
+            ),userSessionInterface,false
+        )
+
         webView?.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)

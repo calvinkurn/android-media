@@ -1,4 +1,4 @@
-package com.tokopedia.interceptors.refreshtoken
+package com.tokopedia.interceptors
 
 import com.google.gson.JsonArray
 import com.tokopedia.graphql.GraphqlConstant.GqlApiKeys
@@ -13,7 +13,7 @@ import retrofit2.http.POST
  */
 
 @JvmSuppressWildcards
-interface RefreshTokenApi {
+interface GqlBaseApi {
 
     @POST("./")
     @Headers(GqlApiKeys.ANDROID_FLAG)

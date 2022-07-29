@@ -58,7 +58,7 @@ class RegisterInitialRouterHelper @Inject constructor() {
 
     fun goToChooseAccountPage(fragment: Fragment, accessToken: String, phoneNumber: String){
         val intent = RouteManager.getIntent(fragment.context,
-                ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+                ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)

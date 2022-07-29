@@ -57,10 +57,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/withdraw
     const val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    //ChooseTokocashAccountActivity
-    // tokopedia-android-internal://global/choose-account
-    const val CHOOSE_ACCOUNT = "$INTERNAL_GLOBAL/choose-account"
-
     // LandingShopCreationActivity
     // tokopedia-android-internal://global/landing-shop-creation
     const val LANDING_SHOP_CREATION = "$INTERNAL_GLOBAL/landing-shop-creation"
@@ -323,10 +319,6 @@ object ApplinkConstInternalGlobal {
     // AccountHomeActivity
     // tokopedia-android-internal://global/account-home-old
     const val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"
-
-    // ChooseAccountFingerprintActivity
-    // tokopedia-android-internal://global/choose-account-fingerprint
-    const val CHOOSE_ACCOUNT_FINGERPRINT = "$INTERNAL_GLOBAL/choose-account-fingerprint"
 
     //SeamlessActivity
     const val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
