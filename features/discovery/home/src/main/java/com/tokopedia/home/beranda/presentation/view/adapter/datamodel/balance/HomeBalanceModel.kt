@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
-import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.SubscriptionsData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
