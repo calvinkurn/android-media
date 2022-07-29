@@ -28,5 +28,5 @@ class PlayNewAnalytic @Inject constructor(
         PlayUpcomingAnalytic by upcomingAnalytic,
         PlayShareExperienceAnalytic by shareExperienceAnalytic,
         PlayCampaignAnalytic by campaignAnalytic,
-        PlayInteractiveAnalytic by interactiveAnalytic
+        PlayInteractiveAnalytic by interactiveAnalytic,
         PlayTokoNowAnalytic by tokoNowAnalytic
