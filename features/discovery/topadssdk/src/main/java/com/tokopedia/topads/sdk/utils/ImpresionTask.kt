@@ -5,7 +5,9 @@ import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.sdk.TopAdsConstants.TopAdsClickUrlTrackerConstant.RESPONSE_HEADER_KEY
 import com.tokopedia.topads.sdk.listener.ImpressionListener
+import com.tokopedia.topads.sdk.listener.TopAdsHeaderResponseListener
 import com.tokopedia.topads.sdk.utils.ImpressionTaskAlert.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +20,8 @@ import java.io.IOException
  */
 class ImpresionTask {
     private var impressionListener: ImpressionListener? = null
-    private var taskAlert: ImpressionTaskAlert?
+    private var topAdsHeaderResponseListener: TopAdsHeaderResponseListener? = null
+    private var taskAlert: ImpressionTaskAlert? = null
     private var userSession: UserSessionInterface? = null
     private var fileName: String = ""
     private var methodName: String = ""
@@ -29,10 +32,10 @@ class ImpresionTask {
         try {
             var traceElement: StackTraceElement
             var stackTraceElements = Thread.currentThread().stackTrace
-            if (stackTraceElements[4].className.equals(TopAdsUrlHitter::class.qualifiedName)) {
-                traceElement = stackTraceElements[5]
+            if (stackTraceElements[CONST_FOUR].className.equals(TopAdsUrlHitter::class.qualifiedName)) {
+                traceElement = stackTraceElements[CONST_FIVE]
             } else {
-                traceElement = stackTraceElements[4]
+                traceElement = stackTraceElements[CONST_FOUR]
             }
             fileName = traceElement.fileName
             methodName = traceElement.methodName
@@ -49,6 +52,12 @@ class ImpresionTask {
     constructor(className: String?, impressionListener: ImpressionListener?) {
         this.impressionListener = impressionListener
         taskAlert = getInstance(className!!)
+    }
+
+    constructor(className: String?, topAdsHeaderResponseListener: TopAdsHeaderResponseListener) {
+        this.topAdsHeaderResponseListener = topAdsHeaderResponseListener
+        className?.let { taskAlert = getInstance(it) }
+
     }
 
     constructor(className: String?, userSession: UserSessionInterface?) {
@@ -83,7 +92,32 @@ class ImpresionTask {
         }
     }
 
+    fun getHeader(url: String?) {
+        url?.let {
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    taskAlert?.track(url, fileName, methodName, lineNumber)
+
+                    //Request 1
+                    val token = object : TypeToken<DataResponse<String>>() {}.type
+                    val restRequest = RestRequest.Builder(url, token).build()
+                    val headers = restRepository.getResponse(restRequest).headers;
+                    if (topAdsHeaderResponseListener != null) {
+                        if (headers != null) {
+                            topAdsHeaderResponseListener?.onSuccess(headers[RESPONSE_HEADER_KEY] ?: "")
+                        }
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                } catch (e: RuntimeException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
     companion object {
-        private const val KEY_SESSION_ID = "Tkpd-SessionID"
+        private const val CONST_FOUR = 4
+        private const val CONST_FIVE = 5
     }
 }
