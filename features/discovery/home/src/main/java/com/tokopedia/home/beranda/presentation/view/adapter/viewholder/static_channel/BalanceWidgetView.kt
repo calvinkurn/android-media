@@ -29,7 +29,6 @@ class BalanceWidgetView : FrameLayout {
     private var layoutManager: LinearLayoutManager? = null
     private var balanceWidgetAdapter: BalanceWidgetAdapter? = null
     private var subscriptionPosition = HomeBalanceModel.DEFAULT_BALANCE_POSITION
-    private var previousState : Int = HomeBalanceModel.STATUS_LOADING
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -68,11 +67,9 @@ class BalanceWidgetView : FrameLayout {
         when (element.status) {
             HomeBalanceModel.STATUS_LOADING -> {
                 balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
-                previousState = HomeBalanceModel.STATUS_LOADING
             }
             HomeBalanceModel.STATUS_ERROR -> {
                 balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
-                previousState = HomeBalanceModel.STATUS_ERROR
             }
             else -> {
                 loadDataSuccess(element)
@@ -83,10 +80,6 @@ class BalanceWidgetView : FrameLayout {
     private fun loadDataSuccess(element: HomeBalanceModel) {
         if (element.balanceDrawerItemModels.isNotEmpty()) {
             subscriptionPosition = element.balancePositionSubscriptions
-            if (previousState == HomeBalanceModel.STATUS_LOADING) {
-                balanceWidgetAdapter = BalanceWidgetAdapter(BalanceWidgetTypeFactoryImpl(listener))
-                rvBalance?.adapter = balanceWidgetAdapter
-            }
             balanceWidgetAdapter?.setVisitables(listOf(element))
             listener?.showBalanceWidgetCoachMark(element)
             rvBalance?.post {
@@ -95,7 +88,6 @@ class BalanceWidgetView : FrameLayout {
         } else {
             balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
         }
-        previousState = HomeBalanceModel.STATUS_SUCCESS
     }
 
     fun getSubscriptionView(): View? {
