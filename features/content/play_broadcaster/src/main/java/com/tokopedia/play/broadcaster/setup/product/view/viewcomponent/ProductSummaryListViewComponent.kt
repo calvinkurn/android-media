@@ -32,7 +32,7 @@ internal class ProductSummaryListViewComponent(
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun setProductList(productSectionList: List<ProductTagSectionUiModel>, isDuringLiveStream: Boolean) {
+    fun setProductList(productSectionList: List<ProductTagSectionUiModel>, isEligibleForPin: Boolean) {
         val finalList = buildList {
             productSectionList.forEachIndexed { idx, section ->
                 /** Don't display section title if its at the top && title is empty */
@@ -41,7 +41,7 @@ internal class ProductSummaryListViewComponent(
                 }
 
                 addAll(section.products.map { product ->
-                    ProductSummaryAdapter.Model.Body(product, isDuringLiveStream)
+                    ProductSummaryAdapter.Model.Body(product, isEligibleForPin)
                 })
             }
         }

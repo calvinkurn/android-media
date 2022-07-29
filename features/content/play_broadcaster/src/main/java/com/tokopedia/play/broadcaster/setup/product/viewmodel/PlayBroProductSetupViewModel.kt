@@ -64,7 +64,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         fun create(
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
-            isDuringLiveStream: Boolean,
+            isEligibleForPin: Boolean,
         ): PlayBroProductSetupViewModel
     }
 
