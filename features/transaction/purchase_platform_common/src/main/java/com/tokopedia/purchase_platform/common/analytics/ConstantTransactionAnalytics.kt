@@ -474,5 +474,6 @@ object ConstantTransactionAnalytics {
         const val VIEW_GOTOPLUS_UPSELL_TICKER = "33466"
         const val CLICK_GOTOPLUS_UPSELL_TICKER = "33467"
         const val VIEW_GOTOPLUS_TICKER_OCC = "33468"
+        const val CLICK_BAYAR_OCC = "15570"
     }
 }

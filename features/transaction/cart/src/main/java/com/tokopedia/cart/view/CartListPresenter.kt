@@ -1163,7 +1163,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemHolderData: CartItemHolderData): EnhancedECommerceProductCartMapData {
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setDimension80(
+            setDimension38(
                     if (cartItemHolderData.trackerAttribution.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
