@@ -26,9 +26,9 @@ object CentralizedPromoConstant {
 
     // PROMO LIST
     const val TRACKER_ID_IMPRESSION_CARD = "34637"
-    const val EVENT_IMPRESSION_CARD = "impression promotion card"
+    const val EVENT_IMPRESSION_CARD = "impression card"
 
-    const val EVENT_CLICK_CAMPAIGN_CARD = "click campaign card"
+    const val EVENT_CLICK_CAMPAIGN_CARD = "click card"
     const val TRACKER_ID_CLICK_CARD = "34638"
 
     const val EVENT_IMPRESSION_BOTTOM_SHEET = "impression bottom sheet"
@@ -40,9 +40,14 @@ object CentralizedPromoConstant {
     const val EVENT_BOTTOM_SHEET_CREATE_CAMPAIGN = "click bottom sheet - create campaign"
     const val TRACKER_ID_BOTTOM_SHEET_CREATE_CAMPAIGN = "34641"
 
+    const val EVENT_BOTTOM_SHEET_PAYWALL= "click bottom sheet - paywall"
+    const val TRACKER_ID_BOTTOM_SHEET_PAYWALL= "34642"
+
+    const val IMPRESSION_BOTTOM_SHEET_PAYWALL= "impression bottom sheet - paywall"
+    const val TRACKER_ID_IMPRESSION_BOTTOM_SHEET_PAYWALL= "34643"
 
     // ON GOING
-    const val EVENT_ACTION_ON_GOING_IMPRESSION = "impression - fitur tokomu"
+    const val EVENT_ACTION_ON_GOING_IMPRESSION = "impression card - fitur tokomu"
     const val TRACKER_ID_ON_GOING_IMPRESSION = "34645"
 
     const val EVENT_ACTION_ON_GOING_CLICK = "click card - fitur tokomu"

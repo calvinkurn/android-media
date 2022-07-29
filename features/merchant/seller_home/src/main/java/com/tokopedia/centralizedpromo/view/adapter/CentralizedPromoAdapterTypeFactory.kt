@@ -26,7 +26,7 @@ class CentralizedPromoAdapterTypeFactory(
             PromoCreationViewHolder.RES_LAYOUT -> PromoCreationViewHolder(parent).apply {
                 onClickItemPromo = this@CentralizedPromoAdapterTypeFactory.onClickItemPromo
             }
-            OnGoingPromoViewHolder.RES_LAYOUT -> OnGoingPromoViewHolder(onProductCouponOngoingClicked, parent)
+            OnGoingPromoViewHolder.RES_LAYOUT -> OnGoingPromoViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

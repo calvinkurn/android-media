@@ -10,6 +10,7 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_AC
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_BOTTOM_SHEET_CHECKBOX
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_BOTTOM_SHEET_CREATE_CAMPAIGN
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_BOTTOM_SHEET_PAYWALL
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CATEGORY_ADS_AND_PROMO
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CATEGORY_MAIN_APP
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CATEGORY_MVC_PRODUCT
@@ -33,11 +34,14 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_INCREASE_BUYER
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_INCREASE_LOYALTY
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_INCREASE_NEW_ORDER
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.IMPRESSION_BOTTOM_SHEET_PAYWALL
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_BOTTOM_SHEET_CHECKBOX
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_BOTTOM_SHEET_CREATE_CAMPAIGN
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_BOTTOM_SHEET_PAYWALL
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_CLICK_CARD
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_FILTER_ALL
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_IMPRESSION_BOTTOM_SHEET
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_IMPRESSION_BOTTOM_SHEET_PAYWALL
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_IMPRESSION_CARD
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_INCREASE_BUYER
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.TRACKER_ID_INCREASE_LOYALTY
@@ -120,15 +124,12 @@ object CentralizedPromoTracking {
 
     fun sendClickOnGoingPromoFooter(widgetName: String, footerText: String) {
         val data = createMap(
-            event = EVENT_NAME_CLICK,
+            event = EVENT_NAME_VIEW_PG_IRIS,
             category = EVENT_CATEGORY_ADS_AND_PROMO,
-            action = arrayOf(
-                EVENT_ACTION_ON_GOING_CLICK,
-                widgetName,
-                footerText
-            ).joinToString(" - "),
-            label = ""
-        )
+            action = EVENT_ACTION_ON_GOING_CLICK,
+            label = widgetName,
+            trackerId = TRACKER_ID_ON_GOING_CLICK
+        ).completeEventInfo()
 
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
@@ -341,6 +342,36 @@ object CentralizedPromoTracking {
                 featureName
             ).joinToString(" - "),
             trackerId = TRACKER_ID_BOTTOM_SHEET_CREATE_CAMPAIGN
+        ).completeEventInfo()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun sendClickPaywall(filterTabName: String, featureName: String) {
+        val data = createMap(
+            event = EVENT_NAME_CLICK_PG,
+            action = EVENT_BOTTOM_SHEET_PAYWALL,
+            category = EVENT_CATEGORY_ADS_AND_PROMO,
+            label = arrayOf(
+                filterTabName,
+                featureName
+            ).joinToString(" - "),
+            trackerId = TRACKER_ID_BOTTOM_SHEET_PAYWALL
+        ).completeEventInfo()
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun sendImpressionBottomSheetPaywall(filterTabName: String, featureName: String) {
+        val data = createMap(
+            event = EVENT_NAME_CLICK_PG,
+            action = IMPRESSION_BOTTOM_SHEET_PAYWALL,
+            category = EVENT_CATEGORY_ADS_AND_PROMO,
+            label = arrayOf(
+                filterTabName,
+                featureName
+            ).joinToString(" - "),
+            trackerId = TRACKER_ID_IMPRESSION_BOTTOM_SHEET_PAYWALL
         ).completeEventInfo()
 
         TrackApp.getInstance().gtm.sendGeneralEvent(data)

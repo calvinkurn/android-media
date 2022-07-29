@@ -23,6 +23,8 @@ class DetailPromoBottomSheet :
 
     private var onCheckBoxListener: ((Boolean) -> Unit?)? =null
     private var onCreateCampaignTracking: (() -> Unit?)? =null
+    private var onClickPaywallTracking: (() -> Unit?)? =null
+    private var onImpressionPaywallracking: (() -> Unit?)? =null
 
     companion object {
         private const val TAG = "DetailPromoBottomSheet"
@@ -59,9 +61,11 @@ class DetailPromoBottomSheet :
                 tickerInfoEligble.show()
                 tickerInfoEligble.setTextDescription(it.infoText)
                 cbDontShowInfo.gone()
+                onImpressionPaywallracking?.invoke()
             }else{
                 tickerInfoEligble.gone()
-                cbDontShowInfo.setOnCheckedChangeListener { compoundButton, isChecked ->
+                cbDontShowInfo.show()
+                cbDontShowInfo.setOnCheckedChangeListener { _, _ ->
                     onCheckBoxListener?.invoke(binding?.cbDontShowInfo?.isChecked.orFalse())
                 }
             }
@@ -74,6 +78,8 @@ class DetailPromoBottomSheet :
                 RouteManager.route(context,it.ctaLink)
                 if (it.infoText.isEmpty()){
                     onCreateCampaignTracking?.invoke()
+                }else{
+                    onClickPaywallTracking?.invoke()
                 }
             }
         }
@@ -91,5 +97,13 @@ class DetailPromoBottomSheet :
 
     fun onCreateCampaignTracking(onCreateCampaignTracking:() -> Unit){
         this.onCreateCampaignTracking = onCreateCampaignTracking
+    }
+
+    fun onClickPaywallTracking(onClickPaywallTracking:() -> Unit){
+        this.onClickPaywallTracking = onClickPaywallTracking
+    }
+
+    fun onImpressionPaywallTracking(onImpressionPaywallracking:() -> Unit){
+        this.onImpressionPaywallracking = onImpressionPaywallracking
     }
 }

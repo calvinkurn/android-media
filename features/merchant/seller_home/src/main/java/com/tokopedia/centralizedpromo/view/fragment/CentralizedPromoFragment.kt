@@ -317,6 +317,21 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
                     )
                 }
 
+                detailPromoBottomSheet.onClickPaywallTracking {
+                    CentralizedPromoTracking.sendClickPaywall(
+                        currentFilterTab.name,
+                        promoCreationUiModel.title
+                    )
+                }
+
+
+                detailPromoBottomSheet.onImpressionPaywallTracking {
+                    CentralizedPromoTracking.sendImpressionBottomSheetPaywall(
+                        currentFilterTab.name,
+                        promoCreationUiModel.title
+                    )
+                }
+
                 CentralizedPromoTracking.sendImpressionBottomSheetPromo(
                     currentFilterTab.name,
                     promoCreationUiModel.title

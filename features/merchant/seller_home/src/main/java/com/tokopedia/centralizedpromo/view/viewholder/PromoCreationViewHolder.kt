@@ -26,7 +26,7 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
         binding.run {
             ivRecommendedPromo.loadImage(element.icon)
             tvRecommendedPromoTitle.text = element.title
-            if (element.isEligible()) {
+            if (element.notAvailableText.isEmpty()) {
                 tvRecommendedPromoDescription.text = element.description
             } else {
                 tvRecommendedPromoDescription.text = itemView.context.getString(
@@ -39,7 +39,6 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
                 tvBadgeNew.show()
             } else {
                 tvBadgeNew.gone()
-
             }
 
             root.setOnClickListener {

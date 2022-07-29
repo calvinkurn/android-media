@@ -14,7 +14,6 @@ import com.tokopedia.sellerhome.R.layout.centralized_promo_item_on_going_promo
 import com.tokopedia.sellerhome.databinding.CentralizedPromoItemOnGoingPromoBinding
 
 class OnGoingPromoViewHolder(
-    private val onProductCouponOngoingPromoClicked: (String) -> Unit,
     view: View?
 ) : AbstractViewHolder<OnGoingPromoUiModel>(view) {
 
