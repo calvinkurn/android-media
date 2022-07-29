@@ -92,6 +92,10 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
         }
     }
 
+    fun clearPreviousData() {
+        balanceAdapter?.setItemList(HomeBalanceModel())
+    }
+
     fun getSubscriptionView(subscriptionPosition: Int): View? {
         if (balanceAdapter?.getItemList()?.containsSubscription() == true) {
             return balanceDividerAdapter?.getSubscriptionView(subscriptionPosition)

@@ -63,7 +63,6 @@ class BalanceWidgetView : FrameLayout {
             balanceWidgetAdapter = BalanceWidgetAdapter(BalanceWidgetTypeFactoryImpl(listener))
             rvBalance?.layoutManager = layoutManager
             rvBalance?.adapter = balanceWidgetAdapter
-
         }
         when (element.status) {
             HomeBalanceModel.STATUS_LOADING -> {
@@ -73,21 +72,22 @@ class BalanceWidgetView : FrameLayout {
                 balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
             }
             else -> {
-                if (element.balanceDrawerItemModels.isNotEmpty()) {
-                    subscriptionPosition = element.balancePositionSubscriptions
-                    balanceWidgetAdapter?.setVisitables(listOf(element))
-                    rvBalance?.post {
-                        listener?.showBalanceWidgetCoachMark(element)
-                    }
-                } else {
-                    balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
-                }
+                loadDataSuccess(element)
             }
         }
     }
 
-    fun showLoading() {
-        balanceWidgetAdapter?.setVisitables(listOf(BalanceShimmerModel()))
+    private fun loadDataSuccess(element: HomeBalanceModel) {
+        if (element.balanceDrawerItemModels.isNotEmpty()) {
+            subscriptionPosition = element.balancePositionSubscriptions
+            balanceWidgetAdapter?.setVisitables(listOf(element))
+            listener?.showBalanceWidgetCoachMark(element)
+            rvBalance?.post {
+                listener?.showBalanceWidgetCoachMark(element)
+            }
+        } else {
+            balanceWidgetAdapter?.setVisitables(listOf(BalanceWidgetFailedModel()))
+        }
     }
 
     fun getSubscriptionView(): View? {

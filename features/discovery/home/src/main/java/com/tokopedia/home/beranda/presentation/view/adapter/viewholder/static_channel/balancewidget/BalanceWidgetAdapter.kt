@@ -7,4 +7,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.balancewidge
  * Created by dhaba
  */
 class BalanceWidgetAdapter(typeFactory: BalanceWidgetTypeFactoryImpl) :
-    BaseAdapter<BalanceWidgetTypeFactoryImpl>(typeFactory)
+    BaseAdapter<BalanceWidgetTypeFactoryImpl>(typeFactory) {
+    fun clearBalanceWidgetViewHolder() {
+    }
+}

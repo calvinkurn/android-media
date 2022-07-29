@@ -16,11 +16,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
  * Created by dhaba
  */
 class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAdapterTypeFactory(), BalanceWidgetTypeFactory {
+    private var balanceWidgetViewHolder : BalanceWidgetViewHolder ? = null
+
     override fun type(dataModel: HomeBalanceModel): Int {
         return BalanceWidgetViewHolder.LAYOUT
     }
 
     override fun type(dataModel: BalanceShimmerModel): Int {
+        balanceWidgetViewHolder?.clearPreviousData()
         return BalanceWidgetShimmerViewHolder.LAYOUT
     }
 
@@ -30,7 +33,10 @@ class BalanceWidgetTypeFactoryImpl(val listener: HomeCategoryListener?) : BaseAd
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            BalanceWidgetViewHolder.LAYOUT -> BalanceWidgetViewHolder(view, listener)
+            BalanceWidgetViewHolder.LAYOUT -> {
+                balanceWidgetViewHolder = BalanceWidgetViewHolder(view, listener)
+                balanceWidgetViewHolder
+            }
             BalanceWidgetShimmerViewHolder.LAYOUT -> BalanceWidgetShimmerViewHolder(view, listener)
             BalanceWidgetFailedViewHolder.LAYOUT -> BalanceWidgetFailedViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
