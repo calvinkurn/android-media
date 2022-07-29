@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.media.loader.wrapper.MediaDataSource
@@ -119,6 +120,11 @@ class ReviewImagePlayerFragment : BaseDaggerFragment() {
         setupLayout()
         collectUiState()
         collectToasterEvent()
+    }
+
+    override fun onDestroyView() {
+        binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.clearImage()
+        super.onDestroyView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
