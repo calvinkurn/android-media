@@ -155,10 +155,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     }
 
     private fun onFailRemoveRecipe(isRemoving: Boolean, position: Int, recipeId: String, isSuccess: Boolean, errorMessage: String) {
-        tempRecipeRemoved?.apply {
-            layout.removeAt(first)
-            layout.add(first, second)
-        }
+        restoreRecipeRemoved()
 
         _toaster.value = UiState.Fail(
             data = ToasterUiModel(
