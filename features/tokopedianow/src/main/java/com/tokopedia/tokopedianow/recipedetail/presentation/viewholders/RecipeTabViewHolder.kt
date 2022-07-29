@@ -11,12 +11,14 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.fragment.TokoNowReci
 import com.tokopedia.tokopedianow.recipedetail.presentation.fragment.TokoNowRecipeInstructionFragment
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeTabUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
+import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeTabViewHolder(
     itemView: View,
-    private val view: RecipeDetailView
+    private val view: RecipeDetailView,
+    private val productListener: RecipeProductListener
 ): AbstractViewHolder<RecipeTabUiModel>(itemView) {
 
     companion object {
@@ -36,6 +38,8 @@ class RecipeTabViewHolder(
 
             val ingredientFragment = TokoNowRecipeIngredientFragment.newInstance(tab.ingredient)
             val instructionFragment = TokoNowRecipeInstructionFragment.newInstance(tab.instruction)
+
+            ingredientFragment.setProductListener(productListener)
 
             val recipeTabAdapter = RecipeTabAdapter(it).apply {
                 addFragment(ingredientFragment)

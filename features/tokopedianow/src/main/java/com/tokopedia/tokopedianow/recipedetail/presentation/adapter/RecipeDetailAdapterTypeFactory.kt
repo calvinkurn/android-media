@@ -10,11 +10,13 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeTabUiM
 import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.MediaSliderViewHolder
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeInfoViewHolder
+import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeTabViewHolder
 
 
 class RecipeDetailAdapterTypeFactory(
-    private val view: RecipeDetailView
+    private val view: RecipeDetailView,
+    private val productListener: RecipeProductListener
 ): BaseAdapterTypeFactory(), RecipeDetailTypeFactory {
 
     override fun type(uiModel: MediaSliderUiModel): Int = MediaSliderViewHolder.LAYOUT
@@ -27,7 +29,7 @@ class RecipeDetailAdapterTypeFactory(
         return when(type) {
             MediaSliderViewHolder.LAYOUT -> MediaSliderViewHolder(parent)
             RecipeInfoViewHolder.LAYOUT -> RecipeInfoViewHolder(parent)
-            RecipeTabViewHolder.LAYOUT -> RecipeTabViewHolder(parent, view)
+            RecipeTabViewHolder.LAYOUT -> RecipeTabViewHolder(parent, view, productListener)
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class IngredientTabUiModel(
+data class IngredientTabUiModel(
     val buyAllProductItem: BuyAllProductUiModel,
     val productList: List<RecipeProductUiModel>
 ): Parcelable

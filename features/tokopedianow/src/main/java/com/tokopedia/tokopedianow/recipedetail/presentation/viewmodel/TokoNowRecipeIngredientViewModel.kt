@@ -12,19 +12,19 @@ class TokoNowRecipeIngredientViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
-    val ingredientItemList: LiveData<List<Visitable<*>>>
-        get() = _ingredientItemList
+    val itemList: LiveData<List<Visitable<*>>>
+        get() = _itemList
 
-    private val _ingredientItemList = MutableLiveData<List<Visitable<*>>>()
+    private val _itemList = MutableLiveData<List<Visitable<*>>>()
 
-    fun getIngredientItems(data: IngredientTabUiModel?) {
+    fun getLayout(data: IngredientTabUiModel?) {
         data?.run {
             val items = mutableListOf<Visitable<*>>().apply {
                 add(data.buyAllProductItem)
                 addAll(data.productList)
             }
 
-            _ingredientItemList.postValue(items)
+            _itemList.postValue(items)
         }
     }
 }
