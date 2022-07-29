@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.custom.interactive.follow.InteractiveFollowView
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
@@ -45,7 +46,7 @@ import javax.inject.Inject
  */
 class InteractiveDialogFragment @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val analytic: PlayAnalytic,
+    private val analytic: PlayNewAnalytic,
 ) : DialogFragment() {
 
     private var mDataSource: DataSource? = null
@@ -54,7 +55,7 @@ class InteractiveDialogFragment @Inject constructor(
 
     private val followViewListener = object : InteractiveFollowView.Listener {
         override fun onFollowImpressed(view: InteractiveFollowView) {
-            analytic.impressFollowShopInteractive(shopId = viewModel.partnerId.toString(), interactiveType = viewModel.interactiveData)
+            analytic.impressFollowShopInteractive(shopId = viewModel.partnerId.toString(), interactiveType = viewModel.interactiveData, channelId = viewModel.channelId)
         }
 
         override fun onFollowClicked(view: InteractiveFollowView) {
@@ -62,7 +63,9 @@ class InteractiveDialogFragment @Inject constructor(
             analytic.clickFollowShopInteractive(
                 interactiveId = viewModel.interactiveData.id,
                 shopId = viewModel.partnerId.toString(),
-                interactiveType = viewModel.interactiveData
+                interactiveType = viewModel.interactiveData,
+                channelId = viewModel.channelId,
+                channelType = viewModel.channelType
             )
         }
     }
@@ -72,6 +75,8 @@ class InteractiveDialogFragment @Inject constructor(
             viewModel.submitAction(PlayViewerNewAction.TapGiveaway)
             analytic.clickTapTap(
                 interactiveId = viewModel.interactiveData.id,
+                channelId = viewModel.channelId,
+                channelType = viewModel.channelType
             )
         }
     }
@@ -243,11 +248,13 @@ class InteractiveDialogFragment @Inject constructor(
                         override fun onQuizOptionClicked(item: QuizChoicesUiModel) {
                             viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item))
                             analytic.clickQuizOption(interactiveId = viewModel.interactiveData.id, shopId = viewModel.partnerId.toString(),
-                            choiceAlphabet = if(item.type is PlayQuizOptionState.Default) (item.type as PlayQuizOptionState.Default).alphabet.toString() else "")
+                            choiceAlphabet = if(item.type is PlayQuizOptionState.Default) (item.type as PlayQuizOptionState.Default).alphabet.toString() else "",
+                                channelId = viewModel.channelId)
                         }
 
                         override fun onQuizImpressed() {
-                            analytic.impressQuizOptions(shopId = viewModel.partnerId.toString(), interactiveId = viewModel.interactiveData.id)
+                            analytic.impressQuizOptions(shopId = viewModel.partnerId.toString(), interactiveId = viewModel.interactiveData.id,
+                                channelId = viewModel.channelId)
                         }
                     })
                     getHeader().isEditable = false
