@@ -16,7 +16,7 @@ import com.tokopedia.search.result.product.separator.VerticalSeparable
 
 class SeparatorItemDecoration(
     context: Context,
-    private val visitableAdapter: ProductListAdapter,
+    private val visitableAdapter: ProductListAdapter?,
 ) : RecyclerView.ItemDecoration() {
 
     private val separatorDrawable = ContextCompat.getDrawable(
@@ -25,9 +25,10 @@ class SeparatorItemDecoration(
     )
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        val visitableAdapter = visitableAdapter ?: return
         val separatorDrawable = separatorDrawable ?: return
         if (parent.childCount.isZero()) return
-        (0..parent.childCount).forEach { index ->
+        (0 until parent.childCount).forEach { index ->
             val view = parent.getChildAt(index)
             val childAdapterPosition = parent.getChildAdapterPosition(view)
             if (childAdapterPosition == RecyclerView.NO_POSITION) return
@@ -39,7 +40,7 @@ class SeparatorItemDecoration(
                 if (canDrawTopSeparator(currentData, previousData)) {
                     separatorDrawable.drawTopSeparator(view, parent, canvas)
                 }
-                if (currentData.hasBottomSeparator) {
+                if (currentData.verticalSeparator.hasBottomSeparator) {
                     separatorDrawable.drawBottomSeparator(view, parent, canvas)
                 }
             }
@@ -47,6 +48,7 @@ class SeparatorItemDecoration(
     }
 
     private fun getPreviousData(childAdapterPosition: Int): Visitable<*>? {
+        val visitableAdapter = visitableAdapter ?: return null
         if (childAdapterPosition > 0) {
             return visitableAdapter.itemList[childAdapterPosition - 1]
         }
@@ -55,14 +57,14 @@ class SeparatorItemDecoration(
 
     private fun Visitable<*>?.isBottomSeparator(): Boolean {
         return this is SeparatorDataView
-                || (this is VerticalSeparable && this.hasBottomSeparator)
+                || (this is VerticalSeparable && this.verticalSeparator.hasBottomSeparator)
     }
 
     private fun canDrawTopSeparator(
         verticalSeparable: VerticalSeparable,
         previousViewHolder: Visitable<*>?
     ): Boolean {
-        return verticalSeparable.hasTopSeparator && !previousViewHolder.isBottomSeparator()
+        return verticalSeparable.verticalSeparator.hasTopSeparator && !previousViewHolder.isBottomSeparator()
     }
 
     private fun Drawable.drawTopSeparator(view: View, parent: RecyclerView, canvas: Canvas) =
@@ -91,6 +93,7 @@ class SeparatorItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
+        val visitableAdapter = visitableAdapter ?: return
         val separatorDrawable = separatorDrawable ?: return
 
         val childAdapterPosition = parent.getChildAdapterPosition(view)
@@ -104,7 +107,7 @@ class SeparatorItemDecoration(
                 else -> 0
             }
             outRect.bottom = when {
-                currentData.hasBottomSeparator -> separatorDrawable.intrinsicHeight
+                currentData.verticalSeparator.hasBottomSeparator -> separatorDrawable.intrinsicHeight
                 else -> 0
             }
         }

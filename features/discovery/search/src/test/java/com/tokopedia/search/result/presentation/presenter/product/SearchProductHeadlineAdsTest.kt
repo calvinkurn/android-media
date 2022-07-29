@@ -7,7 +7,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.product.separator.VerticalSeparable
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -64,13 +64,13 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         expectedCpmModel: CpmModel,
         expectedCpmData: CpmData,
     ) {
-        visitableList[1].assertCpmModel(expectedCpmModel, expectedCpmData, VerticalSeparable.None)
+        visitableList[1].assertCpmModel(expectedCpmModel, expectedCpmData, VerticalSeparator.None)
     }
 
     private fun Visitable<*>.assertCpmModel(
         expectedCpmModel: CpmModel,
         expectedCpmData: CpmData,
-        expectedSeparator: VerticalSeparable,
+        expectedSeparator: VerticalSeparator,
     ) {
         this.shouldBeInstanceOf<CpmDataView>()
 
@@ -81,8 +81,8 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         actualCpmModel.status.shouldBe(expectedCpmModel.status)
         actualCpmModel.error.shouldBe(expectedCpmModel.error)
         actualCpmModel.data.shouldBe(listOf(expectedCpmData))
-        cpmDataView.hasTopSeparator.shouldBe(expectedSeparator.hasTopSeparator)
-        cpmDataView.hasBottomSeparator.shouldBe(expectedSeparator.hasBottomSeparator)
+        cpmDataView.verticalSeparator.hasTopSeparator.shouldBe(expectedSeparator.hasTopSeparator)
+        cpmDataView.verticalSeparator.hasBottomSeparator.shouldBe(expectedSeparator.hasBottomSeparator)
     }
 
     @Test
@@ -108,7 +108,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         visitableList[firstSeparatorIndex].assertCpmModel(
             expectedCpmModel,
             expectedCpmData,
-            VerticalSeparable.Both
+            VerticalSeparator.Both
         )
     }
 

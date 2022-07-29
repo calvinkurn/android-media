@@ -56,9 +56,7 @@ class RecyclerViewUpdater @Inject constructor(
             layoutManager = rvLayoutManager
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
-            productListAdapter?.let {
-                addItemDecoration(SeparatorItemDecoration(context, it))
-            }
+            addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
             addOnScrollListener(rvOnScrollListener)
         }
     }

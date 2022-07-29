@@ -325,7 +325,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         actualSuggestionViewModelIndex.shouldBe(expectedSuggestionViewModelIndex,
                 "Suggestion View Model is at position $actualSuggestionViewModelIndex, should be at position $expectedSuggestionViewModelIndex"
         )
-        suggestionDataView.hasTopSeparator.shouldBe(true)
+        suggestionDataView.verticalSeparator.hasTopSeparator.shouldBe(true)
     }
 
     @Test
@@ -561,9 +561,9 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     ) {
         val suggestionDataView = visitableList[suggestionViewModelIndex] as SuggestionDataView
 
-        suggestionDataView.hasTopSeparator.shouldBe(
+        suggestionDataView.verticalSeparator.hasTopSeparator.shouldBe(
             expectedHasTopSeparator,
-            "Suggestion View Model top separator is ${suggestionDataView.hasTopSeparator}, should be $expectedHasTopSeparator"
+            "Suggestion View Model top separator is ${suggestionDataView.verticalSeparator.hasTopSeparator}, should be $expectedHasTopSeparator"
         )
     }
 
@@ -579,9 +579,9 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             it is BroadMatchDataView
         } as BroadMatchDataView
 
-        lastBroadMatchDataView.hasBottomSeparator.shouldBe(
+        lastBroadMatchDataView.verticalSeparator.hasBottomSeparator.shouldBe(
             expectedHasBottomSeparator,
-            "Separator View Model is at position ${lastBroadMatchDataView.hasBottomSeparator}, should be at position $expectedHasBottomSeparator"
+            "Separator View Model is at position ${lastBroadMatchDataView.verticalSeparator.hasBottomSeparator}, should be at position $expectedHasBottomSeparator"
         )
     }
 

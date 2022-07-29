@@ -86,7 +86,7 @@ import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
-import com.tokopedia.search.result.product.separator.VerticalSeparable
+import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
@@ -1128,7 +1128,7 @@ class ProductListPresenter @Inject constructor(
     ) {
         val headlineAdsVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
         if (isUseSeparator) {
-            headlineAdsVisitableList.add(CpmDataView(cpmDataView.cpmModel, VerticalSeparable.Both))
+            headlineAdsVisitableList.add(CpmDataView(cpmDataView.cpmModel, VerticalSeparator.Both))
         } else {
             headlineAdsVisitableList.add(cpmDataView)
         }
@@ -1277,7 +1277,7 @@ class ProductListPresenter @Inject constructor(
 
         if (data.title.isNotEmpty()) {
             broadMatchVisitableList.add(
-                SuggestionDataView(data.title, verticalSeparable = VerticalSeparable.Top)
+                SuggestionDataView(data.title, verticalSeparator = VerticalSeparator.Top)
             )
             broadMatchVisitableList.addAll(data.options.mapToBroadMatchDataView(data.type, false))
         } else {
@@ -1292,12 +1292,12 @@ class ProductListPresenter @Inject constructor(
         addTopSeparator: Boolean,
     ): List<Visitable<*>> {
         return mapIndexed { index, option ->
-            val verticalSeparable = if (index == 0 && addTopSeparator) {
-                VerticalSeparable.Top
+            val verticalSeparator = if (index == 0 && addTopSeparator) {
+                VerticalSeparator.Top
             } else if (index == size - 1) {
-                VerticalSeparable.Bottom
+                VerticalSeparator.Bottom
             } else {
-                VerticalSeparable.None
+                VerticalSeparator.None
             }
             BroadMatchDataView(
                 keyword = option.title,
@@ -1339,7 +1339,7 @@ class ProductListPresenter @Inject constructor(
                     option.cardButton.title,
                     option.cardButton.applink,
                 ),
-                verticalSeparable = verticalSeparable,
+                verticalSeparator = verticalSeparator,
             )
         }
     }
@@ -1432,21 +1432,21 @@ class ProductListPresenter @Inject constructor(
             if (index == 0 && addTopSeparator) {
                 when (visitable) {
                     is SuggestionDataView -> {
-                        visitable.changeVerticalSeparable(VerticalSeparable.Top)
+                        visitable.changeVerticalSeparable(VerticalSeparator.Top)
                     }
                     is BroadMatchDataView -> {
-                        visitable.copy(verticalSeparable = VerticalSeparable.Top)
+                        visitable.copy(verticalSeparator = VerticalSeparator.Top)
                     }
                     else -> visitable
                 }
             } else if (addBottomSeparator && index == size - 1 && visitable is BroadMatchDataView) {
-                visitable.copy(verticalSeparable = VerticalSeparable.Bottom)
+                visitable.copy(verticalSeparator = VerticalSeparator.Bottom)
             } else visitable
         }
     }
 
     private fun SuggestionDataView.changeVerticalSeparable(
-        verticalSeparable: VerticalSeparable
+        verticalSeparator: VerticalSeparator
     ): SuggestionDataView {
         return SuggestionDataView(
             suggestionText,
@@ -1457,7 +1457,7 @@ class ProductListPresenter @Inject constructor(
             keyword,
             dimension90,
             trackingValue,
-            verticalSeparable
+            verticalSeparator
         )
     }
 

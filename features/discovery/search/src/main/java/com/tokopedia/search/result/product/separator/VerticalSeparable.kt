@@ -1,25 +1,29 @@
 package com.tokopedia.search.result.product.separator
 
 interface VerticalSeparable {
-    val hasTopSeparator: Boolean
-    val hasBottomSeparator: Boolean
+    val verticalSeparator: VerticalSeparator
+}
 
-    object None: VerticalSeparable {
+sealed class VerticalSeparator {
+    abstract val hasTopSeparator: Boolean
+    abstract val hasBottomSeparator: Boolean
+
+    object None : VerticalSeparator() {
         override val hasTopSeparator = false
         override val hasBottomSeparator = false
     }
 
-    object Top : VerticalSeparable {
+    object Top : VerticalSeparator() {
         override val hasTopSeparator = true
         override val hasBottomSeparator = false
     }
 
-    object Bottom : VerticalSeparable {
+    object Bottom : VerticalSeparator() {
         override val hasTopSeparator = false
         override val hasBottomSeparator = true
     }
 
-    object Both : VerticalSeparable {
+    object Both : VerticalSeparator() {
         override val hasTopSeparator = true
         override val hasBottomSeparator = true
     }
