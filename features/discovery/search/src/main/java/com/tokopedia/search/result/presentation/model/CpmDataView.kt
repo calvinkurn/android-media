@@ -6,7 +6,7 @@ import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
-class CpmDataView(
+data class CpmDataView(
     val cpmModel: CpmModel = CpmModel(),
     override val verticalSeparator: VerticalSeparator = VerticalSeparator.None,
 ) : Visitable<ProductListTypeFactory>,

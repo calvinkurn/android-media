@@ -11,7 +11,7 @@ import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 
 @Suppress("LongParameterList")
-class SuggestionDataView(
+data class SuggestionDataView(
     val suggestionText: String = "",
     val suggestedQuery: String = "",
     val suggestion: String = "",

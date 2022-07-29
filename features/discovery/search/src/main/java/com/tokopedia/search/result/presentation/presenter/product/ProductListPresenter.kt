@@ -1128,7 +1128,7 @@ class ProductListPresenter @Inject constructor(
     ) {
         val headlineAdsVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
         if (isUseSeparator) {
-            headlineAdsVisitableList.add(CpmDataView(cpmDataView.cpmModel, VerticalSeparator.Both))
+            headlineAdsVisitableList.add(cpmDataView.copy(verticalSeparator = VerticalSeparator.Both))
         } else {
             headlineAdsVisitableList.add(cpmDataView)
         }
@@ -1432,7 +1432,7 @@ class ProductListPresenter @Inject constructor(
             if (index == 0 && addTopSeparator) {
                 when (visitable) {
                     is SuggestionDataView -> {
-                        visitable.changeVerticalSeparable(VerticalSeparator.Top)
+                        visitable.copy(verticalSeparator = VerticalSeparator.Top)
                     }
                     is BroadMatchDataView -> {
                         visitable.copy(verticalSeparator = VerticalSeparator.Top)
@@ -1443,22 +1443,6 @@ class ProductListPresenter @Inject constructor(
                 visitable.copy(verticalSeparator = VerticalSeparator.Bottom)
             } else visitable
         }
-    }
-
-    private fun SuggestionDataView.changeVerticalSeparable(
-        verticalSeparator: VerticalSeparator
-    ): SuggestionDataView {
-        return SuggestionDataView(
-            suggestionText,
-            suggestedQuery,
-            suggestion,
-            componentId,
-            trackingOption,
-            keyword,
-            dimension90,
-            trackingValue,
-            verticalSeparator
-        )
     }
 
     private fun processTopAdsImageViewModel(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {
