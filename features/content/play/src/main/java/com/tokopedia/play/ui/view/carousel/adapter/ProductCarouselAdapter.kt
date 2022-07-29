@@ -6,10 +6,10 @@ import com.tokopedia.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.ui.productfeatured.viewholder.ProductFeaturedViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.adapter.delegate.ProductFeaturedPlaceholderAdapterDelegate
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
+import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by kenny.hadisaputra on 08/07/22
@@ -43,7 +43,9 @@ class ProductCarouselAdapter(
 
     class ProductDelegate(
         private val listener: ProductBasicViewHolder.Listener,
-    ) : BaseAdapterDelegate<PlayProductUiModel.Product, PlayProductUiModel, ProductFeaturedViewHolder>(R.layout.view_play_empty) {
+    ) : BaseAdapterDelegate<PlayProductUiModel.Product, PlayProductUiModel, ProductFeaturedViewHolder>(
+        commonR.layout.view_play_empty
+    ) {
 
         override fun isForViewType(
             itemList: List<PlayProductUiModel>,
@@ -74,7 +76,9 @@ class ProductCarouselAdapter(
 
     class PinnedProductDelegate(
         private val listener: ProductCarouselViewHolder.PinnedProduct.Listener,
-    ) : BaseAdapterDelegate<PlayProductUiModel.Product, PlayProductUiModel, ProductCarouselViewHolder.PinnedProduct>(R.layout.view_play_empty) {
+    ) : BaseAdapterDelegate<PlayProductUiModel.Product, PlayProductUiModel, ProductCarouselViewHolder.PinnedProduct>(
+        commonR.layout.view_play_empty
+    ) {
 
         override fun isForViewType(
             itemList: List<PlayProductUiModel>,
