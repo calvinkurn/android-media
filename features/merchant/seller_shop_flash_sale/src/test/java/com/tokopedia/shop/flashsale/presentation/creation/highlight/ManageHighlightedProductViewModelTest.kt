@@ -550,7 +550,6 @@ class ManageHighlightedProductViewModelTest {
         assertEquals(expected, actual)
     }
 
-
     @Test
     fun `When select a variant product within same parent, other variant should be disabled`() {
         //Given
@@ -571,7 +570,6 @@ class ManageHighlightedProductViewModelTest {
         //Then
         assertEquals(expected, actual)
     }
-
 
     @Test
     fun `When variant product within same parent but not selected, should not update any properties`() {
@@ -621,6 +619,50 @@ class ManageHighlightedProductViewModelTest {
 
         //When
         val actual = viewModel.markAsSelected(products)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When seller already select 5 product, the remaining products should be disabled`() {
+        //Given
+        val firstProduct = buildHighlightableProduct().copy(id = 1, parentId = 100, isSelected = false)
+        val secondProduct = buildHighlightableProduct().copy(id = 2, parentId = 200, isSelected = false)
+        val thirdProduct = buildHighlightableProduct().copy(id = 3, parentId = 300, isSelected = false)
+        val fourthProduct = buildHighlightableProduct().copy(id = 4, parentId = 400, isSelected = false)
+        val fifthProduct = buildHighlightableProduct().copy(id = 5, parentId = 500, isSelected = false)
+        val sixthProduct = buildHighlightableProduct().copy(id = 6, parentId = 600, isSelected = false)
+        val seventhProduct = buildHighlightableProduct().copy(id = 7, parentId = 700, isSelected = false)
+
+        viewModel.addProductIdToSelection(firstProduct)
+        viewModel.addProductIdToSelection(secondProduct)
+        viewModel.addProductIdToSelection(thirdProduct)
+        viewModel.addProductIdToSelection(fourthProduct)
+        viewModel.addProductIdToSelection(fifthProduct)
+
+        val allProducts = listOf(
+            firstProduct,
+            secondProduct,
+            thirdProduct,
+            fourthProduct,
+            fifthProduct,
+            sixthProduct,
+            seventhProduct
+        )
+
+        val expected = listOf(
+            firstProduct.copy(isSelected = true, disabled = false, position = 1),
+            secondProduct.copy(isSelected = true, disabled = false, position = 2),
+            thirdProduct.copy(isSelected = true, disabled = false, position = 3),
+            fourthProduct.copy(isSelected = true, disabled = false, position = 4),
+            fifthProduct.copy(isSelected = true, disabled = false, position = 5),
+            sixthProduct.copy(isSelected = false, disabled = true, position = 6),
+            seventhProduct.copy(isSelected = false, disabled = true, position = 7),
+        )
+
+        //When
+        val actual = viewModel.markAsSelected(allProducts)
 
         //Then
         assertEquals(expected, actual)
