@@ -441,12 +441,14 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
         private const val OTP_TYPE_PHONE_VERIFICATION = 11
 
+        private const val MIN_PHONE_LENGTH = 6
+
         fun createInstance(bundle: Bundle): PhoneShopCreationFragment {
             val fragment = PhoneShopCreationFragment()
             fragment.arguments = bundle
             return fragment
         }
 
-        fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() && phone.length >= 6
+        fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() && phone.length >= MIN_PHONE_LENGTH
     }
 }
