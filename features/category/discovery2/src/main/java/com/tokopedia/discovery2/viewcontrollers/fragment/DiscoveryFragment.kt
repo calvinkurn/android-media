@@ -30,7 +30,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.AdultManager

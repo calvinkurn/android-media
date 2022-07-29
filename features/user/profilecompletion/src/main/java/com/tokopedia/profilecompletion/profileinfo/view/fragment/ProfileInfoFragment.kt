@@ -387,7 +387,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRYPOINT_NAME)
             val intent = RouteManager.getIntent(
                 context,
-                ApplinkConstInternalGlobal.CHANGE_NAME,
+                ApplinkConstInternalUserPlatform.CHANGE_NAME,
                 data.profileInfoData.fullName,
                 data.profileRoleData.chancesChangeName
             )
@@ -405,7 +405,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     private fun onEmailClicked(data: ProfileInfoUiModel) {
         if (data.profileInfoData.email.isEmpty() || !data.profileInfoData.isEmailDone) {
             tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_EMAIL)
             startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_EMAIL)
         } else {
             if (data.profileInfoData.msisdn.isNotEmpty() && data.profileInfoData.isMsisdnVerified) {
@@ -438,7 +438,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         if (data.profileRoleData.isAllowedChangeGender) {
             tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_GENDER)
             val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
+                RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CHANGE_GENDER)
             startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_GENDER)
         }
     }
@@ -685,13 +685,13 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     }
 
     private fun goToAddPhone() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PHONE)
         startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_PHONE)
     }
 
     private fun goToAddPhoneBy(phone: String) {
         val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
+            RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PHONE_WITH, phone)
         startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_VERIFY_PHONE)
     }
 
@@ -703,15 +703,15 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     }
 
     private fun goToAddDob() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD_TITLE, getString(title_add_bod))
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_BOD)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE, getString(title_add_bod))
         startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_BOD)
     }
 
     private fun goToChangeDob(bod: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD_TITLE, getString(title_change_bod))
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD, bod)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_BOD)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE, getString(title_change_bod))
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD, bod)
         startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_EDIT_BOD)
     }
 

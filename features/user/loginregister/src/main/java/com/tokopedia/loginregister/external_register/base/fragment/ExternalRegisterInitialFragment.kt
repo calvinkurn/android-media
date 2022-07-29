@@ -12,6 +12,7 @@ import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
@@ -67,7 +68,7 @@ open class ExternalRegisterInitialFragment: BaseDaggerFragment() {
     }
 
     fun goToAddPin2FA(enableSkip2FA: Boolean) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)

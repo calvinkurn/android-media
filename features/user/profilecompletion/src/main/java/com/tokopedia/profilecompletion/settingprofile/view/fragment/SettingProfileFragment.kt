@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
@@ -444,7 +445,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 true
             ) {
                 val intent =
-                    RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
+                    RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CHANGE_GENDER)
                 startActivityForResult(intent, REQUEST_CODE_ADD_GENDER)
             }
         } else {
@@ -468,7 +469,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                 getString(R.string.message_email_setting_profile),
                 false
             ) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_EMAIL)
                 startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
             }
         } else {
@@ -588,13 +589,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun goToAddPhone() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PHONE)
         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
     private fun goToAddPhoneBy(phone: String) {
         val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
+            RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PHONE_WITH, phone)
         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
@@ -606,21 +607,21 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun goToAddBod() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_BOD)
         intent.putExtra(
-            ApplinkConstInternalGlobal.PARAM_BOD_TITLE,
+            ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE,
             getString(R.string.title_add_bod)
         )
         startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
     }
 
     private fun goToChangeBod(bod: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_BOD)
         intent.putExtra(
-            ApplinkConstInternalGlobal.PARAM_BOD_TITLE,
+            ApplinkConstInternalUserPlatform.PARAM_BOD_TITLE,
             getString(R.string.title_change_bod)
         )
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD, bod)
+        intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_BOD, bod)
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
 
@@ -645,7 +646,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
             ChangeNameTracker().clickOnChangeName()
             val intent = RouteManager.getIntent(
                 context,
-                ApplinkConstInternalGlobal.CHANGE_NAME,
+                ApplinkConstInternalUserPlatform.CHANGE_NAME,
                 profileCompletionData.fullName,
                 chancesChangeName
             )

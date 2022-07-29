@@ -102,15 +102,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEAR
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_PDP
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_BOD
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_EMAIL
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_TALK
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_GENDER
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
@@ -118,7 +110,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHOOSE_ACCOUNT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.FORGOT_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
@@ -131,6 +122,15 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO_SIMPLE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER_CLEAN_VIEW
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_GENDER
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_EMAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_BOD
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PIN
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_NAME
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.FORGOT_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V1
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V3
@@ -582,7 +582,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         || it.startsWith(ApplinkConstInternalUserPlatform.NEW_PROFILE_INFO)
                         )
             }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
-            add(DFP({ it.startsWith(ApplinkConstInternalGlobal.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))
+            add(DFP({ it.startsWith(ApplinkConstInternalUserPlatform.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))
 
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DF_BASE, R.string.applink_change_phone_number))
             add(DFP({ it.startsWith(HAS_PASSWORD) }, DF_BASE, R.string.applink_change_password))

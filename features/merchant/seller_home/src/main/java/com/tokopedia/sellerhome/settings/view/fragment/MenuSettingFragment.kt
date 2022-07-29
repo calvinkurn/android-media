@@ -301,7 +301,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun addOrChangePassword() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.HAS_PASSWORD)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.HAS_PASSWORD)
         startActivity(intent)
     }
 

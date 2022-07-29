@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
@@ -111,7 +112,7 @@ class ResultNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     private fun goToChangePassword() {
         context?.let {
-            RouteManager.route(it, ApplinkConstInternalGlobal.HAS_PASSWORD)
+            RouteManager.route(it, ApplinkConstInternalUserPlatform.HAS_PASSWORD)
             closeResult()
         }
     }

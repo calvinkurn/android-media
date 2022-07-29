@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.data.AddBodData
@@ -126,7 +127,7 @@ class AddBodFragment : BaseDaggerFragment() {
 	val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", LocaleUtils.getIDLocale())
 	val date = simpleDateFormat.parse(selectedDate)
 	val stringDate = simpleDateFormat.format(date)
-	val bod = arguments?.getString(ApplinkConstInternalGlobal.PARAM_BOD)
+	val bod = arguments?.getString(ApplinkConstInternalUserPlatform.PARAM_BOD)
 	btnSave.isEnabled = stringDate != bod
     }
 
@@ -167,7 +168,7 @@ class AddBodFragment : BaseDaggerFragment() {
     }
 
     private fun initVar() {
-	val bod = arguments?.getString(ApplinkConstInternalGlobal.PARAM_BOD)
+	val bod = arguments?.getString(ApplinkConstInternalUserPlatform.PARAM_BOD)
 	if (!bod.isNullOrEmpty()) {
 	    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", LocaleUtils.getIDLocale())
 	    defaultDate.time = simpleDateFormat.parse(bod)

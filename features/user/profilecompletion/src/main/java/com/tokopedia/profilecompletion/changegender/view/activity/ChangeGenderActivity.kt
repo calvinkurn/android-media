@@ -13,7 +13,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 /**
  * @author by nisie on 22/04/19.
- * For navigate: use {@link ApplinkConstInternalGlobal.CHANGE_GENDER}
+ * For navigate: use {@link ApplinkConstInternalUserPlatform.CHANGE_GENDER}
  */
 class ChangeGenderActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 

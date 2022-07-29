@@ -8,7 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager.getIntent
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.MEDIA_QUALITY_SETTING
 import com.tokopedia.dev_monitoring_tools.session.SessionDataUsageLogger
 import com.tokopedia.device.info.DeviceConnectionInfo.getConnectionType
 import com.tokopedia.logger.utils.Priority

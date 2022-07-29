@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.privacy_account.di.DaggerLinkAccountComponent
 import com.tokopedia.home_account.privacy_account.di.LinkAccountComponent
@@ -142,7 +143,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
         val source = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_SOURCE) ?: ""
 
         if(url.isEmpty()) {
-            val redirection = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_LD) ?: ApplinkConst.HOME
+            val redirection = intent.getStringExtra(ApplinkConstInternalUserPlatform.PARAM_LD) ?: ApplinkConst.HOME
             val uri = getLinkAccountUrl(redirection)
             url = uri.toString()
             if(source.isNotEmpty() && url.isNotEmpty()) {

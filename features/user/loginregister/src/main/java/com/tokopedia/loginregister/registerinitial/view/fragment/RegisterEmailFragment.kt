@@ -28,6 +28,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
@@ -499,7 +500,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         view?.setText(spannable, TextView.BufferType.SPANNABLE)
         view?.setOnClickListener {
             if (activity != null) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailString)
                 startActivity(intent)
             }

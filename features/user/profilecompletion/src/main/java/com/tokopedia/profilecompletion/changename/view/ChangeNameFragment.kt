@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -68,9 +69,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
 	super.onCreate(savedInstanceState)
 	ColorUtils.setBackgroundColor(context, activity)
-	oldName = arguments?.getString(ApplinkConstInternalGlobal.PARAM_FULL_NAME).toString()
+	oldName = arguments?.getString(ApplinkConstInternalUserPlatform.PARAM_FULL_NAME).toString()
 	chancesChangeName =
-	    arguments?.getString(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME).toString()
+	    arguments?.getString(ApplinkConstInternalUserPlatform.PARAM_CHANCE_CHANGE_NAME).toString()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

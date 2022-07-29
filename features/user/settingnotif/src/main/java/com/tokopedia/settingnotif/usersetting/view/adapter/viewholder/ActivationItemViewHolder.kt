@@ -4,8 +4,8 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_EMAIL
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_EMAIL
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.settingnotif.R

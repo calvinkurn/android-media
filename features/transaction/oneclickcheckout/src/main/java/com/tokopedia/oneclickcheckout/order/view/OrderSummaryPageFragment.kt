@@ -19,6 +19,7 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
@@ -1457,8 +1458,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             context?.let { ctx ->
                 if (!URLUtil.isNetworkUrl(activationUrl) && RouteManager.isSupportApplink(ctx, activationUrl)) {
                     if (activationUrl.startsWith(ApplinkConst.LINK_ACCOUNT)) {
-                        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
-                            putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+                        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
+                            putExtra(ApplinkConstInternalUserPlatform.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
                             putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
                         }
                         startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)

@@ -22,6 +22,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
@@ -245,11 +246,11 @@ class LoginNormalCase : LoginBase() {
     @Test
     fun whenForgotPasswordIsClicked_TheApplinkPageIsLaunched() {
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD)).respondWith(
+            intending(hasData(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, Intent())
             )
             clickForgotPass()
-            intended(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD))
+            intended(hasData(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD))
         }
     }
 
