@@ -45,7 +45,7 @@ class AffiliateSharedProductCardsItemVH(itemView: View, private val productClick
             itemView.setOnClickListener {
                 sendSelectContentEvent(product)
                 productClickInterface?.onProductClick(product.itemID, product.itemTitle ?: "", product.image?.androidURL
-                        ?: "", product.defaultLinkURL ?: "", product.itemID, product.status ?: 0, "pdp")
+                        ?: "", product.defaultLinkURL ?: "", product.itemID, product.status ?: 0)
             }
         }
     }
