@@ -85,29 +85,8 @@ class TokoFoodCategoryViewModel @Inject constructor(
         private const val SHARED_FLOW_STOP_TIMEOUT_MILLIS = 5000L
     }
 
-    fun getLoadingState(): Pair<Result<TokoFoodListUiModel>, Boolean> {
-        setPageKey(INITIAL_PAGE_KEY_MERCHANT)
-        categoryLayoutItemList.clear()
-        categoryLayoutItemList.addLoadingCategoryIntoList()
-        val data = Success(TokoFoodListUiModel(
-            items = categoryLayoutItemList,
-            state = TokoFoodLayoutState.LOADING
-        ))
-        return Pair(data, false)
-    }
-
     fun setErrorState(throwable: Throwable) {
         _inputState.tryEmit(TokoFoodUiState(uiState = STATE_ERROR, throwable = throwable))
-    }
-
-    fun getErrorState(throwable: Throwable): Pair<Result<TokoFoodListUiModel>, Boolean> {
-        categoryLayoutItemList.clear()
-        categoryLayoutItemList.addErrorState(throwable)
-        val data = Success(TokoFoodListUiModel(
-            items = categoryLayoutItemList,
-            state = TokoFoodLayoutState.HIDE
-        ))
-        return Pair(data, false)
     }
 
     fun setCategoryLayout(
@@ -120,6 +99,39 @@ class TokoFoodCategoryViewModel @Inject constructor(
                 option, sortBy, cuisine, brandUId
             )
         ))
+    }
+
+    fun setLoadMoreMerchant(
+        localCacheModel: LocalCacheModel, option: Int = 0,
+        sortBy: Int = 0, cuisine: String = "", brandUId: String = ""
+    ){
+        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_FETCH_LOAD_MORE,
+            localCacheModel = localCacheModel,
+            merchantListParamsModel = TokoFoodMerchantListParams(
+                option, sortBy, cuisine, brandUId
+            )
+        ))
+    }
+
+    fun getLoadingState(): Pair<Result<TokoFoodListUiModel>, Boolean> {
+        setPageKey(INITIAL_PAGE_KEY_MERCHANT)
+        categoryLayoutItemList.clear()
+        categoryLayoutItemList.addLoadingCategoryIntoList()
+        val data = Success(TokoFoodListUiModel(
+            items = categoryLayoutItemList,
+            state = TokoFoodLayoutState.LOADING
+        ))
+        return Pair(data, false)
+    }
+
+    fun getErrorState(throwable: Throwable): Pair<Result<TokoFoodListUiModel>, Boolean> {
+        categoryLayoutItemList.clear()
+        categoryLayoutItemList.addErrorState(throwable)
+        val data = Success(TokoFoodListUiModel(
+            items = categoryLayoutItemList,
+            state = TokoFoodLayoutState.HIDE
+        ))
+        return Pair(data, false)
     }
 
     suspend fun getCategoryLayout(localCacheModel: LocalCacheModel,
@@ -177,18 +189,6 @@ class TokoFoodCategoryViewModel @Inject constructor(
         return isError
     }
 
-    fun setLoadMoreMerchant(
-        localCacheModel: LocalCacheModel, option: Int = 0,
-        sortBy: Int = 0, cuisine: String = "", brandUId: String = ""
-    ){
-        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_FETCH_LOAD_MORE,
-            localCacheModel = localCacheModel,
-            merchantListParamsModel = TokoFoodMerchantListParams(
-                option, sortBy, cuisine, brandUId
-            )
-        ))
-    }
-
     private suspend fun getLoadMoreMerchant(localCacheModel: LocalCacheModel,
                                          merchantListParamsModel: TokoFoodMerchantListParams):
             Pair<Result<TokoFoodListUiModel>, Boolean>   {
@@ -229,5 +229,4 @@ class TokoFoodCategoryViewModel @Inject constructor(
 
         return scrolledToLastItem && hasNextPage && !isLoading && !isError
     }
-
 }
