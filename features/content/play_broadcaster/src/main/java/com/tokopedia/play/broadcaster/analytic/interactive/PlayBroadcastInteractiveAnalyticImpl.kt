@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.analytic.interactive
 
 import com.tokopedia.play.broadcaster.analytic.*
-import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
@@ -363,6 +362,62 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
             )
     }
 
+    override fun onClickPinProductLiveRoom(channelId: String, productId: String) {
+        sendClickContent(
+            eventAction = "click - pin product live room",
+            eventLabel = "$shopId - $channelId - $productId",
+        )
+    }
+
+    override fun onClickPinProductBottomSheet(channelId: String, productId: String) {
+        sendClickContent(
+            eventAction = "click - pin product bottom sheet",
+            eventLabel = "$shopId - $channelId - $productId",
+        )
+    }
+
+    override fun onImpressPinProductLiveRoom(channelId: String, productId: String) {
+        sendImpressionContent(
+            eventAction = "view - pin product live room",
+            eventLabel = "$shopId - $channelId - $productId",
+        )
+    }
+
+    override fun onImpressPinProductBottomSheet(channelId: String, productId: String) {
+        sendImpressionContent(
+            eventAction = "view - pin product bottom sheet",
+            eventLabel = "$shopId - $channelId - $productId",
+        )
+    }
+
+    override fun onImpressFailPinProductLiveRoom(channelId: String) {
+        sendImpressionContent(
+            eventAction = "view - fail pin product live room",
+            eventLabel = "$shopId - $channelId",
+        )
+    }
+
+    override fun onImpressFailPinProductBottomSheet(channelId: String) {
+        sendImpressionContent(
+            eventAction = "view - fail pin product bottom sheet",
+            eventLabel = "$shopId - $channelId",
+        )
+    }
+
+    override fun onImpressFailUnPinProductLiveRoom(channelId: String) {
+        sendImpressionContent(
+            eventAction = "view - fail un-pin product live room",
+            eventLabel = "$shopId - $channelId",
+        )
+    }
+
+    override fun onImpressFailUnPinProductBottomSheet(channelId: String) {
+        sendImpressionContent(
+            eventAction = "view - fail un-pin product bottom sheet",
+            eventLabel = "$shopId - $channelId",
+        )
+    }
+
     private fun sendClickEvent(
         eventAction: String,
         eventLabel: String,
@@ -370,11 +425,25 @@ class PlayBroadcastInteractiveAnalyticImpl @Inject constructor(
         sendEvent(eventAction, eventLabel, KEY_TRACK_CLICK_EVENT)
     }
 
+    private fun sendClickContent(
+        eventAction: String,
+        eventLabel: String,
+    ) {
+        sendEvent(eventAction, eventLabel, KEY_TRACK_CLICK_EVENT_SELLER)
+    }
+
     private fun sendImpressionEvent(
         eventAction: String,
         eventLabel: String,
     ) {
         sendEvent(eventAction, eventLabel, KEY_TRACK_VIEW_EVENT)
+    }
+
+    private fun sendImpressionContent(
+        eventAction: String,
+        eventLabel: String,
+    ) {
+        sendEvent(eventAction, eventLabel, KEY_TRACK_VIEW_EVENT_SELLER)
     }
 
     private fun sendEvent(
