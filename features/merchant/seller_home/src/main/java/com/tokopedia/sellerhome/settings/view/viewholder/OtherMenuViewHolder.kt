@@ -303,11 +303,17 @@ class OtherMenuViewHolder(
     private fun setupAnniversaryIllustration() {
         anniversaryPatternImage?.run {
             disableShimmeringPlaceholder = true
-            setImageUrl(url = ANNIVERSARY_PATTERN_URL)
+            setImageUrl(
+                url = ANNIVERSARY_PATTERN_URL,
+                placeholderHeight = Int.ZERO
+            )
         }
         anniversaryOrnamentImage?.run {
             disableShimmeringPlaceholder = true
-            setImageUrl(url = ANNIVERSARY_ORNAMENT_URL)
+            setImageUrl(
+                url = ANNIVERSARY_ORNAMENT_URL,
+                placeholderHeight = Int.ZERO
+            )
         }
     }
 

@@ -1624,15 +1624,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun loadAnniversaryIllustrations() {
         binding?.ivSahPattern?.run {
             disableShimmeringPlaceholder = true
-            setImageUrl(url = ANNIV_PATTERN_URL)
+            setImageUrl(
+                url = ANNIV_PATTERN_URL,
+                placeholderHeight = Int.ZERO
+            )
         }
         binding?.ivSahOrnament?.run {
             disableShimmeringPlaceholder = true
-            setImageUrl(url = ANNIV_ORNAMENT_URL)
+            setImageUrl(
+                url = ANNIV_ORNAMENT_URL,
+                placeholderHeight = Int.ZERO
+            )
         }
         binding?.ivSahGradient?.run {
             disableShimmeringPlaceholder = true
-            setImageUrl(url = ANNIV_GRADIENT_URL)
+            setImageUrl(
+                url = ANNIV_GRADIENT_URL,
+                placeholderHeight = Int.ZERO
+            )
         }
     }
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(

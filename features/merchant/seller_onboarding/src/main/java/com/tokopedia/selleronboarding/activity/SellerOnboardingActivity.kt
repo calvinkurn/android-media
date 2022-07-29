@@ -113,21 +113,30 @@ class SellerOnboardingActivity : BaseActivity() {
     private fun setConfettiAnniv() {
         binding?.confettiSob?.run {
             disableShimmeringPlaceholder = true
-            setImageUrl(url = ANNIVERSARY_CONFETTI_IMAGE)
+            setImageUrl(
+                url = ANNIVERSARY_CONFETTI_IMAGE,
+                placeholderHeight = Int.ZERO
+            )
         }
     }
 
     private fun setBackgroundPattern() {
         binding?.patternSob?.run {
             disableShimmeringPlaceholder = true
-            setImageUrl(url = ANNIVERSARY_PATTERN_IMAGE)
+            setImageUrl(
+                url = ANNIVERSARY_PATTERN_IMAGE,
+                placeholderHeight = Int.ZERO
+            )
         }
     }
 
     private fun setAnnivLogo() {
         binding?.logoSob?.run {
             disableShimmeringPlaceholder = true
-            setImageUrl(url = ANNIVERSARY_LOGO_IMAGE)
+            setImageUrl(
+                url = ANNIVERSARY_LOGO_IMAGE,
+                placeholderHeight = Int.ZERO
+            )
         }
     }
 
