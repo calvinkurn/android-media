@@ -511,53 +511,61 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             }
         }
 
-        viewLifecycleOwner.observe(viewModel.updatePinPointState) { isSuccess ->
-            if (isSuccess) {
-                getChooseAddress()
-            }
-        }
-
-        viewLifecycleOwner.observe(viewModel.errorMessage) { message ->
-            showToaster(message)
-        }
-
-        viewLifecycleOwner.observe(viewModel.chooseAddress) {
-            when(it) {
-                is Success -> {
-                    setupChooseAddress(it.data)
-                }
-
-                is Fail -> {
-                    showToaster(it.throwable.message)
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowUpdatePinPointState.collect{ isSuccess ->
+                if (isSuccess) {
+                    getChooseAddress()
                 }
             }
         }
 
-        viewLifecycleOwner.observe(viewModel.eligibleForAnaRevamp) {
-            when(it) {
-                is Success -> {
-                    if (it.data.eligible) {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
-                        startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
-                    } else {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
-                        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
-                        startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowErrorMessage.collect { message ->
+                showToaster(message)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowChooseAddress.collect {
+                when(it) {
+                    is Success -> {
+                        setupChooseAddress(it.data)
+                    }
+
+                    is Fail -> {
+                        showToaster(it.throwable.message)
                     }
                 }
+            }
+        }
 
-                is Fail -> {
-                    logExceptionTokoFoodHome(
-                        it.throwable,
-                        TokofoodErrorLogger.ErrorType.ERROR_ELIGIBLE_SET_ADDRESS,
-                        TokofoodErrorLogger.ErrorDescription.ERROR_ELIGIBLE_SET_ADDRESS
-                    )
-                    showToaster(it.throwable.message)
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowEligibleForAnaRevamp.collect{
+                when(it) {
+                    is Success -> {
+                        if (it.data.eligible) {
+                            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
+                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
+                            startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
+                        } else {
+                            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
+                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
+                            startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
+                        }
+                    }
+
+                    is Fail -> {
+                        logExceptionTokoFoodHome(
+                            it.throwable,
+                            TokofoodErrorLogger.ErrorType.ERROR_ELIGIBLE_SET_ADDRESS,
+                            TokofoodErrorLogger.ErrorDescription.ERROR_ELIGIBLE_SET_ADDRESS
+                        )
+                        showToaster(it.throwable.message)
+                    }
                 }
             }
         }

@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.feature.home.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -72,6 +70,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -87,12 +86,14 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _inputState = MutableSharedFlow<TokoFoodHomeUiState>(1)
-    private val _updatePinPoin = MutableSharedFlow<Boolean>(1)
+    private val _inputState = MutableSharedFlow<TokoFoodHomeUiState>(Int.ONE)
+    private val _flowUpdatePinPointState = MutableSharedFlow<Boolean>(Int.ONE)
+    private val _flowErrorMessage = MutableSharedFlow<String?>(Int.ONE)
+    private val _flowChooseAddress = MutableSharedFlow<Result<GetStateChosenAddressResponse>>(Int.ONE)
+    private val _flowEligibleForAnaRevamp = MutableSharedFlow<Result<EligibleForAddressFeature>>(Int.ONE)
 
     init {
         _inputState.tryEmit(TokoFoodHomeUiState())
-        _updatePinPoin.tryEmit(false)
     }
 
     val flowLayoutList: SharedFlow<Result<TokoFoodListUiModel>> =
@@ -139,19 +140,10 @@ class TokoFoodHomeViewModel @Inject constructor(
             replay = Int.ONE
         )
 
-    val updatePinPointState: LiveData<Boolean>
-        get() = _updatePinPointState
-    val errorMessage: LiveData<String>
-        get() = _errorMessage
-    val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
-        get() = _chooseAddress
-    val eligibleForAnaRevamp: LiveData<Result<EligibleForAddressFeature>>
-        get() = _eligibleForAnaRevamp
-
-    private val _updatePinPointState = MutableLiveData<Boolean>()
-    private val _errorMessage = MutableLiveData<String>()
-    private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
-    private val _eligibleForAnaRevamp = MutableLiveData<Result<EligibleForAddressFeature>>()
+    val flowUpdatePinPointState: SharedFlow<Boolean> = _flowUpdatePinPointState
+    val flowErrorMessage: SharedFlow<String?> = _flowErrorMessage
+    val flowChooseAddress: SharedFlow<Result<GetStateChosenAddressResponse>> = _flowChooseAddress
+    val flowEligibleForAnaRevamp: SharedFlow<Result<EligibleForAddressFeature>> = _flowEligibleForAnaRevamp
 
     private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
@@ -168,19 +160,19 @@ class TokoFoodHomeViewModel @Inject constructor(
             val isSuccess = withContext(dispatchers.io) {
                 keroEditAddressUseCase.execute(addressId, latitude, longitude)
             }
-            _updatePinPointState.postValue(isSuccess)
+            _flowUpdatePinPointState.emit(isSuccess)
         }) {
-            _errorMessage.postValue(it.message)
+            _flowErrorMessage.emit(it.message)
         }
     }
 
     fun checkUserEligibilityForAnaRevamp() {
         eligibleForAddressUseCase.eligibleForAddressFeature(
             {
-                _eligibleForAnaRevamp.postValue(Success(it.eligibleForRevampAna))
+                setEligibleForAnaRevamp(it.eligibleForRevampAna)
             },
             {
-                _eligibleForAnaRevamp.postValue(Fail(it))
+                setEligibleForAnaRevamp(it)
             },
             AddressConstant.ANA_REVAMP_FEATURE_ID
         )
@@ -189,9 +181,9 @@ class TokoFoodHomeViewModel @Inject constructor(
     fun getChooseAddress(source: String) {
         isAddressManuallyUpdated = true
         getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
-            _chooseAddress.postValue(Success(it))
+            setFlowChooseAddress(it)
         }, {
-            _chooseAddress.postValue(Fail(it))
+            setFlowChooseAddress(it)
         }, source)
     }
 
@@ -481,5 +473,29 @@ class TokoFoodHomeViewModel @Inject constructor(
         val isError = layoutList.firstOrNull { it.layout is TokoFoodErrorStateUiModel } != null
 
         return scrolledToLastItem && hasNextPage && !isLoading && !isEmptyStateShown && !isError
+    }
+
+    private fun setFlowChooseAddress(response: GetStateChosenAddressResponse) {
+        launch {
+            _flowChooseAddress.emit(Success(response))
+        }
+    }
+
+    private fun setFlowChooseAddress(throwable: Throwable) {
+        launch {
+            _flowChooseAddress.emit(Fail(throwable))
+        }
+    }
+
+    private fun setEligibleForAnaRevamp(response: EligibleForAddressFeature) {
+        launch {
+            _flowEligibleForAnaRevamp.emit(Success(response))
+        }
+    }
+
+    private fun setEligibleForAnaRevamp(throwable: Throwable) {
+        launch {
+            _flowEligibleForAnaRevamp.emit(Fail(throwable))
+        }
     }
 }
