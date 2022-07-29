@@ -8,8 +8,7 @@ data class RecipeUiModel(
     val title: String,
     val duration: Int?,
     val portion: Int,
-    val tags: List<String>?,
-    val isOtherTag: Boolean,
+    val tags: List<TagUiModel>?,
     val picture: String
 ): Visitable<RecipeBookmarkTypeFactory> {
     override fun type(typeFactory: RecipeBookmarkTypeFactory): Int = typeFactory.type(this)

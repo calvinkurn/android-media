@@ -4,9 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowTagBinding
+import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder
 
-class TagAdapter(private var itemList: List<String>): RecyclerView.Adapter<TagViewHolder>() {
+class TagAdapter(private var itemList: List<TagUiModel>): RecyclerView.Adapter<TagViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
         return TagViewHolder(

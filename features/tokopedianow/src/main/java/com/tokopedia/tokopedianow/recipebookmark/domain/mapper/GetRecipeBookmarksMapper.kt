@@ -2,44 +2,54 @@ package com.tokopedia.tokopedianow.recipebookmark.domain.mapper
 
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarksResponse
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
+import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
 
 object GetRecipeBookmarksMapper {
     private const val MAX_TAGS_DISPLAYED = 4
     private const val TAGS_DISPLAYED = 3
 
-    private fun mapTag(tags: List<GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Data.Recipe.Tag>?): Pair<List<String>, Boolean> {
-        if (tags.isNullOrEmpty()) return Pair(emptyList(), false)
+    private fun mapTag(tags: List<GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Data.Recipe.Tag>?): List<TagUiModel> {
+        if (tags.isNullOrEmpty()) return emptyList()
 
-        val newTags: MutableList<String> = mutableListOf()
-        var isOtherTag = false
+        val newTags: MutableList<TagUiModel> = mutableListOf()
         for ((index, tag) in tags.withIndex()) {
             if (tags.size > MAX_TAGS_DISPLAYED) {
                 if (index < TAGS_DISPLAYED) {
-                    isOtherTag = false
-                    newTags.add(tag.name)
+                    newTags.add(
+                        TagUiModel(
+                            tag = tag.name,
+                            shouldFormatTag = false
+                        )
+                    )
                 } else {
-                    isOtherTag = true
-                    newTags.add(String.format((tags.size - TAGS_DISPLAYED).toString()))
+                    newTags.add(
+                        TagUiModel(
+                            tag = (tags.size - TAGS_DISPLAYED).toString(),
+                            shouldFormatTag = true
+                        )
+                    )
                     break
                 }
             } else {
-                isOtherTag = false
-                newTags.add(tag.name)
+                newTags.add(
+                    TagUiModel(
+                        tag = tag.name,
+                        shouldFormatTag = false
+                    )
+                )
             }
         }
-        return Pair(newTags, isOtherTag)
+        return newTags
     }
 
     fun List<GetRecipeBookmarksResponse.Data.TokonowGetRecipeBookmarks.Data.Recipe>.mapResponseToUiModelList(): List<RecipeUiModel> {
         return map { response ->
-            val (tags, isOtherTag) = mapTag(response.tags)
             RecipeUiModel(
                 id = response.id,
                 title = response.title,
                 portion = response.portion,
                 duration = response.duration,
-                tags = tags,
-                isOtherTag = isOtherTag,
+                tags =  mapTag(response.tags),
                 picture = response.images?.firstOrNull()?.urlOriginal.orEmpty()
             )
         }

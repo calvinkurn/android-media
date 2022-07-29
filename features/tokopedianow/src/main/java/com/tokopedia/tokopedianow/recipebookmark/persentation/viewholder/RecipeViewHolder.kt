@@ -58,15 +58,7 @@ class RecipeViewHolder(
 
     private fun setTagList(binding: ItemTokopedianowRecipeBookmarkBinding, element: RecipeUiModel) {
         binding.rvTags.run {
-            if (element.isOtherTag) {
-                element.tags?.let { tags ->
-                    val newTags = tags.toMutableList()
-                    newTags[tags.lastIndex] = context.getString(R.string.tokopedianow_recipe_other_label, newTags[tags.lastIndex].toIntSafely())
-                    adapter = TagAdapter(newTags)
-                }
-            } else {
-                adapter = TagAdapter(element.tags.orEmpty())
-            }
+            adapter = TagAdapter(element.tags.orEmpty())
             layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, true)
         }
     }
