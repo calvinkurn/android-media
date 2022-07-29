@@ -356,7 +356,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
         val displayMetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
         bannerWidthInPixels = (displayMetrics.widthPixels / BANNER_WIDTH_DIVIDER).toInt()
-        bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.hotel_banner_offset)
+        context?.resources?.let {
+            bannerWidthInPixels -= it.getDimensionPixelSize(R.dimen.hotel_banner_offset)
+        }
     }
 
     private fun loadTickerData() {

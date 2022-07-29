@@ -14,9 +14,10 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -88,7 +89,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             roomDetailViewModel = viewModelProvider.get(HotelRoomDetailViewModel::class.java)
 
             roomIndex = arguments?.getInt(HotelRoomDetailActivity.EXTRA_ROOM_INDEX, 0) ?: 0
@@ -184,7 +185,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = binding?.roomDetailDetailToolbar?.navigationIcon
-        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
         (activity as HotelRoomDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         binding?.roomDetailCollapsingToolbar?.title = ""
@@ -198,16 +199,18 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     binding?.roomDetailCollapsingToolbar?.title = hotelRoom.roomInfo.name
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     binding?.roomDetailCollapsingToolbar?.title = " "
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
             }
         })
     }
+
+    private fun getColor(@ColorRes id: Int): Int = context?.resources?.let { ResourcesCompat.getColor(it, id, null) } ?: 0
 
     private fun setupRoomImages() {
         if (hotelRoom.roomInfo.roomImages.isNotEmpty()) {

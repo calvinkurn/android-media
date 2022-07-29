@@ -20,6 +20,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -409,7 +410,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         if (orderDetail.contactUs.helpText.isNotBlank() && context != null) {
             val helpLabel = Typography(requireContext())
             helpLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, AMENITY_TEXT_SIZE)
-            helpLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            context?.resources?.let {
+                helpLabel.setTextColor(ResourcesCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null))
+            }
 
             val spannableString = createHyperlinkText(orderDetail.contactUs.helpText,
                     orderDetail.contactUs.helpUrl)
@@ -419,7 +422,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
             helpLabel.gravity = Gravity.CENTER
             val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            params.bottomMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+            context?.resources?.let {
+                params.bottomMargin = it.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+            }
             helpLabel.layoutParams = params
 
             binding?.orderDetailFooterLayout?.addView(helpLabel)
