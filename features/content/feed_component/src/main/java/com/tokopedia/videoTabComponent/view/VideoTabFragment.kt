@@ -217,7 +217,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         swipeToRefresh?.isRefreshing = true
         swipeToRefresh?.isEnabled = false
         playFeedVideoTabViewModel.getInitialPlayData()
-        feedFloatingButtonManager.setInitialData(requireParentFragment())
+        feedFloatingButtonManager.setInitialData(parentFragment)
         setupView(view)
         playWidgetCoordinator.onResume()
     }

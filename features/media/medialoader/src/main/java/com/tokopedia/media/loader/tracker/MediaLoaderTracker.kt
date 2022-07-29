@@ -1,6 +1,8 @@
 package com.tokopedia.media.loader.tracker
 
 import android.content.Context
+import android.graphics.Bitmap
+import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.data.MediaSettingPreferences
@@ -18,9 +20,42 @@ object MediaLoaderTracker {
     private const val CDN_URL = "https://images.tokopedia.net/img/"
     private const val TAG = "MEDIALOADER_ANALYTIC"
 
+    private const val PAGE_NAME_NOT_FOUND = "None"
+
     private fun priority() = Priority.P2
 
     private fun tag() = TAG
+
+    fun simpleTrack(
+        context: Context,
+        url: String,
+        isIcon: IsIcon = IsIcon(false),
+        bitmap: Bitmap? = null,
+        loadTime: String = ""
+    ) {
+        if (isIcon.value) return
+
+        val pageName = try {
+            context.javaClass.name.split(".").last()
+        } catch (e: Throwable) {
+            PAGE_NAME_NOT_FOUND
+        }
+
+        val fileSize = bitmap?.allocationByteCount?.toString() ?: "0"
+        val fileSizeInMb = fileSize.toLong().formattedToMB()
+
+
+        // tracker
+        track(
+            context = context.applicationContext,
+            data = MediaLoaderTrackerParam(
+                url = url,
+                pageName = pageName,
+                loadTime = loadTime,
+                fileSize = fileSizeInMb
+            )
+        )
+    }
 
     fun track(context: Context, data: MediaLoaderTrackerParam) {
         if (!data.url.contains(CDN_URL)) return
@@ -59,3 +94,5 @@ object MediaLoaderTracker {
     }
 
 }
+
+data class IsIcon(val value: Boolean)

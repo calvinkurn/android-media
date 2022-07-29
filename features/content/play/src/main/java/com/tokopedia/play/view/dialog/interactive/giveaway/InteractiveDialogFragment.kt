@@ -21,6 +21,7 @@ import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.custom.interactive.follow.InteractiveFollowView
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
+import com.tokopedia.play.view.uimodel.event.QuizAnsweredEvent
 import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
@@ -28,13 +29,14 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.play_common.view.game.giveaway.GiveawayWidgetView
+import com.tokopedia.play_common.view.game.GiveawayWidgetView
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.view.game.quiz.QuizWidgetView
 import com.tokopedia.play_common.view.game.setupGiveaway
 import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -165,6 +167,13 @@ class InteractiveDialogFragment @Inject constructor(
                                 .className(PlayViewModel::class.java.simpleName).build())
                         doShowToaster(toasterType = Toaster.TYPE_ERROR, message = errMsg)
                     }
+                    is QuizAnsweredEvent -> {
+                        if(getWidget() is QuizWidgetView) {
+                            (getWidget() as QuizWidgetView).animateAnswer(event.isTrue)
+                        }
+                        delay(FADE_TRANSITION_DELAY)
+                        dismiss()
+                    }
                     else -> {}
                 }
             }
@@ -287,10 +296,16 @@ class InteractiveDialogFragment @Inject constructor(
         } else firstChild
     }
 
-    companion object {
-        private const val WIDTH_PERCENTAGE = 0.6
+    private fun getWidget() : View {
+        val parent = view as ViewGroup
+        return if(parent.childCount < 0) View(context)
+        else parent.getChildAt(0)
+    }
 
+    companion object {
         private const val TAG = "InteractiveDialogFragment"
+
+        private const val FADE_TRANSITION_DELAY = 3000L
 
         fun get(fragmentManager: FragmentManager): InteractiveDialogFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? InteractiveDialogFragment

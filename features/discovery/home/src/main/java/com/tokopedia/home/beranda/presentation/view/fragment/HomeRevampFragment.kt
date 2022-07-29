@@ -2,7 +2,10 @@ package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.*
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
@@ -40,7 +43,12 @@ import com.tokopedia.analytics.performance.fpi.FragmentFramePerformanceIndexMoni
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -56,7 +64,10 @@ import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getBannerImpre
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerClick
 import com.tokopedia.home.analytics.HomePageTrackingV2.HomeBanner.getOverlayBannerImpression
 import com.tokopedia.home.analytics.HomePageTrackingV2.SprintSale.getSprintSaleImpression
-import com.tokopedia.home.analytics.v2.*
+import com.tokopedia.home.analytics.v2.BestSellerWidgetTracker
+import com.tokopedia.home.analytics.v2.LegoBannerTracking
+import com.tokopedia.home.analytics.v2.PopularKeywordTracking
+import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.di.BerandaComponent
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
@@ -69,7 +80,12 @@ import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_INFLATE_HOME_FRAGMENT
-import com.tokopedia.home.beranda.listener.*
+import com.tokopedia.home.beranda.listener.ActivityStateListener
+import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.listener.HomeEggListener
+import com.tokopedia.home.beranda.listener.HomeFeedsListener
+import com.tokopedia.home.beranda.listener.HomeReviewListener
+import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil
@@ -87,8 +103,50 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.helper.*
-import com.tokopedia.home.beranda.presentation.view.listener.*
+import com.tokopedia.home.beranda.presentation.view.helper.HomeAutoRefreshListener
+import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_HOME_COACHMARK
+import com.tokopedia.home.beranda.presentation.view.helper.TimerRunnable
+import com.tokopedia.home.beranda.presentation.view.helper.getAutoRefreshRunnableThread
+import com.tokopedia.home.beranda.presentation.view.helper.getPositionWidgetVertical
+import com.tokopedia.home.beranda.presentation.view.helper.isHomeTokonowCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.isNewTokopointCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.isNewWalletAppCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.runAutoRefreshJob
+import com.tokopedia.home.beranda.presentation.view.helper.setBalanceWidgetCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.setChooseAddressCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.setHomeTokonowCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.setNewTokopointCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.setNewWalletAppCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.setWalletApp2CoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.setWalletAppCoachmarkShown
+import com.tokopedia.home.beranda.presentation.view.helper.stopAutoRefreshJob
+import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.CategoryNavigationCallback
+import com.tokopedia.home.beranda.presentation.view.listener.CategoryWidgetV2Callback
+import com.tokopedia.home.beranda.presentation.view.listener.ChooseAddressWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.CueWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.DynamicIconComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.DynamicLegoBannerComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.FeaturedShopComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
+import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
+import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.Lego4AutoBannerComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.Lego6AutoBannerComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.MerchantVoucherComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.MixLeftComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.MixTopComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.ProductHighlightComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.RechargeBUWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.RechargeRecommendationCallback
+import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListCarouselComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.MissionWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -108,12 +166,19 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.navigation_common.listener.*
+import com.tokopedia.navigation_common.listener.AllNotificationListener
+import com.tokopedia.navigation_common.listener.FragmentListener
+import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
+import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
+import com.tokopedia.navigation_common.listener.RefreshNotificationListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.const.PlayWidgetConst
@@ -131,7 +196,10 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.remoteconfig.*
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey.HOME_BEAUTY_FEST
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
@@ -140,11 +208,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
-import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
-import com.tokopedia.usercomponents.stickylogin.common.helper.isRegisteredFromStickyLogin
-import com.tokopedia.usercomponents.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
-import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -156,6 +219,11 @@ import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
+import com.tokopedia.usercomponents.stickylogin.common.helper.isRegisteredFromStickyLogin
+import com.tokopedia.usercomponents.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
+import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.weaver.WeaveInterface
@@ -171,7 +239,6 @@ import java.net.URLEncoder
 import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * @author by yoasfs on 12/14/17.
@@ -1634,7 +1701,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             SpecialReleaseComponentCallback(context, this),
             MerchantVoucherComponentCallback(this),
             CueWidgetComponentCallback(this),
-            VpsWidgetComponentCallback(this)
+            VpsWidgetComponentCallback(this),
+            CategoryWidgetV2Callback(context, this),
+            MissionWidgetComponentCallback(this, getHomeViewModel())
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2472,19 +2541,27 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterSuccessWishlist() {
-        showToasterWithAction(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            typeToaster = TYPE_NORMAL,
-            actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            clickListener = View.OnClickListener {
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            })
+        if(activity?.isFinishing == false) {
+            showToasterWithAction(
+                message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+                typeToaster = TYPE_NORMAL,
+                actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+                clickListener = View.OnClickListener {
+                    RouteManager.route(context, ApplinkConst.WISHLIST)
+                })
+        }
     }
 
     private fun showToasterSuccessWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         context?.let { context ->
             view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, v)
+                if(activity?.isFinishing == false) {
+                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
+                        wishlistResult,
+                        context,
+                        v
+                    )
+                }
             }
         }
     }
@@ -2682,7 +2759,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToaster(message: String, typeToaster: Int) {
-        showToasterWithAction(message, typeToaster, "", View.OnClickListener { v: View? -> })
+        if(activity?.isFinishing == false) {
+            showToasterWithAction(message, typeToaster, "", View.OnClickListener { v: View? -> })
+        }
     }
 
     private fun showToasterWithAction(message: String, typeToaster: Int, actionText: String, clickListener: View.OnClickListener) {
@@ -2693,7 +2772,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (errorToaster == null || errorToaster?.isShown == false) {
             Toaster.toasterCustomBottomHeight = 56f.toDpInt()
             errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
-            errorToaster?.show()
+            if(activity?.isFinishing == false) {
+                errorToaster?.show()
+            }
         }
     }
 
@@ -2776,7 +2857,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterReviewSuccess() {
-        view?.let { build(it, getString(R.string.review_create_success_toaster, getHomeViewModel().getUserName()), Snackbar.LENGTH_LONG, TYPE_NORMAL, getString(R.string.review_oke)).show() }
+        if(activity?.isFinishing == false) {
+            view?.let {
+                build(
+                    it,
+                    getString(
+                        R.string.review_create_success_toaster,
+                        getHomeViewModel().getUserName()
+                    ),
+                    Snackbar.LENGTH_LONG,
+                    TYPE_NORMAL,
+                    getString(R.string.review_oke)
+                ).show()
+            }
+        }
     }
 
     /**
@@ -2867,8 +2961,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showSuccessResetPasswordDialog() {
-        Toaster.toasterCustomBottomHeight = 56f.toDpInt()
-        Toaster.build(root,
+        if(activity?.isFinishing == false) {
+            Toaster.toasterCustomBottomHeight = 56f.toDpInt()
+            Toaster.build(root,
                 getString(R.string.text_dialog_success_reset_password),
                 DELAY_TOASTER_RESET_PASSWORD,
                 TYPE_NORMAL,
@@ -2877,12 +2972,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     saveStateReset(false)
                     onGoToLogin()
                 }
-        ).addCallback(object : Snackbar.Callback() {
-            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                super.onDismissed(transientBottomBar, event)
-                saveStateReset(false)
-            }
-        }).show()
+            ).addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    saveStateReset(false)
+                }
+            }).show()
+        }
     }
 
     private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {

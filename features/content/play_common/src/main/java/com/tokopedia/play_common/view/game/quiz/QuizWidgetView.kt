@@ -4,20 +4,25 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.databinding.ViewQuizWidgetBinding
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.util.AnimationUtils
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.quiz.QuizListAdapter
 import com.tokopedia.play_common.view.quiz.QuizOptionItemDecoration
-import java.util.Calendar
+import java.util.*
 
 /**
  * @author by astidhiyaa on 18/04/22
@@ -109,9 +114,70 @@ class QuizWidgetView : ConstraintLayout {
         }
     }
 
+    fun animateAnswer(isCorrect: Boolean){
+        if(isCorrect){
+            animateCorrectAnswer()
+        } else {
+            animateWrongAnswer()
+        }
+    }
+
+    private fun animateCorrectAnswer(){
+        scaleBounceX.start()
+        scaleBounceY.start()
+    }
+
+    private fun animateWrongAnswer(){
+        scaleAnim()
+        rotateAnim()
+    }
+
+    private fun scaleAnim(){
+        scaleX.start()
+        scaleY.start()
+    }
+
+    private fun rotateAnim(){
+        rotate.start()
+    }
+
+    private val scaleBounceX = AnimationUtils.addSpringAnim(
+        view = binding.root, property = SpringAnimation.SCALE_X, startPosition = 0.5f,
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 24f
+    )
+
+    private val scaleBounceY = AnimationUtils.addSpringAnim(
+        view = binding.root, property = SpringAnimation.SCALE_Y, startPosition = 0.5f,
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 24f
+    )
+
+    private val scaleX = AnimationUtils.addSpringAnim(
+        view = binding.root, property = SpringAnimation.SCALE_X, startPosition = 0.7f,
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 4f
+    )
+
+    private val scaleY = AnimationUtils.addSpringAnim(
+        view = binding.root, property = SpringAnimation.SCALE_Y, startPosition = 0.7f,
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 4f
+    )
+
+    private val rotate = AnimationUtils.addSpringAnim(
+        view = binding.root, property = SpringAnimation.ROTATION, startPosition = -9f,
+        finalPosition = 0f, stiffness = SpringForce.STIFFNESS_VERY_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 4f
+    )
+
     interface Listener {
         fun onQuizOptionClicked(item: QuizChoicesUiModel)
 
         fun onQuizImpressed()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        scaleX.cancel()
+        scaleY.cancel()
+        rotate.cancel()
+        scaleBounceX.cancel()
+        scaleBounceY.cancel()
     }
 }

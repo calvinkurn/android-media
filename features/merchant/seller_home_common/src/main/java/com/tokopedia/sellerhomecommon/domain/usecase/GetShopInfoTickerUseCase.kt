@@ -49,6 +49,7 @@ class GetShopInfoTickerUseCase @Inject constructor(
               shopInfoByID(input: {shopIDs: [${'$'}shopId], fields: ["status"], domain: "", source: "sellerapp"}) {
                 result {
                   statusInfo {
+                    shopStatus
                     statusTitle
                     statusMessage
                     tickerType

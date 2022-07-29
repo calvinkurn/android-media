@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.carouselproductcard.CarouselViewAllCardData
 import com.tokopedia.productcard.ProductCardModel
 
 
@@ -59,19 +60,36 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
 
         fun bind(productCardModelList: List<ProductCardModel>) {
             item?.bindCarouselProductCardViewGrid(
-                    productCardModelList = productCardModelList,
-                    recyclerViewPool = recycledViewPool,
-                    carouselProductCardOnItemATCNonVariantClickListener = object: CarouselProductCardListener.OnATCNonVariantClickListener {
-                        override fun onATCNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int) {
-                            Toast.makeText(itemView.context, "ATC non variant position $carouselProductCardPosition, quantity $quantity", Toast.LENGTH_SHORT).show()
-                        }
-                    },
-                    carouselProductCardOnItemAddVariantClickListener = object: CarouselProductCardListener.OnAddVariantClickListener {
-                        override fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                            Toast.makeText(itemView.context, "ATC variant position $carouselProductCardPosition", Toast.LENGTH_SHORT).show()
-                        }
-                    },
-                    showSeeMoreCard = true
+                productCardModelList = productCardModelList,
+                recyclerViewPool = recycledViewPool,
+                carouselProductCardOnItemATCNonVariantClickListener =
+                object: CarouselProductCardListener.OnATCNonVariantClickListener {
+                    override fun onATCNonVariantClick(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int,
+                        quantity: Int,
+                    ) {
+                        Toast.makeText(
+                            itemView.context,
+                            "ATC non variant position $carouselProductCardPosition, quantity $quantity",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
+                },
+                carouselProductCardOnItemAddVariantClickListener =
+                object: CarouselProductCardListener.OnAddVariantClickListener {
+                    override fun onAddVariantClick(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int,
+                    ) {
+                        Toast.makeText(itemView.context,
+                            "ATC variant position $carouselProductCardPosition",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
+                },
+                showSeeMoreCard = true,
+                carouselViewAllCardData = CarouselViewAllCardData("Cek kumpulan promo lainnya")
             )
         }
 

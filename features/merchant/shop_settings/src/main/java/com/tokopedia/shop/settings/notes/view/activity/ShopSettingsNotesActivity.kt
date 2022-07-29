@@ -48,6 +48,11 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
         setContentView(binding?.root)
 
         window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+
+        setUpActionBar()
+    }
+
+    private fun setUpActionBar() {
         binding?.appBarLayout?.toolbar?.apply {
             setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             setSupportActionBar(this)

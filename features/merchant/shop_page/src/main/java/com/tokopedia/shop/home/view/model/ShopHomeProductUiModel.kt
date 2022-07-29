@@ -45,9 +45,17 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var recommendationType: String? = null
     var categoryBreadcrumbs: String? = null
     var minimumOrder: Int = 1
+    var maximumOrder: Int = 0
     var isProductPlaceHolder: Boolean = false
     var totalProduct: Int = 0
     var totalProductWording: String = ""
+    var isEnableDirectPurchase: Boolean = false
+    var productInCart: Int = 0
+    var isVariant: Boolean = false
+    var isNewData: Boolean = false
+    var stock: Int = 0
+    var listChildId: List<String> = listOf()
+    var parentId: String = ""
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when(typeFactory){

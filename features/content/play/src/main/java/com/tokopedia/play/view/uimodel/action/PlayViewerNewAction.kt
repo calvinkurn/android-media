@@ -21,6 +21,7 @@ sealed class PlayViewerNewAction {
     object StartPlayingInteractive : PlayViewerNewAction()
     object StopPlayingInteractive : PlayViewerNewAction()
     object FollowInteractive : PlayViewerNewAction()
+    object AutoOpenInteractive: PlayViewerNewAction()
 
     object Follow : PlayViewerNewAction()
 }
@@ -84,3 +85,5 @@ object OpenUserReport: PlayViewerNewAction()
 data class OpenFooterUserReport(val appLink: String): PlayViewerNewAction()
 
 data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): PlayViewerNewAction()
+
+data class SendWarehouseId(val id: String, val isOOC: Boolean) : PlayViewerNewAction()
