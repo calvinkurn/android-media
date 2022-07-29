@@ -75,10 +75,6 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         )
     }
 
-    /**
-     * @see toaster - failed toaster will be shown with capability to retry the event
-     * @see loadRecipeBookmarks - layout will be updated with latest layout
-     */
     private fun onResponseAddRecipeBE(position: Int, isRemoving: Boolean, recipeId: String, errorMessage: String, isSuccess: Boolean) {
         if (isSuccess) {
             restoreRecipeRemoved()
@@ -97,6 +93,10 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         )
     }
 
+    /**
+     * @see layout - will be updated by removing shimmering model
+     * @see toaster - fail toaster will be shown with capability to try it again
+     */
     private fun onFailAddRecipe(isRemoving: Boolean, position: Int, recipeId: String, isSuccess: Boolean, errorMessage: String) {
         layout.removeAt(position)
 
@@ -137,7 +137,7 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
     }
 
     /**
-     * @see tempRecipeRemoved - keep recipe before removed
+     * @see layout - will be updated by removing shimmering model
      * @see toaster - success toaster will be shown with capability to add recipe back
      */
     private fun onSuccessRemoveRecipe(position: Int, recipeId: String, title: String, isSuccess: Boolean) {
@@ -154,6 +154,9 @@ class TokoNowRecipeBookmarkViewModel @Inject constructor(
         ))
     }
 
+    /**
+     * @see toaster - fail toaster will be shown with capability to try it again
+     */
     private fun onFailRemoveRecipe(isRemoving: Boolean, position: Int, recipeId: String, isSuccess: Boolean, errorMessage: String) {
         restoreRecipeRemoved()
 
