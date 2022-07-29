@@ -275,37 +275,35 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-        viewLifecycleOwner.observe(viewModel.layoutList) {
-            removeScrollListeners()
-            when (it) {
-                is Success -> onSuccessGetCategoryLayout(it.data)
-                is Fail -> {
-                    logExceptionTokoFoodCategory(
-                        it.throwable,
-                        TokofoodErrorLogger.ErrorType.ERROR_PAGE,
-                        TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
-                    )
-                    onErrorGetCategoryLayout(it.throwable)
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowLayoutList.collect {
+                it.first
+                removeScrollListeners()
+                when (it.first) {
+                    is Success -> onSuccessGetCategoryLayout((it.first as Success).data)
+                    is Fail -> {
+                        if (it.second) {
+                            logExceptionTokoFoodCategory(
+                                (it.first as Fail).throwable,
+                                TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                                TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                            )
+                            onErrorGetCategoryLayout((it.first as Fail).throwable)
+                        } else {
+                            logExceptionTokoFoodCategory(
+                                (it.first as Fail).throwable,
+                                TokofoodErrorLogger.ErrorType.ERROR_LOAD_MORE_CATEGORY,
+                                TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_MORE_CATEGORY
+                            )
+                        }
+                    }
+                }
+
+                addScrollListeners()
+                if (it.second) {
+                    resetSwipeLayout()
                 }
             }
-
-            addScrollListeners()
-            resetSwipeLayout()
-        }
-
-        viewLifecycleOwner.observe(viewModel.loadMore) {
-            removeScrollListeners()
-            when (it) {
-                is Success -> showCategoryLayout(it.data)
-                is Fail -> {
-                    logExceptionTokoFoodCategory(
-                        it.throwable,
-                        TokofoodErrorLogger.ErrorType.ERROR_LOAD_MORE_CATEGORY,
-                        TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_MORE_CATEGORY
-                    )
-                }
-            }
-            addScrollListeners()
         }
     }
 
@@ -361,7 +359,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun onErrorGetCategoryLayout(throwable: Throwable) {
-        viewModel.showErrorState(throwable)
+        viewModel.setErrorState(throwable)
     }
 
     private fun onShowCategoryLayout(data: TokoFoodListUiModel) {
@@ -382,8 +380,9 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         adapter.submitList(data.items)
     }
 
+
     private fun loadLayout() {
-        viewModel.showLoadingState()
+        viewModel.setLoadingState()
     }
 
     private fun onRenderCategoryPage() {
@@ -402,7 +401,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
 
     private fun getCategoryLayout() {
         localCacheModel?.let {
-            viewModel.getCategoryLayout(
+            viewModel.setCategoryLayout(
                 localCacheModel = it,
                 option = option,
                 sortBy = sortBy,

@@ -43,10 +43,10 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeIcon
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeTickerUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUSPUiModel
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeUiState
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodUiState
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_ERROR
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_COMPONENT_DATA
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_DYNAMIC_CHANNEL_DATA
@@ -86,14 +86,14 @@ class TokoFoodHomeViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _inputState = MutableSharedFlow<TokoFoodHomeUiState>(Int.ONE)
+    private val _inputState = MutableSharedFlow<TokoFoodUiState>(Int.ONE)
     private val _flowUpdatePinPointState = MutableSharedFlow<Boolean>(Int.ONE)
     private val _flowErrorMessage = MutableSharedFlow<String?>(Int.ONE)
     private val _flowChooseAddress = MutableSharedFlow<Result<GetStateChosenAddressResponse>>(Int.ONE)
     private val _flowEligibleForAnaRevamp = MutableSharedFlow<Result<EligibleForAddressFeature>>(Int.ONE)
 
     init {
-        _inputState.tryEmit(TokoFoodHomeUiState())
+        _inputState.tryEmit(TokoFoodUiState())
     }
 
     val flowLayoutList: SharedFlow<Result<TokoFoodListUiModel>> =
@@ -136,10 +136,9 @@ class TokoFoodHomeViewModel @Inject constructor(
             }
         }.shareIn(
             scope = this,
-            started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
+            started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
             replay = Int.ONE
         )
-
     val flowUpdatePinPointState: SharedFlow<Boolean> = _flowUpdatePinPointState
     val flowErrorMessage: SharedFlow<String?> = _flowErrorMessage
     val flowChooseAddress: SharedFlow<Result<GetStateChosenAddressResponse>> = _flowChooseAddress
@@ -152,7 +151,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     companion object {
         private const val INITIAL_PAGE_KEY_MERCHANT = "0"
-        private const val STATE_FLOW_STOP_TIMEOUT_MILLIS = 5000L
+        private const val SHARED_FLOW_STOP_TIMEOUT_MILLIS = 5000L
     }
 
     fun updatePinPoin(addressId: String, latitude: String, longitude: String) {
@@ -188,29 +187,29 @@ class TokoFoodHomeViewModel @Inject constructor(
     }
 
     fun setLoadingState() {
-        _inputState.tryEmit(TokoFoodHomeUiState(uiState = STATE_LOADING))
+        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_LOADING))
     }
 
     fun setNoPinPointState() {
-        _inputState.tryEmit(TokoFoodHomeUiState(uiState = STATE_NO_PIN_POINT))
+        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_NO_PIN_POINT))
     }
 
     fun setNoAddressState() {
-        _inputState.tryEmit(TokoFoodHomeUiState(uiState = STATE_NO_ADDRESS))
+        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_NO_ADDRESS))
     }
 
     fun setErrorState(throwable: Throwable) {
-        _inputState.tryEmit(TokoFoodHomeUiState(uiState = STATE_ERROR, throwable = throwable))
+        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_ERROR, throwable = throwable))
     }
 
     fun setRemoveTicker(id: String) {
-        _inputState.tryEmit(TokoFoodHomeUiState(uiState = STATE_REMOVE_TICKER, visitableId = id))
+        _inputState.tryEmit(TokoFoodUiState(uiState = STATE_REMOVE_TICKER, visitableId = id))
     }
 
     fun setLayoutComponentData(localCacheModel: LocalCacheModel?) {
         localCacheModel?.let {
             _inputState.tryEmit(
-                TokoFoodHomeUiState(
+                TokoFoodUiState(
                     uiState = STATE_FETCH_COMPONENT_DATA,
                     localCacheModel = it
                 )
@@ -221,7 +220,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     fun setMerchantList(localCacheModel: LocalCacheModel?) {
         localCacheModel?.let {
             _inputState.tryEmit(
-                TokoFoodHomeUiState(
+                TokoFoodUiState(
                     uiState = STATE_FETCH_LOAD_MORE,
                     localCacheModel = it
                 )
@@ -231,7 +230,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     fun setHomeLayout(localCacheModel: LocalCacheModel) {
         _inputState.tryEmit(
-            TokoFoodHomeUiState(
+            TokoFoodUiState(
                 uiState = STATE_FETCH_DYNAMIC_CHANNEL_DATA,
                 localCacheModel = localCacheModel
             )
