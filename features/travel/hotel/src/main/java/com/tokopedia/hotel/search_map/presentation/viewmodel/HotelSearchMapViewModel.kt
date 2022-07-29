@@ -14,7 +14,13 @@ import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.hotel.common.data.HotelTypeEnum
-import com.tokopedia.hotel.search_map.data.model.*
+import com.tokopedia.hotel.search_map.data.model.Filter
+import com.tokopedia.hotel.search_map.data.model.FilterV2
+import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
+import com.tokopedia.hotel.search_map.data.model.HotelSortEnum
+import com.tokopedia.hotel.search_map.data.model.PropertySearch
+import com.tokopedia.hotel.search_map.data.model.QuickFilter
+import com.tokopedia.hotel.search_map.data.model.Sort
 import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search_map.data.model.params.ParamLocation
 import com.tokopedia.hotel.search_map.data.model.params.ParamSort
