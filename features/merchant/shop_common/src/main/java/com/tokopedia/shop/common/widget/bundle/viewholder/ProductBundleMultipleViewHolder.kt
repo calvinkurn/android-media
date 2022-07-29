@@ -1,7 +1,6 @@
 package com.tokopedia.shop.common.widget.bundle.viewholder
 
 import android.graphics.Paint
-import android.util.TypedValue
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -9,11 +8,12 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemProductBundleMultipleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleMultipleAdapter
-import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
@@ -56,43 +56,56 @@ class ProductBundleMultipleViewHolder(
         }
     }
 
-    fun bind(bundle: BundleUiModel, size: Int) {
-        val multipleBundleItem = bundle.bundles.firstOrNull() ?: BundleDetailUiModel()
+    fun bind(bundle: BundleUiModel) {
+        val bundleDetail = bundle.bundleDetails.firstOrNull() ?: BundleDetailUiModel()
 
         // bundle card item details
         typographyBundleName?.text = bundle.bundleName
-        typographyBundleProductDisplayPrice?.text = multipleBundleItem.displayPrice
-        typographyBundleProductOriginalPrice?.text = multipleBundleItem.originalPrice
-        labelBundleDiscount?.setLabel("${multipleBundleItem.discountPercentage}%")
+        typographyBundleProductDisplayPrice?.text = bundleDetail.displayPrice
+        typographyBundleProductOriginalPrice?.text = bundleDetail.originalPrice
+        labelBundleDiscount?.setLabel("${bundleDetail.discountPercentage}%")
         typographyBundleProductOriginalPrice?.apply {
-            text = multipleBundleItem.originalPrice
+            text = bundleDetail.originalPrice
             paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
-        typographyBundleProductSavingAmount?.text = HtmlLinkHelper(itemView.context, multipleBundleItem.savingAmountWording).spannedString
-        typographyBundlePreOrder?.shouldShowWithAction(multipleBundleItem.isPreOrder) {
-            typographyBundlePreOrder?.text = multipleBundleItem.preOrderInfo
+        typographyBundleProductSavingAmount?.text = HtmlLinkHelper(itemView.context, bundleDetail.savingAmountWording).spannedString
+        typographyBundlePreOrder?.shouldShowWithAction(bundleDetail.isPreOrder) {
+            typographyBundlePreOrder?.text = bundleDetail.preOrderInfo
         }
-        buttonAtc?.text = if (multipleBundleItem.isPreOrder) {
+        buttonAtc?.text = if (bundleDetail.isPreOrder) {
             itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
         } else {
             itemView.context.getString(R.string.product_bundle_action_button_text)
         }
 
-        // bundle products list
-        initBundleProductsRecyclerView(multipleBundleItem.products.size)
-        (rvBundleProducts?.adapter as ProductBundleMultipleAdapter).updateDataSet(
-                newList = multipleBundleItem.products,
-                bundleDetail = multipleBundleItem,
-                bundleParent = bundle
-        )
+        initShopInfo(bundleDetail.shopInfo)
+        initBundleProductsRecyclerView(bundleDetail.products.size, bundle, bundleDetail)
     }
 
-    private fun initBundleProductsRecyclerView(spanSize: Int) {
+    private fun initShopInfo(shopInfo: BundleShopUiModel?) {
+        if (shopInfo != null) {
+            viewBinding?.apply {
+                iconShop.loadImage(shopInfo.shopIconUrl)
+                tvShopName.text = shopInfo.shopName
+            }
+        }
+    }
+
+    private fun initBundleProductsRecyclerView(
+        spanSize: Int,
+        bundle: BundleUiModel,
+        bundleDetail: BundleDetailUiModel
+    ) {
         rvBundleProducts?.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, spanSize, GridLayoutManager.VERTICAL, false)
             adapter = ProductBundleMultipleAdapter()
         }
+        (rvBundleProducts?.adapter as ProductBundleMultipleAdapter).updateDataSet(
+            newList = bundleDetail.products,
+            bundleDetail = bundleDetail,
+            bundleParent = bundle
+        )
 
         val constraintSet = ConstraintSet()
         widgetContainer?.layoutParams?.width = containerWidgetParams

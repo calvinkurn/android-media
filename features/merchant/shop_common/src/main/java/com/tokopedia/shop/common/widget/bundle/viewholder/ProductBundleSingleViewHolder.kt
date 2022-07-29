@@ -15,6 +15,7 @@ import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleSingleAdapte
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -44,8 +45,6 @@ class ProductBundleSingleViewHolder(
     private var imageBundleProduct: ImageUnify? = null
     private var rvBundleDetails: RecyclerView? = null
     private var widgetContainer: ConstraintLayout? = null
-    private var selectedSingleBundle: BundleDetailUiModel = BundleDetailUiModel()
-    private var parentSingleBundle: BundleUiModel = BundleUiModel()
 
     init {
         viewBinding?.apply {
@@ -65,17 +64,16 @@ class ProductBundleSingleViewHolder(
     }
 
     fun bind(bundle: BundleUiModel) {
-        parentSingleBundle = bundle
-        selectedSingleBundle = parentSingleBundle.bundles.firstOrNull() ?: BundleDetailUiModel()
-        val product = selectedSingleBundle.products.firstOrNull() ?: BundleProductUiModel()
+        val bundleDetail = bundle.bundleDetails.firstOrNull() ?: BundleDetailUiModel()
+        val product = bundleDetail.products.firstOrNull() ?: BundleProductUiModel()
 
         // bundle card item details
-        renderBundlePriceDetails(selectedSingleBundle)
-        typographyBundleName?.text = parentSingleBundle.bundleName
-        typographyBundlePreOrder?.shouldShowWithAction(selectedSingleBundle.isPreOrder) {
-            typographyBundlePreOrder?.text = selectedSingleBundle.preOrderInfo
+        renderBundlePriceDetails(bundleDetail)
+        typographyBundleName?.text = bundle.bundleName
+        typographyBundlePreOrder?.shouldShowWithAction(bundleDetail.isPreOrder) {
+            typographyBundlePreOrder?.text = bundleDetail.preOrderInfo
         }
-        buttonAtc?.text = if (selectedSingleBundle.isPreOrder) {
+        buttonAtc?.text = if (bundleDetail.isPreOrder) {
             itemView.context.getString(R.string.shop_page_product_bundle_preorder_button_text)
         } else {
             itemView.context.getString(R.string.product_bundle_action_button_text)
@@ -86,7 +84,18 @@ class ProductBundleSingleViewHolder(
         typographyBundleProductName?.text = product.productName
 
         // bundle variant package list
-        (rvBundleDetails?.adapter as ProductBundleSingleAdapter).updateDataSet(parentSingleBundle.bundles)
+        (rvBundleDetails?.adapter as ProductBundleSingleAdapter).updateDataSet(bundle.bundleDetails)
+
+        initShopInfo(bundleDetail.shopInfo)
+    }
+
+    private fun initShopInfo(shopInfo: BundleShopUiModel?) {
+        if (shopInfo != null) {
+            viewBinding?.apply {
+                iconShop.loadImage(shopInfo.shopIconUrl)
+                tvShopName.text = shopInfo.shopName
+            }
+        }
     }
 
     private fun initBundleDetailsRecyclerView() {
@@ -97,7 +106,6 @@ class ProductBundleSingleViewHolder(
         }
 
         val constraintSet = ConstraintSet()
-
         widgetContainer?.layoutParams?.width = containerWidgetParams
         constraintSet.clone(widgetContainer)
         constraintSet.applyTo(widgetContainer)

@@ -34,7 +34,7 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
         val bundleItem = bundleListItem.getOrNull(position) ?: BundleUiModel()
         when (holder) {
             is ProductBundleSingleViewHolder -> holder.bind(bundleItem)
-            is ProductBundleMultipleViewHolder -> holder.bind(bundleItem, bundleListItem.size)
+            is ProductBundleMultipleViewHolder -> holder.bind(bundleItem)
         }
     }
 

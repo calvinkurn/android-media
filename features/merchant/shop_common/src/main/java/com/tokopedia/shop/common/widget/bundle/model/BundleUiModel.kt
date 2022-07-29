@@ -5,6 +5,5 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class BundleUiModel(
         var bundleName: String = "",
         var bundleType: String = "",
-        var shopInfo: BundleShopUiModel? = null,
-        var bundles: List<BundleDetailUiModel> = listOf()
+        var bundleDetails: List<BundleDetailUiModel> = listOf()
 ): ImpressHolder()
