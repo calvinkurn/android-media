@@ -297,6 +297,11 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     }
 
     @Override
+    public void onForceLogoutV2(Activity activity, int redirectionType, String url) {
+
+    }
+
+    @Override
     public void showTimezoneErrorSnackbar() {
 
     }
