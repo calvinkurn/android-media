@@ -5,13 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.databinding.ItemShipperProductNameBinding
-import com.tokopedia.editshipping.databinding.ItemShippingEditorCardBinding
 import com.tokopedia.logisticCommon.data.model.ShipperProductCPLModel
-import com.tokopedia.logisticCommon.data.response.customproductlogistic.ShipperProduct
 
 class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShipperItemViewHolder>() {
 
     val cplShipperItem = mutableListOf<ShipperProductCPLModel>()
+    var listener: CPLShipperItemAdapterListener? = null
+
+    interface CPLShipperItemAdapterListener {
+        fun uncheckCplItem()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CPLShipperItemViewHolder {
         val binding = ItemShipperProductNameBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -39,6 +42,17 @@ class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShip
         notifyDataSetChanged()
     }
 
+    fun setupListener(listener: CPLShipperItemAdapterListener) {
+        this.listener = listener
+    }
+
+    fun doCheckActiveCplShipperItem() {
+        val hasActiveCplShipperItem = cplShipperItem.find { it.isActive }
+        if (hasActiveCplShipperItem == null) {
+            listener?.uncheckCplItem()
+        }
+    }
+
     inner class CPLShipperItemViewHolder(private val binding: ItemShipperProductNameBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bindData(data: ShipperProductCPLModel) {
@@ -52,8 +66,11 @@ class CPLShipperItemAdapter : RecyclerView.Adapter<CPLShipperItemAdapter.CPLShip
 
             binding.shipperProductCb.setOnCheckedChangeListener { _, isChecked ->
                 data.isActive = isChecked
+
+                if (isChecked.not()) {
+                    doCheckActiveCplShipperItem()
+                }
             }
         }
     }
-
 }

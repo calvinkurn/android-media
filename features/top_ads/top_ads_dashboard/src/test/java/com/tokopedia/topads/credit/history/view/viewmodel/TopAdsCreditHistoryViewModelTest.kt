@@ -8,7 +8,9 @@ import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.TopadsDashboardDeposits
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
+import com.tokopedia.topads.dashboard.data.model.ExpiryDateResponse
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
+import com.tokopedia.topads.dashboard.domain.interactor.TopadsGetFreeDepositUseCase
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.usecase.coroutines.Fail
@@ -38,17 +40,34 @@ class TopAdsCreditHistoryViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    private val pendingRewardUseCase: TopadsGetFreeDepositUseCase = mockk(relaxed = true)
     private var autoTopUpUSeCase: TopAdsAutoTopUpUSeCase = mockk(relaxed = true)
     private var topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase = mockk(relaxed = true)
-    private val topAdsCreditHistoryUseCase: GraphqlUseCase<TopAdsCreditHistory.CreditsResponse> = mockk(relaxed = true)
+    private val topAdsCreditHistoryUseCase: GraphqlUseCase<TopAdsCreditHistory.CreditsResponse> =
+        mockk(relaxed = true)
 
     @ExperimentalCoroutinesApi
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        viewModel = TopAdsCreditHistoryViewModel(userSessionInterface, autoTopUpUSeCase, topAdsGetShopDepositUseCase, topAdsCreditHistoryUseCase, Dispatchers.Main)
+        viewModel = TopAdsCreditHistoryViewModel(
+            userSessionInterface, autoTopUpUSeCase, topAdsGetShopDepositUseCase,
+            topAdsCreditHistoryUseCase, Dispatchers.Main, pendingRewardUseCase
+        )
         Mockito.`when`(userSessionInterface.userId).thenReturn("12345")
         Mockito.`when`(userSessionInterface.shopId).thenReturn("123456")
+    }
+
+    @Test
+    fun `loadPendingReward test`() {
+        val actual: ExpiryDateResponse.TopAdsGetFreeDeposit = mockk(relaxed = true)
+
+        every { pendingRewardUseCase.execute(captureLambda()) } answers {
+            firstArg<(ExpiryDateResponse.TopAdsGetFreeDeposit) -> Unit>().invoke(actual)
+        }
+        viewModel.loadPendingReward()
+
+        Assert.assertEquals(viewModel.expiryDateHiddenTrial.value, actual.pendingRebateCredit)
     }
 
     @Test
@@ -64,7 +83,7 @@ class TopAdsCreditHistoryViewModelTest {
             firstArg<(TopAdsCreditHistory.CreditsResponse) -> Unit>().invoke(mockObject)
         }
 
-        viewModel.getCreditHistory("",null,null)
+        viewModel.getCreditHistory("", null, null)
 
         Assert.assertEquals((viewModel.creditsHistory.value as Success).data, expectedValue)
     }
@@ -81,7 +100,7 @@ class TopAdsCreditHistoryViewModelTest {
             firstArg<(TopAdsCreditHistory.CreditsResponse) -> Unit>().invoke(mockObject)
         }
 
-        viewModel.getCreditHistory("",null,null)
+        viewModel.getCreditHistory("", null, null)
 
         Assert.assertTrue(viewModel.creditsHistory.value is Fail)
     }
@@ -96,7 +115,7 @@ class TopAdsCreditHistoryViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(actual)
         }
 
-        viewModel.getCreditHistory("",null,null)
+        viewModel.getCreditHistory("", null, null)
 
         Assert.assertEquals((viewModel.creditsHistory.value as Fail).throwable, actual)
     }
@@ -113,7 +132,9 @@ class TopAdsCreditHistoryViewModelTest {
     fun `credit history`() {
         val expected = 5.0f
         var actual = 0.0f
-        val data = TopAdsCreditHistory.CreditsResponse(response = TopAdsCreditHistory.Response(dataHistory = TopAdsCreditHistory(totalAddition = expected)))
+        val data =
+            TopAdsCreditHistory.CreditsResponse(response = TopAdsCreditHistory.Response(dataHistory = TopAdsCreditHistory(
+                totalAddition = expected)))
         every { topAdsCreditHistoryUseCase.execute(captureLambda(), any()) } answers {
             actual = data.response.dataHistory.totalAddition
         }
@@ -126,7 +147,7 @@ class TopAdsCreditHistoryViewModelTest {
         val mockObject = mockk<AutoTopUpData.Response>(relaxed = true)
 
         every { mockObject.response } returns null
-        every { autoTopUpUSeCase.execute(captureLambda(),any()) } answers {
+        every { autoTopUpUSeCase.execute(captureLambda(), any()) } answers {
             firstArg<(AutoTopUpData.Response) -> Unit>().invoke(mockObject)
         }
 
@@ -138,12 +159,13 @@ class TopAdsCreditHistoryViewModelTest {
     fun `getAutoTopUpStatus success - response not null and error is empty test, livedata should contain data`() {
         val mockObject = AutoTopUpData.Response(AutoTopUpData(AutoTopUpStatus()))
 
-        every { autoTopUpUSeCase.execute(captureLambda(),any()) } answers {
+        every { autoTopUpUSeCase.execute(captureLambda(), any()) } answers {
             firstArg<(AutoTopUpData.Response) -> Unit>().invoke(mockObject)
         }
 
         viewModel.getAutoTopUpStatus()
-        Assert.assertEquals((viewModel.getAutoTopUpStatus.value as Success).data, mockObject.response?.data)
+        Assert.assertEquals((viewModel.getAutoTopUpStatus.value as Success).data,
+            mockObject.response?.data)
     }
 
     @Test
@@ -151,7 +173,7 @@ class TopAdsCreditHistoryViewModelTest {
 
         val actual = AutoTopUpData.Response(AutoTopUpData(errors = listOf(Error())))
 
-        every { autoTopUpUSeCase.execute(captureLambda(),any()) } answers {
+        every { autoTopUpUSeCase.execute(captureLambda(), any()) } answers {
             firstArg<(AutoTopUpData.Response) -> Unit>().invoke(actual)
         }
 
@@ -168,7 +190,7 @@ class TopAdsCreditHistoryViewModelTest {
         }
 
         viewModel.getAutoTopUpStatus()
-        Assert.assertEquals((viewModel.getAutoTopUpStatus.value as Fail).throwable , actual)
+        Assert.assertEquals((viewModel.getAutoTopUpStatus.value as Fail).throwable, actual)
     }
 
     @Test
@@ -181,14 +203,15 @@ class TopAdsCreditHistoryViewModelTest {
 
     @Test
     fun `getShopDeposit on success should contain value in livedata`() {
-        val actual = Deposit(TopadsDashboardDeposits(DepositAmount(0,"10")))
+        val actual = Deposit(TopadsDashboardDeposits(DepositAmount(0, "10")))
 
         every { topAdsGetShopDepositUseCase.execute(captureLambda(), any()) } answers {
             firstArg<(Deposit) -> Unit>().invoke(actual)
         }
 
         viewModel.getShopDeposit()
-        Assert.assertEquals(viewModel.creditAmount.value , actual.topadsDashboardDeposits.data.amountFmt)
+        Assert.assertEquals(viewModel.creditAmount.value,
+            actual.topadsDashboardDeposits.data.amountFmt)
     }
 
     @Test
@@ -198,7 +221,7 @@ class TopAdsCreditHistoryViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
         viewModel.getShopDeposit()
-        Assert.assertEquals(viewModel.creditAmount.value , null)
+        Assert.assertEquals(viewModel.creditAmount.value, null)
     }
 
     @Test

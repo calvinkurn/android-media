@@ -48,4 +48,20 @@ object CentralizedPromoConstant {
     const val EVENT_ACTION_MVC_PRODUCT_CLICK_BOTTOMSHEET = "click buat kupon - bottom sheet"
     const val EVENT_ACTION_CLICK_PROMOTION_CARD = "click promotion card"
     const val EVENT_CATEGORY_MVC_PRODUCT = "seller dashboard - iklan dan promosi"
+
+    /*
+    TokoMember: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3216
+     */
+    const val EVENT_VIEW_BGP_IRIS = "viewBGPIris"
+    const val EVENT_CLICK_BGP = "clickBGP"
+    const val EVENT_VIEW_TOKOMEMBER_ENTRY_POINT = "buat_promosi - view tokomember entry point"
+    const val EVENT_CLICK_TOKOMEMBER_ENTRY_POINT = "buat_promosi - click tokomember entry point"
+    const val EVENT_ADS_PROMO_TOKOMEMBER = "iklan dan promosi page - tokomember"
+    const val TRACKER_ID_33773 = "33773"
+    const val TRACKER_ID_33774 = "33774"
+    const val TRACKER_ID = "trackerId"
+    const val BUSINESS_UNIT_TOKOMEMBER = "tokomember"
+
+    //Flash Sale Toko
+    const val CLICK_CARD = "click card"
 }

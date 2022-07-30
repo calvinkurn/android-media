@@ -1,8 +1,12 @@
 package com.tokopedia.user.session.datastore
 
 import android.content.Context
+import android.util.Log
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import kotlinx.coroutines.flow.first
 
 object DataStoreMigrationHelper {
@@ -32,6 +36,8 @@ object DataStoreMigrationHelper {
                 userSessionDataStore.setAccessToken(userSessionInterface.accessToken.trim())
                 userSessionDataStore.setFirstTimeUserOnboarding(userSessionInterface.isFirstTimeUser)
                 userSessionDataStore.setFirstTimeUser(userSessionInterface.isFirstTimeUser)
+                userSessionDataStore.setIsShopOwner(userSessionInterface.isShopOwner)
+                userSessionDataStore.setIsShopAdmin(userSessionInterface.isShopAdmin)
                 userSessionDataStore.setIsMSISDNVerified(userSessionInterface.isMsisdnVerified)
                 userSessionDataStore.setHasPassword(userSessionInterface.hasPassword())
                 userSessionDataStore.setProfilePicture(userSessionInterface.profilePicture.trim())
@@ -53,7 +59,13 @@ object DataStoreMigrationHelper {
                 userSessionDataStore.setFcmTimestamp(userSessionInterface.fcmTimestamp.toString())
                 userSessionDataStore.setAndroidId(userSessionInterface.androidId.trim())
             } catch (e: Exception) {
-                e.printStackTrace()
+                ServerLogger.log(
+                    Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
+                    mapOf(
+                        "method" to "migrateToDataStore_exception",
+                        "error" to Log.getStackTraceString(e)
+                    )
+                )
             }
         }
     }

@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.storage.PlayChannelData
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import kotlin.math.abs
 
@@ -15,7 +16,6 @@ class VideoAnalyticHelper(
         private val context: Context,
         private val analytic: PlayAnalytic,
         private val log: PlayLog,
-        private val channelData: PlayChannelData,
         private val liveRoomMetricsCommon : PlayLiveRoomMetricsCommon = PlayLiveRoomMetricsCommon(),
 ) {
 
@@ -34,6 +34,9 @@ class VideoAnalyticHelper(
     )
 
     private var watchDurationInSeconds: Long = 0L
+
+    private var mChannelId = ""
+    private var videoPlayer : PlayVideoPlayerUiModel = PlayVideoPlayerUiModel.Unknown
 
     fun onPause() {
         bufferTrackingModel = bufferTrackingModel.copy(
@@ -76,7 +79,7 @@ class VideoAnalyticHelper(
 
         if(bufferTrackingModel.bufferCount > 0 && watchDurationModel.cumulationDuration > MAX_WATCH_DURATION_CUMULATION){
             log.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
-            log.sendAll(channelData.id, channelData.videoMetaInfo.videoPlayer)
+            log.sendAll(mChannelId, videoPlayer)
         }
     }
 
@@ -117,6 +120,11 @@ class VideoAnalyticHelper(
 
     private fun sendErrorStateVideoAnalytic(errorMessage: String) {
         analytic.trackVideoError(errorMessage)
+    }
+
+    fun setVideoData(channelId: String, videoPlayerUiModel: PlayVideoPlayerUiModel){
+        this.mChannelId = channelId
+        this.videoPlayer = videoPlayerUiModel
     }
 
     companion object {
