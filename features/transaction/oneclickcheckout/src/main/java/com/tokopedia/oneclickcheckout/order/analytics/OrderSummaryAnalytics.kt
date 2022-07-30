@@ -127,7 +127,9 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         )
         dataLayer[Key.E_COMMERCE] = ee
         dataLayer[ExtraKey.USER_ID] = userId
-        dataLayer[ExtraKey.PAYMENT_TYPE] = paymentType
+        dataLayer[ExtraKey.PAYMENT_METHOD] = paymentType
+        dataLayer[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        dataLayer[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         sendEnhancedEcommerce(dataLayer)
     }
 
@@ -148,7 +150,12 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         dataLayer[Key.E_COMMERCE] = ee
         dataLayer[Key.PAYMENT_ID] = paymentId
         dataLayer[ExtraKey.USER_ID] = userId
-        dataLayer[ExtraKey.PAYMENT_TYPE] = paymentType
+        dataLayer[ExtraKey.PAYMENT_METHOD] = paymentType
+        dataLayer[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        dataLayer[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        if (!isButtonPilihPembayaran) {
+            dataLayer[ExtraKey.TRACKER_ID] = TrackerId.CLICK_BAYAR_OCC
+        }
         sendEnhancedEcommerce(dataLayer)
     }
 

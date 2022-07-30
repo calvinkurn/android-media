@@ -195,6 +195,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
                 eventLabel)
         dataLayer[ConstantTransactionAnalytics.Key.E_COMMERCE] = cartMap
         dataLayer[ConstantTransactionAnalytics.Key.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        dataLayer[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         dataLayer[KEY_SESSION_IRIS] = irisSession.getSessionId()
         dataLayer[ExtraKey.USER_ID] = userId
         dataLayer[ExtraKey.PROMO_FLAG] = promoFlag.toString()

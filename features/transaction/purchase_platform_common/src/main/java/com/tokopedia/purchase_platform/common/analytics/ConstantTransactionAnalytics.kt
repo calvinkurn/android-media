@@ -436,7 +436,7 @@ object ConstantTransactionAnalytics {
         const val USER_ID = "userId"
         const val CART_ID = "cartId"
         const val PROMO_CODE = "promoCode"
-        const val PAYMENT_TYPE = "paymentType"
+        const val PAYMENT_METHOD = "paymentMethod"
         const val BUSINESS_UNIT = "businessUnit"
         const val CURRENT_SITE = "currentSite"
         const val PAGE_TYPE = "pageType"
@@ -474,5 +474,6 @@ object ConstantTransactionAnalytics {
         const val VIEW_GOTOPLUS_UPSELL_TICKER = "33466"
         const val CLICK_GOTOPLUS_UPSELL_TICKER = "33467"
         const val VIEW_GOTOPLUS_TICKER_OCC = "33468"
+        const val CLICK_BAYAR_OCC = "15570"
     }
 }

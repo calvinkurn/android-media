@@ -143,6 +143,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
         dataLayer[ConstantTransactionAnalytics.Key.E_COMMERCE] = cartMap
         dataLayer[ConstantTransactionAnalytics.Key.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        dataLayer[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         if (tradeInCustomDimension != null && tradeInCustomDimension.isNotEmpty()) {
             dataLayer.putAll(tradeInCustomDimension)
         }
