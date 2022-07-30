@@ -1528,7 +1528,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun onAttachInvoiceSelected(data: Intent?, resultCode: Int) {
         if (data == null || resultCode != RESULT_OK) return
         topchatViewState?.shouldShowSrw = false
-        initInvoicePreview(data.extras)
+        val invoiceAttached = initInvoicePreview(data.extras)
+        if (invoiceAttached) {
+            removeSrwPreview()
+            showTemplateChatIfReady()
+        }
         viewModel.initAttachmentPreview()
     }
 
@@ -1567,6 +1571,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             topchatViewState?.chatTextAreaTabLayout?.resetTab()
         }, onOldDesign = {
             rvSrw?.hideSrw()
+            rvSrw?.resetSrw()
         })
     }
 
@@ -2325,7 +2330,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun initInvoicePreview(savedInstanceState: Bundle?) {
+    private fun initInvoicePreview(savedInstanceState: Bundle?): Boolean {
         val id = getInvoicePreviewId(savedInstanceState)
         val invoiceCode = getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
         val productName = getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
@@ -2347,9 +2352,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             status,
             totalPriceAmount
         )
-        if (invoiceViewModel.enoughRequiredData()) {
+        return if (invoiceViewModel.enoughRequiredData()) {
             viewModel.clearAttachmentPreview()
             viewModel.addAttachmentPreview(invoiceViewModel)
+            true
+        } else {
+            false
         }
     }
 
