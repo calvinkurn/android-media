@@ -7,12 +7,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemProductBundleSingleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleSingleAdapter
+import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
@@ -35,6 +36,7 @@ class ProductBundleSingleViewHolder(
     }
 
     private var viewBinding: ItemProductBundleSingleWidgetBinding? by viewBinding()
+    private var listener: ProductBundleListener? = null
     private var typographyBundleName: Typography? = null
     private var typographyBundlePreOrder: Typography? = null
     private var typographyBundleProductName: Typography? = null
@@ -82,6 +84,43 @@ class ProductBundleSingleViewHolder(
         initPreorderAndSoldItem(bundleDetail)
         initShopInfo(bundleDetail.shopInfo, bundle.bundleName)
         initActionButton(bundleDetail.isPreOrder)
+        initListener(bundle, bundleDetail, product)
+    }
+
+    private fun initListener(
+        bundle: BundleUiModel,
+        bundleDetail: BundleDetailUiModel,
+        product: BundleProductUiModel
+    ) {
+        imageBundleProduct?.setOnClickListener {
+            listener?.onBundleProductClicked(
+                "",
+                bundle,
+                bundleDetail,
+                product,
+                adapterPosition
+            )
+        }
+
+        typographyBundleProductName?.setOnClickListener {
+            imageBundleProduct?.callOnClick()
+        }
+
+        itemView.addOnImpressionListener(bundle) {
+            listener?.impressionProductBundleSingle(
+                bundleDetail,
+                product,
+                bundle.bundleName,
+                adapterPosition
+            )
+        }
+
+        buttonAtc?.setOnClickListener {
+            listener?.addSingleBundleToCart(
+                bundleDetail,
+                product
+            )
+        }
     }
 
     private fun initPreorderAndSoldItem(bundleDetail: BundleDetailUiModel) {
@@ -140,6 +179,10 @@ class ProductBundleSingleViewHolder(
             }
             typographyBundleProductSavingAmount?.text = HtmlLinkHelper(ctx, bundle.savingAmountWording).spannedString
         }
+    }
+
+    fun setListener(listener: ProductBundleListener?) {
+        this.listener = listener
     }
 
 }

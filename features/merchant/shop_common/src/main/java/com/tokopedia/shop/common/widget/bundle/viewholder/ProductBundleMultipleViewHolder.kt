@@ -7,13 +7,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemProductBundleMultipleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleMultipleAdapter
+import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -33,6 +35,7 @@ class ProductBundleMultipleViewHolder(
     }
 
     private var viewBinding: ItemProductBundleMultipleWidgetBinding? by viewBinding()
+    private var listener: ProductBundleListener? = null
     private var typographyBundleName: Typography? = null
     private var typographyBundleProductDisplayPrice: Typography? = null
     private var typographyBundleProductOriginalPrice: Typography? = null
@@ -75,6 +78,7 @@ class ProductBundleMultipleViewHolder(
         initShopInfo(bundleDetail.shopInfo, bundle.bundleName)
         initBundleProductsRecyclerView(bundleDetail.products.size, bundle, bundleDetail)
         initActionButton(bundleDetail.isPreOrder)
+        initListener(bundle, bundleDetail, bundleDetail.products)
     }
 
     private fun initPreorderAndSoldItem(bundleDetail: BundleDetailUiModel) {
@@ -110,12 +114,12 @@ class ProductBundleMultipleViewHolder(
         rvBundleProducts?.apply {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, spanSize, GridLayoutManager.VERTICAL, false)
-            adapter = ProductBundleMultipleAdapter()
+            adapter = ProductBundleMultipleAdapter(listener)
         }
         (rvBundleProducts?.adapter as ProductBundleMultipleAdapter).updateDataSet(
-            newList = bundleDetail.products,
-            bundleDetail = bundleDetail,
-            bundleParent = bundle
+            bundleDetail.products,
+            bundleDetail,
+            bundle
         )
 
         val constraintSet = ConstraintSet()
@@ -130,5 +134,29 @@ class ProductBundleMultipleViewHolder(
         } else {
             itemView.context.getString(R.string.product_bundle_action_button_text)
         }
+    }
+
+    private fun initListener(
+        bundle: BundleUiModel,
+        bundleDetail: BundleDetailUiModel,
+        products: List<BundleProductUiModel>
+    ) {
+        itemView.addOnImpressionListener(bundle) {
+            listener?.impressionProductBundleMultiple(
+                bundleDetail,
+                adapterPosition
+            )
+        }
+
+        buttonAtc?.setOnClickListener {
+            listener?.addMultipleBundleToCart(
+                bundleDetail,
+                products
+            )
+        }
+    }
+
+    fun setListener(listener: ProductBundleListener?) {
+        this.listener = listener
     }
 }

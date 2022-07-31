@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter.Companion.PRODUCT_BUNDLE_SINGLE
+import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleMultipleViewHolder
 import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleSingleViewHolder
@@ -14,6 +15,7 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleSingleVie
 class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var bundleListItem: List<BundleUiModel> = listOf()
+    private val listener: ProductBundleListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val displayMetrics = parent.resources.displayMetrics
@@ -21,12 +23,16 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
             ProductBundleSingleViewHolder(
                 View.inflate(parent.context, viewType, null),
                 createContainerWidgetParams(displayMetrics)
-            )
+            ).apply {
+                setListener(listener)
+            }
         } else {
             ProductBundleMultipleViewHolder(
                 View.inflate(parent.context, viewType, null),
                 createContainerWidgetParams(displayMetrics)
-            )
+            ).apply {
+                setListener(listener)
+            }
         }
     }
 

@@ -3,17 +3,19 @@ package com.tokopedia.shop.common.widget.bundle.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.common.widget.bundle.model.*
-import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
+import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
+import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.ShopHomeProductBundleMultiplePackageViewHolder
-import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 
-class ProductBundleMultipleAdapter: RecyclerView.Adapter<ShopHomeProductBundleMultiplePackageViewHolder>(),
-    MultipleProductBundleListener {
+class ProductBundleMultipleAdapter(
+    private val listener: ProductBundleListener?
+) : RecyclerView.Adapter<ShopHomeProductBundleMultiplePackageViewHolder>() {
 
     private var bundleProducts: List<BundleProductUiModel> = listOf()
-    private var multipleBundleDetail: BundleDetailUiModel = BundleDetailUiModel()
-    private var multipleBundleParent: BundleUiModel = BundleUiModel()
+    private var bundleDetail: BundleDetailUiModel = BundleDetailUiModel()
+    private var bundle: BundleUiModel = BundleUiModel()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopHomeProductBundleMultiplePackageViewHolder {
         return ShopHomeProductBundleMultiplePackageViewHolder(
@@ -21,21 +23,35 @@ class ProductBundleMultipleAdapter: RecyclerView.Adapter<ShopHomeProductBundleMu
                         ShopHomeProductBundleMultiplePackageViewHolder.LAYOUT,
                         parent,
                         false
-                ),
-                this
+                )
         )
     }
 
     override fun onBindViewHolder(holder: ShopHomeProductBundleMultiplePackageViewHolder, position: Int) {
         val bundleProduct = bundleProducts.getOrNull(position) ?: BundleProductUiModel()
-        holder.bind(
-                bundleProduct,
-                multipleBundleDetail,
-                multipleBundleParent,
-                position,
+        holder.bind(bundleProduct, ::onViewImpression, ::onClickImpression)
+    }
+
+    private fun onClickImpression(position: Int) {
+        bundleProducts.getOrNull(position)?.let { product ->
+            listener?.onBundleProductClicked(
                 "",
-                ""
-        )
+                bundle,
+                bundleDetail,
+                product,
+                position
+            )
+        }
+    }
+
+    private fun onViewImpression(position: Int) {
+        bundleProducts.getOrNull(position)?.let { product ->
+            listener?.impressionProductItemBundleMultiple(
+                product,
+                bundleDetail,
+                position
+            )
+        }
     }
 
     override fun getItemCount(): Int {
@@ -43,56 +59,13 @@ class ProductBundleMultipleAdapter: RecyclerView.Adapter<ShopHomeProductBundleMu
     }
 
     fun updateDataSet(
-        newList: List<BundleProductUiModel>,
+        bundleProducts: List<BundleProductUiModel>,
         bundleDetail: BundleDetailUiModel,
-        bundleParent: BundleUiModel
+        bundle: BundleUiModel
     ) {
-        bundleProducts = newList
-        multipleBundleDetail = bundleDetail
-        multipleBundleParent = bundleParent
+        this.bundleProducts = bundleProducts
+        this.bundleDetail = bundleDetail
+        this.bundle = bundle
         notifyDataSetChanged()
     }
-
-    override fun onMultipleBundleProductClicked(
-        selectedProduct: ShopHomeBundleProductUiModel,
-        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-        bundleName: String,
-        bundlePosition: Int,
-        widgetTitle: String,
-        widgetName: String,
-        productItemPosition: Int,
-    ) {
-        //
-    }
-
-    override fun addMultipleBundleToCart(
-        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-        bundleListSize: Int,
-        productDetails: List<ShopHomeBundleProductUiModel>,
-        bundleName: String,
-        widgetLayout: ShopHomeWidgetLayout,
-    ) {
-        //
-    }
-
-    override fun impressionProductBundleMultiple(
-        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-        bundleName: String,
-        bundlePosition: Int,
-    ) {
-       //
-    }
-
-    override fun impressionProductItemBundleMultiple(
-        selectedProduct: ShopHomeBundleProductUiModel,
-        selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-        bundleName: String,
-        bundlePosition: Int,
-        widgetTitle: String,
-        widgetName: String,
-        productItemPosition: Int,
-    ) {
-        //
-    }
-
 }

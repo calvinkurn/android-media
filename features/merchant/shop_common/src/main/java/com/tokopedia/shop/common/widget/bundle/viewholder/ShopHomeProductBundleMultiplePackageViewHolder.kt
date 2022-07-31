@@ -16,7 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductBundleMultiplePackageViewHolder(
         itemView: View,
-        private val itemListener: MultipleProductBundleListener
+        private val itemListener: MultipleProductBundleListener? = null
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -48,7 +48,7 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
         imageBundleProduct?.loadImage(bundleProductItem.productImageUrl)
         typographyBundleProductName?.text = bundleProductItem.productName
         itemView.addOnImpressionListener(bundleProductItem){
-            itemListener.impressionProductItemBundleMultiple(
+            itemListener?.impressionProductItemBundleMultiple(
                 bundleProductItem,
                 bundleDetail,
                 bundleParent.bundleName,
@@ -59,7 +59,7 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
             )
         }
         itemView.setOnClickListener {
-            itemListener.onMultipleBundleProductClicked(
+            itemListener?.onMultipleBundleProductClicked(
                 bundleProductItem,
                 bundleDetail,
                 bundleParent.bundleName,
@@ -73,36 +73,13 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
 
     fun bind(
         bundleProductItem: BundleProductUiModel,
-        bundleDetail: BundleDetailUiModel,
-        bundleParent: BundleUiModel,
-        bundlePosition: Int,
-        widgetTitle: String,
-        widgetName: String
+        onViewImpression: (position: Int) -> Unit,
+        onClickImpression: (position: Int) -> Unit
     ) {
         imageBundleProduct?.loadImage(bundleProductItem.productImageUrl)
         typographyBundleProductName?.text = bundleProductItem.productName
-        /*itemView.addOnImpressionListener(bundleProductItem){
-            itemListener.impressionProductItemBundleMultiple(
-                bundleProductItem,
-                bundleDetail,
-                bundleParent.bundleName,
-                bundlePosition,
-                widgetTitle,
-                widgetName,
-                adapterPosition
-            )
-        }
-        itemView.setOnClickListener {
-            itemListener.onMultipleBundleProductClicked(
-                bundleProductItem,
-                bundleDetail,
-                bundleParent.bundleName,
-                bundlePosition,
-                widgetTitle,
-                widgetName,
-                adapterPosition
-            )
-        }*/
+        itemView.addOnImpressionListener(bundleProductItem) { onViewImpression.invoke(adapterPosition) }
+        itemView.setOnClickListener { onClickImpression.invoke(adapterPosition) }
     }
 }
 
