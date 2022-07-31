@@ -216,6 +216,10 @@ class OtherMenuViewHolder(
         }
     }
 
+    fun setCentralizePromoTag(isShow:Boolean){
+        otherMenuAdapter?.setCentralizedPromoTag(isShow)
+    }
+
     private fun initView() {
         view?.run {
             contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)

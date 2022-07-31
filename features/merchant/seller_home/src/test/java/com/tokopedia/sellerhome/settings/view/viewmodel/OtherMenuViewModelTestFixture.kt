@@ -5,10 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.seller.menu.common.domain.usecase.*
-import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
-import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
-import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
-import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
+import com.tokopedia.sellerhome.domain.usecase.*
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,6 +61,9 @@ abstract class OtherMenuViewModelTestFixture {
     @RelaxedMockK
     lateinit var shouldSwipeSecondaryInfoObserver: Observer<in Boolean>
 
+    @RelaxedMockK
+    lateinit var getNewPromotionUseCase: GetNewPromotionUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -89,6 +89,7 @@ abstract class OtherMenuViewModelTestFixture {
                 topAdsAutoTopupUseCase,
                 topAdsDashboardDepositUseCase,
                 shopShareInfoUseCase,
+                getNewPromotionUseCase,
                 userSession,
                 remoteConfig
             )

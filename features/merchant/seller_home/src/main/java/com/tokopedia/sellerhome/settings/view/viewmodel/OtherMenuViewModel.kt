@@ -17,10 +17,7 @@ import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
-import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
-import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
-import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
-import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
+import com.tokopedia.sellerhome.domain.usecase.*
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
@@ -48,6 +45,7 @@ class OtherMenuViewModel @Inject constructor(
     private val topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
     private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
     private val shopShareInfoUseCase: ShareInfoOtherUseCase,
+    private val getNewPromotionUseCase: GetNewPromotionUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: FirebaseRemoteConfigImpl
 ) : BaseViewModel(dispatcher.main) {
@@ -79,6 +77,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _balanceInfoLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _kreditTopAdsFormattedLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _isTopAdsAutoTopupLiveData = MutableLiveData<Result<Boolean>>()
+    private val _isShowTagCentralizePromo = MutableLiveData<Boolean>()
 
     val shopBadgeLiveData: LiveData<SettingResponseState<String>>
         get() = _shopBadgeLiveData
@@ -96,6 +95,8 @@ class OtherMenuViewModel @Inject constructor(
         get() = _isTopAdsAutoTopupLiveData
     val freeShippingLiveData: LiveData<SettingResponseState<Pair<Boolean, String>>>
         get() = _freeShippingLiveData
+    val isShowTagCentralizePromo: LiveData<Boolean>
+        get() = _isShowTagCentralizePromo
 
     private val _errorStateMap = MediatorLiveData<Map<OtherMenuDataType, Boolean>>().apply {
         addSource(_shopBadgeLiveData) {
@@ -334,6 +335,21 @@ class OtherMenuViewModel @Inject constructor(
 
     fun setDefaultToasterState(isShown: Boolean) {
         _isToasterAlreadyShown.value = isShown
+    }
+
+    fun getIsShowTagCentralizePromo() {
+        launchCatchError(
+            block = {
+                val data = withContext(dispatcher.io) {
+                    getNewPromotionUseCase.execute(userSession.shopId)
+                }
+                val isShow = data.data.pages.filter { it.pageNameSuffix == "Baru" }.isNotEmpty()
+                _isShowTagCentralizePromo.value = isShow
+            },
+            onError = {
+                _isShowTagCentralizePromo.value = false
+            }
+        )
     }
 
     private fun getFreeShippingStatusData() {
