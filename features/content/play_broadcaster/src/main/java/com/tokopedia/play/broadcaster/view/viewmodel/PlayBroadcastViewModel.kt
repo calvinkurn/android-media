@@ -1568,7 +1568,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
         }) {
             updatePinProduct(product = product)
-            _uiEvent.emit(PlayBroadcastEvent.FailPinProduct(it, channelId, isPinned))
+            _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
         }
     }
 

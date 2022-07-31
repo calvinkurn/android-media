@@ -440,7 +440,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             }
         }){
             updatePinProduct(product = product)
-            _uiEvent.emit(PlayBroProductChooserEvent.FailPinProduct(it, channelId, isPinned))
+            _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
         }
     }
 
