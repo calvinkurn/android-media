@@ -343,7 +343,7 @@ class OtherMenuViewModel @Inject constructor(
                 val data = withContext(dispatcher.io) {
                     getNewPromotionUseCase.execute(userSession.shopId)
                 }
-                val isShow = data.data.pages.filter { it.pageNameSuffix == "Baru" }.isNotEmpty()
+                val isShow = data.data.pages.isNotEmpty()
                 _isShowTagCentralizePromo.value = isShow
             },
             onError = {

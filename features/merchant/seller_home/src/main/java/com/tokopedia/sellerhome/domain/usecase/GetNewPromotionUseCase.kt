@@ -39,7 +39,7 @@ class GetNewPromotionUseCase @Inject constructor(
     companion object {
         const val QUERY = """
             query GetPromoList(${'$'}shopId: Int!) {
-                  merchantPromotionGetPromoList(shop_id: ${'$'}shopId, tab_id: 0, search: "") {
+                  merchantPromotionGetPromoList(shop_id: ${'$'}shopId, tab_id: 0, search: "baru") {
                     header {
                       process_time
                       message
