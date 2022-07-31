@@ -51,10 +51,10 @@ import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
 import com.tokopedia.play.broadcaster.view.state.*
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -1553,20 +1553,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     fun getShopName(): String = userSession.shopName
 
 
-    private fun handleClickPin(product: ProductUiModel){
+    private fun handleClickPin(product: ProductUiModel) {
+        val isPinned = product.pinStatus.isPinned
         viewModelScope.launchCatchError(block = {
             updatePinProduct(isLoading = true, product = product)
-            val id = if(product.pinStatus.isPinned) "0" else product.id
+            val id = if (isPinned) "0" else product.id
             val result = repo.setPinProduct(channelId, id)
-            if(result) {
+            if (result) {
                 updatePinProduct(product = product)
                 addCoolDown()
             } else {
                 throw MessageErrorException("Gagal pin product")
             }
-        }){
+        }) {
             updatePinProduct(product = product)
-            _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
+            _uiEvent.emit(PlayBroadcastEvent.FailPinProduct(it, channelId, isPinned))
         }
     }
 

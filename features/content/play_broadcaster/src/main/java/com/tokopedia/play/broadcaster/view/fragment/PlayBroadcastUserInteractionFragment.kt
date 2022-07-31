@@ -801,6 +801,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget(event.showCoachMark)
                     PlayBroadcastEvent.DismissGameResultCoachMark -> dismissGameResultCoachMark()
+                    is PlayBroadcastEvent.FailPinProduct -> {
+                        showErrorToaster(event.error)
+                        if (event.isPinned) analytic.onImpressFailUnPinProductLiveRoom(event.channelId)
+                        else analytic.onImpressFailPinProductLiveRoom(event.channelId)
+                    }
                     else -> {}
                 }
             }
@@ -1146,8 +1151,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
         if (!parentViewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
         else {
-            if (pinStatus) analytic.onImpressFailUnPinProductLiveRoom(parentViewModel.channelId)
-            else analytic.onImpressFailPinProductLiveRoom(parentViewModel.channelId)
             showToaster(
                 message = getString(R.string.play_bro_pin_product_failed),
                 type = Toaster.TYPE_ERROR
