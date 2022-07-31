@@ -12,6 +12,7 @@ class ProductBundleSingleAdapter: RecyclerView.Adapter<ShopHomeProductBundleSing
 
     private var bundleDetails: List<BundleDetailUiModel> = listOf()
     private var lastSelectedPosition = 0
+    private var onSelectedChangeListener: (BundleDetailUiModel) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopHomeProductBundleSinglePackageViewHolder {
         return ShopHomeProductBundleSinglePackageViewHolder(
@@ -37,6 +38,7 @@ class ProductBundleSingleAdapter: RecyclerView.Adapter<ShopHomeProductBundleSing
                 currentBundle.isSelected = !currentBundle.isSelected
                 lastSelectedPosition = position
                 notifyItemChanged(position)
+                onSelectedChangeListener(currentBundle)
             }
         }
     }
@@ -79,6 +81,10 @@ class ProductBundleSingleAdapter: RecyclerView.Adapter<ShopHomeProductBundleSing
         // set first bundle as default selected
         setDefaultSelected()
         notifyDataSetChanged()
+    }
+
+    fun setSelectionListener(listener: (BundleDetailUiModel) -> Unit) {
+        onSelectedChangeListener = listener
     }
 
 }

@@ -48,6 +48,7 @@ class ProductBundleSingleViewHolder(
     private var imageBundleProduct: ImageUnify? = null
     private var rvBundleDetails: RecyclerView? = null
     private var widgetContainer: ConstraintLayout? = null
+    private val bundleDetailAdapter = ProductBundleSingleAdapter()
 
     init {
         viewBinding?.apply {
@@ -121,6 +122,15 @@ class ProductBundleSingleViewHolder(
                 product
             )
         }
+
+        bundleDetailAdapter.setSelectionListener { selectedBundle ->
+            renderBundlePriceDetails(selectedBundle)
+            listener?.onTrackSingleVariantChange(
+                product,
+                selectedBundle,
+                bundle.bundleName
+            )
+        }
     }
 
     private fun initPreorderAndSoldItem(bundleDetail: BundleDetailUiModel) {
@@ -152,7 +162,7 @@ class ProductBundleSingleViewHolder(
         rvBundleDetails?.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = ProductBundleSingleAdapter()
+            adapter = bundleDetailAdapter
         }
 
         val constraintSet = ConstraintSet()
