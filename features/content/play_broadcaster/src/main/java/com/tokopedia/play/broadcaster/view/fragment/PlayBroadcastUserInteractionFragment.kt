@@ -801,6 +801,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget(event.showCoachMark)
                     PlayBroadcastEvent.DismissGameResultCoachMark -> dismissGameResultCoachMark()
+                    is PlayBroadcastEvent.SuccessPinProduct -> {
+                        analytic.onImpressPinProductLiveRoom(event.channelId, event.productId)
+                    }
                     is PlayBroadcastEvent.FailPinProduct -> {
                         showErrorToaster(event.error)
                         if (event.isPinned) analytic.onImpressFailUnPinProductLiveRoom(event.channelId)
@@ -868,10 +871,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         val pinnedProduct = newList.filter { it.pinStatus.isPinned }
         if (pinnedProduct.isNotEmpty()) {
-            analytic.onImpressPinProductLiveRoom(
-                parentViewModel.channelId,
-                pinnedProduct.first().id
-            )
             sortedList.add(pinnedProduct.first())
         }
         sortedList.addAll(newList.filterNot { it.pinStatus.isPinned })
