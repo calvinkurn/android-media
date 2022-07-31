@@ -426,19 +426,21 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleClickPin(product: ProductUiModel){
+        val isPinned = product.pinStatus.isPinned
         viewModelScope.launchCatchError(block = {
             updatePinProduct(isLoading = true, product = product)
-            val id = if(product.pinStatus.isPinned) "0" else product.id
+            val id = if(isPinned) "0" else product.id
             val result = repo.setPinProduct(channelId, id)
             if(result) {
                 updatePinProduct(product = product)
                 addCoolDown()
+                _uiEvent.emit(PlayBroProductChooserEvent.SuccessPinProduct(channelId, product.id))
             } else {
                 throw MessageErrorException("Gagal pin product")
             }
         }){
             updatePinProduct(product = product)
-            _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
+            _uiEvent.emit(PlayBroProductChooserEvent.FailPinProduct(it, channelId, isPinned))
         }
     }
 

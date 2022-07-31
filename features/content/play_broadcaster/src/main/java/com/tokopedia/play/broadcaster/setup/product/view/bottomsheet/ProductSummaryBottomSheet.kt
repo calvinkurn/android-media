@@ -56,6 +56,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     override fun onPinClicked(product: ProductUiModel) {
+        analytic.onClickPinProductBottomSheet(viewModel.channelId, product.id)
         checkPinProduct(product.pinStatus.isPinned){
             viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
         }
@@ -176,6 +177,14 @@ class ProductSummaryBottomSheet @Inject constructor(
                         )
 
                         showLoading(false)
+                    }
+                    is PlayBroProductChooserEvent.SuccessPinProduct -> {
+                        analytic.onImpressPinProductBottomSheet(event.channelId, event.productId)
+                    }
+                    is PlayBroProductChooserEvent.FailPinProduct -> {
+                        toaster.showError(err = event.error)
+                        if (event.isPinned) analytic.onImpressFailUnPinProductBottomSheet(event.channelId)
+                        else analytic.onImpressFailPinProductBottomSheet(event.channelId)
                     }
                 }
             }
