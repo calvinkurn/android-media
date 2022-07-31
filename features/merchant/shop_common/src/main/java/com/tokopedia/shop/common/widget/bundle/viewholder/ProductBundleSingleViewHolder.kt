@@ -13,6 +13,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemProductBundleSingleWidgetBinding
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleSingleAdapter
+import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
@@ -95,7 +96,7 @@ class ProductBundleSingleViewHolder(
     ) {
         imageBundleProduct?.setOnClickListener {
             listener?.onBundleProductClicked(
-                "",
+                BundleTypes.SINGLE_BUNDLE,
                 bundle,
                 bundleDetail,
                 product,

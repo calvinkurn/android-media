@@ -1,5 +1,6 @@
 package com.tokopedia.shop.common.widget.bundle.listener
 
+import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
@@ -7,7 +8,7 @@ import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 interface ProductBundleListener {
 
     fun onBundleProductClicked(
-        bundleType: String,
+        bundleType: BundleTypes,
         bundle: BundleUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel,

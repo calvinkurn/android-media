@@ -3,6 +3,7 @@ package com.tokopedia.shop.common.widget.bundle.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
@@ -35,7 +36,7 @@ class ProductBundleMultipleAdapter(
     private fun onClickImpression(position: Int) {
         bundleProducts.getOrNull(position)?.let { product ->
             listener?.onBundleProductClicked(
-                "",
+                BundleTypes.MULTIPLE_BUNDLE,
                 bundle,
                 bundleDetail,
                 product,

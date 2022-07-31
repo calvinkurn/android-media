@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.common.widget.bundle.adapter.ShopHomeProductBundleWidgetAdapter.Companion.PRODUCT_BUNDLE_SINGLE
+import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleMultipleViewHolder
@@ -50,7 +50,7 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     override fun getItemViewType(position: Int): Int {
         val bundleItem = bundleListItem.getOrNull(position) ?: BundleUiModel()
-        return if (bundleItem.bundleType == PRODUCT_BUNDLE_SINGLE) {
+        return if (bundleItem.bundleType == BundleTypes.SINGLE_BUNDLE) {
             ProductBundleSingleViewHolder.LAYOUT
         } else {
             ProductBundleMultipleViewHolder.LAYOUT
