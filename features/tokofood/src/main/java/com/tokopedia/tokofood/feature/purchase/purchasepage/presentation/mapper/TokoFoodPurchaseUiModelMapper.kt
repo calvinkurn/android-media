@@ -128,8 +128,8 @@ object TokoFoodPurchaseUiModelMapper {
         needPinpoint: Boolean
     ): PartialTokoFoodUiModel {
         val shouldShippingShown = response.data.shipping.name.isNotEmpty()
-        val shouldPromoShown = !response.data.promo.hidePromo
-        val shouldSummaryShown = !response.data.summaryDetail.hideSummary
+        val shouldPromoShown = !response.data.promo.hidePromo && isEnabled
+        val shouldSummaryShown = !response.data.summaryDetail.hideSummary && isEnabled
         val shouldTickerShopLevelShown =
             response.data.errorsUnblocking.isNotEmpty() && response.data.availableSection.products.isNotEmpty()
 
