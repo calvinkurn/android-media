@@ -1,7 +1,6 @@
 package com.tokopedia.manageaddress.ui.shoplocation.shopaddress
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -12,9 +11,9 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.Menus
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
@@ -22,11 +21,11 @@ import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.adapter.ShopLocat
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.viewholder.ShopLocationViewHolder
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.listener.ShopLocationOldView
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import javax.inject.Inject
 
 class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, ShopLocationOldTypeFactory>(),
@@ -61,6 +60,26 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, Shop
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_setting_address_list, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val tickerShopSetting = view.findViewById<Ticker>(R.id.ticker_shop_setting)
+        tickerShopSetting?.setupTickerView()
+    }
+
+    private fun Ticker.setupTickerView() {
+        tickerTitle = getString(R.string.title_ticker_shop_setting)
+        setHtmlDescription(getString(R.string.desc_ticker_shop_setting))
+        tickerShape = Ticker.SHAPE_LOOSE
+        tickerType = Ticker.TYPE_ANNOUNCEMENT
+        setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                RouteManager.route(requireActivity(), ApplinkConst.SELLER_SHIPPING_EDITOR)
+            }
+
+            override fun onDismiss() {}
+        })
     }
 
     override fun getAdapterTypeFactory() = ShopLocationOldTypeFactory(this)
