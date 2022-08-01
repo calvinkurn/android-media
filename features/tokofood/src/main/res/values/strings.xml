@@ -54,7 +54,7 @@
     <string name="text_purchase_no_pinpoint">Kamu belum set pinpoint lokasi</string>
     <string name="text_purchase_pinpoint_benefit">Untuk meningkatkan pengalaman  belanja kamu, set pinpoint terlebih dahulu, ya!</string>
     <string name="text_purchase_set_pinpoint">Set pin point</string>
-    <string name="text_purchase_success_notes">Sip! Catatan berhasil disimpan.</string>
+    <string name="text_purchase_success_notes">Sip, catatanmu tersimpan.</string>
     <string name="text_purchase_success_quantity">Quantity berhasil diubah</string>
     <string name="text_purchase_okay">Oke</string>
     <string name="text_purchase_failed_to_payment">Oops, gagal lanjut ke Pembayaran.</string>
