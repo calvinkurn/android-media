@@ -271,7 +271,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
     private fun goToLinkAccount(context: Context) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
             putExtra(ApplinkConstInternalUserPlatform.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
-            putExtra(ApplinkConstInternalUserGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
+            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
         }
         startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
     }
