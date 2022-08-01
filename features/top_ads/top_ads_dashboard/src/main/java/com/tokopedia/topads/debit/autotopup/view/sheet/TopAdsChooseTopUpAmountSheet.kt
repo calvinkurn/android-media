@@ -2,7 +2,9 @@ package com.tokopedia.topads.debit.autotopup.view.sheet
 
 import android.os.Bundle
 import android.text.Html
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,6 +49,17 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
         context?.run { TopAdsAutoTopUpChipsAdapter() }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        clearContentPadding = true
+        showCloseIcon = false
+        showKnob = true
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val childView =
@@ -54,7 +67,6 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
         setChild(childView)
         initView(childView)
         setTitle(getString(R.string.topads_dash_topads_auto_topup_bottomsheet_title))
-        showCloseIcon = false
     }
 
     private fun initView(childView: View) {
