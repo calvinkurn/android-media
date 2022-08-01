@@ -49,6 +49,7 @@
                 android:id="@+id/checkout_upsell_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/checkout_upsell_title"
