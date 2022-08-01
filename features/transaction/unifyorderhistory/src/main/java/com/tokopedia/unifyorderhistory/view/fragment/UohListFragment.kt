@@ -1677,7 +1677,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             dotMenu.appURL
                         }
                         if (Uri.parse(linkUrl).path?.contains(PATH_RESOLUTION) == true) {
-                            val intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
+                            val intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                             intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
                             startActivity(intent)
                         } else {
