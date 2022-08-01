@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Handler
 import android.util.AttributeSet
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -14,9 +15,13 @@ import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorRotateModel
 import com.tokopedia.media.editor.utils.getDestinationUri
+import com.tokopedia.media.loader.loadImageWithEmptyTarget
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.view.CropImageView
 import com.yalantis.ucrop.view.TransformImageView
 import com.yalantis.ucrop.view.UCropView
+import kotlin.math.abs
 import com.tokopedia.unifyprinciples.R as principleR
 
 class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
@@ -59,6 +64,128 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         overlayView.show()
     }
 
+    fun cropRotate(
+        finalRotationDegree: Float,
+        sliderValue: Float,
+        rotateNumber: Int,
+        data: EditorDetailUiModel,
+        onCropFinish: (cropResult: Bitmap) -> Unit
+    ) {
+        val bitmap = cropImageView.drawable.toBitmap()
+
+        if (cropImageView.currentAngle % 90f == 0f) {
+//            val bitmap = cropImageView.drawable.toBitmap()
+
+            val scale = getScale()
+            val scaleX = scale.first
+            val scaleY = scale.second
+
+            val matrix = Matrix()
+            matrix.preScale(
+                scaleX,
+                scaleY
+            )
+
+            matrix.postRotate(abs(finalRotationDegree))
+
+            // set crop area on data that will be pass to landing pass for state
+            data.rotateData = EditorRotateModel(
+                sliderValue,
+                scaleX,
+                scaleY,
+                0,
+                0,
+                bitmap.width,
+                bitmap.height,
+                rotateNumber
+            )
+
+            onCropFinish(Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true))
+        }
+
+        cropImageView.cropAndSaveImage(
+            Bitmap.CompressFormat.PNG,
+            100,
+            object : BitmapCropCallback {
+                override fun onBitmapCropped(
+                    resultUri: Uri,
+                    offsetX: Int,
+                    offsetY: Int,
+                    imageWidth: Int,
+                    imageHeight: Int
+                ) {
+                    onCropFinish(getProcessedBitmap(
+                        bitmap,
+                        offsetX, offsetY, imageWidth, imageHeight,
+                        finalRotationDegree = finalRotationDegree,
+                        sliderValue = sliderValue,
+                        rotateNumber = rotateNumber,
+                        data = data
+                    ))
+                }
+
+                override fun onCropFailure(t: Throwable) {
+                    Toast.makeText(context, "Crop Error", Toast.LENGTH_LONG).show()
+                }
+            }
+        )
+    }
+
+    private fun getProcessedBitmap(
+        originalBitmap: Bitmap,
+        offsetX: Int,
+        offsetY: Int,
+        imageWidth: Int,
+        imageHeight: Int,
+        finalRotationDegree: Float,
+        sliderValue: Float,
+        rotateNumber: Int,
+        data: EditorDetailUiModel
+    ): Bitmap {
+        val originalWidth = originalBitmap.width
+        val originalHeight = originalBitmap.height
+
+        val scale = getScale()
+        val scaleX = scale.first
+        val scaleY = scale.second
+
+        // matrix scale didn't affect rotation value, positive will always clockwise on matrix
+        val rotateDegree = abs(finalRotationDegree)
+
+        val matrix = Matrix()
+
+        matrix.preScale(scaleX, scaleY)
+        matrix.postRotate(
+            rotateDegree,
+            (originalWidth / 2).toFloat(),
+            (originalHeight / 2).toFloat()
+        )
+
+        val rotatedBitmap = Bitmap.createBitmap(
+            originalBitmap,
+            0,
+            0,
+            originalWidth,
+            originalHeight,
+            matrix,
+            true
+        )
+
+        // set crop area on data that will be pass to landing pass for state
+        data.rotateData = EditorRotateModel(
+            sliderValue,
+            scaleX,
+            scaleY,
+            offsetX,
+            offsetY,
+            imageWidth,
+            imageHeight,
+            rotateNumber
+        )
+
+        return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
+    }
+
     private fun initListener(data: Any?, previousDataModel: Int){
         if(data == null) return
         cropImageView.setTransformImageListener(object: TransformImageView.TransformImageListener{
@@ -76,6 +203,8 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
             override fun onScale(currentScale: Float) {}
         })
     }
+
+
 
     companion object{
         private const val ROTATE_EDITOR = 0

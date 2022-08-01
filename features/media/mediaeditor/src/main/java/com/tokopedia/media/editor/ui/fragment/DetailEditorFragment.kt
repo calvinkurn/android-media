@@ -375,7 +375,20 @@ class DetailEditorFragment @Inject constructor(
         }
 
         viewBinding?.btnSave?.setOnClickListener {
-            saveImage()
+            if(data.editorToolType == EditorToolType.ROTATE){
+                viewBinding?.imgUcropPreview?.cropRotate(
+                    finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
+                    sliderValue = rotateFilterRepositoryImpl.sliderValue,
+                    rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
+                    data
+                ) {
+                    saveImage(it)
+                }
+            } else {
+                viewBinding?.imgUcropPreview?.let {
+                    saveImage(it.cropImageView.drawable.toBitmap())
+                }
+            }
         }
     }
 
@@ -389,144 +402,14 @@ class DetailEditorFragment @Inject constructor(
         activity?.finish()
     }
 
-    private fun crop(): Bitmap? {
-        val rotateCropImageView = viewBinding?.imgUcropPreview
-
-        rotateCropImageView?.let { it ->
-            val cropImageView = it.cropImageView
-            if (cropImageView.currentAngle % 90f == 0f) {
-                val bitmap = cropImageView.drawable.toBitmap()
-
-                val scale = it.getScale()
-                val scaleX = scale.first
-                val scaleY = scale.second
-
-                val matrix = Matrix()
-                matrix.preScale(
-                    scaleX,
-                    scaleY
-                )
-
-                matrix.postRotate(abs(rotateFilterRepositoryImpl.getFinalRotationDegree()))
-
-                // set crop area on data that will be pass to landing pass for state
-                data.rotateData = EditorRotateModel(
-                    rotateFilterRepositoryImpl.sliderValue,
-                    scaleX,
-                    scaleY,
-                    0,
-                    0,
-                    bitmap.width,
-                    bitmap.height,
-                    rotateFilterRepositoryImpl.rotateNumber
-                )
-
-                return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-            }
-            cropImageView.cropAndSaveImage(
-                Bitmap.CompressFormat.PNG,
-                100,
-                object : BitmapCropCallback {
-                    override fun onBitmapCropped(
-                        resultUri: Uri,
-                        offsetX: Int,
-                        offsetY: Int,
-                        imageWidth: Int,
-                        imageHeight: Int
-                    ) {
-                        loadImageWithEmptyTarget(requireContext(),
-                            data.originalUrl,
-                            {},
-                            MediaBitmapEmptyTarget(
-                                onReady = { loadedOriginalBitmap ->
-                                    getProcessedBitmap(
-                                        loadedOriginalBitmap,
-                                        offsetX, offsetY, imageWidth, imageHeight
-                                    ).let {
-                                        saveImage(it)
-                                    }
-                                }
-                            )
-                        )
-                    }
-
-                    override fun onCropFailure(t: Throwable) {
-                        Toast.makeText(context, "Crop Error", Toast.LENGTH_LONG).show()
-                    }
-                }
-            )
-        }
-        return null
-    }
-
-    private fun getProcessedBitmap(
-        originalBitmap: Bitmap,
-        offsetX: Int,
-        offsetY: Int,
-        imageWidth: Int,
-        imageHeight: Int
-    ): Bitmap? {
-        val originalWidth = originalBitmap.width
-        val originalHeight = originalBitmap.height
-
-        viewBinding?.imgUcropPreview?.let {
-            val scale = it.getScale()
-            val scaleX = scale.first
-            val scaleY = scale.second
-
-            // matrix scale didn't affect rotation value, positive will always clockwise on matrix
-            val rotateDegree = abs(rotateFilterRepositoryImpl.getFinalRotationDegree())
-
-            val matrix = Matrix()
-
-            matrix.preScale(scaleX, scaleY)
-            matrix.postRotate(
-                rotateDegree,
-                (originalWidth / 2).toFloat(),
-                (originalHeight / 2).toFloat()
-            )
-
-            val rotatedBitmap = Bitmap.createBitmap(
-                originalBitmap,
-                0,
-                0,
-                originalWidth,
-                originalHeight,
-                matrix,
-                true
-            )
-
-            // set crop area on data that will be pass to landing pass for state
-            data.rotateData = EditorRotateModel(
-                rotateFilterRepositoryImpl.sliderValue,
-                scaleX,
-                scaleY,
-                offsetX,
-                offsetY,
-                imageWidth,
-                imageHeight,
-                rotateFilterRepositoryImpl.rotateNumber
-            )
-
-            return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
-        }
-
-        return null
-    }
-
-    private fun saveImage(bitmapParam: Bitmap? = null, filename: String? = null) {
+    private fun saveImage(bitmapParam: Bitmap, filename: String? = null) {
         viewBinding?.let {
             try {
-                val bitmap = bitmapParam ?: if (data.editorToolType == EditorToolType.ROTATE) {
-                    crop() ?: return@let
-                } else
-                    it.imgPreview.drawToBitmap()
-
                 val file = getDestinationUri(requireContext(), filename).toFile()
                 file.createNewFile()
 
                 val bos = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos)
+                bitmapParam.compress(Bitmap.CompressFormat.PNG, 0, bos)
                 val bitmapData = bos.toByteArray()
 
                 val fos = FileOutputStream(file)
