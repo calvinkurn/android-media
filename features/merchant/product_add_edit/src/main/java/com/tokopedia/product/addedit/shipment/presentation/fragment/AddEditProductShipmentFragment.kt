@@ -257,6 +257,7 @@ class AddEditProductShipmentFragment:
                         shipmentConventionalAdapter.setProductActiveState(it)
                         shipmentOnDemandAdapter.setProductActiveState(it)
                     }
+                    isCPLActivated = false
                 }
             }
         }
@@ -503,6 +504,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun showDialogStandardShipment() {
+        var isStandardShipment = false
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.title_standard_shipment))
             setDefaultMaxWidth()
@@ -510,13 +512,20 @@ class AddEditProductShipmentFragment:
             setPrimaryCTAText(getString(R.string.primary_button_standard_shipment))
             setSecondaryCTAText(getString(R.string.secondary_button_standard_shipment))
             setPrimaryCTAClickListener {
-                shipmentRadioValue(true)
+                isStandardShipment = true
                 dismiss()
             }
             setSecondaryCTAClickListener {
-                radioStandarShipment?.isChecked = false
-                radioCustomShipment?.isChecked = true
+                isStandardShipment = false
                 dismiss()
+            }
+            setOnDismissListener {
+                if (isStandardShipment) {
+                    shipmentRadioValue(true)
+                } else {
+                    radioStandarShipment?.isChecked = false
+                    radioCustomShipment?.isChecked = true
+                }
             }
         }.show()
     }

@@ -6,21 +6,35 @@ import javax.inject.Inject
 
 class CustomProductLogisticMapper @Inject constructor() {
 
-    fun mapCPLData(response: GetCPLData, draftShipperServices: List<Long>? = null): CustomProductLogisticModel {
+    fun mapCPLData(response: GetCPLData, productId: String, draftShipperServices: List<Long>? = null): CustomProductLogisticModel {
         return CustomProductLogisticModel().apply {
-            cplProduct = mapCPLProduct(response.cplProduct, draftShipperServices)
+            cplProduct = mapCPLProduct(response.cplProduct, productId, draftShipperServices)
             shipperList = mapShipperList(response.shipperList)
         }
     }
 
-    private fun mapCPLProduct(response: List<CPLProduct>, draftShipperServices: List<Long>? = null): List<CPLProductModel> {
-        return response.map {
-            CPLProductModel(
-                productId = it.productId,
-                cplStatus = draftShipperServices?.getCplStatus() ?: it.cplStatus,
-                shipperServices = draftShipperServices ?: it.shipperServices
-            )
+    private fun mapCPLProduct(response: List<CPLProduct>, productId: String, draftShipperServices: List<Long>? = null): List<CPLProductModel> {
+        return if (response.isNotEmpty()) {
+            response.map {
+                CPLProductModel(
+                    productId = it.productId,
+                    cplStatus = draftShipperServices?.getCplStatus() ?: it.cplStatus,
+                    shipperServices = draftShipperServices ?: it.shipperServices
+                )
+            }
+        } else {
+            draftShipperServices?.mapCPLProductFromDraft(productId) ?: arrayListOf()
         }
+    }
+
+    private fun List<Long>.mapCPLProductFromDraft(productId: String): List<CPLProductModel>  {
+        return arrayListOf(
+            CPLProductModel(
+                productId = productId.toLong(),
+                cplStatus = getCplStatus(),
+                shipperServices = this
+            )
+        )
     }
 
     private fun List<Long>.getCplStatus(): Int {

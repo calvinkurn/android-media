@@ -116,7 +116,7 @@ class AddEditProductShipmentViewModelTest {
             customProductLogisticRepository.getCPLList(any(), any())
         } returns OngkirGetCPLQGLResponse()
         every {
-            customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data, any())
+            customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data, any(), any())
         } returns testData
         viewModel.getCPLList(1234, "9876", null)
         verify { cplListObserver.onChanged(Success(testData)) }
