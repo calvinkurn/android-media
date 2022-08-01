@@ -44,6 +44,7 @@ class AddEmailViewModelTest {
 
     val mockEmail = "yoris.prayogo@tokopedia.com"
     val mockOtp = "1234"
+    val mockValidateToken = "validateToken"
 
     val mockAddEmailPojo = AddEmailPojo()
     val mockCheckEmailPojo = CheckEmailPojo()
@@ -66,7 +67,7 @@ class AddEmailViewModelTest {
                 ProfileCompletionQueryConstant.PARAM_OTP_CODE to mockOtp
         )
 
-        viewModel.mutateAddEmail(context, mockEmail, mockOtp)
+        viewModel.mutateAddEmail(context, mockEmail, mockOtp, mockValidateToken)
 
         /* Then */
         verify {
@@ -88,7 +89,7 @@ class AddEmailViewModelTest {
             firstArg<(AddEmailPojo) -> Unit>().invoke(mockAddEmailPojo)
         }
 
-        viewModel.mutateAddEmail(context, mockEmail, mockOtp)
+        viewModel.mutateAddEmail(context, mockEmail, mockOtp, mockValidateToken)
 
         /* Then */
         verify { addEmailObserver.onChanged(Success(addEmailResult)) }
@@ -102,7 +103,7 @@ class AddEmailViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        viewModel.mutateAddEmail(context, mockEmail, mockOtp)
+        viewModel.mutateAddEmail(context, mockEmail, mockOtp, mockValidateToken)
 
         /* Then */
         verify { addEmailObserver.onChanged(Fail(mockThrowable)) }
@@ -117,7 +118,7 @@ class AddEmailViewModelTest {
             firstArg<(AddEmailPojo) -> Unit>().invoke(mockAddEmailPojo)
         }
 
-        viewModel.mutateAddEmail(context, mockEmail, mockOtp)
+        viewModel.mutateAddEmail(context, mockEmail, mockOtp, mockValidateToken)
 
         /* Then */
         assertThat(viewModel.mutateAddEmailResponse.value, instanceOf(Fail::class.java))
@@ -134,7 +135,7 @@ class AddEmailViewModelTest {
             firstArg<(AddEmailPojo) -> Unit>().invoke(mockAddEmailPojo)
         }
 
-        viewModel.mutateAddEmail(context, mockEmail, mockOtp)
+        viewModel.mutateAddEmail(context, mockEmail, mockOtp, mockValidateToken)
 
         /* Then */
         assertThat(viewModel.mutateAddEmailResponse.value, instanceOf(Fail::class.java))

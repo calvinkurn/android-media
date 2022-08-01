@@ -57,6 +57,7 @@ class AddPhoneViewModelTest {
     val userValidatePojo = UserValidatePojo()
 
     val mockThrowable = Throwable(errMsg)
+    val mockValidateToken = "validateToken"
 
     @Before
     fun setUp() {
@@ -75,7 +76,7 @@ class AddPhoneViewModelTest {
     fun `on mutateAddPhone executed`() {
         val mockParam = mapOf(ProfileCompletionQueryConstant.PARAM_PHONE to msisdn)
 
-        viewModel.mutateAddPhone(msisdn)
+        viewModel.mutateAddPhone(msisdn, mockValidateToken)
 
         /* Then */
         verify {
@@ -96,7 +97,7 @@ class AddPhoneViewModelTest {
             firstArg<(AddPhonePojo) -> Unit>().invoke(addPhonePojo)
         }
 
-        viewModel.mutateAddPhone(msisdn)
+        viewModel.mutateAddPhone(msisdn, mockValidateToken)
 
         /* Then */
         verify { addPhoneObserver.onChanged(Success(addPhoneResult)) }
@@ -112,7 +113,7 @@ class AddPhoneViewModelTest {
             firstArg<(AddPhonePojo) -> Unit>().invoke(addPhonePojo)
         }
 
-        viewModel.mutateAddPhone(msisdn)
+        viewModel.mutateAddPhone(msisdn, mockValidateToken)
 
         /* Then */
         assertThat(viewModel.addPhoneResponse.value, instanceOf(Fail::class.java))
@@ -129,7 +130,7 @@ class AddPhoneViewModelTest {
             firstArg<(AddPhonePojo) -> Unit>().invoke(addPhonePojo)
         }
 
-        viewModel.mutateAddPhone(msisdn)
+        viewModel.mutateAddPhone(msisdn, mockValidateToken)
 
         /* Then */
         assertThat(viewModel.addPhoneResponse.value, instanceOf(Fail::class.java))
@@ -144,7 +145,7 @@ class AddPhoneViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        viewModel.mutateAddPhone(msisdn)
+        viewModel.mutateAddPhone(msisdn, mockValidateToken)
 
         /* Then */
         verify { addPhoneObserver.onChanged(Fail(mockThrowable)) }
