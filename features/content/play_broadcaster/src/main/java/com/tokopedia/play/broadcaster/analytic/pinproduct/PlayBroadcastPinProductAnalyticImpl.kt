@@ -27,7 +27,7 @@ class PlayBroadcastPinProductAnalyticImpl @Inject constructor(
 
     private val shopId = userSession.shopId
     private val userId = userSession.userId
-    private val channelId = configStore.getChannelId()
+    private val channelId by lazy (LazyThreadSafetyMode.NONE){ configStore.getChannelId() }
 
     override fun onClickPinProductLiveRoom(productId: String) {
         sendClickContent(
