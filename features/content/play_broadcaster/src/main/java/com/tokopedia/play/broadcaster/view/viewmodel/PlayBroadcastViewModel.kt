@@ -1562,7 +1562,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (result) {
                 updatePinProduct(product = product)
                 addCoolDown()
-                _uiEvent.emit(PlayBroadcastEvent.SuccessPinProduct(channelId, product.id))
+                if (!isPinned) _uiEvent.emit(
+                    PlayBroadcastEvent.SuccessPinProduct(
+                        channelId,
+                        product.id
+                    )
+                )
             } else {
                 throw MessageErrorException("Gagal pin product")
             }
