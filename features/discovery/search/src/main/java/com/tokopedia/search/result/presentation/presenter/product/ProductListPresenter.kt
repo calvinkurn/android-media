@@ -87,6 +87,7 @@ import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
+import com.tokopedia.search.result.product.separator.VerticalSeparatorMapper
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
@@ -1340,7 +1341,10 @@ class ProductListPresenter @Inject constructor(
         if (isLastPage()) {
             val broadMatchVisitableList = mutableListOf<Visitable<*>>()
             addBroadMatchToVisitableList(broadMatchVisitableList)
-            list.addAll(broadMatchVisitableList.addVerticalSeparator(addBottomSeparator = false))
+            list.addAll(VerticalSeparatorMapper.addVerticalSeparator(
+                broadMatchVisitableList,
+                addBottomSeparator = false
+            ))
         }
     }
 
@@ -1350,7 +1354,10 @@ class ProductListPresenter @Inject constructor(
 
         list.addAll(
             list.indexOf(productList[0]),
-            broadMatchVisitableList.addVerticalSeparator(addTopSeparator = false)
+            VerticalSeparatorMapper.addVerticalSeparator(
+                broadMatchVisitableList,
+                addTopSeparator = false
+            )
         )
     }
 
@@ -1362,28 +1369,10 @@ class ProductListPresenter @Inject constructor(
 
         val productItemAtBroadMatchPosition = productList[broadMatchPosition - 1]
         val broadMatchIndex = list.indexOf(productItemAtBroadMatchPosition) + 1
-        list.addAll(broadMatchIndex, broadMatchVisitableList.addVerticalSeparator())
-    }
-
-    private fun List<Visitable<*>>.addVerticalSeparator(
-        addTopSeparator: Boolean = true,
-        addBottomSeparator: Boolean = true
-    ): List<Visitable<*>> {
-        return mapIndexed { index, visitable ->
-            if (index == 0 && addTopSeparator) {
-                when (visitable) {
-                    is SuggestionDataView -> {
-                        visitable.copy(verticalSeparator = VerticalSeparator.Top)
-                    }
-                    is BroadMatchDataView -> {
-                        visitable.copy(verticalSeparator = VerticalSeparator.Top)
-                    }
-                    else -> visitable
-                }
-            } else if (addBottomSeparator && index == size - 1 && visitable is BroadMatchDataView) {
-                visitable.copy(verticalSeparator = VerticalSeparator.Bottom)
-            } else visitable
-        }
+        list.addAll(
+            broadMatchIndex,
+            VerticalSeparatorMapper.addVerticalSeparator(broadMatchVisitableList)
+        )
     }
 
     private fun processTopAdsImageViewModel(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {
