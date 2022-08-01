@@ -92,7 +92,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String USER_ID_PARAM = "uid";
     private static final String ENV_PARAM = "t";
     private static final String ENV_VALUE = "android";
-    private static final String TOP_ADS_REDIRECTION = "TOP_ADS_CLICK_REDIRECTION_LINK_MONITORING";
+    private static final String TOP_ADS_REDIRECTION = "TOP_ADS_REDIRECTION";
 
     private final Activity context;
     private final DeepLinkView viewListener;
