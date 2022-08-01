@@ -39,7 +39,7 @@ class ResolutionSuccessActivity : AppCompatActivity() {
     private fun routeToDetail() {
         if (url.isNotEmpty()) {
             val intent = RouteManager.getIntent(this, ApplinkConstInternalOperational.DETAIL_COMPLAIN)
-            intent.putExtra(KEY_URL, url)
+            intent.putExtra(KEY_URL, "https://1198-staging-feature.tokopedia.com" + url)
             startActivity(intent)
         }
     }
