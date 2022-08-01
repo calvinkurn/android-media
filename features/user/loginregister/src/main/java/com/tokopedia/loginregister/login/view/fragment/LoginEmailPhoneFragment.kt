@@ -613,7 +613,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun goToChooseAccountPageFingerprint(validateToken: String) {
         activity?.let {
             val intent = RouteManager.getIntent(it,
-                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT_FINGERPRINT).apply {
+                    ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_FINGERPRINT).apply {
                 putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
             }
             startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT)
@@ -1498,7 +1498,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
         if (activity != null) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
             startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT)
