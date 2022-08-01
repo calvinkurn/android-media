@@ -588,6 +588,22 @@ class ManageHighlightedProductViewModelTest {
     }
 
     @Test
+    fun `When variant product with different parent but not selected,  should not update any properties`() {
+        //Given
+        val firstProduct = buildHighlightableProduct().copy(id = 100, parentId = 200, position = 1)
+        val secondProduct = buildHighlightableProduct().copy(id = 200, parentId = 500, position = 2)
+        val products = listOf(firstProduct, secondProduct)
+
+        val expected = listOf(firstProduct, secondProduct)
+
+        //When
+        val actual = viewModel.markAsSelected(products)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `When select a variant product with different parent, other variant should be stay enabled`() {
         //Given
         val firstProduct = buildHighlightableProduct().copy(id = 100, parentId = 200)
@@ -608,21 +624,7 @@ class ManageHighlightedProductViewModelTest {
         assertEquals(expected, actual)
     }
 
-    @Test
-    fun `When variant product with different parent but not selected,  should not update any properties`() {
-        //Given
-        val firstProduct = buildHighlightableProduct().copy(id = 100, parentId = 200, position = 1)
-        val secondProduct = buildHighlightableProduct().copy(id = 200, parentId = 500, position = 2)
-        val products = listOf(firstProduct, secondProduct)
 
-        val expected = listOf(firstProduct, secondProduct)
-
-        //When
-        val actual = viewModel.markAsSelected(products)
-
-        //Then
-        assertEquals(expected, actual)
-    }
 
     @Test
     fun `When seller already select 5 product, the remaining products should be disabled`() {
