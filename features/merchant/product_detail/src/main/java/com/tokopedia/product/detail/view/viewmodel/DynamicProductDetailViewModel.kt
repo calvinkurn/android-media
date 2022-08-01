@@ -1037,10 +1037,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     }
 
-    fun hitAffiliateCookie(productInfo: DynamicProductInfoP1,
-                           affiliateUuid: String,
-                           uuid: String,
-                           affiliateChannel:String) {
+    fun hitAffiliateCookie(
+        productInfo: DynamicProductInfoP1,
+        affiliateUuid: String,
+        uuid: String,
+        affiliateChannel: String
+    ) {
         launchCatchError(block = {
 
             val affiliatePageDetail = getAffiliatePageDetail(productInfo)
@@ -1057,7 +1059,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         })
     }
 
-    private fun getAffiliatePageDetail(productInfo: DynamicProductInfoP1) :AffiliatePageDetail{
+    private fun getAffiliatePageDetail(productInfo: DynamicProductInfoP1): AffiliatePageDetail {
         val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
         return AffiliatePageDetail(
             pageId = productInfo.basic.productID,
