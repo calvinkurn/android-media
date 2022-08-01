@@ -212,8 +212,8 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     fun setTextViewWithBullet(text: String, context: Context, layout: LinearLayout) {
         val tv = Typography(context)
         val span = SpannableString(text)
-        val radius = dpToPx(4)
-        val gapWidth = dpToPx(12)
+        val radius = dpToPx(RADIUS_FOUR)
+        val gapWidth = dpToPx(GAP_WIDTH)
         val color = ResourcesCompat.getColor(
             resources,
             com.tokopedia.unifyprinciples.R.color.Unify_N100,
@@ -232,7 +232,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        val margin = dpToPx(8)
+        val margin = dpToPx(MARGIN_EIGHT)
         setMargins(tv, 0, 0, 0, margin)
         layout.addView(tv)
     }
@@ -269,5 +269,9 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
             intent.putExtras(bundle)
             return intent
         }
+
+        private const val RADIUS_FOUR = 4
+        private const val GAP_WIDTH = 12
+        private const val MARGIN_EIGHT = 8
     }
 }

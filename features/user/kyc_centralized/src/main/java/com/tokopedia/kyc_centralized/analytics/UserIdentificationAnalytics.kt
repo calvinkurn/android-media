@@ -91,7 +91,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventClickOnNextOnBoarding() {
-        if (projectID == 4) {
+        if (projectID == PROJECT_ID_TRADE_IN) {
             sendTradeInClickEvent(Action.CLICK_NEXT_ONBOARDING, "")
         }
 
@@ -253,6 +253,8 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
 
         private const val TYPE_ALA_CARTE = "ala carte"
         private const val TYPE_CKYC = "ckyc"
+
+        private const val PROJECT_ID_TRADE_IN = 4
     }
 
 }
