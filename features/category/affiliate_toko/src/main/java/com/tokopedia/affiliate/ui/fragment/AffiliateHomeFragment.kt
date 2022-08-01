@@ -20,6 +20,8 @@ import com.tokopedia.affiliate.CLICK_TYPE
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.COMMISSION_TYPE
 import com.tokopedia.affiliate.LINK_HISTORY_BUTTON_CLICKED
+import com.tokopedia.affiliate.PAGE_TYPE_PDP
+import com.tokopedia.affiliate.PAGE_TYPE_SHOP
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TIME_EIGHTEEN
 import com.tokopedia.affiliate.TIME_ELEVEN
@@ -34,10 +36,12 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
+import com.tokopedia.affiliate.interfaces.AffiliateHomeImpressionListener
 import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.interfaces.AffiliatePerformanceChipClick
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
+import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.model.response.ItemTypesItem
 import com.tokopedia.affiliate.setAnnouncementData
@@ -49,8 +53,8 @@ import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet.Companion.TYPE_HOME
-import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
+import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.AffiliateSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateNoPromoItemFoundModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
@@ -76,14 +80,13 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.Calendar
+import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
     ProductClickInterface,
     AffiliatePerformaClickInterfaces, AffiliateDatePickerRangeChangeInterface,
-    AffiliatePerformanceChipClick {
+    AffiliatePerformanceChipClick, AffiliateHomeImpressionListener {
 
     private var isSwipeRefresh = false
     private var listSize = 0
@@ -104,6 +107,7 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
     private var isNoMoreData = false
 
     companion object {
+        private const val PRODUCT_ACTIVE = 1
         fun getFragmentInstance(
             affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface,
             affiliateActivity: AffiliateActivityInterface
@@ -223,25 +227,9 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (!isNoPromoItem && !isNoMoreData) {
-                    sendImpressionEvent()
                     affiliateHomeViewModel.getAffiliatePerformance(page - 1)
                 }
             }
-        }
-    }
-
-    private fun sendImpressionEvent() {
-        lastItem?.let { item ->
-            var itemID = ""
-            item.product.itemID?.let {
-                itemID = it
-            }
-            var itemName = ""
-            item.product.itemTitle?.let {
-                itemName = it
-            }
-            AffiliateAnalytics.trackEventImpression(AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUK_YANG_DIPROMOSIKAN,AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
-                userSessionInterface.userId,itemID,listSize-2,itemName,itemID)
         }
     }
 
@@ -460,9 +448,20 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
     }
 
     override fun onChipClick(type: ItemTypesItem?) {
+        sendFilterClickEvent(type)
         affiliateHomeViewModel.lastSelectedChip = type
         partialReset()
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO, type?.pageType.toIntOrZero())
+    }
+
+    private fun sendFilterClickEvent(type: ItemTypesItem?) {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_PG,
+            AffiliateAnalytics.ActionKeys.CLICK_PROMOTED_PAGE_FILTER_TAB,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            "${type?.name?.lowercase()}",
+            userSessionInterface.userId
+        )
     }
 
     private fun partialReset() {
@@ -470,6 +469,52 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
         adapter.notifyItemRangeRemoved(PARTIAL_RESET_LENGTH, listSize - PARTIAL_RESET_LENGTH)
         loadMoreTriggerListener?.resetState()
         listSize = affiliateHomeViewModel.staticSize
+    }
+    override fun onItemImpression(
+        item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item,
+        position: Int,
+        type: String
+    ) {
+        if (type == PAGE_TYPE_PDP) {
+            sendProductImpression(item, position)
+        } else if (type == PAGE_TYPE_SHOP) {
+           sendShopImpression(item, position)
+        }
+    }
+
+    private fun sendProductImpression(
+        item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item,
+        position: Int
+    ) {
+        val status = if (item.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
+            AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUK_YANG_DIPROMOSIKAN,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            userSessionInterface.userId,
+            item.itemID,
+            position,
+            item.itemTitle,
+            "${item.itemID} - ${item.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $status",
+        )
+    }
+
+    private fun sendShopImpression(
+        item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item,
+        position: Int
+    ) {
+        val status = if (item.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
+            AffiliateAnalytics.ActionKeys.IMPRESSION_SHOP_LINK_DENGAN_PERFORMA,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            userSessionInterface.userId,
+            item.itemID,
+            position,
+            item.itemTitle,
+            "${item.itemID} - ${item.metrics?.findLast { it?.metricType == "shopOrderCommissionPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "shopTotalClickPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "shopOrderPerItem" }?.metricValue} - $status",
+            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
+        )
     }
 
 }
