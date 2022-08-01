@@ -48,6 +48,13 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         initListener()
     }
 
+    fun initializeContrast(uriSource: Uri){
+        val resultDestination = getDestinationUri(context)
+        cropImageView.setImageUri(uriSource, resultDestination)
+        hideOverlay()
+        initListener()
+    }
+
     @SuppressLint("ClickableViewAccessibility")
             /**
              * Component will lose the ability to interact with user input via touch

@@ -200,14 +200,14 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeContrast() {
         viewModel.contrastFilter.observe(viewLifecycleOwner) {
+            val originalBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
             originalBitmap?.let { itBitmap ->
-                val cloneOriginal = itBitmap.copy(itBitmap.config, true)
-                viewBinding?.imgPreview?.setImageBitmap(
-                    contrastFilterRepositoryImpl.contrast(
-                        it,
-                        cloneOriginal
-                    )
+                val contrastBitmap = contrastFilterRepositoryImpl.contrast(
+                    it,
+                    itBitmap.copy(itBitmap.config, true)
                 )
+
+                viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(contrastBitmap)
             }
         }
     }
@@ -271,15 +271,29 @@ class DetailEditorFragment @Inject constructor(
                     }
                 }
                 brightnessComponent.setupView(brightnessValue)
-
-                viewBinding?.imgPreview?.hide()
-                viewBinding?.imgUcropPreview?.show()
             }
+            // ==========
             EditorToolType.REMOVE_BACKGROUND -> removeBgComponent.setupView()
-            EditorToolType.CONTRAST -> contrastComponent.setupView(
-                data.contrastValue ?: DEFAULT_VALUE_CONTRAST
-            )
+            // ==========
+            EditorToolType.CONTRAST -> {
+                val contrastValue = data.contrastValue ?: DEFAULT_VALUE_CONTRAST
+                viewBinding?.imgUcropPreview?.apply {
+                    initializeContrast(uri)
+                    onLoadComplete = {
+                        val originalBitmap = cropImageView.drawable.toBitmap()
+                        val contrastBitmap = contrastFilterRepositoryImpl.contrast(
+                            contrastValue,
+                            originalBitmap.copy(originalBitmap.config, true)
+                        )
+
+                        this.cropImageView.setImageBitmap(contrastBitmap)
+                    }
+                }
+                contrastComponent.setupView(contrastValue)
+            }
+            // ==========
             EditorToolType.WATERMARK -> watermarkComponent.setupView()
+            // ==========
             EditorToolType.ROTATE -> {
                 viewBinding?.imgUcropPreview?.apply {
                     initializeRotate(uri)
@@ -304,17 +318,12 @@ class DetailEditorFragment @Inject constructor(
                     }
                 }
                 rotateComponent.setupView(data)
-
-                viewBinding?.imgPreview?.hide()
-                viewBinding?.imgUcropPreview?.show()
             }
+            // ==========
             EditorToolType.CROP -> {
                 val uri = Uri.fromFile(File(data.originalUrl))
 //                viewBinding?.imgUcropPreview?.initialize(uri)
                 cropComponent.setupView()
-
-                viewBinding?.imgPreview?.hide()
-                viewBinding?.imgUcropPreview?.show()
             }
         }
     }

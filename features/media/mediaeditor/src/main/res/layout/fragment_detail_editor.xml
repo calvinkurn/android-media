@@ -10,6 +10,7 @@
 
     <ImageView
         android:id="@+id/img_preview"
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#D3D3D3"
