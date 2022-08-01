@@ -69,7 +69,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
     private val adapterTypeFactory by lazy {
         CentralizedPromoAdapterTypeFactory(
             ::onClickPromo,
-            ::trackProductCouponOngoingPromoClick
+            ::onImpressionPromoList
         )
     }
 
@@ -320,7 +320,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
                 detailPromoBottomSheet.onClickPaywallTracking {
                     CentralizedPromoTracking.sendClickPaywall(
                         currentFilterTab.name,
-                        promoCreationUiModel.title
+                        promoCreationUiModel.title,
+                        promoCreationUiModel.ctaText
                     )
                 }
 
@@ -328,7 +329,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
                 detailPromoBottomSheet.onImpressionPaywallTracking {
                     CentralizedPromoTracking.sendImpressionBottomSheetPaywall(
                         currentFilterTab.name,
-                        promoCreationUiModel.title
+                        promoCreationUiModel.title,
+                        promoCreationUiModel.ctaText
                     )
                 }
 
@@ -354,11 +356,9 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         sharedPref.edit().putBoolean(pageName, isChecked).apply()
     }
 
-    private fun trackProductCouponOngoingPromoClick(campaignName: String) {
-        CentralizedPromoTracking.sendClickProductCouponOngoingPromo(
-            campaignName,
-            userSession.shopId
-        )
+    private fun onImpressionPromoList(promoName: String) {
+        CentralizedPromoTracking.sendImpressionCard(promoName,currentFilterTab.name)
+
     }
 
 

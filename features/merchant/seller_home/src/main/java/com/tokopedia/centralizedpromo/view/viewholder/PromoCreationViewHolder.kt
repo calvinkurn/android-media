@@ -10,7 +10,8 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
 import com.tokopedia.sellerhome.databinding.CentralizedPromoItemPromoCreationBinding
 
-class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiModel>(view) {
+class PromoCreationViewHolder(view: View?, val impressionListener: (String) -> Unit) :
+    AbstractViewHolder<PromoCreationUiModel>(view) {
 
     var onClickItemPromo: ((PromoCreationUiModel) -> Unit)? = null
 
@@ -46,7 +47,7 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             }
 
             root.addOnImpressionListener(element.impressHolder) {
-                sendImpressionCard(element.title)
+                impressionListener.invoke(element.title)
             }
         }
     }

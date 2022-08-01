@@ -11,7 +11,7 @@ import com.tokopedia.centralizedpromo.view.viewholder.PromoCreationViewHolder
 
 class CentralizedPromoAdapterTypeFactory(
     private val onClickItemPromo: (PromoCreationUiModel) -> Unit,
-    private val onProductCouponOngoingClicked: (String) -> Unit,
+    private val onImpressionPromo: (String) -> Unit,
 ) : BaseAdapterTypeFactory() {
     fun type(onGoingPromoUiModel: OnGoingPromoUiModel): Int {
         return OnGoingPromoViewHolder.RES_LAYOUT
@@ -23,7 +23,7 @@ class CentralizedPromoAdapterTypeFactory(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            PromoCreationViewHolder.RES_LAYOUT -> PromoCreationViewHolder(parent).apply {
+            PromoCreationViewHolder.RES_LAYOUT -> PromoCreationViewHolder(parent,onImpressionPromo).apply {
                 onClickItemPromo = this@CentralizedPromoAdapterTypeFactory.onClickItemPromo
             }
             OnGoingPromoViewHolder.RES_LAYOUT -> OnGoingPromoViewHolder(parent)

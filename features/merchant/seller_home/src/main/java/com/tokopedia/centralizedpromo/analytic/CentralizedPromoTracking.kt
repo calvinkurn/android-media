@@ -273,13 +273,13 @@ object CentralizedPromoTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun sendImpressionCard(featureName: String) {
+    fun sendImpressionCard(featureName: String, tabFilterName: String) {
 
         val data = createMap(
             event = EVENT_NAME_VIEW_PG_IRIS,
             action = EVENT_IMPRESSION_CARD,
             category = EVENT_CATEGORY_ADS_AND_PROMO,
-            label = featureName,
+            label = "$tabFilterName - $featureName",
             trackerId = TRACKER_ID_IMPRESSION_CARD
         ).completeEventInfo()
 
@@ -347,14 +347,15 @@ object CentralizedPromoTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun sendClickPaywall(filterTabName: String, featureName: String) {
+    fun sendClickPaywall(filterTabName: String, featureName: String, ctaText: String) {
         val data = createMap(
             event = EVENT_NAME_CLICK_PG,
             action = EVENT_BOTTOM_SHEET_PAYWALL,
             category = EVENT_CATEGORY_ADS_AND_PROMO,
             label = arrayOf(
                 filterTabName,
-                featureName
+                featureName,
+                ctaText
             ).joinToString(" - "),
             trackerId = TRACKER_ID_BOTTOM_SHEET_PAYWALL
         ).completeEventInfo()
@@ -362,14 +363,15 @@ object CentralizedPromoTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun sendImpressionBottomSheetPaywall(filterTabName: String, featureName: String) {
+    fun sendImpressionBottomSheetPaywall(filterTabName: String, featureName: String, ctaText: String) {
         val data = createMap(
             event = EVENT_NAME_CLICK_PG,
             action = IMPRESSION_BOTTOM_SHEET_PAYWALL,
             category = EVENT_CATEGORY_ADS_AND_PROMO,
             label = arrayOf(
                 filterTabName,
-                featureName
+                featureName,
+                ctaText
             ).joinToString(" - "),
             trackerId = TRACKER_ID_IMPRESSION_BOTTOM_SHEET_PAYWALL
         ).completeEventInfo()
