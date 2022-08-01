@@ -36,7 +36,7 @@ data class ShopPageGetDynamicTabResponse(
             var listBackgroundColor: List<String> = listOf(),
             @SerializedName("textColor")
             var textColor: String = "",
-            @SerializedName("shopLayoutFeature")
+            @SerializedName("shopLayoutFeatures")
             var shopLayoutFeature: List<ShopLayoutFeature> = arrayListOf(),
             @SerializedName("data")
             var data: Data = Data()

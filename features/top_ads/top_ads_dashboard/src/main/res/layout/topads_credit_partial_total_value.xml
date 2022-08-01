@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/topads_bg_rounded_stroke_nn_200"
+    android:padding="@dimen/spacing_lvl3">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="display_3"
+        tools:text="Total Kredit" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtSubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        app:typographyType="display_3"
+        tools:text="Total Kredit" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivIconInfo"
+        android:layout_width="@dimen/unify_space_12"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:tint="@color/light_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/txtTitle"
+        app:layout_constraintStart_toEndOf="@id/txtTitle"
+        app:layout_constraintTop_toTopOf="@id/txtTitle"
+        app:srcCompat="@drawable/iconunify_information" />
+</androidx.constraintlayout.widget.ConstraintLayout>
