@@ -9,7 +9,7 @@ object CentralizedPromoConstant {
 
     //FILTER
     const val ID_FILTER_ALL = "0"
-    const val EVENT_CLICK_FILTER_ALL= "click all promotion tab"
+    const val EVENT_CLICK_FILTER_ALL= "click all features tab"
     const val TRACKER_ID_FILTER_ALL = "34633"
 
     const val EVENT_CLICK_FILTER_INCREASE_BUYER= "click increase buyer traffic tab"
