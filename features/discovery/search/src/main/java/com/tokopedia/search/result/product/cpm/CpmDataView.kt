@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.model
+package com.tokopedia.search.result.product.cpm
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
