@@ -792,6 +792,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         keyword shouldBe inspirationCarouselOption.title
         subtitle shouldBe inspirationCarouselOption.subtitle
         applink shouldBe inspirationCarouselOption.applink
+        cardButton.applink shouldBe inspirationCarouselOption.cardButton.applink
+        cardButton.title shouldBe inspirationCarouselOption.cardButton.title
 
         val inspirationCarouselProducts = inspirationCarouselOption.inspirationCarouselProducts
         broadMatchItemDataViewList.size shouldBe inspirationCarouselProducts.size
@@ -828,6 +830,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         topAdsClickUrl shouldBe inspirationCarouselProduct.ads.productClickUrl
         topAdsViewUrl shouldBe inspirationCarouselProduct.ads.productViewUrl
         topAdsWishlistUrl shouldBe inspirationCarouselProduct.ads.productWishlistUrl
+        originalPrice shouldBe inspirationCarouselProduct.originalPrice
+        discountPercentage shouldBe inspirationCarouselProduct.discountPercentage
 
         labelGroupDataList.listShouldBe(inspirationCarouselProduct.labelGroupList) { actual, expected ->
             actual.title shouldBe expected.title
