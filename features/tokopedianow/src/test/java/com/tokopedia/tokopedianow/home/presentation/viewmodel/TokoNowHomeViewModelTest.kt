@@ -830,6 +830,80 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `when removeLeftCarouselAtc should remove left carousel atc widget from layout list`() {
+        val warehouseId = "1"
+        val localCacheModel = LocalCacheModel(warehouse_id = warehouseId)
+        val dynamicChannelResponse = createDynamicChannelLayoutList(
+            listOf(
+                HomeLayoutResponse(
+                    id = "2122",
+                    layout = "left_carousel_atc",
+                    header = Header(
+                        name = "Mix Left Atc Carousel",
+                        serverTimeUnix = 0
+                    )
+                )
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(
+            layoutResponse = dynamicChannelResponse,
+            localCacheModel = localCacheModel
+        )
+
+        viewModel.getHomeLayout(
+            localCacheModel = localCacheModel,
+            removeAbleWidgets = emptyList()
+        )
+        viewModel.getLayoutComponentData(
+            localCacheModel = localCacheModel
+        )
+
+        val expectedResultWithLeftCarouselAtcWidget = Success(
+            HomeLayoutListUiModel(
+                items = listOf(
+                    TokoNowChooseAddressWidgetUiModel(id = "0"),
+                    createLeftCarouselAtcDataModel(
+                        id = "2122",
+                        headerName = "Mix Left Atc Carousel",
+                    )
+                ),
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList.verifySuccessEquals(expectedResultWithLeftCarouselAtcWidget)
+
+        viewModel.removeLeftCarouselAtc("2122")
+
+        val expectedResultWithoutLeftCarouselAtcWidget = Success(
+            HomeLayoutListUiModel(
+                items = listOf(
+                    TokoNowChooseAddressWidgetUiModel(id = "0"),
+                ),
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
+
+        viewModel.homeLayoutList.verifySuccessEquals(expectedResultWithoutLeftCarouselAtcWidget)
+    }
+
+    @Test
+    fun `when removeLeftCarouselAtc throw exception should not set homeLayoutList value`() {
+        onGetHomeLayoutItemList_returnNull()
+
+        viewModel.removeLeftCarouselAtc("1")
+
+        viewModel.homeLayoutList
+            .verifyValueEquals(null)
+    }
+
+
+    @Test
     fun `given index is NOT between visible item index when getLayoutData should not call use case`() {
         val index = 1
 

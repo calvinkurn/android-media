@@ -256,6 +256,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onStart() {
         super.onStart()
+        initializeMiniCartWidget()
         cartDataUpdateJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             collectCartDataFlow()
         }
@@ -266,7 +267,6 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onResume() {
         super.onResume()
-        initializeMiniCartWidget()
         merchantPageAnalytics.openMerchantPage(
             merchantId,
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
@@ -300,8 +300,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                 // setup merchant info bottom sheet
                 val name = merchantProfile.name
                 val address = merchantProfile.address
-                val merchantOpsHours =
-                    viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
+                val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+                val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(today, merchantProfile.opsHourDetail)
                 setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
             }
             renderProductList(viewModel.productListItems)
@@ -599,8 +599,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                         // setup merchant info bottom sheet
                         val name = merchantProfile.name
                         val address = merchantProfile.address
-                        val merchantOpsHours =
-                            viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
+                        val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+                        val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(today, merchantProfile.opsHourDetail)
                         setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
                         // render product list
                         val isShopClosed = merchantProfile.opsHourFmt.isWarning
@@ -651,9 +651,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private suspend fun collectCartDataFlow() {
         activityViewModel?.cartDataFlow?.collect { cartData ->
-            cartData?.availableSection?.products?.let { products ->
-                viewModel.selectedProducts = products
-            }
+            viewModel.selectedProducts = cartData?.availableSection?.products.orEmpty()
         }
     }
 
@@ -706,12 +704,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                                                 cardPositions?.run {
                                                     productListAdapter?.updateProductUiModel(
                                                         cartTokoFood = cartTokoFood,
-                                                        dataSetPosition = viewModel.getDataSetPosition(
-                                                            this
-                                                        ),
-                                                        adapterPosition = viewModel.getAdapterPosition(
-                                                            this
-                                                        )
+                                                        dataSetPosition = viewModel.getDataSetPosition(this),
+                                                        adapterPosition = viewModel.getAdapterPosition(this)
                                                     )
                                                 }
                                             }
@@ -734,29 +728,20 @@ class MerchantPageFragment : BaseMultiFragment(),
                             (pair.first as? String)?.let { cartId ->
                                 (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()
                                     ?.let { product ->
-                                        val cardPositions =
-                                            viewModel.productMap[product.productId]
+                                        val cardPositions = viewModel.productMap[product.productId]
                                         cardPositions?.run {
-                                            val dataSetPosition =
-                                                viewModel.getDataSetPosition(this)
-                                            val productUiModel =
-                                                productListAdapter?.getProductUiModel(
-                                                    dataSetPosition
-                                                )
+                                            val dataSetPosition = viewModel.getDataSetPosition(this)
+                                            val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
                                             if (productUiModel?.isCustomizable == true) {
                                                 productListAdapter?.removeCustomOrder(
                                                     cartId = cartId,
                                                     dataSetPosition = dataSetPosition,
-                                                    adapterPosition = viewModel.getAdapterPosition(
-                                                        this
-                                                    )
+                                                    adapterPosition = viewModel.getAdapterPosition(this)
                                                 )
                                             } else {
                                                 productListAdapter?.resetProductUiModel(
                                                     dataSetPosition = dataSetPosition,
-                                                    adapterPosition = viewModel.getAdapterPosition(
-                                                        this
-                                                    )
+                                                    adapterPosition = viewModel.getAdapterPosition(this)
                                                 )
                                             }
                                             view?.let { view ->

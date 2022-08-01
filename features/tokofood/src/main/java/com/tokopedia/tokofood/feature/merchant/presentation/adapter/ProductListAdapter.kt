@@ -117,7 +117,7 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
                 val position = customOrderDetails.indexOfFirst { it.cartId == customOrderDetail.cartId }
                 if (position > RecyclerView.NO_POSITION) {
 
-                    cartId = cartTokoFood.cartId
+                    if (!isCustomizable) cartId = cartTokoFood.cartId
                     orderQty = cartTokoFood.quantity
                     orderNote = cartTokoFood.getMetadata()?.notes.orEmpty()
                     isAtc = cartTokoFood.quantity.isMoreThanZero()
