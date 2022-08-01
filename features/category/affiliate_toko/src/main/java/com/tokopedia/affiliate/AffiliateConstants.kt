@@ -122,6 +122,8 @@ const val PRODUCT_INACTIVE = 4
 
 const val SHOP_INACTIVE = 5
 
+const val SHOP_CLOSED = 6
+
 const val TRAFFIC_TYPE = "TRAFFIC"
 
 const val PRODUCT_TYPE = "PRODUCT"

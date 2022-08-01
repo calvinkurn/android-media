@@ -222,10 +222,17 @@ object AffiliateAnalytics {
             const val PROMISIKAN_PERNAH_DIBELI = "click - promosikan - pernah dibeli"
             const val PROMOSIKAN_PERNAH_DILIHAT = "click - promosikan - pernah dilihat"
             const val IMPRESSION_PRODUCT_SEARCH_RESULT_PAGE = "impression - product - search result page"
+            const val IMPRESSION_SHOP_SEARCH_RESULT_PAGE = "impression - shop - search result page"
             const val CLICK_PROMOSIKAN_SEARCH_RESULT_PAGE = "click - promosikan - search result page"
             const val CLICK_SALIN_LINK_RESULT_PAGE = "click - salin link - search result page"
             const val CLICK_TOTAL_KOMISI_CARD = "click - total komisi card"
             const val CLICK_KLIK_CARD= "click - klik card"
+            const val CLICK_SHOP_LINK_DENGAN_PERFORMA= "click - shop - link dengan performa"
+            const val CLICK_SALIN_LINK_SHOP_LINK_DENGAN_PERFORMA= "click - salin link - shop -  link dengan performa"
+            const val CLICK_SALIN_LINK_SHOP_SEARCH_RESULT= "click - salin link - shop - search result page"
+            const val CLICK_SHOP_SEARCH_RESULT_PAGE = "click - shop - search result page"
+            const val IMPRESSION_SHOP_LINK_DENGAN_PERFORMA = "impression - shop - link dengan performa"
+            const val CLICK_PROMOTED_PAGE_FILTER_TAB = "click - promoted page filter tab"
         }
     }
 
@@ -251,6 +258,8 @@ object AffiliateAnalytics {
             const val AFFILIATE_PROMOSIKAN_PERNAH_DIBEL = "/affiliate promosikan page - pernah dibeli"
             const val AFFILIATE_PROMOSIKAN_PERNAH_DILIHAT = "/affiliate promosikan page - pernah dilihat"
             const val AFFILIATE_SEARCH_PROMOSIKAN_CLICK = "/affiliate promosikan page - search result page"
+            const val AFFILAITE_HOME_SHOP_SELECT_CONTENT = "/affiliate home page - link dengan performa - shop"
+            const val AFFILIATE_SEARCH_SHOP_CLICK = "/affiliate promosikan page - search result page - shop"
         }
     }
 
@@ -276,6 +285,8 @@ object AffiliateAnalytics {
             const val ALMOST_OOS =  "almost OOS"
             const val SHOP_INACTIVE = "shop inactive"
             const val PRODUCT_INACTIVE = "product inactive"
+            const val SHOP_ACTIVE = "shop active"
+            const val SHOP_CLOSED = "shop closed"
 
         }
     }

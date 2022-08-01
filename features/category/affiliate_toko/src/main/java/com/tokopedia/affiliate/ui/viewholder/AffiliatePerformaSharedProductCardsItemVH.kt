@@ -97,7 +97,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 itemView.findViewById<Typography>(R.id.product_status)?.text = getString(R.string.affiliate_inactive)
             }
             itemView.setOnClickListener {
-                sendSelectContentEvent(product)
+                if (product.itemType == PRODUCT_ITEM) sendSelectContentEvent(product) else sendShopClickEvent(product)
                 productClickInterface?.onProductClick(
                     product.itemID!!, product.itemTitle ?: "", product.image?.androidURL
                         ?: "", product.defaultLinkURL ?: "",
@@ -109,8 +109,29 @@ class AffiliatePerformaSharedProductCardsItemVH(
     }
 
     private fun sendSelectContentEvent(product: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item) {
-        val label = if(product.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
-        AffiliateAnalytics.trackEventImpression(AffiliateAnalytics.EventKeys.SELECT_CONTENT,AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN,
-        AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,UserSession(itemView.context).userId,product.itemID,adapterPosition-1,product.itemTitle,"${product.itemID} - $label",AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT)
+        val label = if (product.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_PRODUCT_PRODUL_YANG_DIPROMOSIKAN,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            UserSession(itemView.context).userId,
+            product.itemID,
+            adapterPosition-1,
+            "${product.itemID} - ${product.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${product.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${product.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $label",
+            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SELECT_CONTENT
+        )
+    }
+    private fun sendShopClickEvent(shop: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item){
+        val label = if (shop.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_SHOP_LINK_DENGAN_PERFORMA,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            UserSession(itemView.context).userId,
+            shop.itemID,
+            adapterPosition-1,
+            shop.itemTitle,
+            "${shop.itemID} - ${shop.metrics?.findLast { it?.metricType == "shopOrderCommissionPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "shopTotalClickPerItem" }?.metricValue} - ${shop.metrics?.findLast { it?.metricType == "shopOrderPerItem" }?.metricValue} - $label",
+            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT)
     }
 }
