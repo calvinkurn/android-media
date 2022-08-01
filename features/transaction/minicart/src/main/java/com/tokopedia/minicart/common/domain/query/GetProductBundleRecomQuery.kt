@@ -33,6 +33,7 @@ internal object GetProductBundleRecomQuery: GqlQueryInterface {
                     shopID
                     warehouseID
                     bundleDetails {
+                      bundleID
                       originalPrice
                       originalPriceRaw
                       displayPrice
@@ -46,6 +47,7 @@ internal object GetProductBundleRecomQuery: GqlQueryInterface {
                       isProductsHaveVariant
                     }
                     bundleProducts {
+                      productID
                       productName
                       imageUrl
                       appLink

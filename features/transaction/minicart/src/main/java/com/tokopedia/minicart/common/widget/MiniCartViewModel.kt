@@ -269,7 +269,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, response: MiniCartProductBundleRecomData) {
-        if (response.data.widgetData.isNotEmpty()) {
+        if (response.data.tokonowBundleWidget.data.widgetData.isNotEmpty()) {
             tmpProductBundleRecomUiModel =  miniCartListUiModelMapper.mapToProductBundleUiModel(response)
             tmpProductBundleRecomUiModel?.apply {
                 miniCartListUiModel.visitables.removeFirst { it is MiniCartProductBundleRecomShimmeringUiModel }
