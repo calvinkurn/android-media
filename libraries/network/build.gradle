@@ -14,13 +14,16 @@ buildscript {
 }
 
 dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+
     implementation rootProject.ext.debugToolsDependencies.chuck
+
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 }
 

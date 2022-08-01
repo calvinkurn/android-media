@@ -21,7 +21,7 @@
         android:longClickable="true"
         android:textColorLink="@color/Unify_G500"
         android:visibility="gone"
-        app:typographyType="body_2" />
+        app:typographyType="display_2" />
 
     <HorizontalScrollView
         android:id="@+id/horizontal_scroll_container"

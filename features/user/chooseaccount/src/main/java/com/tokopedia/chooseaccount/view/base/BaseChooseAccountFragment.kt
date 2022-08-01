@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -26,7 +27,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.view.binding.viewBinding
@@ -69,7 +69,7 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
             it.supportActionBar?.apply {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)
-                setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.transparent)))
+                setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, android.R.color.transparent)))
             }
         }
     }

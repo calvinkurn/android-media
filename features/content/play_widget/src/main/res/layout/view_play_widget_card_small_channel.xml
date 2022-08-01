@@ -153,7 +153,7 @@
         android:padding="@dimen/spacing_lvl1"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="GIFT"
+        app:icon_name="GAME"
         app:layout_constraintBottom_toTopOf="@id/tv_title"
         app:layout_constraintStart_toStartOf="@id/tv_title"
         tools:ignore="RtlSymmetry"

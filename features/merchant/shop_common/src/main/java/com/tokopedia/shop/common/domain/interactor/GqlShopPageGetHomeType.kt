@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.usecase.RequestParams
@@ -18,8 +19,8 @@ class GqlShopPageGetHomeType @Inject constructor(
         private const val PARAM_SHOP_ID = "shopID"
         private const val PARAM_EXT_PARAM = "extParam"
         @JvmStatic
-        fun createParams(shopId: Int, extParam: String): RequestParams = RequestParams.create().apply {
-            putObject(PARAM_SHOP_ID, shopId)
+        fun createParams(shopId: String, extParam: String): RequestParams = RequestParams.create().apply {
+            putObject(PARAM_SHOP_ID, shopId.toIntOrZero())
             putObject(PARAM_EXT_PARAM, extParam)
         }
 
@@ -39,6 +40,10 @@ class GqlShopPageGetHomeType @Inject constructor(
                     widgetType
                     widgetName
                   }
+                }
+                shopLayoutFeatures {
+                    name
+                    isActive
                 }
               }
             }

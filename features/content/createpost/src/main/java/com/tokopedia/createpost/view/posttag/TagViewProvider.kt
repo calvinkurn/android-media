@@ -28,12 +28,6 @@ class TagViewProvider {
     var dY = 0f
     var listener: CreateContentPostCommonListener? = null
 
-    companion object {
-        private const val POINTER_HALF_DIMEN = 8
-        private const val POINTER_HEIGHT = 21
-    }
-
-
     fun getTagView(
         context: Context?,
         products: List<RelatedProductItem>,
@@ -50,7 +44,7 @@ class TagViewProvider {
         var productTagViewDelete: IconUnify = view.findViewById(R.id.product_tag_clear)
         var productTagViewDeleteRight: IconUnify = view.findViewById(R.id.product_tag_clear_right)
 
-        val productItem = products[index]
+        val productItem = if (products.size > index) products[index] else return null
         this.listener = listener
         productName.text = productItem.name
         productViewPrice.text = productItem.price
@@ -84,6 +78,7 @@ class TagViewProvider {
         return view
     }
 
+    @Suppress("MagicNumber")
     @SuppressLint("ClickableViewAccessibility")
     fun addViewToParent(
         child: View,
@@ -335,10 +330,12 @@ class TagViewProvider {
 
     }
 
+    @Suppress("MagicNumber")
     private fun resetPositionOfNotchToCenter(view: View, parentWidth: Float) {
         view.x = parentWidth/2 - view.width/2
     }
 
+    @Suppress("MagicNumber")
     private fun scaleUp(view: View) {
         val scaleDownX2 = ObjectAnimator.ofFloat(
             view, ConstraintLayout.SCALE_X, 1.05f)
@@ -354,6 +351,7 @@ class TagViewProvider {
 
     }
 
+    @Suppress("MagicNumber")
     private fun scaleDown(view: View) {
         val scaleDownX = ObjectAnimator.ofFloat(view,
             ConstraintLayout.SCALE_X, 1f)
@@ -367,7 +365,7 @@ class TagViewProvider {
         scaleDown.start()
     }
 
-
+    @Suppress("MagicNumber")
     private fun calculateGreyAreaX(parent: ConstraintLayout, bitmap: Bitmap?): Int {
         bitmap?.let {
             return if (bitmap.width > bitmap.height) {
@@ -378,7 +376,7 @@ class TagViewProvider {
         }
         return 0
     }
-
+    @Suppress("MagicNumber")
     private fun calculateGreyAreaY(parent: ConstraintLayout, bitmap: Bitmap?): Int {
         bitmap?.let {
             return if (bitmap.height > bitmap.width) {

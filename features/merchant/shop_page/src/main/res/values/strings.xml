@@ -2,6 +2,7 @@
     <string name="shop_page_label_reputation">Reputasi</string>
     <string name="shop_page_label_favorite">Favoritkan</string>
     <string name="shop_page_label_featured_product">Produk Unggulan</string>
+    <string name="shop_page_seller_atc_error_message">Eits, kamu nggak bisa menambahkan barang jualanmu ke keranjang</string>
 
     <string name="shop_page_header_request_unmoderate_bottomsheet_title">Permintaan buka moderasi toko</string>
     <string name="shop_page_header_request_unmoderate_already_sent">Permintaan anda sedang dalam proses.</string>
@@ -17,15 +18,18 @@
     <string name="shop_page_reload">Muat Ulang</string>
     <string name="shop_page_reload_beginning_of_description">Data tidak berhasil ditampilkan, klik</string>
     <string name="shop_page_reload_end_of_description">untuk coba lagi</string>
+    <string name="shop_page_error_title_get_p1">Koneksi internetmu terganggu!</string>
+    <string name="shop_page_error_sub_title_get_p1">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
+    <string name="shop_page_atc_label_cta">Oke</string>
 
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
-    <string name="new_shop_info_title_tab_product">Product</string>
-    <string name="shop_info_title_tab_showcase">Etalase</string>
-    <string name="shop_info_title_tab_home">Home</string>
+    <string name="new_shop_info_title_tab_product">Product Tab</string>
+    <string name="shop_info_title_tab_showcase">Etalase Tab</string>
+    <string name="shop_info_title_tab_home">Home Tab</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
-    <string name="shop_info_title_tab_feed">Feed</string>
-    <string name="shop_info_title_tab_review">Review</string>
+    <string name="shop_info_title_tab_feed">Feed Tab</string>
+    <string name="shop_info_title_tab_review">Review Tab</string>
 
     <string name="shop_info_title_tab_shop_info">Informasi Toko</string>
     <string name="shop_info_title_tab_note">Catatan</string>
@@ -161,6 +165,11 @@
     <string name="shop_page_label_flash_sale">Flash Sale</string>
     <string name="shop_page_label_see_all">Lihat Semua</string>
     <string name="shop_page_label_oke">Oke</string>
+
+    <!-- Thematic Widget -->
+    <string name="thematic_widget_see_all">Lihat Semua</string>
+    <string name="thematic_widget_subtitle">Berakhir dalam</string>
+    <string name="thematic_widget_see_all_desc">Masih banyak barang lainnya, lho!</string>
 
     <!-- Product Bundling Widget -->
     <string name="shop_page_product_bundle_success_atc_text">Paket berhasil dimasukkan ke keranjang belanja</string>

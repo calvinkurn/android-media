@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -40,6 +41,7 @@ import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.model.Laku6DeviceModel
 import com.tokopedia.tradein.model.TradeInDetailModel
+import com.tokopedia.tradein.view.activity.TradeInHomePageActivity
 import com.tokopedia.tradein.view.activity.TradeInPromoActivity
 import com.tokopedia.tradein.view.bottomsheet.*
 import com.tokopedia.tradein.viewmodel.TradeInHomePageFragmentVM
@@ -73,6 +75,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var userAddressData: LocalCacheModel? = null
     private var isAnyLogisticAvailable = false
+    private var isFraud = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -146,13 +149,21 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     override fun onClick() {
         tradeInAnalytics.clickEducationalPage()
-        view?.findViewById<View>(R.id.educational_frame_content_layout)?.hide()
-        view?.findViewById<View>(R.id.initial_price_navToolbar)?.show()
+        if (isFraud) {
+            (activity as? TradeInHomePageActivity)?.onClick()
+        } else {
+            view?.findViewById<View>(R.id.educational_frame_content_layout)?.hide()
+            view?.findViewById<View>(R.id.initial_price_navToolbar)?.show()
+        }
     }
 
     override fun onBackClick() {
-        view?.findViewById<View>(R.id.educational_frame_content_layout)?.hide()
-        view?.findViewById<View>(R.id.initial_price_navToolbar)?.show()
+        if (isFraud) {
+            (activity as? TradeInHomePageActivity)?.onBackClick()
+        } else {
+            view?.findViewById<View>(R.id.educational_frame_content_layout)?.hide()
+            view?.findViewById<View>(R.id.initial_price_navToolbar)?.show()
+        }
     }
 
 
@@ -171,7 +182,10 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     (findViewById<ImageUnify>(R.id.product_image)).setImageUrl(it.productImage!!)
                 }
                 if (!it.shopBadge.isNullOrEmpty()) {
+                    (findViewById<ImageUnify>(R.id.image_shop_badge)).show()
                     (findViewById<ImageUnify>(R.id.image_shop_badge)).setImageUrl(it.shopBadge!!)
+                } else {
+                    (findViewById<ImageUnify>(R.id.image_shop_badge)).hide()
                 }
                 findViewById<Typography>(R.id.shop_name).text = it.shopName
                 findViewById<Typography>(R.id.shop_location).text = it.shopLocation
@@ -195,9 +209,17 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         })
         viewModel.tradeInDetailLiveData.observe(viewLifecycleOwner, Observer {
             if(it.getTradeInDetail.errMessage.isNotEmpty()){
-                if(it.getTradeInDetail.isFraud){
-                    setErrorTokopedia(Throwable(it.getTradeInDetail.errMessage), true, it.getTradeInDetail.errTitle, it.getTradeInDetail.errCode.toString())
+                isFraud = it.getTradeInDetail.isFraud
+
+                if(it.getTradeInDetail.errTitle.isNotEmpty()){
+                    setErrorTokopedia(
+                        Throwable(it.getTradeInDetail.errMessage),
+                        isFraud,
+                        it.getTradeInDetail.errTitle,
+                        it.getTradeInDetail.errMessage.toString()
+                    )
                 } else {
+                    tradeInAnalytics.errorScreen(it.getTradeInDetail.errMessage, viewModel.tradeInDetailLiveData.value?.getTradeInDetail?.deviceAttribute)
                     onTradeInDetailSuccess(it)
                     showToast(it.getTradeInDetail.errMessage, getString(R.string.tradein_ok), {
                         activity?.finish()
@@ -208,7 +230,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             }
         })
         tradeInHomePageVM.getWarningMessage().observe(viewLifecycleOwner, Observer {
-            setErrorTokopedia(Throwable(it), errorCode = it)
+            setErrorTokopedia(Throwable(it), errorMessage = it)
         })
         viewModel.getProgBarVisibility().observe(viewLifecycleOwner, Observer {
             if (it)
@@ -220,35 +242,37 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             setErrorLaku6(it)
         })
         viewModel.getErrorMessage().observe(viewLifecycleOwner, Observer {
-            setErrorTokopedia(it, errorCode = it.localizedMessage ?: "")
+            setErrorTokopedia(it, errorMessage = it.localizedMessage ?: "")
         })
     }
 
     private fun setErrorLaku6(it: Throwable?) {
+        view?.findViewById<NestedScrollView>(R.id.scroll_parent)?.hide()
         view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
             //LAKU6 errors
             setType(GlobalError.SERVER_ERROR)
             errorIllustration.hide()
             errorTitle.text = getString(com.tokopedia.tradein.R.string.tradein_cant_continue)
             errorDescription.text = it?.message
+            errorAction.text = getString(R.string.tradein_pelajari_selengkapnya)
             setButtonFull(true)
+            errorAction.hide()
             errorSecondaryAction.gone()
             view?.findViewById<View>(R.id.tradein_error_layout)?.show()
             view?.findViewById<DeferredImageView>(R.id.error_image_view)?.let {
                 it.show()
-                it.mCompleteUrl = LAKU6_ERROR_IMAGE
-            }
-            setActionClickListener {
-                view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
-                refreshPage()
+                it.loadRemoteImageDrawable("", LAKU6_ERROR_IMAGE)
             }
         }
     }
 
     private fun setErrorTokopedia(it: Throwable?, isFraud : Boolean = false,
-                                  errTitle : String = getString(com.tokopedia.tradein.R.string.tradein_cant_continue), errorCode : String) {
-        tradeInAnalytics.errorScreen(errorCode)
+                                  errTitle : String = getString(com.tokopedia.tradein.R.string.tradein_cant_continue), errorMessage : String){
+        tradeInAnalytics.errorScreen(errorMessage, viewModel.tradeInDetailLiveData.value?.getTradeInDetail?.deviceAttribute)
+        view?.findViewById<NestedScrollView>(R.id.scroll_parent)?.hide()
         view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
+
+            errorAction.hide()
             //Tokopedia Backend errors
             when (it) {
                 is UnknownHostException, is SocketTimeoutException -> {
@@ -263,21 +287,19 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     errorTitle.text = errTitle
                 }
             }
-            if(isFraud){
+            if (isFraud) {
+                errorDescription.text = getString(R.string.tradein_fraud_description)
                 errorIllustration.hide()
                 view?.findViewById<DeferredImageView>(R.id.error_image_view)?.let {
                     it.show()
-                    it.mCompleteUrl = FRAUD_ERROR_IMAGE
+                    it.loadRemoteImageDrawable("", FRAUD_ERROR_IMAGE)
                 }
             } else {
                 errorIllustration.show()
                 view?.findViewById<View>(R.id.error_image_view)?.hide()
             }
             view?.findViewById<View>(R.id.tradein_error_layout)?.show()
-            setActionClickListener {
-                view?.findViewById<View>(R.id.tradein_error_layout)?.hide()
-                refreshPage()
-            }
+            errorAction.hide()
         }
     }
 
@@ -291,6 +313,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     }
 
     private fun onTradeInDetailSuccess(tradeInDetailModel: TradeInDetailModel) {
+        view?.findViewById<NestedScrollView>(R.id.scroll_parent)?.show()
         tradeInDetailModel.getTradeInDetail.let { tradeInDetail ->
             setUpLogisticOptions(tradeInDetail.logisticOptions, tradeInDetail.logisticMessage)
             view?.apply {
@@ -511,9 +534,9 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
     }
 
     private fun setUpDiagnosticReviewData(diagnosticReview: ArrayList<TradeInDetailModel.GetTradeInDetail.LogisticOption.DiagnosticReview>) {
-        val textSize = 14.0f
+        val textSize = TradeinConstants.TEXT_SIZE_14F
         view?.findViewById<LinearLayout>(R.id.linear_layout_hp_kamu)?.removeAllViews()
-        if(diagnosticReview.size>=3) {
+        if(diagnosticReview.size>=TradeinConstants.TRADE_IN_DIAGNOSTIC_REVIEW_LIMIT) {
             for (i in 0..2) {
                 val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
                 doubleTextView.apply {
@@ -664,6 +687,15 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     override fun getEventLabelHostPage(): String {
         return (if(tradeInHomePageVM.is3PLSelected.value == true) "ditukar di indomaret" else "ditukar di alamatmu")
+    }
+
+    override fun needToTrackTokoNow(): Boolean {
+        return true
+    }
+
+    override fun onClickChooseAddressTokoNowTracker() {
+        tradeInAnalytics.clickAttemptChangeAddress(tradeInHomePageVM.is3PLSelected.value ?: false)
+        super.onClickChooseAddressTokoNowTracker()
     }
 
     override fun onLocalizingAddressLoginSuccess() {

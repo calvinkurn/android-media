@@ -80,4 +80,7 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="error_message_failed_get_image">"Oops, terjadi kesalahan dalam memuat gambar"</string>
     <string name="pod_label_description">"Foto sepenuhnya diambil dan merupakan tanggung jawab kurir. Tokopedia tidak bertanggung jawab atas hasil foto yang terlampir."</string>
     <string name="pod_not_valid_proof">Oops, foto tidak ditemukan atau terhapus otomatis karena melewati batas waktu simpan 1 bulan.</string>
+
+    <string name="success_copy_reference_number">Nomor resi berhasil tersalin</string>
+    <string name="label_copy_reference_number">awb</string>
 </resources>
