@@ -74,6 +74,8 @@ class ProductCarouselViewHolder private constructor() {
                 UnifyButton.DrawablePosition.RIGHT,
             )
 
+            binding.viewOverlayOos.showWithCondition(item.stock == OutOfStock)
+
             binding.btnAtc.isEnabled = item.stock is StockAvailable
             binding.btnBuy.isEnabled = item.stock is StockAvailable
 
