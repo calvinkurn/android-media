@@ -316,6 +316,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val EXTEND_ORDER_REQUEST_CODE = 400
         const val OPEN_ORDER_REQUEST_CODE = 500
         const val PATH_RESOLUTION = "resolution-center"
+        const val KEY_URL = "url"
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -1669,7 +1670,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 val dotMenu = orderData.metadata.dotMenus[index]
                 if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
                     if (dotMenu.appURL.contains(APPLINK_BASE)) {
-                        RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
+                        val webViewUrl = Uri.parse(dotMenu.appURL).getQueryParameter(KEY_URL)
+                        if (Uri.parse(webViewUrl).path?.contains(PATH_RESOLUTION) == true) {
+                            goToCreateResolution(URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
+                        } else {
+                            RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
+                        }
                     } else {
                         val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
                             dotMenu.webURL
@@ -1677,9 +1683,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             dotMenu.appURL
                         }
                         if (Uri.parse(linkUrl).path?.contains(PATH_RESOLUTION) == true) {
-                            val intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
-                            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-                            startActivity(intent)
+                            goToCreateResolution(URLDecoder.decode(linkUrl, UohConsts.UTF_8))
                         } else {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                         }
@@ -2131,6 +2135,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         orderIdNeedUpdated = order.orderUUID
         currIndexNeedUpdate = index
         startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
+    }
+
+    private fun goToCreateResolution(url: String) {
+        val intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+        intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+        startActivity(intent)
     }
 
     override fun onPause() {
