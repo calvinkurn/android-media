@@ -59,7 +59,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             val visitableListModel = mapVisitables(miniCartData, totalProductAvailable, totalProductUnavailable)
             visitables = visitableListModel.constructVisitableOrder
             availableProductIds = visitableListModel.availableProductIds
-            availableBundleIds = visitableListModel.availableBundleIds
+            availableBundleIds = visitableListModel.availableBundleGroupIds
 
             if (miniCartData.data.availableSection.availableGroup.isNotEmpty()) {
                 maximumShippingWeight = miniCartData.data.availableSection.availableGroup[0].shop.maximumShippingWeight
@@ -165,7 +165,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         val miniCartAvailableSectionUiModels: MutableList<MiniCartProductUiModel> = mutableListOf()
         val miniCartUnavailableSectionUiModels: MutableList<Visitable<*>> = mutableListOf()
         val productIds: ArrayList<String> = arrayListOf()
-        val bundleIds: ArrayList<String> = arrayListOf()
+        val bundleGroupIds: ArrayList<String> = arrayListOf()
         // Add error ticker
         if (totalProductUnavailable > 0 && totalProductAvailable > 0) {
             miniCartTickerErrorUiModel = mapTickerErrorUiModel(totalProductUnavailable, totalProductAvailable)
@@ -202,7 +202,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                         miniCartProductUiModels.add(miniCartProductUiModel)
                         productIds.add(miniCartProductUiModel.productId)
                         if (miniCartProductUiModel.isBundlingItem) {
-                            bundleIds.add(miniCartProductUiModel.bundleId)
+                            bundleGroupIds.add(miniCartProductUiModel.bundleGroupId)
                         }
                     }
                 }
@@ -275,7 +275,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
         return VisitableListModel(
             availableProductIds = productIds,
-            availableBundleIds = bundleIds,
+            availableBundleGroupIds = bundleGroupIds,
             constructVisitableOrder = constructVisitableOrder(
                 miniCartTickerErrorUiModel,
                 miniCartTickerWarningUiModel,
@@ -601,7 +601,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
     class VisitableListModel(
         val availableProductIds: ArrayList<String>,
-        val availableBundleIds: ArrayList<String>,
+        val availableBundleGroupIds: ArrayList<String>,
         val constructVisitableOrder: MutableList<Visitable<*>>,
     )
 }
