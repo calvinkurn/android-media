@@ -125,7 +125,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.WhileSubscribed(STOP_TIME_OUT_MILLIS),
         ProductChooserUiState.Empty,
     )
 
@@ -146,7 +146,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         getCampaignAndEtalaseList()
 
         viewModelScope.launch {
-            searchQuery.debounce(300)
+            searchQuery.debounce(DEBOUNCE_TIME_OUT_MILLIS)
                 .collectLatest { query ->
                     _loadParam.update {
                         it.copy(keyword = query)
@@ -477,5 +477,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         private const val KEY_ELIGIBLE_PIN = "eligible_pin_status"
 
         private const val COOL_DOWN_TIMER = 5000L
+        private const val STOP_TIME_OUT_MILLIS = 5000L
+        private const val DEBOUNCE_TIME_OUT_MILLIS = 300L
     }
 }

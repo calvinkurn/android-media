@@ -109,7 +109,7 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * 0.85f).toInt()
+            height = (getScreenHeight() * SCREEN_HEIGHT_DIVIDER).toInt()
         }
         setTitle(getString(R.string.play_bro_product_summary_title))
         setAction(getString(R.string.play_bro_product_add_more)) {
@@ -224,6 +224,7 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "ProductSummaryBottomSheet"
+        private const val SCREEN_HEIGHT_DIVIDER = 0.85f
 
         fun getFragment(
             fragmentManager: FragmentManager,
