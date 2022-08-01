@@ -51,6 +51,7 @@ import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorRotateModel
 import com.tokopedia.media.editor.utils.getDestinationUri
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.loadImageWithTarget
@@ -216,13 +217,7 @@ class DetailEditorFragment @Inject constructor(
     private fun observeRemoveBackground() {
         viewModel.removeBackground.observe(viewLifecycleOwner) {
             data.removeBackgroundUrl = it?.path
-//            viewBinding?.imgPreview?.let { imgPreview ->
-//                Glide
-//                    .with(requireContext())
-//                    .asBitmap()
-//                    .load(it)
-//                    .into(imgPreview)
-//            }
+            viewBinding?.imgUcropPreview?.cropImageView?.loadImage(it?.path)
         }
     }
 
@@ -275,7 +270,12 @@ class DetailEditorFragment @Inject constructor(
                 brightnessComponent.setupView(brightnessValue)
             }
             // ==========
-            EditorToolType.REMOVE_BACKGROUND -> removeBgComponent.setupView()
+            EditorToolType.REMOVE_BACKGROUND -> {
+                viewBinding?.imgUcropPreview?.apply {
+                    initializeRemoveBackground(uri)
+                }
+                removeBgComponent.setupView()
+            }
             // ==========
             EditorToolType.CONTRAST -> {
                 val contrastValue = data.contrastValue ?: DEFAULT_VALUE_CONTRAST
@@ -339,43 +339,6 @@ class DetailEditorFragment @Inject constructor(
             }
         }
     }
-
-//    private fun renderImagePreview(imageUrl: String) {
-//        viewBinding?.imgPreview?.let {
-//            loadImageWithTarget(requireContext(), imageUrl, {},
-//                MediaTarget(
-//                    viewComponent = it,
-//                    onReady = { imageView, resource ->
-//                        originalBitmap = resource
-//
-//                        imageView.setImageBitmap(resource)
-//                        imageView.post {
-//                            if (data.brightnessValue != null
-//                                && data.editorToolType != EditorToolType.BRIGHTNESS
-//                            ) viewModel.setBrightness(data.brightnessValue!!)
-//                            if (data.contrastValue != null
-//                                && data.editorToolType != EditorToolType.CONTRAST
-//                            ) viewModel.setContrast(data.contrastValue!!)
-//                            if (data.watermarkMode != null
-//                                && data.editorToolType != EditorToolType.WATERMARK
-//                            ) viewModel.setWatermark(data.watermarkMode!!)
-//
-//                            originalBitmap = it.drawToBitmap()
-//
-//                            when (data.editorToolType) {
-//                                EditorToolType.WATERMARK -> viewModel.setWatermark(data.watermarkMode)
-//                                EditorToolType.BRIGHTNESS -> viewModel.setBrightness(data.brightnessValue)
-//                                EditorToolType.CONTRAST -> viewModel.setContrast(data.contrastValue)
-//                            }
-//
-//                            // render result for watermark drawer item
-//                            if (data.editorToolType == EditorToolType.WATERMARK) setWatermarkDrawerItem()
-//                        }
-//                    }
-//                )
-//            )
-//        }
-//    }
 
     private fun setWatermarkDrawerItem() {
         val originalBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
