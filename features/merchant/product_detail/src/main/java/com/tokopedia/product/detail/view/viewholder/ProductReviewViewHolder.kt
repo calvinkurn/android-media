@@ -279,6 +279,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun composeUserStatistics(userStatistics: List<UserStatistic>): String {
-        return userStatistics.joinToString(separator = " • ")
+        return userStatistics.joinToString(separator = " • ") { it.formatted }
     }
 }
