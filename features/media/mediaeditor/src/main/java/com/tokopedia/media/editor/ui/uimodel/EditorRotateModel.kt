@@ -10,6 +10,7 @@ class EditorRotateModel (
     var topRectPos: Int = 0,
     var rightRectPos: Int = 0,
     var bottomRectPos: Int = 0,
+    var orientationChangeNumber: Int = 0
 ) {
     fun getCropRect(): RectF{
         return RectF(

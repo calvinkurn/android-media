@@ -68,6 +68,7 @@ data class EditorDetailUiModel(
         val topRectPos = parcel.readInt()
         val rightRectPos = parcel.readInt()
         val bottomRectPos = parcel.readInt()
+        val orientationChangeNumber = parcel.readInt()
 
         if (rotateDegree != 0f) {
             rotateData = EditorRotateModel(
@@ -77,7 +78,8 @@ data class EditorDetailUiModel(
                 leftRectPos,
                 topRectPos,
                 rightRectPos,
-                bottomRectPos
+                bottomRectPos,
+                orientationChangeNumber
             )
         }
     }
@@ -124,6 +126,7 @@ data class EditorDetailUiModel(
             parcel.writeInt(rotateData?.topRectPos ?: 0)
             parcel.writeInt(rotateData?.rightRectPos ?: 0)
             parcel.writeInt(rotateData?.bottomRectPos ?: 0)
+            parcel.writeInt(rotateData?.orientationChangeNumber ?: 0)
 //            rotateData?.let {
 //                parcel.writeFloat(it.rotateDegree)
 //                parcel.writeFloat(it.scaleX)

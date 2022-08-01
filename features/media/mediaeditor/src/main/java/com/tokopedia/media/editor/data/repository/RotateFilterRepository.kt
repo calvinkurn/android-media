@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.data.repository
 
+import android.os.Handler
 import com.tokopedia.media.editor.ui.component.EditorDetailPreviewImage
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import com.yalantis.ucrop.view.CropImageView
@@ -15,6 +16,7 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
     var previousDegree = 0f
     var rotateNumber = 0
     private var isRatioRotated = false
+    private var sliderValue = 0f
 
     override fun rotate(editorDetailPreview: EditorDetailPreviewImage?, degree: Float, isRotateRatio: Boolean) {
         if(editorDetailPreview == null) return
@@ -22,14 +24,15 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
         val cropImageView = editorDetailPreview.cropImageView
         cropImageView.cancelAllAnimations()
 
-        val absoluteDegree = abs(degree)
+        val normalizeDegree = degree * editorDetailPreview.scaleNormalizeValue
 
+        // rotate logic when rotation is triggered by rotate button instead on slider
         if(isRotateRatio){
             val cropOverlay = editorDetailPreview.overlayView
             val originalWidth = cropImageView.drawable?.intrinsicWidth ?: 0
             val originalHeight = cropImageView.drawable?.intrinsicHeight ?: 0
 
-            cropImageView.postRotate(absoluteDegree)
+            cropImageView.postRotate(normalizeDegree)
 
             if (isRatioRotated) {
                 cropOverlay.setTargetAspectRatio(originalWidth/originalHeight.toFloat())
@@ -40,9 +43,10 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
             isRatioRotated = !isRatioRotated
             rotateNumber++
         } else {
-            cropImageView.postRotate(absoluteDegree - previousDegree)
+            cropImageView.postRotate(normalizeDegree - previousDegree)
 
-            previousDegree = absoluteDegree
+            previousDegree = normalizeDegree
+            sliderValue = normalizeDegree
         }
 
         if (cropImageView.minScale > 0) {
@@ -52,7 +56,23 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
         cropImageView.setImageToWrapCropBounds(false)
     }
 
+
     override fun mirror(editorDetailPreview: EditorDetailPreviewImage?) {
-        editorDetailPreview?.mirrorImage(isMirrorXAxis = true, isMirrorYAxis = false)
+//        editorDetailPreview?.mirrorImage(isMirrorXAxis = true, isMirrorYAxis = false)
+        editorDetailPreview?.let {
+            val previousDegree = it.cropImageView.currentAngle
+            it.cropImageView.postRotate(-previousDegree * 2)
+//            it.cropImageView.scaleX = -it.cropImageView.scaleX
+
+            if(!isRatioRotated){
+                it.cropImageView.scaleX = -it.cropImageView.scaleX
+            } else {
+                it.cropImageView.scaleY = -it.cropImageView.scaleY
+            }
+        }
+    }
+
+    fun getFinalRotationDegree(): Float{
+        return ((rotateNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + sliderValue)
     }
 }

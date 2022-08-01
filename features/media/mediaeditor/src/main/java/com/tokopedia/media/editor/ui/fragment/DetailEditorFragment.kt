@@ -43,6 +43,7 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.BrightnessToolUiComponent
 import com.tokopedia.media.editor.ui.component.ContrastToolsUiComponent
 import com.tokopedia.media.editor.ui.component.CropToolUiComponent
+import com.tokopedia.media.editor.ui.component.EditorDetailPreviewImage
 import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
@@ -64,8 +65,8 @@ import com.yalantis.ucrop.util.RectUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.Exception
 import javax.inject.Inject
+import kotlin.Exception
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.min
@@ -265,7 +266,7 @@ class DetailEditorFragment @Inject constructor(
             EditorToolType.ROTATE -> {
                 val uri = Uri.fromFile(File(data.resultUrl ?: data.originalUrl))
                 viewBinding?.imgUcropPreview?.apply {
-                    initialize(null, uri)
+                    initialize(uri)
                     disabledTouchEvent()
                 }
                 rotateComponent.setupView(data)
@@ -275,7 +276,7 @@ class DetailEditorFragment @Inject constructor(
             }
             EditorToolType.CROP -> {
                 val uri = Uri.fromFile(File(data.originalUrl))
-                viewBinding?.imgUcropPreview?.initialize(null, uri)
+                viewBinding?.imgUcropPreview?.initialize(uri)
                 cropComponent.setupView()
 
                 viewBinding?.imgPreview?.hide()
@@ -394,7 +395,7 @@ class DetailEditorFragment @Inject constructor(
     private fun crop(): Bitmap? {
         val rotateCropImageView = viewBinding?.imgUcropPreview
 
-        rotateCropImageView?.let {
+        rotateCropImageView?.let { it ->
             val cropImageView = it.cropImageView
             if (cropImageView.currentAngle % 90f == 0f) {
                 val bitmap = cropImageView.drawable.toBitmap()
@@ -409,7 +410,7 @@ class DetailEditorFragment @Inject constructor(
                     scaleY
                 )
 
-                matrix.postRotate(abs(it.getFinalRotationDegree()))
+                matrix.postRotate(abs(rotateFilterRepositoryImpl.getFinalRotationDegree()))
 
                 return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
             }
@@ -465,7 +466,7 @@ class DetailEditorFragment @Inject constructor(
             val scaleY = scale.second
 
             // matrix scale didn't affect rotation value, positive will always clockwise on matrix
-            val rotateDegree = abs(it.getFinalRotationDegree())
+            val rotateDegree = abs(rotateFilterRepositoryImpl.getFinalRotationDegree())
 
             val matrix = Matrix()
 
@@ -475,14 +476,6 @@ class DetailEditorFragment @Inject constructor(
                 (originalWidth / 2).toFloat(),
                 (originalHeight / 2).toFloat()
             )
-            // if flipping vertically, do rotate 1st
-//        if(scaleY < 0){
-//            matrix.postScale(scaleX, scaleY)
-//            matrix.preRotate(rotateDegree, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
-//        } else {
-//            matrix.preScale(scaleX, scaleY)
-//            matrix.postRotate(rotateDegree, (originalWidth / 2).toFloat(), (originalHeight / 2).toFloat())
-//        }
 
             val rotatedBitmap = Bitmap.createBitmap(
                 originalBitmap,
@@ -507,6 +500,7 @@ class DetailEditorFragment @Inject constructor(
 
             return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
         }
+
         return null
     }
 
@@ -547,5 +541,4 @@ class DetailEditorFragment @Inject constructor(
         private const val DEFAULT_VALUE_CONTRAST = 0f
         private const val DEFAULT_VALUE_BRIGHTNESS = 0f
     }
-
 }

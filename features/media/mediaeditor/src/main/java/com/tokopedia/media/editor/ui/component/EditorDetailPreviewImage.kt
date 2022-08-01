@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.AttributeSet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.editor.utils.getDestinationUri
 import com.yalantis.ucrop.view.CropImageView
 import com.yalantis.ucrop.view.TransformImageView
 import com.yalantis.ucrop.view.UCropView
@@ -13,17 +14,16 @@ import com.yalantis.ucrop.view.UCropView
 class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
     UCropView(context, attributeSet) {
 
-    private var listener: Listener? = null
+    var onLoadComplete: (() -> Unit)? = null
+    var onLoadFailure: ((e: Exception) -> Unit)? = null
+    var onRotate: ((angle: Float) -> Unit)? = null
+    var onScale: ((scale: Float) -> Unit)? = null
 
-    private var tempScaleX = 1f
-    private var tempScaleY = 1f
+    val scaleNormalizeValue get() = cropImageView.scaleX * cropImageView.scaleY
 
-    private val scaleNormalizeValue get() = scaleX * scaleY
-    private var rotateNumber = 0
-    var sliderValue = 0f
-
-    fun initialize(listener: Listener?, uri: Uri) {
-        cropImageView.setImageUri(uri, Uri.parse(TEMP_OUTPUT_FILE))
+    fun initialize(uriSource: Uri) {
+        val resultDestination = getDestinationUri(context)
+        cropImageView.setImageUri(uriSource, resultDestination)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -37,22 +37,8 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    fun mirrorImage(isMirrorXAxis: Boolean, isMirrorYAxis: Boolean){
-        if(isMirrorXAxis){
-            scaleX = -scaleX
-        }
-
-        if(isMirrorYAxis){
-            scaleY = -scaleY
-        }
-    }
-
-    fun getFinalRotationDegree(): Float{
-        return ((rotateNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + sliderValue)
-    }
-
     fun getScale(): Pair<Float, Float>{
-        return Pair(scaleX, scaleY)
+        return Pair(cropImageView.scaleX, cropImageView.scaleY)
     }
 
     fun hideOverlay(){
@@ -66,31 +52,20 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
     private fun initListener(){
         cropImageView.setTransformImageListener(object: TransformImageView.TransformImageListener{
             override fun onLoadComplete() {
-                listener?.onLoadComplete()
+                this@EditorDetailPreviewImage.onLoadComplete?.invoke()
             }
 
             override fun onLoadFailure(e: java.lang.Exception) {
-                listener?.onLoadFailure(e)
+                this@EditorDetailPreviewImage.onLoadFailure?.invoke(e)
             }
 
             override fun onRotate(currentAngle: Float) {
-                listener?.onRotate(currentAngle)
+                this@EditorDetailPreviewImage.onRotate?.invoke(currentAngle)
             }
 
             override fun onScale(currentScale: Float) {
-                listener?.onScale(currentScale)
+                this@EditorDetailPreviewImage.onScale?.invoke(currentScale)
             }
         })
-    }
-
-    interface Listener {
-        fun onLoadComplete()
-        fun onLoadFailure(e: Exception)
-        fun onRotate(currentAngle: Float)
-        fun onScale(currentScale: Float)
-    }
-
-    companion object {
-        private const val TEMP_OUTPUT_FILE = "media_editor_temp_result"
     }
 }
