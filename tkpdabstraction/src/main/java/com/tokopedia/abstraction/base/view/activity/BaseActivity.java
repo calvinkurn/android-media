@@ -57,7 +57,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
-    private boolean pauseFlag;
+    private boolean needSplitInstall;
 
     private final ArrayList<DebugVolumeListener> debugVolumeListeners = new ArrayList<>();
     private final ArrayList<DispatchTouchListener> dispatchTouchListeners = new ArrayList<>();
@@ -76,9 +76,15 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        needSplitInstall = true;
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        pauseFlag = true;
+        needSplitInstall = true;
         unregisterForceLogoutReceiver();
         unregisterInAppReceiver();
     }
@@ -110,9 +116,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
         // this is to make sure the context of dynamic feature is updated when activity is onBackpressed
         // hacky way of dynamic feature module, when activity is resumed after pausing.
         // SplitCompat.install initiates on onAttachBaseContext by default.
-        if (pauseFlag) {
+        if (needSplitInstall) {
             SplitCompat.installActivity(this);
-            pauseFlag = false;
+            needSplitInstall = false;
         }
 
         sendScreenAnalytics();
@@ -121,6 +127,15 @@ public abstract class BaseActivity extends AppCompatActivity implements
         registerForceLogoutReceiver();
         registerInAppReceiver();
         checkIfForceLogoutMustShow();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (needSplitInstall) {
+            SplitCompat.installActivity(this);
+            needSplitInstall = false;
+        }
     }
 
     protected void sendScreenAnalytics() {
