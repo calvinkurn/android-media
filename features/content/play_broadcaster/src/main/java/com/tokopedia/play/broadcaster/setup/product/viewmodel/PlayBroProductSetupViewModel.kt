@@ -434,7 +434,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                 updatePinProduct(product = product)
                 addCoolDown()
             } else {
-                throw MessageErrorException("Gagal pin product")
+                throw MessageErrorException("Gagal pasang pin di produk. Coba lagi, ya.")
             }
         }){
             updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
