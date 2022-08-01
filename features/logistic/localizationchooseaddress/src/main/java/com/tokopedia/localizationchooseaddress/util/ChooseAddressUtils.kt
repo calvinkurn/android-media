@@ -153,7 +153,7 @@ object ChooseAddressUtils {
                 chooseAddressPref.setLocalCache(localData)
             }
         } else {
-            chooseAddressPref.setLocalCache(localData)
+            chooseAddressPref.setLocalCache(localData.copy(tokonow_last_update = lastUpdate))
         }
     }
 
