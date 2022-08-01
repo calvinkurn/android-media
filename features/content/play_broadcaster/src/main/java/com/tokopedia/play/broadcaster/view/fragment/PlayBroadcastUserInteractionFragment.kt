@@ -1143,13 +1143,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
-        if (!parentViewModel.getCoolDownStatus()) ifTimerIsOn()
+        if(!parentViewModel.getCoolDownStatus()) ifTimerIsOn()
         else {
-            if (pinStatus) analytic.onImpressFailUnPinProductLiveRoom(parentViewModel.channelId)
+            if(pinStatus) analytic.onImpressFailUnPinProductLiveRoom(parentViewModel.channelId)
             else analytic.onImpressFailPinProductLiveRoom(parentViewModel.channelId)
             showToaster(
                 message = getString(
-                    if (pinStatus) R.string.play_bro_pin_product_un_pin_failed
+                    if(pinStatus) R.string.play_bro_pin_product_un_pin_failed
                     else R.string.play_bro_pin_product_pin_failed
                 ),
                 type = Toaster.TYPE_ERROR

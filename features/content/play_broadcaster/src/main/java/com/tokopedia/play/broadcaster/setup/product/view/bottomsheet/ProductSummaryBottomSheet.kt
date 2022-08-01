@@ -63,13 +63,13 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
-        if (!viewModel.getCoolDownStatus()) ifTimerIsOn()
+        if(!viewModel.getCoolDownStatus()) ifTimerIsOn()
         else {
-            if (pinStatus) analytic.onImpressFailUnPinProductBottomSheet(viewModel.channelId)
+            if(pinStatus) analytic.onImpressFailUnPinProductBottomSheet(viewModel.channelId)
             else analytic.onImpressFailPinProductBottomSheet(viewModel.channelId)
             toaster.showToaster(
                 message = getString(
-                    if (pinStatus) R.string.play_bro_pin_product_un_pin_failed
+                    if(pinStatus) R.string.play_bro_pin_product_un_pin_failed
                     else R.string.play_bro_pin_product_pin_failed
                 ),
                 type = Toaster.TYPE_ERROR
