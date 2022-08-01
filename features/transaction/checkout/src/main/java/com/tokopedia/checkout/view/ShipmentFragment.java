@@ -253,6 +253,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Inject
     EPharmacyAnalytics ePharmacyAnalytics;
 
+
+
     SaveInstanceCacheManager saveInstanceCacheManager;
     TickerAnnouncementHolderData savedTickerAnnouncementModel;
     List<ShipmentCartItemModel> savedShipmentCartItemModelList;
@@ -2386,7 +2388,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         mTrackerPurchaseProtection.eventClickOnPelajari(userSessionInterface.getUserId(),
                 cartItemModel.getProtectionTitle(), cartItemModel.getProtectionPricePerProduct(),
                 cartItemModel.getAnalyticsProductCheckoutData().getProductCategoryId());
-        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(),
+        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(),userSessionInterface,
                 cartItemModel.getProtectionLinkUrl(), getString(R.string.title_activity_checkout_webview));
     }
 

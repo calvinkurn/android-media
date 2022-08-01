@@ -78,8 +78,10 @@ class ProductCardSingleViewModel(
                 }
             }
             prodComponentsItem?.data?.firstOrNull()?.let {
-                it.hasThreeDotsWishlist = true
-                it.hasATCWishlist = true
+                it.hasThreeDotsWishlist = (it.show3Dots == true)
+                if (it.atcButtonCTA == Constant.ATCButtonCTATypes.GENERAL_CART) {
+                    it.hasATCWishlist = true
+                }
             }
             productData.value = prodComponentsItem
 

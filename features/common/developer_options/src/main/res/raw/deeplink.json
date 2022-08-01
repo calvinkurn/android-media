@@ -2415,6 +2415,16 @@
           "deeplink_variable": ""
      }, 
      {
+          "destination_activity": "com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity", 
+          "deeplink": "https://ta.tokopedia.com/promo/v1/clicks/.*", 
+          "deeplink_variable": ""
+     }, 
+     {
+          "destination_activity": "com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity", 
+          "deeplink": "https://ta-staging.tokopedia.com/promo/v1/clicks/.*", 
+          "deeplink_variable": ""
+     }, 
+     {
           "destination_activity": "com.tokopedia.navigation.presentation.activity.MainParentActivity", 
           "deeplink": "tokopedia-android-internal://home/navigation", 
           "deeplink_variable": "ApplinkConsInternalHome.HOME_NAVIGATION"
