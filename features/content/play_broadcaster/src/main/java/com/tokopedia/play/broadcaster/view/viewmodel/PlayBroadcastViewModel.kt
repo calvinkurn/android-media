@@ -1633,7 +1633,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     )
                 )
             } else {
-                throw MessageErrorException("Gagal pin product")
+                throw MessageErrorException("Gagal pasang pin di produk. Coba lagi, ya.")
             }
         }) {
             updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
@@ -1647,7 +1647,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
                 sectionUiModel.products.map { prod ->
                     if(prod.id == product.id)
-                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isLoading) prod.pinStatus.isPinned else prod.pinStatus.isPinned.switch(), isLoading = isLoading))
+                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isLoading) prod.pinStatus.isPinned else product.pinStatus.isPinned.switch(), isLoading = isLoading))
                     else
                         prod
                 })
