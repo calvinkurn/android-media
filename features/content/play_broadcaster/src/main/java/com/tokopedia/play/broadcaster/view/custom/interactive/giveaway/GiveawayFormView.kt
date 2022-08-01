@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -146,7 +145,7 @@ class GiveawayFormView : ConstraintLayout {
             this,
             Data(
                 title = binding.viewGiveaway.getHeader().title,
-                durationInMs = mEligibleDurations[timePickerBinding.puTimer.activeIndex],
+                durationInMs = mEligibleDurations.getOrNull(timePickerBinding.puTimer.activeIndex) ?: DEFAULT_DURATION,
             ),
         )
     }
@@ -266,6 +265,7 @@ class GiveawayFormView : ConstraintLayout {
 
     companion object {
         private const val SHOW_KEYBOARD_DELAY = 500L
+        private const val DEFAULT_DURATION = 180000L
 
         private const val CONTINUE_DISABLED_ALPHA = 0.5f
         private const val CONTINUE_ENABLED_ALPHA = 1f
