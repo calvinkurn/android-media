@@ -3,6 +3,7 @@ package com.tokopedia.unifyorderhistory.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -314,6 +315,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val RESULT_CODE_SUCCESS = 1
         const val EXTEND_ORDER_REQUEST_CODE = 400
         const val OPEN_ORDER_REQUEST_CODE = 500
+        const val PATH_RESOLUTION = "resolution-center"
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -1674,7 +1676,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         } else {
                             dotMenu.appURL
                         }
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+                        if (Uri.parse(linkUrl).path?.contains(PATH_RESOLUTION) == true) {
+                            val intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
+                            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+                            startActivity(intent)
+                        } else {
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+                        }
                     }
                 } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
                     if (dotMenu.appURL.contains(APPLINK_BASE)) {
@@ -1779,27 +1787,27 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         finishOrderBottomSheet.setListener(object : UohFinishOrderBottomSheet.UohFinishOrderBottomSheetListener {
             override fun onClickFinishOrder(index: Int, status: String, orderId: String) {
-                RouteManager.route(context, ApplinkConstInternalOperational.SUCCESS_RESO)
-//                finishOrderBottomSheet.dismiss()
-//                currIndexNeedUpdate = index
-//                uohItemAdapter.showLoaderAtIndex(index)
-//
-//                var actionStatus = ""
-//                if (status.isNotEmpty() && status.toIntOrZero() < STATUS_600) actionStatus = ACTION_FINISH_ORDER
-//
-//                val paramFinishOrder = userSession.userId?.let { it1 ->
-//                    UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
-//                }
-//                if (paramFinishOrder != null) {
-//                    uohListViewModel.doFinishOrder(paramFinishOrder)
-//                }
-//
-//                userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
+                finishOrderBottomSheet.dismiss()
+                currIndexNeedUpdate = index
+                uohItemAdapter.showLoaderAtIndex(index)
+
+                var actionStatus = ""
+                if (status.isNotEmpty() && status.toIntOrZero() < STATUS_600) actionStatus = ACTION_FINISH_ORDER
+
+                val paramFinishOrder = userSession.userId?.let { it1 ->
+                    UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
+                }
+                if (paramFinishOrder != null) {
+                    uohListViewModel.doFinishOrder(paramFinishOrder)
+                }
+
+                userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
             }
 
             override fun onClickAjukanKomplain(orderId: String) {
+                finishOrderBottomSheet.dismiss()
                 val intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
                 startActivity(intent)
                 userSession.userId?.let { userId -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(userId) }
             }

@@ -20,6 +20,7 @@ class ResolutionSuccessActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_resolution_success)
         initData()
+        setToolbar()
 
         binding?.btnGoToDetail?.setOnClickListener {
             routeToDetail()
@@ -28,8 +29,10 @@ class ResolutionSuccessActivity : AppCompatActivity() {
         binding?.btnGoToHome?.setOnClickListener {
             routeToHome()
         }
+    }
 
-
+    private fun setToolbar() {
+        supportActionBar?.title = getString(R.string.title_toolbar_resolution)
     }
 
     private fun initData() {
@@ -38,8 +41,8 @@ class ResolutionSuccessActivity : AppCompatActivity() {
 
     private fun routeToDetail() {
         if (url.isNotEmpty()) {
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalOperational.DETAIL_COMPLAIN)
-            intent.putExtra(KEY_URL, "https://1198-staging-feature.tokopedia.com" + url)
+            val intent = RouteManager.getIntent(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://1198-staging-feature.tokopedia.com" + url))
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
             startActivity(intent)
         }
     }
