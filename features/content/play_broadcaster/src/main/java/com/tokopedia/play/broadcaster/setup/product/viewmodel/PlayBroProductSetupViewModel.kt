@@ -437,7 +437,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                 throw MessageErrorException("Gagal pin product")
             }
         }){
-            updatePinProduct(product = product)
+            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
             _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
         }
     }

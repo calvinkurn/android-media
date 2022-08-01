@@ -1565,7 +1565,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 throw MessageErrorException("Gagal pin product")
             }
         }){
-            updatePinProduct(product = product)
+            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
         }
     }
