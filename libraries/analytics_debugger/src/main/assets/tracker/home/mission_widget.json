@@ -42,6 +42,30 @@
       "userId": ".*",
       "sessionIris": ".*",
       "clientId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click on product dynamic channel mission widget",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .*",
+      "trackerId": "34629",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/ - p.* - dynamic channel mission widget - product - .* - .* - .* - .* - .* - .*",
+      "items": [
+        {
+          "index": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": "0"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
     }
   ]
 }
