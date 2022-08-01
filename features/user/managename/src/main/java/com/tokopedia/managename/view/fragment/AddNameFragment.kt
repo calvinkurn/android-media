@@ -196,7 +196,7 @@ class AddNameFragment : BaseDaggerFragment() {
     fun showLoading(){
         binding?.let {
             it.btnContinue.isEnabled = false
-            it.addNameLinearLayout.alpha = 0.5F
+            it.addNameLinearLayout.alpha = ADD_NAME_ALPHA_0_5
             it.addNameProgressbar.show()
         }
     }
@@ -204,7 +204,7 @@ class AddNameFragment : BaseDaggerFragment() {
     fun dismissLoading(){
         binding?.let {
             it.btnContinue?.isEnabled = true
-            it.addNameLinearLayout?.alpha = 1.0F
+            it.addNameLinearLayout?.alpha = ADD_NAME_ALPHA_1_0
             it.addNameProgressbar?.hide()
         }
     }
@@ -227,5 +227,8 @@ class AddNameFragment : BaseDaggerFragment() {
             fragment.arguments = bundle
             return fragment
         }
+
+        private const val ADD_NAME_ALPHA_0_5 = 0.5F
+        private const val ADD_NAME_ALPHA_1_0 = 0.5F
     }
 }
