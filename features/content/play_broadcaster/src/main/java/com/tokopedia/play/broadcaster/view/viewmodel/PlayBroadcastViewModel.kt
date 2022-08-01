@@ -1562,7 +1562,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 updatePinProduct(product = product)
                 addCoolDown()
             } else {
-                throw MessageErrorException("Gagal pasang pin di produk. Coba lagi, ya.")
+                val wording = if(product.pinStatus.isPinned) "lepas" else "pasang"
+                throw MessageErrorException("Gagal $wording pin di produk. Coba lagi, ya.")
             }
         }){
             updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))

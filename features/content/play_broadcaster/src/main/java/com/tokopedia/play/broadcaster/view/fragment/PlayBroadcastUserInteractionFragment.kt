@@ -1141,7 +1141,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if(!parentViewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
         else {
            showToaster(
-                message = getString(R.string.play_bro_pin_product_failed),
+                message = getString(R.string.play_bro_pin_product_failed, if(pinStatus) "lepas" else "pasang"),
                 type = Toaster.TYPE_ERROR
             )
         }
