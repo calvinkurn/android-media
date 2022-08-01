@@ -261,6 +261,7 @@ class ShopPageCampaignFragment :
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
+        bundleType: String,
         bundlePosition: Int,
         widgetTitle: String,
         widgetName: String,
@@ -286,9 +287,10 @@ class ShopPageCampaignFragment :
         selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
         bundlePosition: Int,
-        widgetName: String,
         widgetTitle: String,
-        productItemPosition: Int
+        widgetName: String,
+        productItemPosition: Int,
+        bundleType: String
     ) {
         shopCampaignTabTracker.clickCampaignTabProduct(
             selectedProduct.productId,
@@ -334,7 +336,8 @@ class ShopPageCampaignFragment :
         bundleName: String,
         bundlePosition: Int,
         widgetTitle: String,
-        widgetName: String
+        widgetName: String,
+        bundleType: String
     ) {
         shopCampaignTabTracker.impressionCampaignTabProduct(
             selectedProduct.productId,
