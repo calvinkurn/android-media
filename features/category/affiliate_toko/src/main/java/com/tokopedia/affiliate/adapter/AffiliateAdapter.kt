@@ -21,12 +21,14 @@ class AffiliateAdapter(
     affiliateAdapterFactory: AffiliateAdapterFactory,
     private val itemImpressionListener: AffiliateItemImpressionListener? = null
 ) : BaseAdapter<AffiliateAdapterFactory>(affiliateAdapterFactory) {
+    companion object{
+        private const val SHIMMER_ITEM_COUNT = 4
 
-    private val shimmerItemCount = 4
+    }
     private val itemImpressionSet = HashSet<Int>()
 
     fun addShimmer(isStaggered : Boolean = false){
-        for (i in 1..shimmerItemCount) {
+        for (i in 1..SHIMMER_ITEM_COUNT) {
             if(isStaggered) addElement(AffiliateStaggeredShimmerModel())
             else addElement(AffiliateShimmerModel())
         }
@@ -37,17 +39,17 @@ class AffiliateAdapter(
     }
 
     fun removeShimmer(listSize: Int) {
-        if(itemCount >= (listSize + (shimmerItemCount - 1))) {
-            for(i in (shimmerItemCount - 1) downTo 0){
+        if(itemCount >= (listSize + (SHIMMER_ITEM_COUNT - 1))) {
+            for(i in (SHIMMER_ITEM_COUNT - 1) downTo 0){
                 this.visitables.removeAt(listSize + i)
             }
-            notifyItemRangeRemoved(listSize,shimmerItemCount)
+            notifyItemRangeRemoved(listSize,SHIMMER_ITEM_COUNT)
         }
     }
 
     fun addDataPlatformShimmer() {
         addElement(AffiliateDataPlatformShimmerModel())
-        for (i in 1..shimmerItemCount) {
+        for (i in 1..SHIMMER_ITEM_COUNT) {
              addElement(AffiliateShimmerModel())
         }
     }
