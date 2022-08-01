@@ -16,6 +16,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
@@ -121,7 +122,7 @@ interface ProductListSectionContract {
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 
-    interface Presenter : CustomerPresenter<View>, Pagination {
+    interface Presenter : CustomerPresenter<View>, Pagination, BannerAdsPresenter {
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
         val pageComponentId: String
@@ -163,7 +164,6 @@ interface ProductListSectionContract {
             savedOptionList: List<SavedOption>,
         )
         fun closeLastFilter(searchParameter: Map<String, Any>)
-        fun shopAdsImpressionCount(impressionCount: Int)
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 }
