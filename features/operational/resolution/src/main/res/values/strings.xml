@@ -4,6 +4,5 @@
     <string name="description_success_reso">Tenang, danamu sudah kami amankan. Jika penjual tidak merespons, danamu dikembalikan secara otomatis.</string>
     <string name="title_btn_detail">Lihat Komplain</string>
     <string name="title_btn_home">Kembali Ke Home</string>
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_toolbar_resolution"> Komplain diajukan </string>
 </resources>
