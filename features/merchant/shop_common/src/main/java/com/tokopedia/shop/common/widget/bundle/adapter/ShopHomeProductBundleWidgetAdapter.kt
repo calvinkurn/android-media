@@ -27,6 +27,8 @@ class ShopHomeProductBundleWidgetAdapter(
     }
 
     private var bundleListItem: List<ShopHomeProductBundleItemUiModel> = listOf()
+    private var widgetTitle: String = ""
+    private var widgetName: String = ""
     private var parentPosition: Int = 0
     private var widgetLayout = ShopHomeWidgetLayout(
             widgetId,
@@ -56,8 +58,8 @@ class ShopHomeProductBundleWidgetAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val bundleItem = bundleListItem.getOrNull(position) ?: ShopHomeProductBundleItemUiModel()
         when (holder) {
-            is ShopHomeProductBundleSingleViewHolder -> holder.bind(bundleItem)
-            is ShopHomeProductBundleMultipleViewHolder -> holder.bind(bundleItem)
+            is ShopHomeProductBundleSingleViewHolder -> holder.bind(bundleItem, widgetTitle, widgetName)
+            is ShopHomeProductBundleMultipleViewHolder -> holder.bind(bundleItem, widgetTitle, widgetName)
         }
     }
 
@@ -82,4 +84,14 @@ class ShopHomeProductBundleWidgetAdapter(
     fun setParentPosition(adapterPosition: Int) {
         this.parentPosition = adapterPosition
     }
+
+    fun setWidgetTitle(widgetTitle: String) {
+        this.widgetTitle = widgetTitle
+    }
+
+    fun setWidgetName(widgetName: String) {
+        this.widgetName = widgetName
+    }
+
+
 }

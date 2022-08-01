@@ -319,6 +319,7 @@ public class MainParentActivity extends BaseActivity implements
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
+        moduleNameList.add(DeeplinkDFMapper.DF_TOKOFOOD);
         moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_NONLOGIN);
         if (BuildConfig.VERSION_NAME.endsWith(SUFFIX_ALPHA) && remoteConfig.get().getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
             moduleNameList.add(DeeplinkDFMapper.DF_ALPHA_TESTING);
@@ -562,7 +563,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void checkAgeVerificationExtra(Intent intent) {
-        if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS)) {
+        if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS) && !isFinishing()) {
             Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                     intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
                     Snackbar.LENGTH_INDEFINITE,
@@ -865,7 +866,9 @@ public class MainParentActivity extends BaseActivity implements
         } else {
             doubleTapExit = true;
             try {
-                Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+                if(!isFinishing()) {
+                    Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+                }
                 new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1046,7 +1049,9 @@ public class MainParentActivity extends BaseActivity implements
                     clipboard.setPrimaryClip(clip);
                 }
                 try {
-                    Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                    if(!isFinishing()) {
+                        Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -35,7 +35,7 @@ ext {
         }
     }
 
-    generateAssetFile = {Project project, LinkedHashSet<String> strings ->
+    generateAssetFile = {Project project, strings ->
         def projectName = project.name
         def assetDir = new File(projectName + "/src/main/assets")
         def fileAsset = new File(projectName + "/src/main/assets/df.cfg")

@@ -1,0 +1,207 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductFragment">
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyEmptyStateCTAFullWidth="true"
+        app:unifyEmptyStateDescription="Yuk, mulai tambah produkmu untuk didaftarkan ke campaign."
+        app:unifyEmptyStateOrientation="horizontal"
+        app:unifyEmptyStatePrimaryCTAText="Tambah Produk"
+        app:unifyEmptyStateTitle="Oops, kamu belum memiliki produk terdaftar"
+        app:unifyEmptyStateType="section" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/unify_space_48"
+        android:layout_height="@dimen/unify_space_48"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView_product"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:paddingTop="90dp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineFooter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_product_count"
+        tools:itemCount="3"
+        tools:listitem="@layout/ssfs_item_manage_product" />
+
+    <View
+        android:id="@+id/headerBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/Unify_Background"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_add_product"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_incomplete_product_info"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:card_type="shadow"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHeader">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image_incomplete_product_info"
+                android:layout_width="73dp"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_incomplete_product_info"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center|start"
+                android:maxLines="2"
+                android:text="@string/manage_product_incomplete_product_info_label"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/image_incomplete_product_info"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="reguler" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_error_product_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
+        app:descriptionText="@string/manage_product_error_banner_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHeader"
+        app:tickerType="error"
+        app:titleText="@string/manage_product_error_banner_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_product_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/grey_500"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineHeader"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="reguler"
+        tools:text="@string/manage_product_placeholder_product_count" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_add_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/manage_product_add_product_label"
+        android:textColor="@color/bg_button_green_border_outline"
+        app:layout_constraintBottom_toBottomOf="@+id/tpg_product_count"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tpg_product_count" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_bottom_button_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineFooter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_save_draft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:minWidth="@dimen/unify_space_96"
+                android:text="@string/sfs_save_draft"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unifyButtonType="alternate"
+                app:unifyButtonVariant="ghost" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_continue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_8"
+                android:enabled="false"
+                android:text="@string/sfs_save_next"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btn_save_draft"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="ticker_error_product_info, card_incomplete_product_info"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="82dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineFooter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="64dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

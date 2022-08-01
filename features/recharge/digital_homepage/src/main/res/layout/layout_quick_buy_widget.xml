@@ -20,21 +20,20 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_name"
                 android:layout_width="@dimen/layout_lvl7"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:layout_marginRight="@dimen/spacing_lvl3"
                 android:ellipsize="end"
-                android:gravity="right"
+                android:gravity="end"
                 android:letterSpacing="0.02"
                 android:maxLines="1"
                 android:textColor="@color/Unify_N700_68"
-                android:textSize="@dimen/quick_buy_text_size"
                 android:visibility="gone"
+                app:typographyType="small"
                 tools:text="PAKET DATA"
                 tools:visibility="visible" />
 
@@ -55,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -63,13 +62,13 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textColor="@color/Unify_N700_96"
-                    android:textSize="@dimen/unify_space_12"
-                    android:textStyle="bold"
+                    app:typographyType="display_3"
+                    app:typographyWeight="bold"
                     android:visibility="gone"
                     tools:text="BRONET 4G OWS"
                     tools:visibility="visible" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -81,7 +80,7 @@
                     android:lineSpacingExtra="@dimen/quick_buy_text_spacing"
                     android:maxLines="1"
                     android:textColor="@color/Unify_N700_96"
-                    android:textSize="@dimen/quick_buy_text_size"
+                    app:typographyType="small"
                     android:visibility="gone"
                     tools:text="081234567890"
                     tools:visibility="visible" />

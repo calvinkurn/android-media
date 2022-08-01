@@ -46,7 +46,8 @@
             }
           ],
           "shop": {
-            "location": "Jakarta Barat"
+            "location": "Jakarta Barat",
+            "id": "123456"
           }
         }
       }

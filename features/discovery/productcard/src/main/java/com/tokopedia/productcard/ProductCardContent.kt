@@ -19,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -64,16 +65,13 @@ internal fun View.renderProductCardContent(
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
     renderTextETA(productCardModel)
+    productCardModel.fashionStrategy.configContentPosition(this)
 
     if (isWideContent) configureWideContent(productCardModel)
 }
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
-    val textViewGimmick = findViewById<Typography?>(R.id.textViewGimmick)
-    if (productCardModel.isShowLabelGimmick())
-        textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
-    else
-        textViewGimmick?.initLabelGroup(null)
+    productCardModel.fashionStrategy.renderTextGimmick(this, productCardModel)
 }
 
 private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
@@ -96,10 +94,9 @@ private fun View.renderTextProductName(productCardModel: ProductCardModel) {
 
 private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
     val textViewProductName = findViewById<Typography?>(R.id.textViewProductName)
-    val labelVariantContainer = findViewById<LinearLayout?>(R.id.labelVariantContainer)
     val willShowVariant = productCardModel.willShowVariant()
 
-    if (willShowVariant) {
+    if (productCardModel.fashionStrategy.isSingleLine(willShowVariant)) {
         textViewProductName?.isSingleLine = true
     }
     else {
@@ -108,58 +105,11 @@ private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
         textViewProductName?.ellipsize = TextUtils.TruncateAt.END
     }
 
-    labelVariantContainer?.shouldShowWithAction(willShowVariant) { labelVariantContainer ->
-        labelVariantContainer.removeAllViews()
-
-        val marginStart = 4.toPx()
-        val colorSampleSize = 14.toPx()
-
-        productCardModel.getRenderedLabelGroupVariantList().forEachIndexed { index, labelVariant ->
-            val hasMarginStart = index > 0
-
-            when {
-                labelVariant.isColor() -> {
-                    labelVariantContainer.addLabelVariantColor(labelVariant, hasMarginStart, colorSampleSize, marginStart)
-                }
-                labelVariant.isSize() -> {
-                    labelVariantContainer.addLabelVariantSize(labelVariant, hasMarginStart, marginStart)
-                }
-                labelVariant.isCustom() -> {
-                    labelVariantContainer.addLabelVariantCustom(labelVariant, marginStart)
-                }
-            }
-        }
-    }
-}
-
-private fun LinearLayout.addLabelVariantColor(
-        labelVariant: ProductCardModel.LabelGroupVariant,
-        hasMarginStart: Boolean,
-        colorSampleSize: Int,
-        marginStart: Int
-) {
-    val gradientDrawable = createColorSampleDrawable(context, labelVariant.hexColor)
-
-    val layoutParams = LinearLayout.LayoutParams(colorSampleSize, colorSampleSize)
-    layoutParams.marginStart = if (hasMarginStart) marginStart else 0
-
-    val colorSampleImageView = ImageView(context)
-    colorSampleImageView.setImageDrawable(gradientDrawable)
-    colorSampleImageView.layoutParams = layoutParams
-    colorSampleImageView.tag = LABEL_VARIANT_TAG
-
-    addView(colorSampleImageView)
-}
-
-internal fun createColorSampleDrawable(context: Context, colorString: String): GradientDrawable {
-    val gradientDrawable = GradientDrawable()
-
-    gradientDrawable.shape = GradientDrawable.OVAL
-    gradientDrawable.cornerRadii = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
-    gradientDrawable.setStroke(2, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))
-    gradientDrawable.setColor(safeParseColor(colorString))
-
-    return gradientDrawable
+    productCardModel.fashionStrategy.renderVariant(
+        willShowVariant,
+        this,
+        productCardModel,
+    )
 }
 
 internal fun safeParseColor(color: String): Int {
@@ -170,39 +120,6 @@ internal fun safeParseColor(color: String): Int {
         throwable.printStackTrace()
         0
     }
-}
-
-private fun LinearLayout.addLabelVariantSize(
-        labelVariant: ProductCardModel.LabelGroupVariant,
-        hasMarginStart: Boolean,
-        marginStart: Int
-) {
-    val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-    layoutParams.marginStart = if (hasMarginStart) marginStart else 0
-
-    val unifyLabel = Label(context)
-    unifyLabel.setLabelType(labelVariant.type.toUnifyLabelType())
-    unifyLabel.text = labelVariant.title
-    unifyLabel.layoutParams = layoutParams
-    unifyLabel.tag = LABEL_VARIANT_TAG
-
-    addView(unifyLabel)
-}
-
-private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.LabelGroupVariant, marginStart: Int) {
-    val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-    layoutParams.topMargin = 1.toPx() // Small hack to make custom label center
-    layoutParams.marginStart = marginStart
-
-    val typography = Typography(context)
-    typography.weightType = Typography.BOLD
-    typography.setType(Typography.SMALL)
-    typography.text = "+${labelVariant.title}"
-    typography.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-    typography.layoutParams = layoutParams
-    typography.tag = LABEL_VARIANT_TAG
-
-    addView(typography)
 }
 
 fun View.renderTextCategoryAndCostPerUnit(productCardModel: ProductCardModel) {
@@ -244,6 +161,10 @@ private fun View.moveTextPriceConstraint(productCardModel: ProductCardModel) {
 private fun View.renderDiscount(productCardModel: ProductCardModel) {
     val labelDiscount = findViewById<Label?>(R.id.labelDiscount)
     val textViewSlashedPrice = findViewById<Typography?>(R.id.textViewSlashedPrice)
+
+    productCardModel.fashionStrategy.moveDiscountConstraint(this, productCardModel)
+    productCardModel.fashionStrategy.setDiscountMargin(labelDiscount)
+
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.discountPercentage, context.getString(R.string.content_desc_labelDiscount))
     }
@@ -255,22 +176,7 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
-    val labelPrice = findViewById<Label?>(R.id.labelPrice)
-    moveLabelPriceConstraint(productCardModel)
-
-    if (productCardModel.isShowDiscountOrSlashPrice())
-        labelPrice?.initLabelGroup(null)
-    else
-        labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
-}
-
-private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
-    val targetConstraint = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
-    val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
-
-    view?.applyConstraintSet {
-        it.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 2.toPx())
-    }
+    productCardModel.fashionStrategy.renderLabelPrice(this, productCardModel)
 }
 
 private fun ProductCardModel.getPriceToRender(): String {
@@ -308,8 +214,14 @@ private fun View.renderShopBadge(productCardModel: ProductCardModel) {
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
     val textViewShopLocation = findViewById<Typography?>(R.id.textViewShopLocation)
-    textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty() && !productCardModel.willShowFulfillment()) {
-        TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.shopLocation, context.getString(R.string.content_desc_textViewShopLocation))
+    textViewShopLocation?.shouldShowWithAction(
+        productCardModel.isShowShopLocation()
+    ) {
+        TextAndContentDescriptionUtil.setTextAndContentDescription(
+            it,
+            productCardModel.shopLocation,
+            context.getString(R.string.content_desc_textViewShopLocation),
+        )
     }
 }
 
@@ -331,6 +243,7 @@ private fun View.renderRatingStars(productCardModel: ProductCardModel) {
     setImageRating(productCardModel.ratingCount)
 }
 
+@Suppress("MagicNumber")
 private fun View.setImageRating(rating: Int) {
     val imageViewRating1 = findViewById<ImageView?>(R.id.imageViewRating1)
     val imageViewRating2 = findViewById<ImageView?>(R.id.imageViewRating2)
@@ -371,7 +284,7 @@ private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderSalesRatingFloat(productCardModel: ProductCardModel) {
-    val imageSalesRatingFloat = findViewById<ImageView?>(R.id.imageSalesRatingFloat)
+    val imageSalesRatingFloat = findViewById<IconUnify?>(R.id.productCardImageSalesRatingFloat)
     val salesRatingFloat = findViewById<Typography?>(R.id.salesRatingFloat)
     val willShowSalesRatingFloat = productCardModel.willShowRating()
 

@@ -4,12 +4,15 @@ import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
+import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
@@ -69,8 +72,20 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_STICKY_BUTTON-> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_VIEW-> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
+            TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(chatItemPojoByDateByTime, attachmentIds)
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
+    }
+
+    private fun convertToInvoiceSentUiModel(pojo: Reply, attachmentIds: List<String>): AttachInvoiceSentUiModel {
+        val invoiceAttributes = pojo.attachment.attributes
+        val invoiceSentPojo = gson.fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
+        val needSync = attachmentIds.contains(pojo.attachment.id)
+        return AttachInvoiceSentUiModel.Builder()
+            .withResponseFromGQL(pojo)
+            .withNeedSync(needSync)
+            .withInvoiceAttributesResponse(invoiceSentPojo.invoiceLink)
+            .build()
     }
 
     /////////////////// QUICK REPLIES

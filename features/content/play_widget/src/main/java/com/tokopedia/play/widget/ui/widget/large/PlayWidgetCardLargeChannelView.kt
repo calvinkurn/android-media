@@ -117,7 +117,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
         tvTotalView.text = model.totalView.totalViewFmt
-        ivGiveaway.showWithCondition(model.hasGiveaway)
+        ivGiveaway.showWithCondition(model.hasGame)
 
         setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {
@@ -126,12 +126,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         setOnClickListener {
             mListener?.onChannelClicked(it, model)
-            mListener?.onLabelPromoClicked(this, model)
         }
-
-        llPromoDetail.isVisibleOnTheScreen(onViewVisible = {
-            mListener?.onLabelPromoImpressed(this, model)
-        }, onViewNotVisible = {})
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
@@ -221,15 +216,6 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         fun onToggleReminderChannelClicked(
             item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType
-        )
-        fun onLabelPromoClicked(
-            view: View,
-            item: PlayWidgetChannelUiModel
-        )
-
-        fun onLabelPromoImpressed(
-            view: View,
-            item: PlayWidgetChannelUiModel
         )
     }
 }

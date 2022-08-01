@@ -23,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.utils.ViewUtilsKt;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
@@ -490,10 +491,26 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     private List<Visitable> getData() {
         List<Visitable> inboxList = new ArrayList<>();
-        inboxList.add(new Inbox(R.drawable.ic_topchat, R.string.chat, R.string.chat_desc));
-        inboxList.add(new Inbox(R.drawable.ic_tanyajawab, R.string.diskusi, R.string.diskusi_desc));
-        inboxList.add(new Inbox(R.drawable.ic_ulasan, R.string.ulasan, R.string.ulasan_desc));
-        inboxList.add(new Inbox(R.drawable.ic_pesan_bantuan, R.string.pesan_bantuan, R.string.pesan_bantuan_desc));
+        inboxList.add(new Inbox(
+                IconUnify.CHAT,
+                R.string.chat,
+                R.string.chat_desc
+        ));
+        inboxList.add(new Inbox(
+                IconUnify.DISCUSSION,
+                R.string.diskusi,
+                R.string.diskusi_desc
+        ));
+        inboxList.add(new Inbox(
+                IconUnify.STAR,
+                R.string.ulasan,
+                R.string.ulasan_desc
+        ));
+        inboxList.add(new Inbox(
+                IconUnify.CALL_CENTER,
+                R.string.pesan_bantuan,
+                R.string.pesan_bantuan_desc
+        ));
         inboxList.add(new InboxTopAdsBannerUiModel());
         return inboxList;
     }
@@ -611,23 +628,24 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         this.visitables = list;
         adapter.addElement(list);
         int index = 0;
-        if (pageNum == 0) {
-            headlineExperimentPosition = headlineIndexList.get(0);
-        } else if (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT) {
-            headlineExperimentPosition = headlineIndexList.get(1);
-            index = 1;
-        }
-
-        if ((headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))
-                && headlineExperimentPosition <= adapter.getList().size() && (!isAdded || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))) {
-            if (isTopAdsBannerAdded) {
-                adapter.addElement(headlineExperimentPosition + SHIFTING_INDEX,
-                        new TopadsHeadlineUiModel(headlineData, 0, index));
-            } else {
-                adapter.addElement(headlineExperimentPosition,
-                        new TopadsHeadlineUiModel(headlineData, 0, index));
+        if (headlineIndexList != null && !headlineIndexList.isEmpty()){
+            if (pageNum == 0) {
+                headlineExperimentPosition = headlineIndexList.get(0);
+            } else if (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT) {
+                headlineExperimentPosition = headlineIndexList.get(1);
+                index = 1;
             }
-            isAdded = true;
+            if ((headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))
+                    && headlineExperimentPosition <= adapter.getList().size() && (!isAdded || (headlineIndexList.size() == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT))) {
+                if (isTopAdsBannerAdded) {
+                    adapter.addElement(headlineExperimentPosition + SHIFTING_INDEX,
+                            new TopadsHeadlineUiModel(headlineData, 0, index));
+                } else {
+                    adapter.addElement(headlineExperimentPosition,
+                            new TopadsHeadlineUiModel(headlineData, 0, index));
+                }
+                isAdded = true;
+            }
         }
 
         if (toAdsBannerExperimentPosition != TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED

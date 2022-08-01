@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.Keep
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -89,6 +90,7 @@ import com.tokopedia.feedplus.view.customview.FeedFloatingButton
 private const val FEED_PAGE = "feed"
 private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 
+@Keep
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener,PostProgressUpdateView.PostUpdateSwipe, FeedPlusContainerListener {
 
     private var showOldToolbar: Boolean = false
@@ -110,6 +112,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val PARAM_MEDIA_PREVIEW = "media_preview"
         const val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
         const val FEED_BACKGROUND_CROSSFADER_DURATION = 200
+        const val FEED_FRAGMENT_INDEX = 0
 
         const val TITLE = "title"
         const val SUB_TITLE = "subtitle"
@@ -879,10 +882,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
     fun updateFeedUpdateVisibility(position: Int) {
         try {
-            val fragment = pagerAdapter.getRegisteredFragment(position)
-            if (fragment is FeedPlusFragment) {
-                fragment.updateFeedVisibilityVariable(position == 0)
-            }
+            val feedFragment = pagerAdapter.getRegisteredFragment(FEED_FRAGMENT_INDEX)
+                (feedFragment as FeedPlusFragment).updateFeedVisibilityVariable(position == FEED_FRAGMENT_INDEX)
         } catch (e: IllegalStateException) {
             Timber.e(e)
         }

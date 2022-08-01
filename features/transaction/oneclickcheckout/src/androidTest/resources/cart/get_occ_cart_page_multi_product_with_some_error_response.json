@@ -702,7 +702,18 @@
               "ticker_message": "",
               "is_enable_next_button": false,
               "is_disable_pay_button": false,
-              "is_ovo_only_campaign": false
+              "is_ovo_only_campaign": false,
+              "payment_fee_detail": [
+                {
+                  "fee": 1000,
+                  "show_slashed": false,
+                  "show_tooltip": true,
+                  "slashed_fee": 0,
+                  "title": "Biaya Layanan",
+                  "tooltip_info": "Biaya ini dikenakan khusus pembayaran dengan metode tertentu.",
+                  "type": 10
+                }
+              ]
             },
             "shipment": {
               "service_id": 1104,
