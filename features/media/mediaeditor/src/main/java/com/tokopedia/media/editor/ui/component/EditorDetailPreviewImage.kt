@@ -34,11 +34,18 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
 
     val scaleNormalizeValue get() = cropImageView.scaleX * cropImageView.scaleY
 
-    fun initializeRotate(uriSource: Uri, previousData: EditorRotateModel?) {
+    fun initializeRotate(uriSource: Uri) {
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
         overlayView.setDimmedColor(ContextCompat.getColor(context, principleR.color.Unify_Static_White))
-        initListener(previousData, ROTATE_EDITOR)
+        initListener()
+    }
+
+    fun initializeBrightness(uriSource: Uri){
+        val resultDestination = getDestinationUri(context)
+        cropImageView.setImageUri(uriSource, resultDestination)
+        hideOverlay()
+        initListener()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -74,8 +81,6 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         val bitmap = cropImageView.drawable.toBitmap()
 
         if (cropImageView.currentAngle % 90f == 0f) {
-//            val bitmap = cropImageView.drawable.toBitmap()
-
             val scale = getScale()
             val scaleX = scale.first
             val scaleY = scale.second
@@ -186,28 +191,23 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
     }
 
-    private fun initListener(data: Any?, previousDataModel: Int){
-        if(data == null) return
+    private fun initListener(){
         cropImageView.setTransformImageListener(object: TransformImageView.TransformImageListener{
             override fun onLoadComplete() {
-                if(previousDataModel == ROTATE_EDITOR){
-
-                    this@EditorDetailPreviewImage.onLoadComplete?.invoke()
-                }
+                this@EditorDetailPreviewImage.onLoadComplete?.invoke()
             }
 
-            override fun onLoadFailure(e: java.lang.Exception) {}
+            override fun onLoadFailure(e: java.lang.Exception) {
+                this@EditorDetailPreviewImage.onLoadFailure?.invoke(e)
+            }
 
-            override fun onRotate(currentAngle: Float) {}
+            override fun onRotate(currentAngle: Float) {
+                this@EditorDetailPreviewImage.onRotate?.invoke(currentAngle)
+            }
 
-            override fun onScale(currentScale: Float) {}
+            override fun onScale(currentScale: Float) {
+                this@EditorDetailPreviewImage.onScale?.invoke(currentScale)
+            }
         })
-    }
-
-
-
-    companion object{
-        private const val ROTATE_EDITOR = 0
-        private const val CROP_EDITOR = 1
     }
 }

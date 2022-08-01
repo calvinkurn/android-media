@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.base.BaseEditorFragment
+import com.tokopedia.media.editor.data.repository.ColorFilterRepositoryImpl
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepositoryImpl
 import com.tokopedia.media.editor.data.repository.RotateFilterRepositoryImpl
 import com.tokopedia.media.editor.data.repository.WatermarkFilterRepositoryImpl
@@ -88,6 +89,9 @@ class DetailEditorFragment @Inject constructor(
 
     @Inject
     lateinit var rotateFilterRepositoryImpl: RotateFilterRepositoryImpl
+
+    @Inject
+    lateinit var brightnessFilterRepositoryImpl: ColorFilterRepositoryImpl
 
     private val brightnessComponent by uiComponent { BrightnessToolUiComponent(it, this) }
     private val removeBgComponent by uiComponent { RemoveBackgroundToolUiComponent(it, this) }
@@ -190,7 +194,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeBrightness() {
         viewModel.brightnessFilter.observe(viewLifecycleOwner) {
-            viewBinding?.imgPreview?.colorFilter = it
+            viewBinding?.imgUcropPreview?.cropImageView?.colorFilter = it
         }
     }
 
@@ -254,19 +258,31 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun renderUiComponent(@EditorToolType type: Int) {
+        val uri = Uri.fromFile(File(data.originalUrl))
+
         when (type) {
-            EditorToolType.BRIGHTNESS -> brightnessComponent.setupView(
-                data.brightnessValue ?: DEFAULT_VALUE_BRIGHTNESS
-            )
+            EditorToolType.BRIGHTNESS -> {
+                val brightnessValue = data.brightnessValue ?: DEFAULT_VALUE_BRIGHTNESS
+                viewBinding?.imgUcropPreview?.apply {
+                    initializeBrightness(uri)
+                    onLoadComplete = {
+                        val newColorFilter = brightnessFilterRepositoryImpl.brightness(brightnessValue)
+                        this.cropImageView.colorFilter = newColorFilter
+                    }
+                }
+                brightnessComponent.setupView(brightnessValue)
+
+                viewBinding?.imgPreview?.hide()
+                viewBinding?.imgUcropPreview?.show()
+            }
             EditorToolType.REMOVE_BACKGROUND -> removeBgComponent.setupView()
             EditorToolType.CONTRAST -> contrastComponent.setupView(
                 data.contrastValue ?: DEFAULT_VALUE_CONTRAST
             )
             EditorToolType.WATERMARK -> watermarkComponent.setupView()
             EditorToolType.ROTATE -> {
-                val uri = Uri.fromFile(File(data.originalUrl))
                 viewBinding?.imgUcropPreview?.apply {
-                    initializeRotate(uri, data.rotateData)
+                    initializeRotate(uri)
                     disabledTouchEvent()
                     onLoadComplete = {
                         data.rotateData?.let {
