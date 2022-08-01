@@ -88,7 +88,7 @@ class MiniCartGeneralViewModel @Inject constructor(
             getMiniCartListSimplifiedUseCase.setParams(shopIds, currentSource, isShopDirectPurchase, delay)
         } else {
             val tmpShopIds = getCurrentShopIds()
-            getMiniCartListSimplifiedUseCase.setParams(tmpShopIds, currentSource, isShopDirectPurchase)
+            getMiniCartListSimplifiedUseCase.setParams(tmpShopIds, currentSource, isShopDirectPurchase, delay)
         }
         getMiniCartListSimplifiedUseCase.execute(
             onSuccess = {

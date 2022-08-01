@@ -288,7 +288,7 @@ class NewShopPageFragment :
         private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
 
-        private const val DELAY_MINI_CART_RESUME = 300L
+        private const val DELAY_MINI_CART_RESUME = 1000L
 
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
