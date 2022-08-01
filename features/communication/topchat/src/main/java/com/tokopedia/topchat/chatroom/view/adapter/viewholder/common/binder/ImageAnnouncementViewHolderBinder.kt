@@ -14,7 +14,6 @@ object ImageAnnouncementViewHolderBinder {
     ) {
         banner?.loadImage(uiModel.imageUrl) {
             adaptiveImageSizeRequest(true)
-            fitCenter()
         }
     }
 
