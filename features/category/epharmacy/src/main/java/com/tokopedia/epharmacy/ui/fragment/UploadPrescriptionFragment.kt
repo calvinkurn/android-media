@@ -223,7 +223,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 pageSource(PageSource.Epharmacy)
                 modeType(ModeType.IMAGE_ONLY)
                 multipleSelectionMode()
-                maxMediaItem(withMaxMediaItems - 2)
+                maxVideoItem(0)
+                maxMediaItem(withMaxMediaItems)
                 maxImageFileSize(MAX_MEDIA_SIZE_PICKER)
             }
             startActivityForResult(intent, MEDIA_PICKER_REQUEST_CODE)
