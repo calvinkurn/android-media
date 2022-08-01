@@ -92,7 +92,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String USER_ID_PARAM = "uid";
     private static final String ENV_PARAM = "t";
     private static final String ENV_VALUE = "android";
-    private static final String TOP_ADS_CLICK_REDIRECTION_LINK_MONITORING = "TOP_ADS_CLICK_REDIRECTION_LINK_MONITORING";
+    private static final String TOP_ADS_REDIRECTION = "TOP_ADS_CLICK_REDIRECTION_LINK_MONITORING";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -317,7 +317,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Map<String, String> map = new HashMap<>();
         map.put("type", "request");
         map.put("uri", uriData.toString());
-        ServerLogger.log(Priority.P2, TOP_ADS_CLICK_REDIRECTION_LINK_MONITORING, map);
+        ServerLogger.log(Priority.P2, TOP_ADS_REDIRECTION, map);
     }
 
     private static Uri replaceUriParameter(Uri uri, UserSessionInterface userSession) {
