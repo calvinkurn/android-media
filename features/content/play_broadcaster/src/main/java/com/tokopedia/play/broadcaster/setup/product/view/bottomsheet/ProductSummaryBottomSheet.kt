@@ -66,7 +66,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         if(!viewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
         else {
             toaster.showToaster(
-                message = getString(R.string.play_bro_pin_product_pin_failed),
+                message = getString(R.string.play_bro_pin_product_failed),
                 type = Toaster.TYPE_ERROR
             )
         }
