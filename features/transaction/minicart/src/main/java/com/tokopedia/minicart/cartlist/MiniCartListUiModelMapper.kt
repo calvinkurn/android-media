@@ -71,12 +71,12 @@ class MiniCartListUiModelMapper @Inject constructor() {
     fun mapToProductBundleUiModel(
         widgetResponse: MiniCartProductBundleRecomData
     ) = MiniCartProductBundleRecomUiModel(
-        title = widgetResponse.data.tokonowBundleWidget.data.widgetName,
-        productBundleList = mapToProductBundleListItemUiModel(widgetResponse.data.tokonowBundleWidget.data.widgetData)
+        title = widgetResponse.tokonowBundleWidget.data.widgetName,
+        productBundleList = mapToProductBundleListItemUiModel(widgetResponse.tokonowBundleWidget.data.widgetData)
     )
 
     private fun mapToProductBundleListItemUiModel(
-        widgetData: List<MiniCartProductBundleRecomData.Data.TokonowBundleWidget.DataX.WidgetData>
+        widgetData: List<MiniCartProductBundleRecomData.TokonowBundleWidget.Data.WidgetData>
     ): List<ShopHomeProductBundleItemUiModel> {
         return widgetData.map {
             ShopHomeProductBundleItemUiModel().apply {
