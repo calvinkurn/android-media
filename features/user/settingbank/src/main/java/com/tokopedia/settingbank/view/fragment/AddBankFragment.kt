@@ -454,7 +454,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun openPinVerification() {
         val OTP_TYPE_ADD_BANK_ACCOUNT = 12
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)

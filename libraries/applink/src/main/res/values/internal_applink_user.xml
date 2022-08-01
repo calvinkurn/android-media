@@ -35,4 +35,7 @@
 
     <string name="applink_new_profile_info">/profile-info</string>
 
+    // OTP
+    <string name="applink_cotp">/cotp</string>
+
 </resources>

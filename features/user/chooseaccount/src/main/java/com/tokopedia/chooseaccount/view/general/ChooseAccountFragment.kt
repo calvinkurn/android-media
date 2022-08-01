@@ -133,7 +133,7 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     private fun open2FA(account: UserDetailDataModel, phone: String) {
         uiModel?.selectedEmail = account.email
         showLoadingProgress()
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_AFTER_LOGIN_PHONE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, account.email)

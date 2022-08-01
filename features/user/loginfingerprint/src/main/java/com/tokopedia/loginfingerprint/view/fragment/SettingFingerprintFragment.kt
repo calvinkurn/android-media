@@ -153,7 +153,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
     }
 
     private fun goToVerification() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_SECURITY_QUESTION)

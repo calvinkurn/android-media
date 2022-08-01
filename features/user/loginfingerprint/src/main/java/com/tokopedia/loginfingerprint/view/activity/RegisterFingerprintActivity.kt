@@ -95,7 +95,7 @@ class RegisterFingerprintActivity: BaseActivity() {
     }
 
     private fun goToVerification() {
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
         intent.putExtra(
