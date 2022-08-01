@@ -266,7 +266,7 @@ class DetailEditorFragment @Inject constructor(
             EditorToolType.ROTATE -> {
                 val uri = Uri.fromFile(File(data.originalUrl))
                 viewBinding?.imgUcropPreview?.apply {
-                    initialize(uri, data.rotateData)
+                    initializeRotate(uri, data.rotateData)
                     disabledTouchEvent()
                     onLoadComplete = {
                         data.rotateData?.let {
@@ -294,7 +294,7 @@ class DetailEditorFragment @Inject constructor(
             }
             EditorToolType.CROP -> {
                 val uri = Uri.fromFile(File(data.originalUrl))
-                viewBinding?.imgUcropPreview?.initialize(uri)
+//                viewBinding?.imgUcropPreview?.initialize(uri)
                 cropComponent.setupView()
 
                 viewBinding?.imgPreview?.hide()

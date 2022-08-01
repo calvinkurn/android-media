@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Handler
 import android.util.AttributeSet
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
@@ -16,6 +17,7 @@ import com.tokopedia.media.editor.utils.getDestinationUri
 import com.yalantis.ucrop.view.CropImageView
 import com.yalantis.ucrop.view.TransformImageView
 import com.yalantis.ucrop.view.UCropView
+import com.tokopedia.unifyprinciples.R as principleR
 
 class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
     UCropView(context, attributeSet) {
@@ -27,14 +29,10 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
 
     val scaleNormalizeValue get() = cropImageView.scaleX * cropImageView.scaleY
 
-    fun initialize(uriSource: Uri) {
+    fun initializeRotate(uriSource: Uri, previousData: EditorRotateModel?) {
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
-    }
-
-    fun initialize(uriSource: Uri, previousData: EditorRotateModel?) {
-        val resultDestination = getDestinationUri(context)
-        cropImageView.setImageUri(uriSource, resultDestination)
+        overlayView.setDimmedColor(ContextCompat.getColor(context, principleR.color.Unify_Static_White))
         initListener(previousData, ROTATE_EDITOR)
     }
 
