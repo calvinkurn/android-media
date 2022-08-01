@@ -2,6 +2,7 @@ package com.tokopedia.shop.analytic
 
 import android.os.Bundle
 import android.os.Parcelable
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -2085,37 +2086,33 @@ class ShopPageHomeTracking(
      * Product bundling widget tracker
      */
     fun clickAtcProductBundleMultiple(
-            shopId: String,
-            userId: String,
-            bundleId: String,
+            atcBundleModel: AddToCartBundleModel,
             bundleName: String,
-            bundlePriceCut: String,
+            bundleId: String,
             bundlePrice: Long,
             quantity: String,
             shopName: String,
             shopType: String,
-            cartId: String
+            bundlePriceCut: String,
+            shopId: String,
+            userId: String
     ) {
         val bundle = Bundle()
-        val itemBundle = Bundle().apply {
-            putString(CATEGORY_ID, "")
-            putString(DIMENSION_117, VALUE_MULTIPLE_BUNDLING)
-            putString(DIMENSION_118, bundleId)
-            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE))
-            putString(DIMENSION_45, cartId)
-            putString(DIMENSION_87, SHOP_PAGE)
-            putString(ITEM_BRAND, "")
-            putString(ITEM_CATEGORY, "")
-            putString(ITEM_ID, bundleId)
-            putString(ITEM_NAME, bundleName)
-            putString(ITEM_VARIANT, "")
-            putLong(PRICE, bundlePrice)
-            putString(QUANTITY, quantity)
-            putString(SHOP_ID, shopId)
-            putString(SHOP_NAME, shopName)
-            putString(SHOP_TYPE, shopType)
+        val itemBundle = arrayListOf<Bundle>()
+        atcBundleModel.addToCartBundleDataModel.data.forEachIndexed { position, productDataModel ->
+            itemBundle.add(
+                    getItemsBundlingAtc(
+                            bundleId = bundleId,
+                            cartId = productDataModel.cartId,
+                            bundleName = bundleName,
+                            bundlePrice = bundlePrice,
+                            quantity = quantity,
+                            shopName = shopName,
+                            shopId = productDataModel.shopId,
+                            shopType = shopType
+                    )
+            )
         }
-
         bundle.putString(TrackAppUtils.EVENT, BUNDLING_ADD_TO_CART)
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, MULTIPLE_BUNDLE_WIDGET, BUNDLE_ADD_TO_CART))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
@@ -2124,41 +2121,42 @@ class ShopPageHomeTracking(
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
         bundle.putString(SHOP_ID, userId)
         bundle.putString(USER_ID, shopId)
-        bundle.putParcelableArrayList(ITEMS, arrayListOf(itemBundle))
+        bundle.putParcelableArrayList(ITEMS, itemBundle)
 
         sendEnhanceEcommerceDataLayerEvent(ADD_TO_CART, bundle)
     }
 
+
     fun clickAtcProductBundleSingle(
-            shopId: String,
-            userId: String,
-            bundleId: String,
+            atcBundleModel: AddToCartBundleModel,
             bundleName: String,
-            bundlePriceCut: String,
+            bundleId: String,
             bundlePrice: Long,
-            selectedPackage: String,
-            productId: String,
             quantity: String,
             shopName: String,
-            shopType: String
+            shopType: String,
+            bundlePriceCut: String,
+            shopId: String,
+            userId: String,
+            selectedPackage: String
     ) {
         val bundle = Bundle()
-        val itemBundle = Bundle().apply {
-            putString(CATEGORY_ID, "")
-            putString(DIMENSION_117, VALUE_SINGLE_BUNDLING)
-            putString(DIMENSION_118, bundleId)
-            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, SINGLE_TYPE))
-            putString(DIMENSION_87, SHOP_PAGE)
-            putString(ITEM_BRAND, "")
-            putString(ITEM_CATEGORY, "")
-            putString(ITEM_ID, bundleId)
-            putString(ITEM_NAME, bundleName)
-            putString(ITEM_VARIANT, "")
-            putLong(PRICE, bundlePrice)
-            putString(QUANTITY, quantity)
-            putString(SHOP_ID, shopId)
-            putString(SHOP_NAME, shopName)
-            putString(SHOP_TYPE, shopType)
+        val itemBundle = arrayListOf<Bundle>()
+        var productId = ""
+        atcBundleModel.addToCartBundleDataModel.data.forEachIndexed { position, productDataModel ->
+            itemBundle.add(
+                    getItemsBundlingAtc(
+                            bundleId = bundleId,
+                            cartId = productDataModel.cartId,
+                            bundleName = bundleName,
+                            bundlePrice = bundlePrice,
+                            quantity = quantity,
+                            shopName = shopName,
+                            shopId = productDataModel.shopId,
+                            shopType = shopType
+                    )
+            )
+            productId = productDataModel.productId
         }
 
         bundle.putString(TrackAppUtils.EVENT, BUNDLING_ADD_TO_CART)
@@ -2170,7 +2168,7 @@ class ShopPageHomeTracking(
         bundle.putString(SHOP_ID, userId)
         bundle.putString(USER_ID, shopId)
         bundle.putString(PRODUCT_ID, productId)
-        bundle.putParcelableArrayList(ITEMS, arrayListOf(itemBundle))
+        bundle.putParcelableArrayList(ITEMS, itemBundle)
 
         sendEnhanceEcommerceDataLayerEvent(ADD_TO_CART, bundle)
     }
@@ -2466,6 +2464,27 @@ class ShopPageHomeTracking(
             shopId = shopId
         )
         sendEnhanceEcommerceDataLayerEvent(CLICK_PG, bundle)
+    }
+
+    private fun getItemsBundlingAtc(bundleId: String, cartId: String, bundleName: String, bundlePrice: Long, quantity: String, shopName: String, shopId: String, shopType: String): Bundle {
+        return Bundle().apply {
+            putString(CATEGORY_ID, "")
+            putString(DIMENSION_117, VALUE_MULTIPLE_BUNDLING)
+            putString(DIMENSION_118, bundleId)
+            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE))
+            putString(DIMENSION_45, cartId)
+            putString(DIMENSION_87, SHOP_PAGE)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, bundleId)
+            putString(ITEM_NAME, bundleName)
+            putString(ITEM_VARIANT, "")
+            putLong(PRICE, bundlePrice)
+            putString(QUANTITY, quantity)
+            putString(SHOP_ID, shopId)
+            putString(SHOP_NAME, shopName)
+            putString(SHOP_TYPE, shopType)
+        }
     }
 
     private fun getBaseCampaignBundle(event: String, action: String, category: String, label: String, userId: String, shopId: String): Bundle {

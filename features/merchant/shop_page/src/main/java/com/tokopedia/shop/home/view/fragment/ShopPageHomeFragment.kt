@@ -1717,7 +1717,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                         userId = userId,
                         bundleId = selectedMultipleBundle.bundleId,
                         productDetails = productDetails,
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams, selectedMultipleBundle, bundleName) },
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams, bundleName, ShopPageConstant.BundleType.MULTIPLE_BUNDLE, selectedMultipleBundle) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         productQuantity = selectedMultipleBundle.minOrder
                 )
@@ -1752,7 +1752,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                         userId = userId,
                         bundleId = selectedBundle.bundleId,
                         productDetails = listOf(bundleProducts),
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams, selectedBundle, bundleName) },
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams, bundleName, ShopPageConstant.BundleType.SINGLE_BUNDLE, selectedBundle) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         productQuantity = selectedBundle.minOrder
                 )
@@ -1764,14 +1764,14 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             atcBundleModel: AddToCartBundleModel,
             bundleListSize: Int,
             widgetLayout: ShopPageWidgetLayoutUiModel,
-            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
-            bundleName: String
+            bundleName: String,
+            bundleType: String,
+            shopHomeProductBundleDetailUiModel: ShopHomeProductBundleDetailUiModel
     ) {
         atcBundleModel.validateResponse(
                 onSuccess = {
-                    // Send the tracker here because the tracker needs cartId. CartId will we got once we success ATC
-                    var _cartId = ""
-                    sendTrackerAtcBundleMultiple(selectedMultipleBundle, bundleName, _cartId)
+                    // Send the tracker here because the tracker needs cartId. CartId will we get once we success ATC
+                    sendTrackerAtcBundle(atcBundleModel, bundleName, bundleType, shopHomeProductBundleDetailUiModel)
 
                     showToastSuccess(
                             getString(R.string.shop_page_product_bundle_success_atc_text),
@@ -1806,19 +1806,35 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         showErrorToast(throwable.message.orEmpty())
     }
 
-    private fun sendTrackerAtcBundleMultiple(selectedMultipleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String, cartId: String) {
-        shopPageHomeTracking.clickAtcProductBundleMultiple(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                bundlePrice = selectedMultipleBundle.displayPriceRaw,
-                quantity = selectedMultipleBundle.minOrder.toString(),
-                shopName = shopName,
-                shopType = customDimensionShopPage.shopType.orEmpty(),
-                cartId = cartId
-        )
+    private fun sendTrackerAtcBundle(atcBundleModel: AddToCartBundleModel, bundleName: String, bundleType: String, shopHomeProductBundleDetailUiModel: ShopHomeProductBundleDetailUiModel) {
+        if (bundleType == ShopPageConstant.BundleType.MULTIPLE_BUNDLE) {
+            shopPageHomeTracking.clickAtcProductBundleMultiple(
+                    atcBundleModel = atcBundleModel,
+                    bundleName = bundleName,
+                    bundleId = shopHomeProductBundleDetailUiModel.bundleId,
+                    bundlePrice = shopHomeProductBundleDetailUiModel.displayPriceRaw,
+                    quantity = shopHomeProductBundleDetailUiModel.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty(),
+                    bundlePriceCut = shopHomeProductBundleDetailUiModel.discountPercentage.toString(),
+                    shopId = shopId,
+                    userId = userId
+            )
+        } else if (bundleType == ShopPageConstant.BundleType.SINGLE_BUNDLE) {
+            shopPageHomeTracking.clickAtcProductBundleSingle(
+                    atcBundleModel = atcBundleModel,
+                    bundleName = bundleName,
+                    bundleId = shopHomeProductBundleDetailUiModel.bundleId,
+                    bundlePrice = shopHomeProductBundleDetailUiModel.displayPriceRaw,
+                    quantity = shopHomeProductBundleDetailUiModel.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty(),
+                    bundlePriceCut = shopHomeProductBundleDetailUiModel.discountPercentage.toString(),
+                    shopId = shopId,
+                    userId = userId,
+                    selectedPackage = shopHomeProductBundleDetailUiModel.minOrderWording,
+            )
+        }
     }
 
     private fun goToBundlingSelectionPage(bundleId: String) {
