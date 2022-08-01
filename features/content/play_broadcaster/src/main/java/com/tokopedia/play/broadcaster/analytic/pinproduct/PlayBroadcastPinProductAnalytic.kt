@@ -13,12 +13,12 @@ interface PlayBroadcastPinProductAnalytic {
 
     fun onImpressPinProductBottomSheet(productId: String)
 
-    fun onImpressFailPinProductLiveRoom(channelId: String)
+    fun onImpressFailPinProductLiveRoom()
 
-    fun onImpressFailPinProductBottomSheet(channelId: String)
+    fun onImpressFailPinProductBottomSheet()
 
-    fun onImpressFailUnPinProductLiveRoom(channelId: String)
+    fun onImpressFailUnPinProductLiveRoom()
 
-    fun onImpressFailUnPinProductBottomSheet(channelId: String)
+    fun onImpressFailUnPinProductBottomSheet()
 
 }

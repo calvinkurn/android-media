@@ -445,7 +445,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             }
         }){
             updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
-            _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
+            _uiEvent.emit(PlayBroProductChooserEvent.FailPinUnPinProduct(it, isPinned))
         }
     }
 

@@ -32,4 +32,5 @@ sealed interface PlayBroadcastEvent {
     object DismissGameResultCoachMark : PlayBroadcastEvent
 
     data class ImpressPinProduct(val channelId: String, val productId: String): PlayBroadcastEvent
+    data class FailPinUnPinProduct(val throwable: Throwable, val isPinned: Boolean): PlayBroadcastEvent
 }

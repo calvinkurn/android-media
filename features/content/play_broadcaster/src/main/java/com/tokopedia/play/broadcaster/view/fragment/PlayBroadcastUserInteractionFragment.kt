@@ -804,6 +804,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ImpressPinProduct -> {
                         analytic.onImpressPinProductLiveRoom(event.productId)
                     }
+                    is PlayBroadcastEvent.FailPinUnPinProduct -> {
+                        showErrorToaster(event.throwable)
+                        if (event.isPinned) analytic.onImpressFailUnPinProductLiveRoom()
+                        else analytic.onImpressFailPinProductLiveRoom()
+                    }
                     else -> {}
                 }
             }

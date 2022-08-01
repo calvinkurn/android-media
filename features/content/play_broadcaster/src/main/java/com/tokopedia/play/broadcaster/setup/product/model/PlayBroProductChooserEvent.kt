@@ -12,4 +12,5 @@ sealed class PlayBroProductChooserEvent {
     data class DeleteProductSuccess(val deletedProductCount: Int): PlayBroProductChooserEvent()
     data class DeleteProductError(val throwable: Throwable, val action: (()->Unit)? = null): PlayBroProductChooserEvent()
     data class ImpressPinProduct(val channelId: String, val productId: String): PlayBroProductChooserEvent()
+    data class FailPinUnPinProduct(val throwable: Throwable, val isPinned: Boolean): PlayBroProductChooserEvent()
 }

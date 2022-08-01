@@ -1637,7 +1637,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
         }) {
             updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
-            _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
+            _uiEvent.emit(PlayBroadcastEvent.FailPinUnPinProduct(it, isPinned))
         }
     }
 

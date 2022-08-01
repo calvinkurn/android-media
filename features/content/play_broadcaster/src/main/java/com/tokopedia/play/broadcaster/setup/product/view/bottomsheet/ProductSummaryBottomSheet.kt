@@ -181,6 +181,11 @@ class ProductSummaryBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.ImpressPinProduct -> {
                         analytic.onImpressPinProductBottomSheet(event.productId)
                     }
+                    is PlayBroProductChooserEvent.FailPinUnPinProduct -> {
+                        toaster.showError(event.throwable)
+                        if (event.isPinned) analytic.onImpressFailUnPinProductBottomSheet()
+                        else analytic.onImpressFailPinProductBottomSheet()
+                    }
                 }
             }
         }

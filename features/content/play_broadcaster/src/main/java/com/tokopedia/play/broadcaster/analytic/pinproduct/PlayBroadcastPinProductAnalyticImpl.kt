@@ -57,28 +57,28 @@ class PlayBroadcastPinProductAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun onImpressFailPinProductLiveRoom(channelId: String) {
+    override fun onImpressFailPinProductLiveRoom() {
         sendImpressionContent(
             eventAction = "view - fail pin product live room",
             eventLabel = "$shopId - $channelId",
         )
     }
 
-    override fun onImpressFailPinProductBottomSheet(channelId: String) {
+    override fun onImpressFailPinProductBottomSheet() {
         sendImpressionContent(
             eventAction = "view - fail pin product bottom sheet",
             eventLabel = "$shopId - $channelId",
         )
     }
 
-    override fun onImpressFailUnPinProductLiveRoom(channelId: String) {
+    override fun onImpressFailUnPinProductLiveRoom() {
         sendImpressionContent(
             eventAction = "view - fail un-pin product live room",
             eventLabel = "$shopId - $channelId",
         )
     }
 
-    override fun onImpressFailUnPinProductBottomSheet(channelId: String) {
+    override fun onImpressFailUnPinProductBottomSheet() {
         sendImpressionContent(
             eventAction = "view - fail un-pin product bottom sheet",
             eventLabel = "$shopId - $channelId",
