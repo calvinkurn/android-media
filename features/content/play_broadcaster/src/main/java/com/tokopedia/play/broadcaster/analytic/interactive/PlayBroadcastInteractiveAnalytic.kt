@@ -88,7 +88,8 @@ interface PlayBroadcastInteractiveAnalytic {
         channelTitle: String,
         interactiveId: String,
         interactiveTitle: String,
-        reward: String)
+        reward: String
+    )
 
     fun onImpressQuizChoiceDetail(
         channelId: String,
@@ -118,5 +119,4 @@ interface PlayBroadcastInteractiveAnalytic {
         interactiveId: String,
         interactiveTitle: String
     )
-
 }
