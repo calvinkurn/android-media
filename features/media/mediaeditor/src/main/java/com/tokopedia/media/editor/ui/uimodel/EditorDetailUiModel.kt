@@ -111,12 +111,6 @@ data class EditorDetailUiModel(
             parcel.writeInt(cropBound?.imageWidth ?: 0)
             parcel.writeInt(cropBound?.offsetX ?: 0)
             parcel.writeInt(cropBound?.offsetY ?: 0)
-//            cropBound?.let {
-//                parcel.writeInt(it.imageHeight)
-//                parcel.writeInt(it.imageWidth)
-//                parcel.writeInt(it.offsetX)
-//                parcel.writeInt(it.offsetY)
-//            }
 
             // rotate
             parcel.writeFloat(rotateData?.rotateDegree ?: 0f)
@@ -127,11 +121,6 @@ data class EditorDetailUiModel(
             parcel.writeInt(rotateData?.rightRectPos ?: 0)
             parcel.writeInt(rotateData?.bottomRectPos ?: 0)
             parcel.writeInt(rotateData?.orientationChangeNumber ?: 0)
-//            rotateData?.let {
-//                parcel.writeFloat(it.rotateDegree)
-//                parcel.writeFloat(it.scaleX)
-//                parcel.writeFloat(it.imageRatio)
-//            }
         }
     }
 }
