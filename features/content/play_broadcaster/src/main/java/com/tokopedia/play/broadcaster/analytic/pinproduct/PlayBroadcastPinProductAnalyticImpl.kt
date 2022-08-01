@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_BUSINESS_UNIT
 import com.tokopedia.play.broadcaster.analytic.KEY_USER_ID
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT_SELLER
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_VIEW_EVENT_SELLER
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -20,33 +21,36 @@ import javax.inject.Inject
  * Created by fachrizalmrsln on 01/08/22.
  */
 class PlayBroadcastPinProductAnalyticImpl @Inject constructor(
-    private val userSession: UserSessionInterface
+    userSession: UserSessionInterface,
+    configStore: HydraConfigStore,
 ) : PlayBroadcastPinProductAnalytic {
 
     private val shopId: String = userSession.shopId
+    private val userId: String = userSession.userId
+    private val channelId = configStore.getChannelId()
 
-    override fun onClickPinProductLiveRoom(channelId: String, productId: String) {
+    override fun onClickPinProductLiveRoom(productId: String) {
         sendClickContent(
             eventAction = "click - pin product live room",
             eventLabel = "$shopId - $channelId - $productId",
         )
     }
 
-    override fun onClickPinProductBottomSheet(channelId: String, productId: String) {
+    override fun onClickPinProductBottomSheet(productId: String) {
         sendClickContent(
             eventAction = "click - pin product bottom sheet",
             eventLabel = "$shopId - $channelId - $productId",
         )
     }
 
-    override fun onImpressPinProductLiveRoom(channelId: String, productId: String) {
+    override fun onImpressPinProductLiveRoom(productId: String) {
         sendImpressionContent(
             eventAction = "view - pin product live room",
             eventLabel = "$shopId - $channelId - $productId",
         )
     }
 
-    override fun onImpressPinProductBottomSheet(channelId: String, productId: String) {
+    override fun onImpressPinProductBottomSheet(productId: String) {
         sendImpressionContent(
             eventAction = "view - pin product bottom sheet",
             eventLabel = "$shopId - $channelId - $productId",
@@ -108,7 +112,7 @@ class PlayBroadcastPinProductAnalyticImpl @Inject constructor(
                 KEY_EVENT_LABEL to eventLabel,
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_CURRENT_SITE to currentSite,
-                KEY_USER_ID to userSession.userId
+                KEY_USER_ID to userId
             )
         )
     }

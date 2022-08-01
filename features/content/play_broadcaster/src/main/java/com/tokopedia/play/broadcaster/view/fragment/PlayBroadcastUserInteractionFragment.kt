@@ -163,7 +163,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
 
             override fun onPinClicked(product: ProductUiModel) {
-                analytic.onClickPinProductLiveRoom(parentViewModel.channelId, product.id)
+                analytic.onClickPinProductLiveRoom(product.id)
                 checkPinProduct(product.pinStatus.isPinned) {
                     parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
                 }
@@ -802,7 +802,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget(event.showCoachMark)
                     PlayBroadcastEvent.DismissGameResultCoachMark -> dismissGameResultCoachMark()
                     is PlayBroadcastEvent.ImpressPinProduct -> {
-                        analytic.onImpressPinProductLiveRoom(event.channelId, event.productId)
+                        analytic.onImpressPinProductLiveRoom(event.productId)
                     }
                     else -> {}
                 }

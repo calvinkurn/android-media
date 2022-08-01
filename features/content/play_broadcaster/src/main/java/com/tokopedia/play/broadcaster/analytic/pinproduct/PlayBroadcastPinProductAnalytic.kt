@@ -5,13 +5,13 @@ package com.tokopedia.play.broadcaster.analytic.pinproduct
  */
 interface PlayBroadcastPinProductAnalytic {
 
-    fun onClickPinProductLiveRoom(channelId: String, productId: String)
+    fun onClickPinProductLiveRoom(productId: String)
 
-    fun onClickPinProductBottomSheet(channelId: String, productId: String)
+    fun onClickPinProductBottomSheet(productId: String)
 
-    fun onImpressPinProductLiveRoom(channelId: String, productId: String)
+    fun onImpressPinProductLiveRoom(productId: String)
 
-    fun onImpressPinProductBottomSheet(channelId: String, productId: String)
+    fun onImpressPinProductBottomSheet(productId: String)
 
     fun onImpressFailPinProductLiveRoom(channelId: String)
 
