@@ -264,10 +264,28 @@ class DetailEditorFragment @Inject constructor(
             )
             EditorToolType.WATERMARK -> watermarkComponent.setupView()
             EditorToolType.ROTATE -> {
-                val uri = Uri.fromFile(File(data.resultUrl ?: data.originalUrl))
+                val uri = Uri.fromFile(File(data.originalUrl))
                 viewBinding?.imgUcropPreview?.apply {
-                    initialize(uri)
+                    initialize(uri, data.rotateData)
                     disabledTouchEvent()
+                    onLoadComplete = {
+                        data.rotateData?.let {
+                            if(it.scaleX < 0f){
+                                rotateFilterRepositoryImpl.mirror(this)
+                            }
+                            if(it.scaleY < 0f){
+                                rotateFilterRepositoryImpl.rotate(this, RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
+                                rotateFilterRepositoryImpl.mirror(this)
+                            }
+
+                            this.cropImageView.post {
+                                if(it.orientationChangeNumber > 0){
+                                    rotateFilterRepositoryImpl.rotate(this, it.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
+                                }
+                                rotateFilterRepositoryImpl.rotate(this, it.rotateDegree, false)
+                            }
+                        }
+                    }
                 }
                 rotateComponent.setupView(data)
 
@@ -304,18 +322,6 @@ class DetailEditorFragment @Inject constructor(
                             if (data.watermarkMode != null
                                 && data.editorToolType != EditorToolType.WATERMARK
                             ) viewModel.setWatermark(data.watermarkMode!!)
-                            if (data.rotateData != null
-                                && data.editorToolType != EditorToolType.ROTATE
-                            ) {
-                                val imgUcropPreview = viewBinding?.imgUcropPreview
-                                imgUcropPreview?.let {
-                                    rotateFilterRepositoryImpl.rotate(
-                                        imgUcropPreview,
-                                        data.rotateData?.rotateDegree ?: 0f,
-                                        false
-                                    )
-                                }
-                            }
 
                             originalBitmap = it.drawToBitmap()
 
@@ -323,16 +329,6 @@ class DetailEditorFragment @Inject constructor(
                                 EditorToolType.WATERMARK -> viewModel.setWatermark(data.watermarkMode)
                                 EditorToolType.BRIGHTNESS -> viewModel.setBrightness(data.brightnessValue)
                                 EditorToolType.CONTRAST -> viewModel.setContrast(data.contrastValue)
-                                EditorToolType.ROTATE -> {
-                                    val imgUcropPreview = viewBinding?.imgUcropPreview
-                                    imgUcropPreview?.let {
-                                        rotateFilterRepositoryImpl.rotate(
-                                            imgUcropPreview,
-                                            data.rotateData?.rotateDegree ?: 0f,
-                                            false
-                                        )
-                                    }
-                                }
                             }
 
                             // render result for watermark drawer item
@@ -346,6 +342,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun setWatermarkDrawerItem() {
         originalBitmap?.let { bitmap ->
+            // todo: implement text from user data
             val text = "Toko Maju Jaya Perkasa Abadi Bangunan"
             val resultBitmap1 = watermarkFilterRepositoryImpl.watermark(
                 requireContext(),
@@ -411,6 +408,18 @@ class DetailEditorFragment @Inject constructor(
                 )
 
                 matrix.postRotate(abs(rotateFilterRepositoryImpl.getFinalRotationDegree()))
+
+                // set crop area on data that will be pass to landing pass for state
+                data.rotateData = EditorRotateModel(
+                    rotateFilterRepositoryImpl.sliderValue,
+                    scaleX,
+                    scaleY,
+                    0,
+                    0,
+                    bitmap.width,
+                    bitmap.height,
+                    rotateFilterRepositoryImpl.rotateNumber
+                )
 
                 return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
             }
@@ -489,13 +498,14 @@ class DetailEditorFragment @Inject constructor(
 
             // set crop area on data that will be pass to landing pass for state
             data.rotateData = EditorRotateModel(
-                rotateDegree,
+                rotateFilterRepositoryImpl.sliderValue,
                 scaleX,
                 scaleY,
                 offsetX,
                 offsetY,
                 imageWidth,
-                imageHeight
+                imageHeight,
+                rotateFilterRepositoryImpl.rotateNumber
             )
 
             return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)

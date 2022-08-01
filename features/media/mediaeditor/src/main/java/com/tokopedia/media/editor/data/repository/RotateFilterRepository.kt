@@ -16,7 +16,7 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
     var previousDegree = 0f
     var rotateNumber = 0
     private var isRatioRotated = false
-    private var sliderValue = 0f
+    var sliderValue = 0f
 
     override fun rotate(editorDetailPreview: EditorDetailPreviewImage?, degree: Float, isRotateRatio: Boolean) {
         if(editorDetailPreview == null) return
@@ -46,7 +46,7 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
             cropImageView.postRotate(normalizeDegree - previousDegree)
 
             previousDegree = normalizeDegree
-            sliderValue = normalizeDegree
+            sliderValue = degree
         }
 
         if (cropImageView.minScale > 0) {
@@ -58,20 +58,21 @@ class RotateFilterRepositoryImpl @Inject constructor(): RotateFilterRepository {
 
 
     override fun mirror(editorDetailPreview: EditorDetailPreviewImage?) {
-//        editorDetailPreview?.mirrorImage(isMirrorXAxis = true, isMirrorYAxis = false)
         editorDetailPreview?.let {
-            val previousDegree = it.cropImageView.currentAngle
-            it.cropImageView.postRotate(-previousDegree * 2)
-//            it.cropImageView.scaleX = -it.cropImageView.scaleX
+            val originalDegree = it.cropImageView.currentAngle
+            it.cropImageView.postRotate(-originalDegree * 2)
 
             if(!isRatioRotated){
                 it.cropImageView.scaleX = -it.cropImageView.scaleX
             } else {
                 it.cropImageView.scaleY = -it.cropImageView.scaleY
             }
+
+            previousDegree = -previousDegree
         }
     }
 
+    // get total degree from clicked rotate button & slider value
     fun getFinalRotationDegree(): Float{
         return ((rotateNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + sliderValue)
     }

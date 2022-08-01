@@ -2,10 +2,16 @@ package com.tokopedia.media.editor.ui.component
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.net.Uri
+import android.os.Handler
 import android.util.AttributeSet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorRotateModel
 import com.tokopedia.media.editor.utils.getDestinationUri
 import com.yalantis.ucrop.view.CropImageView
 import com.yalantis.ucrop.view.TransformImageView
@@ -24,6 +30,12 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
     fun initialize(uriSource: Uri) {
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
+    }
+
+    fun initialize(uriSource: Uri, previousData: EditorRotateModel?) {
+        val resultDestination = getDestinationUri(context)
+        cropImageView.setImageUri(uriSource, resultDestination)
+        initListener(previousData, ROTATE_EDITOR)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -49,23 +61,26 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         overlayView.show()
     }
 
-    private fun initListener(){
+    private fun initListener(data: Any?, previousDataModel: Int){
+        if(data == null) return
         cropImageView.setTransformImageListener(object: TransformImageView.TransformImageListener{
             override fun onLoadComplete() {
-                this@EditorDetailPreviewImage.onLoadComplete?.invoke()
+                if(previousDataModel == ROTATE_EDITOR){
+
+                    this@EditorDetailPreviewImage.onLoadComplete?.invoke()
+                }
             }
 
-            override fun onLoadFailure(e: java.lang.Exception) {
-                this@EditorDetailPreviewImage.onLoadFailure?.invoke(e)
-            }
+            override fun onLoadFailure(e: java.lang.Exception) {}
 
-            override fun onRotate(currentAngle: Float) {
-                this@EditorDetailPreviewImage.onRotate?.invoke(currentAngle)
-            }
+            override fun onRotate(currentAngle: Float) {}
 
-            override fun onScale(currentScale: Float) {
-                this@EditorDetailPreviewImage.onScale?.invoke(currentScale)
-            }
+            override fun onScale(currentScale: Float) {}
         })
+    }
+
+    companion object{
+        private const val ROTATE_EDITOR = 0
+        private const val CROP_EDITOR = 1
     }
 }
