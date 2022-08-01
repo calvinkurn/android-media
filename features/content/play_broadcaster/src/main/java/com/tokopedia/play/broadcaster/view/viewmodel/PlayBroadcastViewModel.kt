@@ -1626,12 +1626,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (result) {
                 updatePinProduct(product = product)
                 addCoolDown()
-                if (!isPinned) _uiEvent.emit(
-                    PlayBroadcastEvent.ImpressPinProduct(
-                        channelId,
-                        product.id
-                    )
-                )
+                if (!isPinned) {
+                    _uiEvent.emit(PlayBroadcastEvent.ImpressPinProduct(product.id))
+                }
             } else {
                 throw MessageErrorException("Gagal pasang pin di produk. Coba lagi, ya.")
             }

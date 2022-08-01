@@ -434,12 +434,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             if(result) {
                 updatePinProduct(product = product)
                 addCoolDown()
-                if (!isPinned) _uiEvent.emit(
-                    PlayBroProductChooserEvent.ImpressPinProduct(
-                        channelId,
-                        product.id
-                    )
-                )
+                if (!isPinned) {
+                    _uiEvent.emit(PlayBroProductChooserEvent.ImpressPinProduct(product.id))
+                }
             } else {
                 throw MessageErrorException("Gagal pasang pin di produk. Coba lagi, ya.")
             }
