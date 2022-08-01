@@ -25,8 +25,8 @@ class PlayBroadcastPinProductAnalyticImpl @Inject constructor(
     configStore: HydraConfigStore,
 ) : PlayBroadcastPinProductAnalytic {
 
-    private val shopId: String = userSession.shopId
-    private val userId: String = userSession.userId
+    private val shopId = userSession.shopId
+    private val userId = userSession.userId
     private val channelId = configStore.getChannelId()
 
     override fun onClickPinProductLiveRoom(productId: String) {
