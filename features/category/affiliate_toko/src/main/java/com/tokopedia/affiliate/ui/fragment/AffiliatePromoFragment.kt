@@ -22,7 +22,10 @@ import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.EMPTY_STOCK
 import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.ON_REVIEWED
+import com.tokopedia.affiliate.PAGE_TYPE_PDP
+import com.tokopedia.affiliate.PAGE_TYPE_SHOP
 import com.tokopedia.affiliate.PRODUCT_INACTIVE
+import com.tokopedia.affiliate.SHOP_CLOSED
 import com.tokopedia.affiliate.SHOP_INACTIVE
 import com.tokopedia.affiliate.SYSTEM_DOWN
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -30,6 +33,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateRecommendedAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.AffiliatePromoImpressionListener
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.setAnnouncementData
@@ -62,7 +66,7 @@ import javax.inject.Inject
 
 class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     PromotionClickInterface,
-    AffiliateLinkTextFieldInterface, AffiliatePromoInterface {
+    AffiliateLinkTextFieldInterface, AffiliatePromoInterface, AffiliatePromoImpressionListener {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -478,6 +482,63 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
 
     override fun onUserRegistered() {
         affiliatePromoViewModel.setValidateUserType(ON_REGISTERED)
+    }
+
+    override fun onItemImpression(
+        item: AffiliateSearchData.SearchAffiliate.Data.Card.Item,
+        position: Int,
+        type: String
+    ) {
+        if (type == PAGE_TYPE_PDP) {
+            sendProductImpression(item, position)
+        } else if (type == PAGE_TYPE_SHOP) {
+            sendShopImpression(item, position)
+        }
+    }
+    private fun sendProductImpression(
+        item: AffiliateSearchData.SearchAffiliate.Data.Card.Item,
+        position: Int
+    ) {
+        val status = when (item.status?.messages?.first()?.messageType) {
+            AVAILABLE -> AffiliateAnalytics.LabelKeys.AVAILABLE
+            ALMOST_OOS -> AffiliateAnalytics.LabelKeys.ALMOST_OOS
+            EMPTY_STOCK -> AffiliateAnalytics.LabelKeys.EMPTY_STOCK
+            PRODUCT_INACTIVE -> AffiliateAnalytics.LabelKeys.PRODUCT_INACTIVE
+            SHOP_INACTIVE -> AffiliateAnalytics.LabelKeys.SHOP_INACTIVE
+            else -> ""
+        }
+
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
+            AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_SEARCH_RESULT_PAGE,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            userSessionInterface.userId,
+            item.itemId,
+            position,
+            item.title,
+            "${item.itemId} - ${item.commission?.amount} - $status"
+        )
+    }
+    private fun sendShopImpression(
+        item: AffiliateSearchData.SearchAffiliate.Data.Card.Item,
+        position: Int
+    ) {
+        val status = when (item.status?.messages?.first()?.messageType) {
+            AVAILABLE -> AffiliateAnalytics.LabelKeys.SHOP_ACTIVE
+            SHOP_INACTIVE -> AffiliateAnalytics.LabelKeys.SHOP_INACTIVE
+            SHOP_CLOSED -> AffiliateAnalytics.LabelKeys.SHOP_CLOSED
+            else -> ""
+        }
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
+            AffiliateAnalytics.ActionKeys.IMPRESSION_SHOP_SEARCH_RESULT_PAGE,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            userSessionInterface.userId,
+            item.itemId,
+            position,
+            item.title,
+            "${item.itemId} - ${item.commission?.percentage} - $status"
+        )
     }
 }
 
