@@ -15,7 +15,7 @@ class LandscapeVideoBoundsProvider : VideoBoundsProvider {
     override suspend fun getVideoBottomBoundsOnKeyboardShown(
         view: View,
         estimatedKeyboardHeight: Int,
-        hasQuickReply: Boolean
+        videoOrientation: VideoOrientation,
     ): Int {
         return 0
     }

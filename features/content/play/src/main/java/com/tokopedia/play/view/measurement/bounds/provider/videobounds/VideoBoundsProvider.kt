@@ -13,6 +13,6 @@ interface VideoBoundsProvider {
     suspend fun getVideoBottomBoundsOnKeyboardShown(
         view: View,
         estimatedKeyboardHeight: Int,
-        hasQuickReply: Boolean
+        videoOrientation: VideoOrientation,
     ): Int
 }

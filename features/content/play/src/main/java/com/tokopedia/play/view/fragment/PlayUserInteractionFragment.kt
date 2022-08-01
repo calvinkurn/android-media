@@ -1227,10 +1227,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
-        val hasQuickReply = playViewModel.quickReply.quickReplyList.isNotEmpty()
-
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
-            playFragment.onBottomInsetsViewShown(getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply))
+            playFragment.onBottomInsetsViewShown(
+                getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight)
+            )
             chatListView?.setMaxHeight(
                 requireContext().resources.getDimensionPixelSize(
                     R.dimen.play_chat_vertical_max_height
@@ -1247,12 +1247,12 @@ class PlayUserInteractionFragment @Inject constructor(
         return getVideoBoundsProvider().getVideoTopBounds(videoOrientation)
     }
 
-    private suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
+    private suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int): Int {
         return try {
             getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(
                 requireView(),
                 estimatedKeyboardHeight,
-                hasQuickReply,
+                playViewModel.videoOrientation,
             )
         } catch (e: Throwable) { getScreenHeight() }
     }

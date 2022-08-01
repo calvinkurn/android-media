@@ -87,11 +87,7 @@ class PlayVideoScalingManager(
         val view = if (videoPlayer.isYouTube) flYouTube else flVideo
         if (view.width <= 0 || view.height <= 0) return
 
-        videoScaleAnimator =
-                if (videoOrientation.isHorizontal)
-                    animateInsetsShownIfVideoLandscape(view, destHeight)
-                else
-                    animateInsetsShownIfVideoPortrait(view, destHeight)
+        videoScaleAnimator = animateInsetsShown(view, destHeight)
 
         videoScaleAnimator.start()
     }
@@ -116,59 +112,7 @@ class PlayVideoScalingManager(
     /**
      * Private methods
      */
-    private fun animateInsetsShownIfVideoLandscape(view: View, bottomMostBounds: Int): Animator {
-        val animator = AnimatorSet()
-
-        val currentWidth = view.width
-        val destWidth = 2 * (ivClose.x + ivClose.width + offset16)
-
-        val scaleFactorFromWidth =
-                if (currentWidth <= 0) DEFAULT_HORIZONTAL_SCALE_FACTOR
-                else 1 - (destWidth / currentWidth)
-
-        val bottomBoundsFromScaleFactor = ivClose.y + scaleFactorFromWidth * view.height
-
-        val bottomMostBoundsWithMargin = bottomMostBounds - MARGIN_CHAT_VIDEO
-
-        val scaleFactor = if (bottomBoundsFromScaleFactor > bottomMostBoundsWithMargin) {
-            bottomMostBoundsWithMargin / (ivClose.y + view.height)
-        } else scaleFactorFromWidth
-
-        val animatorScaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, view.scaleY, scaleFactor)
-        val animatorScaleX = ObjectAnimator.ofFloat(view ,View.SCALE_X, view.scaleX, scaleFactor)
-
-        animatorScaleY.duration = ANIMATION_DURATION
-        animatorScaleX.duration = ANIMATION_DURATION
-
-        val currentY = view.y
-        val destY = ivClose.y
-        val translateDelta = destY - currentY
-        val animatorTranslateY = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, view.translationY, translateDelta)
-
-        animatorTranslateY.duration = ANIMATION_DURATION
-
-        if (currentWidth > 0) view.pivotX = (currentWidth / 2).toFloat()
-        view.pivotY = ivClose.y - (ivClose.y * scaleFactor) - offset12
-
-        val matrix = Matrix()
-        matrix.setScale(scaleFactor, scaleFactor, view.pivotX, view.pivotY)
-        matrix.preTranslate(0f, translateDelta)
-
-        val visibleRect = view.globalVisibleRect
-        val visibleRectF = RectF(visibleRect)
-        matrix.mapRect(visibleRectF)
-        mListener?.onFinalBottomMostBoundsScalingCalculated(visibleRectF.bottom.toInt())
-
-        animator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsShownAnimatorListener)
-            playTogether(animatorScaleX, animatorScaleY, animatorTranslateY)
-        }
-
-        return animator
-    }
-
-    private fun animateInsetsShownIfVideoPortrait(view: View, destHeight: Int): Animator {
+    private fun animateInsetsShown(view: View, destHeight: Int): Animator {
         val animator = AnimatorSet()
 
         val originalHeight = abs(view.bottom - view.top)
@@ -176,13 +120,15 @@ class PlayVideoScalingManager(
 
         if (!scaleFactor.isFinite()) return animator
 
+        val translateDelta = ivClose.top.toFloat() - view.top
+
         val animatorY = ObjectAnimator.ofFloat(view, View.SCALE_Y, view.scaleY, scaleFactor)
         val animatorX = ObjectAnimator.ofFloat(view ,View.SCALE_X, view.scaleX, scaleFactor)
         val translateY = ObjectAnimator.ofFloat(
             view,
             View.TRANSLATION_Y,
             view.translationY,
-            ivClose.top.toFloat() - view.top
+            translateDelta
         )
         animatorY.duration = ANIMATION_DURATION
         animatorX.duration = ANIMATION_DURATION
@@ -195,33 +141,16 @@ class PlayVideoScalingManager(
             playTogether(animatorX, animatorY, translateY)
         }
 
+        val matrix = Matrix()
+        matrix.setScale(scaleFactor, scaleFactor, view.pivotX, view.pivotY)
+        matrix.preTranslate(0f, translateDelta)
+
+        val visibleRect = view.globalVisibleRect
+        val visibleRectF = RectF(visibleRect)
+        matrix.mapRect(visibleRectF)
+        mListener?.onFinalBottomMostBoundsScalingCalculated(visibleRectF.bottom.toInt())
+
         return animator
-//        val animator = AnimatorSet()
-//
-//        val currentHeight = view.height
-//        val currentWidth = view.width
-//        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
-//        val scaleFactor =
-//                if (currentHeight <= 0) DEFAULT_VERTICAL_SCALE_FACTOR
-//                else destHeight / currentHeight
-//        val animatorY = ObjectAnimator.ofFloat(view, View.SCALE_Y, view.scaleY, scaleFactor)
-//        val animatorX = ObjectAnimator.ofFloat(view ,View.SCALE_X, view.scaleX, scaleFactor)
-//        animatorY.duration = ANIMATION_DURATION
-//        animatorX.duration = ANIMATION_DURATION
-//
-//        if (currentWidth > 0) view.pivotX = (currentWidth / 2).toFloat()
-//        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
-//        val marginTopXt = marginTop * scaleFactor
-//        view.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
-//
-//        mListener?.onFinalBottomMostBoundsScalingCalculated(bottomMostBounds)
-//        animator.apply {
-//            removeAllListeners()
-//            addListener(onBottomInsetsShownAnimatorListener)
-//            playTogether(animatorX, animatorY)
-//        }
-//
-//        return animator
     }
 
     private fun animateInsetsHidden(view: View): Animator {

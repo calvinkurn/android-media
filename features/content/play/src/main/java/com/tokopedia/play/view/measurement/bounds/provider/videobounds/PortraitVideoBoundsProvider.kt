@@ -17,10 +17,11 @@ import kotlinx.coroutines.coroutineScope
  * Created by jegul on 04/08/20
  */
 class PortraitVideoBoundsProvider(
-        private val container: ViewGroup
+    private val container: ViewGroup
 ) : VideoBoundsProvider {
 
     private val toolbarView = container.findViewById<View>(R.id.view_toolbar_room)
+    private val toolbarCloseIcon = toolbarView.findViewById<View>(R.id.iv_back)
     private val statsInfoView = container.findViewById<View>(R.id.view_stats_info)
     private val partnerInfoView = container.findViewById<View>(R.id.view_partner_info)
     private val chatListView = container.findViewById<View>(R.id.view_chat_list)
@@ -61,19 +62,28 @@ class PortraitVideoBoundsProvider(
     override suspend fun getVideoBottomBoundsOnKeyboardShown(
         view: View,
         estimatedKeyboardHeight: Int,
-        hasQuickReply: Boolean
+        videoOrientation: VideoOrientation,
     ): Int {
         view.awaitLayout()
 
         val viewBottom = view.bottom
         //View Bottom is still a full device height because it is not changed by the insets
 
-        return viewBottom -
-                estimatedKeyboardHeight -
-                (viewBottom - estimatedKeyboardHeight - chatListView.bottom) -
-                verticalChatListHeight -
-                toolbarView.top -
-                offset16
+        val destHeight = if (videoOrientation is VideoOrientation.Horizontal) {
+            val dstStart = toolbarCloseIcon.right + offset16
+            val dstEnd = view.right - dstStart
+            val dstWidth = dstEnd - dstStart
+            (1 / (videoOrientation.widthRatio / videoOrientation.heightRatio.toFloat()) * dstWidth).toInt()
+        } else {
+            viewBottom -
+                    estimatedKeyboardHeight -
+                    (viewBottom - estimatedKeyboardHeight - chatListView.bottom) -
+                    verticalChatListHeight -
+                    toolbarView.top -
+                    offset16
+        }
+
+        return destHeight
     }
 
     companion object {
