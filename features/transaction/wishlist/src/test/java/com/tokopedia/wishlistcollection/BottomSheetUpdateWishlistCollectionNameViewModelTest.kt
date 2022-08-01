@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist
+package com.tokopedia.wishlistcollection
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -34,11 +34,17 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
     @RelaxedMockK
     lateinit var updateWishlistCollectionNameUseCase: UpdateWishlistCollectionNameUseCase
 
-    private var collectionNamesResponseData = GetWishlistCollectionNamesResponse(
+    private var collectionNamesResponseDataStatusOk = GetWishlistCollectionNamesResponse(
         getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "OK"))
 
-    private var updateCollectionNameResponseData = UpdateWishlistCollectionNameResponse(
+    private var collectionNamesResponseDataStatusError = GetWishlistCollectionNamesResponse(
+        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "ERROR"))
+
+    private var updateCollectionNameResponseDataStatusOk = UpdateWishlistCollectionNameResponse(
         updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "OK"))
+
+    private var updateCollectionNameResponseDataStatusError = UpdateWishlistCollectionNameResponse(
+        updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "ERROR"))
 
     private val throwable = Fail(Throwable(message = "Error"))
 
@@ -56,23 +62,35 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
         )
     }
 
-    // get wishlist collection names success
     @Test
-    fun `Execute GetWishlistCollectionNames Success`() {
+    fun `Execute GetWishlistCollectionNames Success Status OK`() {
         //given
         coEvery {
             getWishlistCollectionNamesUseCase(Unit)
-        } returns collectionNamesResponseData
+        } returns collectionNamesResponseDataStatusOk
 
         //when
         bottomSheetUpdateWishlistCollectionNameViewModel.getWishlistCollectionNames()
 
         //then
         assert(bottomSheetUpdateWishlistCollectionNameViewModel.collectionNames.value is Success)
-        assert((bottomSheetUpdateWishlistCollectionNameViewModel.collectionNames.value as Success).data.status.equals("OK"))
+        assert((bottomSheetUpdateWishlistCollectionNameViewModel.collectionNames.value as Success).data.status == "OK")
     }
 
-    // get wishlist collection names failed
+    @Test
+    fun `Execute GetWishlistCollectionNames Success Status ERROR`() {
+        //given
+        coEvery {
+            getWishlistCollectionNamesUseCase(Unit)
+        } returns collectionNamesResponseDataStatusError
+
+        //when
+        bottomSheetUpdateWishlistCollectionNameViewModel.getWishlistCollectionNames()
+
+        //then
+        assert(bottomSheetUpdateWishlistCollectionNameViewModel.collectionNames.value is Fail)
+    }
+
     @Test
     fun `Execute GetWishlistCollectionNames Failed`() {
         //given
@@ -87,23 +105,35 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
         assert(bottomSheetUpdateWishlistCollectionNameViewModel.collectionNames.value is Fail)
     }
 
-    // update wishlist collection name success
     @Test
-    fun `Execute UpdateWishlistCollectionName Success`() {
+    fun `Execute UpdateWishlistCollectionName Success Status OK`() {
         //given
         coEvery {
             updateWishlistCollectionNameUseCase(newCollectionNameParam)
-        } returns updateCollectionNameResponseData
+        } returns updateCollectionNameResponseDataStatusOk
 
         //when
         bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionName(newCollectionNameParam)
 
         //then
         assert(bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionNameResult.value is Success)
-        assert((bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionNameResult.value as Success).data.status.equals("OK"))
+        assert((bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionNameResult.value as Success).data.status == "OK")
     }
 
-    // get wishlist collection names failed
+    @Test
+    fun `Execute UpdateWishlistCollectionName Success Status ERROR`() {
+        //given
+        coEvery {
+            updateWishlistCollectionNameUseCase(newCollectionNameParam)
+        } returns updateCollectionNameResponseDataStatusError
+
+        //when
+        bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionName(newCollectionNameParam)
+
+        //then
+        assert(bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionNameResult.value is Fail)
+    }
+
     @Test
     fun `Execute UpdateWishlistCollectionName Failed`() {
         //given

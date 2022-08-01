@@ -275,7 +275,7 @@ class WishlistV2ViewModelTest {
         assert((wishlistV2ViewModel.deleteWishlistV2Result.value as Success<DeleteWishlistV2Response.Data.WishlistRemoveV2>).data.success)
     }
 
-    // delete_success
+    // delete_fail
     @Test
     fun deleteWishlist_shouldReturnFail() {
         //given

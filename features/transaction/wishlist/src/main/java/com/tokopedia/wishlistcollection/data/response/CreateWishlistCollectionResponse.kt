@@ -9,7 +9,7 @@ data class CreateWishlistCollectionResponse(
 	data class CreateWishlistCollection(
 
 		@field:SerializedName("data")
-		val dataCreate: DataCreate,
+		val dataCreate: DataCreate = DataCreate(),
 
 		@field:SerializedName("status")
 		val status: String = "",

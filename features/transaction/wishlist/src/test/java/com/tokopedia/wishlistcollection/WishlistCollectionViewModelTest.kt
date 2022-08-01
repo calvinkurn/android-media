@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist
+package com.tokopedia.wishlistcollection
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -33,14 +33,21 @@ class WishlistCollectionViewModelTest {
     @RelaxedMockK
     lateinit var deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase
 
-    private var collectionWishlistResponseData = WishlistCollectionResponse(
+    private var collectionWishlistResponseDataStatusOk = WishlistCollectionResponse(
         getWishlistCollections = WishlistCollectionResponse.GetWishlistCollections(status = "OK"))
+
+    private var collectionWishlistResponseDataStatusError = WishlistCollectionResponse(
+        getWishlistCollections = WishlistCollectionResponse.GetWishlistCollections(status = "ERROR"))
+
     private val throwable = Fail(Throwable(message = "Error"))
 
     private val collectionIdToBeDeleted = "1"
-    private var deleteWishlistCollectionResponseData = DeleteWishlistCollectionResponse(
-        deleteWishlistCollection = DeleteWishlistCollectionResponse.DeleteWishlistCollection(status = "OK")
-    )
+
+    private var deleteWishlistCollectionResponseDataStatusOk = DeleteWishlistCollectionResponse(
+        deleteWishlistCollection = DeleteWishlistCollectionResponse.DeleteWishlistCollection(status = "OK"))
+
+    private var deleteWishlistCollectionResponseDataStatusError = DeleteWishlistCollectionResponse(
+        deleteWishlistCollection = DeleteWishlistCollectionResponse.DeleteWishlistCollection(status = "ERROR"))
 
     @Before
     fun setUp() {
@@ -55,11 +62,11 @@ class WishlistCollectionViewModelTest {
     }
 
     @Test
-    fun `Execute GetWishlistCollections Success`() {
+    fun `Execute GetWishlistCollections Success Status OK`() {
         //given
         coEvery {
             getWishlistCollectionUseCase(Unit)
-        } returns collectionWishlistResponseData
+        } returns collectionWishlistResponseDataStatusOk
 
         //when
         wishlistCollectionViewModel.getWishlistCollections()
@@ -67,6 +74,20 @@ class WishlistCollectionViewModelTest {
         //then
         assert(wishlistCollectionViewModel.collections.value is Success)
         assert((wishlistCollectionViewModel.collections.value as Success).data.status == "OK")
+    }
+
+    @Test
+    fun `Execute GetWishlistCollections Success Status ERROR`() {
+        //given
+        coEvery {
+            getWishlistCollectionUseCase(Unit)
+        } returns collectionWishlistResponseDataStatusError
+
+        //when
+        wishlistCollectionViewModel.getWishlistCollections()
+
+        //then
+        assert(wishlistCollectionViewModel.collections.value is Fail)
     }
 
     @Test
@@ -84,11 +105,11 @@ class WishlistCollectionViewModelTest {
     }
 
     @Test
-    fun `Execute DeleteWishlistCollections Success`() {
+    fun `Execute DeleteWishlistCollections Success Status OK`() {
         //given
         coEvery {
             deleteWishlistCollectionUseCase(collectionIdToBeDeleted)
-        } returns deleteWishlistCollectionResponseData
+        } returns deleteWishlistCollectionResponseDataStatusOk
 
         //when
         wishlistCollectionViewModel.deleteWishlistCollection(collectionIdToBeDeleted)
@@ -96,6 +117,20 @@ class WishlistCollectionViewModelTest {
         //then
         assert(wishlistCollectionViewModel.deleteCollectionResult.value is Success)
         assert((wishlistCollectionViewModel.deleteCollectionResult.value as Success).data.status == "OK")
+    }
+
+    @Test
+    fun `Execute DeleteWishlistCollections Success Status ERROR`() {
+        //given
+        coEvery {
+            deleteWishlistCollectionUseCase(collectionIdToBeDeleted)
+        } returns deleteWishlistCollectionResponseDataStatusError
+
+        //when
+        wishlistCollectionViewModel.deleteWishlistCollection(collectionIdToBeDeleted)
+
+        //then
+        assert(wishlistCollectionViewModel.deleteCollectionResult.value is Fail)
     }
 
     @Test
