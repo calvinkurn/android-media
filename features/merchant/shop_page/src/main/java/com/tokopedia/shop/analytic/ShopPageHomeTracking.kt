@@ -2093,7 +2093,8 @@ class ShopPageHomeTracking(
             bundlePrice: Long,
             quantity: String,
             shopName: String,
-            shopType: String
+            shopType: String,
+            cartId: String
     ) {
         val bundle = Bundle()
         val itemBundle = Bundle().apply {
@@ -2101,6 +2102,7 @@ class ShopPageHomeTracking(
             putString(DIMENSION_117, VALUE_MULTIPLE_BUNDLING)
             putString(DIMENSION_118, bundleId)
             putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE))
+            putString(DIMENSION_45, cartId)
             putString(DIMENSION_87, SHOP_PAGE)
             putString(ITEM_BRAND, "")
             putString(ITEM_CATEGORY, "")

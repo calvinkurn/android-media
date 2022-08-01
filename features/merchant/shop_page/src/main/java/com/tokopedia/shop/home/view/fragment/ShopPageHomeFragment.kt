@@ -1717,22 +1717,11 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                         userId = userId,
                         bundleId = selectedMultipleBundle.bundleId,
                         productDetails = productDetails,
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams, selectedMultipleBundle, bundleName) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         productQuantity = selectedMultipleBundle.minOrder
                 )
             }
-            shopPageHomeTracking.clickAtcProductBundleMultiple(
-                    shopId = shopId,
-                    userId = userId,
-                    bundleId = selectedMultipleBundle.bundleId,
-                    bundleName = bundleName,
-                    bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                    bundlePrice = selectedMultipleBundle.displayPriceRaw,
-                    quantity = selectedMultipleBundle.minOrder.toString(),
-                    shopName = shopName,
-                    shopType = customDimensionShopPage.shopType.orEmpty()
-            )
         }
     }
 
@@ -1763,34 +1752,27 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                         userId = userId,
                         bundleId = selectedBundle.bundleId,
                         productDetails = listOf(bundleProducts),
-                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams, selectedBundle, bundleName) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         productQuantity = selectedBundle.minOrder
                 )
             }
-            shopPageHomeTracking.clickAtcProductBundleSingle(
-                    shopId = shopId,
-                    userId = userId,
-                    bundleId = selectedBundle.bundleId,
-                    bundleName = bundleName,
-                    bundlePriceCut = selectedBundle.discountPercentage.toString(),
-                    bundlePrice = selectedBundle.displayPriceRaw,
-                    selectedPackage = selectedBundle.minOrderWording,
-                    productId = bundleProducts.productId,
-                    quantity = selectedBundle.minOrder.toString(),
-                    shopName = shopName,
-                    shopType = customDimensionShopPage.shopType.orEmpty()
-            )
         }
     }
 
     private fun handleOnFinishAtcBundle(
             atcBundleModel: AddToCartBundleModel,
             bundleListSize: Int,
-            widgetLayout: ShopPageWidgetLayoutUiModel
+            widgetLayout: ShopPageWidgetLayoutUiModel,
+            selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
+            bundleName: String
     ) {
         atcBundleModel.validateResponse(
                 onSuccess = {
+                    // Send the tracker here because the tracker needs cartId. CartId will we got once we success ATC
+                    var _cartId = ""
+                    sendTrackerAtcBundleMultiple(selectedMultipleBundle, bundleName, _cartId)
+
                     showToastSuccess(
                             getString(R.string.shop_page_product_bundle_success_atc_text),
                             getString(R.string.see_label)
@@ -1822,6 +1804,21 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
 
     private fun handleOnErrorAtcBundle(throwable: Throwable) {
         showErrorToast(throwable.message.orEmpty())
+    }
+
+    private fun sendTrackerAtcBundleMultiple(selectedMultipleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String, cartId: String) {
+        shopPageHomeTracking.clickAtcProductBundleMultiple(
+                shopId = shopId,
+                userId = userId,
+                bundleId = selectedMultipleBundle.bundleId,
+                bundleName = bundleName,
+                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                bundlePrice = selectedMultipleBundle.displayPriceRaw,
+                quantity = selectedMultipleBundle.minOrder.toString(),
+                shopName = shopName,
+                shopType = customDimensionShopPage.shopType.orEmpty(),
+                cartId = cartId
+        )
     }
 
     private fun goToBundlingSelectionPage(bundleId: String) {
