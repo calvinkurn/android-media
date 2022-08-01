@@ -200,7 +200,8 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeContrast() {
         viewModel.contrastFilter.observe(viewLifecycleOwner) {
-            val originalBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
+            if(originalBitmap == null)
+                originalBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
             originalBitmap?.let { itBitmap ->
                 val contrastBitmap = contrastFilterRepositoryImpl.contrast(
                     it,
@@ -215,13 +216,13 @@ class DetailEditorFragment @Inject constructor(
     private fun observeRemoveBackground() {
         viewModel.removeBackground.observe(viewLifecycleOwner) {
             data.removeBackgroundUrl = it?.path
-            viewBinding?.imgPreview?.let { imgPreview ->
-                Glide
-                    .with(requireContext())
-                    .asBitmap()
-                    .load(it)
-                    .into(imgPreview)
-            }
+//            viewBinding?.imgPreview?.let { imgPreview ->
+//                Glide
+//                    .with(requireContext())
+//                    .asBitmap()
+//                    .load(it)
+//                    .into(imgPreview)
+//            }
         }
     }
 
@@ -230,7 +231,6 @@ class DetailEditorFragment @Inject constructor(
             // make this ui model as global variable
             data = it
 
-            renderImagePreview(it.removeBackgroundUrl ?: it.originalUrl)
             renderUiComponent(it.editorToolType)
         }
     }
@@ -243,6 +243,8 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkType ->
+            if(originalBitmap == null)
+                originalBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
             originalBitmap?.let { bitmap ->
                 val text = "Toko Maju Jaya Perkasa Abadi Bangunan"
                 val result = watermarkFilterRepositoryImpl.watermark(
@@ -252,7 +254,7 @@ class DetailEditorFragment @Inject constructor(
                     text,
                     false
                 )
-                viewBinding?.imgPreview?.setImageBitmap(result)
+                viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(result)
             }
         }
     }
@@ -292,7 +294,17 @@ class DetailEditorFragment @Inject constructor(
                 contrastComponent.setupView(contrastValue)
             }
             // ==========
-            EditorToolType.WATERMARK -> watermarkComponent.setupView()
+            EditorToolType.WATERMARK -> {
+                val watermarkValue = data.watermarkMode ?: DEFAULT_VALUE_WATERMARK
+                viewBinding?.imgUcropPreview?.apply {
+                    initializeWatermark(uri)
+                    onLoadComplete = {
+                        setWatermarkDrawerItem()
+                    }
+                }
+
+                watermarkComponent.setupView()
+            }
             // ==========
             EditorToolType.ROTATE -> {
                 viewBinding?.imgUcropPreview?.apply {
@@ -328,44 +340,45 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun renderImagePreview(imageUrl: String) {
-        viewBinding?.imgPreview?.let {
-            loadImageWithTarget(requireContext(), imageUrl, {},
-                MediaTarget(
-                    viewComponent = it,
-                    onReady = { imageView, resource ->
-                        originalBitmap = resource
-
-                        imageView.setImageBitmap(resource)
-                        imageView.post {
-                            if (data.brightnessValue != null
-                                && data.editorToolType != EditorToolType.BRIGHTNESS
-                            ) viewModel.setBrightness(data.brightnessValue!!)
-                            if (data.contrastValue != null
-                                && data.editorToolType != EditorToolType.CONTRAST
-                            ) viewModel.setContrast(data.contrastValue!!)
-                            if (data.watermarkMode != null
-                                && data.editorToolType != EditorToolType.WATERMARK
-                            ) viewModel.setWatermark(data.watermarkMode!!)
-
-                            originalBitmap = it.drawToBitmap()
-
-                            when (data.editorToolType) {
-                                EditorToolType.WATERMARK -> viewModel.setWatermark(data.watermarkMode)
-                                EditorToolType.BRIGHTNESS -> viewModel.setBrightness(data.brightnessValue)
-                                EditorToolType.CONTRAST -> viewModel.setContrast(data.contrastValue)
-                            }
-
-                            // render result for watermark drawer item
-                            if (data.editorToolType == EditorToolType.WATERMARK) setWatermarkDrawerItem()
-                        }
-                    }
-                )
-            )
-        }
-    }
+//    private fun renderImagePreview(imageUrl: String) {
+//        viewBinding?.imgPreview?.let {
+//            loadImageWithTarget(requireContext(), imageUrl, {},
+//                MediaTarget(
+//                    viewComponent = it,
+//                    onReady = { imageView, resource ->
+//                        originalBitmap = resource
+//
+//                        imageView.setImageBitmap(resource)
+//                        imageView.post {
+//                            if (data.brightnessValue != null
+//                                && data.editorToolType != EditorToolType.BRIGHTNESS
+//                            ) viewModel.setBrightness(data.brightnessValue!!)
+//                            if (data.contrastValue != null
+//                                && data.editorToolType != EditorToolType.CONTRAST
+//                            ) viewModel.setContrast(data.contrastValue!!)
+//                            if (data.watermarkMode != null
+//                                && data.editorToolType != EditorToolType.WATERMARK
+//                            ) viewModel.setWatermark(data.watermarkMode!!)
+//
+//                            originalBitmap = it.drawToBitmap()
+//
+//                            when (data.editorToolType) {
+//                                EditorToolType.WATERMARK -> viewModel.setWatermark(data.watermarkMode)
+//                                EditorToolType.BRIGHTNESS -> viewModel.setBrightness(data.brightnessValue)
+//                                EditorToolType.CONTRAST -> viewModel.setContrast(data.contrastValue)
+//                            }
+//
+//                            // render result for watermark drawer item
+//                            if (data.editorToolType == EditorToolType.WATERMARK) setWatermarkDrawerItem()
+//                        }
+//                    }
+//                )
+//            )
+//        }
+//    }
 
     private fun setWatermarkDrawerItem() {
+        val originalBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
         originalBitmap?.let { bitmap ->
             // todo: implement text from user data
             val text = "Toko Maju Jaya Perkasa Abadi Bangunan"
@@ -458,5 +471,6 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DEFAULT_VALUE_CONTRAST = 0f
         private const val DEFAULT_VALUE_BRIGHTNESS = 0f
+        private const val DEFAULT_VALUE_WATERMARK = 0f
     }
 }
