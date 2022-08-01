@@ -25,11 +25,11 @@
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gofood"
+                    android:text="@string/tokofood_title"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="body_1"
+                    app:typographyType="display_1"
                     app:typographyWeight="bold" />
 
 
@@ -76,7 +76,7 @@
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:gravity="center"
             android:textColor="@color/Unify_NN600"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             tools:text="@string/home_no_pin_poin_desc" />
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -97,7 +97,8 @@
             android:gravity="center"
             android:text="@string/home_back_to_home"
             android:textColor="@color/Unify_N600"
-            app:typographyType="heading_5" />
+            app:typographyType="display_2"
+            app:typographyWeight="bold"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

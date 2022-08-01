@@ -9,6 +9,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCaseWithCoroutine
 import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUseCaseWithCoroutine
 import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUseCaseWithCoroutine
+import com.tokopedia.favorite.domain.interactor.GetTopAdsShopUseCaseWithCoroutine
 import com.tokopedia.favorite.domain.model.DataFavorite
 import com.tokopedia.favorite.domain.model.FavoriteShop
 import com.tokopedia.favorite.domain.model.TopAdsShop
@@ -19,6 +20,7 @@ import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -51,6 +53,12 @@ class FavoriteViewModelTest {
     @RelaxedMockK
     lateinit var pagingHandler: PagingHandler
 
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
+    @RelaxedMockK
+    lateinit var getTopAdsShopUseCase: GetTopAdsShopUseCaseWithCoroutine
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -61,7 +69,10 @@ class FavoriteViewModelTest {
                 toggleFavouriteShopUseCase,
                 getAllDataFavoriteUseCase,
                 getFavoriteShopUseCaseWithCoroutine,
+                getTopAdsShopUseCase,
+                userSession,
                 pagingHandler
+
         )
     }
 

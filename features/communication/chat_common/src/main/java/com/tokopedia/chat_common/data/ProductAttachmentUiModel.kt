@@ -467,8 +467,8 @@ open class ProductAttachmentUiModel protected constructor(
             return self()
         }
 
-        fun withVariants(variants: List<AttachmentVariant>): Builder {
-            this.variants = variants
+        fun withVariants(variants: List<AttachmentVariant>?): Builder {
+            this.variants = variants?: emptyList()
             return self()
         }
 

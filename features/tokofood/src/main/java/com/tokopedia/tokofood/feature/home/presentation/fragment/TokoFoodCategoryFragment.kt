@@ -14,11 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood.BRAND_UID_PARAM
@@ -128,6 +126,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     private var navToolbar: NavToolbar? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var localCacheModel: LocalCacheModel? = null
+    private var isShowMiniCart = false
     private val spaceZero: Int
         get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)?.toInt() ?: 0
 
@@ -252,14 +251,23 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
                         (uiEvent.data as? CheckoutTokoFoodData)?.let {
                             analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
+                            if (uiEvent.source == MINI_CART_SOURCE){
+                                goToPurchasePage()
+                            }
                         }
-                        goToPurchasePage()
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                        showMiniCartCategory()
+                        if (viewModel.isShownEmptyState()){
+                            hideMiniCartCategory()
+                            isShowMiniCart = false
+                        } else {
+                            showMiniCartCategory()
+                            isShowMiniCart = true
+                        }
                     }
                     UiEvent.EVENT_FAILED_LOAD_CART -> {
                         hideMiniCartCategory()
+                        isShowMiniCart = false
                     }
                 }
             }
@@ -370,11 +378,20 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun showCategoryLayout(data: TokoFoodListUiModel) {
+        onRenderCategoryPage()
         adapter.submitList(data.items)
     }
 
     private fun loadLayout() {
         viewModel.showLoadingState()
+    }
+
+    private fun onRenderCategoryPage() {
+        if (!viewModel.isShownEmptyState() && isShowMiniCart) {
+            showMiniCartCategory()
+        } else {
+            hideMiniCartCategory()
+        }
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
@@ -443,10 +460,12 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
     }
 
     private fun showMiniCartCategory() {
+        setRvPadding(isShowMiniCart = true)
         miniCartCategory?.show()
     }
 
     private fun hideMiniCartCategory() {
+        setRvPadding(isShowMiniCart = false)
         miniCartCategory?.hide()
     }
 
@@ -466,5 +485,16 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
             userSession.deviceId.orEmpty(),
             description
         )
+    }
+
+    private fun setRvPadding(isShowMiniCart: Boolean) {
+        rvCategory?.let {
+            if (isShowMiniCart){
+                it.setPadding(0,0, 0, context?.resources?.
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)?: 0)
+            } else {
+                it.setPadding(0,0, 0,0)
+            }
+        }
     }
 }

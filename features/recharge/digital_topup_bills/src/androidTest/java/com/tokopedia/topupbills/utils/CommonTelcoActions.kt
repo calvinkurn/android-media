@@ -24,7 +24,6 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragm
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -83,11 +82,6 @@ object CommonTelcoActions {
             .check(matches(ViewMatchers.withText(text)))
     }
 
-    fun clientNumberWidget_validateErrorMessage(text: String) {
-        onView(withId(com.tokopedia.unifycomponents.R.id.textinput_helper_text))
-            .check(matches(ViewMatchers.withText(text)))
-    }
-
     fun clientNumberWidget_clickFilterChip_withText(text: String) {
         onView(ViewMatchers.withText(text)).perform(click())
     }
@@ -96,10 +90,6 @@ object CommonTelcoActions {
         onView(withId(R.id.menu_promo)).check(matches(isDisplayed()))
         onView(withId(R.id.menu_help)).check(matches(isDisplayed()))
         onView(withId(R.id.menu_order_list)).check(matches(isDisplayed()))
-    }
-
-    fun pdp_validateViewPagerDisplayed() {
-        onView(withId(R.id.telco_view_pager)).check(matches(isDisplayed()))
     }
 
     fun clientNumberWidget_clickClearBtn() {
@@ -122,14 +112,6 @@ object CommonTelcoActions {
             )
         )
     }
-    fun promoWidget_scrollToItem(viewInteraction: ViewInteraction, position: Int) {
-        viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
-                position,
-                scrollTo()
-            )
-        )
-    }
 
     fun promoItem_click(viewInteraction: ViewInteraction) {
         viewInteraction.perform(
@@ -139,10 +121,6 @@ object CommonTelcoActions {
                     CommonActions.clickChildViewWithId(R.id.promo_container)
                 )
         )
-    }
-
-    fun pdp_validateProductViewDisplayed() {
-        onView(withId(R.id.telco_product_view)).check(matches(isDisplayed()))
     }
 
     fun pdp_validateBuyWidgetDisplayed() {
@@ -157,59 +135,13 @@ object CommonTelcoActions {
         onView(withId(R.id.telco_buy_widget)).perform(click())
     }
 
-    fun productItem_click(viewInteraction: ViewInteraction, position: Int) {
-        viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(
-                position,
-                click()
-            )
-        )
-    }
-
-    fun tabLayout_validateExist(text: String) {
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), ViewMatchers.withText(text))).check(
-            matches(isDisplayed()))
-    }
-
     fun tabLayout_clickTabWithText(text: String) {
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), ViewMatchers.withText(text))).perform(
             click()
         )
     }
 
-    fun productItemRv_scrollToPosition(viewInteraction: ViewInteraction, position: Int) {
-        viewInteraction.perform(
-            RecyclerViewActions.scrollToPosition<TelcoProductViewHolder>(
-                position
-            )
-        )
-    }
-
-    fun productItem_clickSeeMore(viewInteraction: ViewInteraction, position: Int) {
-        viewInteraction.perform(
-            RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(
-                position,
-                CommonActions.clickChildViewWithId(R.id.telco_see_more_btn)
-            )
-        )
-    }
-
     fun bottomSheet_close() {
         onView(withId(R.id.bottom_sheet_close)).perform(click())
-    }
-
-    fun withIndex(matcher: Matcher<View?>, index: Int): Matcher<View?> {
-        return object : TypeSafeMatcher<View?>() {
-            var currentIndex = 0
-            override fun describeTo(description: Description) {
-                description.appendText("with index: ")
-                description.appendValue(index)
-                matcher.describeTo(description)
-            }
-
-            override fun matchesSafely(view: View?): Boolean {
-                return matcher.matches(view) && currentIndex++ == index
-            }
-        }
     }
 }

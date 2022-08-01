@@ -146,6 +146,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListC
 import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.MissionWidgetComponentCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -1701,7 +1702,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             MerchantVoucherComponentCallback(this),
             CueWidgetComponentCallback(this),
             VpsWidgetComponentCallback(this),
-            CategoryWidgetV2Callback(context, this)
+            CategoryWidgetV2Callback(context, this),
+            MissionWidgetComponentCallback(this, getHomeViewModel())
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2539,19 +2541,27 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterSuccessWishlist() {
-        showToasterWithAction(
-            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            typeToaster = TYPE_NORMAL,
-            actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            clickListener = View.OnClickListener {
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            })
+        if(activity?.isFinishing == false) {
+            showToasterWithAction(
+                message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+                typeToaster = TYPE_NORMAL,
+                actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+                clickListener = View.OnClickListener {
+                    RouteManager.route(context, ApplinkConst.WISHLIST)
+                })
+        }
     }
 
     private fun showToasterSuccessWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         context?.let { context ->
             view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, v)
+                if(activity?.isFinishing == false) {
+                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
+                        wishlistResult,
+                        context,
+                        v
+                    )
+                }
             }
         }
     }
@@ -2749,7 +2759,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToaster(message: String, typeToaster: Int) {
-        showToasterWithAction(message, typeToaster, "", View.OnClickListener { v: View? -> })
+        if(activity?.isFinishing == false) {
+            showToasterWithAction(message, typeToaster, "", View.OnClickListener { v: View? -> })
+        }
     }
 
     private fun showToasterWithAction(message: String, typeToaster: Int, actionText: String, clickListener: View.OnClickListener) {
@@ -2760,7 +2772,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (errorToaster == null || errorToaster?.isShown == false) {
             Toaster.toasterCustomBottomHeight = 56f.toDpInt()
             errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
-            errorToaster?.show()
+            if(activity?.isFinishing == false) {
+                errorToaster?.show()
+            }
         }
     }
 
@@ -2843,7 +2857,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterReviewSuccess() {
-        view?.let { build(it, getString(R.string.review_create_success_toaster, getHomeViewModel().getUserName()), Snackbar.LENGTH_LONG, TYPE_NORMAL, getString(R.string.review_oke)).show() }
+        if(activity?.isFinishing == false) {
+            view?.let {
+                build(
+                    it,
+                    getString(
+                        R.string.review_create_success_toaster,
+                        getHomeViewModel().getUserName()
+                    ),
+                    Snackbar.LENGTH_LONG,
+                    TYPE_NORMAL,
+                    getString(R.string.review_oke)
+                ).show()
+            }
+        }
     }
 
     /**
@@ -2934,8 +2961,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showSuccessResetPasswordDialog() {
-        Toaster.toasterCustomBottomHeight = 56f.toDpInt()
-        Toaster.build(root,
+        if(activity?.isFinishing == false) {
+            Toaster.toasterCustomBottomHeight = 56f.toDpInt()
+            Toaster.build(root,
                 getString(R.string.text_dialog_success_reset_password),
                 DELAY_TOASTER_RESET_PASSWORD,
                 TYPE_NORMAL,
@@ -2944,12 +2972,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     saveStateReset(false)
                     onGoToLogin()
                 }
-        ).addCallback(object : Snackbar.Callback() {
-            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                super.onDismissed(transientBottomBar, event)
-                saveStateReset(false)
-            }
-        }).show()
+            ).addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    saveStateReset(false)
+                }
+            }).show()
+        }
     }
 
     private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {

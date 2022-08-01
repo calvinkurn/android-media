@@ -17,12 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -161,6 +159,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var collectJob: Job? = null
 
     companion object {
+        private const val HEIGHT_DIVIDER = 4
         private const val ITEM_VIEW_CACHE_SIZE = 20
         private const val REQUEST_CODE_SET_PINPOINT = 112
         private const val REQUEST_CODE_ADD_ADDRESS = 113
@@ -193,7 +192,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var shareHomeTokoFood: TokoFoodHomeShare? = null
     private var localCacheModel: LocalCacheModel? = null
     private var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
-    private var heightDivider = 4
+    private var isShowMiniCart = false
     private var totalScrolled = 0
     private val spaceZero: Int
        get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)?.toInt() ?: 0
@@ -570,14 +569,24 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
                         (uiEvent.data as? CheckoutTokoFoodData)?.let {
                             analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
+                            if (uiEvent.source == MINI_CART_SOURCE){
+                                goToPurchasePage()
+                            }
                         }
-                        goToPurchasePage()
+
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                        showMiniCartHome()
+                        if (viewModel.isShownEmptyState()){
+                            hideMiniCartHome()
+                            isShowMiniCart = false
+                        } else {
+                            showMiniCartHome()
+                            isShowMiniCart = true
+                        }
                     }
                     UiEvent.EVENT_FAILED_LOAD_CART -> {
                         hideMiniCartHome()
+                        isShowMiniCart = false
                     }
                 }
             }
@@ -618,6 +627,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun showHomeLayout(data: TokoFoodListUiModel) {
+        onRenderHomepage()
         rvHome?.post {
             adapter.submitList(data.items)
         }
@@ -840,10 +850,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun showMiniCartHome() {
+        setRvPadding(isShowMiniCart = true)
         miniCartHome?.show()
     }
 
     private fun hideMiniCartHome() {
+        setRvPadding(isShowMiniCart = false)
         miniCartHome?.hide()
     }
 
@@ -925,6 +937,15 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun onRenderHomepage(){
+        if (!viewModel.isShownEmptyState() && isShowMiniCart) {
+            showMiniCartHome()
+        } else {
+            hideMiniCartHome()
+            hideJumpToTop()
+        }
+    }
+
     private fun onShowOutOfCoverage(){
         localCacheModel?.let {
             analytics.openScreenOutOfCoverage(userSession.userId, localCacheModel?.district_id,
@@ -978,10 +999,21 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun setupJumpToTop(recyclerView: RecyclerView, dy: Int) {
         totalScrolled += dy
         binding?.root?.height?.let {
-            if (totalScrolled > (it / heightDivider)) {
+            if (totalScrolled > (it / HEIGHT_DIVIDER)) {
                 showJumpToTop(recyclerView)
             } else {
                 hideJumpToTop()
+            }
+        }
+    }
+
+    private fun setRvPadding(isShowMiniCart: Boolean) {
+        rvHome?.let {
+            if (isShowMiniCart){
+                it.setPadding(0,0, 0, context?.resources?.
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)?: 0)
+            } else {
+                it.setPadding(0,0, 0,0)
             }
         }
     }
