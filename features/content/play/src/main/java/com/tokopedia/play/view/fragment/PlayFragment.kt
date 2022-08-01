@@ -102,8 +102,6 @@ class PlayFragment @Inject constructor(
     private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
 
-//    private val keyboardWatcher = KeyboardWatcher()
-
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
 
@@ -550,21 +548,10 @@ class PlayFragment @Inject constructor(
                 if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
             }
         }
-//        keyboardWatcher.listen(view, object : KeyboardWatcher.Listener {
-//            override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-//                playViewModel.onKeyboardShown(estimatedKeyboardHeight)
-//            }
-//
-//            override fun onKeyboardHidden() {
-//                playViewModel.onKeyboardHidden()
-//                if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
-//            }
-//        })
     }
 
     private fun unregisterKeyboardListener(view: View) {
         view.setOnApplyWindowInsetsListener(null)
-//        keyboardWatcher.unlisten(view)
     }
 
     private fun hideAllInsets() {
