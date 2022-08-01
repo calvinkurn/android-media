@@ -73,7 +73,7 @@ class VideoPictureView @JvmOverloads constructor(
 
         if (videoPictureAdapter == null) {
             setupViewPagerCallback()
-            setupViewPager(containerType = containerType)
+            setupViewPager(containerType = containerType, listener = listener)
             //If first position is video and selected: process the video
         }
 
@@ -170,7 +170,10 @@ class VideoPictureView @JvmOverloads constructor(
         return false
     }
 
-    private fun setupViewPager(containerType: MediaContainerType) {
+    private fun setupViewPager(
+        containerType: MediaContainerType,
+        listener: DynamicProductDetailListener?
+    ) {
         videoPictureAdapter = VideoPictureAdapter(
                 mListener,
                 componentTrackDataModel)
@@ -182,6 +185,8 @@ class VideoPictureView @JvmOverloads constructor(
         }
 
         viewPager.post {
+            listener?.onSetupToolbarState(containerType = containerType)
+
             viewPager.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 if (this != null) {
                     dimensionRatio = containerType.ratio

@@ -58,6 +58,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.device.info.DeviceConnectionInfo
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -293,10 +294,6 @@ open class DynamicProductDetailFragment :
     companion object {
         // for set transparent searchbar on toolbar
         private const val ALPHA_MAX = 255
-        // start transition for toolbar transparent
-        private const val START_TRANSITION_PIXEL = 200
-        // start range transition for toolbar transparent
-        private const val TOOLBAR_TRANSITION_RANGE_PIXEL = 50
 
         fun newInstance(
             productId: String? = null,
@@ -485,12 +482,18 @@ open class DynamicProductDetailFragment :
 
     private val compositeSubscription by lazy { CompositeSubscription() }
 
+    // start transition for toolbar transparent
+    // 1 / 3 from screen height
+    private val toolbarStartTransitionPixel get() = DeviceScreenInfo.getScreenWidth(requireContext()) / 3
+    // transition range from 1/2 from toolbarStartTransitionPixel
+    private val toolbarTransitionRangePixel get() = toolbarStartTransitionPixel / 2
+
     private val scrollListener by lazy {
         navToolbar?.let {
             NavRecyclerViewScrollListener(
                 navToolbar = it,
-                startTransitionPixel = START_TRANSITION_PIXEL,
-                toolbarTransitionRangePixel = TOOLBAR_TRANSITION_RANGE_PIXEL,
+                startTransitionPixel = toolbarStartTransitionPixel,
+                toolbarTransitionRangePixel = toolbarTransitionRangePixel,
                 navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                     override fun onAlphaChanged(offsetAlpha: Float) {
                         navToolbar?.setSearchBarAlpha(alpha = offsetAlpha)
@@ -1385,7 +1388,6 @@ open class DynamicProductDetailFragment :
                 }
             )
         }
-
     }
 
     override fun onChipFilterClicked(
@@ -1988,10 +1990,10 @@ open class DynamicProductDetailFragment :
 
     private fun observeVideoDetail() {
         activity?.let { activity ->
-            sharedViewModel?.productVideoData?.observe(activity, {
+            sharedViewModel?.productVideoData?.observe(activity) {
                 if (it.isEmpty()) return@observe
                 productVideoCoordinator?.updateAndResume(it)
-            })
+            }
         }
     }
 
@@ -2039,11 +2041,11 @@ open class DynamicProductDetailFragment :
 
     private fun observeShippingAddressChanged() {
         activity?.let { activity ->
-            sharedViewModel?.isAddressChanged?.observe(activity, {
+            sharedViewModel?.isAddressChanged?.observe(activity) {
                 if (it) {
                     onSuccessUpdateAddress()
                 }
-            })
+            }
         }
     }
 
@@ -2063,15 +2065,15 @@ open class DynamicProductDetailFragment :
     }
 
     private fun observePlayWidget() {
-        viewModel.playWidgetModel.observe(viewLifecycleOwner, {
+        viewModel.playWidgetModel.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> handlePlayWidgetUiModel(it.data)
                 is Fail -> pdpUiUpdater?.removeComponent(ProductDetailConstant.PLAY_CAROUSEL)
             }
             updateUi()
-        })
+        }
 
-        viewModel.playWidgetReminderSwitch.observe(viewLifecycleOwner, {
+        viewModel.playWidgetReminderSwitch.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> view?.showToasterSuccess(
                     if (it.data.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
@@ -2081,7 +2083,7 @@ open class DynamicProductDetailFragment :
                     getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder)
                 )
             }
-        })
+        }
     }
 
     private fun handlePlayWidgetUiModel(playWidgetState: PlayWidgetState) {
@@ -2472,6 +2474,10 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    override fun onSetupToolbarState(containerType: MediaContainerType) {
+        setupToolbarTransparent(shouldTransparent = containerType == MediaContainerType.Portrait)
+    }
+
     private fun observeP2Data() {
         viewLifecycleOwner.observe(viewModel.p2Data) {
             val boeData = viewModel.getBebasOngkirDataByProductId()
@@ -2774,7 +2780,6 @@ open class DynamicProductDetailFragment :
         setupProductVideoCoordinator()
         submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList() ?: listOf())
         showWarehouseChangeBs(productInfo.basic.productMultilocation)
-        setupToolbarTransparent(productInfo.data.containerType)
     }
 
     private fun showWarehouseChangeBs(productMultiloc: ProductMultilocation) {
@@ -3769,28 +3774,31 @@ open class DynamicProductDetailFragment :
     /**
      * Setup Toolbar Transparent
      */
-    private fun setupToolbarTransparent(containerType: String) {
-        activity?.let { activity ->
-            val shouldTransparent = containerType == MediaContainerType.Portrait.type
-            binding?.pdpSpaceList?.isVisible = !shouldTransparent
+    private fun setupToolbarTransparent(shouldTransparent: Boolean) {
+        val activityContext = activity ?: return
+        val viewBinding = binding ?: return
+        val toolbar = navToolbar ?: return
+        val recyclerView = getRecyclerView() ?: return
 
-            if (shouldTransparent) {
-                navToolbar?.setupToolbarWithStatusBar(
-                    activity,
-                    NavToolbar.Companion.StatusBar.STATUS_BAR_DARK
-                )
-                scrollListener?.let { getRecyclerView()?.addOnScrollListener(it) }
+        viewBinding.pdpSpaceList.isVisible = !shouldTransparent
 
-                binding?.pdpToolbarShadow?.setImageResource(R.drawable.bg_pdp_toolbar_gradient)
-                binding?.pdpToolbarShadow?.isVisible = true
-            } else {
-                binding?.pdpToolbarShadow?.isVisible = false
-                navToolbar?.setupToolbarWithStatusBar(
-                    activity,
-                    NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT
-                )
-                scrollListener?.let { getRecyclerView()?.removeOnScrollListener(it) }
-            }
+        if (shouldTransparent) {
+            toolbar.setupToolbarWithStatusBar(
+                activityContext,
+                NavToolbar.Companion.StatusBar.STATUS_BAR_DARK
+            )
+
+            scrollListener?.let { recyclerView.addOnScrollListener(it) }
+            viewBinding.pdpToolbarShadow.setImageResource(R.drawable.bg_pdp_toolbar_gradient)
+            viewBinding.pdpToolbarShadow.isVisible = true
+        } else {
+            toolbar.setupToolbarWithStatusBar(
+                activityContext,
+                NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT
+            )
+
+            scrollListener?.let { recyclerView.removeOnScrollListener(it) }
+            viewBinding.pdpToolbarShadow.isVisible = false
         }
     }
 
