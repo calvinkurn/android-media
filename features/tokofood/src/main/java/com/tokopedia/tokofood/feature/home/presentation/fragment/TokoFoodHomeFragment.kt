@@ -166,7 +166,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         private const val NEW_ADDRESS_PARCELABLE = "EXTRA_ADDRESS_NEW"
         private const val TOTO_LATITUDE = "-6.2216771"
         private const val TOTO_LONGITUDE = "106.8184023"
-        private const val EMPTY_LOCATION = "0.0"
         private const val MINI_CART_SOURCE = "home_page"
         private const val PAGE_SHARE_NAME = "TokoFood"
         private const val SHARE = "share"
@@ -494,16 +493,16 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.flowUpdatePinPointState.collect{ isSuccess ->
-                if (isSuccess) {
-                    getChooseAddress()
-                }
-            }
-        }
+            viewModel.flowUpdatePinPointState.collect{
+                when(it) {
+                    is Success -> {
+                        getChooseAddress()
+                    }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.flowErrorMessage.collect { message ->
-                showToaster(message)
+                    is Fail -> {
+                        showToaster(it.throwable.message)
+                    }
+                }
             }
         }
 
@@ -678,6 +677,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun onRefreshLayout() {
         removeAllScrollListener()
         rvLayoutManager?.setScrollEnabled(true)
+        updateCurrentPageLocalCacheModelData()
         loadLayout()
     }
 
@@ -717,6 +717,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun updateCurrentPageLocalCacheModelData() {
         context?.let {
+            isShowMiniCart = true
             localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
@@ -741,7 +742,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 val locationPass = it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
                 locationPass?.let { locationPass ->
                     localCacheModel?.address_id?.let { addressId ->
-                        viewModel.updatePinPoin(addressId, locationPass.latitude, locationPass.longitude)
+                        viewModel.setUpdatePinPoint(addressId, locationPass.latitude, locationPass.longitude)
                     }
                 }
             }

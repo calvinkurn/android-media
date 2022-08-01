@@ -18,6 +18,7 @@ import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
+import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodInputPinPoint
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodHomeMapper.addErrorState
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
 import com.tokopedia.tokofood.feature.home.domain.mapper.TokoFoodHomeMapper.addMerchantTitle
@@ -70,7 +71,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 
@@ -89,9 +89,8 @@ class TokoFoodHomeViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     private val _inputState = MutableSharedFlow<TokoFoodUiState>(Int.ONE)
-    private val _inputActionAddress = MutableSharedFlow<Boolean>(Int.ONE)
-    private val _flowUpdatePinPointState = MutableSharedFlow<Boolean>(Int.ONE)
-    private val _flowErrorMessage = MutableSharedFlow<String?>(Int.ONE)
+    private val _inputPinPointState = MutableSharedFlow<TokoFoodInputPinPoint>(Int.ONE)
+
     private val _flowChooseAddress = MutableSharedFlow<Result<GetStateChosenAddressResponse>>(Int.ONE)
     private val _flowEligibleForAnaRevamp = MutableSharedFlow<Result<EligibleForAddressFeature>>(Int.ONE)
 
@@ -162,28 +161,21 @@ class TokoFoodHomeViewModel @Inject constructor(
             replay = Int.ONE
         )
 
-    val flowEligibleForAnaRevamp: SharedFlow<Result<EligibleForAddressFeature>> = _inputActionAddress.flatMapConcat {
-        flow {
-            eligibleForAddressUseCase.eligibleForAddressFeature(
-                {
-                    emit(Success(it.eligibleForRevampAna))
-                },
-                {
-                    emit(Fail(it))
-                },
-                AddressConstant.ANA_REVAMP_FEATURE_ID
-            )
-        }.flowOn(dispatchers.io)
-    }.shareIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
-        replay = Int.ONE
-    )
+    val flowUpdatePinPointState: SharedFlow<Result<Boolean>> =
+        _inputPinPointState.flatMapConcat {
+            flow {
+                emit(updatePinPoin(it.addressId, it.latitude, it.longitude))
+            }.catch {
+                emit(Fail(it))
+            }
+        }.shareIn(
+            scope = this,
+            started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
+            replay = Int.ONE
+        )
 
-    val flowUpdatePinPointState: SharedFlow<Boolean> = _flowUpdatePinPointState
-    val flowErrorMessage: SharedFlow<String?> = _flowErrorMessage
+    val flowEligibleForAnaRevamp: SharedFlow<Result<EligibleForAddressFeature>> = _flowEligibleForAnaRevamp
     val flowChooseAddress: SharedFlow<Result<GetStateChosenAddressResponse>> = _flowChooseAddress
-
 
     private val homeLayoutItemList = mutableListOf<TokoFoodItemUiModel>()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
@@ -197,36 +189,10 @@ class TokoFoodHomeViewModel @Inject constructor(
         private const val SOURCE = "tokofood"
     }
 
-    fun updatePinPoin(addressId: String, latitude: String, longitude: String) {
-        launchCatchError(block = {
-            val isSuccess = withContext(dispatchers.io) {
-                keroEditAddressUseCase.execute(addressId, latitude, longitude)
-            }
-            _flowUpdatePinPointState.emit(isSuccess)
-        }) {
-            _flowErrorMessage.emit(it.message)
-        }
-    }
-
-    fun checkUserEligibilityForAnaRevamp() {
-        eligibleForAddressUseCase.eligibleForAddressFeature(
-            {
-                setEligibleForAnaRevamp(it.eligibleForRevampAna)
-            },
-            {
-                setEligibleForAnaRevamp(it)
-            },
-            AddressConstant.ANA_REVAMP_FEATURE_ID
+    fun setUpdatePinPoint(addressId: String, latitude: String, longitude: String) {
+        _inputPinPointState.tryEmit(
+            TokoFoodInputPinPoint(addressId, latitude, longitude)
         )
-    }
-
-    fun getChooseAddress(source: String) {
-        isAddressManuallyUpdated = true
-        getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
-            setFlowChooseAddress(it)
-        }, {
-            setFlowChooseAddress(it)
-        }, source)
     }
 
     fun setErrorState(throwable: Throwable) {
@@ -269,6 +235,27 @@ class TokoFoodHomeViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    fun checkUserEligibilityForAnaRevamp() {
+        eligibleForAddressUseCase.eligibleForAddressFeature(
+            {
+                setEligibleForAnaRevamp(it.eligibleForRevampAna)
+            },
+            {
+                setEligibleForAnaRevamp(it)
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
+        )
+    }
+
+    fun getChooseAddress(source: String) {
+        isAddressManuallyUpdated = true
+        getChooseAddressWarehouseLocUseCase.getStateChosenAddress({
+            setFlowChooseAddress(it)
+        }, {
+            setFlowChooseAddress(it)
+        }, source)
     }
 
     fun getLoadingState(): Result<TokoFoodListUiModel> {
@@ -341,6 +328,13 @@ class TokoFoodHomeViewModel @Inject constructor(
         )
 
         return data
+    }
+
+    suspend fun updatePinPoin(addressId: String, latitude: String, longitude: String): Result<Boolean> {
+        val isSuccess = withContext(dispatchers.io) {
+            keroEditAddressUseCase.execute(addressId, latitude, longitude)
+        }
+        return Success(isSuccess)
     }
 
     suspend fun getHomeLayout(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
