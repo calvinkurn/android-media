@@ -223,6 +223,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           chosen_courier
           ticker_courier
           bottom_sheet_description
+          title_promo_message
         }
       }
       pre_order {
