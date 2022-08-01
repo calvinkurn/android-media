@@ -3,7 +3,7 @@ package com.tokopedia.affiliate.interfaces
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 
-sealed interface AffiliateItemImpressionListener
+interface AffiliateItemImpressionListener
 
 interface AffiliatePromoImpressionListener : AffiliateItemImpressionListener {
     fun onItemImpression(
