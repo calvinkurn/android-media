@@ -1484,17 +1484,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val affiliateChannel = "affiliate channel"
         val uuid = "1111"
 
-        val affiliatePageDetail = AffiliatePageDetail(
-            pageId = productId,
-            source = AffiliateSdkPageSource.PDP(
-                shopId = shopId,
-                productInfo = AffiliateSdkProductInfo(
-                    categoryID = categoryId,
-                    isVariant = isVariant,
-                    stockQty = stock
-                )
-            )
-        )
+        val slot = slot<AffiliatePageDetail>()
 
         viewModel.hitAffiliateCookie(
             productInfo = mockProductInfoP1,
@@ -1507,9 +1497,14 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             affiliateCookieHelper.initCookie(
                 affiliateUUID,
                 affiliateChannel,
-                affiliatePageDetail,
+                capture(slot),
                 uuid
             )
+        }
+
+        with(slot.captured){
+            Assert.assertEquals(productId, this.pageId)
+            Assert.assertTrue(source is AffiliateSdkPageSource.PDP)
         }
     }
 
