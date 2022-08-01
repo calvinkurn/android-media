@@ -66,6 +66,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:actionText="Lanjut Register"
+            app:defaultTemplate="TNC_PRIVACY_OPTIONAL"
             app:layout_constraintTop_toBottomOf="@id/divider1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

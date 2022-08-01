@@ -2,8 +2,8 @@ package com.tokopedia.usercomponents.userconsent.ui
 
 import com.tokopedia.usercomponents.userconsent.common.UserConsentPayload
 
-interface UserConsentActionClickListener {
+interface UserConsentActionListener {
     fun onCheckedChange(isChecked: Boolean)
-    fun onActionClicked(payload: UserConsentPayload)
+    fun onActionClicked(payload: UserConsentPayload, isDefaultTemplate: Boolean = false)
     fun onFailed(throwable: Throwable)
 }
