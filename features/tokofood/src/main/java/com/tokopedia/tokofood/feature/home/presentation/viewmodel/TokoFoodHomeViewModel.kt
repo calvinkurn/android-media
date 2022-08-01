@@ -1,11 +1,9 @@
 package com.tokopedia.tokofood.feature.home.presentation.viewmodel
 
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -53,7 +51,6 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_ER
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_COMPONENT_DATA
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_DYNAMIC_CHANNEL_DATA
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_LOAD_MORE
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_LOADING
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_NO_ADDRESS
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_NO_PIN_POINT
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_REMOVE_TICKER
@@ -65,6 +62,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -111,7 +109,6 @@ class TokoFoodHomeViewModel @Inject constructor(
                                 } else {
                                     getChooseAddress(SOURCE)
                                 }
-
                             }
                             hasNoPinPoin(inputState.isLoggedIn, inputState.localCacheModel) -> {
                                 if (isAddressManuallyUpdate()){
