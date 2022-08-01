@@ -435,7 +435,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                 updatePinProduct(product = product)
                 addCoolDown()
                 if (!isPinned) _uiEvent.emit(
-                    PlayBroProductChooserEvent.SuccessPinProduct(
+                    PlayBroProductChooserEvent.ImpressPinProduct(
                         channelId,
                         product.id
                     )

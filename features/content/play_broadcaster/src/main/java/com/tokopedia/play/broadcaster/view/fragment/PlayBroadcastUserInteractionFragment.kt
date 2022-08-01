@@ -801,7 +801,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget(event.showCoachMark)
                     PlayBroadcastEvent.DismissGameResultCoachMark -> dismissGameResultCoachMark()
-                    is PlayBroadcastEvent.SuccessPinProduct -> {
+                    is PlayBroadcastEvent.ImpressPinProduct -> {
                         analytic.onImpressPinProductLiveRoom(event.channelId, event.productId)
                     }
                     else -> {}

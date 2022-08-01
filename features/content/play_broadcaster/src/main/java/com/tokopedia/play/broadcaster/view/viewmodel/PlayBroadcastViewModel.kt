@@ -1627,7 +1627,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 updatePinProduct(product = product)
                 addCoolDown()
                 if (!isPinned) _uiEvent.emit(
-                    PlayBroadcastEvent.SuccessPinProduct(
+                    PlayBroadcastEvent.ImpressPinProduct(
                         channelId,
                         product.id
                     )

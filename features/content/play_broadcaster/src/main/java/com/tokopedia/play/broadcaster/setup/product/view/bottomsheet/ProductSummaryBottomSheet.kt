@@ -183,7 +183,7 @@ class ProductSummaryBottomSheet @Inject constructor(
 
                         showLoading(false)
                     }
-                    is PlayBroProductChooserEvent.SuccessPinProduct -> {
+                    is PlayBroProductChooserEvent.ImpressPinProduct -> {
                         analytic.onImpressPinProductBottomSheet(event.channelId, event.productId)
                     }
                 }
