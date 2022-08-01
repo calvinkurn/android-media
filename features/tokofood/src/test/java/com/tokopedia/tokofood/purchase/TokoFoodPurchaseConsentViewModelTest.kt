@@ -55,4 +55,27 @@ class TokoFoodPurchaseConsentViewModelTest : TokoFoodPurchaseConsentViewModelTes
         }
     }
 
+    @Test
+    fun `when agreeConsent response failed should set failed data`() {
+        runBlocking {
+            val response = AgreeConsentResponse(
+                tokofoodSubmitUserConsent = AgreeConsentData(
+                    isSuccess = false
+                )
+            )
+            coEvery {
+                agreeConsentUseCase.get().execute()
+            } returns response
+
+            collectFromSharedFlow(
+                whenAction = {
+                    viewModel.agreeConsent()
+                },
+                then = {
+                    assert(it is Result.Failure)
+                }
+            )
+        }
+    }
+
 }
