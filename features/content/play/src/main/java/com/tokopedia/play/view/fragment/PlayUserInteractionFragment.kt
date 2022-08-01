@@ -1231,11 +1231,14 @@ class PlayUserInteractionFragment @Inject constructor(
             playFragment.onBottomInsetsViewShown(
                 getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight)
             )
-            chatListView?.setMaxHeight(
-                requireContext().resources.getDimensionPixelSize(
-                    R.dimen.play_chat_vertical_max_height
-                ).toFloat()
-            )
+
+            if (playViewModel.videoOrientation.isVertical && orientation.isPortrait) {
+                chatListView?.setMaxHeight(
+                    requireContext().resources.getDimensionPixelSize(
+                        R.dimen.play_chat_vertical_max_height
+                    ).toFloat()
+                )
+            }
         }
     }
 

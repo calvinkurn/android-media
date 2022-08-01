@@ -234,6 +234,11 @@ class PlayFragment @Inject constructor(
         fragmentUserInteractionView.finishAnimateInsets(isHidingInsets)
     }
 
+    fun getCloseIconView(): View? {
+        return if (::ivClose.isInitialized) ivClose
+        else null
+    }
+
     fun openVariantBottomSheet(action: ProductAction, product: PlayProductUiModel.Product) {
         fragmentBottomSheetView.openVariantBottomSheet(action, product)
     }

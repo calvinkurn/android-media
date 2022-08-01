@@ -138,7 +138,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         videoResponse: ChannelDetailsWithRecomResponse.Video
     ) = PlayVideoConfigUiModel(
         id = videoResponse.id,
-//        orientation = VideoOrientation.getByValue(videoResponse.orientation),
         orientation = VideoOrientation.getByValue(videoResponse.orientation),
     )
 
@@ -173,7 +172,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     )
 
     private fun mapQuickReply(quickRepliesResponse: List<String>) = PlayQuickReplyInfoUiModel(
-            quickReplyList = quickRepliesResponse.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() }
+        quickReplyList = quickRepliesResponse.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() }
     )
 
     private fun mapVideoMeta(
@@ -203,8 +202,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             title: String
     ) = PlayVideoStreamUiModel(
             id = videoResponse.id,
-//            orientation = VideoOrientation.getByValue(videoResponse.orientation),
-            orientation = VideoOrientation.Horizontal(16, 9),
+            orientation = VideoOrientation.getByValue(videoResponse.orientation),
             title = title
     )
 
