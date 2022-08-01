@@ -1042,28 +1042,34 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                            uuid: String,
                            affiliateChannel:String) {
         launchCatchError(block = {
-            val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
 
-            val affiliatePageDetail = AffiliatePageDetail(
-                pageId = productInfo.basic.productID,
-                source = AffiliateSdkPageSource.PDP(
-                    shopId = productInfo.basic.shopID,
-                    productInfo = AffiliateSdkProductInfo(
-                        categoryID = categoryId,
-                        isVariant = productInfo.isProductVariant(),
-                        stockQty = productInfo.getFinalStock().toIntOrZero()
-                    )
-                )
-            )
+            val affiliatePageDetail = getAffiliatePageDetail(productInfo)
+
             affiliateCookieHelper.get().initCookie(
                 affiliateUUID = affiliateUuid,
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = affiliatePageDetail,
                 uuid = uuid
             )
+
         }, onError = {
             _affiliateCookie.postValue(it.asFail())
         })
+    }
+
+    private fun getAffiliatePageDetail(productInfo: DynamicProductInfoP1) :AffiliatePageDetail{
+        val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
+        return AffiliatePageDetail(
+            pageId = productInfo.basic.productID,
+            source = AffiliateSdkPageSource.PDP(
+                shopId = productInfo.basic.shopID,
+                productInfo = AffiliateSdkProductInfo(
+                    categoryID = categoryId,
+                    isVariant = productInfo.isProductVariant(),
+                    stockQty = productInfo.getFinalStock().toIntOrZero()
+                )
+            )
+        )
     }
 
     private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean = false, recomItem: RecommendationItem = RecommendationItem()) {
