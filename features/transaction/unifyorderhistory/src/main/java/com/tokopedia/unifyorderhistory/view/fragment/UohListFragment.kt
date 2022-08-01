@@ -25,6 +25,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DALAM_PROSES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DEALS
@@ -1778,21 +1779,22 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         finishOrderBottomSheet.setListener(object : UohFinishOrderBottomSheet.UohFinishOrderBottomSheetListener {
             override fun onClickFinishOrder(index: Int, status: String, orderId: String) {
-                finishOrderBottomSheet.dismiss()
-                currIndexNeedUpdate = index
-                uohItemAdapter.showLoaderAtIndex(index)
-
-                var actionStatus = ""
-                if (status.isNotEmpty() && status.toIntOrZero() < STATUS_600) actionStatus = ACTION_FINISH_ORDER
-
-                val paramFinishOrder = userSession.userId?.let { it1 ->
-                    UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
-                }
-                if (paramFinishOrder != null) {
-                    uohListViewModel.doFinishOrder(paramFinishOrder)
-                }
-
-                userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
+                RouteManager.route(context, ApplinkConstInternalOperational.SUCCESS_RESO)
+//                finishOrderBottomSheet.dismiss()
+//                currIndexNeedUpdate = index
+//                uohItemAdapter.showLoaderAtIndex(index)
+//
+//                var actionStatus = ""
+//                if (status.isNotEmpty() && status.toIntOrZero() < STATUS_600) actionStatus = ACTION_FINISH_ORDER
+//
+//                val paramFinishOrder = userSession.userId?.let { it1 ->
+//                    UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
+//                }
+//                if (paramFinishOrder != null) {
+//                    uohListViewModel.doFinishOrder(paramFinishOrder)
+//                }
+//
+//                userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
             }
 
             override fun onClickAjukanKomplain(orderId: String) {

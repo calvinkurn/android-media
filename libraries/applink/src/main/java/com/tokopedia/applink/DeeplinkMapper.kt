@@ -520,8 +520,16 @@ object DeeplinkMapper {
                         idList?.lastOrNull() ?: "")
             }),
             DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
+            DLP.matchPattern(ApplinkConst.RESOLUTION_SUCCESS) { _, uri, _, _ -> buildApplinkResolution(uri)}
         )
 
+    fun buildApplinkResolution(uri: Uri): String {
+        val url = uri.getQueryParameter("URL").orEmpty()
+        if (url.isEmpty()) {
+            return Uri.parse(ApplinkConstInternalOperational.SUCCESS_RESO).toString()
+        }
+        return Uri.parse(ApplinkConstInternalOperational.SUCCESS_RESO).buildUpon().appendQueryParameter("URL", url).build().toString()
+    }
     fun getTokopediaSchemeList():List<DLP>{
         return deeplinkPatternTokopediaSchemeList
     }
