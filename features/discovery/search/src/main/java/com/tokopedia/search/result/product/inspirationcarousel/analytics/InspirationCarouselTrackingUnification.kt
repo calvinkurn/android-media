@@ -1,14 +1,12 @@
-package com.tokopedia.search.analytics
+package com.tokopedia.search.result.product.inspirationcarousel.analytics
 
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
-import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option.Product
+import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import timber.log.Timber
 import javax.inject.Inject
 
 class InspirationCarouselTrackingUnification @Inject constructor() {
@@ -29,20 +27,20 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
         trackingQueue: TrackingQueue,
         data: Data,
     ) {
-            SearchTracking.trackEventImpressionInspirationCarouselUnification(
-                trackingQueue,
-                data.eventLabel,
-                arrayListOf(data.productDataLayer)
-            )
+        SearchTracking.trackEventImpressionInspirationCarouselUnification(
+            trackingQueue,
+            data.eventLabel,
+            arrayListOf(data.productDataLayer)
+        )
     }
 
     fun trackCarouselClick(data: Data) {
-            SearchTracking.trackEventClickInspirationCarouselUnification(
-                data.eventLabel,
-                data.product.inspirationCarouselType,
-                data.product.componentId,
-                arrayListOf(data.productDataLayer),
-            )
+        SearchTracking.trackEventClickInspirationCarouselUnification(
+            data.eventLabel,
+            data.product.inspirationCarouselType,
+            data.product.componentId,
+            arrayListOf(data.productDataLayer),
+        )
     }
 
     fun trackCarouselClickSeeAll(
