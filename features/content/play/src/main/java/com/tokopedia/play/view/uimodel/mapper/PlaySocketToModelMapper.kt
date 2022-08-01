@@ -9,13 +9,16 @@ import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
+import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -55,11 +58,13 @@ class PlaySocketToModelMapper @Inject constructor(
         return PlayQuickReplyInfoUiModel(input.data)
     }
 
-    fun mapProductSection(input: ProductSection): Triple<List<ProductSectionUiModel>, Int, String> {
-        return Triple(
-            input.sectionList.map(productTagMapper::mapSection),
-            input.config.peekProductCount,
-            input.config.bottomSheetTitle
+    fun mapProductSection(input: ProductSection): TagItemUiModel {
+        return TagItemUiModel(
+            product = ProductUiModel(input.sectionList.map(productTagMapper::mapSection), input.config.showProductTag),
+            maxFeatured = input.config.peekProductCount,
+            bottomSheetTitle = input.config.bottomSheetTitle,
+            resultState = ResultState.Success,
+            voucher = VoucherUiModel.Empty // set default value, because we're not updating voucher value
         )
     }
 

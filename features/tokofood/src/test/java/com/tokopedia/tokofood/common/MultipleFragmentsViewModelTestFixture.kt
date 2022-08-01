@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
@@ -152,6 +153,19 @@ abstract class MultipleFragmentsViewModelTestFixture {
             status = TokoFoodCartUtil.SUCCESS_STATUS,
             data = CartTokoFoodData(
                 success = TokoFoodCartUtil.SUCCESS_STATUS_INT
+            )
+        )
+    }
+
+    protected fun getPhoneVerificationAddToCartResponse(): CartTokoFoodResponse {
+        return CartTokoFoodResponse(
+            status = TokoFoodCartUtil.SUCCESS_STATUS,
+            data = CartTokoFoodData(
+                success = TokoFoodCartUtil.SUCCESS_STATUS_INT,
+                bottomSheet = CartTokoFoodBottomSheet(
+                    isShowBottomSheet = true,
+                    title = "Need phone verification"
+                )
             )
         )
     }

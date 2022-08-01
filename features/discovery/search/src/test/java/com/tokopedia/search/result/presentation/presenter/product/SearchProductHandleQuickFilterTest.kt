@@ -100,7 +100,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     private fun `Then verify SortFilterItem list`(quickFilterModel: DataValue) {
         val sortFilterItemList = listItemSlot.captured
         sortFilterItemList.listShouldBe(quickFilterModel.filter) { sortFilterItem, filter ->
-            sortFilterItem.title shouldBe filter.title
+            sortFilterItem.title shouldBe filter.chipName
         }
     }
 
