@@ -53,7 +53,7 @@ class UploadPrescriptionUseCase @Inject constructor(
             val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
             prescriptionImageBitmap.compress(
                 Bitmap.CompressFormat.JPEG,
-                EPharmacyImageQuality,
+                getImageQualitySafeFix(),
                 prescriptionByteArrayOutputStream
             )
             val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
@@ -73,6 +73,10 @@ class UploadPrescriptionUseCase @Inject constructor(
         } else {
             e.printStackTrace()
         }
+    }
+
+    private fun getImageQualitySafeFix() : Int {
+        return EPharmacyImageQuality
     }
 
     companion object {
