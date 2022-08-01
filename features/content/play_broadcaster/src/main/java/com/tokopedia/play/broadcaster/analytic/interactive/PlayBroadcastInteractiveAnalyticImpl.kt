@@ -1,6 +1,20 @@
 package com.tokopedia.play.broadcaster.analytic.interactive
 
-import com.tokopedia.play.broadcaster.analytic.*
+import com.tokopedia.play.broadcaster.analytic.KEY_EVENT
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_VIEW_EVENT
+import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_CATEGORY
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY
+import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_ACTION
+import com.tokopedia.play.broadcaster.analytic.KEY_EVENT_LABEL
+import com.tokopedia.play.broadcaster.analytic.KEY_CURRENT_SITE
+import com.tokopedia.play.broadcaster.analytic.currentSite
+import com.tokopedia.play.broadcaster.analytic.KEY_BUSINESS_UNIT
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_BUSINESS_UNIT
+import com.tokopedia.play.broadcaster.analytic.KEY_SHOP_ID
+import com.tokopedia.play.broadcaster.analytic.KEY_USER_ID
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT_SELLER
+import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_VIEW_EVENT_SELLER
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
