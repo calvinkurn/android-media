@@ -118,6 +118,10 @@ class PlayChatListView : ConstraintLayout {
         } catch (ignored: IllegalStateException) {}
     }
 
+    fun setMaxHeight(height: Float) {
+        if (rvChatList is MaximumHeightRecyclerView) rvChatList.setMaxHeight(height)
+    }
+
     fun setChatList(chatList: List<PlayChatUiModel>) {
         chatAdapter.submitList(chatList)
     }

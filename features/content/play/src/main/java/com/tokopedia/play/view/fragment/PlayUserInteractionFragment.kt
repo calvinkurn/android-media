@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -1230,6 +1231,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
             playFragment.onBottomInsetsViewShown(getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply))
+            chatListView?.setMaxHeight(
+                requireContext().resources.getDimensionPixelSize(
+                    R.dimen.play_chat_vertical_max_height
+                ).toFloat()
+            )
         }
     }
 
@@ -1243,7 +1249,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private suspend fun getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
         return try {
-            getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply)
+            getVideoBoundsProvider().getVideoBottomBoundsOnKeyboardShown(
+                requireView(),
+                estimatedKeyboardHeight,
+                hasQuickReply,
+            )
         } catch (e: Throwable) { getScreenHeight() }
     }
 

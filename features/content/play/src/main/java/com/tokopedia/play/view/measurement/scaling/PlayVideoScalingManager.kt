@@ -13,6 +13,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play_common.util.extension.globalVisibleRect
 import com.tokopedia.unifycomponents.dpToPx
+import kotlin.math.abs
 
 /**
  * Created by jegul on 05/08/20
@@ -76,7 +77,7 @@ class PlayVideoScalingManager(
         }
     }
 
-    override fun onBottomInsetsShown(bottomMostBounds: Int, videoPlayer: PlayVideoPlayerUiModel, videoOrientation: VideoOrientation) {
+    override fun onBottomInsetsShown(destHeight: Int, videoPlayer: PlayVideoPlayerUiModel, videoOrientation: VideoOrientation) {
         flInteraction.layoutParams = flInteraction.layoutParams.apply {
             height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
@@ -88,9 +89,9 @@ class PlayVideoScalingManager(
 
         videoScaleAnimator =
                 if (videoOrientation.isHorizontal)
-                    animateInsetsShownIfVideoLandscape(view, bottomMostBounds)
+                    animateInsetsShownIfVideoLandscape(view, destHeight)
                 else
-                    animateInsetsShownIfVideoPortrait(view, bottomMostBounds)
+                    animateInsetsShownIfVideoPortrait(view, destHeight)
 
         videoScaleAnimator.start()
     }
@@ -167,33 +168,60 @@ class PlayVideoScalingManager(
         return animator
     }
 
-    private fun animateInsetsShownIfVideoPortrait(view: View, bottomMostBounds: Int): Animator {
+    private fun animateInsetsShownIfVideoPortrait(view: View, destHeight: Int): Animator {
         val animator = AnimatorSet()
 
-        val currentHeight = view.height
-        val currentWidth = view.width
-        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
-        val scaleFactor =
-                if (currentHeight <= 0) DEFAULT_VERTICAL_SCALE_FACTOR
-                else destHeight / currentHeight
+        val originalHeight = abs(view.bottom - view.top)
+        val scaleFactor = destHeight / originalHeight.toFloat()
+
+        if (!scaleFactor.isFinite()) return animator
+
         val animatorY = ObjectAnimator.ofFloat(view, View.SCALE_Y, view.scaleY, scaleFactor)
         val animatorX = ObjectAnimator.ofFloat(view ,View.SCALE_X, view.scaleX, scaleFactor)
+        val translateY = ObjectAnimator.ofFloat(
+            view,
+            View.TRANSLATION_Y,
+            view.translationY,
+            ivClose.top.toFloat() - view.top
+        )
         animatorY.duration = ANIMATION_DURATION
         animatorX.duration = ANIMATION_DURATION
+        translateY.duration = ANIMATION_DURATION
 
-        if (currentWidth > 0) view.pivotX = (currentWidth / 2).toFloat()
-        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
-        val marginTopXt = marginTop * scaleFactor
-        view.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
+        view.pivotX = view.width / 2f
+        view.pivotY = 0f
 
-        mListener?.onFinalBottomMostBoundsScalingCalculated(bottomMostBounds)
         animator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsShownAnimatorListener)
-            playTogether(animatorX, animatorY)
+            playTogether(animatorX, animatorY, translateY)
         }
 
         return animator
+//        val animator = AnimatorSet()
+//
+//        val currentHeight = view.height
+//        val currentWidth = view.width
+//        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
+//        val scaleFactor =
+//                if (currentHeight <= 0) DEFAULT_VERTICAL_SCALE_FACTOR
+//                else destHeight / currentHeight
+//        val animatorY = ObjectAnimator.ofFloat(view, View.SCALE_Y, view.scaleY, scaleFactor)
+//        val animatorX = ObjectAnimator.ofFloat(view ,View.SCALE_X, view.scaleX, scaleFactor)
+//        animatorY.duration = ANIMATION_DURATION
+//        animatorX.duration = ANIMATION_DURATION
+//
+//        if (currentWidth > 0) view.pivotX = (currentWidth / 2).toFloat()
+//        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
+//        val marginTopXt = marginTop * scaleFactor
+//        view.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
+//
+//        mListener?.onFinalBottomMostBoundsScalingCalculated(bottomMostBounds)
+//        animator.apply {
+//            removeAllListeners()
+//            addListener(onBottomInsetsShownAnimatorListener)
+//            playTogether(animatorX, animatorY)
+//        }
+//
+//        return animator
     }
 
     private fun animateInsetsHidden(view: View): Animator {
