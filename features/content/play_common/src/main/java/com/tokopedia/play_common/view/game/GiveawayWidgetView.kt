@@ -128,7 +128,7 @@ class GiveawayWidgetView : ConstraintLayout {
     }
 
     private val scaleX = addSpringAnim(
-        view = binding.ivTap, property = SpringAnimation.SCALE_X, startPosition = 0.5f,
+        view = binding.ivTap, property = SpringAnimation.SCALE_X, startPosition = 0f,
         finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 24f)
 
     private val scaleY = addSpringAnim(
