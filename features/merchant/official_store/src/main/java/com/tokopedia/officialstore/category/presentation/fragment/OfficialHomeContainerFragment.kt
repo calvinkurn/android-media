@@ -416,7 +416,10 @@ class OfficialHomeContainerFragment
             setIcon(getToolbarIcons())
             setupSearchbar(
                     hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
-                    applink = ApplinkConstant.OFFICIAL_SEARCHBAR
+                    applink = String.format("%s%s%s",
+                        ApplinkConstant.OFFICIAL_SEARCHBAR, "&hint=",
+                        getString(R.string.os_query_search)
+                    )
             )
             show()
         }
