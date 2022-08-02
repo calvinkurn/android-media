@@ -53,16 +53,16 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
         imgItemShopImage.setImageUrl(data.logoImageURL)
         imgItemShopBadge.setImageUrl(data.badgeImageURL)
 
-        buttonFollowState(data.isFollow)
+        buttonFollowState(data.isFollow, data.isLoading)
         onClickListener(data, position)
     }
 
-    private fun buttonFollowState(isFollow: Boolean) = with(binding) {
+    private fun buttonFollowState(isFollowState: Boolean, isLoadingState: Boolean) = with(binding) {
         btnItemShop.apply {
-            text = context.getString(if (isFollow) btn_text_following else btn_text_follow)
-            buttonVariant = if (isFollow) GHOST else FILLED
-            buttonType = if (isFollow) ALTERNATE else MAIN
-            isLoading = false
+            text = context.getString(if (isFollowState) btn_text_following else btn_text_follow)
+            buttonVariant = if (isFollowState) GHOST else FILLED
+            buttonType = if (isFollowState) ALTERNATE else MAIN
+            isLoading = isLoadingState
         }
     }
 
@@ -76,10 +76,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
             )
         }
         imgItemShopClose.setOnClickListener { mListener?.onShopRecomCloseClicked(data.id) }
-        btnItemShop.setOnClickListener {
-            btnItemShop.isLoading = true
-            mListener?.onShopRecomFollowClicked(data.id)
-        }
+        btnItemShop.setOnClickListener { mListener?.onShopRecomFollowClicked(data.id) }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

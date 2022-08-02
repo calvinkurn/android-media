@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -232,6 +231,8 @@ class UserProfileViewModel @AssistedInject constructor(
             val followInfo = _followInfo.value
             val currentItem = _shopRecom.value.items.find { it.id == itemId } ?: return@launchCatchError
 
+            updateLoadingStateFollowShopRecom(itemId, true)
+
             val result = when (currentItem.type) {
                 FOLLOW_TYPE_SHOP -> {
                     repo.shopFollowUnfollow(
@@ -251,18 +252,29 @@ class UserProfileViewModel @AssistedInject constructor(
                     _profileInfo.update { repo.getProfile(followInfo.userID) }
                     _shopRecom.update { data ->
                         data.copy(items = data.items.map {
-                            if (currentItem.id == it.id) it.copy(isFollow = !it.isFollow)
+                            if (currentItem.id == it.id) it.copy(isFollow = !it.isFollow, isLoading = !it.isLoading)
                             else it
                         })
                     }
                 }
                 is MutationUiModel.Error -> {
-                    _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollowShopRecom(result.message, currentItem))
+                    updateLoadingStateFollowShopRecom(itemId, false)
+                    _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(result.message))
                 }
             }
         }, onError = {
-            _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollowShopRecom("", ShopRecomUiModelItem()))
+            _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
         })
+    }
+
+    private fun updateLoadingStateFollowShopRecom(itemID: Long, isLoadingState: Boolean) {
+        _shopRecom.update { data ->
+            data.copy(
+                items = data.items.map {
+                    if (itemID == it.id) it.copy(isLoading = isLoadingState)
+                    else it
+                })
+        }
     }
 
     private fun handleRemoveShopRecomItem(itemID: Long) {
