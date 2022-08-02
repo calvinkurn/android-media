@@ -238,8 +238,6 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkType ->
-            if(originalBitmap == null)
-                originalBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
             originalBitmap?.let { bitmap ->
                 val text = "Toko Maju Jaya Perkasa Abadi Bangunan"
                 val result = watermarkFilterRepositoryImpl.watermark(
@@ -263,8 +261,10 @@ class DetailEditorFragment @Inject constructor(
                 viewBinding?.imgUcropPreview?.apply {
                     initializeBrightness(uri)
                     onLoadComplete = {
-                        val newColorFilter = brightnessFilterRepositoryImpl.brightness(brightnessValue)
-                        this.cropImageView.colorFilter = newColorFilter
+                        initOriginalBitmap()
+//                        val newColorFilter = brightnessFilterRepositoryImpl.brightness(brightnessValue)
+//                        this.cropImageView.colorFilter = newColorFilter
+                        readPreviousState(data)
                     }
                 }
                 brightnessComponent.setupView(brightnessValue)
@@ -273,6 +273,7 @@ class DetailEditorFragment @Inject constructor(
             EditorToolType.REMOVE_BACKGROUND -> {
                 viewBinding?.imgUcropPreview?.apply {
                     initializeRemoveBackground(uri)
+                    initOriginalBitmap()
                 }
                 removeBgComponent.setupView()
             }
@@ -282,13 +283,14 @@ class DetailEditorFragment @Inject constructor(
                 viewBinding?.imgUcropPreview?.apply {
                     initializeContrast(uri)
                     onLoadComplete = {
-                        val originalBitmap = cropImageView.drawable.toBitmap()
-                        val contrastBitmap = contrastFilterRepositoryImpl.contrast(
-                            contrastValue,
-                            originalBitmap.copy(originalBitmap.config, true)
-                        )
-
-                        this.cropImageView.setImageBitmap(contrastBitmap)
+                        initOriginalBitmap()
+//                        val contrastBitmap = contrastFilterRepositoryImpl.contrast(
+//                            contrastValue,
+//                            originalBitmap!!.copy(originalBitmap!!.config, true)
+//                        )
+//
+//                        this.cropImageView.setImageBitmap(contrastBitmap)
+                        readPreviousState(data)
                     }
                 }
                 contrastComponent.setupView(contrastValue)
@@ -299,6 +301,7 @@ class DetailEditorFragment @Inject constructor(
                 viewBinding?.imgUcropPreview?.apply {
                     initializeWatermark(uri)
                     onLoadComplete = {
+                        initOriginalBitmap()
                         setWatermarkDrawerItem()
                     }
                 }
@@ -311,22 +314,24 @@ class DetailEditorFragment @Inject constructor(
                     initializeRotate(uri)
                     disabledTouchEvent()
                     onLoadComplete = {
-                        data.rotateData?.let {
-                            if(it.scaleX < 0f){
-                                rotateFilterRepositoryImpl.mirror(this)
-                            }
-                            if(it.scaleY < 0f){
-                                rotateFilterRepositoryImpl.rotate(this, RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
-                                rotateFilterRepositoryImpl.mirror(this)
-                            }
-
-                            this.cropImageView.post {
-                                if(it.orientationChangeNumber > 0){
-                                    rotateFilterRepositoryImpl.rotate(this, it.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
-                                }
-                                rotateFilterRepositoryImpl.rotate(this, it.rotateDegree, false)
-                            }
-                        }
+                        initOriginalBitmap()
+//                        data.rotateData?.let {
+//                            if(it.scaleX < 0f){
+//                                rotateFilterRepositoryImpl.mirror(this)
+//                            }
+//                            if(it.scaleY < 0f){
+//                                rotateFilterRepositoryImpl.rotate(this, RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
+//                                rotateFilterRepositoryImpl.mirror(this)
+//                            }
+//
+//                            this.cropImageView.post {
+//                                if(it.orientationChangeNumber > 0){
+//                                    rotateFilterRepositoryImpl.rotate(this, it.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
+//                                }
+//                                rotateFilterRepositoryImpl.rotate(this, it.rotateDegree, false)
+//                            }
+//                        }
+                        readPreviousState(data)
                     }
                 }
                 rotateComponent.setupView(data)
@@ -340,8 +345,49 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    private fun initOriginalBitmap(){
+        if(originalBitmap == null)
+            originalBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
+    }
+
+    private fun readPreviousState(previousState: EditorDetailUiModel){
+        // === Brightness ===
+        if(previousState.brightnessValue != null){
+            viewBinding?.imgUcropPreview?.cropImageView?.colorFilter =
+                brightnessFilterRepositoryImpl.brightness(previousState.brightnessValue!!)
+        }
+        // ==== Contrast ===
+        if(previousState.contrastValue != null ){
+            viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(
+                contrastFilterRepositoryImpl.contrast(
+                    previousState.contrastValue!!,
+                    originalBitmap!!
+                )
+            )
+        }
+        // ==== Rotate ===
+        if(previousState.rotateData != null){
+            viewBinding?.imgUcropPreview?.let {
+                val rotateData = previousState.rotateData!!
+                if(rotateData.scaleX < 0f){
+                    rotateFilterRepositoryImpl.mirror(it)
+                }
+                if(rotateData.scaleY < 0f){
+                    rotateFilterRepositoryImpl.rotate(it, RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
+                    rotateFilterRepositoryImpl.mirror(it)
+                }
+
+                it.cropImageView.post {
+                    if(rotateData.orientationChangeNumber > 0){
+                        rotateFilterRepositoryImpl.rotate(it, rotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
+                    }
+                    rotateFilterRepositoryImpl.rotate(it, rotateData.rotateDegree, false)
+                }
+            }
+        }
+    }
+
     private fun setWatermarkDrawerItem() {
-        val originalBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
         originalBitmap?.let { bitmap ->
             // todo: implement text from user data
             val text = "Toko Maju Jaya Perkasa Abadi Bangunan"

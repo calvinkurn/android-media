@@ -166,16 +166,16 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 val stateLimit = (editorUiModel.editList.size - 1) - editorUiModel.backValue
 
                 // limit for remove background
-                val isBackgroundRemoveIncluded = stateLimit > editorUiModel.removeBackgroundStartState
+//                val isBackgroundRemoveIncluded = stateLimit > editorUiModel.removeBackgroundStartState
 
                 editorUiModel.editList.forEachIndexed { index, item ->
                     // if index is more than undo/redo state and not remove background skip
-                    if (index > stateLimit && !isBackgroundRemoveIncluded) {
+                    if (index > stateLimit) {
                         return@forEachIndexed
                     }
 
                     // if item is removed background and index is less than remove background start state
-                    if ( index < editorUiModel.removeBackgroundStartState && isBackgroundRemoveIncluded ) {
+                    if ( index < editorUiModel.removeBackgroundStartState) {
                         return@forEachIndexed
                     }
 
