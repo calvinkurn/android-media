@@ -2,17 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_dynamic_product_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <View
-        android:id="@+id/pdp_space_list"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="?actionBarSize"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipeRefreshPdp"
@@ -23,7 +15,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:focusableInTouchMode="true"
-        app:layout_constraintTop_toBottomOf="@+id/pdp_space_list">
+        app:layout_constraintTop_toBottomOf="@+id/pdp_navtoolbar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_pdp"
@@ -32,7 +24,7 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/pdp_toolbar_shadow"
         android:layout_width="0dp"
         android:layout_height="84dp"
@@ -40,6 +32,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:unify_image_corner_radius="0"
         android:contentDescription="pdp_toolbar_shadow"
         tools:ignore="HardcodedText" />
 

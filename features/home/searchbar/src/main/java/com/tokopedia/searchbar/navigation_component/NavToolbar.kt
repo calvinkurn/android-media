@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.R
@@ -730,8 +731,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun setTitleTextColorBasedOnTheme() {
         toolbarThemeCondition(
-                lightCondition = { tvToolbarTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)) },
-                darkCondition = { tvToolbarTitle.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+            lightCondition = { tvToolbarTitle.setTextColor(darkIconColor.orZero()) },
+            darkCondition = { tvToolbarTitle.setTextColor(lightIconColor.orZero()) }
         )
     }
 
