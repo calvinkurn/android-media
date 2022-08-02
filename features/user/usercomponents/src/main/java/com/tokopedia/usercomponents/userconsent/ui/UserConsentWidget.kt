@@ -142,7 +142,7 @@ class UserConsentWidget : FrameLayout,
             ?: context.getString(R.string.user_consent_default_action_text)
 
         val consentType = typedArray.getInt(R.styleable.UserConsentWidget_defaultTemplate, -1)
-        defaultTemplate = when(consentType) {
+        defaultTemplate = when(consentType.toString()) {
             TNC_MANDATORY.value -> TNC_MANDATORY
             TNC_PRIVACY_MANDATORY.value -> TNC_PRIVACY_MANDATORY
             TNC_OPTIONAL.value -> TNC_OPTIONAL
