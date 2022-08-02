@@ -11,11 +11,11 @@ class SuspendReasonMapper @Inject constructor() {
 
             SuspendReasonUiModel(
                 productID = this?.productID ?: "0",
-                infoImpact = (this?.infoImpact ?: listOf()).joinToString(separator = ","),
-                infoToPrevent = (this?.infoToPrevent ?: listOf()).joinToString(separator = ","),
-                infoReason = (this?.infoReason ?: listOf()).joinToString(separator = ","),
-                infoToResolve = (this?.infoToResolve ?: listOf()),
-                infoFootNote = (this?.infoFootNote ?: listOf()).joinToString(separator = ","),
+                infoImpact = (this?.infoImpact.orEmpty()).joinToString(separator = ","),
+                infoToPrevent = (this?.infoToPrevent.orEmpty()).joinToString(separator = ","),
+                infoReason = (this?.infoReason.orEmpty()).joinToString(separator = ","),
+                infoToResolve = (this?.infoToResolve.orEmpty()),
+                infoFootNote = (this?.infoFootNote.orEmpty()).joinToString(separator = ","),
                 buttonApplink = this?.urlHelpCenter ?: ""
             )
         }
