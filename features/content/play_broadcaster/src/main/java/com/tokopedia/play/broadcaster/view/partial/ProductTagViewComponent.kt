@@ -120,7 +120,6 @@ class ProductTagViewComponent(
 
     private fun showCoachMark() {
         if (isCoachMarkShown) return
-        if(rvProductTag.childCount < 1) return
 
         rvProductTag.addOneTimeGlobalLayoutListener {
             val holder = rvProductTag.findViewHolderForAdapterPosition(0)
