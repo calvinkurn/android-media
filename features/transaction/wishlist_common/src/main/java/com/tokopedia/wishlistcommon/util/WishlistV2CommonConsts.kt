@@ -6,7 +6,7 @@ object WishlistV2CommonConsts {
     const val TOASTER_RED = "red"
     const val OPEN_WISHLIST = "OPEN_WISHLIST"
     const val OK = "OK"
-    const val PRODUCT_IDs = "product_ids"
+    const val PRODUCT_IDs = "productIds"
     const val SOURCE = "source"
     const val PARAMS = "params"
     const val COLLECTION_NAME = "collection_name"

@@ -25,8 +25,8 @@ class GetWishlistCollectionsBottomSheetUseCase @Inject constructor(
 
     companion object {
         const val query = """
-            query GetWishlistCollectionsBottomsheet(${'$'}params:GetWishlistCollectionBottomsheetParams){
-              get_wishlist_collections_bottomsheet(params:${'$'}params){
+            query GetWishlistCollectionsBottomsheet(${'$'}productIds: String, ${'$'}source: String){
+              get_wishlist_collections_bottomsheet(params:{product_ids: ${'$'}productIds, source: ${'$'}source}){
                 status
                 error_message
                 data{

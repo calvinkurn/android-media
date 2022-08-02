@@ -5,7 +5,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.SOURCE
 
 data class GetWishlistCollectionsBottomSheetParams(
-    @SerializedName("product_ids")
+    @SerializedName("productIds")
     var productIds: String = "",
 
     @SerializedName("source")

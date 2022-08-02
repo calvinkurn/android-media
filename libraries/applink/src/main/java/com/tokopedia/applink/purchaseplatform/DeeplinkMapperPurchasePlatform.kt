@@ -10,7 +10,9 @@ import com.tokopedia.remoteconfig.RollenceKey
 
 object DeeplinkMapperPurchasePlatform {
     fun getRegisteredNavigationWishlist(context: Context): String {
-        return if (isWishlistV2(context)) {
+        return if (isUsingWishlistCollection(context)) {
+            ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION
+        } else if (isWishlistV2(context)) {
             ApplinkConstInternalPurchasePlatform.WISHLIST_V2
         } else {
             ApplinkConsInternalHome.HOME_WISHLIST
