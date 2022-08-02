@@ -1,4 +1,4 @@
-package com.tokopedia.centralizedpromoold.view
+package com.tokopedia.centralizedpromo.view
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
@@ -6,21 +6,20 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
+import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
+import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
-import com.tokopedia.centralizedpromoold.common.util.CentralizedPromoResourceProviderOld
-import com.tokopedia.centralizedpromoold.view.model.PromoCreationListUiModelOld
-import com.tokopedia.centralizedpromoold.view.model.PromoCreationUiModelOld
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.sellerhome.R
 
 
-object PromoCreationStaticDataOld {
+object PromoCreationStaticData {
 
     private const val SELLER_ADMIN_ARTICLE = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
 
     fun provideStaticData(
-        resourceProvider: CentralizedPromoResourceProviderOld,
+        resourceProvider: CentralizedPromoResourceProvider,
         broadcastChatExtra: String,
         broadcastChatUrl: String,
         freeShippingEnabled: Boolean,
@@ -31,38 +30,42 @@ object PromoCreationStaticDataOld {
         isTokopediaPlayFirstTime: Boolean,
         isProductCouponEnabled: Boolean,
         isSlashPriceEnabled: Boolean,
-        isSlashPriceEligible: Boolean
-    ): PromoCreationListUiModelOld {
-        //TODO PULL RELEASE
+        isSlashPriceEligible: Boolean,
+        isEnableFlashSale: Boolean
+    ): PromoCreationListUiModel {
+
         val promoItems = mutableListOf(
-            PromoCreationUiModelOld(
-                R.drawable.ic_sah_flash_sale_toko,
-                resourceProvider.getPromoCreationTitleFlashSaleToko(),
-                resourceProvider.getPromoCreationDescFlashSaleToko(),
-                resourceProvider.getPromoCreationNewInfoFlashSaleToko(),
-                ApplinkConst.SellerApp.SELLER_SHOP_FLASH_SALE,
-                resourceProvider.getPromoCreationLabelFlashSaleToko(),
-            ),
-            PromoCreationUiModelOld(
-                R.drawable.ic_sah_tokomember,
-                resourceProvider.getPromoCreationTitleTokoMember(),
-                resourceProvider.getPromoCreationDescriptionTokoMember(),
-                String.EMPTY,
-                ApplinkConst.SellerApp.TOKOMEMBER,
-                resourceProvider.getPromoCreationLabelTokoMember()
-            ),
-            PromoCreationUiModelOld(
-                R.drawable.ic_tokopedia_play,
-                resourceProvider.getPromoCreationTitleTokopediaPlay(),
-                resourceProvider.getPromoCreationDescriptionTokopediaPlay(),
-                "",
-                if (isTokopediaPlayFirstTime) {
-                    getFirstTimeApplink(SellerHomeApplinkConst.TYPE_TOKOPEDIA_PLAY)
-                } else {
-                    ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
-                }
-            )
+                PromoCreationUiModel(
+                        R.drawable.ic_sah_tokomember,
+                        resourceProvider.getPromoCreationTitleTokoMember(),
+                        resourceProvider.getPromoCreationDescriptionTokoMember(),
+                        String.EMPTY,
+                        ApplinkConst.SellerApp.TOKOMEMBER,
+                        resourceProvider.getPromoCreationLabelTokoMember()
+                ),
+                PromoCreationUiModel(
+                        R.drawable.ic_tokopedia_play,
+                        resourceProvider.getPromoCreationTitleTokopediaPlay(),
+                        resourceProvider.getPromoCreationDescriptionTokopediaPlay(),
+                        "",
+                        if (isTokopediaPlayFirstTime) {
+                            getFirstTimeApplink(SellerHomeApplinkConst.TYPE_TOKOPEDIA_PLAY)
+                        } else {
+                            ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
+                        }
+                )
         )
+
+        if (isEnableFlashSale) {
+            promoItems.add(0, PromoCreationUiModel(
+                    R.drawable.ic_sah_flash_sale_toko,
+                    resourceProvider.getPromoCreationTitleFlashSaleToko(),
+                    resourceProvider.getPromoCreationDescFlashSaleToko(),
+                    resourceProvider.getPromoCreationNewInfoFlashSaleToko(),
+                    ApplinkConst.SellerApp.SELLER_SHOP_FLASH_SALE,
+                    resourceProvider.getPromoCreationLabelFlashSaleToko(),
+            ))
+        }
 
         if (isSlashPriceEnabled) {
             val slashPriceApplink =
@@ -72,7 +75,7 @@ object PromoCreationStaticDataOld {
                     getSlashPriceApplink()
                 }
             promoItems.add(
-                PromoCreationUiModelOld(
+                PromoCreationUiModel(
                     R.drawable.ic_sah_slash_price,
                     resourceProvider.getPromoCreationTitleSlashPrice(),
                     resourceProvider.getPromoCreationDescriptionSlashPrice(),
@@ -85,26 +88,26 @@ object PromoCreationStaticDataOld {
 
         promoItems.addAll(
             listOf(
-                PromoCreationUiModelOld(
+                PromoCreationUiModel(
                     R.drawable.sh_ic_top_ads_color,
                     resourceProvider.getPromoCreationTitleTopAds(),
                     resourceProvider.getPromoCreationDescriptionTopAds(),
                     "",
-                    if (isTopAdsOnBoardingEnable) {
+                    if (isTopAdsOnBoardingEnable){
                         ApplinkConst.SellerApp.TOPADS_ONBOARDING
-                    } else {
+                    }else{
                         ApplinkConst.CustomerApp.TOPADS_DASHBOARD
                     }
 
                 ),
-                PromoCreationUiModelOld(
+                PromoCreationUiModel(
                     R.drawable.ic_broadcast_chat,
                     resourceProvider.getPromoCreationTitleBroadcastChat(),
                     resourceProvider.getPromoCreationDescriptionBroadcastChat(),
                     broadcastChatExtra,
                     String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
                 ),
-                PromoCreationUiModelOld(
+                PromoCreationUiModel(
                     R.drawable.ic_voucher_cashback,
                     resourceProvider.getPromoCreationTitleMerchantVoucher(),
                     resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
@@ -129,7 +132,7 @@ object PromoCreationStaticDataOld {
             )
 
             promoItems.add(
-                PromoCreationUiModelOld(
+                PromoCreationUiModel(
                     R.drawable.ic_sah_free_shipping,
                     resourceProvider.getPromoCreationTitleFreeShipping(),
                     resourceProvider.getPromoCreationDescriptionFreeShipping(),
@@ -147,7 +150,7 @@ object PromoCreationStaticDataOld {
                     ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
                 }
             promoItems.add(
-                PromoCreationUiModelOld(
+                PromoCreationUiModel(
                     R.drawable.ic_sah_voucher_product,
                     resourceProvider.getPromoCreationTitleVoucherProduct(),
                     resourceProvider.getPromoCreationDescriptionVoucherProduct(),
@@ -156,7 +159,7 @@ object PromoCreationStaticDataOld {
                 )
             )
         }
-        return PromoCreationListUiModelOld(
+        return PromoCreationListUiModel(
             items = promoItems,
             errorMessage = ""
         )
