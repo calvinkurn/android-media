@@ -1,8 +1,8 @@
-package com.tokopedia.search.analytics
+package com.tokopedia.search.result.product.inspirationcarousel.analytics
 
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 
 object InspirationCarouselTrackingUnificationDataMapper {
     private val SearchParameter?.queryKey: String

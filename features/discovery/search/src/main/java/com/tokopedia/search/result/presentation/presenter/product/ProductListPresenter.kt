@@ -39,7 +39,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterInput
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.mapper.InspirationCarouselProductDataViewMapper
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
@@ -53,7 +53,7 @@ import com.tokopedia.search.result.presentation.model.CarouselProductType
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -1343,9 +1343,9 @@ class ProductListPresenter @Inject constructor(
         else DynamicCarouselOption(option)
 
     private fun determineInspirationCarouselProductType(
-            type: String,
-            option: InspirationCarouselDataView.Option,
-            product: InspirationCarouselDataView.Option.Product,
+        type: String,
+        option: InspirationCarouselDataView.Option,
+        product: InspirationCarouselDataView.Option.Product,
     ): CarouselProductType {
         return if (type == TYPE_INSPIRATION_CAROUSEL_KEYWORD)
             BroadMatchProduct(false)
@@ -2253,10 +2253,10 @@ class ProductListPresenter @Inject constructor(
 
     //region Inspiration Carousel Chips
     override fun onInspirationCarouselChipsClick(
-            adapterPosition: Int,
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            searchParameter: Map<String, Any>,
+        adapterPosition: Int,
+        inspirationCarouselViewModel: InspirationCarouselDataView,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        searchParameter: Map<String, Any>,
     ) {
         if (isViewNotAttached) return
 
@@ -2276,8 +2276,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun changeActiveInspirationCarouselChips(
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        inspirationCarouselViewModel: InspirationCarouselDataView,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
     ) {
         inspirationCarouselViewModel.options.forEach {
             it.isChipsActive = false
@@ -2311,9 +2311,9 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun createGetInspirationCarouselChipProductsSubscriber(
-            adapterPosition: Int,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            inspirationCarouselTitle: String,
+        adapterPosition: Int,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        inspirationCarouselTitle: String,
     ): Subscriber<InspirationCarouselChipsProductModel> {
         return object : Subscriber<InspirationCarouselChipsProductModel>() {
             override fun onCompleted() { }
@@ -2332,10 +2332,10 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getInspirationCarouselChipsSuccess(
-            adapterPosition: Int,
-            inspirationCarouselChipsProductModel: InspirationCarouselChipsProductModel,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            inspirationCarouselTitle: String,
+        adapterPosition: Int,
+        inspirationCarouselChipsProductModel: InspirationCarouselChipsProductModel,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        inspirationCarouselTitle: String,
     ) {
         if (isViewNotAttached) return
 
