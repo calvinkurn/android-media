@@ -644,6 +644,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
             val pageSource: String
             val icons: IconBuilder
+            viewLifecycleOwner.lifecycle.addObserver(wishlistCollectionDetailNavtoolbar)
             if(activityWishlistV2 != PARAM_HOME) {
                 wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 icons = IconBuilder(IconBuilderFlag()).apply {
