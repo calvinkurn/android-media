@@ -192,6 +192,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var localCacheModel: LocalCacheModel? = null
     private var pageLoadTimeMonitoring: TokoFoodHomePageLoadTimeMonitoring? = null
     private var isShowMiniCart = false
+    private var isFromOtherPage = false
     private var totalScrolled = 0
     private val spaceZero: Int
        get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)?.toInt() ?: 0
@@ -273,6 +274,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onStop() {
         collectJob?.cancel()
+        isFromOtherPage = true
         super.onStop()
     }
 
@@ -567,12 +569,16 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                        if (viewModel.isShownEmptyState()){
-                            hideMiniCartHome()
-                            isShowMiniCart = false
+                        if(!isFromOtherPage) {
+                            if (viewModel.isShownEmptyState()) {
+                                hideMiniCartHome()
+                                isShowMiniCart = false
+                            } else {
+                                showMiniCartHome()
+                                isShowMiniCart = true
+                            }
                         } else {
-                            showMiniCartHome()
-                            isShowMiniCart = true
+                            isFromOtherPage = false
                         }
                     }
                     UiEvent.EVENT_FAILED_LOAD_CART -> {
