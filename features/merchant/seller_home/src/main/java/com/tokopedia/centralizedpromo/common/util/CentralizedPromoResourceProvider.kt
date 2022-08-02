@@ -69,14 +69,6 @@ class CentralizedPromoResourceProvider @Inject constructor(
         return getString(R.string.centralized_promo_promo_creation_tokopedia_play_description).orEmpty()
     }
 
-    fun getPromoCreationTitleSlashPrice(): String {
-        return getString(R.string.centralized_promo_promo_creation_slash_price_title).orEmpty()
-    }
-
-    fun getPromoCreationDescriptionSlashPrice(): String {
-        return getString(R.string.centralized_promo_promo_creation_slash_price_description).orEmpty()
-    }
-
     fun getPromoCreationTitleTokoMember(): String {
         return getString(R.string.centralized_promo_promo_creation_tokomember_title).orEmpty()
     }
@@ -87,6 +79,38 @@ class CentralizedPromoResourceProvider @Inject constructor(
 
     fun getPromoCreationLabelTokoMember(): String {
         return getString(R.string.centralized_promo_promo_creation_tokomember_tag_label).orEmpty()
+    }
+
+    fun getPromoCreationTitleSlashPrice(): String {
+        return getString(R.string.centralized_promo_promo_creation_slash_price_title).orEmpty()
+    }
+
+    fun getPromoCreationDescriptionSlashPrice(): String {
+        return getString(R.string.centralized_promo_promo_creation_slash_price_description).orEmpty()
+    }
+
+    fun getPromoCreationLabelSlashPrice(): String {
+        return getString(R.string.centralized_promo_promo_creation_slash_price_tag_label).orEmpty()
+    }
+
+    fun getPromoCreationNewInfoSlashPrice(): String {
+        return getString(R.string.centralized_promo_promo_creation_slash_price_new_info).orEmpty()
+    }
+
+    fun getPromoCreationTitleFlashSaleToko(): String {
+        return getString(R.string.centralized_promo_promo_creation_flash_sale_toko_title).orEmpty()
+    }
+
+    fun getPromoCreationDescFlashSaleToko(): String {
+        return getString(R.string.centralized_promo_promo_creation_flash_sale_toko_description).orEmpty()
+    }
+
+    fun getPromoCreationLabelFlashSaleToko(): String {
+        return getString(R.string.centralized_promo_promo_creation_flash_sale_toko_tag_label).orEmpty()
+    }
+
+    fun getPromoCreationNewInfoFlashSaleToko(): String {
+        return getString(R.string.centralized_promo_promo_creation_flash_sale_toko_new_info).orEmpty()
     }
 
 }

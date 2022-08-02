@@ -104,7 +104,8 @@ class GroupVariantEditSelectAdapter(val onSelectionListener: OnSelectionListener
                         stockAlertStatus = product.stockAlertStatus,
                         stock = product.stock,
                         variantFirst = product.variantFirst,
-                        variantSecond = product.variantSecond
+                        variantSecond = product.variantSecond,
+                        maxStock = product.maxStock
                     )
                 )
             }

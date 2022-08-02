@@ -200,7 +200,7 @@ class NewShopPageViewModel @Inject constructor(
                     dispatcherProvider.io,
                     block = {
                         getProductListData(
-                                shopId.toString(),
+                                shopId,
                                 page,
                                 itemPerPage,
                                 shopProductFilterParameter,
@@ -289,7 +289,7 @@ class NewShopPageViewModel @Inject constructor(
                 dispatcherProvider.io,
                 block = {
                     getProductListData(
-                        shopId.toString(),
+                        shopId,
                         page,
                         itemPerPage,
                         shopProductFilterParameter,
@@ -597,4 +597,5 @@ class NewShopPageViewModel @Inject constructor(
         useCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopId.toString())
         return useCase.executeOnBackground()
     }
+
 }

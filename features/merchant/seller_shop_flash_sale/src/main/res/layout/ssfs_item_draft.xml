@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typographyDraftTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tool:text="Title max 15 ch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typographyDraftDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            tool:text="23 Draft Produk"
+            app:typographyType="body_3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/typographyDraftTitle" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typographyDraftStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/typographyDraftDesc"
+            app:typographyType="body_3"
+            tool:text="17/01/2020\n08:30 WIB" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typographyDraftDelimiter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="12dp"
+            android:text="@string/draftlist_date_delimiter"
+            app:layout_constraintStart_toEndOf="@+id/typographyDraftStart"
+            app:layout_constraintBottom_toBottomOf="@+id/typographyDraftStart"
+            app:layout_constraintTop_toTopOf="@+id/typographyDraftStart"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typographyDraftEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toEndOf="@+id/typographyDraftDelimiter"
+            app:layout_constraintTop_toBottomOf="@+id/typographyDraftDesc"
+            app:typographyType="body_3"
+            tool:text="17/01/2020\n08:30 WIB" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iconDelete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_name="DELETE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>
