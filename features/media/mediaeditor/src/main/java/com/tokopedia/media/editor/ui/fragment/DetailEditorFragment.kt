@@ -61,6 +61,7 @@ import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.util.RectUtils
@@ -74,7 +75,8 @@ import kotlin.math.ceil
 import kotlin.math.min
 
 class DetailEditorFragment @Inject constructor(
-    viewModelFactory: ViewModelProvider.Factory,
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val userSession: UserSessionInterface
 ) : BaseEditorFragment(), BrightnessToolUiComponent.Listener, ContrastToolsUiComponent.Listener,
     RemoveBackgroundToolUiComponent.Listener, WatermarkToolUiComponent.Listener,
     RotateToolUiComponent.Listener {
@@ -242,7 +244,7 @@ class DetailEditorFragment @Inject constructor(
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkType ->
             originalBitmap?.let { bitmap ->
-                val text = "Toko Maju Jaya Perkasa Abadi Bangunan"
+                val text = if(userSession.shopName.isEmpty()) "Shop Name" else userSession.shopName
                 val result = watermarkFilterRepositoryImpl.watermark(
                     requireContext(),
                     bitmap,
@@ -296,6 +298,7 @@ class DetailEditorFragment @Inject constructor(
                 viewBinding?.imgUcropPreview?.apply {
                     initializeWatermark(uri)
                     onLoadComplete = {
+                        readPreviousState(data)
                         setWatermarkDrawerItem()
                     }
                 }
@@ -369,7 +372,7 @@ class DetailEditorFragment @Inject constructor(
     private fun setWatermarkDrawerItem() {
         originalBitmap?.let { bitmap ->
             // todo: implement text from user data
-            val text = "Toko Maju Jaya Perkasa Abadi Bangunan"
+            var text = if(userSession.shopName.isEmpty()) "Shop Name" else userSession.shopName
             val resultBitmap1 = watermarkFilterRepositoryImpl.watermark(
                 requireContext(),
                 bitmap,
