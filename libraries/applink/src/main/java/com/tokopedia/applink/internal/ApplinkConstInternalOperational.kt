@@ -1,5 +1,8 @@
 package com.tokopedia.applink.internal
 
+import android.net.Uri
+import com.tokopedia.applink.DLP
+import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalOperational {
@@ -11,4 +14,11 @@ object ApplinkConstInternalOperational {
     const val SUCCESS_RESO = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_RESOLUTION/success-create"
     const val DETAIL_COMPLAIN = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_RESOLUTION/detail-complain"
 
+    fun buildApplinkResolution(uri: Uri): String {
+        val url = uri.getQueryParameter("URL").orEmpty()
+        if (url.isEmpty()) {
+            return Uri.parse(SUCCESS_RESO).toString()
+        }
+        return Uri.parse(SUCCESS_RESO).buildUpon().appendQueryParameter("URL", url).build().toString()
+    }
 }

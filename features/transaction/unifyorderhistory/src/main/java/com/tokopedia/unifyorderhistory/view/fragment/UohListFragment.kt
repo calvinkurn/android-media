@@ -1670,23 +1670,14 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 val dotMenu = orderData.metadata.dotMenus[index]
                 if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
                     if (dotMenu.appURL.contains(APPLINK_BASE)) {
-                        val webViewUrl = Uri.parse(dotMenu.appURL).getQueryParameter(KEY_URL)
-                        if (Uri.parse(webViewUrl).path?.contains(PATH_RESOLUTION) == true) {
-                            goToCreateResolution(URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
-                        } else {
-                            RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
-                        }
+                        RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
                     } else {
                         val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
                             dotMenu.webURL
                         } else {
                             dotMenu.appURL
                         }
-                        if (Uri.parse(linkUrl).path?.contains(PATH_RESOLUTION) == true) {
-                            goToCreateResolution(URLDecoder.decode(linkUrl, UohConsts.UTF_8))
-                        } else {
-                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
-                        }
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                     }
                 } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
                     if (dotMenu.appURL.contains(APPLINK_BASE)) {
@@ -2135,12 +2126,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         orderIdNeedUpdated = order.orderUUID
         currIndexNeedUpdate = index
         startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
-    }
-
-    private fun goToCreateResolution(url: String) {
-        val intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-        intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-        startActivity(intent)
     }
 
     override fun onPause() {
