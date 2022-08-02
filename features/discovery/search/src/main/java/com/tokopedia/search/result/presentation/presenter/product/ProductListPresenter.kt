@@ -68,7 +68,6 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterD
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
-import com.tokopedia.search.result.product.cpm.CpmModelMapper
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
@@ -97,6 +96,8 @@ import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.search.utils.getValueString
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -474,9 +475,14 @@ class ProductListPresenter @Inject constructor(
         if (!isHeadlineAdsAllowed()) return
 
         topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel) { _, cpmDataList, isUseSeparator ->
-            val cpmDataView = CpmModelMapper.createCpmDataView(searchProductModel.cpmModel, cpmDataList) {
-                isUseSeparator
-            }
+            val verticalSeparator = if (isUseSeparator)
+                VerticalSeparator.Both
+            else VerticalSeparator.None
+            val cpmDataView = createCpmDataView(
+                searchProductModel.cpmModel,
+                cpmDataList,
+                verticalSeparator
+            )
             processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
         }
     }
@@ -1088,9 +1094,14 @@ class ProductListPresenter @Inject constructor(
     ) {
         if (!isHeadlineAdsAllowed()) return
         topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel, 1) { index, cpmDataList,  isUseSeparator ->
-            val cpmDataView = CpmModelMapper.createCpmDataView(searchProductModel.cpmModel, cpmDataList) {
-                isUseSeparator && index != 0
-            }
+            val verticalSeparator = if(isUseSeparator && index != 0)
+                VerticalSeparator.Both
+            else VerticalSeparator.None
+            val cpmDataView = createCpmDataView(
+                searchProductModel.cpmModel,
+                cpmDataList,
+                verticalSeparator
+            )
             if (index == 0)
                 processHeadlineAdsAtTop(list, cpmDataView)
             else
@@ -1101,6 +1112,24 @@ class ProductListPresenter @Inject constructor(
     private fun isHeadlineAdsAllowed(): Boolean {
         return !isLocalSearch()
                 && (!isGlobalNavWidgetAvailable || isShowHeadlineAdsBasedOnGlobalNav)
+    }
+
+    private fun createCpmDataView(
+        cpmModel: CpmModel,
+        cpmData: ArrayList<CpmData>,
+        verticalSeparator: VerticalSeparator,
+    ): CpmDataView {
+        val cpmForViewModel = createCpmForViewModel(cpmModel, cpmData)
+        return CpmDataView(cpmForViewModel, verticalSeparator)
+    }
+
+    private fun createCpmForViewModel(cpmModel: CpmModel, cpmData: ArrayList<CpmData>): CpmModel {
+        return CpmModel().apply {
+            header = cpmModel.header
+            status = cpmModel.status
+            error = cpmModel.error
+            data = cpmData
+        }
     }
 
     private fun processHeadlineAdsAtTop(visitableList: MutableList<Visitable<*>>, cpmDataView: CpmDataView) {
