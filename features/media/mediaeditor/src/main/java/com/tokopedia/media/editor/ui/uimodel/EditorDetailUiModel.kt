@@ -70,7 +70,7 @@ data class EditorDetailUiModel(
         val bottomRectPos = parcel.readInt()
         val orientationChangeNumber = parcel.readInt()
 
-        if (rotateDegree != 0f || orientationChangeNumber != 0) {
+        if (rotateDegree != 0f || orientationChangeNumber != 0 || scaleX != 1f || scaleY != 1f) {
             rotateData = EditorRotateModel(
                 rotateDegree,
                 scaleX,
