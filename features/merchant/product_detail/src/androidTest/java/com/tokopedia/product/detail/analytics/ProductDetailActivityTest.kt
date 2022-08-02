@@ -27,6 +27,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.util.ProductDetailNetworkIdlingResource
@@ -34,6 +35,7 @@ import com.tokopedia.product.detail.util.ProductIdlingInterface
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -82,6 +84,24 @@ class ProductDetailActivityTest {
         })
     }
 
+    private val idlingResourceVariant by lazy {
+        ProductDetailNetworkIdlingResource(object : ProductIdlingInterface {
+            override fun getName(): String = "variantFinish"
+
+            override fun idleState(): Boolean {
+                val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+                val variantPosition = fragment.productAdapter?.currentList?.indexOfFirst {
+                    it is VariantDataModel
+                } ?: return false
+
+                val variantVh = fragment.getRecyclerView()?.findViewHolderForAdapterPosition(variantPosition) as? ProductVariantViewHolder
+                val vhContainer = variantVh?.view?.findViewById<RecyclerView>(R.id.rvContainerVariant)
+
+                return vhContainer?.findViewHolderForAdapterPosition(0) != null
+            }
+        })
+    }
+
     @Before
     fun setup() {
         setupGraphqlMockResponse(ProductDetailMockResponse())
@@ -98,7 +118,8 @@ class ProductDetailActivityTest {
 
     @After
     fun finish() {
-        IdlingRegistry.getInstance().unregister(ProductDetailIdlingResource.idlingResource)
+        IdlingRegistry.getInstance().unregister(ProductDetailIdlingResource.idlingResource,
+                idlingResource)
     }
 
     /**
@@ -240,6 +261,24 @@ class ProductDetailActivityTest {
         }
     }
 
+    private fun waitVariantToLoad() {
+        IdlingRegistry.getInstance().register(idlingResourceVariant)
+
+        onView(withId(R.id.rv_pdp)).perform(
+                RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                        hasDescendant(allOf(withId(R.id.rvContainerVariant))),
+                        scrollTo()
+                )
+        )
+
+        onView(
+                allOf(withId(R.id.rvContainerVariant))
+        ).check(
+                matches(isDisplayed())
+        )
+        IdlingRegistry.getInstance().unregister(idlingResourceVariant)
+    }
+
     private fun clickSeeAllDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
         onView(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll)))
@@ -264,7 +303,7 @@ class ProductDetailActivityTest {
         IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
         IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
         IdlingRegistry.getInstance().register(idlingResource)
-
+        waitVariantToLoad()
     }
 
     private fun finishTest() {
