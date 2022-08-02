@@ -1027,7 +1027,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check profile completion then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/profile-completion"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/profile-completion"
         assertEqualsDeepLinkMapper(ApplinkConst.PROFILE_COMPLETION, expectedDeepLink)
     }
 
