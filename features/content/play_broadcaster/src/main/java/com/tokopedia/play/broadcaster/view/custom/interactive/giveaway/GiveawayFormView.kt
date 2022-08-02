@@ -167,6 +167,12 @@ class GiveawayFormView : ConstraintLayout {
         }
     }
 
+    private fun trimGiveawayTitle() {
+        binding.viewGiveaway.getHeader().apply {
+            title = title.trim()
+        }
+    }
+
     private fun isLoading() = timePickerBinding.btnApply.isLoading
 
     private fun onStepChanged(step: Step) {
@@ -177,6 +183,8 @@ class GiveawayFormView : ConstraintLayout {
                 binding.groupActionBar.show()
             }
             Step.SetDuration -> {
+                trimGiveawayTitle()
+
                 setEligibleDurations(mEligibleDurations.filter { it < mRemainingTimeInMillis })
                 binding.viewGiveaway.getHeader().isEditable = false
                 showDurationPicker(true)
