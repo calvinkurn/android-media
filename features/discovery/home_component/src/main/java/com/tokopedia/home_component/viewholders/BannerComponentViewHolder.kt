@@ -237,8 +237,10 @@ class BannerComponentViewHolder(itemView: View,
                 })
             }
             binding?.homeComponentHeaderView?.visible()
+//            binding?.homeComponentHeaderView?.rootView?.visible()
         } else {
             binding?.homeComponentHeaderView?.gone()
+//            binding?.homeComponentHeaderView?.rootView?.gone()
         }
     }
 

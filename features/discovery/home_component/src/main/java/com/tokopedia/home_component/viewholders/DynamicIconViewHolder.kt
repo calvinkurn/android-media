@@ -33,7 +33,7 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
         val LAYOUT = R.layout.home_component_dynamic_icon
 
 
-        private const val SCROLLABLE_ITEM = 5
+        private const val SCROLLABLE_ITEM = 6
     }
 
     private val adapter = DynamicIconAdapter(listener)
@@ -143,7 +143,6 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
                     ViewGroup.LayoutParams.WRAP_CONTENT
             )
             iconTvName?.maxLines = if(item.withBackground) 2 else 1
-            iconBackground?.visibility = if(item.withBackground) View.VISIBLE else View.GONE
             itemView.setOnClickListener {
                 listener.onClickIcon(item, parentPosition,adapterPosition, type)
             }
