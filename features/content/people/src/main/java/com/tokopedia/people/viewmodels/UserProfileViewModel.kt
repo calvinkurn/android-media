@@ -4,6 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.FOLLOW
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.UNFOLLOW
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.LOADING_FOLLOW
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState.LOADING_UNFOLLOW
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
@@ -227,21 +232,25 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     private fun handleClickFollowButtonShopRecom(itemId: Long) {
-        viewModelScope.launchCatchError(block = {
-            val followInfo = _followInfo.value
-            val currentItem = _shopRecom.value.items.find { it.id == itemId } ?: return@launchCatchError
+        val currentItem = _shopRecom.value.items.find { it.id == itemId } ?: return
+        val currentState = if (currentItem.state == LOADING_FOLLOW || currentItem.state == LOADING_UNFOLLOW) return
+        else currentItem.state
+        val isCurrentStateFollow = currentState == FOLLOW
+        val loadingState = if (isCurrentStateFollow) LOADING_FOLLOW else LOADING_UNFOLLOW
+        val followInfo = _followInfo.value
 
-            updateLoadingStateFollowShopRecom(itemId, true)
+        viewModelScope.launchCatchError(block = {
+            updateLoadingStateFollowShopRecom(itemId, loadingState)
 
             val result = when (currentItem.type) {
                 FOLLOW_TYPE_SHOP -> {
                     repo.shopFollowUnfollow(
                         currentItem.id.toString(),
-                        if (currentItem.isFollow) UnFollow else Follow
+                        if (currentState == FOLLOW) UnFollow else Follow
                     )
                 }
                 FOLLOW_TYPE_BUYER -> {
-                    if (currentItem.isFollow) repo.unFollowProfile(currentItem.encryptedID)
+                    if (currentState == FOLLOW) repo.unFollowProfile(currentItem.encryptedID)
                     else repo.followProfile(currentItem.encryptedID)
                 }
                 else -> return@launchCatchError
@@ -252,27 +261,29 @@ class UserProfileViewModel @AssistedInject constructor(
                     _profileInfo.update { repo.getProfile(followInfo.userID) }
                     _shopRecom.update { data ->
                         data.copy(items = data.items.map {
-                            if (currentItem.id == it.id) it.copy(isFollow = !it.isFollow, isLoading = !it.isLoading)
+                            if (currentItem.id == it.id) {
+                                it.copy(state = if (currentState == FOLLOW) UNFOLLOW else FOLLOW)
+                            }
                             else it
                         })
                     }
                 }
                 is MutationUiModel.Error -> {
-                    updateLoadingStateFollowShopRecom(itemId, false)
+                    updateLoadingStateFollowShopRecom(itemId, currentState)
                     _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(result.message))
                 }
             }
         }, onError = {
-            updateLoadingStateFollowShopRecom(itemId, false)
+            updateLoadingStateFollowShopRecom(itemId, currentState)
             _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
         })
     }
 
-    private fun updateLoadingStateFollowShopRecom(itemID: Long, isLoadingState: Boolean) {
+    private fun updateLoadingStateFollowShopRecom(itemID: Long, state: ShopRecomFollowState) {
         _shopRecom.update { data ->
             data.copy(
                 items = data.items.map {
-                    if (itemID == it.id) it.copy(isLoading = isLoadingState)
+                    if (itemID == it.id) it.copy(state = state)
                     else it
                 })
         }
