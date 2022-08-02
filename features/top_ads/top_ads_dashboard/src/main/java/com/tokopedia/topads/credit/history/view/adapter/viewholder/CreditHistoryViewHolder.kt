@@ -18,41 +18,33 @@ class CreditHistoryViewHolder(val view: View) : AbstractViewHolder<CreditHistory
     override fun bind(element: CreditHistory) {
         with(itemView) {
             txtDate?.text = element.formatedDate
-            txtAmount?.text = ("${if (element.isReduction) "-" else "+"} ${element.amountFmt}")
-            if (!element.isReduction)
-                txtAmount?.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.topads.common.R.color.topads_common_green_tab
-                    )
-                )
-            else
-                txtAmount?.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.topads.common.R.color.topads_heading_color
-                    )
-                )
             txtTitle?.text = element.description
 
-            txtStatus?.text = element.status
-            txtStatus?.setTextColor(
-                ContextCompat.getColor(
+            txtAmount?.apply {
+                text = ("${if (element.isReduction) "-" else "+"} ${element.amountFmt}")
+                setTextColor(ContextCompat.getColor(
+                    context,
+                    if (!element.isReduction) {
+                        com.tokopedia.topads.common.R.color.topads_common_green_tab
+                    } else {
+                        com.tokopedia.topads.common.R.color.topads_heading_color
+                    }
+                ))
+            }
+
+            txtStatus?.apply {
+                text = element.status
+                setTextColor(ContextCompat.getColor(
                     context,
                     when (element.status) {
-                        getString(R.string.topads_credit_status_berhasil) ->
-                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                        getString(R.string.topads_credit_status_digunakan) ->
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN500
-                        getString(R.string.topads_credit_status_menunggu) ->
-                            com.tokopedia.unifyprinciples.R.color.Unify_YN500
-                        getString(R.string.topads_credit_status_kedaluwarsa) ->
-                            com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                        else ->
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                        getString(R.string.topads_credit_status_berhasil) -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        getString(R.string.topads_credit_status_digunakan) -> com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                        getString(R.string.topads_credit_status_menunggu) -> com.tokopedia.unifyprinciples.R.color.Unify_YN500
+                        getString(R.string.topads_credit_status_kedaluwarsa) -> com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                        else -> com.tokopedia.unifyprinciples.R.color.Unify_NN500
                     }
-                )
-            )
+                ))
+            }
         }
     }
 
