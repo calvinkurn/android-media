@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Created by @ilhamsuaib on 16/07/22.
@@ -18,5 +19,6 @@ data class UnificationTabUiModel(
     val metricParam: String = String.EMPTY,
     var isSelected: Boolean = false,
     val config: WidgetConfigUiModel = WidgetConfigUiModel(),
-    var isVisited: Boolean = false
+    var isVisited: Boolean = false,
+    var impressHolder: ImpressHolder = ImpressHolder()
 )

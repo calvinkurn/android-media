@@ -648,6 +648,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendAnnouncementClickEvent(element)
     }
 
+    override fun sendUnificationImpressionEvent(element: UnificationWidgetUiModel) {
+        SellerHomeTracking.sendUnificationImpressionEvent(element.dataKey)
+    }
+
+    override fun sendUnificationEmptyStateCtaClickEvent(element: UnificationWidgetUiModel) {
+        val selectedTab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
+        SellerHomeTracking.sendUnificationEmptyStateCtaClickEvent(element.dataKey, selectedTab)
+    }
+
+    override fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {
+        SellerHomeTracking.sendUnificationSeeMoreClickEvent(dataKey, tab)
+    }
+
+    override fun sendUnificationTabImpressionEvent(element: UnificationWidgetUiModel) {
+        val selectedTab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
+        SellerHomeTracking.sendUnificationTabImpressionEvent(element.dataKey, selectedTab)
+    }
+
     override fun showAnnouncementWidgetCoachMark(dataKey: String, view: View) {
         val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
         if (isEligibleCoachMark && dataKey == CoachMarkPrefHelper.REBATE_MVP_DATA_KEY) {
@@ -756,6 +774,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun showUnificationTabBottomSheets(element: UnificationWidgetUiModel) {
         val tabs = element.data?.tabs.orEmpty()
+
+        if (tabs.isEmpty()) return
+
         val bottomSheet = UnificationTabBottomSheet.createInstance()
         bottomSheet.setItems(tabs)
             .setOnTabItemSelected { selectedTab ->
@@ -764,8 +785,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     applyUnificationTabSelected(element, selectedTab)
                 }
                 bottomSheet.dismiss()
+                SellerHomeTracking.sendUnificationTabItemClickEvent(element.dataKey, selectedTab)
             }
             .show(childFragmentManager)
+
+        val selectedTab = tabs.firstOrNull { it.isSelected } ?: return
+        SellerHomeTracking.sendUnificationTabClickEvent(element.dataKey, selectedTab)
     }
 
     fun setNavigationOtherMenuView(view: View?) {
@@ -821,7 +846,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val unificationWidget = widget.apply unificationWidget@{
                     val widgetData = widget.data
                     data = widgetData?.copy(
-                        tabs = widgetData.tabs.map tab@ {
+                        tabs = widgetData.tabs.map tab@{
                             it.isSelected = it.dataKey == tab.dataKey
                             return@tab it
                         }
@@ -1685,6 +1710,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         binding?.ivSahOrnament?.loadImageWithoutPlaceholder(ANNIV_ORNAMENT_URL)
         binding?.ivSahGradient?.loadImageWithoutPlaceholder(ANNIV_GRADIENT_URL)
     }
+
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(
         liveData: LiveData<Result<List<D>>>,
         type: String

@@ -6,6 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -72,6 +73,10 @@ class UnificationViewHolder(
             data.error.isNotEmpty() -> showErrorState(element)
             else -> showSuccessState(element)
         }
+
+        binding.root.addOnImpressionListener(element.impressHolder) {
+            listener.sendUnificationImpressionEvent(element)
+        }
     }
 
     private fun showLoadingState() {
@@ -123,14 +128,14 @@ class UnificationViewHolder(
                 return@with
             }
 
-            showTableWidget(tab)
+            showTableWidget(element, tab)
             setupDropDownView(element)
-            setupWidgetCta(tab)
+            setupWidgetCta(element, tab)
             setupLastUpdate(element)
 
             val isEmpty = tab.data?.isWidgetEmpty().orTrue()
             if (isEmpty) {
-                showEmptyState(tab.config.emptyStateUiModel)
+                showEmptyState(element, tab.config.emptyStateUiModel)
                 setupDropDownView(element)
             } else {
                 hideEmptyState()
@@ -142,7 +147,10 @@ class UnificationViewHolder(
         emptyStateBinding.shcViewEmptyStateCommon.gone()
     }
 
-    private fun showEmptyState(emptyState: WidgetEmptyStateUiModel) {
+    private fun showEmptyState(
+        element: UnificationWidgetUiModel,
+        emptyState: WidgetEmptyStateUiModel
+    ) {
         with(emptyStateBinding) {
             shcViewEmptyStateCommon.visible()
             imgShcEmptyCommon.loadImage(emptyState.imageUrl)
@@ -155,7 +163,13 @@ class UnificationViewHolder(
                 btnShcEmptyCommon.text = emptyState.ctaText
                 btnShcEmptyCommon.setOnClickListener {
                     openAppLink(emptyState.appLink)
+                    listener.sendUnificationEmptyStateCtaClickEvent(element)
                 }
+            }
+
+            val tab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
+            root.addOnImpressionListener(tab.impressHolder) {
+                listener.sendUnificationTabImpressionEvent(element)
             }
         }
     }
@@ -164,7 +178,7 @@ class UnificationViewHolder(
         RouteManager.route(itemView.context, appLink)
     }
 
-    private fun showTableWidget(tab: UnificationTabUiModel) {
+    private fun showTableWidget(element: UnificationWidgetUiModel, tab: UnificationTabUiModel) {
         with(successStateBinding) {
             val tableData = tab.data as? TableDataUiModel ?: return@with
 
@@ -176,15 +190,14 @@ class UnificationViewHolder(
             tableShcUnification.showTable(tableData.dataSet)
             tableShcUnification.resetHeight()
             tableShcUnification.setPageIndicatorEnabled(false)
-            tableShcUnification.addOnSlideImpressionListener { position, maxPosition, isEmpty ->
-
-            }
-            tableShcUnification.setOnSwipeListener { position, maxPosition, isEmpty ->
-//                listener.sendTableOnSwipeEvent(element, position, maxPosition, isEmpty)
+            tableShcUnification.setOnSwipeListener { position, _, _ ->
                 shcTableViewPageControl.setCurrentIndicator(position)
             }
-            tableShcUnification.addOnHtmlClickListener { url, isEmpty ->
-//                listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
+            tableShcUnification.addOnHtmlClickListener { url, _ ->
+                openAppLink(url)
+            }
+            tableShcUnification.addOnImpressionListener(tab.impressHolder) {
+                listener.sendUnificationTabImpressionEvent(element)
             }
         }
     }
@@ -202,7 +215,7 @@ class UnificationViewHolder(
         }
     }
 
-    private fun setupWidgetCta(tab: UnificationTabUiModel) {
+    private fun setupWidgetCta(element: UnificationWidgetUiModel, tab: UnificationTabUiModel) {
         with(successStateBinding) {
             val shouldShowCta = tab.config.appLink.isNotBlank()
                     && tab.config.ctaText.isNotBlank()
@@ -225,16 +238,13 @@ class UnificationViewHolder(
                 btnShcUnificationCta.visible()
                 btnShcUnificationCta.text = tab.config.ctaText
                 btnShcUnificationCta.setOnClickListener {
-                    setOnCtaClicked(tab.config.appLink)
+                    openAppLink(tab.config.appLink)
+                    listener.sendUnificationSeeMoreClickEvent(element.dataKey, tab)
                 }
             } else {
                 btnShcUnificationCta.gone()
             }
         }
-    }
-
-    private fun setOnCtaClicked(appLink: String) {
-        RouteManager.route(itemView.context, appLink)
     }
 
     private fun setupDropDownView(element: UnificationWidgetUiModel) {
@@ -274,5 +284,13 @@ class UnificationViewHolder(
 
     interface Listener : BaseViewHolderListener {
         fun showUnificationTabBottomSheets(element: UnificationWidgetUiModel) {}
+
+        fun sendUnificationImpressionEvent(element: UnificationWidgetUiModel) {}
+
+        fun sendUnificationTabImpressionEvent(element: UnificationWidgetUiModel) {}
+
+        fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {}
+
+        fun sendUnificationEmptyStateCtaClickEvent(element: UnificationWidgetUiModel) {}
     }
 }
