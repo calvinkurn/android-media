@@ -14,22 +14,30 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.ShareTokonow
+import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOptionRequest
 import com.tokopedia.tokopedianow.common.view.ToolbarHeaderView
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeDetailBinding
 import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailComponent
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapter
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapterTypeFactory
-import com.tokopedia.tokopedianow.recipedetail.presentation.listener.RecipeProductListener
+import com.tokopedia.tokopedianow.recipedetail.presentation.listener.RecipeChooseAddressListener
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewmodel.TokoNowRecipeDetailViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -37,6 +45,10 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     companion object {
         private const val KEY_PARAM_RECIPE_ID = "recipe_id"
+
+        private const val PAGE_NAME = "Tokonow"
+        private const val PAGE_TYPE = "Recipe Detail"
+        private const val SHARE_FEATURE_NAME = "Share"
 
         private const val RECIPE_INFO_POSITION = 1
         private const val BOOKMARK_BTN_POSITION = 0
@@ -50,18 +62,19 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     @Inject
     lateinit var viewModel: TokoNowRecipeDetailViewModel
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private val adapter by lazy {
         RecipeDetailAdapter(
-            RecipeDetailAdapterTypeFactory(
-                view = this,
-                productListener = RecipeProductListener(viewModel)
-            )
+            RecipeDetailAdapterTypeFactory(view = this)
         )
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeDetailBinding>()
 
     private var toolbarHeader: ToolbarHeaderView? = null
+    private var shareBottomSheet: UniversalShareBottomSheet? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,15 +87,13 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val recipeId = activity?.intent?.data
-            ?.getQueryParameter(KEY_PARAM_RECIPE_ID).orEmpty()
-
+        showLoading()
+        setRecipeData()
         setupToolbarHeader()
         setupRecyclerView()
         updateAddressData()
         observeLiveData()
-
-        getRecipe(recipeId)
+        checkAddressData()
     }
 
     override fun onAttach(context: Context) {
@@ -100,30 +111,60 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
     }
 
-    override fun getFragmentActivity() = activity
-
-    private fun setupToolbarHeader() {
-        initToolbarHeader()
-        setToolbarClickListener()
-        setToolbarScrollListener()
+    override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
+        viewModel.onQuantityChanged(productId, shopId, quantity)
     }
 
-    private fun initToolbarHeader() {
+    override fun deleteCartItem(productId: String) {
+        val miniCartItem = viewModel.getMiniCartItem(productId)
+        val cartId = miniCartItem?.cartId.orEmpty()
+        viewModel.deleteCartItem(productId, cartId)
+    }
+
+    override fun showChooseAddressBottomSheet() {
+        val bottomSheet = ChooseAddressBottomSheet().apply {
+            val recyclerView = binding?.rvRecipeDetail
+            setListener(RecipeChooseAddressListener(
+                toolbarHeader,
+                recyclerView,
+                viewModel
+            ))
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun getFragmentActivity() = activity
+
+    private fun setRecipeData() {
+        val recipeId = activity?.intent?.data
+            ?.getQueryParameter(KEY_PARAM_RECIPE_ID).orEmpty()
+        viewModel.setRecipeId(recipeId)
+    }
+
+    private fun setupToolbarHeader() {
+        setToolbarHeaderView()
+        setToolbarClickListener()
+    }
+
+    private fun setToolbarHeaderView() {
         toolbarHeader = ToolbarHeaderView(
             header = binding?.toolbarHeader,
             statusBar = binding?.statusBar
         ) { rv, _, _ -> findStartSwitchThemePosition(rv) }.apply {
-            icons = listOf(
-                com.tokopedia.iconunify.R.drawable.iconunify_bookmark,
-                com.tokopedia.iconunify.R.drawable.iconunify_share_mobile
+            rightIcons = listOf(
+                R.drawable.tokopedianow_ic_recipe_bookmark_dark,
+                R.drawable.tokopedianow_ic_recipe_share_dark
             )
+            setBackButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             onSwitchToNormal = {
                 binding?.headerDivider?.show()
             }
             onSwitchToTransparent = {
                 binding?.headerDivider?.hide()
             }
+            enableSwitchTheme = true
         }
+        binding?.headerDivider?.hide()
     }
 
     private fun setToolbarClickListener() {
@@ -133,7 +174,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
             }
 
             getActionItem(SHARE_BTN_POSITION)?.setOnClickListener {
-                // Implement share recipe here
+                showShareBottomSheet()
             }
 
             setNavButtonClickListener {
@@ -149,6 +190,63 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         }
     }
 
+    private fun setupShareBottomSheet(recipeInfo: RecipeInfoUiModel) {
+        val title = recipeInfo.title
+        val portion = recipeInfo.portion
+        val duration = recipeInfo.duration
+        val imageUrl = recipeInfo.thumbnail
+        val shareUrl = "https://tokopedia.link/aBc123DeF" // To-Do
+        val shareTitle = getString(R.string.tokopedianow_share_recipe_title, title, portion, duration)
+        val shareText = getString(R.string.tokopedianow_share_recipe_text, title, shareUrl)
+
+        val shareData = ShareTokonow(
+            sharingText = shareText,
+            thumbNailImage = imageUrl,
+            ogImageUrl = imageUrl,
+        )
+
+        shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(createShareListener(shareData))
+
+            setUtmCampaignData(
+                pageName = PAGE_NAME,
+                userId = userSession.userId,
+                pageIdConstituents = listOf(PAGE_TYPE),
+                feature = SHARE_FEATURE_NAME
+            )
+
+            setMetaData(
+                tnTitle = shareTitle,
+                tnImage = imageUrl,
+            )
+
+            setOgImageUrl(imgUrl = imageUrl)
+        }
+    }
+
+    private fun createShareListener(data: ShareTokonow): ShareBottomsheetListener {
+        return object : ShareBottomsheetListener {
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                shareOptionRequest(
+                    shareModel = shareModel,
+                    shareTokoNowData = data,
+                    activity = activity,
+                    view = view,
+                    onSuccess = {
+                        shareBottomSheet?.dismiss()
+                    }
+                )
+            }
+
+            override fun onCloseOptionClicked() {
+            }
+        }
+    }
+
+    private fun showShareBottomSheet() {
+        shareBottomSheet?.show(childFragmentManager, this@TokoNowRecipeDetailFragment)
+    }
+
     private fun observeLiveData() {
         observe(viewModel.layoutList) {
             if (it is Success) {
@@ -159,6 +257,9 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         observe(viewModel.recipeInfo) {
             if(it is Success) {
                 setHeaderTitle(it.data.title)
+                setupShareBottomSheet(it.data)
+                setToolbarScrollListener()
+                setToolbarIconsColor()
             }
         }
 
@@ -265,8 +366,12 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         binding?.miniCart?.updateData(listOf(shopId))
     }
 
-    private fun getRecipe(recipeId: String) {
-        viewModel.getRecipe(recipeId)
+    private fun checkAddressData() {
+        viewModel.checkAddressData()
+    }
+
+    private fun showLoading() {
+        viewModel.showLoading()
     }
 
     private fun getMiniCart() {
@@ -282,6 +387,13 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun setToolbarIconsColor() {
+        toolbarHeader?.apply {
+            setRightIconsColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            setBackButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        }
     }
 
     private fun setToolbarScrollListener() {
@@ -330,13 +442,6 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     private fun updateAddressData() {
-        context?.let { context ->
-            viewModel.localAddressData?.let { currentData ->
-                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(context, currentData)) {
-                    val addressData = ChooseAddressUtils.getLocalizingAddressData(context)
-                    viewModel.localAddressData = addressData
-                }
-            }
-        }
+        viewModel.updateAddressData()
     }
 }

@@ -11,14 +11,12 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.fragment.TokoNowReci
 import com.tokopedia.tokopedianow.recipedetail.presentation.fragment.TokoNowRecipeInstructionFragment
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeTabUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
-import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeTabViewHolder(
     itemView: View,
-    private val view: RecipeDetailView,
-    private val productListener: RecipeProductListener
+    private val recipeDetailView: RecipeDetailView
 ): AbstractViewHolder<RecipeTabUiModel>(itemView) {
 
     companion object {
@@ -28,7 +26,7 @@ class RecipeTabViewHolder(
     private var binding: ItemTokopedianowRecipeTabBinding? by viewBinding()
 
     override fun bind(tab: RecipeTabUiModel) {
-        view.getFragmentActivity()?.let {
+        recipeDetailView.getFragmentActivity()?.let {
             val recipeTab = binding?.recipeTab
             val viewPager = binding?.viewPager
             val ingredientTabTitle = itemView.context.resources.getString(
@@ -36,10 +34,14 @@ class RecipeTabViewHolder(
             val instructionTabTitle = itemView.context.resources.getString(
                 R.string.tokopedianow_recipe_instruction_tab_title)
 
-            val ingredientFragment = TokoNowRecipeIngredientFragment.newInstance(tab.ingredient)
-            val instructionFragment = TokoNowRecipeInstructionFragment.newInstance(tab.instruction)
+            val ingredientFragment = TokoNowRecipeIngredientFragment.newInstance().apply {
+                setRecipeDetailView(recipeDetailView)
+                setItemList(tab.ingredient.items)
+            }
 
-            ingredientFragment.setProductListener(productListener)
+            val instructionFragment = TokoNowRecipeInstructionFragment.newInstance().apply {
+                setItemList(tab.instruction.items)
+            }
 
             val recipeTabAdapter = RecipeTabAdapter(it).apply {
                 addFragment(ingredientFragment)

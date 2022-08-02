@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeIngredientBinding
 import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailComponent
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeIngredientAdapter
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeIngredientAdapterTypeFactory
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientTabUiModel
-import com.tokopedia.tokopedianow.recipedetail.presentation.viewholders.RecipeProductViewHolder.RecipeProductListener
+import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewmodel.TokoNowRecipeIngredientViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -22,22 +22,18 @@ import javax.inject.Inject
 class TokoNowRecipeIngredientFragment : Fragment() {
 
     companion object {
-        private const val EXTRA_INGREDIENT_DATA = "extra_ingredient_data"
 
-        fun newInstance(ingredient: IngredientTabUiModel): TokoNowRecipeIngredientFragment {
-            return TokoNowRecipeIngredientFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(EXTRA_INGREDIENT_DATA, ingredient)
-                }
-            }
+        fun newInstance(): TokoNowRecipeIngredientFragment {
+            return TokoNowRecipeIngredientFragment()
         }
     }
 
     @Inject
     lateinit var viewModel: TokoNowRecipeIngredientViewModel
 
+    private var items: List<Visitable<*>> = emptyList()
     private var adapter: RecipeIngredientAdapter? = null
-    private var productListener: RecipeProductListener? = null
+    private var recipeDetailView: RecipeDetailView? = null
 
     private var binding by autoClearedNullable<FragmentTokopedianowRecipeIngredientBinding>()
 
@@ -52,13 +48,9 @@ class TokoNowRecipeIngredientFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val data = arguments
-            ?.getParcelable<IngredientTabUiModel>(EXTRA_INGREDIENT_DATA)
-
         setupRecyclerView()
         observeLiveData()
-
-        viewModel.getLayout(data)
+        onViewCreated()
     }
 
     override fun onAttach(context: Context) {
@@ -66,9 +58,17 @@ class TokoNowRecipeIngredientFragment : Fragment() {
         super.onAttach(context)
     }
 
+    fun setRecipeDetailView(recipeDetailView: RecipeDetailView) {
+        this.recipeDetailView = recipeDetailView
+    }
+
+    fun setItemList(itemList: List<Visitable<*>>) {
+        this.items = itemList
+    }
+
     private fun setupRecyclerView() {
         adapter = RecipeIngredientAdapter(RecipeIngredientAdapterTypeFactory(
-            productListener = productListener
+            recipeDetailView = recipeDetailView
         ))
 
         binding?.rvIngredient?.apply {
@@ -79,8 +79,16 @@ class TokoNowRecipeIngredientFragment : Fragment() {
 
     private fun observeLiveData() {
         observe(viewModel.itemList) {
-            adapter?.submitList(it)
+            submitList(it)
         }
+    }
+
+    private fun submitList(items: List<Visitable<*>>) {
+        adapter?.submitList(items)
+    }
+
+    private fun onViewCreated() {
+        viewModel.onViewCreated(items)
     }
 
     private fun injectDependencies() {
@@ -88,9 +96,5 @@ class TokoNowRecipeIngredientFragment : Fragment() {
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
-    }
-
-    fun setProductListener(productListener: RecipeProductListener) {
-        this.productListener = productListener
     }
 }

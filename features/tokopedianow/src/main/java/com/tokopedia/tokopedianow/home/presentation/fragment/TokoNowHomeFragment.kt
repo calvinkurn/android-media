@@ -78,9 +78,6 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_20M
-import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
@@ -1835,7 +1832,7 @@ class TokoNowHomeFragment: Fragment(),
 
         shareOptionRequest(
             shareModel = shareModel,
-            shareHomeTokonow = shareHomeTokonow,
+            shareTokoNowData = shareHomeTokonow,
             activity = activity,
             view = view,
             onSuccess = {
