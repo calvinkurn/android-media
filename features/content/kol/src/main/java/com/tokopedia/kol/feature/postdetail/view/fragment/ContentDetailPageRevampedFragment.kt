@@ -209,7 +209,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                                         context?.getString(throwable.errorMessageId)
                                     } else {
                                         it.throwable.message
-                                            ?: getString(com.tokopedia.feedcomponent.R.string.default_request_error_unknown)
+                                            ?: getString(com.tokopedia.network.R.string.default_request_error_unknown)
                                     }
                                     message?.let { errormessage ->
                                         showToast(errormessage, Toaster.TYPE_ERROR)
@@ -268,7 +268,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     is Fail -> {
                         Timber.e(it.throwable)
                         showToast(
-                            getString(kolR.string.default_request_error_unknown),
+                            getString(com.tokopedia.network.R.string.default_request_error_unknown),
                             Toaster.TYPE_ERROR
                         )
                     }
@@ -306,12 +306,12 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                         if (data.isSuccess) {
                             onSuccessDeletePost(data.rowNumber)
                         } else {
-                            data.errorMessage = getString(kolR.string.default_request_error_unknown)
+                            data.errorMessage = getString(com.tokopedia.network.R.string.default_request_error_unknown)
                             onErrorDeletePost(data)
                         }
                     }
                     is Fail -> {
-                        val message = getString(kolR.string.default_request_error_unknown)
+                        val message = getString(com.tokopedia.network.R.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
