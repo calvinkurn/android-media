@@ -339,7 +339,7 @@ class UserProfileShopRecomViewModelTest {
                 state.shopRecom.items.forEach { item ->
                     item.isFollow.assertFalse()
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollowShopRecom("any error", mockEmptyItemShopRecom))
             }
         }
     }
@@ -368,7 +368,7 @@ class UserProfileShopRecomViewModelTest {
                     if (item.id == mockItemId) item.isFollow.assertTrue()
                     else item.isFollow.assertFalse()
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollowShopRecom("any error", mockEmptyItemShopRecom))
             }
         }
     }
@@ -390,7 +390,7 @@ class UserProfileShopRecomViewModelTest {
                 state.shopRecom.items.forEach { item ->
                     item.isFollow.assertFalse()
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollowShopRecom("any error", mockEmptyItemShopRecom))
             }
         }
     }
@@ -419,7 +419,7 @@ class UserProfileShopRecomViewModelTest {
                     if (item.id == mockItemId) item.isFollow.assertTrue()
                     else item.isFollow.assertFalse()
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollowShopRecom("any error", mockEmptyItemShopRecom))
             }
         }
     }
@@ -542,7 +542,7 @@ class UserProfileShopRecomViewModelTest {
                 state.shopRecom.items.forEach { item ->
                     item.isFollow.assertFalse()
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollowShopRecom("any error", mockEmptyItemShopRecom))
             }
         }
     }
@@ -571,7 +571,7 @@ class UserProfileShopRecomViewModelTest {
                     if (item.id == mockItemId) item.isFollow.assertTrue()
                     else item.isFollow.assertFalse()
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollowShopRecom("any error", mockEmptyItemShopRecom))
             }
         }
     }
@@ -593,7 +593,7 @@ class UserProfileShopRecomViewModelTest {
                 state.shopRecom.items.forEach { item ->
                     item.isFollow.assertFalse()
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollowShopRecom("any error", mockEmptyItemShopRecom))
             }
         }
     }
@@ -622,7 +622,7 @@ class UserProfileShopRecomViewModelTest {
                     if (item.id == mockItemId) item.isFollow.assertTrue()
                     else item.isFollow.assertFalse()
                 }
-                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
+                events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollowShopRecom("any error", mockEmptyItemShopRecom))
             }
         }
     }
