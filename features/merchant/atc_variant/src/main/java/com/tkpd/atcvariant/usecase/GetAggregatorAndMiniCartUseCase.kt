@@ -25,8 +25,8 @@ class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: Corout
 
     private var requestParamsAggregator: Map<String, Any?> = mapOf()
     private var shopIds: List<String> = listOf()
-    private var isTokoNow: Boolean = false
     private var isLoggedIn: Boolean = false
+    private var showQtyEditor: Boolean = false
 
     override val coroutineContext: CoroutineContext
         get() = dispatcher.main + SupervisorJob()
@@ -38,17 +38,18 @@ class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: Corout
                                     shopId: String,
                                     isLoggedIn: Boolean,
                                     isTokoNow: Boolean,
+                                    showQtyEditor: Boolean,
                                     extParams: String): AggregatorMiniCartUiModel {
         this.requestParamsAggregator = aggregatorUseCase.createRequestParams(productId, source, isTokoNow, shopId, extParams, warehouseId, pdpSession)
         this.shopIds = listOf(shopId)
-        this.isTokoNow = isTokoNow
         this.isLoggedIn = isLoggedIn
+        this.showQtyEditor = showQtyEditor
         return executeOnBackground()
     }
 
     override suspend fun executeOnBackground(): AggregatorMiniCartUiModel {
         val request: MutableList<Deferred<Any?>> = mutableListOf(executeAggregator())
-        if (isTokoNow) {
+        if (showQtyEditor) {
             request.add(executeMiniCart())
         }
 

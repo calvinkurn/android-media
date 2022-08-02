@@ -3,7 +3,6 @@ package com.tokopedia.imagepreview.imagesecure
 import com.tokopedia.utils.image.ImageProcessingUtil.getBitmapFromPath
 import android.view.ViewGroup
 import com.tokopedia.design.image.TouchImageView
-import com.tokopedia.design.image.ImageLoader
 import android.text.TextUtils
 import android.view.View
 import android.webkit.URLUtil
@@ -11,6 +10,7 @@ import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadSecureImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.user.session.UserSessionInterface
 import java.lang.Exception
 import java.util.ArrayList
@@ -70,9 +70,15 @@ class TouchImageAdapterKt(
 
     private fun handleUrlImage(imageView: ImageView, source: String) {
         if (isSecure) {
-            imageView.loadSecureImage(source, userSessionInterface)
+            imageView.loadSecureImage(source, userSessionInterface) {
+                this.fitCenter()
+                this.setCacheStrategy(MediaCacheStrategy.DATA)
+            }
         } else {
-            imageView.loadImage(source)
+            imageView.loadImage(source) {
+                this.fitCenter()
+                this.setCacheStrategy(MediaCacheStrategy.DATA)
+            }
         }
     }
 

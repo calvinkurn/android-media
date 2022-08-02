@@ -46,7 +46,7 @@ abstract class BaseChatViewStateImpl(
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var replyEditText: EditText
     protected lateinit var replyBox: ViewGroup
-    protected lateinit var actionBox: LinearLayout
+    protected lateinit var actionBox: View
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
@@ -259,7 +259,7 @@ abstract class BaseChatViewStateImpl(
         return (recyclerView.adapter as BaseChatAdapter).getList()
     }
 
-    fun clearEditText() {
+    open fun clearEditText() {
         replyEditText.setText("")
     }
 

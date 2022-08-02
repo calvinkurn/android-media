@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
+import com.google.gson.Gson
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder
@@ -75,6 +76,7 @@ class ShippingDurationConverter @Inject constructor() {
             shippingDurationUiModel.etaErrorCode = serviceData.texts.errorCode
             val shippingCourierUiModels = convertToShippingCourierViewModel(shippingDurationUiModel,
                     serviceData.products, ratesId, blackboxInfo, convertToPreOrderModel(ratesDetailData.preOrder))
+            shippingDurationUiModel.serviceData.isUiRatesHidden = shippingDurationUiModel.serviceData.isUiRatesHidden || (shippingDurationUiModel.serviceData.selectedShipperProductId == 0 && shippingCourierUiModels.all { it.productData.isUiRatesHidden })
             shippingDurationUiModel.shippingCourierViewModelList = shippingCourierUiModels
             if (shippingCourierUiModels.isNotEmpty()) {
                 shippingDurationUiModels.add(shippingDurationUiModel)
@@ -150,6 +152,7 @@ class ShippingDurationConverter @Inject constructor() {
         if (promo == null || promo.isPromo != 1) return null
         val applied = promo.isApplied == 1
         val promoBadge = if (showPromoBadge) promo.imageUrl else ""
+        val gson = Gson()
         return LogisticPromoUiModel(
                 promo.promoCode, promo.title, promo.benefitDesc,
                 promo.shipperName, promo.serviceId, promo.shipperId,
@@ -157,7 +160,8 @@ class ShippingDurationConverter @Inject constructor() {
                 promo.promoTncHtml, applied, promoBadge, promo.discontedRate,
                 promo.shippingRate, promo.benefitAmount, promo.isDisabled, promo.isHideShipperName,
                 promo.cod, promo.eta, promo.texts.bottomSheet, promo.texts.chosenCourier,
-                promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription, promo.texts.titlePromoMessage)
+                promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription, promo.texts.titlePromoMessage,
+                gson.toJson(promo.freeShippingMetadata))
     }
 
     private fun convertToPreOrderModel(preOrder: PreOrder?): PreOrderModel? {
