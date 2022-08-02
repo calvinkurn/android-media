@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.updateLayoutParams
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
@@ -193,23 +194,6 @@ class VideoPictureView @JvmOverloads constructor(
                 }
             }
         }
-    }
-
-
-    /**
-     * Executes [block] with a typed version of the View's layoutParams and reassigns the
-     * layoutParams with the updated version.
-     *
-     * @see View.getLayoutParams
-     * @see View.setLayoutParams
-     **/
-    @JvmName("updateLayoutParamsTyped")
-    private inline fun <reified T : ViewGroup.LayoutParams> View.updateLayoutParams(
-        block: T?.() -> Unit
-    ) {
-        val params = layoutParams as? T
-        block(params)
-        layoutParams = params
     }
 
     private fun renderVideoOnceAtPosition(position: Int) {
