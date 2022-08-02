@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.lifecycle.Lifecycle
@@ -57,6 +58,43 @@ class QuizWidgetView : ConstraintLayout {
         }
     })
 
+    /**
+     * For correct answer
+     */
+    private val scaleBounceX = AnimationUtils.addSpringAnim(
+        view = binding.root, property = SpringAnimation.SCALE_X, startPosition = 0.5f,
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
+    )
+
+    private val scaleBounceY = AnimationUtils.addSpringAnim(
+        view = binding.root, property = SpringAnimation.SCALE_Y, startPosition = 0.5f,
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
+    )
+
+    /**
+     * For wrong answer
+     */
+
+    private val scaleX = AnimationUtils.addSpringAnim(
+        view = binding.root, property = SpringAnimation.SCALE_X, startPosition = 0.7f,
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
+    )
+
+    private val scaleY = AnimationUtils.addSpringAnim(
+        view = binding.root, property = SpringAnimation.SCALE_Y, startPosition = 0.7f,
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
+    )
+
+    private val rotate = AnimationUtils.addSpringAnim(
+        view = binding.root, property = SpringAnimation.ROTATION, startPosition = -9f,
+        finalPosition = 9f, stiffness = SpringForce.STIFFNESS_VERY_LOW, dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY, velocity = 0f
+    )
+
+    private val rotateEndListener =
+        DynamicAnimation.OnAnimationEndListener { animation, canceled, value, velocity ->
+            rotate.animateToFinalPosition(0f)
+        }
+
     init {
         binding.rvQuizQuestion.apply {
             itemAnimator = null
@@ -69,6 +107,7 @@ class QuizWidgetView : ConstraintLayout {
         }
 
         binding.quizHeader.isEditable = false
+        rotate.addEndListener(rotateEndListener)
     }
 
     override fun onDetachedFromWindow() {
@@ -141,38 +180,6 @@ class QuizWidgetView : ConstraintLayout {
         rotate.start()
     }
 
-    /**
-     * For correct answer
-     */
-    private val scaleBounceX = AnimationUtils.addSpringAnim(
-        view = binding.root, property = SpringAnimation.SCALE_X, startPosition = 0.5f,
-        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
-    )
-
-    private val scaleBounceY = AnimationUtils.addSpringAnim(
-        view = binding.root, property = SpringAnimation.SCALE_Y, startPosition = 0.5f,
-        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
-    )
-
-    /**
-     * For wrong answer
-     */
-
-    private val scaleX = AnimationUtils.addSpringAnim(
-        view = binding.root, property = SpringAnimation.SCALE_X, startPosition = 0.7f,
-        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
-    )
-
-    private val scaleY = AnimationUtils.addSpringAnim(
-        view = binding.root, property = SpringAnimation.SCALE_Y, startPosition = 0.7f,
-        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
-    )
-
-    private val rotate = AnimationUtils.addSpringAnim(
-        view = binding.root, property = SpringAnimation.ROTATION, startPosition = -9f,
-        finalPosition = 0f, stiffness = SpringForce.STIFFNESS_VERY_LOW, dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY, velocity = 0f
-    )
-
     interface Listener {
         fun onQuizOptionClicked(item: QuizChoicesUiModel)
 
@@ -186,5 +193,6 @@ class QuizWidgetView : ConstraintLayout {
         rotate.cancel()
         scaleBounceX.cancel()
         scaleBounceY.cancel()
+        rotate.removeEndListener(rotateEndListener)
     }
 }
