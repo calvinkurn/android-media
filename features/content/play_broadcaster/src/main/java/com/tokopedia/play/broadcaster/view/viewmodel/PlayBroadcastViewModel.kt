@@ -1472,15 +1472,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun updateOptionsState() {
-        val quizFormData = _quizFormData.value
-
-        val title = quizFormData.title
-        val gift = quizFormData.gift
-        val options = quizFormData.options.toMutableList()
-
-        val quizConfig = _interactiveConfig.value.quizConfig
         val isStateEditable = isQuizStateEditable()
 
+        val quizConfig = _interactiveConfig.value.quizConfig
+        val quizFormData = _quizFormData.value
+
+        val newTitle = if(!isStateEditable) quizFormData.title.trim() else quizFormData.title
+        val newGift = if(!isStateEditable) quizFormData.gift.trim() else quizFormData.gift
+
+        val options = quizFormData.options.toMutableList()
         val newOptions = if (isStateEditable) {
             options.setupAutoAddField(quizConfig)
         } else {
@@ -1488,12 +1488,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     .trim()
         }.setupEditable(isStateEditable)
 
-        val newTitle = if(!isStateEditable) title.trim() else title
-
-        val newGift = if(!isStateEditable) gift.trim() else gift
-
-        _quizFormData.setValue {
-            copy(
+        _quizFormData.update {
+            it.copy(
                 title = newTitle,
                 options = newOptions,
                 gift = newGift
