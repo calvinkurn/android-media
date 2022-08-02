@@ -36,13 +36,13 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
     lateinit var updateWishlistCollectionNameUseCase: UpdateWishlistCollectionNameUseCase
 
     private var collectionNamesResponseDataStatusOk = GetWishlistCollectionNamesResponse(
-        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "OK"))
+        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "OK", errorMessage = emptyList()))
 
     private var collectionNamesResponseDataStatusError = GetWishlistCollectionNamesResponse(
         getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "ERROR", errorMessage = listErrorMessage))
 
     private var updateCollectionNameResponseDataStatusOk = UpdateWishlistCollectionNameResponse(
-        updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "OK"))
+        updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "OK", errorMessage = emptyList()))
 
     private var updateCollectionNameResponseDataStatusError = UpdateWishlistCollectionNameResponse(
         updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "ERROR", errorMessage = listErrorMessage))
