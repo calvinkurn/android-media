@@ -426,16 +426,19 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleClickPin(product: ProductUiModel){
+        val isPinned = product.pinStatus.isPinned
         viewModelScope.launchCatchError(block = {
             updatePinProduct(isLoading = true, product = product)
-            val id = if(product.pinStatus.isPinned) "0" else product.id
+            //for unpin send 0 to unpin all product in channel
+            val id = if(isPinned) "0" else product.id
             val result = repo.setPinProduct(channelId, id)
             if(result) {
                 updatePinProduct(product = product)
                 addCoolDown()
             } else {
-                val wording = if(product.pinStatus.isPinned) "lepas" else "pasang"
-                throw MessageErrorException("Gagal $wording pin di produk. Coba lagi, ya.")
+                //switch current status bcz in update UI it'll switch to the OG
+                val action = if(isPinned) "lepas" else "pasang"
+                throw MessageErrorException("Gagal $action pin di produk. Coba lagi, ya.")
             }
         }){
             updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
