@@ -268,7 +268,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     is Fail -> {
                         Timber.e(it.throwable)
                         showToast(
-                            getString(com.tokopedia.network.string.default_request_error_unknown),
+                            getString(com.tokopedia.network.R.string.default_request_error_unknown),
                             Toaster.TYPE_ERROR
                         )
                     }
