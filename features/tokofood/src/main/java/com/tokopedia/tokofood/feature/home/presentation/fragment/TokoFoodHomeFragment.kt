@@ -567,7 +567,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                        if (viewModel.isShownEmptyState() && isChooseAddressWidgetDataUpdated()){
+                        if (viewModel.isShownEmptyState()){
                             hideMiniCartHome()
                             isShowMiniCart = false
                         } else {
