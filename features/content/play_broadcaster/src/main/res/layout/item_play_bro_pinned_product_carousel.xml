@@ -117,7 +117,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/tv_pinned_product_carousel_price"
             app:layout_constraintTop_toTopOf="@+id/tv_pinned_product_carousel_price"
-            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintVertical_bias="1.0"
             app:typographyType="small"
             tools:ignore="TextContrastCheck"
             tools:text="Rp349.000" />
