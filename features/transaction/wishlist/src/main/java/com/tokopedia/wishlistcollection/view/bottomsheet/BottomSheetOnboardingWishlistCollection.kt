@@ -50,7 +50,9 @@ class BottomSheetOnboardingWishlistCollection: BottomSheetUnify() {
             setTitle(getString(R.string.collection_onboarding_title))
             setDescription(getString(R.string.collection_onboarding_desc))
             setPrimaryCTAText(getString(R.string.collection_onboarding_btn_primary))
+            setPrimaryCTAClickListener { actionListener?.onClickShowCoachmarkButton() }
             setSecondaryCTAText(getString(R.string.collection_onboarding_btn_secondary))
+            setSecondaryCTAClickListener { actionListener?.onClickSkipOnboardingButton() }
         }
         showCloseIcon = true
         isFullpage = false
