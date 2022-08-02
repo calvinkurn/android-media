@@ -529,7 +529,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             // set "sampai" end date text
             shopIsOnHolidayEndDateText?.text = getString(
                     R.string.shop_operational_hour_is_on_holiday_until,
-                    OperationalHoursUtil.toIndonesianDateFormat(selectedEndDate, isRequireSimpleFormat = true)
+                    OperationalHoursUtil.toIndonesianDateFormat(selectedEndDate, isRequireSimpleFormat = false)
             )
 
             // set open shop button

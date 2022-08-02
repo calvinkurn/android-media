@@ -257,6 +257,7 @@ class AddEditProductShipmentFragment:
                         shipmentConventionalAdapter.setProductActiveState(it)
                         shipmentOnDemandAdapter.setProductActiveState(it)
                     }
+                    updateLayoutShipment()
                 }
             }
         }

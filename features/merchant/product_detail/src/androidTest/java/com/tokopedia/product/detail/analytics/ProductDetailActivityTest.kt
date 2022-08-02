@@ -277,16 +277,52 @@ class ProductDetailActivityTest {
     }
 
     private fun clickVariantTest() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.rvContainerVariant))), scrollTo()))
-        val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, clickChildViewWithId(R.id.variantImgContainer)))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(1, clickChildViewWithId(R.id.containerChipVariant)))
+        onView(withId(R.id.rv_pdp)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(allOf(withId(R.id.rvContainerVariant))),
+                scrollTo()
+            )
+        )
+        val viewInteraction = onView(
+            allOf(withId(R.id.rvContainerVariant))
+        ).check(
+            matches(isDisplayed())
+        )
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(
+                0, clickChildViewWithId(
+                    com.tokopedia.variant_common.R.id.variantImgContainer
+                )
+            )
+        )
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(
+                1, clickChildViewWithId(
+                    com.tokopedia.variant_common.R.id.containerChipVariant
+                )
+            )
+        )
     }
 
     private fun clickSeeGuideSizeChart() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.rvContainerVariant))), scrollTo()))
-        val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(1, clickChildViewWithId(R.id.txtVariantGuideline)))
+        onView(withId(R.id.rv_pdp)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(allOf(withId(R.id.rvContainerVariant))),
+                scrollTo()
+            )
+        )
+        val viewInteraction = onView(
+            allOf(withId(R.id.rvContainerVariant))
+        ).check(
+            matches(isDisplayed())
+        )
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(
+                1, clickChildViewWithId(
+                    com.tokopedia.variant_common.R.id.txtVariantGuideline
+                )
+            )
+        )
     }
 
     private fun waitForTrackerSent() {
