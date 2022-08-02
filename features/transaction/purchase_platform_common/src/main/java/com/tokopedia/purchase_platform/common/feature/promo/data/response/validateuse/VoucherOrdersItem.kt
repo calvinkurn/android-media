@@ -10,6 +10,12 @@ data class VoucherOrdersItem(
         @field:SerializedName("unique_id")
         val uniqueId: String = "",
 
+        @field:SerializedName("shipping_id")
+        val shippingId: Long = -1,
+
+        @field:SerializedName("sp_id")
+        val spId: Long = -1,
+
         @field:SerializedName("title_description")
         val titleDescription: String = "",
 
