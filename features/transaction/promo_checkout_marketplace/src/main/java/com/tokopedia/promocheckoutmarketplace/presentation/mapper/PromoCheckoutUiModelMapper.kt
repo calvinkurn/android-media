@@ -111,8 +111,6 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     } else {
                         couponSection.id
                     }
-                    maximumSelectedPromo = couponSubSection.maximumSelectablePromo
-                    selectablePromoMessage = couponSubSection.selectablePromoMessage
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
                     isEnabled = couponSubSection.isEnabled

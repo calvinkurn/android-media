@@ -85,8 +85,6 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                 icon_unify
                                 is_enabled
                                 id
-                                selectable_promo_message
-                                maximum_selectable_promo
                                 coupon_groups {
                                     id
                                     count

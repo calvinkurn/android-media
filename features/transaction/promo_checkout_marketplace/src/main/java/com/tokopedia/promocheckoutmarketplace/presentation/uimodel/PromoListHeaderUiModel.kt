@@ -18,7 +18,7 @@ class PromoListHeaderUiModel(
             var iconUnify: String = "",
             var identifierId: Int = 0,
             var tabId: String = "",
-            var selectablePromoMessage: String = "",
+            var selectablePromoMessage: String = "Hanya bisa pilih 1",
             var maximumSelectedPromo: Int = 1
     )
 
