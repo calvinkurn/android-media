@@ -304,5 +304,5 @@
     <string name="play_bro_unpin">Lepas</string>
     <string name="play_bro_pinned_product_info">Pin Dipasang</string>
     <string name="play_bro_pinned_coachmark_desc">Pasang pin di produk agar penonton tahu\nkalau lagi kamu membahasnya.</string>
-    <string name="play_bro_pin_product_failed">Gagal %1$s pin di produk. Coba lagi, ya.</string>
+    <string name="play_bro_pin_product_failed">Tunggu 5 detik untuk pin produk ya</string>
 </resources>
