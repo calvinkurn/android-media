@@ -9,7 +9,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -35,7 +34,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent
 import com.tokopedia.kol.feature.post.di.KolProfileModule
-import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
+import com.tokopedia.kol.feature.postdetail.view.activity.ContentDetailActivity
 import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailPageRevampAdapter
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel
@@ -133,7 +132,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     }
 
     private fun initVar() {
-        postId = arguments?.getString(KolPostDetailActivity.PARAM_POST_ID) ?: "0"
+        postId = arguments?.getString(ContentDetailActivity.PARAM_POST_ID) ?: "0"
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
