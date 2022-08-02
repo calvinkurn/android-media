@@ -41,14 +41,14 @@
             android:id="@+id/one_liners_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="Stok Tersedia" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/one_liners_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text=" • Terakhir update minggu ini" />
 
         <com.tokopedia.iconunify.IconUnify

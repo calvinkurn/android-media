@@ -19,14 +19,11 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOP_NAV
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ATC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CAMPAIGN_CODE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_COMMUNICATION
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROWTH
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_PG
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_CLICK
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_VIEW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROWTH_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM
@@ -347,6 +344,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY,
             category = EVENT_CATEGORY_HOME_PAGE,
+            label = categoryId,
             affinityLabel = "null",
             promotions = arrayListOf(
                 ecommerceDataLayerCategoryClicked(
@@ -549,13 +547,13 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         val ecommerceDataLayer = getEcommerceImpressionDataLayer(productList)
 
         val dataLayer = getProductDataLayer(
-            event = EVENT_PRODUCT_VIEW,
+            event = EVENT_VIEW_ITEM_LIST,
             action = EVENT_ACTION_IMPRESSION_PAST_PURCHASE,
             category = EVENT_CATEGORY_HOME_PAGE,
             label = eventLabel,
             ecommerceDataLayer = ecommerceDataLayer
         )
-        getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_VIEW, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
     }
 
     fun onClickRepurchase(position: Int, data: TokoNowProductCardUiModel) {
@@ -572,13 +570,13 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         val ecommerceDataLayer = getEcommerceClickDataLayer(products)
 
         val dataLayer = getProductDataLayer(
-            event = EVENT_PRODUCT_CLICK,
+            event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_PAST_PURCHASE,
             category = EVENT_CATEGORY_HOME_PAGE,
             label = eventLabel,
             ecommerceDataLayer = ecommerceDataLayer
         )
-        getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_CLICK, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
     fun onRepurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
@@ -601,13 +599,13 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         val ecommerceDataLayer = getEcommerceATCDataLayer(products)
 
         val dataLayer = getProductDataLayer(
-            event = EVENT_ATC,
+            event = EVENT_ADD_TO_CART,
             action = EVENT_ACTION_ATC_PAST_PURCHASE,
             category = EVENT_CATEGORY_HOME_PAGE,
             label = eventLabel,
             ecommerceDataLayer = ecommerceDataLayer
         )
-        getTracker().sendEnhanceEcommerceEvent(EVENT_ATC, dataLayer)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
 
     fun trackImpressionLeftCarousel(channelId: String, channelHeaderName: String) {
@@ -1265,7 +1263,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         warehouseId: String
     ) {
         Tracker.Builder()
-            .setEvent(EVENT_VIEW_PG_IRIS)
+            .setEvent(EVENT_VIEW_ITEM)
             .setEventAction(EVENT_ACTION_IMPRESSION_RECEIVER_REFERRAL_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
             .setEventLabel(
@@ -1295,7 +1293,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         warehouseId: String
     ) {
         Tracker.Builder()
-            .setEvent(EVENT_CLICK_PG)
+            .setEvent(EVENT_SELECT_CONTENT)
             .setEventAction(EVENT_ACTION_CLICK_CHECK_DETAIL_RECEIVER_REFERRAL_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
             .setEventLabel(

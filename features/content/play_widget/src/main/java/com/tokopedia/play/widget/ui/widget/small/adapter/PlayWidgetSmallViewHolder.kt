@@ -17,7 +17,7 @@ class PlayWidgetSmallViewHolder {
 
     class Banner private constructor(
         itemView: View,
-        listener: Listener,
+        private val listener: Listener,
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val bannerView = itemView as PlayWidgetCardSmallBannerView
@@ -31,6 +31,9 @@ class PlayWidgetSmallViewHolder {
         }
 
         fun bind(data: PlayWidgetBannerUiModel) {
+            itemView.addOnImpressionListener(data.impressHolder) {
+                listener.onBannerImpressed(itemView)
+            }
             bannerView.setData(data)
         }
 
@@ -45,6 +48,9 @@ class PlayWidgetSmallViewHolder {
         }
 
         interface Listener {
+
+            fun onBannerImpressed(view: View)
+
             fun onBannerClicked(view: View)
         }
     }
@@ -63,18 +69,6 @@ class PlayWidgetSmallViewHolder {
                     model: PlayWidgetChannelUiModel
                 ) {
                     listener.onChannelClicked(view, model, adapterPosition)
-                }
-
-                override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
-                    if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
-                        || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
-                        listener.onLabelPromoChannelClicked(item, adapterPosition)
-                }
-
-                override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
-                    if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
-                        || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
-                            listener.onLabelPromoChannelImpressed(item, adapterPosition)
                 }
             })
         }
@@ -108,16 +102,6 @@ class PlayWidgetSmallViewHolder {
                 view: View,
                 item: PlayWidgetChannelUiModel,
                 position: Int,
-            )
-
-            fun onLabelPromoChannelClicked(
-                item: PlayWidgetChannelUiModel,
-                position: Int
-            )
-
-            fun onLabelPromoChannelImpressed(
-                item: PlayWidgetChannelUiModel,
-                position: Int
             )
         }
     }

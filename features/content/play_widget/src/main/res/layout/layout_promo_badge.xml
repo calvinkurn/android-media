@@ -13,7 +13,7 @@
         android:padding="@dimen/spacing_lvl1"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="GIFT"
+        app:icon_name="GAME"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlSymmetry"

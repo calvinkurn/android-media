@@ -102,9 +102,9 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                 if(available) {
                     findViewById<View>(R.id.tradein_p3_view).setOnClickListener { click->
                         if(it.firstOrNull()?.is3PL == false) {
-                            tradeInAnalytics?.clickExchangeMethods(it[0].isAvailable, it[0].estimatedPriceFmt, it[1].isAvailable, it[1].estimatedPriceFmt)
+                            tradeInAnalytics?.clickExchangeMethods(true, it[0].estimatedPriceFmt, it[1].estimatedPriceFmt)
                         } else {
-                            tradeInAnalytics?.clickExchangeMethods(it[1].isAvailable, it[1].estimatedPriceFmt, it[0].isAvailable, it[0].estimatedPriceFmt)
+                            tradeInAnalytics?.clickExchangeMethods(false, it[1].estimatedPriceFmt,  it[0].estimatedPriceFmt)
                         }
                         onLogisticSelected?.onLogisticSelected(true)
                         dismiss()
@@ -155,16 +155,14 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                     findViewById<View>(R.id.tradein_p1_view).setOnClickListener { click ->
                         if (logisticsOptions.firstOrNull()?.is3PL == false) {
                             tradeInAnalytics?.clickExchangeMethods(
-                                logisticsOptions[0].isAvailable,
+                                false,
                                 logisticsOptions[0].estimatedPriceFmt,
-                                logisticsOptions[1].isAvailable,
                                 logisticsOptions[1].estimatedPriceFmt
                             )
                         } else {
                             tradeInAnalytics?.clickExchangeMethods(
-                                logisticsOptions[1].isAvailable,
+                                true,
                                 logisticsOptions[1].estimatedPriceFmt,
-                                logisticsOptions[0].isAvailable,
                                 logisticsOptions[0].estimatedPriceFmt
                             )
                         }

@@ -231,7 +231,7 @@ class PlayAnalytic(
                 hashMapOf (
                     "ecommerce" to hashMapOf(
                         "click" to hashMapOf(
-                            "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
+                            "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet"),
                             "products" to  listOf(convertProductToHashMapWithList(product, position + 1, "bottom sheet"))
                         )
                     )
@@ -397,8 +397,8 @@ class PlayAnalytic(
                 EventModel(
                         "productView",
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "view on featured product",
-                        "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - featured product tagging",
+                    "view on featured product",
+                    "$mChannelId - ${products.first().first.id} - ${mChannelType.value}"
                 ),
                 hashMapOf(
                         "ecommerce" to hashMapOf(
@@ -425,7 +425,7 @@ class PlayAnalytic(
                     "productClick",
                     KEY_TRACK_GROUP_CHAT_ROOM,
                     KEY_TRACK_CLICK,
-                    "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging"
+                    "$mChannelId - ${featuredProduct.id} - ${mChannelType.value} - featured product tagging",
                 ),
                 hashMapOf(
                     "ecommerce" to hashMapOf(

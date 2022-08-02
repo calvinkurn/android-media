@@ -1,10 +1,10 @@
 package com.tokopedia.topads.dashboard.view.presenter
 
 import android.content.res.Resources
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -12,21 +12,19 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.*
 import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
-import com.tokopedia.topads.common.data.response.groupitem.GroupStatisticsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.domain.interactor.*
 import com.tokopedia.topads.common.domain.usecase.*
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
@@ -35,7 +33,6 @@ import com.tokopedia.topads.dashboard.data.raw.PRODUCT_RECOMMENDATION
 import com.tokopedia.topads.dashboard.data.raw.SHOP_AD_INFO
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
-import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.headline.data.ShopAdInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -52,39 +49,39 @@ import kotlin.coroutines.CoroutineContext
  * Created by hadi.putra on 23/04/18.
  */
 
-class TopAdsDashboardPresenter @Inject
-constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
-            private val shopAdInfoUseCase: GraphqlUseCase<ShopAdInfo>,
-            private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-            private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
-            private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase,
-            private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
-            private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
-            private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase,
-            private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
-            private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
-            private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
-            private val topAdsInsightUseCase: TopAdsInsightUseCase,
-            private val getStatisticUseCase: TopAdsGetStatisticsUseCase,
-            private val budgetRecomUseCase: GraphqlUseCase<DailyBudgetRecommendationModel>,
-            private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel>,
-            private val topAdsEditUseCase: TopAdsEditUseCase,
-            private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
-            private val createGroupUseCase: CreateGroupUseCase,
-            private val bidInfoUseCase: BidInfoUseCase,
-            private val groupInfoUseCase: GroupInfoUseCase,
-            private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
-            private val adsStatusUseCase: GraphqlUseCase<AdStatusResponse>,
-            private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse>,
-            private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse>,
-            private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse>,
-            private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
-            private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase,
-            private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>(), CoroutineScope {
+class TopAdsDashboardPresenter @Inject constructor(
+    private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
+    private val shopAdInfoUseCase: GraphqlUseCase<ShopAdInfo>,
+    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
+    private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase,
+    private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
+    private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
+    private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase,
+    private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
+    private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
+    private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
+    private val topAdsInsightUseCase: TopAdsInsightUseCase,
+    private val getStatisticUseCase: TopAdsGetStatisticsUseCase,
+    private val budgetRecomUseCase: GraphqlUseCase<DailyBudgetRecommendationModel>,
+    private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel>,
+    private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
+    private val topAdsCreateUseCase: TopAdsCreateUseCase,
+    private val bidInfoUseCase: BidInfoUseCase,
+    private val groupInfoUseCase: GroupInfoUseCase,
+    private val adsStatusUseCase: GraphqlUseCase<AdStatusResponse>,
+    private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse>,
+    private val getExpiryDateUseCase: TopadsGetFreeDepositUseCase,
+    private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse>,
+    private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
+    private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase,
+    private val userSession: UserSessionInterface,
+) : BaseDaggerPresenter<TopAdsDashboardView>(), CoroutineScope {
 
     private val job = SupervisorJob()
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
-    var expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
+    private val _expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
+    val expiryDateHiddenTrial: LiveData<String> = _expiryDateHiddenTrial
 
     companion object {
         const val HIDDEN_TRIAL_FEATURE = 21
@@ -200,6 +197,20 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         })
     }
 
+    fun setProductActionMoveGroup(
+        groupId: String, productIds: List<String>, onSuccess: (() -> Unit),
+    ) {
+        launchCatchError(block = {
+            val param = topAdsCreateUseCase.createRequestParamMoveGroup(
+                groupId, TopAdsDashboardConstant.SOURCE_DASH, productIds, ParamObject.ACTION_ADD
+            )
+            topAdsCreateUseCase.execute(param)
+            onSuccess()
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
     fun setProductAction(
         onSuccess: (() -> Unit), action: String, adIds: List<String>, selectedFilter: String?,
     ) {
@@ -261,18 +272,9 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     }
 
     fun getExpiryDate(resources: Resources) {
-        getExpiryDateUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, R.raw.query_hidden_trial_expiry_date))
-        getExpiryDateUseCase.setRequestParams(mapOf("shopID" to userSession.shopId.toIntOrZero()))
-        getExpiryDateUseCase.setTypeClass(ExpiryDateResponse::class.java)
-        getExpiryDateUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.WEEK.`val`())
-                .setSessionIncluded(true)
-                .build())
-        getExpiryDateUseCase.execute({
-            expiryDateHiddenTrial.postValue(it.topAdsGetFreeDeposit.expiryDate)
-        }, {
-            it.printStackTrace()
-        })
+        getExpiryDateUseCase.execute {
+            _expiryDateHiddenTrial.postValue(it.expiryDate)
+        }
     }
 
     fun getShopListHiddenTrial(resources: Resources) {
@@ -349,19 +351,21 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     }
 
     fun editBudgetThroughInsight(
-        productData: MutableList<GroupEditInput.Group.AdOperationsItem>?,
-        groupData: HashMap<String, Any?>?,
+        adOperations: MutableList<GroupEditInput.Group.AdOperationsItem>?,
+        priceBid: Float?, currentGroupId: String, dailyBudget: Double?,
         onSuccess: ((FinalAdResponse.TopadsManageGroupAds)) -> Unit,
         onError: ((String)) -> Unit,
     ) {
         launchCatchError(block = {
-            val params = topAdsEditUseCase.setParam(productData, groupData)
-
-            val response = topAdsEditUseCase.execute(params)
+            val params = topAdsCreateUseCase.createRequestParamEditBudgetInsight(
+                adOperations, priceBid, dailyBudget, currentGroupId
+            )
+            val response = topAdsCreateUseCase.execute(params)
 
             onSuccess(response.topadsManageGroupAds)
         }, onError = {
             it.printStackTrace()
+            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_EDIT_RECOM_BUDGET#%s", it.localizedMessage)
         })
     }
 
@@ -376,17 +380,19 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
                 })
     }
 
-    fun createGroup(param: HashMap<String, Any>, onSuccess: ((ResponseCreateGroup.TopadsCreateGroupAds) -> Unit)) {
-        createGroupUseCase.setParams(param)
-        createGroupUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it)
+    fun createGroup(
+        productIds: List<String>, currentGroupName: String, priceBid: Double,
+        suggestedBidValue: Double, error: (String?) -> Unit,
+    ) {
+        val param =
+            topAdsCreateUseCase.createRequestParamActionCreate(productIds, currentGroupName, priceBid, suggestedBidValue)
 
-                }, {
-            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_CREATE_GROUP#%s", it.localizedMessage)
-
-        }
-        )
+        launchCatchError(onError = {
+            error(it.localizedMessage)
+        }, block = {
+            topAdsCreateUseCase.execute(param)
+            error(null)
+        })
     }
 
     fun getBidInfo(suggestion: List<DataSuggestions>, onSuccess: ((List<TopadsBidInfo.DataItem>) -> Unit)) {
@@ -451,7 +457,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         budgetRecomUseCase.cancelJobs()
         validGroupUseCase.cancelJobs()
         productRecomUseCase.cancelJobs()
-        createGroupUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
         groupInfoUseCase.cancelJobs()

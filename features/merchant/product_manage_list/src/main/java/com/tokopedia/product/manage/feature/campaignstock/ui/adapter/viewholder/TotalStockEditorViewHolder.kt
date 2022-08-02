@@ -4,6 +4,7 @@ import android.text.InputFilter
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,7 +20,7 @@ import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TotalStockEditorViewHolder(itemView: View?,
-                                 private val onTotalStockChanged: (Int) -> Unit,
+                                 private val onTotalStockChanged: (String, Int, Int?) -> Unit,
                                  private val onOngoingPromotionClicked: (campaignTypeList: List<ProductCampaignType>) -> Unit,
                                  private val source: String,
                                  private val shopId: String
@@ -44,10 +45,15 @@ class TotalStockEditorViewHolder(itemView: View?,
         get() = binding?.tvCampaignStockCount
 
     private val stockTextWatcher by lazy {
-        StockEditorTextWatcher(stockEditor, emptyStockInfo, onTotalStockChanged)
+        StockEditorTextWatcher(stockEditor, emptyStockInfo, ::onStockChanged)
     }
 
+    private var maxStock: Int? = null
+    private var productId: String = ""
+
     override fun bind(stock: TotalStockEditorUiModel) {
+        maxStock = stock.maxStock
+        productId = stock.productId.orEmpty()
         stockEditor?.setElement(stock)
         emptyStockInfo?.showWithCondition(stock.isEmpty())
     }
@@ -60,6 +66,7 @@ class TotalStockEditorViewHolder(itemView: View?,
 
         removeEditorTextListener()
         setValue(element.totalStock)
+        setErrorMessage(element.totalStock, element.maxStock)
         addEditorTextListener()
 
         editText.setOnFocusChangeListener { _, hasFocus ->
@@ -81,6 +88,7 @@ class TotalStockEditorViewHolder(itemView: View?,
                 productId = element.productId.orEmpty(),
                 shopId = shopId)
         }
+
         setupStockEditor(element)
         setupCampaignCountText(element)
     }
@@ -91,6 +99,17 @@ class TotalStockEditorViewHolder(itemView: View?,
 
     private fun QuantityEditorUnify.addEditorTextListener() {
         editText.addTextChangedListener(stockTextWatcher)
+    }
+
+    private fun QuantityEditorUnify.setErrorMessage(stock: Int, maxStock: Int?) {
+        errorMessageText =
+            maxStock?.let {
+                if (stock > it) {
+                    itemView.context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_max_stock, it)
+                } else {
+                    String.EMPTY
+                }
+            }.orEmpty()
     }
 
     private fun setupStockEditor(element: TotalStockEditorUiModel) {
@@ -118,4 +137,10 @@ class TotalStockEditorViewHolder(itemView: View?,
             }
         }
     }
+
+    private fun onStockChanged(stock: Int) {
+        binding?.qteCampaignStockAmount?.setErrorMessage(stock, maxStock)
+        onTotalStockChanged(productId, stock, maxStock)
+    }
+
 }

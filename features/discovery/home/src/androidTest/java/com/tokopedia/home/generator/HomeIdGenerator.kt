@@ -8,6 +8,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.home.BuildConfig
 import com.tokopedia.home.R
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
@@ -68,8 +69,15 @@ class HomeIdGenerator {
         }
     ) + printConditions
 
-    private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition, customIdPrefix = "P")
-    private val viewPrinter = ViewHierarchyPrinter(printConditions)
+    private val parentViewPrinter = ViewHierarchyPrinter(
+        parentPrintCondition,
+        customIdPrefix = "P",
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+    )
+    private val viewPrinter = ViewHierarchyPrinter(
+        printConditions,
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+    )
     private val fileWriter = FileWriter()
 
     @Test
