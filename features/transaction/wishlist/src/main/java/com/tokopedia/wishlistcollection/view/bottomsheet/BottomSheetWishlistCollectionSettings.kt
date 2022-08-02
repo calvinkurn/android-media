@@ -40,6 +40,13 @@ class BottomSheetWishlistCollectionSettings: BottomSheetUnify() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    init {
+        showCloseIcon = true
+        showHeader = true
+        isFullpage = false
+        isKeyboardOverlap = false
+    }
+
     private fun initLayout() {
         val collectionName = arguments?.getString(COLLECTION_NAME) ?: ""
         val collectionId = arguments?.getString(COLLECTION_ID) ?: ""
@@ -58,9 +65,6 @@ class BottomSheetWishlistCollectionSettings: BottomSheetUnify() {
                 actionListener?.onDeleteCollectionItem(collectionId, collectionName)
             }
         }
-
-        showCloseIcon = true
-        showHeader = true
         setChild(binding?.root)
     }
 

@@ -93,16 +93,16 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
 
     init {
         isDragable = true
-        isKeyboardOverlap = true
+        isKeyboardOverlap = false
         isFullpage = false
+        showCloseIcon = false
+        showHeader = true
     }
 
     private fun initLayout() {
         binding = BottomsheetAddWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.rvAddWishlistCollection?.adapter = collectionAdapter
         binding?.rvAddWishlistCollection?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        showCloseIcon = false
-        showHeader = true
         setChild(binding?.root)
     }
 

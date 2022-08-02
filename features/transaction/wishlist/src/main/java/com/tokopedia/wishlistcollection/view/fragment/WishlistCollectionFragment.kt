@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -46,6 +45,7 @@ import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_NEED_REFRESH
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
+import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollectionItem
@@ -74,6 +74,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val collectionViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[WishlistCollectionViewModel::class.java]
+    }
+    private val onboardingPref: WishlistCollectionOnboardingPreference? by lazy {
+        activity?.let { WishlistCollectionOnboardingPreference(it) }
     }
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
 
@@ -112,6 +115,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkLogin()
+        checkOnboarding()
     }
 
     private fun checkLogin() {
@@ -122,6 +126,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 RouteManager.getIntent(context, ApplinkConst.LOGIN),
                 WishlistV2Fragment.REQUEST_CODE_LOGIN
             )
+        }
+    }
+
+    private fun checkOnboarding() {
+        if (onboardingPref?.hasOnboardingShown() == false) {
+            showBottomSheetOnboarding()
+            onboardingPref?.setShown(true)
         }
     }
 
@@ -383,7 +394,6 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         ) {
             _allCollectionView = allCollectionView
             _createCollectionView = createCollectionView
-            showBottomSheetOnboarding()
         }
     }
 

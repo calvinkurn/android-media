@@ -39,11 +39,17 @@ class BottomSheetOnboardingWishlistCollection: BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setupBottomSheet()
+        initLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun setupBottomSheet() {
+    init {
+        showCloseIcon = true
+        isFullpage = false
+        isKeyboardOverlap = false
+    }
+
+    private fun initLayout() {
         binding = BottomsheetWishlistCollectionOnboardingBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.onboardingState?.apply {
             setImageUrl(imageUrl)
@@ -54,9 +60,6 @@ class BottomSheetOnboardingWishlistCollection: BottomSheetUnify() {
             setSecondaryCTAText(getString(R.string.collection_onboarding_btn_secondary))
             setSecondaryCTAClickListener { actionListener?.onClickSkipOnboardingButton() }
         }
-        showCloseIcon = true
-        isFullpage = false
-        isKeyboardOverlap = false
         setChild(binding?.root)
     }
 

@@ -94,11 +94,18 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setupBottomSheet()
+        initLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun setupBottomSheet() {
+    init {
+        showCloseIcon = true
+        showHeader = true
+        isFullpage = false
+        isKeyboardOverlap = false
+    }
+
+    private fun initLayout() {
         val collectionName = arguments?.getString(COLLECTION_NAME) ?: ""
         binding = BottomsheetCreateNewWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
@@ -121,10 +128,6 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
                 text = getString(R.string.update_collection_bottomsheet_button)
             }
         }
-        showCloseIcon = true
-        showHeader = true
-        isFullpage = false
-        isKeyboardOverlap = false
         setChild(binding?.root)
         setTitle(getString(R.string.update_collection_bottomsheet_title))
     }

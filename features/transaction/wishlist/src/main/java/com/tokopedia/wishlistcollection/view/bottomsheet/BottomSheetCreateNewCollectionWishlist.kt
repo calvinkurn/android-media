@@ -93,11 +93,18 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setupBottomSheet()
+        initLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun setupBottomSheet() {
+    init {
+        showCloseIcon = true
+        showHeader = true
+        isFullpage = false
+        isKeyboardOverlap = false
+    }
+
+    private fun initLayout() {
         binding = BottomsheetCreateNewWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
             collectionCreateNameInputTextField.editText.addTextChangedListener(object: TextWatcher{
@@ -115,10 +122,6 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
             })
             collectionCreateButton.isEnabled = false
         }
-        showCloseIcon = true
-        showHeader = true
-        isFullpage = false
-        isKeyboardOverlap = false
         setChild(binding?.root)
         setTitle(getString(R.string.collection_create_bottomsheet_title))
     }
