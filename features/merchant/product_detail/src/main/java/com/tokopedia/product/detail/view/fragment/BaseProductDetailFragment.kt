@@ -138,7 +138,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         }
     }
 
-    protected fun getRecyclerView(): RecyclerView? {
+    fun getRecyclerView(): RecyclerView? {
         return rvPdp
     }
 
