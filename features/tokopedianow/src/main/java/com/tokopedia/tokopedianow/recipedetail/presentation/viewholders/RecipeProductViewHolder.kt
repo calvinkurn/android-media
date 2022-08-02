@@ -12,12 +12,13 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeProductBinding
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeProductUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeProductViewHolder(
     itemView: View,
-    private val listener: RecipeProductListener?
+    private val recipeDetailView: RecipeDetailView?
 ) : AbstractViewHolder<RecipeProductUiModel>(itemView) {
 
     companion object {
@@ -121,7 +122,7 @@ class RecipeProductViewHolder(
 
     private fun renderDeleteBtn(product: RecipeProductUiModel) {
         binding?.btnDeleteCart?.setOnClickListener {
-            listener?.onDeleteCartItem(product.id)
+            recipeDetailView?.deleteCartItem(product.id)
         }
     }
 
@@ -139,7 +140,7 @@ class RecipeProductViewHolder(
                 val input = p0?.toString()
 
                 if(input?.isNotEmpty() == true) {
-                    listener?.onQuantityChanged(
+                    recipeDetailView?.onQuantityChanged(
                         productId = product.id,
                         shopId = product.shopId,
                         quantity = input.toIntOrZero()
@@ -147,10 +148,5 @@ class RecipeProductViewHolder(
                 }
             }
         }
-    }
-
-    interface RecipeProductListener {
-        fun onQuantityChanged(productId: String, shopId: String, quantity: Int)
-        fun onDeleteCartItem(productId: String)
     }
 }

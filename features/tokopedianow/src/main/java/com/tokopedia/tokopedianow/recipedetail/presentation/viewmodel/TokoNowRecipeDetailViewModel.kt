@@ -13,15 +13,17 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
 import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipedetail.constant.MediaType
 import com.tokopedia.tokopedianow.recipedetail.domain.usecase.GetRecipeUseCase
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeDetailMapper.updateProductQuantity
@@ -30,11 +32,14 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientTa
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionTabUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.InstructionUiModel
-import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.LoadingUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.MediaSliderUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.OutOfCoverageUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeProductUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeTabUiModel
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.SectionTitleUiModel.IngredientSectionTitle
+import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.SectionTitleUiModel.InstructionSectionTitle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,11 +53,17 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    private val getAddressUseCase: GetChosenAddressWarehouseLocUseCase,
+    private val addressData: TokoNowLocalAddress,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
+        private const val GET_ADDRESS_SOURCE = "tokonow"
+
+        private const val INVALID_SHOP_ID = 0L
+        private const val OOC_WAREHOUSE_ID = 0L
         private const val CHANGE_QUANTITY_DELAY = 500L
     }
 
@@ -76,15 +87,110 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     private val _updateCartItem = MutableLiveData<Result<UpdateCartV2Data>>()
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
+    private var recipeId: String = ""
     private val layoutItemList = mutableListOf<Visitable<*>>()
     private var miniCartData: MiniCartSimplifiedData? = null
 
     private var changeQuantityJob: Job? = null
     private var getMiniCartJob: Job? = null
 
-    var localAddressData: LocalCacheModel? = null
+    fun checkAddressData() {
+        val shopId = addressData.getShopId()
 
-    fun getRecipe(recipeId: String) {
+        if (shopId == INVALID_SHOP_ID) {
+            getAddress()
+        } else {
+            getRecipe()
+        }
+    }
+
+    fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
+        changeQuantityJob?.cancel()
+        launchWithDelay(block = {
+            val miniCartItem = getMiniCartItem(productId)
+            val cartId = miniCartItem?.cartId.orEmpty()
+            val notes = miniCartItem?.notes.orEmpty()
+
+            when {
+                miniCartItem == null -> addItemToCart(productId, shopId, quantity)
+                quantity.isZero() -> deleteCartItem(productId, cartId)
+                else -> updateCartItem(cartId, quantity, notes)
+            }
+        }, {
+
+        }, CHANGE_QUANTITY_DELAY).let {
+            changeQuantityJob = it
+        }
+    }
+
+    fun deleteCartItem(productId: String, cartId: String) {
+        deleteCartUseCase.setParams(cartIdList = listOf(cartId))
+        deleteCartUseCase.execute({
+            val message = it.data.message.joinToString(separator = ", ")
+            val data = Pair(productId, message)
+            _removeCartItem.postValue(Success(data))
+        }, {
+            _removeCartItem.postValue(Fail(it))
+        })
+    }
+
+    fun getMiniCart() {
+        val shopIds = listOf(getShopId())
+
+        if(shouldGetMiniCart(shopIds)) {
+            getMiniCartJob?.cancel()
+            launchCatchError(block = {
+                getMiniCartUseCase.setParams(shopIds, MiniCartSource.TokonowRecipe)
+                getMiniCartUseCase.execute({
+                    val showMiniCart = it.isShowMiniCartWidget
+                    val outOfCoverage = addressData.isOutOfCoverage()
+                    val data = it.copy(isShowMiniCartWidget = showMiniCart && !outOfCoverage)
+                    setProductAddToCartQuantity(it)
+                    _miniCart.postValue(Success(data))
+                }, {
+                    _miniCart.postValue(Fail(it))
+                })
+            }) {
+                _miniCart.postValue(Fail(it))
+            }.let {
+                getMiniCartJob = it
+            }
+        }
+    }
+
+    fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
+        launchCatchError(block = {
+            setMiniCartAndProductQuantity(miniCart)
+            _layoutList.postValue(Success(layoutItemList))
+        }) {}
+    }
+
+    fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
+        val items = miniCartData?.miniCartItems.orEmpty()
+        return items.getMiniCartItemProduct(productId)
+    }
+
+    fun onAddressChanged() {
+        showLoading()
+        updateAddressData()
+        checkAddressData()
+    }
+
+    fun showLoading() {
+        layoutItemList.clear()
+        layoutItemList.add(LoadingUiModel)
+        _layoutList.postValue(Success(layoutItemList))
+    }
+
+    fun updateAddressData() = addressData.updateLocalData()
+
+    fun getShopId(): String = addressData.getShopId().toString()
+
+    fun setRecipeId(recipeId: String) {
+        this.recipeId = recipeId
+    }
+
+    private fun getRecipe() {
         launchCatchError(block = {
             // Temporary Hardcode Data
             val mediaSlider = MediaSliderUiModel(
@@ -187,12 +293,30 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
             val totalPrice = "Rp60.000"
             val buyAllProductItem = BuyAllProductUiModel(totalPrice, products)
+            val isOutOfCoverage = addressData.isOutOfCoverage()
+
+            val ingredientTabItems = mutableListOf<Visitable<*>>().apply {
+                if(isOutOfCoverage) {
+                    add(OutOfCoverageUiModel)
+                } else {
+                    add(buyAllProductItem)
+                    addAll(products)
+                }
+            }
+
+            val instructionTabItems = mutableListOf<Visitable<*>>().apply {
+                add(IngredientSectionTitle)
+                addAll(ingredients)
+                add(InstructionSectionTitle)
+                add(instruction)
+            }
 
             val recipeTab = RecipeTabUiModel(
-                IngredientTabUiModel(buyAllProductItem, products),
-                InstructionTabUiModel(ingredients, instruction)
+                IngredientTabUiModel(ingredientTabItems),
+                InstructionTabUiModel(instructionTabItems)
             )
 
+            layoutItemList.clear()
             layoutItemList.add(mediaSlider)
             layoutItemList.add(recipeInfo)
             layoutItemList.add(recipeTab)
@@ -211,82 +335,23 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
                 )
             )
             setProductAddToCartQuantity(miniCart)
+            hideLoading()
 
             _recipeInfo.postValue(Success(recipeInfo))
             _layoutList.postValue(Success(layoutItemList))
         }) {
-
+            hideLoading()
         }
     }
 
-    fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
-        changeQuantityJob?.cancel()
-        launchWithDelay(block = {
-            val miniCartItem = getMiniCartItem(productId)
-            val cartId = miniCartItem?.cartId.orEmpty()
-            val notes = miniCartItem?.notes.orEmpty()
+    private fun getAddress() {
+        getAddressUseCase.getStateChosenAddress( {
+            addressData.updateAddressData(it)
+            checkAddressData()
+        },{
 
-            when {
-                miniCartItem == null -> addItemToCart(productId, shopId, quantity)
-                quantity.isZero() -> removeCartItem(productId, cartId)
-                else -> updateCartItem(cartId, quantity, notes)
-            }
-        }, {
-
-        }, CHANGE_QUANTITY_DELAY).let {
-            changeQuantityJob = it
-        }
+        }, GET_ADDRESS_SOURCE)
     }
-
-    fun removeCartItem(productId: String, cartId: String) {
-        deleteCartUseCase.setParams(cartIdList = listOf(cartId))
-        deleteCartUseCase.execute({
-            val message = it.data.message.joinToString(separator = ", ")
-            val data = Pair(productId, message)
-            _removeCartItem.postValue(Success(data))
-        }, {
-            _removeCartItem.postValue(Fail(it))
-        })
-    }
-
-    fun getMiniCart() {
-        val shopId = listOf(getShopId())
-        val warehouseId = localAddressData?.warehouse_id
-
-        if(shouldGetMiniCart(shopId, warehouseId)) {
-            getMiniCartJob?.cancel()
-            launchCatchError(block = {
-                getMiniCartUseCase.setParams(shopId, MiniCartSource.TokonowRecipe)
-                getMiniCartUseCase.execute({
-                    val showMiniCart = it.isShowMiniCartWidget
-                    val outOfCoverage = localAddressData?.isOutOfCoverage() == true
-                    val data = it.copy(isShowMiniCartWidget = showMiniCart && !outOfCoverage)
-                    setProductAddToCartQuantity(it)
-                    _miniCart.postValue(Success(data))
-                }, {
-                    _miniCart.postValue(Fail(it))
-                })
-            }) {
-                _miniCart.postValue(Fail(it))
-            }.let {
-                getMiniCartJob = it
-            }
-        }
-    }
-
-    fun setProductAddToCartQuantity(miniCart: MiniCartSimplifiedData) {
-        launchCatchError(block = {
-            setMiniCartAndProductQuantity(miniCart)
-            _layoutList.postValue(Success(layoutItemList))
-        }) {}
-    }
-
-    fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
-        val items = miniCartData?.miniCartItems.orEmpty()
-        return items.getMiniCartItemProduct(productId)
-    }
-
-    fun getShopId(): String = localAddressData?.shop_id.orEmpty()
 
     private fun addItemToCart(productId: String, shopId: String, quantity: Int) {
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
@@ -332,7 +397,14 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
         miniCartData = miniCart
     }
 
-    private fun shouldGetMiniCart(shopId: List<String>, warehouseId: String?): Boolean {
-        return !shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn
+    private fun shouldGetMiniCart(shopId: List<String>): Boolean {
+        val warehouseId = addressData.getWarehouseId()
+        val outOfCoverage = warehouseId != OOC_WAREHOUSE_ID
+        return !shopId.isNullOrEmpty() && outOfCoverage && userSession.isLoggedIn
+    }
+
+    private fun hideLoading() {
+        layoutItemList.removeFirst { it is LoadingUiModel }
+        _layoutList.postValue(Success(layoutItemList))
     }
 }

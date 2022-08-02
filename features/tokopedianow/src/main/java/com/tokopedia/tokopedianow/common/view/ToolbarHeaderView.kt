@@ -5,7 +5,9 @@ import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.applyIconUnifyColor
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.orZero
 
 class ToolbarHeaderView(
@@ -15,7 +17,7 @@ class ToolbarHeaderView(
 ) {
 
     var title: String = ""
-    var icons: List<Int> = listOf()
+    var rightIcons: List<Int> = listOf()
         set(value) {
             field = value
             value.forEach {
@@ -26,12 +28,14 @@ class ToolbarHeaderView(
     var onSwitchToTransparent: (() -> Unit)? = null
     var onSwitchToNormal: (() -> Unit)? = null
     var enableSwitchTheme: Boolean = true
-
-    init {
-        if (enableSwitchTheme) {
-            createScrollListener()
+        set(value) {
+            field = value
+            if (field) {
+                setScrollListener()
+            } else {
+                resetScrollListener()
+            }
         }
-    }
 
     fun setTheme(transparent: Boolean) {
         val isTransparent = header?.transparentMode ?: false
@@ -50,25 +54,7 @@ class ToolbarHeaderView(
 
     fun getActionItem(pos: Int): View? = header?.rightIcons?.get(pos)
 
-    private fun setTransparentTheme() {
-        header?.apply {
-            headerTitle = ""
-            isShowShadow = false
-            transparentMode = true
-            setIconsColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-        }
-    }
-
-    private fun setNormalTheme() {
-        header?.apply {
-            headerTitle = this@ToolbarHeaderView.title
-            isShowShadow = false
-            transparentMode = false
-            setIconsColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-        }
-    }
-
-    private fun setIconsColor(@ColorRes colorId: Int) {
+    fun setRightIconsColor(@ColorRes colorId: Int) {
         header?.rightIcons?.forEach {
             it.drawable?.let { drawable ->
                 val color = ContextCompat.getColor(header.context, colorId)
@@ -77,7 +63,42 @@ class ToolbarHeaderView(
         }
     }
 
-    private fun createScrollListener() {
+    fun setBackButtonColor(@ColorRes colorResId: Int) {
+        header?.apply {
+            val color = ContextCompat.getColor(context, colorResId)
+            navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, color)
+        }
+    }
+
+    fun reset() {
+        header?.apply {
+            headerTitle = ""
+            isShowShadow = false
+            transparentMode = true
+        }
+        setBackButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        setRightIconsColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+    }
+
+    private fun setTransparentTheme() {
+        header?.apply {
+            headerTitle = ""
+            isShowShadow = false
+            transparentMode = true
+            setRightIconsColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        }
+    }
+
+    private fun setNormalTheme() {
+        header?.apply {
+            headerTitle = this@ToolbarHeaderView.title
+            isShowShadow = false
+            transparentMode = false
+            setRightIconsColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        }
+    }
+
+    private fun setScrollListener() {
         scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -94,5 +115,9 @@ class ToolbarHeaderView(
                 }
             }
         }
+    }
+
+    private fun resetScrollListener() {
+        scrollListener = null
     }
 }

@@ -1,10 +1,7 @@
 package com.tokopedia.tokopedianow.recipedetail.presentation.uimodel
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 
-@Parcelize
 data class IngredientTabUiModel(
-    val buyAllProductItem: BuyAllProductUiModel,
-    val productList: List<RecipeProductUiModel>
-): Parcelable
+    val items: List<Visitable<*>>
+)

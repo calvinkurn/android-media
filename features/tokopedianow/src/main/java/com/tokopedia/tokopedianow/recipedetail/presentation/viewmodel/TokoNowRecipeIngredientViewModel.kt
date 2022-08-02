@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.IngredientTabUiModel
 import javax.inject.Inject
 
 class TokoNowRecipeIngredientViewModel @Inject constructor(
@@ -17,14 +16,7 @@ class TokoNowRecipeIngredientViewModel @Inject constructor(
 
     private val _itemList = MutableLiveData<List<Visitable<*>>>()
 
-    fun getLayout(data: IngredientTabUiModel?) {
-        data?.run {
-            val items = mutableListOf<Visitable<*>>().apply {
-                add(data.buyAllProductItem)
-                addAll(data.productList)
-            }
-
-            _itemList.postValue(items)
-        }
+    fun onViewCreated(items: List<Visitable<*>>) {
+        _itemList.postValue(items)
     }
 }

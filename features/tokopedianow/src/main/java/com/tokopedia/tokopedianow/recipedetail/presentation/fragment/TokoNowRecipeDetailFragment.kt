@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
@@ -27,7 +27,7 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeDetailBi
 import com.tokopedia.tokopedianow.recipedetail.di.component.DaggerRecipeDetailComponent
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapter
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailAdapterTypeFactory
-import com.tokopedia.tokopedianow.recipedetail.presentation.listener.RecipeProductListener
+import com.tokopedia.tokopedianow.recipedetail.presentation.listener.RecipeChooseAddressListener
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.view.RecipeDetailView
 import com.tokopedia.tokopedianow.recipedetail.presentation.viewmodel.TokoNowRecipeDetailViewModel
@@ -67,10 +67,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     private val adapter by lazy {
         RecipeDetailAdapter(
-            RecipeDetailAdapterTypeFactory(
-                view = this,
-                productListener = RecipeProductListener(viewModel)
-            )
+            RecipeDetailAdapterTypeFactory(view = this)
         )
     }
 
@@ -90,15 +87,13 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val recipeId = activity?.intent?.data
-            ?.getQueryParameter(KEY_PARAM_RECIPE_ID).orEmpty()
-
+        showLoading()
+        setRecipeData()
         setupToolbarHeader()
         setupRecyclerView()
         updateAddressData()
         observeLiveData()
-
-        getRecipe(recipeId)
+        checkAddressData()
     }
 
     override fun onAttach(context: Context) {
@@ -116,30 +111,60 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
     }
 
-    override fun getFragmentActivity() = activity
-
-    private fun setupToolbarHeader() {
-        initToolbarHeader()
-        setToolbarClickListener()
-        setToolbarScrollListener()
+    override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
+        viewModel.onQuantityChanged(productId, shopId, quantity)
     }
 
-    private fun initToolbarHeader() {
+    override fun deleteCartItem(productId: String) {
+        val miniCartItem = viewModel.getMiniCartItem(productId)
+        val cartId = miniCartItem?.cartId.orEmpty()
+        viewModel.deleteCartItem(productId, cartId)
+    }
+
+    override fun showChooseAddressBottomSheet() {
+        val bottomSheet = ChooseAddressBottomSheet().apply {
+            val recyclerView = binding?.rvRecipeDetail
+            setListener(RecipeChooseAddressListener(
+                toolbarHeader,
+                recyclerView,
+                viewModel
+            ))
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun getFragmentActivity() = activity
+
+    private fun setRecipeData() {
+        val recipeId = activity?.intent?.data
+            ?.getQueryParameter(KEY_PARAM_RECIPE_ID).orEmpty()
+        viewModel.setRecipeId(recipeId)
+    }
+
+    private fun setupToolbarHeader() {
+        setToolbarHeaderView()
+        setToolbarClickListener()
+    }
+
+    private fun setToolbarHeaderView() {
         toolbarHeader = ToolbarHeaderView(
             header = binding?.toolbarHeader,
             statusBar = binding?.statusBar
         ) { rv, _, _ -> findStartSwitchThemePosition(rv) }.apply {
-            icons = listOf(
-                com.tokopedia.iconunify.R.drawable.iconunify_bookmark,
-                com.tokopedia.iconunify.R.drawable.iconunify_share_mobile
+            rightIcons = listOf(
+                R.drawable.tokopedianow_ic_recipe_bookmark_dark,
+                R.drawable.tokopedianow_ic_recipe_share_dark
             )
+            setBackButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             onSwitchToNormal = {
                 binding?.headerDivider?.show()
             }
             onSwitchToTransparent = {
                 binding?.headerDivider?.hide()
             }
+            enableSwitchTheme = true
         }
+        binding?.headerDivider?.hide()
     }
 
     private fun setToolbarClickListener() {
@@ -233,6 +258,8 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
             if(it is Success) {
                 setHeaderTitle(it.data.title)
                 setupShareBottomSheet(it.data)
+                setToolbarScrollListener()
+                setToolbarIconsColor()
             }
         }
 
@@ -339,8 +366,12 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         binding?.miniCart?.updateData(listOf(shopId))
     }
 
-    private fun getRecipe(recipeId: String) {
-        viewModel.getRecipe(recipeId)
+    private fun checkAddressData() {
+        viewModel.checkAddressData()
+    }
+
+    private fun showLoading() {
+        viewModel.showLoading()
     }
 
     private fun getMiniCart() {
@@ -356,6 +387,13 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun setToolbarIconsColor() {
+        toolbarHeader?.apply {
+            setRightIconsColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            setBackButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        }
     }
 
     private fun setToolbarScrollListener() {
@@ -404,13 +442,6 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     private fun updateAddressData() {
-        context?.let { context ->
-            viewModel.localAddressData?.let { currentData ->
-                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(context, currentData)) {
-                    val addressData = ChooseAddressUtils.getLocalizingAddressData(context)
-                    viewModel.localAddressData = addressData
-                }
-            }
-        }
+        viewModel.updateAddressData()
     }
 }
