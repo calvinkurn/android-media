@@ -486,7 +486,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     }
     private fun showNoInterNetDialog(context: Context) {
         val sheet = FeedNetworkErrorBottomSheet.newInstance(false)
-        sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.show(childFragmentManager, "")
 
     }
 
@@ -707,7 +707,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 feedXCard.reportable, feedXCard.followers.isFollowed,
                 feedXCard.deletable
             )
-            sheet.show((context as FragmentActivity).supportFragmentManager, "")
+            sheet.show(childFragmentManager, "")
             sheet.onReport = {
 
                 if (userSession.isLoggedIn) {
@@ -729,7 +729,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                                 }
                             })
                         reportBottomSheet.show(
-                            (context as FragmentActivity).supportFragmentManager,
+                            childFragmentManager,
                             ""
                         )
                     }
@@ -981,7 +981,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
         val sheet = ProductActionBottomSheet.newInstance(bundle)
-        sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.show(childFragmentManager, "")
         sheet.shareProductCB = {
             onShareProduct(
                 item.id.toIntOrZero(),
@@ -1155,6 +1155,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             ).show()
         }
         if (adapter.getList().isEmpty()) {
+            //TODO handle empty list view
 //            showRefresh()
 //            onRefresh()
         }
