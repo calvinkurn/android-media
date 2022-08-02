@@ -8,13 +8,12 @@ import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
-import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,15 +28,16 @@ public class KolProfileModule {
 
     @KolProfileScope
     @Provides
-    KolPostDetailContract.Presenter provideKolPostDetailPresenter(KolPostDetailPresenter presenter) {
-        return presenter;
+    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context) {
+        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
     }
 
     @KolProfileScope
     @Provides
-    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(@ApplicationContext Context context) {
-        return new ToggleFavouriteShopUseCase(new GraphqlUseCase(), context.getResources());
+    public AddWishListUseCase provideAddWishListUseCase(@ApplicationContext Context context){
+        return new AddWishListUseCase(context);
     }
+
 
     @KolProfileScope
     @Provides

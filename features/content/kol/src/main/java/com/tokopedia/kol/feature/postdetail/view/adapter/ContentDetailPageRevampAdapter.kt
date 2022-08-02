@@ -10,13 +10,12 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
 
 class ContentDetailPageRevampAdapter(
-    dataSource: DataSource,
-    contentDetailListener: ContentDetailPostViewHolder.CDPListener
+    ContentDetailListener: ContentDetailPostViewHolder.CDPListener
 ): BaseDiffUtilAdapter<FeedXCard>(true)
 {
     init {
         delegatesManager
-            .addDelegate(CDPPostDelegate(dataSource, contentDetailListener))
+            .addDelegate(CDPPostDelegate(ContentDetailListener))
     }
 
     override fun areItemsTheSame(oldItem: FeedXCard, newItem: FeedXCard): Boolean {
@@ -30,8 +29,7 @@ class ContentDetailPageRevampAdapter(
 
 
     private class CDPPostDelegate(
-        private val dataSource: DataSource,
-        private val contentDetailListener: ContentDetailPostViewHolder.CDPListener
+        private val ContentDetailListener: ContentDetailPostViewHolder.CDPListener
     ) : BaseAdapterDelegate<FeedXCard,FeedXCard, ContentDetailPostViewHolder>(
         R.layout.item_content_detail_revamp_view) {
         override fun onBindViewHolder(item: FeedXCard, holder: ContentDetailPostViewHolder) {
@@ -45,15 +43,12 @@ class ContentDetailPageRevampAdapter(
         ) {
             if (payloads.isEmpty) super.onBindViewHolderWithPayloads(item, holder, payloads)
             else {
-                if (payloads.containsKey(IMAGE_ITEM_IMPRESSED) || payloads.containsKey(
-                        VOD_ITEM_IMPRESSED)) {
-                    holder.bindWithPayloads(item, payloads)
-                }
+                holder.bindWithPayloads(item, payloads)
             }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ContentDetailPostViewHolder {
-            return ContentDetailPostViewHolder.create(parent, dataSource, contentDetailListener)
+            return ContentDetailPostViewHolder.create(parent, ContentDetailListener)
         }
 
         override fun isForViewType(
@@ -64,14 +59,5 @@ class ContentDetailPageRevampAdapter(
             return true
         }
     }
-    companion object{
-        private const val IMAGE_ITEM_IMPRESSED = "image_item_impressed"
-        private const val VOD_ITEM_IMPRESSED = "vod_item_impressed"
 
-    }
-
-    interface DataSource {
-        fun getData(): FeedXCard
-        fun getPositionInFeed(): Int
-    }
 }

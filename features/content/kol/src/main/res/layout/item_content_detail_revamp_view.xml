@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_cdp_revamp_view_item"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/unify_space_8">
 
 </com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostTypeViewHolder>

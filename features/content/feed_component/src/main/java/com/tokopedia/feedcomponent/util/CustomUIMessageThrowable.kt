@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.view.util
+package com.tokopedia.feedcomponent.util
 
 import androidx.annotation.StringRes
 

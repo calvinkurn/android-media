@@ -11,6 +11,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
+import com.tokopedia.feedcomponent.view.widget.PostTagView
 
 /**
  * Created by kenny.hadisaputra on 24/06/22
@@ -199,7 +200,7 @@ class FeedPostCarouselAdapter(
 
     interface DataSource {
         fun getFeedXCard(): FeedXCard
-        fun getDynamicPostListener(): DynamicPostViewHolder.DynamicPostListener?
+        fun getTagBubbleListener(): PostTagView.TagBubbleListener?
         fun getPositionInFeed(): Int
     }
 }

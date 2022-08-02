@@ -193,7 +193,7 @@ class CarouselImageViewHolder(
             item.tagging.forEach { tagging ->
                 val tagView = PostTagView(itemView.context, tagging)
                 tagView.bindData(
-                    dynamicPostListener = dataSource.getDynamicPostListener(),
+                    tagBubbleListener  = dataSource.getTagBubbleListener(),
                     products = if (card.isTypeProductHighlight && card.useASGCNewDesign) {
                         card.products
                     } else card.tags,

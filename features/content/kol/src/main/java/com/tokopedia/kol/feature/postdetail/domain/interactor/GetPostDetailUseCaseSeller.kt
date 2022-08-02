@@ -2,14 +2,9 @@ package com.tokopedia.kol.feature.postdetail.domain.interactor
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Share
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -40,7 +35,7 @@ class GetPostDetailUseCaseSeller @Inject constructor(
             requestParams.putString(GetDynamicFeedUseCase.PARAM_CURSOR, cursor)
             requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE, source.sourceString)
             requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, sourceId)
-            requestParams.putInt(GetKolPostDetailUseCase.PARAM_ID, sourceId.toIntOrZero())
+            requestParams.putInt(GetDynamicFeedUseCase.PARAM_ID, sourceId.toIntOrZero())
             return requestParams
         }
     }

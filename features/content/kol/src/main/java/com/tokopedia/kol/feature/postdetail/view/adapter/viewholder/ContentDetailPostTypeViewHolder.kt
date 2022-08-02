@@ -7,7 +7,6 @@ import android.text.style.ClickableSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.feedcomponent.R as feedComponentR
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -20,6 +19,7 @@ import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
@@ -33,7 +33,8 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
-import com.tokopedia.feedcomponent.view.widget.*
+import com.tokopedia.feedcomponent.view.widget.FeedVODViewHolder
+import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kol.R
 import com.tokopedia.kotlin.extensions.view.*
@@ -41,6 +42,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.URLEncoder
+import com.tokopedia.feedcomponent.R as feedComponentR
+import com.tokopedia.kol.R as kolR
 
 class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     context: Context,
@@ -89,8 +93,19 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 return mData
             }
 
-            override fun getDynamicPostListener(): DynamicPostViewHolder.DynamicPostListener? {
-                return null
+            override fun getTagBubbleListener(): PostTagView.TagBubbleListener? {
+                return object : PostTagView.TagBubbleListener{
+                    override fun onPostTagBubbleClick(
+                        positionInFeed: Int,
+                        redirectUrl: String,
+                        postTagItem: FeedXProduct,
+                        adClickUrl: String
+                    ) {
+                        listener?.onPostTagBubbleClicked(
+                            redirectUrl
+                        )
+                    }
+                }
             }
 
             override fun getPositionInFeed(): Int {
@@ -102,31 +117,9 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 viewHolder: CarouselImageViewHolder,
                 media: FeedXMedia,
             ) {
-                if (mData.isTopAds) {
-                    RouteManager.route(
-                        context,
-                        media.appLink,
-                    )
-                }
 
                 if (mData.isTypeProductHighlight && mData.useASGCNewDesign) {
-//                    listener?.onClickSekSekarang(
-//                        mData.id,
-//                        mData.author.id,
-//                        mData.typename,
-//                        mData.followers.isFollowed,
-//                        positionInFeed,
-//                        mData,
-//                    )
-                } else {
-//                    listener?.onClickSekSekarang(
-//                        mData.id,
-//                        mData.shopId,
-//                        TYPE_TOPADS_HEADLINE_NEW,
-//                        mData.followers.isFollowed,
-//                        positionInFeed,
-//                        mData,
-//                    )
+                    listener?.onCekSekarangButtonClicked(mData, positionInFeed)
                 }
 
             }
@@ -138,33 +131,17 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             }
 
             override fun onImageClicked(viewHolder: CarouselImageViewHolder) {
-//                listener?.onImageClicked(
-//                    mData.id,
-//                    mData.typename,
-//                    mData.followers.isFollowed,
-//                    mData.author.id,
-//                )
+
             }
 
             override fun onLiked(viewHolder: CarouselImageViewHolder) {
-//                listener?.onLikeClick(
-//                    positionInFeed,
-//                    mData.id.toIntOrZero(),
-//                    mData.like.isLiked,
-//                    mData.typename,
-//                    mData.followers.isFollowed,
-//                    type = true,
-//                    mData.author.id,
-//                    mData.type,
-//                )
+                listener?.onLikeClicked(
+                    mData,
+                    positionInFeed
+                )
             }
 
             override fun onImpressed(viewHolder: CarouselImageViewHolder) {
-//                imagePostListener.userImagePostImpression(
-//                    positionInFeed,
-//                    pageControl.indicatorCurrentPosition,
-//                )
-
                 val data = mData
                 val position = viewHolder.adapterPosition
 
@@ -174,29 +151,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
                     if (data.products.isEmpty() ||
                         data.products.size <= position) return
-//
-//                    imagePostListener.userProductImpression(
-//                        positionInFeed,
-//                        data.id,
-//                        data.typename,
-//                        data.author.id,
-//                        listOf(data.products[position])
-//                    )
+
                 } else {
                     if (data.media.isEmpty() ||
                         data.media.size <= position) return
 
-//                    imagePostListener.userCarouselImpression(
-//                        data.id,
-//                        data.media[position],
-//                        position,
-//                        data.typename,
-//                        data.followers.isFollowed,
-//                        data.author.id,
-//                        positionInFeed,
-//                        data.cpmData,
-//                        data.listProduct
-//                    )
                 }
             }
 
@@ -204,20 +163,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 viewHolder: CarouselImageViewHolder,
                 media: FeedXMedia,
             ) {
-//                val listener = this@PostDynamicViewNew.listener ?: return
-//
-//                listener.onTagClicked(
-//                    mData.id.toIntOrZero(),
-//                    media.tagProducts,
-//                    listener,
-//                    mData.author.id,
-//                    mData.typename,
-//                    mData.followers.isFollowed,
-//                    media.type,
-//                    positionInFeed,
-//                    mData.playChannelID,
-//                    shopName = mData.author.name
-//                )
+                listener?.onLihatProdukClicked(
+                    mData,
+                    positionInFeed,
+                    media.tagProducts
+                )
             }
         },
         videoListener = object : CarouselVideoViewHolder.Listener {
@@ -225,20 +175,12 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 viewHolder: CarouselVideoViewHolder,
                 media: FeedXMedia
             ) {
-//                val listener = this@PostDynamicViewNew.listener ?: return
-//
-//                listener.onTagClicked(
-//                    mData.id.toIntOrZero(),
-//                    media.tagProducts,
-//                    listener,
-//                    mData.author.id,
-//                    mData.typename,
-//                    mData.followers.isFollowed,
-//                    media.type,
-//                    positionInFeed,
-//                    mData.playChannelID,
-//                    shopName = mData.author.name
-//                )
+                listener?.onLihatProdukClicked(
+                    mData,
+                    positionInFeed,
+                    media.tagProducts
+                )
+
             }
 
             override fun onMuteChanged(
@@ -246,6 +188,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 media: FeedXMedia,
                 isMuted: Boolean
             ) {
+                //TODO analytics
 //                listener?.muteUnmuteVideo(
 //                    mData.playChannelID,
 //                    isMuted,
@@ -257,6 +200,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             }
 
             override fun onVideoStopTrack(viewHolder: CarouselVideoViewHolder, lastPosition: Long) {
+                //TODO analytics
 //                videoListener?.onVideoStopTrack(
 //                    mData,
 //                    lastPosition,
@@ -299,13 +243,13 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         rvCarousel.adapter = adapter
     }
     fun bindData(
-        contentDetailListener: ContentDetailPostViewHolder.CDPListener,
+        ContentDetailListener: ContentDetailPostViewHolder.CDPListener,
         adapterPosition: Int,
         feedXCard: FeedXCard,
         userSession: UserSessionInterface
     ) {
         mData = feedXCard
-        this.listener = contentDetailListener
+        this.listener = ContentDetailListener
         this.positionInFeed = adapterPosition
         bindHeader(feedXCard)
         bindItems(feedXCard)
@@ -315,19 +259,14 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         bindComment(
             feedXCard.comments,
             userSession.profilePicture,
-            userSession.name,
-            feedXCard.id.toIntOrZero(),
-            feedXCard.author.type,
-            feedXCard.author.id,
-            feedXCard.typename,
-            feedXCard.followers.isFollowed,
-            feedXCard.media.firstOrNull()?.type ?: "",
-            feedXCard.playChannelID
+            userSession.name
         )
+        bindShare(feedXCard)
 
     }
-    private fun bindLike(feedXCard: FeedXCard) {
-        if (feedXCard.isTypeVOD || feedXCard.isTypeLongVideo ) {
+
+    fun bindLike(feedXCard: FeedXCard) {
+        if (feedXCard.isTypeVOD || feedXCard.isTypeLongVideo) {
             bindViews(feedXCard)
         } else {
             bindLikeData(feedXCard)
@@ -349,7 +288,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         timestampText.text = spannableString
         timestampText.show()
     }
-    private fun bindHeader(
+
+    fun bindHeader(
         feedXCard: FeedXCard
     ) {
         val author = feedXCard.author
@@ -360,15 +300,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         if (count >= FOLLOW_COUNT_THRESHOLD) {
             followCount.text =
                 String.format(
-                    context.getString(feedComponentR.string.feed_header_follow_count_text),
+                    context.getString(kolR.string.feed_header_follow_count_text),
                     count.productThousandFormatted()
                 )
-        } else {
-            followCount.text =
-                context.getString(feedComponentR.string.feed_header_follow_count_less_text)
         }
 
-        followCount.showWithCondition(!isFollowed || followers.transitionFollow)
         if (feedXCard.isTypeProductHighlight) {
             if (feedXCard.type == ASGC_NEW_PRODUCTS)
                 followCount.text =
@@ -376,6 +312,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             else if (feedXCard.type == ASGC_RESTOCK_PRODUCTS)
                 followCount.text = context.getString(feedComponentR.string.feeds_asgc_restock_text)
             followCount.show()
+        } else {
+            followCount.showWithCondition((!isFollowed || followers.transitionFollow) && count >= FOLLOW_COUNT_THRESHOLD)
         }
 
         shopImage.setImageUrl(author.logoURL)
@@ -386,10 +324,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             layoutParams?.setMargins(FOLLOW_MARGIN, MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO)
             followCount.layoutParams = layoutParams
         }
-        val activityName = ""
-        val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
-        val followCta =
-            FollowCta(authorID = author.id, authorType = authorType, isFollow = isFollowed)
         val authorName = MethodChecker.fromHtml(author.name)
         val startIndex = authorName.length + DOT_SPACE
         var endIndex = startIndex + FOLLOW_SIZE
@@ -413,19 +347,9 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
         val cs: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-//                listener?.onAvatarClick(
-//                    positionInFeed,
-//                    author.appLink,
-//                    if (type == TYPE_FEED_X_CARD_VOD) channelId else activityId,
-//                    activityName,
-//                    followCta,
-//                    type,
-//                    isFollowed,
-//                    author.id,
-//                    mediaType,
-//                    false
-//
-//                )
+                listener?.onShopHeaderItemClicked(
+                    feedXCard.author.appLink
+                )
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -441,10 +365,10 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         if (startIndex < spannableString.length && endIndex <= spannableString.length) {
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {
-//                        listener?.onHeaderActionClick(
-//                            positionInFeed, author.id,
-//                            authorType, isFollowed, type, isVideo
-//                        )
+                        listener?.onFollowUnfollowClicked(
+                            feedXCard,
+                            positionInFeed
+                        )
 
                 }
 
@@ -494,37 +418,22 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         followers.transitionFollow = false
 
         shopImage.setOnClickListener {
-//            listener?.onAvatarClick(
-//                positionInFeed,
-//                author.appLink,
-//                if (type == TYPE_FEED_X_CARD_VOD) channelId else activityId,
-//                activityName,
-//                followCta,
-//                type,
-//                isFollowed,
-//                author.id,
-//                mediaType,
-//                false
-//            )
+            listener?.onShopHeaderItemClicked(
+                    feedXCard.appLink
+                )
         }
         shopMenuIcon.setOnClickListener {
-//            listener?.onMenuClick(
-//                positionInFeed,
-//                activityId,
-//                reportable,
-//                deletable,
-//                true,
-//                isFollowed,
-//                author.id,
-//                authorType,
-//                type,
-//                mediaType,
-//                caption,
-//                channelId.toString())
-//        }
+            listener?.onClickOnThreeDots(
+                feedXCard,
+                positionInFeed)
         }
     }
-    private fun bindViews(feedXCard: FeedXCard){
+    private fun bindShare(feedXCard: FeedXCard){
+        shareButton.setOnClickListener {
+            listener?.onSharePostClicked(feedXCard, positionInFeed)
+        }
+    }
+    fun bindViews(feedXCard: FeedXCard){
 
         val view = feedXCard.views
         if (feedXCard.like.isLiked) {
@@ -550,25 +459,20 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             likedText.hide()
         }
         likeButton.setOnClickListener {
-//            listener?.onLikeClick(
-//                positionInFeed,
-//                feedXCard.id.toIntOrZero(),
-//                feedXCard.like.isLiked,
-//                feedXCard.typename,
-//                feedXCard.followers.isFollowed,
-//                shopId = feedXCard.author.id,
-//                mediaType = feedXCard.media.firstOrNull()?.type?:"",
-//                playChannelId = feedXCard.playChannelID
-//
-//            )
+            likeButton.setOnClickListener {
+            adapter.updateCTAasperWidgetColor(pageControl.indicatorCurrentPosition)
+
+            listener?.onLikeClicked(
+                feedXCard,
+                positionInFeed
+            )
+        }
         }
 
     }
 
     private fun bindLikeData(feedXCard: FeedXCard) {
         val like: FeedXLike = feedXCard.like
-        val id: Int = feedXCard.id.toIntOrZero()
-        val mediaType: String = feedXCard.media.firstOrNull()?.type?:""
 
         if (like.isLiked) {
             val colorGreen =
@@ -615,31 +519,18 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             likedText.hide()
         }
         likeButton.setOnClickListener {
-//            changeTopadsCekSekarangBtnColorToGreen(feedXCard)
             adapter.updateCTAasperWidgetColor(pageControl.indicatorCurrentPosition)
 
-//            listener?.onLikeClick(
-//                positionInFeed,
-//                id,
-//                like.isLiked,
-//                feedXCard.typename,
-//                feedXCard.followers.isFollowed,
-//                shopId = feedXCard.author.id,
-//                mediaType = mediaType
-//            )
+            listener?.onLikeClicked(
+                feedXCard,
+                positionInFeed
+            )
         }
     }
     private fun bindComment(
         comments: FeedXComments,
         profilePicture: String,
-        name: String,
-        id: Int,
-        authorType: Int,
-        authorId: String,
-        type: String,
-        isFollowed: Boolean,
-        mediaType: String,
-        playChannelId: String
+        name: String
     ) {
 
         setCommentCount(comments)
@@ -668,22 +559,18 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         userImage.setImageUrl(profilePicture)
         addCommentHint.hint = context.getString(com.tokopedia.feedcomponent.R.string.feed_component_add_comment, name)
 
-        var authId = ""
-        if (authorType != 1)
-            authId = authorId
         commentButton.setOnClickListener {
-//            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, mediaType, playChannelId = playChannelId, isClickIcon = true)
+            listener?.onCommentClicked(mData, positionInFeed)
         }
         seeAllCommentText.setOnClickListener {
-//            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, mediaType, playChannelId = playChannelId, isClickIcon = false)
+            listener?.onCommentClicked(mData, positionInFeed)
         }
         addCommentHint.setOnClickListener {
-//            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, mediaType, playChannelId=playChannelId, isClickIcon = true)
+            listener?.onCommentClicked(mData, positionInFeed)
         }
     }
     fun bindImageOnImpress(){
         adapter.focusItemAt(mData.lastCarouselIndex)
-
     }
 
     private fun bindItems(
@@ -725,13 +612,13 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                     shopMenuIcon.hide()
                 }
             }
-        }
-        else if (feedXCard.isTypeVOD) {
-            setVODLayout(feedXCard) }
-        else {
+        } else if (feedXCard.isTypeVOD) {
+            setVODLayout(feedXCard)
+        } else {
             setNewASGCLayout(feedXCard)
         }
     }
+
     private fun setVODLayout(feedXCard: FeedXCard) {
         val media = feedXCard.media
         val globalCardProductList = feedXCard.tags
@@ -741,7 +628,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         adapter.setItemsAndAnimateChanges(mediaList)
         pageControl.setIndicator(mediaList.size)
         pageControl.hide()
-        var ratio = VOD_VIDEO_RATIO
 
         val feedMedia = media.first()
         val tags = feedMedia.tagging
@@ -759,7 +645,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             feedXCard,
             feedMedia,
             tagProducts,
-            ratio
+            VOD_VIDEO_RATIO
         )
         feedVODViewHolder.visible()
 
@@ -786,6 +672,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 positionInFeed: Int,
                 products: List<FeedXProduct>
             ) {
+                listener?.onLihatProdukClicked(feedXCard, positionInFeed, products)
 
             }
 
@@ -797,7 +684,12 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 shouldTrack: Boolean,
                 isFullScreenButton: Boolean
             ) {
-
+                listener?.onFullScreenButtonClicked(
+                    feedXCard,
+                    positionInFeed,
+                    currentTime,
+                    shouldTrack
+                )
             }
 
             override fun onVolumeBtnClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String) {
@@ -810,9 +702,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 time: Long,
                 hitTrackerApi: Boolean
             ) {
-
+                listener?.addViewsToVOD(feedXCard, rowNumber, time, hitTrackerApi)
             }
-
 
         })
 
@@ -908,31 +799,22 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         return text
     }
 
-    private fun bindCaption(caption: FeedXCard) {
+    private fun bindCaption(card: FeedXCard) {
         val tagConverter = TagConverter()
         var spannableString: SpannableString
         val authorType =
-            if (caption.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+            if (card.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
         val followCta =
             FollowCta(
-                authorID = caption.author.id,
+                authorID = card.author.id,
                 authorType = authorType,
-                isFollow = caption.followers.isFollowed
+                isFollow = card.followers.isFollowed
             )
         val cs: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-//                listener?.onAvatarClick(
-//                    positionInFeed,
-//                    caption.author.appLink,
-//                    if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID.toIntOrZero() else caption.id.toIntOrZero(),
-//                    "",
-//                    followCta,
-//                    caption.typename,
-//                    caption.followers.isFollowed,
-//                    caption.author.id,
-//                    caption.media.firstOrNull()?.type?:"",
-//                    true
-//                )
+                listener?.onShopHeaderItemClicked(
+                    card.appLink
+                )
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -944,20 +826,20 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 )
             }
         }
-        captionText.shouldShowWithAction(caption.text.isNotEmpty()) {
-            if (caption.text.length > MAX_CHAR ||
-                hasSecondLine(caption.text)
+        captionText.shouldShowWithAction(card.text.isNotEmpty()) {
+            if (card.text.length > MAX_CHAR ||
+                hasSecondLine(card.text)
             ) {
                 val captionEnd =
-                    if (findSubstringSecondLine(caption.text) < CAPTION_END)
-                        findSubstringSecondLine(caption.text)
+                    if (findSubstringSecondLine(card.text) < CAPTION_END)
+                        findSubstringSecondLine(card.text)
                     else
                         DynamicPostViewHolder.CAPTION_END
 
                 val captionTxt: String = buildString {
                     append(
-                        ("<b>" + caption.author.name + "</b>" + " - ")
-                            .plus(caption.text.substring(0, captionEnd))
+                        ("<b>" + card.author.name + "</b>" + " - ")
+                            .plus(card.text.substring(0, captionEnd))
                             .replace("\n", "<br/>")
                             .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
                             .plus("... ")
@@ -969,34 +851,27 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 spannableString = tagConverter.convertToLinkifyHashtag(
                     SpannableString(MethodChecker.fromHtml(captionTxt)), colorLinkHashtag
                 ) {
-//                        hashtag -> onHashtagClicked(hashtag, caption)
+                        hashtag -> onHashtagClicked(hashtag, mData)
                 }
 
                 captionText.setOnClickListener {
                     if (captionText.text.contains(context.getString(feedComponentR.string.feed_component_read_more_button))) {
-//                        listener?.onReadMoreClicked(
-//                            if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID else caption.id,
-//                            caption.author.id,
-//                            caption.typename,
-//                            caption.followers.isFollowed,
-//                            caption.media.firstOrNull()?.type?:""
-//                        )
                         val txt: String = buildString {
-                            append("<b>" + caption.author.name + "</b>" + " - ").appendLine(
-                                caption.text.replace("(\r\n|\n)".toRegex(), "<br />")
+                            append("<b>" + card.author.name + "</b>" + " - ").appendLine(
+                                card.text.replace("(\r\n|\n)".toRegex(), "<br />")
                             )
                         }
                         spannableString = tagConverter.convertToLinkifyHashtag(
                             SpannableString(MethodChecker.fromHtml(txt)),
                             colorLinkHashtag
                         ) {
-//                                hashtag -> onHashtagClicked(hashtag, caption)
+                                hashtag -> onHashtagClicked(hashtag, card)
                         }
                         spannableString.setSpan(
                             cs,
                             0,
 
-                            MethodChecker.fromHtml(caption.author.name).length - 1 ,
+                            MethodChecker.fromHtml(card.author.name).length - 1 ,
                             Spannable.SPAN_INCLUSIVE_INCLUSIVE
                         )
                         captionText.text = spannableString
@@ -1008,8 +883,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
                 val captionTxt: String = buildString {
                     append(
-                        ("<b>" + caption.author.name + "</b>" + " - ").plus(
-                            caption.text.replace(DynamicPostViewHolder.NEWLINE, " ")
+                        ("<b>" + card.author.name + "</b>" + " - ").plus(
+                            card.text.replace(DynamicPostViewHolder.NEWLINE, " ")
                         )
                     )
                 }
@@ -1022,13 +897,13 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                         ),
                         colorLinkHashtag
                     ) {
-//                            hashtag -> onHashtagClicked(hashtag, caption)
+                            hashtag -> onHashtagClicked(hashtag, card)
                     }
             }
             spannableString.setSpan(
                 cs,
                 0,
-                MethodChecker.fromHtml(caption.author.name).length - 1,
+                MethodChecker.fromHtml(card.author.name).length - 1,
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE
             )
             captionText.text = spannableString
@@ -1051,6 +926,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             "\n",
             firstIndex + 1
         ) else caption.length
+    }
+
+    private fun onHashtagClicked(hashtag: String, feed: FeedXCard) {
+        val encodeHashtag = URLEncoder.encode(hashtag, "UTF-8")
+        RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
     }
 
     fun playVOD(feedXCard: FeedXCard, position: Int = feedXCard.lastCarouselIndex) {
@@ -1086,8 +966,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         adapter.onPause()
     }
 
-
-
     companion object {
 
         private const val ASGC_NEW_PRODUCTS = "asgc_new_products"
@@ -1095,21 +973,16 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         private const val MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL = 5
         private const val TOPADS_TAGGING_CENTER_POS_X = 0.5f
         private const val TOPADS_TAGGING_CENTER_POS_Y = 0.44f
-        private const val VOD_VIDEO_RATIO = "1:1"
-
-
+        private const val VOD_VIDEO_RATIO = "4:5"
 
         private const val FOLLOW_COUNT_THRESHOLD = 100
         private const val FOLLOW_MARGIN = 6
         private const val MARGIN_ZERO = 0
-        private const val TIME_SECOND = 1000L
         private const val FOLLOW_SIZE = 7
-        private const val MINUTE_IN_HOUR = 60
         private const val SPACE = 3
         private const val DOT_SPACE = 2
         private const val MAX_CHAR = 120
         private const val CAPTION_END = 120
-
 
     }
 
