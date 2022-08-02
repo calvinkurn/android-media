@@ -29,9 +29,9 @@ data class LogisticPromoUiModel(val promoCode: String = "",
                                 val codData: CodDataPromo = CodDataPromo(),
                                 val etaData: EstimatedTimeArrivalPromo = EstimatedTimeArrivalPromo(),
                                 val freeShippingItemTitle: String = "",
-                                val freeShippingChosenCourierTitle: String ="",
+                                val freeShippingChosenCourierTitle: String = "",
                                 val tickerAvailableFreeShippingCourierTitle: String = "",
                                 val isBebasOngkirExtra: Boolean = false,
                                 val bottomSheetDescription: String = "",
                                 val tickerDescriptionPromoAdjusted: String = "",
-                                val freeShippingMetadata: String) : RatesViewModelType, Parcelable
+                                val freeShippingMetadata: String = "") : RatesViewModelType, Parcelable
