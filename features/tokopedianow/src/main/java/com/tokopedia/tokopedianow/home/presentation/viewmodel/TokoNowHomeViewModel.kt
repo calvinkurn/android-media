@@ -404,6 +404,20 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {}
     }
 
+    fun removeLeftCarouselAtc(id: String) {
+        launchCatchError(block = {
+            hasTickerBeenRemoved = true
+            homeLayoutItemList.removeItem(id)
+
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.UPDATE
+            )
+
+            _homeLayoutList.postValue(Success(data))
+        }) {}
+    }
+
     fun removeWidget(id: String) {
         launchCatchError(block = {
             homeLayoutItemList.removeItem(id)

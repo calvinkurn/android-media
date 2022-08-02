@@ -36,17 +36,7 @@ class VideoCarouselListenerDelegate(
             getSearchParameter()
         )
 
-        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
-            val products = ArrayList<Any>()
-            products.add(videoItem.getInspirationCarouselListProductImpressionAsObjectDataLayer())
-
-            SearchTracking.trackImpressionInspirationCarouselList(
-                trackingQueue,
-                videoItem.inspirationCarouselType,
-                queryKey,
-                products
-            )
-        }
+        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data)
     }
 
     override fun onInspirationVideoCarouselProductClicked(videoItem: VideoCarouselDataView.VideoItem) {
@@ -57,15 +47,6 @@ class VideoCarouselListenerDelegate(
             getSearchParameter()
         )
 
-        inspirationCarouselTrackingUnification.trackCarouselClick(data) {
-            val products = ArrayList<Any>()
-            products.add(videoItem.getInspirationCarouselListProductAsObjectDataLayer())
-
-            SearchTracking.trackEventClickInspirationCarouselListProduct(
-                videoItem.inspirationCarouselType,
-                queryKey,
-                products,
-            )
-        }
+        inspirationCarouselTrackingUnification.trackCarouselClick(data)
     }
 }
