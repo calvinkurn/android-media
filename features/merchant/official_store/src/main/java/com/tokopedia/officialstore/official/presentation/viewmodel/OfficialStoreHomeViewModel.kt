@@ -23,10 +23,12 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChanne
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
 import com.tokopedia.officialstore.official.presentation.OfficialStoreConfig
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
@@ -265,7 +267,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         PRODUCT_RECOMMENDATION_TITLE_SECTION = title
         if(counterTitleShouldBeRendered == 1){
             _officialStoreListVisitable.add(ProductRecommendationTitleDataModel(title))
-            _officialStoreLiveData.postValue(_officialStoreListVisitable)
+            _officialStoreLiveData.postValue()
         }
     }
 
@@ -327,30 +329,72 @@ class OfficialStoreHomeViewModel @Inject constructor(
             }
         }){
             if (!officialStoreConfig.isEligibleForDisableRemoveShopWidget()) {
-                OfficialHomeMapper.removeFeaturedShop(featuredShopDataModel, _officialStoreListVisitable){
-                    _officialStoreLiveData.postValue(it)
+                _officialStoreListVisitable.run {
+                    removeAll {
+                        it is FeaturedShopDataModel || (it is FeaturedShopDataModel && it.channelModel.id == featuredShopDataModel.channelModel.id)
+                    }
+                    _officialStoreLiveData.postValue(this)
                 }
             }
         }
     }
 
+    // ============================================================================================
+    // ===================================== ADD/REMOVE WIDGET ====================================
+    // ============================================================================================
+    fun addLoadingMore(){
+        _officialStoreListVisitable.add(OfficialLoadingMoreDataModel())
+        _officialStoreLiveData.postValue()
+    }
+
     fun removeRecomWidget(){
         if (!officialStoreConfig.isEligibleForDisableRemoveBestSellerWidget()) {
-            OfficialHomeMapper.removeRecomWidget(_officialStoreListVisitable) {
-                _officialStoreLiveData.postValue(it)
+            _officialStoreListVisitable.run {
+                removeAll {
+                    it is BestSellerDataModel
+                }
+                _officialStoreLiveData.postValue(this)
             }
         }
     }
 
-    fun resetIsFeatureShopAllowed() {
-        isFeaturedShopAllowed = false
+    fun removeFlashSale(){
+        _officialStoreListVisitable.run {
+            removeAll {
+                it is DynamicChannelDataModel || it is ProductRecommendationDataModel
+            }
+            _officialStoreLiveData.postValue(this)
+        }
+    }
+
+    fun removeRecommendation(){
+        _officialStoreListVisitable.run {
+            removeAll { it is ProductRecommendationDataModel || it is ProductRecommendationTitleDataModel }
+            _officialStoreLiveData.postValue(this)
+        }
+    }
+
+    fun removeTopAdsHeadlineWidget() {
+        _officialStoreListVisitable.run {
+            removeAll { it is OfficialTopAdsHeadlineDataModel }
+            _officialStoreLiveData.postValue(this)
+        }
+
+    }
+
+    fun resetState() {
+        _officialStoreListVisitable.clear()
+        _officialStoreListVisitable.add(OfficialHomeMapper.BANNER_POSITION, OfficialLoadingDataModel())
+        _officialStoreLiveData.postValue()
     }
 
     private fun MutableLiveData<OfficialStoreDataModel>.postValue(
-        updatedList: MutableList<Visitable<*>>,
+        updatedList: MutableList<Visitable<*>> = _officialStoreListVisitable,
         isCache: Boolean? = null
     ){
-        _officialStoreListVisitable = updatedList
+        if(updatedList != _officialStoreListVisitable){
+            _officialStoreListVisitable = updatedList
+        }
         this.postValue(OfficialStoreDataModel(_officialStoreListVisitable, isCache))
     }
 
@@ -449,6 +493,18 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
+    fun updateWishlist(wishlist: Boolean, position: Int){
+        _officialStoreListVisitable.run {
+            (getOrNull(position) as? ProductRecommendationDataModel)?.let { recom ->
+                val newRecom = recom.copy(
+                    productItem = recom.productItem.copy(isWishlist = wishlist)
+                )
+                this[position] = newRecom
+                _officialStoreLiveData.postValue(this)
+            }
+        }
+    }
+
     // ============================================================================================
     // ======================================== IMPRESSION ========================================
     // ============================================================================================
@@ -465,6 +521,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     fun resetShopWidgetImpressionCount() {
         impressedShop.clear()
+    }
+
+    fun resetIsFeatureShopAllowed() {
+        isFeaturedShopAllowed = false
     }
 
     override fun onCleared() {

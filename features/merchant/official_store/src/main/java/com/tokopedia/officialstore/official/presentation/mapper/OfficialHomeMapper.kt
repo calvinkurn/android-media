@@ -259,20 +259,6 @@ object OfficialHomeMapper {
         action.invoke(newList)
     }
 
-    fun removeFeaturedShop(
-        featuredShopDataModel: FeaturedShopDataModel,
-        currentList: List<Visitable<*>>,
-        action: (updatedList: MutableList<Visitable<*>>) -> Unit
-    ) {
-        val newList = mutableListOf<Visitable<*>>()
-        currentList.toMutableList().forEach {
-            if (it !is FeaturedShopDataModel || it.channelModel.id != featuredShopDataModel.channelModel.id)  {
-                newList.add(it)
-            }
-        }
-        action.invoke(newList)
-    }
-
     fun updateFeaturedShop(
         featuredShopDataModel: FeaturedShopDataModel,
         currentList: List<Visitable<*>>,
@@ -286,19 +272,6 @@ object OfficialHomeMapper {
                 newList.add(featuredShopDataModel)
             }
             else {
-                newList.add(it)
-            }
-        }
-        action.invoke(newList)
-    }
-    
-    fun removeRecomWidget(
-        currentList: List<Visitable<*>>, 
-        action: (updatedList: MutableList<Visitable<*>>) -> Unit
-    ) {
-        val newList = mutableListOf<Visitable<*>>()
-        currentList.forEach {
-            if (it !is BestSellerDataModel) {
                 newList.add(it)
             }
         }

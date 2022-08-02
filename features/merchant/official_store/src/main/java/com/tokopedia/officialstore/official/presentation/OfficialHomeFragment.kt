@@ -44,7 +44,6 @@ import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
-import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
@@ -102,8 +101,6 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-    @Inject
-    lateinit var officialHomeMapper: OfficialHomeMapper
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -139,7 +136,7 @@ class OfficialHomeFragment :
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
                     viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
 
-                    officialHomeMapper.showLoadingMore(adapter)
+                    viewModel.addLoadingMore()
 
                 }
             }
@@ -199,7 +196,7 @@ class OfficialHomeFragment :
         )
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
-        officialHomeMapper.resetState(adapter)
+        viewModel.resetState()
         return view
     }
 
@@ -322,7 +319,7 @@ class OfficialHomeFragment :
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
         updateWishListRecomWidget(isWishlist)
         if (position > -1 && adapter != null) {
-            officialHomeMapper.updateWishlist(isWishlist, position, adapter)
+            viewModel.updateWishlist(isWishlist, position)
         }
     }
 
@@ -464,7 +461,7 @@ class OfficialHomeFragment :
     }
 
     override fun onCountDownFinished() {
-        officialHomeMapper.removeFlashSale(adapter)
+        viewModel.removeFlashSale()
         loadData(true)
     }
 
@@ -896,7 +893,7 @@ class OfficialHomeFragment :
 
     private fun reloadDataForDifferentAddressSaved() {
         localChooseAddress?.setLocalCacheModel(ChooseAddressUtils.getLocalizingAddressData(requireContext())?.copy())
-        officialHomeMapper.resetState(adapter)
+        viewModel.resetState()
         viewModel.loadFirstDataRevamp(category, getLocation())
     }
 
@@ -913,9 +910,9 @@ class OfficialHomeFragment :
         setLoadMoreListener()
         swipeRefreshLayout?.setOnRefreshListener {
             viewModel.counterTitleShouldBeRendered = 0
-            officialHomeMapper.removeRecommendation(adapter)
+            viewModel.removeRecommendation()
             viewModel.removeRecomWidget()
-            officialHomeMapper.removeTopAdsHeadlineWidget(adapter)
+            viewModel.removeTopAdsHeadlineWidget()
             loadData(true)
             viewModel.resetShopWidgetImpressionCount()
             viewModel.resetIsFeatureShopAllowed()
