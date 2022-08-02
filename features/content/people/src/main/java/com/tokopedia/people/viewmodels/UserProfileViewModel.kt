@@ -257,11 +257,11 @@ class UserProfileViewModel @AssistedInject constructor(
                     }
                 }
                 is MutationUiModel.Error -> {
-                    _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(result.message))
+                    _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollowShopRecom(result.message, currentItem))
                 }
             }
         }, onError = {
-            _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
+            _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollowShopRecom("", ShopRecomUiModelItem()))
         })
     }
 

@@ -367,6 +367,11 @@ class UserProfileFragment @Inject constructor(
                         val message = if(event.message.isNotEmpty()) event.message else getDefaultErrorMessage()
                         view?.showErrorToast(message)
                     }
+                    is UserProfileUiEvent.ErrorFollowUnfollowShopRecom -> {
+                        mAdapterShopRecom.failFollowUnfollow(event.item)
+                        val message = if(event.message.isNotEmpty()) event.message else getDefaultErrorMessage()
+                        view?.showErrorToast(message)
+                    }
                     is UserProfileUiEvent.SuccessUpdateReminder -> {
                         mAdapter.notifyItemChanged(event.position)
                         view?.showToast(event.message)

@@ -37,6 +37,11 @@ class ShopRecomAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    fun failFollowUnfollow(item: ShopRecomUiModelItem) {
+        val position = shopRecomItem.indexOf(item)
+        notifyItemChanged(position)
+    }
+
     override fun onShopRecomCloseClicked(itemID: Long) {
         shopRecomCallback.onShopRecomCloseClicked(itemID)
     }

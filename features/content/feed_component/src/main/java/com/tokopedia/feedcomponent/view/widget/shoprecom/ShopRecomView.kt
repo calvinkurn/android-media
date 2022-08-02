@@ -62,6 +62,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
             text = context.getString(if (isFollow) btn_text_following else btn_text_follow)
             buttonVariant = if (isFollow) GHOST else FILLED
             buttonType = if (isFollow) ALTERNATE else MAIN
+            isLoading = false
         }
     }
 
@@ -75,7 +76,10 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
             )
         }
         imgItemShopClose.setOnClickListener { mListener?.onShopRecomCloseClicked(data.id) }
-        btnItemShop.setOnClickListener { mListener?.onShopRecomFollowClicked(data.id) }
+        btnItemShop.setOnClickListener {
+            btnItemShop.isLoading = true
+            mListener?.onShopRecomFollowClicked(data.id)
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
