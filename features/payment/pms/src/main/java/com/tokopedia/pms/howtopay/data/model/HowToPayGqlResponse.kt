@@ -10,7 +10,7 @@ data class HowToPayGqlResponse(
 data class HowToPayData(
         @SerializedName("expiredIn")
         val expiredIn: String,
-        @SerializedName("nettAmountUnf")
+        @SerializedName("leftPaymentAmountUnf")
         val netAmount: Double,
         @SerializedName("combineAmount")
         val combineAmount: Double,

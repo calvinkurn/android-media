@@ -11,15 +11,16 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
-import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
@@ -167,4 +168,8 @@ class OrderSummaryPageViewModelTestHelper {
             addOns = emptyList()
     )
 
+    val paymentFeeDetails = listOf(
+        OrderPaymentFee(fee = 500.0),
+        OrderPaymentFee(fee = 1000.0)
+    )
 }
