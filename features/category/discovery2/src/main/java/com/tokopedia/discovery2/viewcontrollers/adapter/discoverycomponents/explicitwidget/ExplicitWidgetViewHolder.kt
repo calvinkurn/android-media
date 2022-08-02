@@ -38,9 +38,9 @@ class ExplicitWidgetViewHolder(itemView: View, private val fragment: Fragment) :
                             pagePath = removeDashPagePath(componentItem.pagePath),
                             pageType = componentItem.pageType
                     )
-                    binding.parentExplicit.removeAllViews()
                     val param: ViewGroup.LayoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                     explicitView.layoutParams = param
+                    binding.parentExplicit.removeAllViews()
                     binding.parentExplicit.addView(explicitView)
                     explicitView.setOnWidgetDismissListener {
                         mExplicitWidgetViewModel.setWidgetHiddenState(true)

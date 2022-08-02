@@ -7,7 +7,6 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 
 class ExplicitWidgetViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val explicitWidgetData: SingleLiveEvent<ComponentsItem> = SingleLiveEvent()
-    var isExplicitWidgetHidden: Boolean = false
 
     fun getComponentData(): SingleLiveEvent<ComponentsItem> = explicitWidgetData
 
