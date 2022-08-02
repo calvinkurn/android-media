@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.di.DaggerLoginFingerprintComponent
 import com.tokopedia.loginfingerprint.di.LoginFingerprintSettingModule

@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.chooseaccount.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.chooseaccount.data.AccountListDataModel
 import com.tokopedia.chooseaccount.data.ChooseAccountUiModel
