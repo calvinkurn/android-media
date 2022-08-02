@@ -219,69 +219,11 @@ class OfficialHomeMapper (
         }
     }
 
-    fun mappingProductRecommendationTitle(title: String, adapter: OfficialHomeAdapter?) {
-        _listOfficialStore.add(ProductRecommendationTitleDataModel(title))
-        adapter?.submitList(listOfficialStore.toMutableList())
-    }
-
-    fun mappingProductRecommendation(
-        productRecommendationWithTopAdsHeadline: ProductRecommendationWithTopAdsHeadline,
-        adapter: OfficialHomeAdapter?,
-        listener: RecommendationListener
-    ) {
-        val newList = listOfficialStore.toMutableList()
-        val headlineIndex =
-            productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel?.topAdsHeadlineResponse?.displayAds?.data?.firstOrNull()?.cpm?.position
-        productRecommendationWithTopAdsHeadline.recommendationWidget.recommendationItemList.forEachIndexed { index, recommendationItem ->
-            if (index == headlineIndex) productRecommendationWithTopAdsHeadline.officialTopAdsHeadlineDataModel.let {
-                newList.add(it)
-            }
-            newList.add(ProductRecommendationDataModel(recommendationItem))
-        }
-        newList.removeAll { it is OfficialLoadingDataModel || it is OfficialLoadingMoreDataModel }
-        _listOfficialStore = newList
-        adapter?.submitList(newList)        
-    }
-
-    fun removeRecommendation(adapter: OfficialHomeAdapter?){
-        _listOfficialStore.run {
-            removeAll { it is ProductRecommendationDataModel || it is ProductRecommendationTitleDataModel }
-            adapter?.submitList(this.toMutableList())
-        }
-    }
-
     fun showLoadingMore(adapter: OfficialHomeAdapter?){
         _listOfficialStore.run {
             this.add(OfficialLoadingMoreDataModel())
             adapter?.submitList(this.toMutableList())
         }
-    }
-
-    fun removeFlashSale(adapter: OfficialHomeAdapter?){
-        _listOfficialStore.run {
-            removeAll {
-                it is DynamicChannelDataModel || it is ProductRecommendationDataModel
-            }
-            adapter?.submitList(this.toMutableList())
-        }
-    }
-
-    fun updateWishlist(wishlist: Boolean, position: Int, adapter: OfficialHomeAdapter?) {
-        _listOfficialStore.run {
-            (getOrNull(position) as? ProductRecommendationDataModel)?.let { recom ->
-                val newRecom = recom.copy(
-                        productItem = recom.productItem.copy(isWishlist = wishlist)
-                )
-                this[position] = newRecom
-                adapter?.submitList(this.toMutableList())
-            }
-        }
-    }
-
-    fun resetState(adapter: OfficialHomeAdapter?) {
-        _listOfficialStore.clear()
-        _listOfficialStore.add(BANNER_POSITION, OfficialLoadingDataModel())
-        adapter?.submitList(listOfficialStore.toMutableList())
     }
 
     fun mappingProductCards(grids: List<Grid>): List<ProductCardModel> {
@@ -314,20 +256,6 @@ class OfficialHomeMapper (
                 coroutineDispatcher = dispatchers.io,
                 productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
         )
-    }
-
-    inline fun <reified T> findWidgetList(predicate: (T?) -> Boolean = {true}, actionOnFound: (List<IndexedValue<T>>) -> Unit) {
-        val listFound = mutableListOf<IndexedValue<T>>()
-        listOfficialStore.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
-            it.forEach { indexedValue ->
-                if (indexedValue.value is T) {
-                    (indexedValue as? IndexedValue<T>)?.let { findValue ->
-                        listFound.add(findValue)
-                    }
-                }
-            }
-        }
-        actionOnFound.invoke(listFound)
     }
 
     fun updateFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
@@ -392,17 +320,4 @@ class OfficialHomeMapper (
         _listOfficialStore = newList
         action.invoke(newList)
     }
-
-    fun removeTopAdsHeadlineWidget(adapter: OfficialHomeAdapter?) {
-        val newList = mutableListOf<Visitable<*>>()
-        listOfficialStore.toMutableList().forEach {
-            if (it !is OfficialTopAdsHeadlineDataModel) {
-                newList.add(it)
-            }
-        }
-        _listOfficialStore = newList
-        adapter?.submitList(newList)
-        
-    }
-
 }
