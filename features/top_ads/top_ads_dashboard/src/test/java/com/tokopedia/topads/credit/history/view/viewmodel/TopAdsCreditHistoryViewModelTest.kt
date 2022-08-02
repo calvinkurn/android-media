@@ -18,7 +18,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -83,7 +82,7 @@ class TopAdsCreditHistoryViewModelTest {
             firstArg<(TopAdsCreditHistory.CreditsResponse) -> Unit>().invoke(mockObject)
         }
 
-        viewModel.getCreditHistory("", null, null)
+        viewModel.getCreditHistory(null, null)
 
         Assert.assertEquals((viewModel.creditsHistory.value as Success).data, expectedValue)
     }
@@ -100,7 +99,7 @@ class TopAdsCreditHistoryViewModelTest {
             firstArg<(TopAdsCreditHistory.CreditsResponse) -> Unit>().invoke(mockObject)
         }
 
-        viewModel.getCreditHistory("", null, null)
+        viewModel.getCreditHistory(null, null)
 
         Assert.assertTrue(viewModel.creditsHistory.value is Fail)
     }
@@ -115,14 +114,14 @@ class TopAdsCreditHistoryViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(actual)
         }
 
-        viewModel.getCreditHistory("", null, null)
+        viewModel.getCreditHistory(null, null)
 
         Assert.assertEquals((viewModel.creditsHistory.value as Fail).throwable, actual)
     }
 
     @Test
     fun `credit history execute`() {
-        viewModel.getCreditHistory("", Date(), Date())
+        viewModel.getCreditHistory(Date(), Date())
         verify {
             topAdsCreditHistoryUseCase.execute(any(), any())
         }
@@ -138,7 +137,7 @@ class TopAdsCreditHistoryViewModelTest {
         every { topAdsCreditHistoryUseCase.execute(captureLambda(), any()) } answers {
             actual = data.response.dataHistory.totalAddition
         }
-        viewModel.getCreditHistory("", Date(), Date())
+        viewModel.getCreditHistory(Date(), Date())
         Assert.assertEquals(expected, actual)
     }
 
