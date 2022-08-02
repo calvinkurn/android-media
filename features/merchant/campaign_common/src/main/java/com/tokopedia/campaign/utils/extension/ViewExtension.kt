@@ -49,7 +49,7 @@ fun View?.slideUp(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
         override fun onAnimationStart(animation: Animation?) {}
 
         override fun onAnimationEnd(animation: Animation?) {
-            visible()
+            visibility = View.VISIBLE
         }
 
         override fun onAnimationRepeat(animation: Animation?) {}
@@ -67,26 +67,12 @@ fun View?.slideDown(duration: Int = DEFAULT_SCROLL_ANIMATION_DURATION) {
         override fun onAnimationStart(animation: Animation?) {}
 
         override fun onAnimationEnd(animation: Animation?) {
-            gone()
+            visibility = View.GONE
         }
 
         override fun onAnimationRepeat(animation: Animation?) {}
     })
     this.startAnimation(animate)
-}
-//endregion
-
-//region View visibility
-fun View.visible() {
-    this.visibility = View.VISIBLE
-}
-
-fun View.invisible() {
-    this.visibility = View.INVISIBLE
-}
-
-fun View.gone() {
-    this.visibility = View.GONE
 }
 //endregion
 
