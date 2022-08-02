@@ -567,7 +567,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                        if (viewModel.isShownEmptyState()){
+                        if (viewModel.isShownEmptyState() && isChooseAddressWidgetDataUpdated()){
                             hideMiniCartHome()
                             isShowMiniCart = false
                         } else {
@@ -717,7 +717,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun updateCurrentPageLocalCacheModelData() {
         context?.let {
-            isShowMiniCart = true
             localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
