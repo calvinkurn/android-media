@@ -1908,15 +1908,19 @@ class NewShopPageFragment :
                     shopShowcaseTabFragment
                 }
                 ShopPageTabName.FEED -> {
-                    val feedFragment = RouteManager.instantiateFragmentDF(
-                        activity as AppCompatActivity,
-                        FEED_SHOP_FRAGMENT,
-                        Bundle().apply {
-                            putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
-                            putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
-                        }
-                    )
-                    feedFragment
+                    if (isShowFeed) {
+                        val feedFragment = RouteManager.instantiateFragmentDF(
+                            activity as AppCompatActivity,
+                            FEED_SHOP_FRAGMENT,
+                            Bundle().apply {
+                                putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
+                                putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
+                            }
+                        )
+                        feedFragment
+                    } else {
+                        null
+                    }
                 }
                 ShopPageTabName.REVIEW -> {
                     val reviewTabFragment = RouteManager.instantiateFragmentDF(

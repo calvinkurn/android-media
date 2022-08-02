@@ -155,7 +155,7 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
                 day = "Minggu",
                 time = "11:00 - 21:45",
                 isWarning = false,
-                isToday = false
+                isToday = true
         )
         val today = 1 // Calendar.SUNDAY = 1
         val testData = generateTestMerchantOpsHour()

@@ -11,9 +11,11 @@
         android:layout_height="wrap_content"
         app:typographyType="display_3"
         android:textColor="@color/Unify_NN950"
-        tools:text="1 x Milo Macchiato"
+        tools:text="1 x Milo Macchiato 1 x Milo Macchiato 1 x Milo Macchiato 1 x Milo Macchiato"
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@id/tvFoodItemQtyPrice"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
