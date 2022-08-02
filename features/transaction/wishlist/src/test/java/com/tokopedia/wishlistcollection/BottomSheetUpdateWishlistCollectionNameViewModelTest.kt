@@ -27,6 +27,7 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
 
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var bottomSheetUpdateWishlistCollectionNameViewModel: BottomSheetUpdateWishlistCollectionNameViewModel
+    private val listErrorMessage = arrayListOf<String>()
 
     @RelaxedMockK
     lateinit var getWishlistCollectionNamesUseCase: GetWishlistCollectionNamesUseCase
@@ -38,13 +39,13 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
         getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "OK"))
 
     private var collectionNamesResponseDataStatusError = GetWishlistCollectionNamesResponse(
-        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "ERROR"))
+        getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "ERROR", errorMessage = listErrorMessage))
 
     private var updateCollectionNameResponseDataStatusOk = UpdateWishlistCollectionNameResponse(
         updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "OK"))
 
     private var updateCollectionNameResponseDataStatusError = UpdateWishlistCollectionNameResponse(
-        updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "ERROR"))
+        updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "ERROR", errorMessage = listErrorMessage))
 
     private val throwable = Fail(Throwable(message = "Error"))
 
@@ -60,6 +61,7 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
                 updateWishlistCollectionNameUseCase
             )
         )
+        listErrorMessage.add("error")
     }
 
     @Test
