@@ -41,6 +41,7 @@ import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.removeUnusedField
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupAutoAddField
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupEditable
+import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.trim
 import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.updateQuizOptionFlow
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -1471,7 +1472,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun updateOptionsState() {
-        val options = _quizFormData.value.options.toMutableList()
+        val quizFormData = _quizFormData.value
+
+        val title = quizFormData.title
+        val gift = quizFormData.gift
+        val options = quizFormData.options.toMutableList()
+
         val quizConfig = _interactiveConfig.value.quizConfig
         val isStateEditable = isQuizStateEditable()
 
@@ -1479,9 +1485,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             options.setupAutoAddField(quizConfig)
         } else {
             options.removeUnusedField()
+                    .trim()
         }.setupEditable(isStateEditable)
 
-        _quizFormData.setValue { copy(options = newOptions) }
+        val newTitle = if(!isStateEditable) title.trim() else title
+
+        val newGift = if(!isStateEditable) gift.trim() else gift
+
+        _quizFormData.setValue {
+            copy(
+                title = newTitle,
+                options = newOptions,
+                gift = newGift
+            )
+        }
     }
 
     private fun isQuizStateEditable(): Boolean {
