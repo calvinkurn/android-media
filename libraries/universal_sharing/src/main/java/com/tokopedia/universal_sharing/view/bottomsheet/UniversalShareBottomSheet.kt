@@ -122,7 +122,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private var isAffiliateUser: String = KEY_GENERAL_USER
         //Image Type
         const val KEY_NO_IMAGE = "no image"
-        const val KEY_IMAGE = "image"
+        const val KEY_IMAGE_DEFAULT = "default"
         const val KEY_CONTEXTUAL_IMAGE = "contextual image"
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
@@ -843,7 +843,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         return if(getImageFromMedia){
             KEY_CONTEXTUAL_IMAGE
         }else if(!TextUtils.isEmpty(savedImagePath) && TextUtils.isEmpty(screenShotImagePath)){
-            KEY_IMAGE
+            KEY_IMAGE_DEFAULT
         }else{
             KEY_NO_IMAGE
         }
