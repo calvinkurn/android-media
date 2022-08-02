@@ -796,10 +796,16 @@ class AddEditProductPreviewFragment :
     }
 
     private fun saveProductToDraft() {
+        // increment wholesale min order by one because of > symbol
+        viewModel.productInputModel.value?.run {
+            detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(detailInputModel.wholesaleList)
+        }
         viewModel.productInputModel.value?.let {
             viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
         }
-        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
+        activity?.let {
+            Toast.makeText(it, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun isEditing(): Boolean {
