@@ -18,7 +18,6 @@ import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
@@ -707,8 +706,6 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
-                assertionData.topSeparatorPosition, assertionData.bottomSeparatorPosition ->
-                    visitable.shouldBeInstanceOf<SeparatorDataView>()
                 in assertionData.inspirationCarouselRange ->
                     assertInspirationCarouselAsBroadMatch(index, assertionData, visitable)
                 else ->
@@ -724,39 +721,40 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     }
 
     class CarouselProductListAssertionData(
-            suggestionDataViewCount: Int,
-            firstProductPosition: Int,
-            val inspirationCarouselData: SearchProductModel.InspirationCarouselData,
-            val assertType: (BroadMatchDataView, SearchProductModel.InspirationCarouselData) -> Unit,
+        suggestionDataViewCount: Int,
+        firstProductPosition: Int,
+        val inspirationCarouselData: SearchProductModel.InspirationCarouselData,
+        val assertType: (BroadMatchDataView, SearchProductModel.InspirationCarouselData) -> Unit,
     ) {
-        val topSeparatorPosition =
-                firstProductPosition + inspirationCarouselData.position
-        val bottomSeparatorPosition =
-                topSeparatorPosition +
-                        inspirationCarouselData.inspirationCarouselOptions.size +
-                        suggestionDataViewCount + 1
+        private val hasSuggestionDataView = suggestionDataViewCount > 0
+        private val topSeparatorPosition = firstProductPosition + inspirationCarouselData.position
+        private val bottomSeparatorPosition = topSeparatorPosition +
+                inspirationCarouselData.inspirationCarouselOptions.size +
+                suggestionDataViewCount
+        val suggestionDataViewIndex = if (hasSuggestionDataView) {
+            topSeparatorPosition + suggestionDataViewCount - 1
+        } else -1
         val inspirationCarouselRange =
-                (topSeparatorPosition + suggestionDataViewCount) until bottomSeparatorPosition
+            (topSeparatorPosition + suggestionDataViewCount) until bottomSeparatorPosition
 
         var inspirationCarouselOptionIndex = 0
     }
 
     private fun assertInspirationCarouselAsBroadMatch(
-            index: Int,
-            assertionData: CarouselProductListAssertionData,
-            visitable: Visitable<*>,
+        index: Int,
+        assertionData: CarouselProductListAssertionData,
+        visitable: Visitable<*>,
     ) {
         val inspirationCarouselData = assertionData.inspirationCarouselData
         val assertType = assertionData.assertType
 
-        if (index == assertionData.inspirationCarouselRange.first) {
+        if (index == assertionData.suggestionDataViewIndex) {
             visitable.assertSuggestionViewModel(inspirationCarouselData)
-        }
-        else {
+        } else {
             visitable.assertInspirationCarouselAsBroadMatch(
-                    index,
-                    assertionData.inspirationCarouselOptionIndex,
-                    inspirationCarouselData
+                index,
+                assertionData.inspirationCarouselOptionIndex,
+                inspirationCarouselData
             )
 
             val broadMatchDataView = visitable as BroadMatchDataView
