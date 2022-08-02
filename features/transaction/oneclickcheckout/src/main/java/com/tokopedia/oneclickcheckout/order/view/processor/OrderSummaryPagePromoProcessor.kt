@@ -42,19 +42,19 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                 val result = validateUsePromoRevampUseCase.get().setParam(validateUsePromoRequest).executeOnBackground()
                 var newGlobalEvent: OccGlobalEvent? = null
                 if (result.status.equals(STATUS_OK, true) && result.errorCode == STATUS_CODE_200) {
-                var isPromoReleased = false
-                if (!lastValidateUsePromoRevampUiModel?.promoUiModel?.codes.isNullOrEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
-                    isPromoReleased = true
-                } else {
-                    result.promoUiModel.voucherOrderUiModels.firstOrNull { it.messageUiModel.state == "red" }?.let {
+                    var isPromoReleased = false
+                    if (!lastValidateUsePromoRevampUiModel?.promoUiModel?.codes.isNullOrEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
                         isPromoReleased = true
+                    } else {
+                        result.promoUiModel.voucherOrderUiModels.firstOrNull { it.messageUiModel.state == "red" }?.let {
+                            isPromoReleased = true
+                        }
                     }
-                }
-                if (isPromoReleased) {
-                    orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
-                } else if (lastValidateUsePromoRevampUiModel != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastValidateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
-                    orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
-                }
+                    if (isPromoReleased) {
+                        orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
+                    } else if (lastValidateUsePromoRevampUiModel != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastValidateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
+                        orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
+                    }
                     if (result.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message.isNotEmpty()) {
                         newGlobalEvent = OccGlobalEvent.ToasterInfo(result.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message)
                     }

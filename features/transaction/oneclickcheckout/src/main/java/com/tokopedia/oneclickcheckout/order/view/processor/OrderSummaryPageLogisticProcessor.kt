@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
@@ -24,6 +23,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -192,7 +192,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                                 null
                         )
                     }
-                    shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) logisticPromo.tickerAvailableFreeShippingCourierTitle else null,
+                    shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) constructBboTickerTitle(logisticPromo) else null,
                             logisticPromoShipping = null, isApplyLogisticPromo = false)
                 } else if (logisticPromo != null && profileShipment.isDisableChangeCourier) {
                     shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null, isApplyLogisticPromo = false)
@@ -262,7 +262,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             it.isSelected = it.productData.shipperProductId == shipping.shipperProductId
         }
         val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected }
-                ?: shippingCourierViewModelList.firstOrNull { it.productData.isRecommend } ?: shippingCourierViewModelList.first()
+                ?: shippingCourierViewModelList.firstOrNull { it.productData.isRecommend }
+                ?: shippingCourierViewModelList.first()
         var flagNeedToSetPinpoint = false
         var errorMessage: String? = null
         var shippingErrorId: String? = null
@@ -605,12 +606,19 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                 if (logisticPromo != null && !logisticPromo.disabled) {
-                    newShipping = newShipping.copy(logisticPromoTickerMessage = logisticPromo.tickerAvailableFreeShippingCourierTitle, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
+                    newShipping = newShipping.copy(logisticPromoTickerMessage = constructBboTickerTitle(logisticPromo), logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
                 }
             }
             return newShipping
         }
         return null
+    }
+
+    private fun constructBboTickerTitle(logisticPromoUiModel: LogisticPromoUiModel): String {
+        if (logisticPromoUiModel.tickerDescriptionPromoAdjusted.isNotEmpty()) {
+            return "${logisticPromoUiModel.tickerAvailableFreeShippingCourierTitle}\n${logisticPromoUiModel.tickerDescriptionPromoAdjusted}"
+        }
+        return logisticPromoUiModel.tickerAvailableFreeShippingCourierTitle
     }
 
     fun onApplyBbo(shipping: OrderShipment, logisticPromoUiModel: LogisticPromoUiModel, newGlobalEvent: OccGlobalEvent): Pair<OrderShipment?, OccGlobalEvent> {
@@ -663,7 +671,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     shippingRecommendationData = shippingRecommendationData,
                     isApplyLogisticPromo = false,
                     logisticPromoShipping = null,
-                    logisticPromoTickerMessage = logisticPromoViewModel.tickerAvailableFreeShippingCourierTitle)
+                    logisticPromoTickerMessage = constructBboTickerTitle(logisticPromoViewModel))
         }
         return orderShipment
     }
