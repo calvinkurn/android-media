@@ -102,7 +102,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         var postDescription = ""
         var adClickUrl = ""
         val desc = context?.getString(R.string.feed_share_default_text)
-        val itemList: MutableList<ProductPostTagViewModelNew> = ArrayList()
+        val itemList: MutableList<ProductPostTagViewModelNew> = mutableListOf()
         for (postTagItem in postTagItemList) {
             if (postTagItem.isTopads){
                 postDescription = desc?.replace("%s", postTagItem.authorName).toString()

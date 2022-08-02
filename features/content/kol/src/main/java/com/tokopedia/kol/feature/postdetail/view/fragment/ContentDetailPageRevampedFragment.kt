@@ -215,7 +215,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                                         context?.getString(throwable.errorMessageId)
                                     } else {
                                         it.throwable.message
-                                            ?: getString(com.tokopedia.feedcomponent.R.string.default_request_error_unknown)
+                                            ?: getString(com.tokopedia.network.R.string.default_request_error_unknown)
                                     }
                                     message?.let { errormessage ->
                                         showToast(errormessage, Toaster.TYPE_ERROR)
@@ -274,7 +274,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     is Fail -> {
                         Timber.e(it.throwable)
                         showToast(
-                            getString(kolR.string.default_request_error_unknown),
+                            getString(com.tokopedia.network.R.string.default_request_error_unknown),
                             Toaster.TYPE_ERROR
                         )
                     }
@@ -312,12 +312,12 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                         if (data.isSuccess) {
                             onSuccessDeletePost(data.rowNumber)
                         } else {
-                            data.errorMessage = getString(kolR.string.default_request_error_unknown)
+                            data.errorMessage = getString(com.tokopedia.network.R.string.default_request_error_unknown)
                             onErrorDeletePost(data)
                         }
                     }
                     is Fail -> {
-                        val message = getString(kolR.string.default_request_error_unknown)
+                        val message = getString(com.tokopedia.network.R.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
@@ -502,7 +502,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     }
     private fun showNoInterNetDialog(context: Context) {
         val sheet = FeedNetworkErrorBottomSheet.newInstance(false)
-        sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.show(childFragmentManager, "")
 
     }
 
@@ -734,7 +734,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 feedXCard.reportable, feedXCard.followers.isFollowed,
                 feedXCard.deletable
             )
-            sheet.show((context as FragmentActivity).supportFragmentManager, "")
+            sheet.show(childFragmentManager, "")
             sheet.onReport = {
                 analyticsTracker.sendClickReportSgcImageEvent(getContentDetailAnalyticsData(
                     feedXCard,
@@ -772,7 +772,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
                         }
                         reportBottomSheet.show(
-                            (context as FragmentActivity).supportFragmentManager,
+                            childFragmentManager,
                             ""
                         )
                     }
@@ -1096,7 +1096,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
         val sheet = ProductActionBottomSheet.newInstance(bundle)
-        sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.show(childFragmentManager, "")
         sheet.shareProductCB = {
             onShareProduct(
                 item
@@ -1318,6 +1318,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             ).show()
         }
         if (adapter.getList().isEmpty()) {
+            //TODO handle empty list view
 //            showRefresh()
 //            onRefresh()
         }
