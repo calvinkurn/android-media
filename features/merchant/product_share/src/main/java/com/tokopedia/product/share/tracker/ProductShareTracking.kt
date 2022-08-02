@@ -82,7 +82,7 @@ object ProductShareTracking {
                 EVENT_CATEGORY_PDP_SHARING,
                 EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOMSHEET,
                 channel+" - "+UniversalShareBottomSheet.getUserType()+" - "+productId+" - "+campaignId+" - "
-                        +bundleId+" - "+UniversalShareBottomSheet.Companion.KEY_IMAGE)
+                        +bundleId+" - "+UniversalShareBottomSheet.Companion.KEY_IMAGE_DEFAULT)
         mapEvent.appendDefaultTracker(userId, productId)
         mapEvent[ProductShareConstant.TRACKER_ID] = ProductShareConstant.TRACKER_ID_CLICK_SHARING_CHANNEL
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
