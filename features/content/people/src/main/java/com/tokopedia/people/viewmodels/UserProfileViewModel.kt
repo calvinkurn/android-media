@@ -263,6 +263,7 @@ class UserProfileViewModel @AssistedInject constructor(
                 }
             }
         }, onError = {
+            updateLoadingStateFollowShopRecom(itemId, false)
             _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
         })
     }
