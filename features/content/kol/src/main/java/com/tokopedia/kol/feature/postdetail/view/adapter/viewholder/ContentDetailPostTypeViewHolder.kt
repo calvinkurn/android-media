@@ -23,6 +23,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
 import com.tokopedia.feedcomponent.util.ColorUtil
 import com.tokopedia.feedcomponent.util.NestedScrollableHost
 import com.tokopedia.feedcomponent.util.TagConverter
@@ -33,8 +35,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
-import com.tokopedia.feedcomponent.view.widget.FeedVODViewHolder
-import com.tokopedia.feedcomponent.view.widget.PostTagView
+import com.tokopedia.feedcomponent.view.widget.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kol.R
 import com.tokopedia.kotlin.extensions.view.*
@@ -131,6 +132,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             }
 
             override fun onImageClicked(viewHolder: CarouselImageViewHolder) {
+                listener?.onImageClicked(mData)
 
             }
 
@@ -143,6 +145,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
             override fun onImpressed(viewHolder: CarouselImageViewHolder) {
                 val data = mData
+                listener?.onCarouselItemImpressed(data, positionInFeed)
                 val position = viewHolder.adapterPosition
 
                 if (position == RecyclerView.NO_POSITION) return
@@ -261,8 +264,17 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             userSession.profilePicture,
             userSession.name
         )
+        bindTracking(feedXCard)
         bindShare(feedXCard)
 
+    }
+    private fun bindTracking(feedXCard: FeedXCard) {
+        addOnImpressionListener(feedXCard.impressHolder) {
+
+            if (feedXCard.typename == TYPE_FEED_X_CARD_POST) {
+                listener?.onPostImpressed(feedXCard, positionInFeed)
+            }
+        }
     }
 
     fun bindLike(feedXCard: FeedXCard) {
@@ -348,7 +360,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         val cs: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 listener?.onShopHeaderItemClicked(
-                    feedXCard.author.appLink
+                    feedXCard
                 )
             }
 
@@ -419,7 +431,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
         shopImage.setOnClickListener {
             listener?.onShopHeaderItemClicked(
-                    feedXCard.appLink
+                    feedXCard
                 )
         }
         shopMenuIcon.setOnClickListener {
@@ -813,7 +825,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         val cs: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 listener?.onShopHeaderItemClicked(
-                    card.appLink
+                    card,
+                    true
                 )
             }
 
@@ -855,6 +868,9 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 }
 
                 captionText.setOnClickListener {
+                    listener?.onReadMoreClicked(
+                        card
+                    )
                     if (captionText.text.contains(context.getString(feedComponentR.string.feed_component_read_more_button))) {
                         val txt: String = buildString {
                             append("<b>" + card.author.name + "</b>" + " - ").appendLine(
@@ -929,6 +945,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     }
 
     private fun onHashtagClicked(hashtag: String, feed: FeedXCard) {
+        listener?.onHashtagClicked(hashtag, feed)
         val encodeHashtag = URLEncoder.encode(hashtag, "UTF-8")
         RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
     }

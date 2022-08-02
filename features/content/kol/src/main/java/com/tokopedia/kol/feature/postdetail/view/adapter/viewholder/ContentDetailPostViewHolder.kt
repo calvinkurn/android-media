@@ -66,7 +66,7 @@ class ContentDetailPostViewHolder(
         }
     }
     interface CDPListener {
-        fun onLikeClicked(feedXCard: FeedXCard, postPosition: Int)
+        fun onLikeClicked(feedXCard: FeedXCard, postPosition: Int, isDoubleTap: Boolean = false)
         fun onCommentClicked(feedXCard: FeedXCard, postPosition: Int)
         fun onSharePostClicked(feedXCard: FeedXCard, postPosition: Int)
         fun onFollowUnfollowClicked(feedXCard: FeedXCard, postPosition: Int)
@@ -78,7 +78,7 @@ class ContentDetailPostViewHolder(
             shouldTrack: Boolean
         )
 
-        fun onShopHeaderItemClicked(link: String)
+        fun onShopHeaderItemClicked(feedXCard: FeedXCard, isShopNameBelow: Boolean = false)
         fun addViewsToVOD(
             feedXCard: FeedXCard,
             rowNumber: Int,
@@ -98,6 +98,11 @@ class ContentDetailPostViewHolder(
         )
 
         fun onPostTagBubbleClicked(redirectUrl: String)
+        fun onCarouselItemImpressed(feedXCard: FeedXCard, postPosition: Int)
+        fun onPostImpressed(feedXCard: FeedXCard, postPosition: Int)
+        fun onImageClicked(feedXCard: FeedXCard)
+        fun onReadMoreClicked(feedXCard: FeedXCard)
+        fun onHashtagClicked(hashTag: String, feedXCard: FeedXCard)
 
 
     }
