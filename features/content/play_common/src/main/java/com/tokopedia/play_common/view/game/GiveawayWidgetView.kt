@@ -119,6 +119,9 @@ class GiveawayWidgetView : ConstraintLayout {
     }
 
     private fun animateTap() {
+        /**
+         * Need to reset every time we tap
+         */
         binding.ivTap.apply {
             scaleX = 0f
             scaleY = 0f

@@ -141,15 +141,22 @@ class QuizWidgetView : ConstraintLayout {
         rotate.start()
     }
 
+    /**
+     * For correct answer
+     */
     private val scaleBounceX = AnimationUtils.addSpringAnim(
         view = binding.root, property = SpringAnimation.SCALE_X, startPosition = 0.5f,
-        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 24f
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
     )
 
     private val scaleBounceY = AnimationUtils.addSpringAnim(
         view = binding.root, property = SpringAnimation.SCALE_Y, startPosition = 0.5f,
-        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 24f
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 0f
     )
+
+    /**
+     * For wrong answer
+     */
 
     private val scaleX = AnimationUtils.addSpringAnim(
         view = binding.root, property = SpringAnimation.SCALE_X, startPosition = 0.7f,
