@@ -306,12 +306,12 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                         if (data.isSuccess) {
                             onSuccessDeletePost(data.rowNumber)
                         } else {
-                            data.errorMessage = getString(kolR.string.default_request_error_unknown)
+                            data.errorMessage = getString(com.tokopedia.network.R.string.default_request_error_unknown)
                             onErrorDeletePost(data)
                         }
                     }
                     is Fail -> {
-                        val message = getString(kolR.string.default_request_error_unknown)
+                        val message = getString(com.tokopedia.network.R.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
