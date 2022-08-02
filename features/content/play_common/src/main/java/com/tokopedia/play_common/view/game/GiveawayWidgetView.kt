@@ -119,21 +119,24 @@ class GiveawayWidgetView : ConstraintLayout {
     }
 
     private fun animateTap() {
+        /**
+         * Need to reset every time we tap
+         */
         binding.ivTap.apply {
-            scaleX = 0.5f
-            scaleY = 0.5f
+            scaleX = 0f
+            scaleY = 0f
         }
         scaleX.start()
         scaleY.start()
     }
 
     private val scaleX = addSpringAnim(
-        view = binding.ivTap, property = SpringAnimation.SCALE_X, startPosition = 0.5f,
-        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 24f)
+        view = binding.ivTap, property = SpringAnimation.SCALE_X, startPosition = 0f,
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY, velocity = 0f)
 
     private val scaleY = addSpringAnim(
-        view = binding.ivTap, property = SpringAnimation.SCALE_Y, startPosition = 0.5f,
-        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 24f)
+        view = binding.ivTap, property = SpringAnimation.SCALE_Y, startPosition = 0f,
+        finalPosition = 1f, stiffness = SpringForce.STIFFNESS_MEDIUM, dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY, velocity = 0f)
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {

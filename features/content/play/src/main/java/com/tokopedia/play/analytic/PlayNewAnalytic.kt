@@ -21,12 +21,12 @@ class PlayNewAnalytic @Inject constructor(
         shareExperienceAnalytic: PlayShareExperienceAnalytic,
         campaignAnalytic: PlayCampaignAnalytic,
         interactiveAnalytic: PlayInteractiveAnalytic,
-        tokoNowAnalytic: PlayTokoNowAnalytic,
+        tokoNowAnalytic: PlayTokoNowAnalytic
 ) : PlayPartnerAnalytic by partnerAnalytic,
         PlayLikeAnalytic by likeAnalytic,
         PlaySocketAnalytic by socketAnalytic,
         PlayUpcomingAnalytic by upcomingAnalytic,
         PlayShareExperienceAnalytic by shareExperienceAnalytic,
         PlayCampaignAnalytic by campaignAnalytic,
-        PlayInteractiveAnalytic by interactiveAnalytic
+        PlayInteractiveAnalytic by interactiveAnalytic,
         PlayTokoNowAnalytic by tokoNowAnalytic
