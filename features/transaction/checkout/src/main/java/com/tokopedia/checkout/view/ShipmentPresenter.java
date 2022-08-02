@@ -1923,7 +1923,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         );
     }
 
-    private void clearAllBoPromoOnChangeAddress() {
+    private void hitClearAllBo() {
         ArrayList<String> currentBo = new ArrayList<>();
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             if (shipmentCartItemModel != null && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
@@ -2015,7 +2015,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     getView().setHasRunningApiCall(false);
                                     if (setShippingAddressData.isSuccess()) {
                                         getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
-                                        clearAllBoPromoOnChangeAddress();
+                                        hitClearAllBo();
                                         getView().renderChangeAddressSuccess(reloadCheckoutPage);
                                     } else {
                                         if (setShippingAddressData.getMessages().size() > 0) {
