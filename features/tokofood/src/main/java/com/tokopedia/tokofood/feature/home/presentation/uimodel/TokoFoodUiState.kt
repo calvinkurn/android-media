@@ -19,7 +19,6 @@ data class TokoFoodMerchantListParams(
 )
 
 object UiEvent{
-    const val STATE_LOADING = 1
     const val STATE_FETCH_DYNAMIC_CHANNEL_DATA = 2
     const val STATE_FETCH_MERCHANT_LIST_DATA = 2
     const val STATE_FETCH_COMPONENT_DATA = 3
