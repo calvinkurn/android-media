@@ -464,8 +464,8 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @NonNull
     @Override
-    public Fragment getProductManageFragment(@NonNull ArrayList<String> filterOptions, @NonNull String searchKeyword, View navigationMenu) {
-        ProductManageSellerFragment productManageSellerFragment = ProductManageSellerFragment.newInstance(filterOptions, searchKeyword);
+    public Fragment getProductManageFragment(@NonNull ArrayList<String> filterOptions, @NonNull String searchKeyword, @NonNull String tab, View navigationMenu) {
+        ProductManageSellerFragment productManageSellerFragment = ProductManageSellerFragment.newInstance(filterOptions, tab, searchKeyword);
         productManageSellerFragment.setNavigationHomeMenuView(navigationMenu);
         return productManageSellerFragment;
     }

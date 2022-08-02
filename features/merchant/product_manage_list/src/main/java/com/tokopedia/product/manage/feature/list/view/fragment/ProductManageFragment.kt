@@ -2074,7 +2074,7 @@ open class ProductManageFragment :
                     childFragmentManager,
                     QuickEditVariantStockBottomSheet.TAG
                 )
-            }catch (e: IllegalArgumentException){
+            } catch (e: IllegalArgumentException) {
                 e.printStackTrace()
             }
 
@@ -2903,12 +2903,25 @@ open class ProductManageFragment :
 
                     if (data is ShowFilterTab) {
                         filterTab?.show(data)
+                        showViolationProductFilter(data.tabs)
                     } else {
                         filterTab?.update(data, this)
                     }
                     renderCheckedView()
                 }
             }
+        }
+    }
+
+    private fun showViolationProductFilter(tabs: List<FilterTabUiModel>) {
+        val tab = arguments?.getString(
+            ProductManageSellerFragment.PRODUCT_MANAGE_TAB, String.EMPTY
+        )
+
+        if (tab.isNullOrBlank()) return
+        if (tab.equals(FilterTabUiModel.FilterId.VIOLATION.name, true)) {
+            val violationTab = tabs.firstOrNull { it is FilterTabUiModel.Violation } ?: return
+            filterTab?.setActiveTab(violationTab)
         }
     }
 

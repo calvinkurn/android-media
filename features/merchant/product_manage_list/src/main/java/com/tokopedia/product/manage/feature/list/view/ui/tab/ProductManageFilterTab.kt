@@ -107,6 +107,10 @@ class ProductManageFilterTab(
         setActiveFilterCount(0)
     }
 
+    fun setActiveTab(model: FilterTabUiModel) {
+
+    }
+
     private fun updateTabs(tabs: List<FilterTabUiModel>) {
         sortFilterTab.apply {
             val filterTabs = tabs.map { tab ->
