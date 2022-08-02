@@ -451,7 +451,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                     if(prod.id == product.id)
                         prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isLoading) prod.pinStatus.isPinned else product.pinStatus.isPinned.switch(), isLoading = isLoading))
                     else
-                        prod
+                        //Reset
+                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = false))
                 })
             }
         }
