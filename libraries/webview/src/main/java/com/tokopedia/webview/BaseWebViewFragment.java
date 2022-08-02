@@ -857,6 +857,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (url.contains(RESOLUTION_APPLINK)) {
             RouteManager.route(getContext(), url);
             activity.finish();
+            return true;
         }
 
         if (isExternalAppLink(url)) {
