@@ -1461,7 +1461,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 if (!URLUtil.isNetworkUrl(activationUrl) && RouteManager.isSupportApplink(ctx, activationUrl)) {
                     if (activationUrl.startsWith(ApplinkConst.LINK_ACCOUNT)) {
                         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
-                            putExtra(ApplinkConstInternalUserPlatform.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+                            putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
                             putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
                         }
                         startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)

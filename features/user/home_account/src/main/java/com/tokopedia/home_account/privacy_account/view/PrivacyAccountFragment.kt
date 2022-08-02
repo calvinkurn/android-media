@@ -291,7 +291,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
             RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW)
                 .apply {
                     putExtra(
-                        ApplinkConstInternalUserPlatform.PARAM_LD,
+                        ApplinkConstInternalGlobal.PARAM_LD,
                         LinkAccountWebviewFragment.BACK_BTN_APPLINK
                     )
                 }

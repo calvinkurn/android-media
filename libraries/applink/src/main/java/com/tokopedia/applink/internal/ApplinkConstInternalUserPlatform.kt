@@ -142,7 +142,6 @@ object ApplinkConstInternalUserPlatform {
      * @param   : [PARAM_LD]
      **/
     const val LINK_ACCOUNT_WEBVIEW = "${NEW_INTERNAL_USER}/link-account-webview"
-    const val PARAM_LD = "redirectionApplink"
 
     /**
      * LinkAccountActivity

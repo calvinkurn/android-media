@@ -143,7 +143,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
         val source = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_SOURCE) ?: ""
 
         if(url.isEmpty()) {
-            val redirection = intent.getStringExtra(ApplinkConstInternalUserPlatform.PARAM_LD) ?: ApplinkConst.HOME
+            val redirection = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_LD) ?: ApplinkConst.HOME
             val uri = getLinkAccountUrl(redirection)
             url = uri.toString()
             if(source.isNotEmpty() && url.isNotEmpty()) {

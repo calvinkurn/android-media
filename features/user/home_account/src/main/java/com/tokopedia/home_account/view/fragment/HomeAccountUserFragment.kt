@@ -318,7 +318,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         } else {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
                 putExtra(
-                    ApplinkConstInternalUserPlatform.PARAM_LD,
+                    ApplinkConstInternalGlobal.PARAM_LD,
                     LinkAccountWebviewFragment.BACK_BTN_APPLINK
                 )
             }

@@ -531,7 +531,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             showFullLoading()
             reloadUrl = scroogeWebView?.url ?: ""
             val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW)
-            intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
         }
