@@ -248,6 +248,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
             case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                 accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConst.ACCOUNT_HOST);
                 startActivity(intent);
                 break;
             case SettingConstant.SETTING_ACCOUNT_KYC_ID:

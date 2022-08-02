@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.globalerror.GlobalError
@@ -125,6 +126,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         typeRequest = arguments?.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST)
         prevState = arguments?.getInt(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS) ?: -1
         localChosenAddr = context?.let { ChooseAddressUtils.getLocalizingAddressData(it) }
+        viewModel.setPageSource(arguments?.getString(ApplinkConstInternalGlobal.PARAM_SOURCE))
         initSearch()
         initSearchView()
     }

@@ -40,6 +40,10 @@ class ManageAddressViewModel @Inject constructor(
     var canLoadMore: Boolean = true
     var isClearData: Boolean = true
 
+    private var _pageSource = ""
+    val pageSource: String
+        get() = _pageSource
+
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>
         get() = _addressList
@@ -65,6 +69,12 @@ class ManageAddressViewModel @Inject constructor(
         get() = _eligibleForAddressFeature
 
     private val compositeSubscription = CompositeSubscription()
+
+    fun setPageSource(source: String?){
+        if(source!=null){
+            _pageSource = source
+        }
+    }
 
     fun searchAddress(query: String, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
         _addressList.value = ManageAddressState.Loading
