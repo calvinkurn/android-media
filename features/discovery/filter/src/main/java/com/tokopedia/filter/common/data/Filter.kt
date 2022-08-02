@@ -32,6 +32,10 @@ class Filter(@SerializedName("title")
              @Expose
              var filterAttributeDetail: String = "",
 
+             @SerializedName("chip_name")
+             @Expose
+             var chipName: String = "",
+
              @SerializedName("options")
              @Expose
              var options: List<Option> = ArrayList()) : Parcelable {

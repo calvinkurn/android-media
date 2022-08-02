@@ -28,7 +28,8 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    protected val savedStateHandle: SavedStateHandle = SavedStateHandle()
+    @RelaxedMockK
+    protected lateinit var savedStateHandle: SavedStateHandle
 
     @RelaxedMockK
     protected lateinit var getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>

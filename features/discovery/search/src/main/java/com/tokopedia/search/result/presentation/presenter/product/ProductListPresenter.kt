@@ -39,7 +39,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterInput
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.mapper.InspirationCarouselProductDataViewMapper
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
@@ -51,10 +51,9 @@ import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.CarouselOptionType
 import com.tokopedia.search.result.presentation.model.CarouselProductType
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -67,6 +66,9 @@ import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
+import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
+import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
+import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
@@ -144,7 +146,8 @@ class ProductListPresenter @Inject constructor(
     private val paginationImpl: PaginationImpl,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
-    Pagination by paginationImpl {
+    Pagination by paginationImpl,
+    BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper){
 
     companion object {
         private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
@@ -1340,9 +1343,9 @@ class ProductListPresenter @Inject constructor(
         else DynamicCarouselOption(option)
 
     private fun determineInspirationCarouselProductType(
-            type: String,
-            option: InspirationCarouselDataView.Option,
-            product: InspirationCarouselDataView.Option.Product,
+        type: String,
+        option: InspirationCarouselDataView.Option,
+        product: InspirationCarouselDataView.Option.Product,
     ): CarouselProductType {
         return if (type == TYPE_INSPIRATION_CAROUSEL_KEYWORD)
             BroadMatchProduct(false)
@@ -1511,24 +1514,12 @@ class ProductListPresenter @Inject constructor(
 
     private fun createSortFilterItem(filter: Filter, options: List<Option>): SortFilterItem {
         val isChipSelected = options.any { view.isFilterSelected(it) }
-        val selectedOptionsOnCurrentFilter = options.filter { view.isFilterSelected(it) }
-        val item = SortFilterItem(createSortFilterTitle(filter, selectedOptionsOnCurrentFilter))
+        val item = SortFilterItem(filter.chipName)
 
         setSortFilterItemListener(item, filter, options)
         setSortFilterItemState(item, isChipSelected)
 
         return item
-    }
-
-    @Suppress("MagicNumber")
-    private fun createSortFilterTitle(filter: Filter, activeOptions: List<Option>): String {
-        val optionSize = activeOptions.size
-
-        return when {
-            optionSize == 1 -> activeOptions.first().name
-            optionSize > 1 -> "$optionSize ${filter.title}"
-            else -> filter.title
-        }
     }
 
     private fun setSortFilterItemState(item: SortFilterItem, isChipSelected: Boolean) {
@@ -2130,25 +2121,20 @@ class ProductListPresenter @Inject constructor(
     }
 
     override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
-        if (isViewNotAttached) return
-        trackBroadMatchSeeMoreClick(broadMatchDataView)
-
-        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.applink)
-        view.redirectionStartActivity(applink, broadMatchDataView.url)
+        val applink = getModifiedApplinkToSearchResult(broadMatchDataView.applink)
+        handleBroadMatchSeeMoreClick(broadMatchDataView, applink)
     }
 
     override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {
+        val applink = getModifiedApplinkToSearchResult(broadMatchDataView.cardButton.applink)
+        handleBroadMatchSeeMoreClick(broadMatchDataView, applink)
+    }
+
+    private fun handleBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView, applink: String) {
         if (isViewNotAttached) return
         trackBroadMatchSeeMoreClick(broadMatchDataView)
 
-        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.cardButton.applink)
-        view.redirectionStartActivity(applink, null)
-    }
-
-    private fun getModifiedApplinkToSearchResultIfNeeded(applink: String): String {
-        return if (applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-            view.modifyApplinkToSearchResult(applink)
-        else applink
+        view.redirectionStartActivity(applink, broadMatchDataView.url)
     }
 
     private fun trackBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
@@ -2160,6 +2146,12 @@ class ProductListPresenter @Inject constructor(
                 carouselOptionType.option,
             )
         }
+    }
+
+    private fun getModifiedApplinkToSearchResult(applink: String): String {
+        return if (applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
+            view.modifyApplinkToSearchResult(applink)
+        else applink
     }
     //endregion
 
@@ -2262,10 +2254,10 @@ class ProductListPresenter @Inject constructor(
 
     //region Inspiration Carousel Chips
     override fun onInspirationCarouselChipsClick(
-            adapterPosition: Int,
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            searchParameter: Map<String, Any>,
+        adapterPosition: Int,
+        inspirationCarouselViewModel: InspirationCarouselDataView,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        searchParameter: Map<String, Any>,
     ) {
         if (isViewNotAttached) return
 
@@ -2285,8 +2277,8 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun changeActiveInspirationCarouselChips(
-            inspirationCarouselViewModel: InspirationCarouselDataView,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        inspirationCarouselViewModel: InspirationCarouselDataView,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
     ) {
         inspirationCarouselViewModel.options.forEach {
             it.isChipsActive = false
@@ -2320,9 +2312,9 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun createGetInspirationCarouselChipProductsSubscriber(
-            adapterPosition: Int,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            inspirationCarouselTitle: String,
+        adapterPosition: Int,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        inspirationCarouselTitle: String,
     ): Subscriber<InspirationCarouselChipsProductModel> {
         return object : Subscriber<InspirationCarouselChipsProductModel>() {
             override fun onCompleted() { }
@@ -2341,10 +2333,10 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getInspirationCarouselChipsSuccess(
-            adapterPosition: Int,
-            inspirationCarouselChipsProductModel: InspirationCarouselChipsProductModel,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
-            inspirationCarouselTitle: String,
+        adapterPosition: Int,
+        inspirationCarouselChipsProductModel: InspirationCarouselChipsProductModel,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
+        inspirationCarouselTitle: String,
     ) {
         if (isViewNotAttached) return
 
@@ -2413,10 +2405,6 @@ class ProductListPresenter @Inject constructor(
         updateLastFilter(searchParameter, listOf())
     }
     //endregion
-
-    override fun shopAdsImpressionCount(impressionCount: Int) {
-        topAdsHeadlineHelper.seenAds = impressionCount
-    }
 
     override fun detachView() {
         super.detachView()

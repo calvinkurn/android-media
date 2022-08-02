@@ -29,6 +29,7 @@ data class OrderProfileAddress(
         val cityName: String = "",
         val provinceId: Long = 0,
         val provinceName: String = "",
+        val country: String = "",
         val phone: String = "",
         val longitude: String = "",
         val latitude: String = "",

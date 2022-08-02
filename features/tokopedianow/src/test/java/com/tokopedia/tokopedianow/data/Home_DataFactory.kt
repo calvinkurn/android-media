@@ -134,6 +134,10 @@ fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
     )
 }
 
+fun createDynamicChannelLayoutList(listResponses: List<HomeLayoutResponse>): List<HomeLayoutResponse> {
+    return listResponses
+}
+
 fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
     return listOf(
             HomeLayoutResponse(

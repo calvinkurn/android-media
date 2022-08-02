@@ -5,4 +5,7 @@ data class TokoNowDynamicHeaderUiModel(
     val subTitle: String = "",
     val ctaText: String = "",
     val ctaTextLink: String = "",
+    val expiredTime: String = "",
+    val serverTimeOffset: Long = 0,
+    val backColor: String = ""
 )

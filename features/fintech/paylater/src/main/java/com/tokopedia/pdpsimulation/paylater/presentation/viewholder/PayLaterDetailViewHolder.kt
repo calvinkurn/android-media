@@ -84,10 +84,12 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             itemView.payLaterActionCta.gone()
             itemView.llBenefits.gone()
             itemView.payLaterStatusTicker.visible()
+            itemView.disableTitleDetail()
             itemView.payLaterStatusTicker.setHtmlDescription(element.paylaterDisableDetail.header.orEmpty())
         } else {
             itemView.payLaterActionCta.visible()
             itemView.payLaterStatusTicker.gone()
+            itemView.enableTitleDetail()
             setPayLaterBenefits(element)
         }
     }
@@ -98,7 +100,7 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
         element.benefits?.forEach {
             val typography = Typography(itemView.context)
             typography.text = it
-            typography.setType(Typography.BODY_3)
+            typography.setType(Typography.DISPLAY_3)
             typography.setTextColor(
                 ContextCompat.getColor(
                     itemView.context,
@@ -127,9 +129,11 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
                 element.installment_per_month_ceil
                     ?: 0, false
             )
-            if (element.tenure != 1)
+            if (element.tenure != 1) {
+                tvTenureMultiplier.visible()
                 tvTenureMultiplier.text =
                     context.getString(R.string.paylater_x_tenure, element.tenure)
+            }
             else {
                 tvTenureMultiplier.gone()
                 tvInstallmentAmount.text = element.optionalTenureHeader
@@ -159,4 +163,25 @@ class PayLaterDetailViewHolder(itemView: View, private val interaction: PayLater
             linkingStatus = detail.linkingStatus ?: ""
             action = PdpSimulationAnalytics.CLICK_CTA_PARTNER_CARD
         }
+}
+
+private fun View.disableTitleDetail() {
+
+    this.tvTitlePaymentPartner.setTextColor( ContextCompat.getColor(
+        this.context,com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+    this.tvInstallmentAmount.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+    this.tvTenureMultiplier.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+    this.partnerTenureInfo.isEnabled = false
+}
+private fun View.enableTitleDetail() {
+    this.tvTitlePaymentPartner.setTextColor( ContextCompat.getColor(
+        this.context,com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+    this.tvInstallmentAmount.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+    this.tvTenureMultiplier.setTextColor(ContextCompat.getColor(this.context,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN600))
+    this.partnerTenureInfo.isEnabled = true
+
 }
