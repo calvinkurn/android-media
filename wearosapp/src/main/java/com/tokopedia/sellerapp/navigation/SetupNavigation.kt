@@ -1,27 +1,22 @@
-package com.tokopedia.sellerapp.navigation
-
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.tokopedia.sellerapp.navigation.destination.homeComposable
-import com.tokopedia.sellerapp.navigation.destination.splashComposable
+import androidx.wear.compose.navigation.SwipeDismissableNavHost
+import com.tokopedia.sellerapp.navigation.ScreenNavigation
+import com.tokopedia.sellerapp.navigation.homeComposable
+import com.tokopedia.sellerapp.navigation.splashComposable
 import com.tokopedia.sellerapp.util.Constants.SPLASH_SCREEN
 
-@ExperimentalAnimationApi
-@ExperimentalMaterialApi
 @Composable
 fun SetupNavigation(
     navController: NavHostController
 ) {
-    val screen = Screens(navController = navController)
-    AnimatedNavHost(
+    val nav = ScreenNavigation(navController)
+    SwipeDismissableNavHost(
         navController = navController,
         startDestination = SPLASH_SCREEN
     ) {
         splashComposable(
-            navigateToHomeScreen = screen.splash
+            navigateToHomeScreen = nav.splashToHomeScreen
         )
         homeComposable()
     }
