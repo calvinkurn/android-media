@@ -1292,12 +1292,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         dialog?.setPrimaryCTAText(getString(Rv2.string.collection_inside_delete_confirmation_button_primary))
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()
-            doDeleteBulkCollectionItems(productId)
+            doDeleteCollectionItems(productId)
         }
         dialog?.setSecondaryCTAText(getString(Rv2.string.collection_inside_delete_confirmation_button_secondary))
         dialog?.setSecondaryCTAClickListener {
             dialog.dismiss()
-            doDeleteCollectionItems(productId)
+            doDeleteBulkCollectionItems(productId)
         }
         dialog?.show()
     }
