@@ -67,6 +67,7 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterD
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
+import com.tokopedia.search.result.product.cpm.CpmModelMapper
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
@@ -95,8 +96,6 @@ import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.search.utils.getValueString
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -474,8 +473,10 @@ class ProductListPresenter @Inject constructor(
         if (!isHeadlineAdsAllowed()) return
 
         topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel) { _, cpmDataList, isUseSeparator ->
-            val cpmDataView = createCpmDataView(searchProductModel.cpmModel, cpmDataList)
-            processHeadlineAdsAtPosition(list, productList.size, cpmDataView, isUseSeparator)
+            val cpmDataView = CpmModelMapper.createCpmDataView(searchProductModel.cpmModel, cpmDataList) {
+                isUseSeparator
+            }
+            processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
         }
     }
 
@@ -1086,31 +1087,19 @@ class ProductListPresenter @Inject constructor(
     ) {
         if (!isHeadlineAdsAllowed()) return
         topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel, 1) { index, cpmDataList,  isUseSeparator ->
-            val cpmDataView = createCpmDataView(searchProductModel.cpmModel, cpmDataList)
+            val cpmDataView = CpmModelMapper.createCpmDataView(searchProductModel.cpmModel, cpmDataList) {
+                isUseSeparator && index != 0
+            }
             if (index == 0)
                 processHeadlineAdsAtTop(list, cpmDataView)
             else
-                processHeadlineAdsAtPosition(list, productList.size, cpmDataView, isUseSeparator)
+                processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
         }
     }
 
     private fun isHeadlineAdsAllowed(): Boolean {
         return !isLocalSearch()
                 && (!isGlobalNavWidgetAvailable || isShowHeadlineAdsBasedOnGlobalNav)
-    }
-
-    private fun createCpmDataView(cpmModel: CpmModel, cpmData: ArrayList<CpmData>): CpmDataView {
-        val cpmForViewModel = createCpmForViewModel(cpmModel, cpmData)
-        return CpmDataView(cpmForViewModel)
-    }
-
-    private fun createCpmForViewModel(cpmModel: CpmModel, cpmData: ArrayList<CpmData>): CpmModel {
-        return CpmModel().apply {
-            header = cpmModel.header
-            status = cpmModel.status
-            error = cpmModel.error
-            data = cpmData
-        }
     }
 
     private fun processHeadlineAdsAtTop(visitableList: MutableList<Visitable<*>>, cpmDataView: CpmDataView) {
@@ -1126,14 +1115,9 @@ class ProductListPresenter @Inject constructor(
             visitableList: MutableList<Visitable<*>>,
             position: Int,
             cpmDataView: CpmDataView,
-            isUseSeparator: Boolean,
     ) {
         val headlineAdsVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
-        if (isUseSeparator) {
-            headlineAdsVisitableList.add(cpmDataView.copy(verticalSeparator = VerticalSeparator.Both))
-        } else {
-            headlineAdsVisitableList.add(cpmDataView)
-        }
+        headlineAdsVisitableList.add(cpmDataView)
 
 
         val product = productList[position - 1]

@@ -48,6 +48,11 @@ data class SuggestionDataView(
         dest.writeString(suggestion)
     }
 
+    override fun addTopSeparator(): VerticalSeparable =
+        this.copy(verticalSeparator = VerticalSeparator.Top)
+
+    override fun addBottomSeparator(): VerticalSeparable = this
+
     constructor(parcel: Parcel) : this(
         suggestionText = parcel.readString() ?: "",
         suggestedQuery = parcel.readString() ?: "",

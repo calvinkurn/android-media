@@ -38,5 +38,11 @@ data class BroadMatchDataView(
         return typeFactory.type(this)
     }
 
+    override fun addTopSeparator(): VerticalSeparable =
+        this.copy(verticalSeparator = VerticalSeparator.Top)
+
+    override fun addBottomSeparator(): VerticalSeparable =
+        this.copy(verticalSeparator = VerticalSeparator.Bottom)
+
     data class CardButton(val title: String = "", val applink: String = "")
 }

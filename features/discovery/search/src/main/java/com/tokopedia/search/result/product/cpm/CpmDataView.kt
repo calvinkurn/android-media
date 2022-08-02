@@ -15,4 +15,8 @@ data class CpmDataView(
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
+
+    override fun addTopSeparator(): VerticalSeparable = this
+
+    override fun addBottomSeparator(): VerticalSeparable = this
 }

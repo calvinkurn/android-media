@@ -2,6 +2,10 @@ package com.tokopedia.search.result.product.separator
 
 interface VerticalSeparable {
     val verticalSeparator: VerticalSeparator
+
+    fun addTopSeparator(): VerticalSeparable
+
+    fun addBottomSeparator(): VerticalSeparable
 }
 
 sealed class VerticalSeparator {
