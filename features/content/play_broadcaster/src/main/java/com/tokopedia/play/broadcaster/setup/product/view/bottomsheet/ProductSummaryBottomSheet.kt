@@ -65,6 +65,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
         if(!viewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
         else {
+            analytic.onImpressColdDownPinProductSecondEvent(false)
             toaster.showToaster(
                 message = getString(R.string.play_bro_pin_product_failed),
                 type = Toaster.TYPE_ERROR
