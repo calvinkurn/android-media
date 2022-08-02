@@ -264,9 +264,6 @@ class DetailEditorFragment @Inject constructor(
                 viewBinding?.imgUcropPreview?.apply {
                     initializeBrightness(uri)
                     onLoadComplete = {
-                        initOriginalBitmap()
-//                        val newColorFilter = brightnessFilterRepositoryImpl.brightness(brightnessValue)
-//                        this.cropImageView.colorFilter = newColorFilter
                         readPreviousState(data)
                     }
                 }
@@ -277,7 +274,6 @@ class DetailEditorFragment @Inject constructor(
                 viewBinding?.imgUcropPreview?.apply {
                     initializeRemoveBackground(uri)
                     onLoadComplete = {
-                        initOriginalBitmap()
                         readPreviousState(data)
                     }
                 }
@@ -289,13 +285,6 @@ class DetailEditorFragment @Inject constructor(
                 viewBinding?.imgUcropPreview?.apply {
                     initializeContrast(uri)
                     onLoadComplete = {
-                        initOriginalBitmap()
-//                        val contrastBitmap = contrastFilterRepositoryImpl.contrast(
-//                            contrastValue,
-//                            originalBitmap!!.copy(originalBitmap!!.config, true)
-//                        )
-//
-//                        this.cropImageView.setImageBitmap(contrastBitmap)
                         readPreviousState(data)
                     }
                 }
@@ -307,7 +296,6 @@ class DetailEditorFragment @Inject constructor(
                 viewBinding?.imgUcropPreview?.apply {
                     initializeWatermark(uri)
                     onLoadComplete = {
-                        initOriginalBitmap()
                         setWatermarkDrawerItem()
                     }
                 }
@@ -320,23 +308,6 @@ class DetailEditorFragment @Inject constructor(
                     initializeRotate(uri)
                     disabledTouchEvent()
                     onLoadComplete = {
-                        initOriginalBitmap()
-//                        data.rotateData?.let {
-//                            if(it.scaleX < 0f){
-//                                rotateFilterRepositoryImpl.mirror(this)
-//                            }
-//                            if(it.scaleY < 0f){
-//                                rotateFilterRepositoryImpl.rotate(this, RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
-//                                rotateFilterRepositoryImpl.mirror(this)
-//                            }
-//
-//                            this.cropImageView.post {
-//                                if(it.orientationChangeNumber > 0){
-//                                    rotateFilterRepositoryImpl.rotate(this, it.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
-//                                }
-//                                rotateFilterRepositoryImpl.rotate(this, it.rotateDegree, false)
-//                            }
-//                        }
                         readPreviousState(data)
                     }
                 }
@@ -357,6 +328,8 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun readPreviousState(previousState: EditorDetailUiModel){
+        initOriginalBitmap()
+
         // === Brightness ===
         if(previousState.brightnessValue != null){
             viewBinding?.imgUcropPreview?.cropImageView?.colorFilter =
