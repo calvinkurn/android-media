@@ -668,4 +668,236 @@ class UserProfileShopRecomViewModelTest {
         }
     }
 
+    @Test
+    fun `when user want to follow type shop but loading state is loading_follow`() {
+        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
+            items = mockShopRecomIsShownTypeShop.items.map {
+                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
+                else it
+            }
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
+        coEvery { mockRepo.shopFollowUnfollow(mockEncryptedId, ShopFollowAction.Follow) } returns mockMutationSuccess
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom.items.forEach { item ->
+                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
+                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when user want to unfollow type shop but loading state is loading_follow`() {
+        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
+            items = mockShopRecomIsShownTypeShop.items.map {
+                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
+                else it
+            }
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
+        coEvery { mockRepo.shopFollowUnfollow(mockEncryptedId, ShopFollowAction.UnFollow) } returns mockMutationSuccess
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom.items.forEach { item ->
+                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
+                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when user want to follow type shop but loading state is loading_unfollow`() {
+        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
+            items = mockShopRecomIsShownTypeShop.items.map {
+                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
+                else it
+            }
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
+        coEvery { mockRepo.shopFollowUnfollow(mockEncryptedId, ShopFollowAction.Follow) } returns mockMutationSuccess
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom.items.forEach { item ->
+                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
+                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when user want to unfollow type shop but loading state is loading_unfollow`() {
+        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
+            items = mockShopRecomIsShownTypeShop.items.map {
+                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
+                else it
+            }
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
+        coEvery { mockRepo.shopFollowUnfollow(mockEncryptedId, ShopFollowAction.UnFollow) } returns mockMutationSuccess
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom.items.forEach { item ->
+                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
+                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when user want to follow type buyer but loading state is loading_follow`() {
+        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
+            items = mockShopRecomIsShownTypeBuyer.items.map {
+                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
+                else it
+            }
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
+        coEvery { mockRepo.followProfile(mockEncryptedId) } returns mockMutationSuccess
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom.items.forEach { item ->
+                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
+                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when user want to unfollow type buyer but loading state is loading_follow`() {
+        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
+            items = mockShopRecomIsShownTypeBuyer.items.map {
+                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
+                else it
+            }
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
+        coEvery { mockRepo.unFollowProfile(mockEncryptedId) } returns mockMutationSuccess
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom.items.forEach { item ->
+                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
+                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when user want to follow type buyer but loading state is loading_unfollow`() {
+        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
+            items = mockShopRecomIsShownTypeBuyer.items.map {
+                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
+                else it
+            }
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
+        coEvery { mockRepo.followProfile(mockEncryptedId) } returns mockMutationSuccess
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom.items.forEach { item ->
+                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
+                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when user want to unfollow type buyer but loading state is loading_unfollow`() {
+        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
+            items = mockShopRecomIsShownTypeBuyer.items.map {
+                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
+                else it
+            }
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom() } returns mockShopRecomIsShownBeforeUnfollow
+        coEvery { mockRepo.unFollowProfile(mockEncryptedId) } returns mockMutationSuccess
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom.items.forEach { item ->
+                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
+                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                }
+            }
+        }
+    }
+
 }
