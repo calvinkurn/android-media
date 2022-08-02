@@ -80,6 +80,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
@@ -757,16 +758,18 @@ open class TopChatViewModel @Inject constructor(
 
     fun getSmartReplyWidget(msgId: String, productIds: String) {
         launchCatchError(block = {
-            val param = GetSmartReplyQuestionUseCase.Param(
-                msgId = msgId,
-                productIds = productIds,
-                addressId = userLocationInfo.address_id.toLongOrZero(),
-                districtId = userLocationInfo.district_id.toLongOrZero(),
-                postalCode = userLocationInfo.postal_code,
-                latLon = userLocationInfo.latLong
-            )
-            chatSrwUseCase(param).collect {
-                _srw.postValue(it)
+            withTimeout(SRW_TIMEOUT) {
+                val param = GetSmartReplyQuestionUseCase.Param(
+                    msgId = msgId,
+                    productIds = productIds,
+                    addressId = userLocationInfo.address_id.toLongOrZero(),
+                    districtId = userLocationInfo.district_id.toLongOrZero(),
+                    postalCode = userLocationInfo.postal_code,
+                    latLon = userLocationInfo.latLong
+                )
+                chatSrwUseCase(param).collect {
+                    _srw.postValue(it)
+                }
             }
         }, onError = {
             _srw.postValue(Resource.error(it, null))
@@ -1204,5 +1207,7 @@ open class TopChatViewModel @Inject constructor(
         private const val ERROR_TYPE_LOG = "ErrorConnectWebSocket"
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
         private val PROBLEMATIC_DEVICE = listOf("iris88", "iris88_lite", "lenovo k9")
+
+        private const val SRW_TIMEOUT = 3000L
     }
 }

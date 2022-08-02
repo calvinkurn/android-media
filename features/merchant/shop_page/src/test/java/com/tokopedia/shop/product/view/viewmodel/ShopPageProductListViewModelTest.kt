@@ -82,7 +82,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     anyInt(),
                     anyString(),
                     ShopProductFilterParameter(),
-                    addressWidgetData
+                    addressWidgetData,
+                    mockIsDirectPurchase
             )
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
@@ -107,7 +108,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     anyInt(),
                     anyString(),
                     ShopProductFilterParameter(),
-                    addressWidgetData
+                    addressWidgetData,
+                    mockIsDirectPurchase
             )
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
@@ -123,7 +125,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     fun `check whether response  get product list data error is null`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyInt(), anyString(), ShopProductFilterParameter(), addressWidgetData)
+            viewModelShopPageProductListViewModel.getProductListData(anyString(), anyInt(), anyInt(), anyString(), ShopProductFilterParameter(), addressWidgetData, mockIsDirectPurchase)
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 
@@ -286,7 +288,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -431,7 +434,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                 "123",
                 productPerPage = mockProductPerPage,
                 ShopProduct.GetShopProduct(data = listOf(ShopProduct())
-        ))
+        ),mockIsDirectPurchase)
         Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success<GetShopProductUiModel>)
     }
 
@@ -561,7 +564,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -621,7 +625,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -680,7 +685,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -737,7 +743,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -796,7 +803,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -856,7 +864,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -915,7 +924,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
 
             verifyGetMemberShipUseCaseCalled()
@@ -973,7 +983,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
             assert(viewModelShopPageProductListViewModel.membershipData.value == null)
         }
@@ -1022,7 +1033,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
             assert(viewModelShopPageProductListViewModel.merchantVoucherData.value == null)
         }
@@ -1071,7 +1083,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = true,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
             assert(viewModelShopPageProductListViewModel.merchantVoucherData.value == null)
             assert(viewModelShopPageProductListViewModel.shopProductFeaturedData.value == null)
@@ -1126,7 +1139,8 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
                     )),
                     isShopWidgetAlreadyShown = false,
                     widgetUserAddressLocalData = addressWidgetData,
-                    context
+                    context,
+                    mockIsDirectPurchase
             )
             assert(viewModelShopPageProductListViewModel.productListData.value is Fail)
         }

@@ -99,4 +99,16 @@ object ApplinkConstInternalUserPlatform {
     **/
     const val PRIVACY_ACCOUNT = "${NEW_INTERNAL_USER}/privacy-account"
 
+
+    /**
+     * ChooseAccountActivity
+     * @Applink : tokopedia-android-internal://user/choose-account
+     **/
+    const val CHOOSE_ACCOUNT = "${NEW_INTERNAL_USER}/choose-account"
+
+    /**
+     * ChooseAccountActivity
+     * @Applink : tokopedia-android-internal://user/choose-account-fingerprint
+     **/
+    const val CHOOSE_ACCOUNT_FINGERPRINT = "${NEW_INTERNAL_USER}/choose-account-fingerprint"
 }

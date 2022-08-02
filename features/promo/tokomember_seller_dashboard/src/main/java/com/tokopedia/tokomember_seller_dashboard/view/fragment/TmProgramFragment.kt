@@ -31,11 +31,41 @@ import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DURATION
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID_IN_TOOLS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_AVATAR
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_NAME
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.LOADING_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.PROGRAM_CTA_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.SIMPLE_DATE_FORMAT
+import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.TM_PROGRAM_MIN_PURCHASE_ERROR
+import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.convertDateTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayFromTimeWindow
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -512,7 +542,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         if(selectedCalendar != null) {
             membershipGetProgramForm?.programForm?.timeWindow?.startTime =
                 selectedCalendar?.time?.let {
-                    convertDateTime(it)
+                    TmDateUtil.convertDateTimeRemoveTimeDiff(it)
                 }
         }
         membershipGetProgramForm?.timePeriodList?.getOrNull(selectedChipPosition)?.months?.let {
@@ -565,7 +595,7 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 datePickerButton.let { button ->
                     button.setOnClickListener {
                         selectedCalendar = getDate()
-                        selectedTime = selectedCalendar?.time.toString()
+                        selectedTime = selectedCalendar?.time?.let { it1 -> TmDateUtil.convertDateTimeRemoveTimeDiff(it1) }.toString()
                          date = selectedCalendar?.get(Calendar.DATE).toString()
                          month = selectedCalendar?.getDisplayName(Calendar.MONTH, Calendar.LONG, LocaleUtils.getIDLocale()).toString()
                          year = selectedCalendar?.get(Calendar.YEAR).toString()

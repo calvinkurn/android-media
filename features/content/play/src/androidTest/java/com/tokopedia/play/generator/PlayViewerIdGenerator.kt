@@ -125,7 +125,9 @@ class PlayViewerIdGenerator {
                 timerFactory = mockk(relaxed = true),
                 castPlayerHelper = mockk(relaxed = true),
                 playShareExperience = mockk(relaxed = true),
+                playLog = mockk(relaxed = true),
                 chatStreamsFactory = mockk(relaxed = true),
+                liveRoomMetricsCommon = mockk(relaxed = true),
             )
         }
     }
@@ -135,6 +137,7 @@ class PlayViewerIdGenerator {
             PlayFragment::class.java to {
                 PlayFragment(
                     playViewModelFactory,
+                    mockk(relaxed = true),
                     mockk(relaxed = true),
                     mockk(relaxed = true),
                 )
@@ -148,12 +151,14 @@ class PlayViewerIdGenerator {
                     multipleLikesIconCacheStorage = mockk(relaxed = true),
                     castAnalyticHelper = mockk(relaxed = true),
                     performanceClassConfig = mockk(relaxed = true),
+                    newAnalytic = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {
                 PlayBottomSheetFragment(
                     viewModelFactory = mockViewModelFactory,
                     analytic = mockk(relaxed = true),
+                    newAnalytic = mockk(relaxed = true),
                 )
             },
             PlayVideoFragment::class.java to {
@@ -162,6 +167,7 @@ class PlayViewerIdGenerator {
                     pipAnalytic = mockk(relaxed = true),
                     analytic = mockk(relaxed = true),
                     pipSessionStorage = mockk(relaxed = true),
+                    playLog = mockk(relaxed = true),
                 )
             }
         )
@@ -215,6 +221,7 @@ class PlayViewerIdGenerator {
                                 minQty = 1,
                                 isFreeShipping = false,
                                 applink = "",
+                                isTokoNow = false,
                             )
                         ),
                         config = ProductSectionUiModel.Section.ConfigUiModel(
@@ -255,7 +262,7 @@ class PlayViewerIdGenerator {
         )
 
         val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
-        coEvery { repo.getTagItem(any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any()) } returns tagItem
         every { mockChannelStorage.getChannelList() } returns listOf("12669")
         every { mockChannelStorage.getData(any()) } returns PlayChannelData(
             id = "12669",
