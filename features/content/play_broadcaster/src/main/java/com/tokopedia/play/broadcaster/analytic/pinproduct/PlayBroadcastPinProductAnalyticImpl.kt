@@ -85,6 +85,14 @@ class PlayBroadcastPinProductAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun onImpressColdDownPinProductSecondEvent(isLiveRoom: Boolean) {
+        val screen = if (isLiveRoom) "product carousel" else "bottom sheet"
+        sendImpressionContent(
+            eventAction = "view - cold down pin product 5 second",
+            eventLabel = "$shopId - $screen",
+        )
+    }
+
     private fun sendClickContent(
         eventAction: String,
         eventLabel: String,

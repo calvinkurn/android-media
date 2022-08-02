@@ -81,6 +81,16 @@
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "sessionIris": ".*",
       "userId": "\\d+"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - cold down pin product 5 second",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - (bottom sheet|product carousel)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": "\\d+"
     }
   ]
 }

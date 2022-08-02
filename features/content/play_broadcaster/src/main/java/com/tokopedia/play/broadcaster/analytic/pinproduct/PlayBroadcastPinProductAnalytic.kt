@@ -21,4 +21,6 @@ interface PlayBroadcastPinProductAnalytic {
 
     fun onImpressFailUnPinProductBottomSheet()
 
+    fun onImpressColdDownPinProductSecondEvent(isLiveRoom: Boolean)
+
 }
