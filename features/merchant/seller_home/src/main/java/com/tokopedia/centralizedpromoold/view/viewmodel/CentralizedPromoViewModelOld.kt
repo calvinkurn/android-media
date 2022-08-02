@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.centralizedpromo.view.LayoutType
+import com.tokopedia.centralizedpromo.view.PromoCreationStaticDataOld
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.centralizedpromoold.analytic.CentralizedPromoTrackingOld
 import com.tokopedia.centralizedpromoold.common.util.CentralizedPromoResourceProviderOld
@@ -15,7 +16,6 @@ import com.tokopedia.centralizedpromoold.domain.usecase.SellerHomeGetWhiteListed
 import com.tokopedia.centralizedpromoold.domain.usecase.SlashPriceEligibleUseCase
 import com.tokopedia.centralizedpromoold.domain.usecase.VoucherCashbackEligibleUseCase
 import com.tokopedia.centralizedpromoold.view.FirstPromoDataSource
-import com.tokopedia.centralizedpromoold.view.PromoCreationStaticDataOld
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
@@ -79,6 +79,10 @@ class CentralizedPromoViewModelOld @Inject constructor(
 
     private suspend fun getPromoCreation(): Result<BaseUiModel> {
         return try {
+            val isEnableFlashSaleDeferred = async {
+                remoteConfig.getBoolean(
+                    RemoteConfigKey.ENABLE_FLASH_SALE_ENTRY_SELLER, true)
+            }
             val isFreeShippingEnabledDeferred = async {
                 !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
             }
@@ -143,6 +147,8 @@ class CentralizedPromoViewModelOld @Inject constructor(
             val isProductCouponEnabled = isProductCouponEnabledDeffered.await()
             val isSlashPriceEnabled = isSlashPriceEnabledDeffered.await()
             val isSlashPriceEligible = isSlashPriceEligibleDeffered.await()
+            val isEnableFlashSale = isEnableFlashSaleDeferred.await()
+
             Success(
                 PromoCreationStaticDataOld.provideStaticData(
                     resourceProvider,
@@ -156,7 +162,8 @@ class CentralizedPromoViewModelOld @Inject constructor(
                     isTokopediaPlayFirstTime,
                     isProductCouponEnabled,
                     isSlashPriceEnabled,
-                    isSlashPriceEligible
+                    isSlashPriceEligible,
+                    isEnableFlashSale
                 )
             )
         } catch (t: Throwable) {

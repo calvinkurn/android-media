@@ -77,7 +77,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _balanceInfoLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _kreditTopAdsFormattedLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _isTopAdsAutoTopupLiveData = MutableLiveData<Result<Boolean>>()
-    private val _isShowTagCentralizePromo = MutableLiveData<Boolean>()
+    private val _isShowTagCentralizePromo = MutableLiveData<SettingResponseState<Boolean>>()
 
     val shopBadgeLiveData: LiveData<SettingResponseState<String>>
         get() = _shopBadgeLiveData
@@ -95,7 +95,7 @@ class OtherMenuViewModel @Inject constructor(
         get() = _isTopAdsAutoTopupLiveData
     val freeShippingLiveData: LiveData<SettingResponseState<Pair<Boolean, String>>>
         get() = _freeShippingLiveData
-    val isShowTagCentralizePromo: LiveData<Boolean>
+    val isShowTagCentralizePromo: LiveData<SettingResponseState<Boolean>>
         get() = _isShowTagCentralizePromo
 
     private val _errorStateMap = MediatorLiveData<Map<OtherMenuDataType, Boolean>>().apply {
@@ -119,6 +119,9 @@ class OtherMenuViewModel @Inject constructor(
         }
         addSource(_freeShippingLiveData) {
             value = value?.getUpdatedErrorMap(OtherMenuDataType.FreeShipping, it)
+        }
+        addSource(_isShowTagCentralizePromo) {
+            value = value?.getUpdatedErrorMap(OtherMenuDataType.IsShowTagCentralizePromo, it)
         }
     }
 
@@ -244,6 +247,7 @@ class OtherMenuViewModel @Inject constructor(
                     OtherMenuDataType.Operational -> getShopOperational()
                     OtherMenuDataType.Saldo -> getBalanceInfo()
                     OtherMenuDataType.FreeShipping -> getFreeShippingStatus()
+                    OtherMenuDataType.IsShowTagCentralizePromo -> getIsShowTagCentralizePromo()
                     else -> getKreditTopAds()
                 }
             }
@@ -316,7 +320,9 @@ class OtherMenuViewModel @Inject constructor(
                 OtherMenuDataType.Operational to false,
                 OtherMenuDataType.Saldo to false,
                 OtherMenuDataType.Topads to false,
-                OtherMenuDataType.FreeShipping to false
+                OtherMenuDataType.FreeShipping to false,
+                OtherMenuDataType.IsShowTagCentralizePromo to false
+
             )
         }
     }
@@ -328,7 +334,9 @@ class OtherMenuViewModel @Inject constructor(
                 OtherMenuDataType.Followers to false,
                 OtherMenuDataType.Status to false,
                 OtherMenuDataType.Operational to false,
-                OtherMenuDataType.FreeShipping to false
+                OtherMenuDataType.FreeShipping to false,
+                OtherMenuDataType.IsShowTagCentralizePromo to false
+
             )
         }
     }
@@ -344,10 +352,10 @@ class OtherMenuViewModel @Inject constructor(
                     getNewPromotionUseCase.execute(userSession.shopId)
                 }
                 val isShow = data.data.pages.isNotEmpty()
-                _isShowTagCentralizePromo.value = isShow
+                _isShowTagCentralizePromo.value = SettingResponseState.SettingSuccess(isShow)
             },
             onError = {
-                _isShowTagCentralizePromo.value = false
+                _isShowTagCentralizePromo.value = SettingResponseState.SettingError(it)
             }
         )
     }
