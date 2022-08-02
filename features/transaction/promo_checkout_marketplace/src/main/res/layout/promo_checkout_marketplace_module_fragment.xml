@@ -63,6 +63,28 @@
 
         </FrameLayout>
 
+        <LinearLayout
+            android:id="@+id/container_ticker_bo_clashing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_above="@id/container_action_bottom"
+            android:background="@drawable/promo_checkout_marketplace_module_ticker_bo_clashing_background_and_shadow"
+            android:padding="16dp">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:icon_name="COURIER_FAST"
+                android:layout_marginEnd="8dp"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Bebas Ongkir tidak tersedia di promo pilihanmu." />
+        </LinearLayout>
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_action_bottom"
             android:layout_width="match_parent"
