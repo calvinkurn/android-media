@@ -754,6 +754,77 @@ class ManageHighlightedProductViewModelTest {
         assertEquals(expected, actual)
     }
 
+    @Test
+    fun `When already select 5 parent product then unselect one product, other parent product should be enabled`() {
+        //Given
+        val firstProduct = buildHighlightableProduct().copy(id = 100, parentId = 1)
+        val secondProduct = buildHighlightableProduct().copy(id = 200, parentId = 2)
+        val thirdProduct = buildHighlightableProduct().copy(id = 300, parentId = 3)
+        val fourthProduct = buildHighlightableProduct().copy(id = 400, parentId = 4)
+        val fifthProduct = buildHighlightableProduct().copy(id = 500, parentId = 5)
+        val sixthProduct = buildHighlightableProduct().copy(id = 600, parentId = 6, isSelected = false, disabled = true, disabledReason = HighlightableProduct.DisabledReason.MAX_PRODUCT_REACHED)
+        val seventhProduct = buildHighlightableProduct().copy(id = 700, parentId = 7, isSelected = false, disabled = true, disabledReason = HighlightableProduct.DisabledReason.MAX_PRODUCT_REACHED)
+
+        val products = listOf(firstProduct, secondProduct, thirdProduct, fourthProduct, fifthProduct, sixthProduct, seventhProduct)
+
+        viewModel.addProductIdToSelection(firstProduct)
+        viewModel.addProductIdToSelection(secondProduct)
+        viewModel.addProductIdToSelection(thirdProduct)
+        viewModel.addProductIdToSelection(fourthProduct)
+        viewModel.addProductIdToSelection(fifthProduct)
+
+        val expected = listOf(
+            firstProduct.copy(
+                position = 1,
+                isSelected = true,
+                disabled = false,
+                disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+            ),
+            secondProduct.copy(
+                position = 2,
+                isSelected = true,
+                disabled = false,
+                disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+            ),
+            thirdProduct.copy(
+                position = 3,
+                isSelected = true,
+                disabled = false,
+                disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+            ),
+            fourthProduct.copy(
+                position = 4,
+                isSelected = true,
+                disabled = false,
+                disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+            ),
+            fifthProduct.copy(
+                position = 5,
+                isSelected = false,
+                disabled = false,
+                disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+            ),
+            sixthProduct.copy(
+                position = 6,
+                isSelected = false,
+                disabled = false,
+                disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+            ),
+            seventhProduct.copy(
+                position = 7,
+                isSelected = false,
+                disabled = false,
+                disabledReason = HighlightableProduct.DisabledReason.NOT_DISABLED
+            )
+        )
+
+        //When
+        val actual = viewModel.markAsUnselected(fifthProduct, products)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
     //endregion
 
     private fun buildHighlightableProduct(): HighlightableProduct {
