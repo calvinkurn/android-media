@@ -135,31 +135,34 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onRemoveBackgroundClicked() {
-        val target = data.resultUrl ?: data.originalUrl
-        val uri = Uri.parse(target)
-        uri.path?.let { it ->
-            viewModel.setRemoveBackground(it) {
-                viewBinding?.let {
-                    Toaster.build(
-                        it.editorFragmentDetailRoot,
-                        getString(R.string.editor_tool_remove_background_failed_normal),
-                        Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        getString(R.string.editor_tool_remove_background_failed_cta)
-                    ) {
-                        removeBackgroundRetryLimit--
-                        if (removeBackgroundRetryLimit == 0) {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.editor_tool_remove_background_failed_normal),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            activity?.finish()
-                        } else
-                            onRemoveBackgroundClicked()
-                    }.show()
+        viewBinding?.imgUcropPreview?.cropImageView?.let { cropView ->
+            saveImage(cropView.drawable.toBitmap(), isFinish = false)
+            data.resultUrl?.let { it ->
+                viewModel.setRemoveBackground(it) { _ ->
+                    viewBinding?.let {
+                        Toaster.build(
+                            it.editorFragmentDetailRoot,
+                            getString(R.string.editor_tool_remove_background_failed_normal),
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_NORMAL,
+                            getString(R.string.editor_tool_remove_background_failed_cta)
+                        ) {
+                            removeBackgroundRetryLimit--
+                            if (removeBackgroundRetryLimit == 0) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.editor_tool_remove_background_failed_normal),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                activity?.finish()
+                            } else
+                                onRemoveBackgroundClicked()
+                        }.show()
+                    }
                 }
             }
+            // set result null, just use it as temporary for save image to cache
+            data.resultUrl = null
         }
     }
 
@@ -253,7 +256,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun renderUiComponent(@EditorToolType type: Int) {
-        val uri = Uri.fromFile(File(data.originalUrl))
+        val uri = Uri.fromFile(File(data.removeBackgroundUrl ?: data.originalUrl))
 
         when (type) {
             EditorToolType.BRIGHTNESS -> {
@@ -273,7 +276,10 @@ class DetailEditorFragment @Inject constructor(
             EditorToolType.REMOVE_BACKGROUND -> {
                 viewBinding?.imgUcropPreview?.apply {
                     initializeRemoveBackground(uri)
-                    initOriginalBitmap()
+                    onLoadComplete = {
+                        initOriginalBitmap()
+                        readPreviousState(data)
+                    }
                 }
                 removeBgComponent.setupView()
             }
@@ -356,7 +362,7 @@ class DetailEditorFragment @Inject constructor(
             viewBinding?.imgUcropPreview?.cropImageView?.colorFilter =
                 brightnessFilterRepositoryImpl.brightness(previousState.brightnessValue!!)
         }
-        // ==== Contrast ===
+        // === Contrast ===
         if(previousState.contrastValue != null ){
             viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(
                 contrastFilterRepositoryImpl.contrast(
@@ -365,7 +371,7 @@ class DetailEditorFragment @Inject constructor(
                 )
             )
         }
-        // ==== Rotate ===
+        // === Rotate ===
         if(previousState.rotateData != null){
             viewBinding?.imgUcropPreview?.let {
                 val rotateData = previousState.rotateData!!
@@ -449,7 +455,7 @@ class DetailEditorFragment @Inject constructor(
         activity?.finish()
     }
 
-    private fun saveImage(bitmapParam: Bitmap, filename: String? = null) {
+    private fun saveImage(bitmapParam: Bitmap, filename: String? = null, isFinish: Boolean = true) {
         viewBinding?.let {
             try {
                 val file = getDestinationUri(requireContext(), filename).toFile()
@@ -467,7 +473,7 @@ class DetailEditorFragment @Inject constructor(
                 val uri = file.toUri()
                 data.resultUrl = uri.path
 
-                editingSave()
+                if(isFinish) editingSave()
             } catch (e: Exception) {
             }
         }
