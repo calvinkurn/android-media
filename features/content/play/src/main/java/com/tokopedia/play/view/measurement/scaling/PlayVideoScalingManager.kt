@@ -138,6 +138,8 @@ class PlayVideoScalingManager(
         view.pivotY = 0f
 
         animator.apply {
+            removeAllListeners()
+            addListener(onBottomInsetsShownAnimatorListener)
             playTogether(animatorX, animatorY, translateY)
         }
 
