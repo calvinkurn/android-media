@@ -1,9 +1,14 @@
 package com.tokopedia.affiliate.ui.bottomsheet
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.di.AffiliateComponent
+import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
@@ -13,12 +18,17 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class AffiliateBottomSheetInfo : BottomSheetUnify() {
     private lateinit var contentView: View
     private var tickerData: AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData? =
         null
     private var tickerId: Long = 0
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     companion object {
         private const val TICKER_DATA = "tickerData"
@@ -54,6 +64,20 @@ class AffiliateBottomSheetInfo : BottomSheetUnify() {
         contentView = View.inflate(context, R.layout.affiliate_bottom_sheet_info, null)
         setData()
         setChild(contentView)
+        setCloseClickListener {
+            sendCloseClickEvent()
+            dismiss()
+        }
+    }
+
+    private fun sendCloseClickEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_CLOSE,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_BOTTOM_SHEET_COMMUNICATION,
+            "$tickerId",
+            userSessionInterface.userId
+        )
     }
 
     private fun setData() {
@@ -68,6 +92,7 @@ class AffiliateBottomSheetInfo : BottomSheetUnify() {
                 visible()
                 text = tickerData?.ctaTextSecondary
                 setOnClickListener {
+                    sendSecondaryCtaEvent()
                     RouteManager.route(
                         requireContext(),
                         tickerData?.ctaLinkSecondary?.androidURL
@@ -80,9 +105,44 @@ class AffiliateBottomSheetInfo : BottomSheetUnify() {
             tickerData?.announcementDescription
         contentView.findViewById<UnifyButton>(R.id.info_button_primary).text = tickerData?.ctaText
         contentView.findViewById<UnifyButton>(R.id.info_button_primary).setOnClickListener {
+            sendPrimaryCtaEvent()
             RouteManager.route(requireContext(), tickerData?.ctaLink?.androidURL)
         }
 
     }
 
+    private fun sendPrimaryCtaEvent(){
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_PRIMARY_BUTTON,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_BOTTOM_SHEET_COMMUNICATION,
+            "$tickerId",
+            userSessionInterface.userId
+        )
+    }
+
+    private fun sendSecondaryCtaEvent(){
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_SECONDARY_BUTTON,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_BOTTOM_SHEET_COMMUNICATION,
+            "$tickerId",
+            userSessionInterface.userId
+        )
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        initInject()
+        return super.onCreateDialog(savedInstanceState)
+    }
+
+    private fun initInject() {
+        getComponent().injectHomeBottomSheetCommunication(this)
+    }
+
+    private fun getComponent(): AffiliateComponent =
+        DaggerAffiliateComponent
+            .builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build()
 }
