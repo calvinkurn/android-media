@@ -8,10 +8,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.*
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.R
