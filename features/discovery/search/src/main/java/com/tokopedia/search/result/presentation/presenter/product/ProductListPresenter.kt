@@ -2121,25 +2121,20 @@ class ProductListPresenter @Inject constructor(
     }
 
     override fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
-        if (isViewNotAttached) return
-        trackBroadMatchSeeMoreClick(broadMatchDataView)
-
-        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.applink)
-        view.redirectionStartActivity(applink, broadMatchDataView.url)
+        val applink = getModifiedApplinkToSearchResult(broadMatchDataView.applink)
+        handleBroadMatchSeeMoreClick(broadMatchDataView, applink)
     }
 
     override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {
+        val applink = getModifiedApplinkToSearchResult(broadMatchDataView.cardButton.applink)
+        handleBroadMatchSeeMoreClick(broadMatchDataView, applink)
+    }
+
+    private fun handleBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView, applink: String) {
         if (isViewNotAttached) return
         trackBroadMatchSeeMoreClick(broadMatchDataView)
 
-        val applink = getModifiedApplinkToSearchResultIfNeeded(broadMatchDataView.cardButton.applink)
-        view.redirectionStartActivity(applink, null)
-    }
-
-    private fun getModifiedApplinkToSearchResultIfNeeded(applink: String): String {
-        return if (applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-            view.modifyApplinkToSearchResult(applink)
-        else applink
+        view.redirectionStartActivity(applink, broadMatchDataView.url)
     }
 
     private fun trackBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView) {
@@ -2151,6 +2146,12 @@ class ProductListPresenter @Inject constructor(
                 carouselOptionType.option,
             )
         }
+    }
+
+    private fun getModifiedApplinkToSearchResult(applink: String): String {
+        return if (applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
+            view.modifyApplinkToSearchResult(applink)
+        else applink
     }
     //endregion
 
