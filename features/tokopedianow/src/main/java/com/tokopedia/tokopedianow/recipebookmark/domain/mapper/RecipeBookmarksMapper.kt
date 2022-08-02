@@ -4,7 +4,7 @@ import com.tokopedia.tokopedianow.recipebookmark.domain.model.GetRecipeBookmarks
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
 
-object GetRecipeBookmarksMapper {
+object RecipeBookmarksMapper {
     private const val MAX_TAGS_DISPLAYED = 4
     private const val TAGS_DISPLAYED = 3
 

@@ -14,7 +14,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -29,6 +28,7 @@ import com.tokopedia.tokopedianow.recipebookmark.persentation.viewmodel.TokoNowR
 import com.tokopedia.tokopedianow.recipebookmark.util.RecyclerViewSpaceItemDecoration
 import com.tokopedia.tokopedianow.recipebookmark.util.UiState
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeShimmeringUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.RecipeViewHolder
 import com.tokopedia.tokopedianow.recipebookmark.util.repeatOnLifecycle
@@ -50,6 +50,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         const val DEFAULT_PER_PAGE = 10
         const val REMAINING_RECIPES_SIZE = 1
         const val SCROLL_DOWN_DIRECTION = 1
+        const val RESTORE_ADD_POSITION = 0
         const val ERROR_PAGE_NOT_FOUND = "404"
         const val ERROR_SERVER = "500"
         const val ERROR_PAGE_FULL = "501"
@@ -211,7 +212,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                 isSuccess = isSuccess,
                 cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel),
                 clickListener = {
-                    viewModel.addRecipeBookmark(recipeId, false)
+                    viewModel.addRecipeBookmark(recipeId, data.position.orZero(), false)
                 }
             )
         }
@@ -227,7 +228,7 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
                     if (data.isRemoving) {
                         viewModel.removeRecipeBookmark(title, data.position.orZero(), recipeId, data.isRemoving)
                     } else {
-                        viewModel.addRecipeBookmark(recipeId, data.isRemoving)
+                        viewModel.addRecipeBookmark(recipeId, data.position.orZero(), data.isRemoving)
                     }
                 }
             )
@@ -258,8 +259,15 @@ class TokoNowRecipeBookmarkFragment: Fragment(), RecipeViewHolder.RecipeListener
         if (!data.isNullOrEmpty()) {
             showRecipesList()
             adapter?.submitList(data)
+            scrollToRestorePosition(data)
         } else {
             showEmptyState()
+        }
+    }
+
+    private fun scrollToRestorePosition(data: List<Visitable<*>>?) {
+        if (data?.firstOrNull() is RecipeShimmeringUiModel) {
+            binding?.rvRecipeBookmark?.smoothScrollToPosition(RESTORE_ADD_POSITION)
         }
     }
 
