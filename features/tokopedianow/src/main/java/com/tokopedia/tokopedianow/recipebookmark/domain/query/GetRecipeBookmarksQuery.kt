@@ -1,0 +1,139 @@
+package com.tokopedia.tokopedianow.recipebookmark.domain.query
+
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
+
+internal object GetRecipeBookmarksQuery: GqlQueryInterface {
+
+    const val PARAM_USER_ID = "userID"
+    const val PARAM_WAREHOUSE_ID = "warehouseID"
+    const val PARAM_PAGE = "page"
+    const val PARAM_PER_PAGE = "perPage"
+
+    private const val OPERATION_NAME = "TokonowGetRecipeBookmarks"
+
+    override fun getOperationNameList(): List<String> {
+        return listOf(OPERATION_NAME)
+    }
+
+    override fun getQuery(): String {
+        return """
+            query $OPERATION_NAME(
+               ${'$'}$PARAM_USER_ID : String!,
+               ${'$'}$PARAM_WAREHOUSE_ID : String!,
+               ${'$'}$PARAM_PAGE : Int!,
+               ${'$'}$PARAM_PER_PAGE : Int!
+            ) {
+               $OPERATION_NAME(input: 
+               {
+                 $PARAM_USER_ID: ${'$'}$PARAM_USER_ID,
+                 $PARAM_WAREHOUSE_ID: ${'$'}$PARAM_WAREHOUSE_ID,
+                 $PARAM_PAGE: ${'$'}$PARAM_PAGE,
+                 $PARAM_PER_PAGE: ${'$'}$PARAM_PER_PAGE
+               }) {
+                	header {
+                      success
+                      processTime
+                      message
+                      statusCode
+                    }
+                    metadata {
+                      hasNext
+                      total
+                    }
+                    data {
+                      userId
+                      recipes {
+                        id
+                        title
+                        status
+                        instruction
+                        portion
+                        duration
+                        createdTime
+                        updatedTime
+                        publishedTime
+                        category {
+                          id
+                          name
+                        }
+                        tags {
+                          id
+                          name
+                        }
+                        products {
+                          id
+                          quantity
+                          detail {
+                            name
+                            url
+                            imageUrl
+                            fmtPrice
+                            appUrl
+                            slashedPrice
+                            discountPercentage
+                            parentProductID
+                            minOrder
+                            stock
+                            categoryName
+                            countReview
+                            rating
+                            ratingAverage
+                            shopID
+                            maxOrder
+                            categoryID
+                            redirectLink
+                            labelGroup {
+                              title
+                              type
+                              typeVariant
+                              hexColor
+                            }
+                            labelGroupVariant {
+                              title
+                              type
+                              typeVariant
+                              hexColor
+                            }
+                          }
+                        }
+                        ingredients {
+                          id
+                          name
+                          quantity
+                          unit
+                          image {
+                            urlOriginal
+                            urlThumbnail
+                            fileName
+                            filePath
+                            width
+                            height
+                          }
+                        }
+                        images {
+                          urlOriginal
+                          urlThumbnail
+                          fileName
+                          filePath
+                          width
+                          height
+                        }
+                        videos {
+                          url
+                          type
+                        }
+                        medias {
+                          url
+                          type
+                        }
+                     }
+                  }
+               }
+            }
+        """.trimIndent()
+    }
+
+    override fun getTopOperationName(): String {
+        return OPERATION_NAME
+    }
+}
