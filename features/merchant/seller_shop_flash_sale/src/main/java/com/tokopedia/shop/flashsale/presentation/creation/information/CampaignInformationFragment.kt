@@ -630,7 +630,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val remainingQuota = viewModel.getRemainingQuota()
 
         return CampaignInformationViewModel.Selection(
-            binding?.tauCampaignName?.editText?.text.toString().trim(),
+            binding?.tauCampaignName?.editText?.text.toString(),
             startDate,
             endDate,
             showTeaser,
@@ -643,7 +643,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun validateDraft() {
-        val campaignName = binding?.tauCampaignName?.editText?.text.toString().trim()
+        val campaignName = binding?.tauCampaignName?.editText?.text.toString()
         val validationResult = viewModel.validateCampaignName(campaignName)
 
         if (validationResult !is CampaignInformationViewModel.CampaignNameValidationResult.Valid) {
@@ -656,7 +656,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun displayTextLengthCounter() {
-        val length = binding?.tauCampaignName?.editText?.text.toString().trim().length
+        val length = binding?.tauCampaignName?.editText?.text.toString().length
         val counterTemplate = String.format(getString(R.string.sfs_placeholder_length_counter), length, CAMPAIGN_NAME_MAX_LENGTH)
         binding?.tpgNameLengthCounter?.text = counterTemplate
     }

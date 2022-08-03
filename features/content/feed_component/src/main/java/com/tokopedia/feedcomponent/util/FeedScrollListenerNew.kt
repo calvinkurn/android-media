@@ -16,9 +16,12 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PRODUCT_HIGHLI
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
+import com.tokopedia.feedcomponent.util.util.globalVisibleRect
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -32,6 +35,7 @@ object FeedScrollListenerNew {
     private const val IMAGE_ITEM_IMPRESSED = "image_item_impressed"
     private const val VOD_ITEM_IMPRESSED = "vod_item_impressed"
 
+    private const val CTA_BUTTON_VISIBLE_PERCENT_THRESHOLD = 50
     private const val TYPE_VIDEO = "video"
     private const val TYPE_LONG_VIDEO = "long-video"
     fun  onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
@@ -100,6 +104,7 @@ object FeedScrollListenerNew {
     }
 
 
+    @Suppress("MagicNumber")
     private fun getImagePostScrollListener(
         layoutManager: LinearLayoutManager?,
         recyclerView: RecyclerView,
@@ -107,15 +112,11 @@ object FeedScrollListenerNew {
         item: FeedXMedia,
         isCDPScroll: Boolean = false
     ) {
-        val rvRect = Rect()
-        recyclerView.getGlobalVisibleRect(rvRect)
-        val rowRect = Rect()
-        layoutManager?.findViewByPosition(i)?.getGlobalVisibleRect(rowRect)
-        val videoViewRect = Rect()
-        layoutManager?.findViewByPosition(i)?.findViewById<View>(R.id.post_image)
-            ?.getGlobalVisibleRect(videoViewRect)
-        val imageView =
-            layoutManager?.findViewByPosition(i)?.findViewById<View>(R.id.post_image)
+        val rvRect = recyclerView.globalVisibleRect
+        val currentView = layoutManager?.findViewByPosition(i) ?: return
+        val rowRect = currentView.globalVisibleRect
+        val imageView = currentView.findViewById<View>(R.id.post_image)
+        val videoViewRect = imageView?.globalVisibleRect ?: Rect()
         if (imageView != null) {
             var percentVideo: Int = -1
             val visibleVideo: Int = if (rowRect.bottom >= rvRect.bottom) {
@@ -143,6 +144,17 @@ object FeedScrollListenerNew {
             }
             if(percentVideo <= 0)
                 item.isImageImpressedFirst = true
+        }
+
+        val ctaView = currentView.findViewById<View>(R.id.top_ads_detail_card)
+        if (ctaView == null || !ctaView.isVisible) return
+        val ctaRect = ctaView.globalVisibleRect
+        val ctaVisiblePercent = (ctaRect.bottom - ctaRect.top) / ctaView.height.toFloat()
+        if (ctaRect.top >= rvRect.top &&
+            ctaRect.bottom <= rvRect.bottom &&
+                ctaVisiblePercent > CTA_BUTTON_VISIBLE_PERCENT_THRESHOLD / 100f) {
+            Objects.requireNonNull(recyclerView.adapter)
+                .notifyItemChanged(i, DynamicPostNewViewHolder.PAYLOAD_CTA_VISIBLE)
         }
     }
 
