@@ -18,11 +18,11 @@ import javax.inject.Inject
  */
 class GetPostDetailUseCaseSeller @Inject constructor(
         @ApplicationContext val context: Context,
-        private val getDynamicFeedUseCase: GetDynamicFeedUseCase) : UseCase<PostDetailViewModel>() {
-
-
+        private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
+) : UseCase<PostDetailViewModel>() {
 
     companion object {
+
         private const val LIMIT_3 = 3
 
         @JvmOverloads
@@ -38,6 +38,7 @@ class GetPostDetailUseCaseSeller @Inject constructor(
             requestParams.putInt(GetDynamicFeedUseCase.PARAM_ID, sourceId.toIntOrZero())
             return requestParams
         }
+
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<PostDetailViewModel> {
