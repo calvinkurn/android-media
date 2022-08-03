@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -137,6 +138,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private val layoutCustomView: ViewGroup by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.layout_custom_view)
     }
+    private val etSearch : EditText by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.et_search)
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -214,6 +218,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 ta.recycle()
             }
         }
+        etSearch.typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
         userSessionInterface = UserSession(context)
         configureInvertedSearchBar()
         configureInitialFillBasedOnAttribute()
