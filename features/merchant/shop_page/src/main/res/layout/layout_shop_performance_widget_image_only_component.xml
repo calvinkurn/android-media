@@ -12,8 +12,6 @@
         android:layout_gravity="center"
         android:adjustViewBounds="true"
         android:paddingStart="16dp"
-        android:paddingTop="2dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="2dp"
         tools:visibility="visible" />
 </FrameLayout>
