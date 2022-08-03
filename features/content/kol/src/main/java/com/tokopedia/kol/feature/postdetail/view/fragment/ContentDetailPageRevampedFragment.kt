@@ -931,7 +931,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             sheet.onDelete = {
                 val media =
                     if (feedXCard.media.size > feedXCard.lastCarouselIndex) feedXCard.media[feedXCard.lastCarouselIndex] else null
-                createDeleteDialog(postPosition)
+                createDeleteDialog(feedXCard.id.toIntOrZero(), postPosition)
 
             }
             sheet.onDismiss = {
@@ -1295,7 +1295,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         activity?.startActivity(Intent.createChooser(intent, shareData.name))
     }
 
-    private fun createDeleteDialog(rowNumber: Int) {
+    private fun createDeleteDialog(id: Int, rowNumber: Int) {
         val dialog =
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(kolR.string.feed_delete_post))
