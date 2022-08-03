@@ -1201,9 +1201,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
             }
 
-            ctx?.let {
-                TkpdFirebaseAnalytics.getInstance(ctx).setUserId(userId)
-            }
+            TkpdFirebaseAnalytics.getInstance(it).setUserId(userSession.userId)
 
             it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
             it.finish()
