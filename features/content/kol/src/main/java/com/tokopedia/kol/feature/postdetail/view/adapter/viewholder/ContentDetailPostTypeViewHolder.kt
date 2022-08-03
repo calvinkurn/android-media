@@ -124,12 +124,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
             }
 
-            override fun onCTAColorChangedAsPerWidgetColor(viewHolder: CarouselImageViewHolder) {
-                (rvCarousel.adapter as FeedPostCarouselAdapter).updateNeighbourTopAdsColor(
-                    viewHolder.adapterPosition
-                )
-            }
-
             override fun onImageClicked(viewHolder: CarouselImageViewHolder) {
 
             }
@@ -460,15 +454,12 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         }
         likeButton.setOnClickListener {
             likeButton.setOnClickListener {
-            adapter.updateCTAasperWidgetColor(pageControl.indicatorCurrentPosition)
-
-            listener?.onLikeClicked(
-                feedXCard,
-                positionInFeed
-            )
+                listener?.onLikeClicked(
+                    feedXCard,
+                    positionInFeed
+                )
+            }
         }
-        }
-
     }
 
     private fun bindLikeData(feedXCard: FeedXCard) {
@@ -519,8 +510,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             likedText.hide()
         }
         likeButton.setOnClickListener {
-            adapter.updateCTAasperWidgetColor(pageControl.indicatorCurrentPosition)
-
             listener?.onLikeClicked(
                 feedXCard,
                 positionInFeed
