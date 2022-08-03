@@ -93,6 +93,7 @@ class QuizWidgetView : ConstraintLayout {
     private val rotateEndListener =
         DynamicAnimation.OnAnimationEndListener { animation, canceled, value, velocity ->
             rotate.animateToFinalPosition(0f)
+            rotate.skipToEnd()
         }
 
     init {
