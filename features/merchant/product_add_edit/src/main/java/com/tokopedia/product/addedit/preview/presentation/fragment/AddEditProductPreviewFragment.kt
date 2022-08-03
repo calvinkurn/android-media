@@ -796,6 +796,10 @@ class AddEditProductPreviewFragment :
     }
 
     private fun saveProductToDraft() {
+        // increment wholesale min order by one because of > symbol
+        viewModel.productInputModel.value?.run {
+            detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(detailInputModel.wholesaleList)
+        }
         viewModel.productInputModel.value?.let {
             viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
         }

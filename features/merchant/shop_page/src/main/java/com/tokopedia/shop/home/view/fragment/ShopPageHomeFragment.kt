@@ -1701,18 +1701,19 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             // disable owner add their own bundle to cart
             showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
         } else {
-            if (selectedMultipleBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+            if (isLogin) {
+                if (selectedMultipleBundle.isProductsHaveVariant) {
+                    // go to bundling selection page
+                    goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
+                } else {
+                    // atc bundle directly from shop page home
+                    val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
                         widgetId = widgetLayout.widgetId,
                         widgetMasterId = widgetLayout.widgetMasterId,
                         widgetType = widgetLayout.widgetType,
                         widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
+                    )
+                    viewModel?.addBundleToCart(
                         shopId = shopId,
                         userId = userId,
                         bundleId = selectedMultipleBundle.bundleId,
@@ -1720,7 +1721,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                         onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         productQuantity = selectedMultipleBundle.minOrder
-                )
+                    )
+                }
+            } else {
+                redirectToLoginPage()
             }
             shopPageHomeTracking.clickAtcProductBundleMultiple(
                     shopId = shopId,
@@ -1747,18 +1751,19 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             // disable owner add their own bundle to cart
             showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
         } else {
-            if (selectedBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+            if (isLogin) {
+                if (selectedBundle.isProductsHaveVariant) {
+                    // go to bundling selection page
+                    goToBundlingSelectionPage(selectedBundle.bundleId)
+                } else {
+                    // atc bundle directly from shop page home
+                    val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
                         widgetId = widgetLayout.widgetId,
                         widgetMasterId = widgetLayout.widgetMasterId,
                         widgetType = widgetLayout.widgetType,
                         widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
+                    )
+                    viewModel?.addBundleToCart(
                         shopId = shopId,
                         userId = userId,
                         bundleId = selectedBundle.bundleId,
@@ -1766,7 +1771,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                         onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         productQuantity = selectedBundle.minOrder
-                )
+                    )
+                }
+            } else {
+                redirectToLoginPage()
             }
             shopPageHomeTracking.clickAtcProductBundleSingle(
                     shopId = shopId,
