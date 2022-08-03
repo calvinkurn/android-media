@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
@@ -3807,14 +3808,14 @@ open class DynamicProductDetailFragment :
      */
     private fun setupToolbarState(shouldTransparent: Boolean) {
         if (shouldTransparent) {
+            setContentConstraintToParentTop()
             setupToolbarWithStatusBarDark()
             addRecyclerViewScrollListener()
-            setContentConstraintToParentTop()
             setToolbarShadowState(show = true)
         } else {
+            setContentConstraintToNavToolbarBottom()
             setupToolbarWithStatusBarLight()
             removeRecyclerViewScrollListener()
-            setContentConstraintToNavToolbarBottom()
             setToolbarShadowState(show = false)
         }
     }
@@ -3825,16 +3826,14 @@ open class DynamicProductDetailFragment :
      */
     private fun setContentConstraintToParentTop() {
         binding?.apply {
-            containerDynamicProductDetail.post {
-                val constraintSet = ConstraintSet()
-                constraintSet.clone(containerDynamicProductDetail)
-                constraintSet.connect(
-                    swipeRefreshPdp.id, ConstraintSet.TOP,
-                    containerDynamicProductDetail.id, ConstraintSet.TOP,
-                    0
-                )
-                constraintSet.applyTo(containerDynamicProductDetail)
-            }
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(containerDynamicProductDetail)
+            constraintSet.connect(
+                swipeRefreshPdp.id, ConstraintSet.TOP,
+                containerDynamicProductDetail.id, ConstraintSet.TOP,
+                0
+            )
+            constraintSet.applyTo(containerDynamicProductDetail)
         }
     }
 
@@ -3844,16 +3843,14 @@ open class DynamicProductDetailFragment :
      */
     private fun setContentConstraintToNavToolbarBottom() {
         binding?.apply {
-            containerDynamicProductDetail.post {
-                val constraintSet = ConstraintSet()
-                constraintSet.clone(containerDynamicProductDetail)
-                constraintSet.connect(
-                    swipeRefreshPdp.id, ConstraintSet.TOP,
-                    pdpNavtoolbar.id, ConstraintSet.BOTTOM,
-                    0
-                )
-                constraintSet.applyTo(containerDynamicProductDetail)
-            }
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(containerDynamicProductDetail)
+            constraintSet.connect(
+                swipeRefreshPdp.id, ConstraintSet.TOP,
+                pdpNavtoolbar.id, ConstraintSet.BOTTOM,
+                0
+            )
+            constraintSet.applyTo(containerDynamicProductDetail)
         }
     }
 
