@@ -360,9 +360,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     isMuted,
                     mData.author.id,
                     mData.followers.isFollowed,
-                    true,
+                    mData.isTypeVOD,
                     media.type,
                 )
+            }
+
+            override fun onVideoSurfaceTapped(
+                viewHolder: CarouselVideoViewHolder,
+                media: FeedXMedia,
+                isMuted: Boolean
+            ) {
+
             }
 
             override fun onVideoStopTrack(viewHolder: CarouselVideoViewHolder, lastPosition: Long) {

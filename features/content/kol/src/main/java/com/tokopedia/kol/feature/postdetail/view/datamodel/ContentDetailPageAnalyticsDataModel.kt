@@ -7,6 +7,7 @@ data class ContentDetailPageAnalyticsDataModel(
     var activityId: String = "",
     val shopId: String = "",
     val shopName: String = "",
+    val itemName: String = "",
     val rowNumber: Int = 0,
     val mediaType: String = "",
     val mediaUrl:String = "",

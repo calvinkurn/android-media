@@ -202,12 +202,19 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 //                )
             }
 
+            override fun onVideoSurfaceTapped(
+                viewHolder: CarouselVideoViewHolder,
+                media: FeedXMedia,
+                isMuted: Boolean
+            ) {
+                listener?.onSgcVideoTapped(mData)
+            }
+
             override fun onVideoStopTrack(viewHolder: CarouselVideoViewHolder, lastPosition: Long) {
-                //TODO analytics
-//                videoListener?.onVideoStopTrack(
-//                    mData,
-//                    lastPosition,
-//                )
+                listener?.onVideoStopTrack(
+                    mData,
+                    lastPosition,
+                )
             }
         }
     )
@@ -575,7 +582,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             listener?.onCommentClicked(mData, positionInFeed)
         }
         seeAllCommentText.setOnClickListener {
-            listener?.onCommentClicked(mData, positionInFeed)
+            listener?.onCommentClicked(mData, positionInFeed, isSeeMoreComment = true)
         }
         addCommentHint.setOnClickListener {
             listener?.onCommentClicked(mData, positionInFeed)
@@ -700,11 +707,13 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                     feedXCard,
                     positionInFeed,
                     currentTime,
-                    shouldTrack
+                    shouldTrack,
+                    isFullScreenButton
                 )
             }
 
             override fun onVolumeBtnClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String) {
+                listener?.onVolumeClicked(feedXCard, mute, mediaType)
 
             }
 

@@ -67,7 +67,7 @@ class ContentDetailPostViewHolder(
     }
     interface CDPListener {
         fun onLikeClicked(feedXCard: FeedXCard, postPosition: Int, isDoubleTap: Boolean = false)
-        fun onCommentClicked(feedXCard: FeedXCard, postPosition: Int)
+        fun onCommentClicked(feedXCard: FeedXCard, postPosition: Int, isSeeMoreComment: Boolean = false)
         fun onSharePostClicked(feedXCard: FeedXCard, postPosition: Int)
         fun onFollowUnfollowClicked(feedXCard: FeedXCard, postPosition: Int)
         fun onClickOnThreeDots(feedXCard: FeedXCard, postPosition: Int)
@@ -75,7 +75,8 @@ class ContentDetailPostViewHolder(
             feedXCard: FeedXCard,
             postPosition: Int,
             currentTime: Long,
-            shouldTrack: Boolean
+            shouldTrack: Boolean,
+            isFullScreenBtn: Boolean
         )
 
         fun onShopHeaderItemClicked(feedXCard: FeedXCard, isShopNameBelow: Boolean = false)
@@ -97,12 +98,20 @@ class ContentDetailPostViewHolder(
             postPosition: Int
         )
 
-        fun onPostTagBubbleClicked(redirectUrl: String)
+        fun onPostTagBubbleClicked(
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+        )
         fun onCarouselItemImpressed(feedXCard: FeedXCard, postPosition: Int)
         fun onPostImpressed(feedXCard: FeedXCard, postPosition: Int)
         fun onImageClicked(feedXCard: FeedXCard)
         fun onReadMoreClicked(feedXCard: FeedXCard)
         fun onHashtagClicked(hashTag: String, feedXCard: FeedXCard)
+        fun onVolumeClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String)
+        fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long)
+        fun onSgcVideoTapped(feedXCard: FeedXCard)
+
 
 
     }

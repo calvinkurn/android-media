@@ -257,5 +257,6 @@ class CarouselVideoViewHolder(
         fun onLihatProductClicked(viewHolder: CarouselVideoViewHolder, media: FeedXMedia)
         fun onVideoStopTrack(viewHolder: CarouselVideoViewHolder, lastPosition: Long)
         fun onMuteChanged(viewHolder: CarouselVideoViewHolder, media: FeedXMedia, isMuted: Boolean)
+        fun onVideoSurfaceTapped(viewHolder: CarouselVideoViewHolder, media: FeedXMedia, isMuted: Boolean)
     }
 }
