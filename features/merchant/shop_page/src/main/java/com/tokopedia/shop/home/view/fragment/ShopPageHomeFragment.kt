@@ -534,7 +534,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             viewModel?.setMiniCartData(it)
             val listWidgetData = shopHomeAdapter.data.toMutableList()
             if(listWidgetData.isNotEmpty())
-                viewModel?.getShopWidgetDataWithUpdatedQuantity(it, listWidgetData)
+                viewModel?.getShopWidgetDataWithUpdatedQuantity(listWidgetData)
         })
     }
 
