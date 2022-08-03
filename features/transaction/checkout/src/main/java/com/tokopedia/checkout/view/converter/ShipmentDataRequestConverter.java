@@ -156,12 +156,24 @@ public class ShipmentDataRequestConverter {
                 }
 
                 shopProductCheckout.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
+                shopProductCheckout.setNeedPrescription(productInCartNeedsPrescription(shipmentCartItemModel));
 
                 return shopProductCheckout;
             }
             return null;
         }
         return null;
+    }
+
+    private boolean productInCartNeedsPrescription(ShipmentCartItemModel shipmentCartItemModel) {
+        boolean flag = false;
+        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+            if (cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
     }
 
     public static RatesFeature generateRatesFeature(CourierItemData courierItemData) {
