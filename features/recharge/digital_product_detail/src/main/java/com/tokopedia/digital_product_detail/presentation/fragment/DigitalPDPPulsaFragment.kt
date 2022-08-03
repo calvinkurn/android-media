@@ -54,6 +54,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.M
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN_ALT
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_VERIFY_PHONE_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.TELCO_PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
@@ -923,7 +924,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     Toaster.TYPE_ERROR,
                     getString(com.tokopedia.common_digital.R.string.digital_common_toaster_button_label)
                 ) {
-                    RouteManager.route(context, error.appLinkUrl)
+                    RouteManager.getIntent(context, error.appLinkUrl).apply {
+                        startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
+                    }
                 }.show()
             }
         }
@@ -1317,7 +1320,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                         FavoriteNumberType.LIST
                     )
                 )
-            } else if (requestCode == REQUEST_CODE_LOGIN) {
+            } else if (requestCode == REQUEST_CODE_LOGIN || requestCode == REQUEST_CODE_VERIFY_PHONE_NUMBER) {
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {
                 addToCartFromUrl()

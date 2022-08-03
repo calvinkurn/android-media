@@ -89,6 +89,7 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common_digital.atc.DigitalErrorAtcData
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_VERIFY_PHONE_NUMBER
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
@@ -1100,7 +1101,9 @@ class DigitalPDPDataPlanFragment :
                     Toaster.TYPE_ERROR,
                     getString(com.tokopedia.common_digital.R.string.digital_common_toaster_button_label)
                 ) {
-                    RouteManager.route(context, error.appLinkUrl)
+                    RouteManager.getIntent(context, error.appLinkUrl).apply {
+                        startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
+                    }
                 }.show()
             }
         }
@@ -1525,7 +1528,7 @@ class DigitalPDPDataPlanFragment :
                         FavoriteNumberType.LIST
                     )
                 )
-            } else if (requestCode == REQUEST_CODE_LOGIN) {
+            } else if (requestCode == REQUEST_CODE_LOGIN || requestCode == REQUEST_CODE_VERIFY_PHONE_NUMBER) {
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {
                 addToCartFromUrl()
