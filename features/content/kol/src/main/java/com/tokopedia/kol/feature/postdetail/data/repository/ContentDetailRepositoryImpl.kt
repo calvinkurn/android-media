@@ -2,9 +2,13 @@ package com.tokopedia.kol.feature.postdetail.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
+import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -18,9 +22,27 @@ import javax.inject.Inject
 class ContentDetailRepositoryImpl @Inject constructor(
     private  val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
+    private val followShopUseCase: UpdateFollowStatusUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val addToWishlistUseCase: AddToWishlistV2UseCase,
 ) : ContentDetailRepository {
+
+    override suspend fun followShop(shopId: String, action: ShopFollowAction) {
+        return withContext(dispatcher.io) {
+            followShopUseCase.params = UpdateFollowStatusUseCase.createParams(
+                shopId,
+                action.value
+            )
+            val response = followShopUseCase.executeOnBackground()
+            if (response.followShop?.success == false) {
+                throw CustomUiMessageThrowable(
+                    if (action.isFollowing) R.string.feed_follow_error_message
+                    else R.string.feed_unfollow_error_message
+                )
+            }
+        }
+
+    }
 
     override suspend fun addToCart(
         productId: String,

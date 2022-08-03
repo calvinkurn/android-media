@@ -31,7 +31,7 @@ import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
+import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.di.DaggerContentDetailComponent
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
 import com.tokopedia.kol.feature.postdetail.view.activity.ContentDetailActivity
@@ -54,6 +54,8 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampAr
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.TYPE_CONTENT_PREVIEW_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.VOD_POST
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailRevampViewModel
 import com.tokopedia.kol.feature.video.view.fragment.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -187,44 +189,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     }
                 }
             })
-            toggleFollowUnfollowResp.observe(viewLifecycleOwner, {
-                when (it) {
-                    is Success -> {
-                        val data = it.data
-                        if (data.isSuccess) {
-                            onSuccessToggleFavoriteShop(data)
-                        } else {
-                            data.errorMessage =
-                                ErrorHandler.getErrorMessage(context, RuntimeException())
-                            onErrorToggleFavoriteShop(data)
-                        }
-                    }
-                    is Fail -> {
-                        when (it.throwable.cause) {
-                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
-                                view?.let { v ->
-                                    showNoInterNetDialog(v.context)
-                                }
-                            }
-                            else -> {
-                                it.throwable.let { throwable ->
-                                    val message = if (throwable is CustomUiMessageThrowable) {
-                                        context?.getString(throwable.errorMessageId)
-                                    } else {
-                                        it.throwable.message
-                                            ?: getString(networkR.string.default_request_error_unknown)
-                                    }
-                                    message?.let { errormessage ->
-                                        showToast(errormessage, Toaster.TYPE_ERROR)
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-
-            })
             vodViewData.observe(viewLifecycleOwner,  {
                 when (it) {
                     is Success -> {
@@ -343,7 +307,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
 
         observeWishlist()
-
+        observeFollowShop()
     }
 
     private fun setupView(view: View) {
@@ -564,14 +528,14 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         }
     }
 
-    private fun onSuccessToggleFavoriteShop(data: FavoriteShopViewModel) {
+    private fun onSuccessFollowShop(data: ShopFollowModel) {
 
         val rowNumber = data.rowNumber
         if (rowNumber < adapter.getList().size) {
              val feedXCardData = adapter.getList()[rowNumber]
 
                 feedXCardData.followers.isFollowed = !feedXCardData.followers.isFollowed
-                if (!feedXCardData.followers.isFollowed && data.isUnfollowFromShopsMenu) {
+                if (!feedXCardData.followers.isFollowed && data.action.isUnFollowing) {
                     showToast(
                         getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
                         Toaster.TYPE_NORMAL
@@ -610,21 +574,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
     private fun onErrorLikeDislikeKolPost(errorMessage: String) {
         showToast(errorMessage, Toaster.TYPE_ERROR)
-    }
-
-    private fun onErrorToggleFavoriteShop(data: FavoriteShopViewModel) {
-        Toaster.build(
-            requireView(),
-            data.errorMessage,
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_ERROR,
-            getString(com.tokopedia.abstraction.R.string.title_try_again)
-        ) {
-            viewModel.doToggleFavoriteShop(
-                data.rowNumber,
-                data.shopId
-            )
-        }
     }
 
     private fun openCommentPage(
@@ -792,10 +741,11 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     )
                 )
             )
-        viewModel.doToggleFavoriteShop(
-            rowNumber = postPosition,
+
+        viewModel.followShop(
             shopId = feedXCard.author.id,
-            feedXCard.followers.isFollowed
+            action = ShopFollowAction.getFollowAction(feedXCard.followers.isFollowed),
+            rowNumber = postPosition
         )
     }
 
@@ -1553,7 +1503,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 productTagBS.dismissedByClosing = true
                 productTagBS.dismiss()
             }
-            viewModel.doAddToCart(
+            viewModel.addToCart(
                 postTagItem.id,
                 postTagItem.productName,
                 postTagItem.price.toString(),
@@ -1610,6 +1560,38 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.throwable)
                     AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, requireView())
+                }
+            }
+        })
+    }
+
+    private fun observeFollowShop() {
+        viewModel.followShopObservable.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {}
+                is ContentDetailResult.Success -> onSuccessFollowShop(it.data)
+                is ContentDetailResult.Failure -> {
+                    when (it.error.cause) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
+                                requireContext().getString(it.error.errorMessageId)
+                            } else ErrorHandler.getErrorMessage(requireContext(), it.error.cause)
+
+                            Toaster.build(
+                                requireView(),
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again)
+                            ) { view ->
+                                it.onRetry()
+                            }
+                                .show()
+                        }
+                    }
                 }
             }
         })

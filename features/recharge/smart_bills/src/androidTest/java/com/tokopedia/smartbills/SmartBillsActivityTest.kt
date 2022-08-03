@@ -73,6 +73,10 @@ class SmartBillsActivityTest {
                     KEY_DELETE_PRODUCT,
                     ResourcePathUtil.getJsonFromResource(PATH_DELELTE_BILLS),
                     MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                KEY_HIGHLIGHT_CATEGORY,
+                ResourcePathUtil.getJsonFromResource(PATH_HIGHLIGHT_CATEGORY),
+                MockModelConfig.FIND_BY_CONTAINS)
         }
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
@@ -99,6 +103,8 @@ class SmartBillsActivityTest {
         click_add_bills()
         click_delete_cancel()
         click_delete_success()
+        click_highlight_widget()
+        close_highlight_widget()
 
         MatcherAssert.assertThat(
             cassavaTestRule.validate(SMART_BILLS_VALIDATOR_QUERY),
@@ -221,6 +227,17 @@ class SmartBillsActivityTest {
         onView(withId(R.id.dialog_btn_primary)).perform(click())
     }
 
+    private fun click_highlight_widget() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Thread.sleep(3000)
+        onView(withId(R.id.highlight_category)).perform(click())
+    }
+
+    private fun close_highlight_widget() {
+        Thread.sleep(3000)
+        onView(withId(R.id.icon_highlighted_category_close)).perform(click())
+    }
+
     @After
     fun cleanUp() {
         Intents.release()
@@ -232,11 +249,13 @@ class SmartBillsActivityTest {
         private const val KEY_STATEMENT_BILLS = "rechargeSBMList"
         private const val KEY_CATALOG_MENU = "rechargeCatalogMenu"
         private const val KEY_DELETE_PRODUCT = "rechargeSBMDeleteBill"
+        private const val KEY_HIGHLIGHT_CATEGORY = "rechargeRecommendation"
 
         private const val PATH_STATEMENT_MONTHS = "statement_months.json"
         private const val PATH_STATEMENT_BILLS = "statement_bills.json"
         private const val PATH_CATALOG_BILLS = "catalog_bills.json"
         private const val PATH_DELELTE_BILLS = "delete_bills.json"
+        private const val PATH_HIGHLIGHT_CATEGORY = "highlight_category.json"
 
         private const val SMART_BILLS_VALIDATOR_QUERY = "tracker/recharge/smart_bills_management_test.json"
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.domain
 
+import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 
@@ -7,6 +8,11 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
  * Created by meyta.taliti on 02/08/22.
  */
 interface ContentDetailRepository {
+
+    suspend fun followShop(
+        shopId: String,
+        action: ShopFollowAction,
+    )
 
     suspend fun addToCart(
         productId: String,
