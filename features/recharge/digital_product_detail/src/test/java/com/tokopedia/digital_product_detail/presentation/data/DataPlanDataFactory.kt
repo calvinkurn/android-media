@@ -111,6 +111,13 @@ class DataPlanDataFactory {
         )
     }
 
+    fun getAddToCartDataWithErrors(): ResponseCartData{
+        return gson.fromJson(
+            gson.JsonToString(PulsaDataFactory.GET_ADD_TO_CART_WITH_ERRORS),
+            ResponseCartData::class.java
+        )
+    }
+
     fun getCheckoutPassData(denomData: DenomData = getDenomData()): DigitalCheckoutPassData {
         return DigitalCheckoutPassData().apply {
             categoryId = denomData.categoryId
@@ -198,6 +205,7 @@ class DataPlanDataFactory {
         const val GET_PREFIX_OPERATOR = "common_telco/get_prefix_operator_mock.json"
         const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "common_telco/get_prefix_operator_empty_validation_mock.json"
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"
+        const val GET_ADD_TO_CART_WITH_ERRORS = "common_telco/get_add_to_cart_not_empty_error_mock.json"
         const val GET_CATALOG_INPUT_MULTITAB = "dataplan/get_catalog_input_multitab_mock.json"
         const val GET_MENU_DETAIL = "dataplan/get_menu_detail_mock.json"
 
