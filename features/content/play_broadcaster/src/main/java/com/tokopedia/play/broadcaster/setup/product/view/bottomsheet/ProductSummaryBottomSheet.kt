@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
+import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
@@ -56,19 +57,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     override fun onPinClicked(product: ProductUiModel) {
-        checkPinProduct(product.pinStatus.isPinned){
-            viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
-        }
-    }
-
-    private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
-        if (!viewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
-        else {
-            toaster.showToaster(
-                message = getString(R.string.play_bro_pin_product_failed),
-                type = Toaster.TYPE_ERROR
-            )
-        }
+        viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -176,6 +165,21 @@ class ProductSummaryBottomSheet @Inject constructor(
                         )
 
                         showLoading(false)
+                    }
+                    is PlayBroProductChooserEvent.ShowError -> {
+                        if(event.error is PinnedProductException){
+                            toaster.showToaster(
+                                message = if (event.error.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.error.message,
+                                type = Toaster.TYPE_ERROR
+                            )
+                        }else {
+                            toaster.showError(
+                                err = event.error,
+                                customErrMessage = getString(
+                                    R.string.play_bro_product_chooser_error_save
+                                )
+                            )
+                        }
                     }
                 }
             }

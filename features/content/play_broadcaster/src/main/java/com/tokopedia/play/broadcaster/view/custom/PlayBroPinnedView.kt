@@ -9,6 +9,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPinProductBinding
 import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.play.broadcaster.R as broR
 
 /**
  * @author by astidhiyaa on 26/07/22
@@ -45,7 +46,7 @@ class PlayBroPinnedView : ConstraintLayout {
                 )
             )
             binding.tvPin.text =
-                context.resources.getString(com.tokopedia.play.broadcaster.R.string.play_bro_unpin)
+                context.resources.getString(broR.string.play_bro_unpin)
             binding.tvPin.setTextColor(
                 MethodChecker.getColor(
                     context,
@@ -65,7 +66,7 @@ class PlayBroPinnedView : ConstraintLayout {
                 )
             )
             binding.tvPin.text =
-                context.resources.getString(com.tokopedia.play.broadcaster.R.string.play_bro_pin)
+                context.resources.getString(broR.string.play_bro_pin)
             binding.tvPin.setTextColor(
                 MethodChecker.getColor(
                     context,
