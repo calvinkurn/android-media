@@ -169,4 +169,14 @@ class CustomOrderDetailBottomSheet :
             )
         }
     }
+
+    override fun onUpdateQty(quantity: Int, customOrderDetail: CustomOrderDetail) {
+        productUiModel?.let {
+            clickListener?.onUpdateCustomOrderQtyButtonClicked(
+                    customOrderDetail = customOrderDetail,
+                    quantity = quantity,
+                    productId = it.id
+            )
+        }
+    }
 }

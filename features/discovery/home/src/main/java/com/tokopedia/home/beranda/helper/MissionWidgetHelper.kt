@@ -16,7 +16,15 @@ object MissionWidgetHelper {
                         title = pojo.title,
                         subTitle = pojo.subTitle,
                         appLink = pojo.appLink,
-                        imageURL = pojo.imageURL
+                        imageURL = pojo.imageURL,
+                        pageName = pojo.pageName,
+                        categoryID = pojo.categoryID,
+                        productID = pojo.productID,
+                        productName = pojo.productName,
+                        recommendationType = pojo.recommendationType,
+                        buType = pojo.buType,
+                        isTopads = pojo.isTopads,
+                        isCarousel = pojo.isCarousel
                     )
             )
         }
