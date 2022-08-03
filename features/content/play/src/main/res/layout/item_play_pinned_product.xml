@@ -144,12 +144,13 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_NN400"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/tv_price"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/tv_price"
             app:layout_constraintTop_toTopOf="@id/tv_price"
-            app:typographyType="display_3"
+            app:typographyType="small"
             tools:text="Rp300.000"
             />
 

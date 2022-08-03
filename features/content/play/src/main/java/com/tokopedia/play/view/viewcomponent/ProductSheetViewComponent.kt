@@ -44,8 +44,6 @@ import kotlinx.coroutines.withContext
 class ProductSheetViewComponent(
     container: ViewGroup,
     private val listener: Listener,
-    private val scope: CoroutineScope,
-    private val dispatcher: CoroutineDispatchers,
 ) : ViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
@@ -65,8 +63,6 @@ class ProductSheetViewComponent(
     private val tvHeaderProductEmpty: TextView = findViewById(R.id.tv_title_product_empty)
     private val tvBodyProductEmpty: TextView = findViewById(R.id.tv_desc_product_empty)
     private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
-
-    private var setProductsJob by reusableJob()
 
     private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
         override fun onBuyProduct(
@@ -173,21 +169,7 @@ class ProductSheetViewComponent(
         showContent(true)
         tvSheetTitle.text = title
 
-        setProductsJob = scope.launch {
-            val sortedSectionList = withContext(dispatcher.computation) {
-                 sectionList.map {
-                    if (it is ProductSectionUiModel.Section) {
-                        val pinnedProduct = it.productList.firstOrNull { product -> product.isPinned }
-                        val sortedProductList = if (pinnedProduct != null) {
-                            val nonPinnedProductList = it.productList - pinnedProduct
-                            listOf(pinnedProduct) + nonPinnedProductList
-                        } else it.productList
-                        it.copy(productList = sortedProductList)
-                    } else it
-                }
-            }
-            productSectionAdapter.setItemsAndAnimateChanges(sortedSectionList)
-        }
+        productSectionAdapter.setItemsAndAnimateChanges(sectionList)
 
         if (voucherList.isEmpty()) {
             clProductVoucher.hide()
@@ -206,12 +188,9 @@ class ProductSheetViewComponent(
 
     fun showPlaceholder() {
         showContent(true)
-
-        setProductsJob = scope.launch {
-            productSectionAdapter.setItemsAndAnimateChanges(
-                List(PLACEHOLDER_COUNT) { ProductSectionUiModel.Placeholder }
-            )
-        }
+        productSectionAdapter.setItemsAndAnimateChanges(
+            List(PLACEHOLDER_COUNT) { ProductSectionUiModel.Placeholder }
+        )
     }
 
     fun showError(isConnectionError: Boolean, onError: () -> Unit) {
