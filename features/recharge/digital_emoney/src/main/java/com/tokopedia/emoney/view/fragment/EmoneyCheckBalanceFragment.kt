@@ -112,6 +112,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun executeCard(intent: Intent) {
+        val startTimeBeforeCallGql = System.currentTimeMillis()
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         if (CardUtils.isTapcashCard(intent)) {
             issuerActive = ISSUER_ID_TAP_CASH
@@ -124,7 +125,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 showLoading(getOperatorName(issuerActive))
                 emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
                         DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
-                        0)
+                        0, startTimeBeforeCallGql)
             } else {
                 val errorMessage = ErrorHandler.getErrorMessagePair(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD), errorHanlderBuilder)
                 showError(errorMessage.first.orEmpty(),

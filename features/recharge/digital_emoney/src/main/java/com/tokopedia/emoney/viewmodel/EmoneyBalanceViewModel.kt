@@ -1,6 +1,7 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
+import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiryResponse
@@ -28,7 +29,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
     lateinit var isoDep: IsoDep
 
-    fun processEmoneyTagIntent(isoDep: IsoDep, balanceRawQuery: String, idCard: Int) {
+    fun processEmoneyTagIntent(isoDep: IsoDep, balanceRawQuery: String, idCard: Int, startTimeBeforeCallGql: Long) {
         //do something with tagFromIntent
         if (isoDep != null) {
             run {
@@ -58,7 +59,12 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         mapAttributes[PARAM_ISSUER_ID] = ISSUER_ID_EMONEY
                         mapAttributes[PARAM_CARD_UUID] = responseCardUID
                         mapAttributes[PARAM_LAST_BALANCE] = responseCardLastBalance
-                        getEmoneyInquiryBalance(PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
+
+                        val endTimeBeforeCallGql = System.currentTimeMillis()
+                        Log.d("EMONEY_TIME_BEFORE_CALL", "${endTimeBeforeCallGql - startTimeBeforeCallGql} ms")
+                        val startTimeCallGql = System.currentTimeMillis()
+
+                        getEmoneyInquiryBalance(PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes, startTimeCallGql)
                     } else {
                         isoDep.close()
                         errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -74,7 +80,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     private fun getEmoneyInquiryBalance(paramCommand: String, balanceRawQuery: String, idCard: Int,
-                                        mapAttributesParam: HashMap<String, Any>) {
+                                        mapAttributesParam: HashMap<String, Any>, startTimeCallGql: Long) {
         launchCatchError(block = {
             var mapParam = HashMap<String, Any>()
             mapParam.put(TYPE_CARD, paramCommand)
@@ -94,6 +100,8 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 if (it.status == 0) {
                     writeBalanceToCard(it.payload, balanceRawQuery, data.emoneyInquiry.id.toInt(), mapAttributesParam)
                 } else {
+                    val endTimeCallGql = System.currentTimeMillis()
+                    Log.d("EMONEY_TIME_CALL", "${endTimeCallGql - startTimeCallGql} ms")
                     emoneyInquiry.postValue(data.emoneyInquiry)
                 }
             }
@@ -112,7 +120,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         // to get card payload
                         val response = NFCUtils.toHex(responseInByte)
                         mapAttributes[PARAM_PAYLOAD] = response
-                        getEmoneyInquiryBalance(PARAM_SEND_COMMAND, balanceRawQuery, id, mapAttributes)
+                        getEmoneyInquiryBalance(PARAM_SEND_COMMAND, balanceRawQuery, id, mapAttributes, 0)
                     } else {
                         isoDep.close()
                         errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
