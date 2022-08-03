@@ -54,7 +54,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
         _inputState.flatMapConcat { inputState ->
             flow {
                 when (inputState.uiState) {
-                   STATE_ERROR -> inputState.throwable?.let { emit(getErrorState(it)) }
+                   STATE_ERROR -> emit(getErrorState(inputState.throwable))
                    STATE_FETCH_MERCHANT_LIST_DATA -> {
                        emit(getLoadingState())
                        emit(getCategoryLayout(inputState.localCacheModel, inputState.merchantListParamsModel))
@@ -76,7 +76,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
             replay = Int.ONE
         )
 
-    private val categoryLayoutItemList :MutableList<Visitable<*>> = mutableListOf()
+    val categoryLayoutItemList :MutableList<Visitable<*>> = mutableListOf()
     private var pageKey = INITIAL_PAGE_KEY_MERCHANT
 
     companion object {
@@ -100,9 +100,42 @@ class TokoFoodCategoryViewModel @Inject constructor(
         ))
     }
 
-    fun setLoadMoreMerchant(
-        localCacheModel: LocalCacheModel, option: Int = 0,
-        sortBy: Int = 0, cuisine: String = "", brandUId: String = ""
+    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
+                            sortBy: Int = 0, cuisine: String = "", brandUId: String = "") {
+        if(shouldLoadMore(containsLastItemIndex, itemCount)) {
+            setLoadMoreMerchant(localCacheModel = localCacheModel,
+                option = option,
+                sortBy = sortBy,
+                cuisine = cuisine,
+                brandUId = brandUId
+            )
+        }
+    }
+
+    fun isShownEmptyState(): Boolean {
+        val layoutList = categoryLayoutItemList.toMutableList()
+        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
+        return isError
+    }
+
+    fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
+        val lastItemIndex = itemCount - Int.ONE
+        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
+                && containsLastItemIndex.isMoreThanZero())
+        val hasNextPage = pageKey.isNotEmpty()
+        val layoutList = categoryLayoutItemList.toMutableList()
+        val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
+        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
+
+        return scrolledToLastItem && hasNextPage && !isLoading && !isError
+    }
+
+    private fun setLoadMoreMerchant(
+        localCacheModel: LocalCacheModel,
+        option: Int,
+        sortBy: Int,
+        cuisine: String,
+        brandUId: String
     ){
         _inputState.tryEmit(TokoFoodUiState(uiState = STATE_FETCH_LOAD_MORE,
             localCacheModel = localCacheModel,
@@ -112,7 +145,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
         ))
     }
 
-    fun getLoadingState(): Pair<Result<TokoFoodListUiModel>, Boolean> {
+    private fun getLoadingState(): Pair<Result<TokoFoodListUiModel>, Boolean> {
         setPageKey(INITIAL_PAGE_KEY_MERCHANT)
         categoryLayoutItemList.clear()
         categoryLayoutItemList.addLoadingCategoryIntoList()
@@ -123,7 +156,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
         return Pair(data, false)
     }
 
-    fun getErrorState(throwable: Throwable): Pair<Result<TokoFoodListUiModel>, Boolean> {
+    private fun getErrorState(throwable: Throwable): Pair<Result<TokoFoodListUiModel>, Boolean> {
         categoryLayoutItemList.clear()
         categoryLayoutItemList.addErrorState(throwable)
         val data = Success(TokoFoodListUiModel(
@@ -133,7 +166,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
         return Pair(data, false)
     }
 
-    suspend fun getCategoryLayout(localCacheModel: LocalCacheModel,
+    private suspend fun getCategoryLayout(localCacheModel: LocalCacheModel,
                                   merchantListParamsModel: TokoFoodMerchantListParams):
             Pair<Result<TokoFoodListUiModel>, Boolean> {
             categoryLayoutItemList.clear()
@@ -161,31 +194,13 @@ class TokoFoodCategoryViewModel @Inject constructor(
            return  Pair(Success(data), true)
     }
 
-    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
-                            sortBy: Int = 0, cuisine: String = "", brandUId: String = "") {
-        if(shouldLoadMore(containsLastItemIndex, itemCount)) {
-            setLoadMoreMerchant(localCacheModel = localCacheModel,
-                option = option,
-                sortBy = sortBy,
-                cuisine = cuisine,
-                brandUId = brandUId
-            )
-        }
-    }
-
-    fun getProgressBar(): Pair<Result<TokoFoodListUiModel>, Boolean> {
+    private fun getProgressBar(): Pair<Result<TokoFoodListUiModel>, Boolean> {
         categoryLayoutItemList.addProgressBar()
         val data = TokoFoodListUiModel(
             items = categoryLayoutItemList,
             state = TokoFoodLayoutState.UPDATE
         )
         return Pair(Success(data), false)
-    }
-
-    fun isShownEmptyState(): Boolean {
-        val layoutList = categoryLayoutItemList.toMutableList()
-        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
-        return isError
     }
 
     private suspend fun getLoadMoreMerchant(localCacheModel: LocalCacheModel,
@@ -215,17 +230,5 @@ class TokoFoodCategoryViewModel @Inject constructor(
 
     private fun setPageKey(pageNew:String) {
         pageKey = pageNew
-    }
-
-    private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
-        val lastItemIndex = itemCount - Int.ONE
-        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
-                && containsLastItemIndex.isMoreThanZero())
-        val hasNextPage = pageKey.isNotEmpty()
-        val layoutList = categoryLayoutItemList.toMutableList()
-        val isLoading = layoutList.firstOrNull { it is TokoFoodProgressBarUiModel } != null
-        val isError = layoutList.firstOrNull { it is TokoFoodErrorStateUiModel } != null
-
-        return scrolledToLastItem && hasNextPage && !isLoading && !isError
     }
 }

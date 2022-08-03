@@ -7,7 +7,7 @@ data class TokoFoodUiState(
     var isLoggedIn: Boolean = false,
     var visitableId: String? = null,
     val localCacheModel: LocalCacheModel = LocalCacheModel(),
-    val throwable: Throwable? = null,
+    val throwable: Throwable = Throwable(),
     val merchantListParamsModel: TokoFoodMerchantListParams = TokoFoodMerchantListParams()
 )
 
