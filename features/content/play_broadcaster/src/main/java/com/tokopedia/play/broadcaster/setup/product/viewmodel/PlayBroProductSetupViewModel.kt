@@ -438,9 +438,11 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             sectionList.map { sectionUiModel ->
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
                 sectionUiModel.products.map { prod ->
-                    if(prod.id == product.id) prod.copy(pinStatus = product.pinStatus)
-                    //reset if its not failed; hacky wAy
-                    else prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isFailed && prod.pinStatus.isPinned) prod.pinStatus.isPinned else false))
+                    when {
+                        prod.id == product.id -> prod.copy(pinStatus = product.pinStatus)
+                        prod.pinStatus.isPinned && isFailed-> prod.copy(pinStatus = prod.pinStatus.copy(isPinned = true))
+                        else -> prod.copy(pinStatus = prod.pinStatus.copy(isPinned = false))
+                    }
                 })
             }
         }
