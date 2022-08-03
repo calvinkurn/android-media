@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.feedcomponent.R.string.btn_text_follow
 import com.tokopedia.feedcomponent.R.string.btn_text_following
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.databinding.ItemShopRecommendationBinding
 import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
@@ -53,15 +54,44 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
         imgItemShopImage.setImageUrl(data.logoImageURL)
         imgItemShopBadge.setImageUrl(data.badgeImageURL)
 
-        buttonFollowState(data.isFollow)
+        buttonFollowState(data.state)
         onClickListener(data, position)
     }
 
-    private fun buttonFollowState(isFollow: Boolean) = with(binding) {
-        btnItemShop.apply {
-            text = context.getString(if (isFollow) btn_text_following else btn_text_follow)
-            buttonVariant = if (isFollow) GHOST else FILLED
-            buttonType = if (isFollow) ALTERNATE else MAIN
+    private fun buttonFollowState(state: ShopRecomFollowState) = with(binding) {
+        when (state) {
+            ShopRecomFollowState.FOLLOW -> {
+                btnItemShop.apply {
+                    text = context.getString(btn_text_following)
+                    buttonVariant = GHOST
+                    buttonType = ALTERNATE
+                    isLoading = false
+                }
+            }
+            ShopRecomFollowState.UNFOLLOW -> {
+                btnItemShop.apply {
+                    text = context.getString(btn_text_follow)
+                    buttonVariant = FILLED
+                    buttonType = MAIN
+                    isLoading = false
+                }
+            }
+            ShopRecomFollowState.LOADING_FOLLOW -> {
+                btnItemShop.apply {
+                    text = context.getString(btn_text_following)
+                    buttonVariant = GHOST
+                    buttonType = ALTERNATE
+                    isLoading = true
+                }
+            }
+            ShopRecomFollowState.LOADING_UNFOLLOW -> {
+                btnItemShop.apply {
+                    text = context.getString(btn_text_follow)
+                    buttonVariant = FILLED
+                    buttonType = MAIN
+                    isLoading = true
+                }
+            }
         }
     }
 

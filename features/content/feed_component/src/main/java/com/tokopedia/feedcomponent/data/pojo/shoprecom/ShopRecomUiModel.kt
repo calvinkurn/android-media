@@ -16,5 +16,9 @@ data class ShopRecomUiModelItem(
     val nickname: String = "",
     val type: Int = 0,
     val applink: String = "",
-    val isFollow: Boolean = false,
+    val state: ShopRecomFollowState = ShopRecomFollowState.UNFOLLOW,
 )
+
+enum class ShopRecomFollowState {
+    FOLLOW, UNFOLLOW, LOADING_FOLLOW, LOADING_UNFOLLOW
+}

@@ -18,8 +18,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_item_shop_close"
-            android:layout_width="@dimen/unify_space_12"
-            android:layout_height="@dimen/unify_space_12"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:icon_name="CLOSE" />

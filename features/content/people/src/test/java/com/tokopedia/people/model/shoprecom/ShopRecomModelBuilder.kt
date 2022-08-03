@@ -1,5 +1,6 @@
 package com.tokopedia.people.model.shoprecom
 
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
 import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 
@@ -45,7 +46,7 @@ class ShopRecomModelBuilder {
                     nickname = "miisooid",
                     type = type,
                     applink = "tokopedia://shop/1353688",
-                    isFollow = false
+                    state = ShopRecomFollowState.UNFOLLOW
                 )
             )
         }
