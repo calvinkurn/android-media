@@ -33,7 +33,7 @@ public class StatusBarUtil {
             int flag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
             int statusBarColor = ContextCompat.getColor(
                     activityWeakReference.get(),
-                    R.color.statusbar_dms_state_dark_icon
+                    R.color.searchbar_dms_statusbar_darkmode
             );
             // add light status bar if above equal 23
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
