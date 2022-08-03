@@ -10,10 +10,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import androidx.activity.ComponentActivity
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -27,9 +24,7 @@ import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitFailedBindin
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitQuestionBinding
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitSuccessBinding
 import com.tokopedia.usercomponents.explicit.analytics.ExplicitAnalytics
-import com.tokopedia.usercomponents.explicit.di.DaggerExplicitComponent
 import com.tokopedia.usercomponents.explicit.domain.model.Property
-import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewModel
 import javax.inject.Inject
 
 class ExplicitView : CardUnify2, ExplicitAction {
@@ -38,8 +33,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
     lateinit var explicitAnalytics: ExplicitAnalytics
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var viewModel: ExplicitViewModel? = null
+    lateinit var viewModel: ExplicitViewContract
 
     private var bindingQuestion: LayoutWidgetExplicitQuestionBinding? = null
     private var bindingSuccess: LayoutWidgetExplicitSuccessBinding? = null
@@ -115,25 +109,16 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
     private fun initInjector() {
         context?.let {
-            val component = DaggerExplicitComponent.builder()
-                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-            component.inject(this)
-
-            if (it is ComponentActivity) {
-                viewModel = ViewModelProvider(it, viewModelFactory).get(ExplicitViewModel::class.java)
-
-                initObserver()
-            }
+            initObserver()
         }
     }
 
     private fun initObserver() {
-        viewModel?.getExplicitContent(templateName)
+        viewModel.getExplicitContent(templateName)
 
         val lifecycleOwner = context as LifecycleOwner
 
-        viewModel?.explicitContent?.observe(lifecycleOwner) {
+        viewModel.explicitContent.observe(lifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.first) {
@@ -149,20 +134,20 @@ class ExplicitView : CardUnify2, ExplicitAction {
             }
         }
 
-        viewModel?.statusSaveAnswer?.observe(lifecycleOwner) {
+        viewModel.statusSaveAnswer.observe(lifecycleOwner) {
             when (it) {
                 is Success -> onSubmitSuccessShow()
                 is Fail -> onFailed()
             }
         }
 
-        viewModel?.isQuestionLoading?.observe(lifecycleOwner) {
+        viewModel.isQuestionLoading.observe(lifecycleOwner) {
             if (it) {
                 onLoading()
             }
         }
 
-        viewModel?.statusUpdateState?.observeOnce(lifecycleOwner) {
+        viewModel.statusUpdateState.observeOnce(lifecycleOwner) {
             onWidgetFinishListener?.invoke()
         }
     }
@@ -181,7 +166,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
         bindingQuestion?.imgDismiss?.setOnClickListener {
             explicitAnalytics.trackClickDismissButton(pageName, templateName, pagePath, pageType)
-            viewModel?.updateState()
+            viewModel.updateState()
             onDismiss()
         }
 
@@ -197,7 +182,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
         bindingFailed?.containerLocalLoad?.refreshBtn?.setOnClickListener {
             if (preferenceAnswer == null)
-                viewModel?.getExplicitContent(templateName)
+                viewModel.getExplicitContent(templateName)
             else {
                 onLoading()
                 saveAnswer()
@@ -207,7 +192,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
     private fun saveAnswer() {
         if (preferenceAnswer != null) {
-            viewModel?.sendAnswer(preferenceAnswer)
+            viewModel.sendAnswer(preferenceAnswer)
         }
     }
 
@@ -343,9 +328,9 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
     override fun onCleared() {
         val lifecycleOwner = context as LifecycleOwner
-        viewModel?.explicitContent?.removeObservers(lifecycleOwner)
-        viewModel?.statusSaveAnswer?.removeObservers(lifecycleOwner)
-        viewModel?.isQuestionLoading?.removeObservers(lifecycleOwner)
+        viewModel.explicitContent.removeObservers(lifecycleOwner)
+        viewModel.statusSaveAnswer.removeObservers(lifecycleOwner)
+        viewModel.isQuestionLoading.removeObservers(lifecycleOwner)
         removeAllViews()
         bindingFailed = null
         bindingQuestion = null
@@ -359,4 +344,5 @@ class ExplicitView : CardUnify2, ExplicitAction {
     fun setOnWidgetFinishListener(listener: () -> Unit) {
         onWidgetFinishListener = listener
     }
+
 }
