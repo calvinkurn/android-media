@@ -166,6 +166,9 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_DELETE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_IMPRESSION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_FINISHED_BANNER
@@ -2117,6 +2120,7 @@ class ShopPageHomeTracking(
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, MULTIPLE_BUNDLE_WIDGET, BUNDLE_ADD_TO_CART))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
         bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut))
+        bundle.putString(TRACKER_ID, TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
         bundle.putString(SHOP_ID, userId)

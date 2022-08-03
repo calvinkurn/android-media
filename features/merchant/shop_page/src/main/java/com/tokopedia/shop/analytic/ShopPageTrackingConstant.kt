@@ -392,9 +392,9 @@ object ShopPageTrackingConstant {
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
 
-    //trackerId
-    const val TRACKER_ID_CLICK_MULTIPLE_BUNDLE = "25998"
-    const val TRACKER_ID_CLICK_SINGLE_BUNDLE = "25999"
+//    //trackerId
+//    const val TRACKER_ID_CLICK_MULTIPLE_BUNDLE = "25998"
+//    const val TRACKER_ID_CLICK_SINGLE_BUNDLE = "25999"
 
 
     //dimension83
@@ -451,5 +451,9 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_ATC_CLICK = "32349"
         const val TRACKER_ID_ATC_CLICK_QUANTITY = "32350"
         const val TRACKER_ID_ATC_CLICK_DELETE = "32352"
+        const val TRACKER_ID_CLICK_MULTIPLE_BUNDLE = "25998"
+        const val TRACKER_ID_CLICK_SINGLE_BUNDLE = "25999"
+        const val TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET = "25640"
+        const val TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET = ""
     }
 }
