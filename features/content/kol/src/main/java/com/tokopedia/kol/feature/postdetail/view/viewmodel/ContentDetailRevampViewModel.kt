@@ -8,7 +8,6 @@ import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendation
 import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
@@ -19,6 +18,7 @@ import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.NON_LOGIN_USER_ID
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.DeleteContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ReportContentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
@@ -57,7 +57,7 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val _longVideoViewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
     private val _trackVODViewsData = MutableLiveData<Result<ViewsKolModel>>()
     private val _atcResp = MutableLiveData<Result<AtcViewModel>>()
-    private val _reportResponse = MutableLiveData<Result<DeletePostViewModel>>()
+    private val _reportResponse = MutableLiveData<ContentDetailResult<ReportContentModel>>()
     private val _deletePostResp = MutableLiveData<ContentDetailResult<DeleteContentModel>>()
 
     val cDPPostRecomData: LiveData<Result<FeedXPostRecommendation>>
@@ -81,7 +81,7 @@ class ContentDetailRevampViewModel @Inject constructor(
     val atcRespData: LiveData<Result<AtcViewModel>>
         get() = _atcResp
 
-    val reportResponse: LiveData<Result<DeletePostViewModel>>
+    val reportResponse: LiveData<ContentDetailResult<ReportContentModel>>
          get() = _reportResponse
 
     val deletePostResp: LiveData<ContentDetailResult<DeleteContentModel>>
@@ -256,30 +256,20 @@ class ContentDetailRevampViewModel @Inject constructor(
 
     fun sendReport(
         positionInFeed: Int,
-        contentId: Int,
+        contentId: String,
         reasonType: String,
         reasonMessage: String,
-        contentType: String
     ) {
-        sendReportUseCase.createRequestParams(contentId, reasonType, reasonMessage, contentType)
-        sendReportUseCase.execute(
-            {
-                val deleteModel = DeletePostViewModel(
-                    contentId,
-                    positionInFeed,
-                    it.feedReportSubmit.errorMessage,
-                    true
-                )
-                if (it.feedReportSubmit.errorMessage.isEmpty()) {
-                    _reportResponse.value = Success(deleteModel)
-                } else {
-                    _reportResponse.value = Fail(Exception(it.feedReportSubmit.errorMessage))
-                }
-            },
-            {
-                _reportResponse.value = Fail(it)
+        launchCatchError(block = {
+            repository.reportContent(contentId, reasonType, reasonMessage)
+            _reportResponse.value = ContentDetailResult.Success(
+                mapper.mapReportContent(positionInFeed)
+            )
+        }) {
+            _reportResponse.value = ContentDetailResult.Failure(it) {
+                sendReport(positionInFeed, contentId, reasonType, reasonMessage)
             }
-        )
+        }
     }
 
     fun deleteContent(contentId: String, rowNumber: Int) {

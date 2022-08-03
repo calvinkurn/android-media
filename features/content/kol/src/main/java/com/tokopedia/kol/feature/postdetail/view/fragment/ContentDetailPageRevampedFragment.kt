@@ -237,30 +237,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     }
                 }
             })
-
-            reportResponse.observe(viewLifecycleOwner, {
-                when (it) {
-                    is Fail -> {
-                        when (it.throwable) {
-                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
-                                view?.let {
-                                    reportBottomSheet.dismiss()
-                                    showNoInterNetDialog(it.context)
-                                }
-                            }
-                            else -> {
-                                val message = it.throwable.localizedMessage ?: ""
-                                showToast(message, Toaster.TYPE_ERROR)
-                            }
-                        }
-
-                    }
-                    is Success -> {
-                        reportBottomSheet.setFinalView()
-                        onSuccessDeletePost(it.data.rowNumber)
-                    }
-                }
-            })
         }
     }
 
@@ -283,6 +259,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         observeWishlist()
         observeFollowShop()
         observeDeleteContent()
+        observeReportContent()
     }
 
     private fun setupView(view: View) {
@@ -470,7 +447,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     }
 
     private fun onSuccessFollowShop(data: ShopFollowModel) {
-
         val rowNumber = data.rowNumber
         if (rowNumber < adapter.getList().size) {
              val feedXCardData = adapter.getList()[rowNumber]
@@ -657,10 +633,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                                 ) {
                                     viewModel.sendReport(
                                         postPosition,
-                                        feedXCard.id.toIntOrZero(),
+                                        feedXCard.id,
                                         reasonType,
                                         reasonDesc,
-                                        "content"
                                     )
                                 }
                             })
@@ -1069,6 +1044,41 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 is ContentDetailResult.Failure -> {
                     when (it.error.cause) {
                         is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error.cause)
+                            Toaster.build(
+                                requireView(),
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again)
+                            ) { view ->
+                                it.onRetry()
+                            }
+                                .show()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun observeReportContent() {
+        viewModel.reportResponse.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
+                is ContentDetailResult.Success -> {
+                    reportBottomSheet.setFinalView()
+                    onSuccessDeletePost(it.data.rowNumber)
+                }
+                is ContentDetailResult.Failure -> {
+                    when (it.error.cause) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            reportBottomSheet.dismiss()
                             showNoInterNetDialog(requireContext())
                         }
                         else -> {

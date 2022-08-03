@@ -8,6 +8,7 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
+import com.tokopedia.kolcommon.domain.interactor.SubmitReportContentUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
@@ -28,6 +29,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val addToWishlistUseCase: AddToWishlistV2UseCase,
     private val submitActionContentUseCase: SubmitActionContentUseCase,
+    private val submitReportContentUseCase: SubmitReportContentUseCase,
 ) : ContentDetailRepository {
 
     override suspend fun followShop(shopId: String, action: ShopFollowAction) {
@@ -83,6 +85,20 @@ class ContentDetailRepositoryImpl @Inject constructor(
         val response = submitActionContentUseCase.executeOnBackground()
         if (TextUtils.isEmpty(response.content.error).not()) {
             throw MessageErrorException(response.content.error)
+        }
+    }
+
+    override suspend fun reportContent(
+        contentId: String,
+        reasonType: String,
+        reasonMessage: String
+    ) {
+        submitReportContentUseCase.setRequestParams(
+            SubmitReportContentUseCase.createParam(contentId, reasonType, reasonMessage)
+        )
+        val response = submitReportContentUseCase.executeOnBackground()
+        if (TextUtils.isEmpty(response.content.errorMessage).not()) {
+            throw MessageErrorException(response.content.errorMessage)
         }
     }
 }

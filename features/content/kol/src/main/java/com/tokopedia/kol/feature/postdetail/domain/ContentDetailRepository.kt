@@ -28,4 +28,10 @@ interface ContentDetailRepository {
     suspend fun deleteContent(
         contentId: String
     )
+
+    suspend fun reportContent(
+        contentId: String,
+        reasonType: String,
+        reasonMessage: String,
+    )
 }
