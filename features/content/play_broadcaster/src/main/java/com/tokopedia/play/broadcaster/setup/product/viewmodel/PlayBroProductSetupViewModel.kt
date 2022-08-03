@@ -429,6 +429,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         val isPinned = product.pinStatus.isPinned
         viewModelScope.launchCatchError(block = {
             updatePinProduct(isLoading = true, product = product)
+            //for unpin send 0 to unpin all product in channel
             val id = if(isPinned) "0" else product.id
             val result = repo.setPinProduct(channelId, id)
             if(result) {
@@ -438,8 +439,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                     _uiEvent.emit(PlayBroProductChooserEvent.ImpressPinProduct(product.id))
                 }
             } else {
-                val wording = if(product.pinStatus.isPinned) "lepas" else "pasang"
-                throw MessageErrorException("Gagal $wording pin di produk. Coba lagi, ya.")
+                //switch current status bcz in update UI it'll switch to the OG
+                val action = if(isPinned) "lepas" else "pasang"
+                throw MessageErrorException("Gagal $action pin di produk. Coba lagi, ya.")
             }
         }){
             updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
@@ -455,7 +457,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                     if(prod.id == product.id)
                         prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isLoading) prod.pinStatus.isPinned else product.pinStatus.isPinned.switch(), isLoading = isLoading))
                     else
-                        prod
+                        //Reset
+                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = false))
                 })
             }
         }

@@ -67,7 +67,7 @@ class ProductSummaryBottomSheet @Inject constructor(
         else {
             analytic.onImpressColdDownPinProductSecondEvent(false)
             toaster.showToaster(
-                message = getString(R.string.play_bro_pin_product_failed, if(pinStatus) "lepas" else "pasang"),
+                message = getString(R.string.play_bro_pin_product_failed),
                 type = Toaster.TYPE_ERROR
             )
         }

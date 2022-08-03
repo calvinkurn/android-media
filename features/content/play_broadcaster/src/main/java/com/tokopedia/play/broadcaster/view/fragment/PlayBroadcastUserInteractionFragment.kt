@@ -1152,7 +1152,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         else {
             analytic.onImpressColdDownPinProductSecondEvent(true)
            showToaster(
-                message = getString(R.string.play_bro_pin_product_failed, if(pinStatus) "lepas" else "pasang"),
+                message = getString(R.string.play_bro_pin_product_failed),
                 type = Toaster.TYPE_ERROR
             )
         }
