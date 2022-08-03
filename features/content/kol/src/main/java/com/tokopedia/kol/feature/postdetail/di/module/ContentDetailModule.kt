@@ -6,13 +6,15 @@ import com.tokopedia.feedcomponent.domain.SUSPEND_GRAPHQL_REPOSITORY
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kol.feature.postdetail.data.mapper.ContentDetailMapperImpl
 import com.tokopedia.kol.feature.postdetail.di.ContentDetailScope
+import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import dagger.Module
 import dagger.Provides
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import javax.inject.Named
 
 /**
@@ -50,5 +52,12 @@ class ContentDetailModule {
     @Provides
     fun provideGqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+
+    @ContentDetailScope
+    @Provides
+    fun provideMapper(): ContentDetailMapper {
+        return ContentDetailMapperImpl()
     }
 }

@@ -97,7 +97,7 @@
     <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
     <!-- Unfollow -->
     <string name="feed_unfollow_error_message">Oops, tidak bisa unfollow toko</string>
-    <string name="feed_follow_error_message">“Oops, gagal mem-follow.</string>
+    <string name="feed_follow_error_message">Oops, gagal mem-follow.</string>
     <!-- Comment -->
     <string name="cta_refresh_feed">Refresh</string>
     <!-- Share -->
