@@ -1,5 +1,4 @@
 <resources>
-    <string name="testapp_name">testapp</string>
     <string name="app_name">Tokopedia Wear</string>
-
+    <string name="splash_screen_logo_content_description">Splash Screen Logo</string>
 </resources>
