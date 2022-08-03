@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
+import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
@@ -21,6 +22,7 @@ import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -163,6 +165,21 @@ class ProductSummaryBottomSheet @Inject constructor(
                         )
 
                         showLoading(false)
+                    }
+                    is PlayBroProductChooserEvent.ShowError -> {
+                        if(event.error is PinnedProductException){
+                            toaster.showToaster(
+                                message = getString(R.string.play_bro_pin_product_failed),
+                                type = Toaster.TYPE_ERROR
+                            )
+                        }else {
+                            toaster.showError(
+                                err = event.error,
+                                customErrMessage = getString(
+                                    R.string.play_bro_product_chooser_error_save
+                                )
+                            )
+                        }
                     }
                 }
             }

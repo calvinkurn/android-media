@@ -15,7 +15,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
-import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
@@ -239,19 +238,10 @@ class ProductChooserBottomSheet @Inject constructor(
                         mListener?.onSetupSuccess(this@ProductChooserBottomSheet)
                     }
                     is PlayBroProductChooserEvent.ShowError -> {
-                        if(it.error is PinnedProductException){
-                            toaster.showToaster(
-                                message = getString(R.string.play_bro_pin_product_failed),
-                                type = Toaster.TYPE_ERROR
-                            )
-                        }else {
-                            toaster.showError(
-                                err = it.error,
-                                customErrMessage = getString(
-                                    R.string.play_bro_product_chooser_error_save
-                                )
-                            )
-                        }
+                        toaster.showError(
+                            err = it.error,
+                            customErrMessage = getString(R.string.play_bro_product_chooser_error_save)
+                        )
                     }
                     else -> {}
                 }
