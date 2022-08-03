@@ -101,8 +101,7 @@ object UohConsts {
 
     const val APP_LINK_TYPE = "APP_LINK"
     const val WEB_LINK_TYPE = "WEB_LINK"
-//    const val URL_RESO = "https://m.tokopedia.com/resolution-center/create/{order_id}"
-    const val URL_RESO = "https://1198-staging-feature.tokopedia.com/resolution-center/create/{order_id}"
+    const val URL_RESO = "https://m.tokopedia.com/resolution-center/create/{order_id}"
     const val WEBVIEW = "webview"
     const val UTF_8 = "UTF-8"
 

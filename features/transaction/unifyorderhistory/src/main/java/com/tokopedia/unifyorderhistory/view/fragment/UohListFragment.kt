@@ -26,7 +26,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalOperational
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DALAM_PROSES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DEALS
@@ -315,8 +314,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val RESULT_CODE_SUCCESS = 1
         const val EXTEND_ORDER_REQUEST_CODE = 400
         const val OPEN_ORDER_REQUEST_CODE = 500
-        const val PATH_RESOLUTION = "resolution-center"
-        const val KEY_URL = "url"
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
