@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -1198,6 +1199,10 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
             if (!isSmartRegister) {
                 bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
+            }
+
+            ctx?.let {
+                TkpdFirebaseAnalytics.getInstance(ctx).setUserId(userId)
             }
 
             it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
