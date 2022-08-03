@@ -84,6 +84,8 @@
         app:layout_constraintTop_toBottomOf="@id/iv_product_tag"
         app:typographyType="small"
         app:typographyWeight="bold"
+        android:ellipsize="end"
+        android:maxLines="1"
         tools:text="Rp88.888.888" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -97,6 +99,8 @@
         app:layout_constraintStart_toStartOf="@id/tv_product_tag_price"
         app:layout_constraintTop_toBottomOf="@id/tv_product_tag_price"
         app:typographyType="small"
+        android:ellipsize="end"
+        android:maxLines="1"
         tools:text="Rp88.888.888" />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>
