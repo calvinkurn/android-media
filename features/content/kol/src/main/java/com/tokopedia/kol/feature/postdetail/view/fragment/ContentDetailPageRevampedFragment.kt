@@ -1056,7 +1056,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     )
                 )
             )
-        onGoToLink(feedXCard.appLink)
+        onGoToLink(feedXCard.author.appLink)
     }
 
     override fun addViewsToVOD(

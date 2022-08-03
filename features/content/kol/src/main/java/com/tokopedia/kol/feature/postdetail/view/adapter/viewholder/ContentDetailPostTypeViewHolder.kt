@@ -960,6 +960,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         adapter.removeAllFocus(pageControl.indicatorCurrentPosition)
+        feedVODViewHolder.onPause()
     }
 
     override fun onAttachedToWindow() {
@@ -970,16 +971,19 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         }
         scrollHostCarousel.setTargetParent(parent)
         adapter.focusItemAt(mData.lastCarouselIndex)
+        feedVODViewHolder.onResume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
         adapter.focusItemAt(pageControl.indicatorCurrentPosition)
+        feedVODViewHolder.onResume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     internal fun onPause() {
         adapter.onPause()
+        feedVODViewHolder.onPause()
     }
 
     companion object {

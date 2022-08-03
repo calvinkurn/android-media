@@ -474,7 +474,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.author.id,
                 feedXCard.media.firstOrNull()?.type?:"",
                 feedXCard.isTopAds,
-                feedXCard.playChannelID
+                feedXCard.playChannelID,
+                feedXCard.webLink
             )
         }
     }
