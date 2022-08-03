@@ -20,10 +20,11 @@ object OtpConstant {
     const val OTP_WA_NOT_REGISTERED_SUBTITLE = "otp-wa-not-registered-subtitle"
     const val OTP_WA_NOT_REGISTERED_IMG_LINK = "otp-wa-not-registered-img-link"
 
+    private const val staging = "staging"
+
     val PIN_V2_SALT = getSalt()
 
     private fun getSalt(): String {
-        val staging = "staging"
         return if (GlobalConfig.DEBUG && TokopediaUrl.getInstance().TYPE.value.lowercase() == staging) {
             "c456bbc2c9c746ffaf67787d7c59945d"
         } else {
