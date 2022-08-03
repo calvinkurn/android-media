@@ -62,6 +62,10 @@ class ProductSummaryBottomSheet @Inject constructor(
         }
     }
 
+    override fun onImpressPinnedProduct(product: ProductUiModel) {
+        analytic.onImpressPinProductBottomSheet(product.id)
+    }
+
     private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
         if(!viewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
         else {
