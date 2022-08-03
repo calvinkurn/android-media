@@ -121,8 +121,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
-    var tmpProductBundleRecomUiModel: MiniCartProductBundleRecomUiModel? = null
-
     var lastDeletedProductItems: List<MiniCartProductUiModel>? = null
         private set
 
@@ -248,8 +246,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         miniCartListUiModel: MiniCartListUiModel
     ) {
         launchCatchError(context = Dispatchers.IO, block = {
-            if (tmpProductBundleRecomUiModel != null) return@launchCatchError
-
             showProductBundleRecomShimmering(miniCartListUiModel)
 
             val response = getMinicartProductBundleRecomUseCase.execute(
@@ -270,12 +266,10 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, response: MiniCartProductBundleRecomData) {
         if (response.tokonowBundleWidget.data.widgetData.isNotEmpty()) {
-            tmpProductBundleRecomUiModel =  miniCartListUiModelMapper.mapToProductBundleUiModel(response)
-            tmpProductBundleRecomUiModel?.apply {
-                miniCartListUiModel.visitables.removeFirst { it is MiniCartProductBundleRecomShimmeringUiModel }
-                miniCartListUiModel.visitables.add(this)
-                updateVisitablesBackgroundState(miniCartListUiModel.visitables)
-            }
+            val productBundleRecom = miniCartListUiModelMapper.mapToProductBundleUiModel(response)
+            miniCartListUiModel.visitables.removeFirst { it is MiniCartProductBundleRecomShimmeringUiModel }
+            miniCartListUiModel.visitables.add(productBundleRecom)
+            updateVisitablesBackgroundState(miniCartListUiModel.visitables)
         } else {
             hideProductBundleRecomShimmering(miniCartListUiModel)
         }
@@ -287,6 +281,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun trackProductBundleRecom(
+        shopId: String,
+        warehouseId: String,
         bundleId: String,
         bundleName: String,
         bundleType: String,
@@ -295,8 +291,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         state: String
     ) {
         _productBundleRecomTracker.value = ProductBundleRecomTracker(
-            shopId = tmpProductBundleRecomUiModel?.shopId.orEmpty(),
-            warehouseId = tmpProductBundleRecomUiModel?.warehouseId.orEmpty(),
+            shopId = shopId,
+            warehouseId = warehouseId,
             bundleId = bundleId,
             bundleName = bundleName,
             bundleType = bundleType,
@@ -307,6 +303,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun addBundleToCart(
+        shopId: String,
+        warehouseId: String,
         bundleGroupId: String,
         bundleId: String,
         bundleName: String,
@@ -317,8 +315,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         productQuantity: Int
     ) {
         launchCatchError(context = Dispatchers.IO, block = {
-            val shopId = currentShopIds.value?.firstOrNull().orEmpty()
-
             val bundleProductDetails = productDetails.map {
                 ProductDetail(
                     productId = it.productId,
@@ -340,6 +336,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             val response = addToCartBundleUseCase.executeOnBackground()
 
             validateResponse(
+                shopId = shopId,
+                warehouseId = warehouseId,
                 response = response,
                 bundleGroupId = bundleGroupId,
                 bundleId = bundleId,
@@ -359,6 +357,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     private fun validateResponse(
+        shopId: String,
+        warehouseId: String,
         response: AddToCartBundleModel,
         bundleGroupId: String,
         bundleId: String,
@@ -369,8 +369,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     ) {
         response.validateResponse(
             onSuccess = {
-                removeProductRecom(bundleGroupId)
-
                 _globalEvent.postValue(
                     GlobalEvent(
                         state = GlobalEvent.STATE_SUCCESS_ADD_TO_CART_BUNDLE_RECOM_ITEM
@@ -379,8 +377,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
                 _productBundleRecomTracker.postValue(
                     ProductBundleRecomTracker(
-                        shopId = tmpProductBundleRecomUiModel?.shopId.orEmpty(),
-                        warehouseId = tmpProductBundleRecomUiModel?.warehouseId.orEmpty(),
+                        shopId = shopId,
+                        warehouseId = warehouseId,
                         bundleId = bundleId,
                         bundleName = bundleName,
                         bundleType = bundleType,
@@ -391,6 +389,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                         state = STATE_PRODUCT_BUNDLE_RECOM_ATC
                     )
                 )
+
+                getCartList()
             },
             onFailedWithMessages = { errorMessages ->
                 _globalEvent.postValue(
@@ -409,27 +409,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 )
             }
         )
-    }
-
-    private fun removeProductRecom(bundleGroupId: String) {
-        val visitables = getVisitables()
-        loop@ for ((index, visitable) in visitables.withIndex()) {
-            if (visitable is MiniCartProductBundleRecomUiModel) {
-                val productRecomWidget = visitables[index] as MiniCartProductBundleRecomUiModel
-                productRecomWidget.productBundleList = productRecomWidget.productBundleList.filter { it.bundleGroupId != bundleGroupId }
-
-                if (productRecomWidget.productBundleList.isEmpty()) {
-                    visitables.removeAt(index)
-                }
-
-                updateVisitablesBackgroundState(visitables)
-
-                _globalEvent.postValue(GlobalEvent(
-                    state = GlobalEvent.STATE_SUCCESS_ADD_TO_CART_BUNDLE_RECOM_ITEM
-                ))
-                break@loop
-            }
-        }
     }
 
     private fun onSuccessGetCartList(miniCartData: MiniCartData, isFirstLoad: Boolean) {

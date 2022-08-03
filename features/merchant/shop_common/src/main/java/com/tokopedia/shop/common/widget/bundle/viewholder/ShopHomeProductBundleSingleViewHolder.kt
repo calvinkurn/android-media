@@ -103,6 +103,8 @@ class ShopHomeProductBundleSingleViewHolder(
         imageBundleProduct?.loadImage(singleBundleProduct.productImageUrl)
         imageBundleProduct?.setOnClickListener {
             singleProductBundleListener.onSingleBundleProductClicked(
+                bundle.shopId,
+                bundle.warehouseId,
                 singleBundleProduct,
                 selectedSingleBundle,
                 parentSingleBundle.bundleName,
@@ -116,6 +118,8 @@ class ShopHomeProductBundleSingleViewHolder(
         typographyBundleProductName?.text = singleBundleProduct.productName
         typographyBundleProductName?.setOnClickListener {
             singleProductBundleListener.onSingleBundleProductClicked(
+                bundle.shopId,
+                bundle.warehouseId,
                 singleBundleProduct,
                 selectedSingleBundle,
                 parentSingleBundle.bundleName,
@@ -133,6 +137,8 @@ class ShopHomeProductBundleSingleViewHolder(
         // bind listeners
         itemView.addOnImpressionListener(bundle) {
             singleProductBundleListener.impressionProductBundleSingle(
+                    bundle.shopId,
+                    bundle.warehouseId,
                     selectedSingleBundle,
                     singleBundleProduct,
                     bundle.bundleName,
@@ -145,6 +151,8 @@ class ShopHomeProductBundleSingleViewHolder(
 
         buttonAtc?.setOnClickListener {
             singleProductBundleListener.addSingleBundleToCart(
+                    bundle.shopId,
+                    bundle.warehouseId,
                     selectedSingleBundle,
                     bundleListSize,
                     singleBundleProduct,
@@ -197,6 +205,8 @@ class ShopHomeProductBundleSingleViewHolder(
 
 interface SingleProductBundleListener {
     fun onSingleBundleProductClicked(
+            shopId: String,
+            warehouseId: String,
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
@@ -207,6 +217,8 @@ interface SingleProductBundleListener {
             bundleType: String
     )
     fun addSingleBundleToCart(
+            shopId: String,
+            warehouseId: String,
             selectedBundle: ShopHomeProductBundleDetailUiModel,
             bundleListSize: Int,
             bundleProducts: ShopHomeBundleProductUiModel,
@@ -222,6 +234,8 @@ interface SingleProductBundleListener {
             bundleName: String
     )
     fun impressionProductBundleSingle(
+            shopId: String,
+            warehouseId: String,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             selectedProduct: ShopHomeBundleProductUiModel,
             bundleName: String,

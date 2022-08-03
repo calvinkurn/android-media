@@ -62,6 +62,8 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
         }
         itemView.setOnClickListener {
             itemListener.onMultipleBundleProductClicked(
+                bundleParent.shopId,
+                bundleParent.warehouseId,
                 bundleProductItem,
                 bundleDetail,
                 bundleParent.bundleName,
@@ -77,6 +79,8 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
 
 interface MultipleProductBundleListener {
     fun onMultipleBundleProductClicked(
+            shopId: String,
+            warehouseId: String,
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
@@ -87,6 +91,8 @@ interface MultipleProductBundleListener {
             productItemPosition: Int
     )
     fun addMultipleBundleToCart(
+            shopId: String,
+            warehouseId: String,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleListSize: Int,
             productDetails: List<ShopHomeBundleProductUiModel>,
@@ -97,6 +103,8 @@ interface MultipleProductBundleListener {
             bundleGroupId: String
     )
     fun impressionProductBundleMultiple(
+            shopId: String,
+            warehouseId: String,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
             bundleType: String,

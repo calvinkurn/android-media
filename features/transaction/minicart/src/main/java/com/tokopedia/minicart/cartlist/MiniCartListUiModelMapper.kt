@@ -80,6 +80,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
     ): List<ShopHomeProductBundleItemUiModel> {
         return widgetData.map {
             ShopHomeProductBundleItemUiModel().apply {
+                warehouseId = it.warehouseID
+                shopId = it.shopID
                 bundleGroupId = it.bundleGroupID
                 bundleType = it.bundleType
                 bundleName = it.bundleName
@@ -200,9 +202,10 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             lastGroupItem = lastGroupItem
                         )
                         miniCartProductUiModels.add(miniCartProductUiModel)
-                        productIds.add(miniCartProductUiModel.productId)
                         if (miniCartProductUiModel.isBundlingItem) {
                             bundleGroupIds.add(miniCartProductUiModel.bundleGroupId)
+                        } else {
+                            productIds.add(miniCartProductUiModel.productId)
                         }
                     }
                 }

@@ -160,9 +160,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                     onResultFromEditBundle(resultCode, data)
                 }
             }
-            override fun onDismiss() {
-                viewModel?.tmpProductBundleRecomUiModel = null
-            }
         }).apply {
             showCloseIcon = false
             showHeader = true
@@ -239,6 +236,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun multiProductBundleCallback() = object : MultipleProductBundleListener {
 
         override fun onMultipleBundleProductClicked(
+            shopId: String,
+            warehouseId: String,
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
@@ -249,6 +248,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             productItemPosition: Int
         ) {
             viewModel?.trackProductBundleRecom(
+                shopId = shopId,
+                warehouseId = warehouseId,
                 bundleId = selectedMultipleBundle.bundleId,
                 bundleName = bundleName,
                 bundleType = bundleType,
@@ -261,6 +262,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
 
         override fun addMultipleBundleToCart(
+            shopId: String,
+            warehouseId: String,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleListSize: Int,
             productDetails: List<ShopHomeBundleProductUiModel>,
@@ -273,6 +276,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             showProgressLoading()
 
             viewModel?.addBundleToCart(
+                shopId = shopId,
+                warehouseId = warehouseId,
                 bundleGroupId = bundleGroupId,
                 bundleId = selectedMultipleBundle.bundleId,
                 bundleName = bundleName,
@@ -285,12 +290,16 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
 
         override fun impressionProductBundleMultiple(
+            shopId: String,
+            warehouseId: String,
             selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
             bundleType: String,
             bundlePosition: Int
         ) {
             viewModel?.trackProductBundleRecom(
+                shopId = shopId,
+                warehouseId = warehouseId,
                 bundleId = selectedMultipleBundle.bundleId,
                 bundleName = bundleName,
                 bundleType = bundleType,
@@ -315,6 +324,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun singleProductBundleCallback() = object : SingleProductBundleListener {
 
         override fun onSingleBundleProductClicked(
+            shopId: String,
+            warehouseId: String,
             selectedProduct: ShopHomeBundleProductUiModel,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             bundleName: String,
@@ -325,6 +336,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             bundleType: String
         ) {
             viewModel?.trackProductBundleRecom(
+                shopId = shopId,
+                warehouseId = warehouseId,
                 bundleId = selectedSingleBundle.bundleId,
                 bundleName = bundleName,
                 bundleType = bundleType,
@@ -337,6 +350,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
 
         override fun addSingleBundleToCart(
+            shopId: String,
+            warehouseId: String,
             selectedBundle: ShopHomeProductBundleDetailUiModel,
             bundleListSize: Int,
             bundleProducts: ShopHomeBundleProductUiModel,
@@ -349,6 +364,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             showProgressLoading()
 
             viewModel?.addBundleToCart(
+                shopId = shopId,
+                warehouseId = warehouseId,
                 bundleGroupId = bundleGroupId,
                 bundleId = selectedBundle.bundleId,
                 bundleName = bundleName,
@@ -367,6 +384,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         ) { /* nothing to do */ }
 
         override fun impressionProductBundleSingle(
+            shopId: String,
+            warehouseId: String,
             selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
             selectedProduct: ShopHomeBundleProductUiModel,
             bundleName: String,
@@ -376,6 +395,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             bundleType: String
         ) {
             viewModel?.trackProductBundleRecom(
+                shopId = shopId,
+                warehouseId = warehouseId,
                 bundleId = selectedSingleBundle.bundleId,
                 bundleName = bundleName,
                 bundleType = bundleType,
