@@ -74,7 +74,10 @@ class AddPhoneViewModelTest {
 
     @Test
     fun `on mutateAddPhone executed`() {
-        val mockParam = mapOf(ProfileCompletionQueryConstant.PARAM_PHONE to msisdn)
+        val mockParam = mapOf(
+            ProfileCompletionQueryConstant.PARAM_PHONE to msisdn,
+            ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN to mockValidateToken
+        )
 
         viewModel.mutateAddPhone(msisdn, mockValidateToken)
 
