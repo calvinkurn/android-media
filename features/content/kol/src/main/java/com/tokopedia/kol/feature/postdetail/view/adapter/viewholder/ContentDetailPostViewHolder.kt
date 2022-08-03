@@ -27,6 +27,7 @@ class ContentDetailPostViewHolder(
         const val IMAGE_POST_FOLLOW_UNFOLLOW = "image_follow_unfollow"
         const val IMAGE_ITEM_IMPRESSED = "image_item_impressed"
         const val VOD_ITEM_IMPRESSED = "vod_item_impressed"
+        private const val IMAGE_ASGC_CTA_IMPRESSED = "image_asgc_cta_impressed"
 
 
         fun create(
@@ -58,6 +59,8 @@ class ContentDetailPostViewHolder(
                 else if (media.isVideo || media.isImage)
                     cdpView.bindImageOnImpress()
             }
+        } else if (payloads.containsKey(IMAGE_ASGC_CTA_IMPRESSED)) {
+            cdpView.onCTAVisible(feedXCard)
         } else if (payloads.containsKey(IMAGE_POST_LIKED_UNLIKED)) {
             cdpView.bindLike(feedXCard)
         } else if (payloads.containsKey(IMAGE_POST_COMMENT_ADD_DELETE)) {

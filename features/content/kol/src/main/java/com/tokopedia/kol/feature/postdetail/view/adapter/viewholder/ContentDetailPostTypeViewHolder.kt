@@ -15,6 +15,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -24,7 +25,6 @@ import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
 import com.tokopedia.feedcomponent.util.ColorUtil
 import com.tokopedia.feedcomponent.util.NestedScrollableHost
 import com.tokopedia.feedcomponent.util.TagConverter
@@ -35,7 +35,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
-import com.tokopedia.feedcomponent.view.widget.*
+import com.tokopedia.feedcomponent.view.transition.BackgroundColorTransition
+import com.tokopedia.feedcomponent.view.widget.FeedVODViewHolder
+import com.tokopedia.feedcomponent.view.widget.PostTagView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kol.R
 import com.tokopedia.kotlin.extensions.view.*
@@ -43,6 +45,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import java.net.URLEncoder
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.kol.R as kolR
@@ -83,9 +86,18 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     private val followCount: Typography = findViewById(R.id.follow_count)
     private val scrollHostCarousel: NestedScrollableHost = findViewById(R.id.scroll_host_carousel)
     private var listener: ContentDetailPostViewHolder.CDPListener? = null
+    private val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
+    private val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
+    private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
 
     private var mData = FeedXCard()
-    private var positionInFeed: Int = 0
+    private var positionInCdp: Int = 0
+    private var isFirstImpressedItemAfterEnteringCDP = true
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main.immediate + job)
+    private var topAdsJob: Job? = null
+
 
 
     private val adapter = FeedPostCarouselAdapter(
@@ -94,7 +106,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 return mData
             }
 
-            override fun getTagBubbleListener(): PostTagView.TagBubbleListener? {
+            override fun getTagBubbleListener(): PostTagView.TagBubbleListener {
                 return object : PostTagView.TagBubbleListener{
                     override fun onPostTagBubbleClick(
                         positionInFeed: Int,
@@ -112,7 +124,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             }
 
             override fun getPositionInFeed(): Int {
-                return positionInFeed
+                return positionInCdp
             }
         },
         imageListener = object : CarouselImageViewHolder.Listener {
@@ -122,27 +134,38 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             ) {
 
                 if (mData.isTypeProductHighlight && mData.useASGCNewDesign) {
-                    listener?.onCekSekarangButtonClicked(mData, positionInFeed)
+                    listener?.onCekSekarangButtonClicked(mData, positionInCdp)
                 }
 
             }
 
-
             override fun onImageClicked(viewHolder: CarouselImageViewHolder) {
                 listener?.onImageClicked(mData)
+                changeCTABtnColorAsPerWidget(mData)
 
             }
 
+            override fun onImageDoubleClicked(viewHolder: CarouselImageViewHolder) {
+                val card = mData
+                if (!card.isTopAds) changeCTABtnColorAsPerWidget(card)
+            }
+
+            override fun onImageLongClicked(viewHolder: CarouselImageViewHolder) {
+                changeCTABtnColorAsPerWidget(mData)
+            }
+
+
             override fun onLiked(viewHolder: CarouselImageViewHolder) {
+                changeCTABtnColorAsPerWidget(mData)
                 listener?.onLikeClicked(
                     mData,
-                    positionInFeed
+                    positionInCdp
                 )
             }
 
             override fun onImpressed(viewHolder: CarouselImageViewHolder) {
                 val data = mData
-                listener?.onCarouselItemImpressed(data, positionInFeed)
+                listener?.onCarouselItemImpressed(data, positionInCdp)
                 val position = viewHolder.adapterPosition
 
                 if (position == RecyclerView.NO_POSITION) return
@@ -163,9 +186,10 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 viewHolder: CarouselImageViewHolder,
                 media: FeedXMedia,
             ) {
+                changeCTABtnColorAsPerWidget(mData)
                 listener?.onLihatProdukClicked(
                     mData,
-                    positionInFeed,
+                    positionInCdp,
                     media.tagProducts
                 )
             }
@@ -177,7 +201,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             ) {
                 listener?.onLihatProdukClicked(
                     mData,
-                    positionInFeed,
+                    positionInCdp,
                     media.tagProducts
                 )
 
@@ -225,6 +249,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
             val position = layoutManager.getPosition(snappedView)
             pageControl.setCurrentIndicator(position)
+            if (mData.lastCarouselIndex != position) changeCTABtnColorAsPerWidget(mData)
             mData.lastCarouselIndex = position
         }
     }
@@ -257,10 +282,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     ) {
         mData = feedXCard
         this.listener = ContentDetailListener
-        this.positionInFeed = adapterPosition
+        this.positionInCdp = adapterPosition
         bindHeader(feedXCard)
         bindItems(feedXCard)
         bindCaption(feedXCard)
+        bindTopAds(feedXCard)
         bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
         bindLike(feedXCard)
         bindComment(
@@ -268,17 +294,28 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             userSession.profilePicture,
             userSession.name
         )
-        bindTracking(feedXCard)
+        addOnImpressionListener(feedXCard.impressHolder) {
+            bindTracking(feedXCard)
+            bindFirstItemForAnimations(feedXCard)
+        }
         bindShare(feedXCard)
 
     }
-    private fun bindTracking(feedXCard: FeedXCard) {
-        addOnImpressionListener(feedXCard.impressHolder) {
 
-            if (feedXCard.typename == TYPE_FEED_X_CARD_POST) {
-                listener?.onPostImpressed(feedXCard, positionInFeed)
-            }
+    private fun bindFirstItemForAnimations(feedXCard: FeedXCard) {
+        if (positionInCdp == 0 && isFirstImpressedItemAfterEnteringCDP) {
+            isFirstImpressedItemAfterEnteringCDP = false
+            if (feedXCard.isTypeVOD || feedXCard.isTypeLongVideo)
+                playVOD(feedXCard)
+            else
+                bindImageOnImpress()
+            if (feedXCard.isTypeProductHighlight)
+                onCTAVisible(mData)
         }
+    }
+
+    private fun bindTracking(feedXCard: FeedXCard) {
+                listener?.onPostImpressed(feedXCard, positionInCdp)
     }
 
     fun bindLike(feedXCard: FeedXCard) {
@@ -288,6 +325,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             bindLikeData(feedXCard)
         }
     }
+
     private fun bindPublishedAt(publishedAt: String, subTitle: String) {
         val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
         val spannableString: SpannableString =
@@ -383,7 +421,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 override fun onClick(widget: View) {
                         listener?.onFollowUnfollowClicked(
                             feedXCard,
-                            positionInFeed
+                            positionInCdp
                         )
 
                 }
@@ -434,22 +472,48 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         followers.transitionFollow = false
 
         shopImage.setOnClickListener {
+            changeCTABtnColorAsPerWidget(feedXCard)
             listener?.onShopHeaderItemClicked(
-                    feedXCard
-                )
+                feedXCard
+            )
         }
         shopMenuIcon.setOnClickListener {
+            changeCTABtnColorAsPerWidget(feedXCard)
             listener?.onClickOnThreeDots(
                 feedXCard,
-                positionInFeed)
+                positionInCdp)
         }
     }
+
     private fun bindShare(feedXCard: FeedXCard){
+        changeCTABtnColorAsPerWidget(mData)
         shareButton.setOnClickListener {
-            listener?.onSharePostClicked(feedXCard, positionInFeed)
+            changeCTABtnColorAsPerWidget(feedXCard)
+            listener?.onSharePostClicked(feedXCard, positionInCdp)
         }
     }
-    fun bindViews(feedXCard: FeedXCard){
+
+    private fun bindTopAds(feedXCard: FeedXCard) {
+        topAdsProductName.text = getCTAButtonText(feedXCard)
+
+        topAdsCard.showWithCondition(
+            shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
+                    feedXCard.media.any { it.isImage }
+        )
+
+        topAdsCard.setOnClickListener {
+            changeCTABtnColorAsPerWidget(feedXCard)
+
+            if (feedXCard.isTypeProductHighlight && feedXCard.useASGCNewDesign) {
+                listener?.onCekSekarangButtonClicked(
+                    feedXCard,
+                    positionInCdp
+                )
+            }
+        }
+    }
+
+    private fun bindViews(feedXCard: FeedXCard){
 
         val view = feedXCard.views
         if (feedXCard.like.isLiked) {
@@ -475,13 +539,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             likedText.hide()
         }
         likeButton.setOnClickListener {
-            likeButton.setOnClickListener {
-
+            changeCTABtnColorAsPerWidget(feedXCard)
             listener?.onLikeClicked(
                 feedXCard,
-                positionInFeed
+                positionInCdp
             )
-        }
         }
 
     }
@@ -536,7 +598,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         likeButton.setOnClickListener {
             listener?.onLikeClicked(
                 feedXCard,
-                positionInFeed
+                positionInCdp
             )
         }
     }
@@ -573,13 +635,13 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         addCommentHint.hint = context.getString(com.tokopedia.feedcomponent.R.string.feed_component_add_comment, name)
 
         commentButton.setOnClickListener {
-            listener?.onCommentClicked(mData, positionInFeed)
+            listener?.onCommentClicked(mData, positionInCdp)
         }
         seeAllCommentText.setOnClickListener {
-            listener?.onCommentClicked(mData, positionInFeed, isSeeMoreComment = true)
+            listener?.onCommentClicked(mData, positionInCdp, isSeeMoreComment = true)
         }
         addCommentHint.setOnClickListener {
-            listener?.onCommentClicked(mData, positionInFeed)
+            listener?.onCommentClicked(mData, positionInCdp)
         }
     }
     fun bindImageOnImpress(){
@@ -663,7 +725,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             feedMedia,
             ratio,
             products,
-            positionInFeed = positionInFeed
+            positionInFeed = positionInCdp
         )
         feedMedia.vodView = feedVODViewHolder
         feedVODViewHolder.bindData(GridPostAdapter.isMute)
@@ -674,7 +736,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 products: List<FeedXProduct>
             ) {
                 listener?.onLihatProdukClicked(feedXCard, positionInFeed, products)
-
             }
 
             override fun onFullScreenBtnClicked(
@@ -942,11 +1003,99 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     }
 
     fun playVOD(feedXCard: FeedXCard, position: Int = feedXCard.lastCarouselIndex) {
-        if (feedXCard.media[position].canPlay) {
             val feedMedia = feedXCard.media[position]
             val vodItem = feedMedia.vodView
             vodItem?.setVODControl(GridPostAdapter.isMute)
+    }
+
+    private fun changeCTABtnColorAsPerWidget(card: FeedXCard, delayInMs: Long? = null) {
+        topAdsJob?.cancel()
+        topAdsJob = scope.launch {
+            if (delayInMs != null) delay(delayInMs)
+
+            card.isAsgcColorChangedAsPerWidgetColor = true
+
+            if (card.isASGCDiscountToko) changeCTABtnColorToRed()
+            else changeCTABtnColorToGreen()
         }
+    }
+
+    private fun changeCTABtnColor(
+        primaryColor: Int,
+        secondaryColor: Int,
+    ) {
+        TransitionManager.beginDelayedTransition(
+            this,
+            BackgroundColorTransition()
+                .addTarget(topAdsCard)
+        )
+        topAdsProductName.setTextColor(secondaryColor)
+        topAdsChevron.setColorFilter(secondaryColor)
+        topAdsCard.setBackgroundColor(primaryColor)
+    }
+
+    private fun getCTAButtonText(card: FeedXCard) =
+        if (card.isTypeProductHighlight && !card.isASGCDiscountToko && card.totalProducts > 1)
+            context.getString(com.tokopedia.feedcomponent.R.string.feeds_check_x_products, card.totalProducts)
+        else if (card.isASGCDiscountToko && card.totalProducts > 1)
+            context.getString(
+                com.tokopedia.feedcomponent.R.string.feeds_asgc_disc_x_products,
+                card.totalProducts,
+                card.maximumDisPercentFmt
+            )
+        else if (card.isASGCDiscountToko && card.totalProducts == 1)
+            context.getString(
+                com.tokopedia.feedcomponent.R.string.feeds_asgc_disc_one_products,
+                card.maximumDisPercentFmt
+            )
+        else context.getString(com.tokopedia.feedcomponent.R.string.feeds_cek_sekarang)
+
+
+    fun onCTAVisible(feedXCard: FeedXCard) {
+        changeCTABtnColorAsPerWidget(feedXCard,
+            FOCUS_CTA_DELAY
+        )
+    }
+
+    private fun changeCTABtnColorToRed() {
+        changeCTABtnColor(
+            primaryColor = MethodChecker.getColor(
+                context,
+                com.tokopedia.feedcomponent.R.color.feed_dms_asgc_discount_toko_btn_bg_color
+            ),
+            secondaryColor = MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0
+            ),
+        )
+    }
+
+    private fun changeCTABtnColorToGreen() {
+        changeCTABtnColor(
+            primaryColor = MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_G500
+            ),
+            secondaryColor = MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0
+            ),
+        )
+    }
+
+    private fun changeCTABtnColorToWhite(card: FeedXCard) {
+        card.isAsgcColorChangedAsPerWidgetColor = false
+
+        changeCTABtnColor(
+            primaryColor = MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN50
+            ),
+            secondaryColor = MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+            ),
+        )
     }
 
     override fun onDetachedFromWindow() {
@@ -961,6 +1110,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         while (parent !is ViewPager && parent !is ViewPager2 && parent != null) {
             parent = parent.parent
         }
+        changeCTABtnColorToWhite(mData)
         scrollHostCarousel.setTargetParent(parent)
         adapter.focusItemAt(mData.lastCarouselIndex)
         feedVODViewHolder.onResume()
@@ -976,6 +1126,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     internal fun onPause() {
         adapter.onPause()
         feedVODViewHolder.onPause()
+        job.cancelChildren()
     }
 
     companion object {
@@ -986,6 +1137,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         private const val TOPADS_TAGGING_CENTER_POS_X = 0.5f
         private const val TOPADS_TAGGING_CENTER_POS_Y = 0.44f
         private const val VOD_VIDEO_RATIO = "4:5"
+        private const val FOCUS_CTA_DELAY = 2000L
 
         private const val FOLLOW_COUNT_THRESHOLD = 100
         private const val FOLLOW_MARGIN = 6
