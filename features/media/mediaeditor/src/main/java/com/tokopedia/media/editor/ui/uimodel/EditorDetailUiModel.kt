@@ -30,8 +30,6 @@ data class EditorDetailUiModel(
     @IgnoredOnParcel
     var rotateData: EditorRotateModel? = null
 
-
-
     constructor(parcel: Parcel) : this(
         originalUrl = parcel.readString() ?: "",
         editorToolType = parcel.readInt(),
@@ -74,7 +72,10 @@ data class EditorDetailUiModel(
         val bottomRectPos = parcel.readInt()
         val orientationChangeNumber = parcel.readInt()
 
-        if (rotateDegree != 0f || orientationChangeNumber != 0 || scaleX != 1f) {
+        if (rotateDegree != 0f ||
+            orientationChangeNumber != 0 ||
+            (scaleX != -1f && scaleX != 0f)
+        ) {
             rotateData = EditorRotateModel(
                 rotateDegree,
                 scaleX,
@@ -98,6 +99,26 @@ data class EditorDetailUiModel(
             orientationChangeNumber = 0
             scaleX = 1f
         }
+    }
+
+    fun isToolBrightness(): Boolean{
+        return editorToolType == EditorToolType.BRIGHTNESS
+    }
+
+    fun isToolContrast(): Boolean{
+        return editorToolType == EditorToolType.CONTRAST
+    }
+
+    fun isToolRotate(): Boolean{
+        return editorToolType == EditorToolType.ROTATE
+    }
+
+    fun isToolWatermark(): Boolean{
+        return editorToolType == EditorToolType.WATERMARK
+    }
+
+    fun isToolRemoveBackground(): Boolean{
+        return editorToolType == EditorToolType.REMOVE_BACKGROUND
     }
 
     companion object : Parceler<EditorDetailUiModel> {

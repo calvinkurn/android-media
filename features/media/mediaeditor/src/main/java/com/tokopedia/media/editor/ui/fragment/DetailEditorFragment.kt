@@ -349,27 +349,44 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun implementPreviousStateRotate(rotateData: EditorRotateModel){
+//        viewBinding?.imgUcropPreview?.let {
+//            if(rotateData.scaleX < 0f){
+//                rotateFilterRepositoryImpl.mirror(it)
+//            }
+//            if(rotateData.scaleY < 0f){
+//                rotateFilterRepositoryImpl.rotate(it, RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
+//                rotateFilterRepositoryImpl.mirror(it)
+//            }
+//
+//            it.cropImageView.post {
+//                if(rotateData.orientationChangeNumber > 0){
+//                    rotateFilterRepositoryImpl.rotate(it, rotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
+//                }
+//                rotateFilterRepositoryImpl.rotate(it, rotateData.rotateDegree, false)
+//            }
+//        }
         viewBinding?.imgUcropPreview?.let {
-            if(rotateData.scaleX < 0f){
-                rotateFilterRepositoryImpl.mirror(it)
-            }
-            if(rotateData.scaleY < 0f){
-                rotateFilterRepositoryImpl.rotate(it, RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
-                rotateFilterRepositoryImpl.mirror(it)
-            }
+            data.rotateData?.let { rotationData ->
+                val bitmapResult = it.getProcessedBitmap(
+                    it.cropImageView.drawable.toBitmap(),
+                    rotationData.leftRectPos,
+                    rotationData.topRectPos,
+                    rotationData.rightRectPos,
+                    rotationData.bottomRectPos,
+                    finalRotationDegree = ((rotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + rotationData.rotateDegree),
+                    sliderValue = rotationData.rotateDegree,
+                    rotateNumber = rotateData.orientationChangeNumber,
+                    null
+                )
 
-            it.cropImageView.post {
-                if(rotateData.orientationChangeNumber > 0){
-                    rotateFilterRepositoryImpl.rotate(it, rotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
-                }
-                rotateFilterRepositoryImpl.rotate(it, rotateData.rotateDegree, false)
+                it.cropImageView.setImageBitmap(bitmapResult)
             }
         }
     }
 
     private fun readPreviousState(previousState: EditorDetailUiModel){
         // if current selected editor not brightness and contrast, implement filter with sequence
-        if (previousState.editorToolType != EditorToolType.BRIGHTNESS && previousState.editorToolType != EditorToolType.CONTRAST) {
+        if (!previousState.isToolBrightness() && !previousState.isToolContrast()) {
             if(previousState.isContrastExecuteFirst == 1){
                 implementPreviousStateContrast(previousState.contrastValue)
                 implementPreviousStateBrightness(previousState.brightnessValue)
@@ -380,13 +397,13 @@ class DetailEditorFragment @Inject constructor(
         } else {
             // === Contrast ===
             if (previousState.contrastValue != null
-                && previousState.editorToolType != EditorToolType.CONTRAST
+                && !previousState.isToolContrast()
             ) {
                 implementPreviousStateContrast(previousState.contrastValue ?: 0f)
             }
             // === Brightness ===
             if (previousState.brightnessValue != null
-                && previousState.editorToolType != EditorToolType.BRIGHTNESS
+                && !previousState.isToolBrightness()
             ) {
                 implementPreviousStateBrightness(previousState.brightnessValue ?: 0f)
             }
@@ -400,10 +417,10 @@ class DetailEditorFragment @Inject constructor(
         // image that already implemented previous filter
         implementedBaseBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
 
-        if(previousState.brightnessValue != null && previousState.editorToolType == EditorToolType.BRIGHTNESS){
+        if(previousState.brightnessValue != null && previousState.isToolBrightness()){
             // if current editor is brightness keep the filter color so we can adjust it later
             implementPreviousStateBrightness(previousState.brightnessValue, false)
-        }else if(previousState.contrastValue != null && previousState.editorToolType == EditorToolType.CONTRAST){
+        }else if(previousState.contrastValue != null && previousState.isToolContrast()){
             viewBinding?.imgUcropPreview?.cropImageView?.let {
                 it.setImageBitmap(
                     contrastFilterRepositoryImpl.contrast(
@@ -449,12 +466,13 @@ class DetailEditorFragment @Inject constructor(
             activity?.finish()
         }
 
+        // if current tools editor not rotate then skip crop data set by sent empty object on data
         viewBinding?.btnSave?.setOnClickListener {
             viewBinding?.imgUcropPreview?.cropRotate(
                 finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
                 sliderValue = rotateFilterRepositoryImpl.sliderValue,
                 rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
-                data
+                if(data.isToolRotate()) data else EditorDetailUiModel()
             ) {
                 saveImage(it)
             }
@@ -464,7 +482,7 @@ class DetailEditorFragment @Inject constructor(
     private fun editingSave() {
         val intent = Intent()
 
-        if (data.editorToolType == EditorToolType.REMOVE_BACKGROUND) data.clearValue()
+        if (data.isToolRemoveBackground()) data.clearValue()
 
         intent.putExtra(DetailEditorActivity.EDITOR_RESULT_PARAM, data)
         activity?.setResult(DetailEditorActivity.EDITOR_RESULT_CODE, intent)

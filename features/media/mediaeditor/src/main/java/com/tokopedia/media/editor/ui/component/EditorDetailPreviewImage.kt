@@ -96,7 +96,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         finalRotationDegree: Float,
         sliderValue: Float,
         rotateNumber: Int,
-        data: EditorDetailUiModel,
+        data: EditorDetailUiModel?,
         onCropFinish: (cropResult: Bitmap) -> Unit
     ) {
         val bitmap = cropImageView.drawable.toBitmap()
@@ -115,7 +115,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
             matrix.postRotate(abs(finalRotationDegree))
 
             // set crop area on data that will be pass to landing pass for state
-            data.rotateData = EditorRotateModel(
+            data?.rotateData = EditorRotateModel(
                 sliderValue,
                 scaleX,
                 scaleY,
@@ -167,7 +167,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         finalRotationDegree: Float,
         sliderValue: Float,
         rotateNumber: Int,
-        data: EditorDetailUiModel
+        data: EditorDetailUiModel?
     ): Bitmap {
         val originalWidth = originalBitmap.width
         val originalHeight = originalBitmap.height
@@ -199,7 +199,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         )
 
         // set crop area on data that will be pass to landing pass for state
-        data.rotateData = EditorRotateModel(
+        data?.rotateData = EditorRotateModel(
             sliderValue,
             scaleX,
             scaleY,
