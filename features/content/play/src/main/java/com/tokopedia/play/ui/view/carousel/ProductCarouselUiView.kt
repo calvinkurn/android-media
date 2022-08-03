@@ -95,6 +95,10 @@ class ProductCarouselUiView(
         sendImpression()
     }
 
+    fun scrollToFirstPosition() {
+        binding.rvProductFeatured.scrollToPosition(0)
+    }
+
     fun setLoading() {
         val placeholders = getPlaceholder()
         if (placeholders != adapter.getItems()) invalidateItemDecorations()
