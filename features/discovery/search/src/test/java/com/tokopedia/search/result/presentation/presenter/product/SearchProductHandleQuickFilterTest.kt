@@ -261,8 +261,6 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     ) {
         val sortFilterItemList = listItemSlot.captured
 
-        val a = sortFilterItemList[selectedFilterIndex].title
-
         assert(sortFilterItemList[selectedFilterIndex].type == ChipsUnify.TYPE_SELECTED)
         assert(sortFilterItemList[selectedFilterIndex].title == expectedChipName)
     }
