@@ -97,7 +97,7 @@ open class TopChatViewStateImpl constructor(
 
 
     var chatTextAreaTabLayout: ChatTextAreaTabLayout? = null
-    var chatTextAreaShimmer: LoaderUnify? = null
+    private var chatTextAreaShimmer: LoaderUnify? = null
 
     var isAbleToReply: Boolean? = null
         set(value) {
@@ -901,5 +901,9 @@ open class TopChatViewStateImpl constructor(
         actionBox.hide()
         replyBox.hide()
         chatTextAreaTabLayout?.hide()
+    }
+
+    fun getChatAreaShimmer(): LoaderUnify? {
+        return chatTextAreaShimmer
     }
 }

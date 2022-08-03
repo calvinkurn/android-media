@@ -791,7 +791,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             val productIdCommaSeparated2 = viewModel.getProductIdPreview()
                 .joinToString(separator = ",")
             viewModel.getSmartReplyWidget(messageId, productIdCommaSeparated2)
-        } else if (topchatViewState?.chatTextAreaShimmer?.isVisible == true) {
+        } else if (topchatViewState?.getChatAreaShimmer()?.isVisible == true) {
             topchatViewState?.shouldShowSrw = false
         }
     }
