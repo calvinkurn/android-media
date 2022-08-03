@@ -1552,23 +1552,24 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleClickPin(product: ProductUiModel){
         viewModelScope.launchCatchError(block = {
-            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = true)))
+            product.updatePinProduct(isLoading = true)
             val result = repo.setPinProduct(channelId, product)
             if(result)
-                updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = false, isPinned = product.pinStatus.isPinned.switch())))
+                product.updatePinProduct(isLoading = false, needToUpdate = true)
         }){
-            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = false)))
+            product.updatePinProduct(isLoading = false)
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
         }
     }
 
-    private fun updatePinProduct(product: ProductUiModel) {
+    private fun ProductUiModel.updatePinProduct(isLoading: Boolean = false, needToUpdate: Boolean = false) {
         _productSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
                 sectionUiModel.products.map { prod ->
-                    if(prod.id == product.id)
-                        prod.copy(pinStatus = product.pinStatus)
+                    if(prod.id == this.id)
+                        prod.copy(pinStatus = this.pinStatus.copy(isLoading = isLoading,
+                            isPinned = if(needToUpdate) this.pinStatus.isPinned.switch() else this.pinStatus.isPinned))
                     else
                         prod
                 })
@@ -1586,7 +1587,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
 
         private const val START_LIVE_TIMER_DELAY = 1000L
-        private const val COOL_DOWN_TIMER = 5000L
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
         private const val DEFAULT_QUIZ_DURATION_PICKER_IN_MINUTE = 5L
