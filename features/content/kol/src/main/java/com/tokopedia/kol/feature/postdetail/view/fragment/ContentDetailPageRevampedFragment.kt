@@ -69,9 +69,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -79,7 +77,6 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.kol.R as kolR
-import com.tokopedia.wishlist_common.R as Rwishlist
 import com.tokopedia.network.R as networkR
 
 /**

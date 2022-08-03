@@ -103,7 +103,9 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                         adClickUrl: String
                     ) {
                         listener?.onPostTagBubbleClicked(
-                            redirectUrl
+                            positionInFeed,
+                            redirectUrl,
+                            postTagItem
                         )
                     }
                 }
