@@ -117,7 +117,7 @@ class ProfileViewHolder(
             binding?.homeAccountProfileSection?.accountUserItemProfileLinkStatus?.hide()
         }
 
-        binding?.homeAccountProfileSection?.tokopediaPlusWidget?.apply {
+        binding?.tokopediaPlusWidget?.apply {
             listener = tokopediaPlusListener
             if (profile.isSuccessGetTokopediaPlusData) {
                 setContent(
