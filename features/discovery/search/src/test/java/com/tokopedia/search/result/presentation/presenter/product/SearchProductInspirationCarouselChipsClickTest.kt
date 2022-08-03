@@ -8,7 +8,7 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
@@ -71,9 +71,9 @@ internal class SearchProductInspirationCarouselChipsClickTest: ProductListPresen
     }
 
     private fun `When inspiration carousel chips clicked`(
-            adapterPosition: Int,
-            inspirationCarouselDataView: InspirationCarouselDataView,
-            clickedInspirationCarouselOption: InspirationCarouselDataView.Option
+        adapterPosition: Int,
+        inspirationCarouselDataView: InspirationCarouselDataView,
+        clickedInspirationCarouselOption: InspirationCarouselDataView.Option
     ) {
         productListPresenter.onInspirationCarouselChipsClick(
                 adapterPosition,

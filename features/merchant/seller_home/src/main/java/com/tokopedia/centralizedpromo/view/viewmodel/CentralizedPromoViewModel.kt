@@ -22,7 +22,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CentralizedPromoViewModel @Inject constructor(
@@ -76,6 +79,10 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getPromoCreation(): Result<BaseUiModel> {
         return try {
+            val isEnableFlashSaleDeferred = async {
+                remoteConfig.getBoolean(
+                        RemoteConfigKey.ENABLE_FLASH_SALE_ENTRY_SELLER, true)
+            }
             val isFreeShippingEnabledDeferred = async {
                 !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
             }
@@ -140,6 +147,8 @@ class CentralizedPromoViewModel @Inject constructor(
             val isProductCouponEnabled = isProductCouponEnabledDeffered.await()
             val isSlashPriceEnabled = isSlashPriceEnabledDeffered.await()
             val isSlashPriceEligible = isSlashPriceEligibleDeffered.await()
+            val isEnableFlashSale = isEnableFlashSaleDeferred.await()
+
             Success(
                 PromoCreationStaticData.provideStaticData(
                     resourceProvider,
@@ -153,7 +162,8 @@ class CentralizedPromoViewModel @Inject constructor(
                     isTokopediaPlayFirstTime,
                     isProductCouponEnabled,
                     isSlashPriceEnabled,
-                    isSlashPriceEligible
+                    isSlashPriceEligible,
+                    isEnableFlashSale
                 )
             )
         } catch (t: Throwable) {
