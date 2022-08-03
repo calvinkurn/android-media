@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.domain.model.editshipping;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * Created by Kris on 3/2/2016.
  */
 public class ProvinceCitiesDistrict implements Parcelable {
+    @SuppressLint("Invalid Data Type")
     @SerializedName("province_id")
     @Expose
     public Integer provinceId;

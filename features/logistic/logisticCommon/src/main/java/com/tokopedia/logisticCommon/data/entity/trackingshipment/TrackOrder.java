@@ -4,6 +4,8 @@ package com.tokopedia.logisticCommon.data.entity.trackingshipment;
  * Created by Alifa on 10/12/2016.
  */
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -36,6 +38,7 @@ public class TrackOrder {
     @SerializedName("shipping_ref_num")
     @Expose
     private String shippingRefNum;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("invalid")
     @Expose
     private int invalid;

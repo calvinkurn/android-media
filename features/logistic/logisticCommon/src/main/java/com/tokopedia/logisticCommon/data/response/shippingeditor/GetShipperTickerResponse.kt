@@ -117,6 +117,7 @@ data class Warehouses(
 data class ShopId(
         @SerializedName("int64")
         var int64: Long = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("valid")
         var valid: Boolean = false
 )
@@ -124,6 +125,7 @@ data class ShopId(
 data class PartnerId(
         @SerializedName("int64")
         var int64: Long = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("valid")
         var valid: Boolean = false
 )

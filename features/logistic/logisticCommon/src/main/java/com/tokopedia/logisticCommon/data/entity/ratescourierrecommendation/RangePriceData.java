@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,9 +13,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class RangePriceData implements Parcelable {
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("min_price")
     @Expose
     private int minPrice;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("max_price")
     @Expose
     private int maxPrice;

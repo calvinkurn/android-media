@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,6 +13,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class InsuranceData implements Parcelable {
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("insurance_price")
     @Expose
     private int insurancePrice;
