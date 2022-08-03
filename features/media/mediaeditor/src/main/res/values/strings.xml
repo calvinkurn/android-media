@@ -18,4 +18,8 @@
     <string name="editor_tool_watermark_label">Logo Tokopedia dan Nama Toko</string>
     <string name="editor_tool_remove_background_failed_normal">Yah, koneksi internetmu terputus saat gunakan fitur ini. Coba lagi, ya.</string>
     <string name="editor_tool_remove_background_failed_cta">Coba Lagi</string>
+
+    <!-- Toast text -->
+    <string name="editor_undo_state_format">Undo %s</string>
+    <string name="editor_redo_state_format">Redo %s</string>
 </resources>

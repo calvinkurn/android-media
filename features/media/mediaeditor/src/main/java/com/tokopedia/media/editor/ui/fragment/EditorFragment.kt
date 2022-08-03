@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visibleWithCondition
-import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
@@ -43,7 +43,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            R.layout.fragment_main_editor,
+            editorR.layout.fragment_main_editor,
             container,
             false
         )
@@ -68,9 +68,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             if (it.backValue >= imageEditStateCount) return@let
 
             it.backValue++
-            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl()) {
-//                this.centerCrop()
-            }
+            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl())
 
             renderUndoText(it)
             renderRedoText(it)
@@ -89,9 +87,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             if (it.backValue == 0) return@let
 
             it.backValue--
-            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl()) {
-//                this.centerCrop()
-            }
+            viewBinding?.imgMainPreview?.loadImage(it.getImageUrl())
 
             renderUndoText(it)
             renderRedoText(it)
@@ -124,24 +120,26 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
     }
 
     private fun renderStateChangeToast(toastKey: Int, @EditorToolType editorToolType: Int) {
-        val toastStateChangeText = if(toastKey == TOAST_UNDO)
-            "Undo"
-        else
-            "Redo"
-
-        val toastEditText = when(editorToolType){
-            EditorToolType.BRIGHTNESS -> "Brightness"
-            EditorToolType.CONTRAST -> "Contrast"
-            EditorToolType.WATERMARK -> "Watermark"
-            EditorToolType.ROTATE -> "Rotate"
-            EditorToolType.REMOVE_BACKGROUND -> "Remove Background"
-            else -> ""
+        val sourceInt = when(editorToolType){
+            EditorToolType.BRIGHTNESS -> editorR.string.editor_tool_brightness
+            EditorToolType.CONTRAST -> editorR.string.editor_tool_contrast
+            EditorToolType.WATERMARK -> editorR.string.editor_tool_watermark
+            EditorToolType.ROTATE -> editorR.string.editor_tool_rotate
+            else -> editorR.string.editor_tool_remove_background
         }
 
+        val toastEditText = getString(sourceInt)
+        val toastStateChangeText = if (toastKey == TOAST_UNDO)
+            getString(editorR.string.editor_undo_state_format, toastEditText)
+        else
+            getString(editorR.string.editor_redo_state_format, toastEditText)
+
+
         viewBinding?.undoRedoToast?.let {
-            it.text = "$toastStateChangeText $toastEditText"
+            it.text = toastStateChangeText
             it.show()
 
+            Handler().removeCallbacksAndMessages(null)
             Handler().postDelayed({
                 it.hide()
             }, 1500)
