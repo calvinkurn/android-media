@@ -13,6 +13,9 @@ data class ErrorAtc(
     @SerializedName("title")
     val title: String = "",
 
+    @SerializedName("subtitle")
+    val subTitle: String = "",
+
     @SerializedName("atc_error_page")
     val atcErrorPage: AtcErrorPage = AtcErrorPage()
 )

@@ -51,6 +51,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -68,6 +69,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_digital_checkout_page.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -144,8 +146,15 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         viewModel.requestCheckoutParam.deviceId =
             cartPassData?.deviceId ?: DEFAULT_ANDROID_DEVICE_ID
 
-        initViews()
-        loadData()
+        Timber.d(cartPassData?.toString())
+        if (cartPassData?.errorAtcData != null){
+            cartPassData?.errorAtcData?.let {
+                showErrorPage(it.errorTitle, it.errorDescription, it.redirectionLink, it.buttonLabel)
+            }
+        }else{
+            initViews()
+            loadData()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -396,6 +405,24 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
             viewEmptyState.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
             viewEmptyState.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showErrorPage(title: String, desc: String, urlRedirection: String, buttonLabel: String){
+        viewEmptyState?.let {
+            hideContent()
+
+            it.setType(GlobalError.AUTHENTICATION_ERROR)
+            it.setButtonFull(true)
+            it.errorAction.text = buttonLabel
+            it.errorTitle.text = title
+            it.errorDescription.text = desc
+
+            it.setActionClickListener {
+                RouteManager.route(context, urlRedirection)
+            }
+
+            it.show()
         }
     }
 
