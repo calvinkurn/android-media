@@ -23,8 +23,8 @@
       "ChatRepliedTarget": 100,
       "ChatSpeedTarget": 9
     },
-    "URL": "https://seller.tokopedia.com/statistic/operational",
-    "AppLink": "tokopedia://gold-merchant-statistic-dashboard?page\u003doperational-insight",
+    "ShopAppLink": "tokopedia://shop-score-detail?param=test123",
+    "OperationalAppLink": "tokopedia://gold-merchant-statistic-dashboard?page\u003doperational-insight",
     "IsMaintain": false,
     "ShowTicker": true
   }

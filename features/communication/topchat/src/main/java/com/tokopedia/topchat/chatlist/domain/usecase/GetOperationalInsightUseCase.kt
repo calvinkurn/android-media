@@ -38,8 +38,8 @@ open class GetOperationalInsightUseCase @Inject constructor(
               ChatRepliedTarget
               ChatSpeedTarget
             }
-            URL
-            AppLink
+            ShopAppLink
+            OperationalAppLink
             IsMaintain
             ShowTicker
           }

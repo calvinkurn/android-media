@@ -285,12 +285,7 @@ class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomS
     private fun initCtaButton() {
         val ctaOperationalInsight: UnifyButton? = childView?.findViewById(R.id.btn_visit_operational_insight)
         ctaOperationalInsight?.setOnClickListener {
-            context?.let {
-                if (!ticker.applink.isNullOrEmpty()) {
-                    val intent = RouteManager.getIntent(it, ticker.applink)
-                    startActivity(intent)
-                }
-            }
+            goToOperationalInsightPage()
         }
     }
 
@@ -305,13 +300,7 @@ class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomS
             val endPosition = completeString.lastIndexOf(SHOP_PERFORMANCE) + SHOP_PERFORMANCE.length
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(textView: View) {
-                    context?.let {
-                        if (!ticker.url.isNullOrEmpty()) {
-                            val intent = RouteManager.getIntent(it, ticker.url)
-                            startActivity(intent)
-                            dismiss()
-                        }
-                    }
+                    goToShopScorePage()
                 }
                 override fun updateDrawState(drawState: TextPaint) {
                     super.updateDrawState(drawState)
@@ -330,6 +319,24 @@ class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomS
             throwable.printStackTrace()
         }
         return spannableString
+    }
+
+    private fun goToOperationalInsightPage() {
+        context?.let {
+            if (!ticker.operationalApplink.isNullOrEmpty()) {
+                val intent = RouteManager.getIntent(it, ticker.operationalApplink)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun goToShopScorePage() {
+        context?.let {
+            if (!ticker.shopScoreApplink.isNullOrEmpty()) {
+                val intent = RouteManager.getIntent(it, ticker.shopScoreApplink)
+                startActivity(intent)
+            }
+        }
     }
 
     companion object {

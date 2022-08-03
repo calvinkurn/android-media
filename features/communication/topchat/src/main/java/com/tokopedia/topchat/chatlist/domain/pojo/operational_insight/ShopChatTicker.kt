@@ -20,11 +20,11 @@ data class ShopChatTicker(
     @SerializedName("Target")
     var target: ShopChatMetricTarget? = ShopChatMetricTarget(),
 
-    @SerializedName("URL")
-    var url: String? = "",
+    @SerializedName("ShopAppLink")
+    var shopScoreApplink: String? = "",
 
-    @SerializedName("AppLink")
-    var applink: String? = "",
+    @SerializedName("OperationalAppLink")
+    var operationalApplink: String? = "",
 
     @SerializedName("IsMaintain")
     var isMaintain: Boolean? = false,

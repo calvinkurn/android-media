@@ -1,5 +1,9 @@
 package com.tokopedia.topchat.chatlist.activity
 
+import android.app.Activity
+import android.app.Instrumentation
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
 import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.OperationalInsightResult.assertOperationalInsightTickerNotVisible
 import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.OperationalInsightResult.assertOperationalInsightTickerText
@@ -8,6 +12,8 @@ import org.junit.Test
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.OperationalInsightResult.assertBottomSheetVisible
 import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.OperationalInsightResult.assertOperationalInsightBottomSheetText
+import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.OperationalInsightRobot.clickOnCTABottomSheet
+import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.OperationalInsightRobot.clickOnTextBottomSheet
 import com.tokopedia.topchat.chatlist.activity.robot.operational_insight.OperationalInsightRobot.clickOperationalInsightTicker
 
 class OperationalInsightTest : ChatListTest() {
@@ -19,6 +25,7 @@ class OperationalInsightTest : ChatListTest() {
             isShowing = true,
             isMaintain = true
         )
+        userSession.setIsShopOwner(true)
 
         //When
         startChatListActivity(isSellerApp = true)
@@ -36,6 +43,7 @@ class OperationalInsightTest : ChatListTest() {
             isShowing = true,
             isMaintain = false
         )
+        userSession.setIsShopOwner(true)
 
         //When
         startChatListActivity(isSellerApp = true)
@@ -53,6 +61,7 @@ class OperationalInsightTest : ChatListTest() {
             isShowing = true,
             isMaintain = true
         )
+        userSession.setIsShopOwner(true)
 
         //When
         startChatListActivity()
@@ -69,6 +78,7 @@ class OperationalInsightTest : ChatListTest() {
             isShowing = false,
             isMaintain = true
         )
+        userSession.setIsShopOwner(true)
 
         //When
         startChatListActivity()
@@ -85,9 +95,10 @@ class OperationalInsightTest : ChatListTest() {
             isShowing = true,
             isMaintain = true
         )
+        userSession.setIsShopOwner(true)
+        startChatListActivity(isSellerApp = true)
 
         //When
-        startChatListActivity(isSellerApp = true)
         clickOperationalInsightTicker()
 
         //Then
@@ -103,9 +114,10 @@ class OperationalInsightTest : ChatListTest() {
             isShowing = true,
             isMaintain = false
         )
+        userSession.setIsShopOwner(true)
+        startChatListActivity(isSellerApp = true)
 
         //When
-        startChatListActivity(isSellerApp = true)
         clickOperationalInsightTicker()
 
         //Then
@@ -113,8 +125,51 @@ class OperationalInsightTest : ChatListTest() {
         assertOperationalInsightBottomSheetText(BS_SUMMARY_FIX)
     }
 
+    @Test
+    fun should_go_to_gold_merchant_statistic_page_when_cta_clicked() {
+        //Given
+        chatListUseCase.response = exSize5ChatListPojo
+        getOperationalInsightUseCase.response = getOperationalInsightUseCase.getShopMetricResponse(
+            isShowing = true,
+            isMaintain = false
+        )
+        userSession.setIsShopOwner(true)
+        startChatListActivity(isSellerApp = true)
+
+        //When
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        clickOperationalInsightTicker()
+        clickOnCTABottomSheet()
+
+        //Then
+        Intents.intended(IntentMatchers.hasData("tokopedia://gold-merchant-statistic-dashboard?page=operational-insight"))
+    }
+
+    @Test
+    fun should_go_to_shop_score_page_when_href_text_clicked() {
+        //Given
+        chatListUseCase.response = exSize5ChatListPojo
+        getOperationalInsightUseCase.response = getOperationalInsightUseCase.getShopMetricResponse(
+            isShowing = true,
+            isMaintain = false
+        )
+        userSession.setIsShopOwner(true)
+        startChatListActivity(isSellerApp = true)
+
+        //When
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        clickOperationalInsightTicker()
+        clickOnTextBottomSheet(SHOP_PERFORMANCE)
+
+        //Then
+        Intents.intended(IntentMatchers.hasData("tokopedia://shop-score-detail?param=test123"))
+    }
+
     companion object {
         private const val BS_SUMMARY_MAINTAIN = "Pertahankan Performa Chat sesuai target agar Performa Toko kamu tetap baik, ya."
         private const val BS_SUMMARY_FIX = "Tingkatkan Performa Chat sesuai target agar Performa Toko kamu lebih baik, ya."
+        private const val SHOP_PERFORMANCE = "Performa Toko (9"
     }
 }
