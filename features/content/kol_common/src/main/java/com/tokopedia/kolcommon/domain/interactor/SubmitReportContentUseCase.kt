@@ -51,9 +51,10 @@ class SubmitReportContentUseCase @Inject constructor(
             contentId: String,
             reasonType: String,
             reasonMessage: String,
-        ): Map<String, String> {
+        ): Map<String, Any> {
+            val content = contentId.toIntOrNull()?:0
             return mapOf(
-                PARAM_CONTENT_ID to contentId,
+                PARAM_CONTENT_ID to content,
                 PARAM_CONTENT_TYPE to VALUE_CONTENT_TYPE,
                 PARAM_REASON_TYPE to reasonType,
                 PARAM_REASON_MESSAGE to reasonMessage

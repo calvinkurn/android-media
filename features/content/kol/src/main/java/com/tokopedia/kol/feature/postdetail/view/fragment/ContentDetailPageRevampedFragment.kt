@@ -1008,14 +1008,14 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 }
                 is ContentDetailResult.Success -> onSuccessFollowShop(it.data)
                 is ContentDetailResult.Failure -> {
-                    when (it.error.cause) {
+                    when (it.error) {
                         is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
                             showNoInterNetDialog(requireContext())
                         }
                         else -> {
                             val errorMessage = if (it.error is CustomUiMessageThrowable) {
                                 requireContext().getString(it.error.errorMessageId)
-                            } else ErrorHandler.getErrorMessage(requireContext(), it.error.cause)
+                            } else ErrorHandler.getErrorMessage(requireContext(), it.error)
 
                             Toaster.build(
                                 requireView(),
@@ -1042,12 +1042,12 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 }
                 is ContentDetailResult.Success -> onSuccessDeletePost(it.data.rowNumber)
                 is ContentDetailResult.Failure -> {
-                    when (it.error.cause) {
+                    when (it.error) {
                         is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
                             showNoInterNetDialog(requireContext())
                         }
                         else -> {
-                            val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error.cause)
+                            val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error)
                             Toaster.build(
                                 requireView(),
                                 errorMessage,
@@ -1076,13 +1076,13 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     onSuccessDeletePost(it.data.rowNumber)
                 }
                 is ContentDetailResult.Failure -> {
-                    when (it.error.cause) {
+                    reportBottomSheet.dismiss()
+                    when (it.error) {
                         is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
-                            reportBottomSheet.dismiss()
                             showNoInterNetDialog(requireContext())
                         }
                         else -> {
-                            val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error.cause)
+                            val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error)
                             Toaster.build(
                                 requireView(),
                                 errorMessage,
