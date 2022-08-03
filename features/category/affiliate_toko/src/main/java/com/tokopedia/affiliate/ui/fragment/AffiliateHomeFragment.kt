@@ -20,8 +20,6 @@ import com.tokopedia.affiliate.CLICK_TYPE
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.COMMISSION_TYPE
 import com.tokopedia.affiliate.LINK_HISTORY_BUTTON_CLICKED
-import com.tokopedia.affiliate.PAGE_TYPE_PDP
-import com.tokopedia.affiliate.PAGE_TYPE_SHOP
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TIME_EIGHTEEN
 import com.tokopedia.affiliate.TIME_ELEVEN
@@ -36,12 +34,10 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
-import com.tokopedia.affiliate.interfaces.AffiliateHomeImpressionListener
 import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.interfaces.AffiliatePerformanceChipClick
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
-import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.model.response.ItemTypesItem
 import com.tokopedia.affiliate.setAnnouncementData
@@ -80,13 +76,13 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 
 class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
     ProductClickInterface,
     AffiliatePerformaClickInterfaces, AffiliateDatePickerRangeChangeInterface,
-    AffiliatePerformanceChipClick, AffiliateHomeImpressionListener {
+    AffiliatePerformanceChipClick {
 
     private var isSwipeRefresh = false
     private var listSize = 0
@@ -107,7 +103,6 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
     private var isNoMoreData = false
 
     companion object {
-        private const val PRODUCT_ACTIVE = 1
         fun getFragmentInstance(
             affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface,
             affiliateActivity: AffiliateActivityInterface
@@ -134,7 +129,9 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
                 onPerformaGridClick = this,
                 bottomNavBarClickListener = bottomNavBarClickListener,
                 affiliatePerformanceChipClick = this
-            )
+            ),
+            source = AffiliateAdapter.SOURCE_HOME,
+            userId = userSessionInterface.userId
         )
     }
 
@@ -469,52 +466,6 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
         adapter.notifyItemRangeRemoved(PARTIAL_RESET_LENGTH, listSize - PARTIAL_RESET_LENGTH)
         loadMoreTriggerListener?.resetState()
         listSize = affiliateHomeViewModel.staticSize
-    }
-    override fun onItemImpression(
-        item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item,
-        position: Int,
-        type: String
-    ) {
-        if (type == PAGE_TYPE_PDP) {
-            sendProductImpression(item, position)
-        } else if (type == PAGE_TYPE_SHOP) {
-           sendShopImpression(item, position)
-        }
-    }
-
-    private fun sendProductImpression(
-        item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item,
-        position: Int
-    ) {
-        val status = if (item.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
-        AffiliateAnalytics.trackEventImpression(
-            AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
-            AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUK_YANG_DIPROMOSIKAN,
-            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
-            userSessionInterface.userId,
-            item.itemID,
-            position,
-            item.itemTitle,
-            "${item.itemID} - ${item.metrics?.findLast { it?.metricType == "orderCommissionPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "totalClickPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "orderPerItem" }?.metricValue} - $status",
-        )
-    }
-
-    private fun sendShopImpression(
-        item: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item,
-        position: Int
-    ) {
-        val status = if (item.status == PRODUCT_ACTIVE) AffiliateAnalytics.LabelKeys.ACTIVE else AffiliateAnalytics.LabelKeys.INACTIVE
-        AffiliateAnalytics.trackEventImpression(
-            AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
-            AffiliateAnalytics.ActionKeys.IMPRESSION_SHOP_LINK_DENGAN_PERFORMA,
-            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
-            userSessionInterface.userId,
-            item.itemID,
-            position,
-            item.itemTitle,
-            "${item.itemID} - ${item.metrics?.findLast { it?.metricType == "shopOrderCommissionPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "shopTotalClickPerItem" }?.metricValue} - ${item.metrics?.findLast { it?.metricType == "shopOrderPerItem" }?.metricValue} - $status",
-            AffiliateAnalytics.ItemKeys.AFFILAITE_HOME_SHOP_SELECT_CONTENT
-        )
     }
 
 }
