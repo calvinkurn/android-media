@@ -70,7 +70,9 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -264,14 +266,33 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun onScrollToTop() {}
 
+    override fun onOperationalInsightTickerShown(element: ShopChatTicker) {
+        TopChatAnalyticsKt.eventViewOperationalInsightTicker(
+            shopId = userSession.shopId,
+            stateReport = getOperationalInsightStateReport(element.isMaintain)
+        )
+    }
+
     override fun onOperationalInsightTickerClicked(element: ShopChatTicker) {
-        val operationalInsightBottomSheet = OperationalInsightBottomSheet(element)
+        val operationalInsightBottomSheet = OperationalInsightBottomSheet(
+            element, userSession.shopId
+        )
         operationalInsightBottomSheet.show(childFragmentManager, FilterMenu.TAG)
+        TopChatAnalyticsKt.eventClickOperationalInsightTicker(
+            shopId = userSession.shopId,
+            stateReport = getOperationalInsightStateReport(element.isMaintain)
+        )
     }
 
     override fun onOperationalInsightCloseButtonClicked(visitable: Visitable<*>) {
         adapter?.removeElement(visitable)
         viewModel.saveNextMondayDate()
+        if (visitable is ShopChatTicker) {
+            TopChatAnalyticsKt.eventClickCloseOperationalInsightTicker(
+                shopId = userSession.shopId,
+                stateReport = getOperationalInsightStateReport(visitable.isMaintain)
+            )
+        }
     }
 
     private fun setupLifecycleObserver() {

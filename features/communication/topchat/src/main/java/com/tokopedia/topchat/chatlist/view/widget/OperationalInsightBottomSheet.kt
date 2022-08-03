@@ -20,13 +20,20 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventClickOperationalInsightCta
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventClickShopPerformanceOperationalInsightBottomSheet
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt.eventViewOperationalInsightBottomSheet
+import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import java.text.DecimalFormat
 
-class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomSheetUnify() {
+class OperationalInsightBottomSheet(
+    private var ticker: ShopChatTicker,
+    private var shopId: String
+): BottomSheetUnify() {
 
     private var childView: View? = null
 
@@ -59,6 +66,7 @@ class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomS
         initTarget()
         initUrlShopPerformance()
         initCtaButton()
+        trackBottomSheet()
     }
 
     private fun initDate() {
@@ -324,6 +332,7 @@ class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomS
     private fun goToOperationalInsightPage() {
         context?.let {
             if (!ticker.operationalApplink.isNullOrEmpty()) {
+                trackerOperationalInsightCta()
                 val intent = RouteManager.getIntent(it, ticker.operationalApplink)
                 startActivity(intent)
             }
@@ -333,10 +342,44 @@ class OperationalInsightBottomSheet(private var ticker: ShopChatTicker): BottomS
     private fun goToShopScorePage() {
         context?.let {
             if (!ticker.shopScoreApplink.isNullOrEmpty()) {
+                trackShopScore()
                 val intent = RouteManager.getIntent(it, ticker.shopScoreApplink)
                 startActivity(intent)
             }
         }
+    }
+
+    private fun trackBottomSheet() {
+        eventViewOperationalInsightBottomSheet(
+            shopId = shopId,
+            stateReport = getOperationalInsightStateReport(ticker.isMaintain),
+            replyChatRate = ticker.data?.chatReplied.toString(),
+            targetReplyChatRate = ticker.target?.chatRepliedTarget.toString(),
+            replyChatSpeed = ticker.data?.chatSpeed.toString(),
+            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString(),
+        )
+    }
+
+    private fun trackerOperationalInsightCta() {
+        eventClickOperationalInsightCta(
+            shopId = shopId,
+            stateReport = getOperationalInsightStateReport(ticker.isMaintain),
+            replyChatRate = ticker.data?.chatReplied.toString(),
+            targetReplyChatRate = ticker.target?.chatRepliedTarget.toString(),
+            replyChatSpeed = ticker.data?.chatSpeed.toString(),
+            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString(),
+        )
+    }
+
+    private fun trackShopScore() {
+        eventClickShopPerformanceOperationalInsightBottomSheet(
+            shopId = shopId,
+            stateReport = getOperationalInsightStateReport(ticker.isMaintain),
+            replyChatRate = ticker.data?.chatReplied.toString(),
+            targetReplyChatRate = ticker.target?.chatRepliedTarget.toString(),
+            replyChatSpeed = ticker.data?.chatSpeed.toString(),
+            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString(),
+        )
     }
 
     companion object {

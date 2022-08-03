@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.common.util
 
+import com.tokopedia.topchat.common.Constant
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -55,4 +56,12 @@ object Utils {
             if (mLocale == null) mLocale = Locale(LANGUAGE_CODE, COUNTRY_CODE, "")
             return mLocale
         }
+
+    fun getOperationalInsightStateReport(isMaintain: Boolean?): String {
+        return if (isMaintain == true) {
+            Constant.GOOD_PERFORMANCE
+        } else {
+            Constant.NEED_IMPROVEMENT
+        }
+    }
 }

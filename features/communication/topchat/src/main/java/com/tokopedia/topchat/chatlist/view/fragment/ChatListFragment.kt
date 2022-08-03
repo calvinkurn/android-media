@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.StringRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -73,7 +72,9 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -650,14 +651,33 @@ open class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
         }
     }
 
+    override fun onOperationalInsightTickerShown(element: ShopChatTicker) {
+        TopChatAnalyticsKt.eventViewOperationalInsightTicker(
+            shopId = userSession.shopId,
+            stateReport = getOperationalInsightStateReport(element.isMaintain)
+        )
+    }
+
     override fun onOperationalInsightTickerClicked(element: ShopChatTicker) {
-        val operationalInsightBottomSheet = OperationalInsightBottomSheet(element)
+        val operationalInsightBottomSheet = OperationalInsightBottomSheet(
+            element, userSession.shopId
+        )
         operationalInsightBottomSheet.show(childFragmentManager, FilterMenu.TAG)
+        TopChatAnalyticsKt.eventClickOperationalInsightTicker(
+            shopId = userSession.shopId,
+            stateReport = getOperationalInsightStateReport(element.isMaintain)
+        )
     }
 
     override fun onOperationalInsightCloseButtonClicked(visitable: Visitable<*>) {
         adapter?.removeElement(visitable)
         chatItemListViewModel.saveNextMondayDate()
+        if (visitable is ShopChatTicker) {
+            TopChatAnalyticsKt.eventClickCloseOperationalInsightTicker(
+                shopId = userSession.shopId,
+                stateReport = getOperationalInsightStateReport(visitable.isMaintain)
+            )
+        }
     }
 
     private fun onViewCreatedFirstSight(view: View?) {

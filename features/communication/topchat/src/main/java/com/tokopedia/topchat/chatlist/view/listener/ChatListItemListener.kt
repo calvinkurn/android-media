@@ -24,6 +24,7 @@ interface ChatListItemListener {
     fun pinUnpinChat(element: ItemChatListPojo, position: Int, isPinChat: Boolean = true)
     fun returnToSellerHome()
     fun onScrollToTop()
+    fun onOperationalInsightTickerShown(element: ShopChatTicker)
     fun onOperationalInsightTickerClicked(element: ShopChatTicker)
     fun onOperationalInsightCloseButtonClicked(visitable: Visitable<*>)
 }

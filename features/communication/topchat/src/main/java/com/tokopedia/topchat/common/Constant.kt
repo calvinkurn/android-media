@@ -12,4 +12,6 @@ object Constant {
     const val CHAT_REMOVE_ATTACHMENT = "RemoveAttachmentChat"
     const val TOPCHAT_ALLOWED_FLEX_MODE = "android_topchat_allowed_flexmode"
     const val ROLE_SHOP = "shop"
+    const val GOOD_PERFORMANCE = "baik"
+    const val NEED_IMPROVEMENT = "perlu ditingkatkan"
 }
