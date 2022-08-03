@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".feature.postdetail.view.activity.KolPostDetailActivity"
+            android:name=".feature.postdetail.view.activity.ContentDetailActivity"
             android:label="@string/kol_title_post_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"

@@ -9,8 +9,10 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
@@ -31,10 +33,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewVi
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
-import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent
-import com.tokopedia.kol.feature.post.di.KolProfileModule
-import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
+import com.tokopedia.kol.feature.postdetail.di.DaggerContentDetailComponent
+import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
+import com.tokopedia.kol.feature.postdetail.view.activity.ContentDetailActivity
 import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailPageRevampAdapter
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
@@ -79,7 +80,7 @@ import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.kol.R as kolR
 import com.tokopedia.wishlist_common.R as Rwishlist
-
+import com.tokopedia.network.R as networkR
 
 /**
  * Created by shruti agarwal on 15/06/22
@@ -97,9 +98,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         ContentDetailListener = this
     )
 
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -109,7 +110,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     private lateinit var shareData: LinkerData
     private var shareBottomSheetProduct = false
 
-    private val cdpViewModel: ContentDetailRevampViewModel by lazy {
+    private val viewModel: ContentDetailRevampViewModel by lazy {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         viewModelProvider.get(ContentDetailRevampViewModel::class.java)
     }
@@ -138,11 +139,12 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     }
 
     private fun initVar() {
-        postId = arguments?.getString(KolPostDetailActivity.PARAM_POST_ID) ?: "0"
+        postId = arguments?.getString(ContentDetailActivity.PARAM_POST_ID) ?: ContentDetailActivity.DEFAULT_POST_ID
     }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        cdpViewModel.run {
+        viewModel.run {
             getCDPPostFirstPostData.observe(viewLifecycleOwner, {
                 when (it) {
                     is Success -> {
@@ -214,7 +216,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                                         context?.getString(throwable.errorMessageId)
                                     } else {
                                         it.throwable.message
-                                            ?: getString(com.tokopedia.network.R.string.default_request_error_unknown)
+                                            ?: getString(networkR.string.default_request_error_unknown)
                                     }
                                     message?.let { errormessage ->
                                         showToast(errormessage, Toaster.TYPE_ERROR)
@@ -272,8 +274,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     }
                     is Fail -> {
                         Timber.e(it.throwable)
+                        val errorMessage = it.throwable.message ?: getString(networkR.string.default_request_error_unknown)
                         showToast(
-                            getString(com.tokopedia.network.R.string.default_request_error_unknown),
+                            errorMessage,
                             Toaster.TYPE_ERROR
                         )
                     }
@@ -311,12 +314,12 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                         if (data.isSuccess) {
                             onSuccessDeletePost(data.rowNumber)
                         } else {
-                            data.errorMessage = getString(com.tokopedia.network.R.string.default_request_error_unknown)
+                            data.errorMessage = getString(networkR.string.default_request_error_unknown)
                             onErrorDeletePost(data)
                         }
                     }
                     is Fail -> {
-                        val message = getString(com.tokopedia.network.R.string.default_request_error_unknown)
+                        val message = getString(networkR.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
@@ -340,9 +343,13 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
         cdpRecyclerView = view.findViewById(kolR.id.cdp_recycler_view)
         setupView(view)
-        cdpViewModel.getCDPPostDetailFirstData(postId)
+        viewModel.getCDPPostDetailFirstData(postId)
+
+
+        observeWishlist()
 
     }
+
     private fun setupView(view: View) {
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
@@ -351,10 +358,11 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         }
         cdpRecyclerView?.adapter = adapter
     }
+
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(cdpRecyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                cdpViewModel.getCDPRecomData(postId)
+                viewModel.getCDPRecomData(postId)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -408,14 +416,14 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
     private fun onSuccessGetFirstPostCDPData(contentDetailRevampDataUiModel: ContentDetailRevampDataUiModel){
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
-        endlessRecyclerViewScrollListener?.setHasNextPage(cdpViewModel.currentCursor.isNotEmpty())
+        endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         adapter.setItemsAndAnimateChanges(contentDetailRevampDataUiModel.postList)
-        cdpViewModel.getCDPRecomData(postId)
+        viewModel.getCDPRecomData(postId)
 
     }
     private fun onSuccessGetCDPRecomData(contentDetailRevampDataUiModel: ContentDetailRevampDataUiModel){
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
-        endlessRecyclerViewScrollListener?.setHasNextPage(cdpViewModel.currentCursor.isNotEmpty())
+        endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         adapter.addItemsAndAnimateChanges(contentDetailRevampDataUiModel.postList)
 
     }
@@ -446,14 +454,13 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     }
 
     override fun initInjector() {
-        activity?.application?.let {
-            DaggerKolProfileComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(activity?.application))
-                .kolProfileModule(KolProfileModule())
-                .build()
-                .inject(this)
-        }
-
+        DaggerContentDetailComponent.builder()
+            .baseAppComponent(
+                (requireContext().applicationContext as BaseMainApplication).baseAppComponent
+            )
+            .contentDetailModule(ContentDetailModule())
+            .build()
+            .inject(this)
     }
     private fun onGoToLogin() {
         if (activity != null) {
@@ -503,7 +510,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         rowNumber: Int, id: Int
     ) {
         if (userSession.isLoggedIn) {
-            cdpViewModel.doLikeKol(id, rowNumber)
+            viewModel.doLikeKol(id, rowNumber)
         } else {
             onGoToLogin()
         }
@@ -513,7 +520,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         rowNumber: Int, id: Int
     ) {
         if (userSession.isLoggedIn) {
-            cdpViewModel.doUnlikeKol(id, rowNumber)
+            viewModel.doUnlikeKol(id, rowNumber)
         } else {
             onGoToLogin()
         }
@@ -612,7 +619,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             Toaster.TYPE_ERROR,
             getString(com.tokopedia.abstraction.R.string.title_try_again)
         ) {
-            cdpViewModel.doToggleFavoriteShop(
+            viewModel.doToggleFavoriteShop(
                 data.rowNumber,
                 data.shopId
             )
@@ -784,7 +791,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     )
                 )
             )
-        cdpViewModel.doToggleFavoriteShop(
+        viewModel.doToggleFavoriteShop(
             rowNumber = postPosition,
             shopId = feedXCard.author.id,
             feedXCard.followers.isFollowed
@@ -861,7 +868,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                                         ),
                                         reportReason = reasonDesc
                                     )
-                                    cdpViewModel.sendReport(
+                                    viewModel.sendReport(
                                         postPosition,
                                         feedXCard.id.toIntOrZero(),
                                         reasonType,
@@ -1068,9 +1075,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         )
         if (hitTrackerApi) {
             if (feedXCard.isTypeLongVideo)
-                cdpViewModel.trackLongVideoView(feedXCard.id, rowNumber)
+                viewModel.trackLongVideoView(feedXCard.id, rowNumber)
             else
-                cdpViewModel.trackVisitChannel(feedXCard.playChannelID, rowNumber)
+                viewModel.trackVisitChannel(feedXCard.playChannelID, rowNumber)
         }
     }
 
@@ -1302,7 +1309,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {
-          cdpViewModel.doDeletePost(id, rowNumber)
+          viewModel.doDeletePost(id, rowNumber)
             dialog.dismiss()
         }
         dialog.show()
@@ -1543,11 +1550,18 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 productTagBS.dismissedByClosing = true
                 productTagBS.dismiss()
             }
-            cdpViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId)
+            viewModel.doAddToCart(
+                postTagItem.id,
+                postTagItem.productName,
+                postTagItem.price.toString(),
+                shopId,
+                postTagItem.appLink
+            )
         } else {
             onGoToLogin()
         }
     }
+
     private fun addToWishList(
         postId: String,
         productId: String,
@@ -1583,84 +1597,19 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                cdpViewModel.addWishlistV2(
-                    postId,
-                    productId,
-                    shopId,
-                    0,
-                    type,
-                    isFollowed,
-                    ::onWishListFail,
-                    ::onWishListSuccessV2,
-                    it
-                )
-            } else {
-                cdpViewModel.addWishlist(
-                    postId,
-                    productId,
-                    shopId,
-                    0,
-                    type,
-                    isFollowed,
-                    ::onWishListFail,
-                    ::onWishListSuccess,
-                    getString(kolR.string.wishlist_default_error)
-                )
-            }
-        }
+        viewModel.addToWishlist(productId)
     }
 
-    private fun onWishListFail(s: String) {
-        showToast(s, Toaster.TYPE_ERROR)
-    }
-
-    private fun onWishListSuccess(
-        activityId: String,
-        shopId: String,
-        type: String,
-        isFollowed: Boolean
-    ) {
-        Toaster.build(
-            requireView(),
-            getString(Rwishlist.string.on_success_add_to_wishlist_msg),
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_NORMAL,
-            getString(Rwishlist.string.cta_success_add_to_wishlist),
-            View.OnClickListener {
-                analyticsTracker.sendClickLihatWishlistSgcImageEvent(
-                    ContentDetailPageAnalyticsDataModel(
-                        activityId = activityId ,
-                        shopId = shopId,
-                        isFollowed = isFollowed,
-                        trackerId = getTrackerID(
-                            ProductPostTagViewModelNew(
-                                id = activityId,
-                                shopId = shopId,
-                                isFollowed = isFollowed
-                            ),
-                            trackerIdSgc = "33271",
-                            trackerIdAsgc = "34105",
-                            trackerIdAsgcRecom = "34093"
-                        )
-                    )
-                )
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            }).show()
-    }
-    private fun onWishListSuccessV2(
-        activityId: String,
-        shopId: String,
-        type: String,
-        isFollowed: Boolean,
-        result: AddToWishlistV2Response.Data.WishlistAddV2
-    ) {
-        context?.let { context ->
-            view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+    private fun observeWishlist() {
+        viewModel.observableWishlist.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(it.data, requireContext(), requireView())
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.throwable)
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, requireView())
+                }
             }
-        }
+        })
     }
 
     private fun onAddToCartSuccess() {
@@ -1696,7 +1645,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             Toaster.TYPE_ERROR,
             getString(com.tokopedia.abstraction.R.string.title_try_again),
             View.OnClickListener {
-                cdpViewModel.doDeletePost(data.id, data.rowNumber)
+                viewModel.doDeletePost(data.id, data.rowNumber)
             })
     }
     private fun getContentDetailAnalyticsData(feedXCard: FeedXCard, postPosition: Int = 0, trackerId : String= "", hashTag: String= "", duration: Long = 0L, product: FeedXProduct = FeedXProduct()) = ContentDetailPageAnalyticsDataModel(
