@@ -902,4 +902,8 @@ open class TopChatViewStateImpl constructor(
         replyBox.hide()
         chatTextAreaTabLayout?.hide()
     }
+
+    fun getChatAreaShimmer(): LoaderUnify? {
+        return chatTextAreaShimmer
+    }
 }
