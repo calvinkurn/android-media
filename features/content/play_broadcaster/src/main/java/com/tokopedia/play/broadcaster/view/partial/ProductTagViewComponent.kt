@@ -34,6 +34,10 @@ class ProductTagViewComponent(
         override fun onPinClicked(product: ProductUiModel) {
             listener.onPinClicked(product)
         }
+
+        override fun onImpressPinnedProduct(product: ProductUiModel) {
+            listener.onImpressPinnedProduct(product)
+        }
     }
 
     private val pinnedProductListener = object : ProductCarouselViewHolder.PinnedProduct.Listener{
@@ -167,5 +171,6 @@ class ProductTagViewComponent(
         fun impressProductTag(view: ProductTagViewComponent)
         fun scrollProductTag(view: ProductTagViewComponent, product: ProductUiModel, position: Int)
         fun onPinClicked(product: ProductUiModel)
+        fun onImpressPinnedProduct(product: ProductUiModel)
     }
 }
