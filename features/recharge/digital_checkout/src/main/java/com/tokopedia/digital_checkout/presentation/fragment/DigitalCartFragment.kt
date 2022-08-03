@@ -69,7 +69,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_digital_checkout_page.*
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -146,7 +145,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         viewModel.requestCheckoutParam.deviceId =
             cartPassData?.deviceId ?: DEFAULT_ANDROID_DEVICE_ID
 
-        Timber.d(cartPassData?.toString())
+        //TODO : will update
         if (cartPassData?.errorAtcData != null){
             cartPassData?.errorAtcData?.let {
                 showErrorPage(it.errorTitle, it.errorDescription, it.redirectionLink, it.buttonLabel)
@@ -211,6 +210,15 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 is Fail -> closeViewWithMessageAlert(it.throwable)
             }
         })
+
+        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
+            showErrorPage(
+                it.title,
+                it.atcErrorPage.subTitle,
+                it.atcErrorPage.buttons.first().appLinkUrl,
+                it.atcErrorPage.buttons.first().label
+            )
+        }
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
             renderCartDigitalInfoData(it)
@@ -419,7 +427,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             it.errorDescription.text = desc
 
             it.setActionClickListener {
-                RouteManager.route(context, urlRedirection)
+                RouteManager.getIntent(context, urlRedirection).apply {
+                    startActivityForResult(this, REQUEST_VERIFY_PHONE_NUMBER)
+                }
             }
 
             it.show()
@@ -505,6 +515,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 }
                 else -> getCartAfterCheckout()
             }
+        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER && resultCode == Activity.RESULT_OK){
+            loadData()
         }
     }
 
@@ -820,6 +832,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER =
             "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"
 
+        private const val REQUEST_VERIFY_PHONE_NUMBER = 1012
         private const val REQUEST_CODE_OTP = 1001
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16
 
