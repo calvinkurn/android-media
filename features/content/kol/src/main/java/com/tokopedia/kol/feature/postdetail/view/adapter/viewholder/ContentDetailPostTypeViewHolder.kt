@@ -598,10 +598,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         feedXCard: FeedXCard,
     ) {
         val media = feedXCard.media
-        if (!feedXCard.isTypeProductHighlight && !feedXCard.isTypeVOD) {
-            if (feedXCard.isTypeLongVideo) {
-                setVODLayout(feedXCard)
-            } else {
+        when {
+            feedXCard.isTypeSGC -> {
                 val globalCardProductList = feedXCard.tags
                 feedVODViewHolder.gone()
                 rvCarousel.visible()
@@ -623,21 +621,11 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 rvCarousel.addOneTimeGlobalLayoutListener {
                     rvCarousel.scrollToPosition(feedXCard.lastCarouselIndex)
                 }
-
-                if (feedXCard.isTopAds) {
-                    likedText.hide()
-                    captionText.hide()
-                    commentButton.invisible()
-                    likeButton.invisible()
-                    seeAllCommentText.hide()
-                    shopMenuIcon.hide()
-                }
             }
-        } else if (feedXCard.isTypeVOD) {
-            setVODLayout(feedXCard)
-        } else {
-            setNewASGCLayout(feedXCard)
+            feedXCard.isTypeLongVideo || feedXCard.isTypeVOD -> setVODLayout(feedXCard)
+            feedXCard.isTypeProductHighlight -> setNewASGCLayout(feedXCard)
         }
+
     }
 
     private fun setVODLayout(feedXCard: FeedXCard) {

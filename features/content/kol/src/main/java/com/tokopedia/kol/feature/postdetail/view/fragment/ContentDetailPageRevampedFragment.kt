@@ -29,7 +29,6 @@ import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
@@ -511,10 +510,11 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             onGoToLogin()
         }
     }
+
     private fun showNoInterNetDialog(context: Context) {
         val sheet = FeedNetworkErrorBottomSheet.newInstance(false)
+        if (!sheet.isAdded )
         sheet.show(childFragmentManager, "")
-
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
@@ -819,6 +819,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 feedXCard.reportable, feedXCard.followers.isFollowed,
                 feedXCard.deletable
             )
+            if (!sheet.isAdded)
             sheet.show(childFragmentManager, "")
             sheet.onReport = {
                 if (feedXCard.isTypeProductHighlight && feedXCard.followers.isFollowed)
@@ -1417,6 +1418,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
         val sheet = ProductActionBottomSheet.newInstance(bundle)
+        if (!sheet.isAdded)
         sheet.show(childFragmentManager, "")
         sheet.shareProductCB = {
             onShareProduct(

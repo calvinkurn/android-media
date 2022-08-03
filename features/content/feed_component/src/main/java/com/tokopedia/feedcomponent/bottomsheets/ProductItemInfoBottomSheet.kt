@@ -172,6 +172,12 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         this.mediaType = mediaType
         show(fragmentManager, "")
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        listener = null
+    }
+
     interface Listener {
         fun onBottomSheetThreeDotsClicked(
             item: ProductPostTagViewModelNew,

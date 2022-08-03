@@ -200,7 +200,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private lateinit var newFeed: View
     private lateinit var newFeedReceiver: BroadcastReceiver
     private lateinit var dynamicPostReceiver: BroadcastReceiver
-    private lateinit var postUpdateSwipe: PostProgressUpdateView.PostUpdateSwipe
     private lateinit var adapter: FeedPlusAdapter
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var infoBottomSheet: TopAdsInfoBottomSheet
@@ -275,12 +274,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val POST_TYPE = "post_type"
         private const val SHOP_NAME = "shop_name"
         private const val PARAM_TYPE = "author_type"
-        private const val TYPE_FEED_X_CARD_LONG_VIDEO: String = "content-long-video"
         private const val TYPE_LONG_VIDEO: String = "long-video"
-        private const val TYPE_FEED_X_CARD_VOD_VIDEO: String = "play-channel-vod"
 
-
-        private val TAG = FeedPlusFragment::class.java.simpleName
         private const val YOUTUBE_URL = "{youtube_url}"
         private const val FEED_TRACE = "mp_feed"
         private const val AFTER_POST = "after_post"
@@ -1130,7 +1125,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
-            return (list[position] as DynamicPostUiModel).feedXCard.media.firstOrNull()
+            if (position >= 0 && list.size > position && list[position] is DynamicPostUiModel) {
+                return (list[position] as DynamicPostUiModel).feedXCard.media.firstOrNull()
+            }
         } catch (e: Exception) {
             Timber.d(e.localizedMessage)
         }
@@ -1157,7 +1154,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun getTopadsCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
-            return (list[position] as TopadsHeadLineV2Model).feedXCard.media.firstOrNull()
+            if (position >= 0 && list.size > position && list[position] is TopadsHeadLineV2Model) {
+                return (list[position] as TopadsHeadLineV2Model).feedXCard.media.firstOrNull()
+            }
         } catch (e: Exception) {
             Timber.d(e.localizedMessage)
         }
@@ -3602,7 +3601,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
         val sheet = ProductActionBottomSheet.newInstance(bundle)
-        sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        if (!sheet.isAdded)
+        sheet.show(childFragmentManager, "")
         sheet.shareProductCB = {
             onShareProduct(
                 item.id.toIntOrZero(),
@@ -3672,7 +3672,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         mediaType: String
     ) {
 
-        if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
+        if (adapter.getlist().size > positionInFeed && adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
             val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
             if (item.feedXCard.tags.isNotEmpty())
                 feedAnalytics.eventClickBSitem(
@@ -3686,7 +3686,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
         }
 
-        if (adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
+        if (adapter.getlist().size > positionInFeed && adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
             val item = (adapter.getlist()[positionInFeed] as TopadsHeadLineV2Model)
             if (item.feedXCard.tags.isNotEmpty())
                 feedAnalytics.eventClickBSitem(
