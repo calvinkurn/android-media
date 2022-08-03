@@ -10,7 +10,6 @@ import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -1554,18 +1553,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
 
     private fun handleClickPin(product: ProductUiModel){
-        val isPinned = product.pinStatus.isPinned
         viewModelScope.launchCatchError(block = {
             updatePinProduct(isLoading = true, product = product)
             //for unpin send 0 to unpin all product in channel
-            val id = if(isPinned) "0" else product.id
             val result = repo.setPinProduct(channelId, product)
             if(result) {
                 updatePinProduct(product = product)
-                addCoolDown()
             } else {
-                val action = if(isPinned) "lepas" else "pasang"
-                throw MessageErrorException("Gagal $action pin di produk. Coba lagi, ya.")
+                val action = if(product.pinStatus.isPinned) "lepas" else "pasang"
+                throw PinnedProductException("Gagal $action pin di produk. Coba lagi, ya.")
             }
         }){
             //switch current status bcz in update UI it'll switch to the OG
@@ -1587,15 +1583,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
         }
     }
-
-    private fun addCoolDown() {
-        coolDownTimerJob?.cancel()
-        coolDownTimerJob = viewModelScope.launch {
-            delay(COOL_DOWN_TIMER)
-        }
-    }
-
-    fun getCoolDownStatus() : Boolean = coolDownTimerJob?.isActive ?: false
 
     companion object {
 

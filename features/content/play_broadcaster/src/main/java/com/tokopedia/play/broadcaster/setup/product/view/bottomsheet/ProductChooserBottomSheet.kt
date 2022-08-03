@@ -15,6 +15,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductChooserBinding
+import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
@@ -42,11 +43,10 @@ import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.net.ConnectException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -239,12 +239,19 @@ class ProductChooserBottomSheet @Inject constructor(
                         mListener?.onSetupSuccess(this@ProductChooserBottomSheet)
                     }
                     is PlayBroProductChooserEvent.ShowError -> {
-                        toaster.showError(
-                            err = it.error,
-                            customErrMessage = getString(
-                                R.string.play_bro_product_chooser_error_save
+                        if(it.error is PinnedProductException){
+                            toaster.showToaster(
+                                message = getString(R.string.play_bro_pin_product_failed),
+                                type = Toaster.TYPE_ERROR
                             )
-                        )
+                        }else {
+                            toaster.showError(
+                                err = it.error,
+                                customErrMessage = getString(
+                                    R.string.play_bro_product_chooser_error_save
+                                )
+                            )
+                        }
                     }
                     else -> {}
                 }

@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
+import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
@@ -34,7 +34,6 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -426,19 +425,17 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleClickPin(product: ProductUiModel){
-        val isPinned = product.pinStatus.isPinned
         viewModelScope.launchCatchError(block = {
             updatePinProduct(isLoading = true, product = product)
             val result = repo.setPinProduct(channelId, product)
             if(result) {
                 updatePinProduct(product = product)
-                addCoolDown()
             } else {
-                //switch current status bcz in update UI it'll switch to the OG
-                val action = if(isPinned) "lepas" else "pasang"
-                throw MessageErrorException("Gagal $action pin di produk. Coba lagi, ya.")
+                val action = if(product.pinStatus.isPinned) "lepas" else "pasang"
+                throw PinnedProductException("Gagal $action pin di produk. Coba lagi, ya.")
             }
         }){
+            //switch current status bcz in update UI it'll switch to the OG
             updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
             _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
         }

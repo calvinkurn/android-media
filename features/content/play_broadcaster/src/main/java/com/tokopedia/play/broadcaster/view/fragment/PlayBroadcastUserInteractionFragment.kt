@@ -20,6 +20,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
+import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
@@ -83,7 +84,6 @@ import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import java.util.Collections
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -164,9 +164,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
 
             override fun onPinClicked(product: ProductUiModel) {
-                checkPinProduct (product.pinStatus.isPinned){
-                    parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
-                }
+                parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
             }
         })
     }
@@ -787,7 +785,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             parentViewModel.uiEvent.collect { event ->
                 when (event) {
-                    is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
+                    is PlayBroadcastEvent.ShowError -> {
+                        if(event.error is PinnedProductException)
+                            showToaster(
+                                message = getString(R.string.play_bro_pin_product_failed),
+                                type = Toaster.TYPE_ERROR)
+                        else showErrorToaster(event.error)
+                    }
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                     PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
                     PlayBroadcastEvent.ShowLeaderboardBottomSheet -> openLeaderboardSheet()
@@ -1135,16 +1139,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             requireContext().classLoader
         )
         ongoingLeaderboardBottomSheet.show(childFragmentManager)
-    }
-
-    private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
-        if(!parentViewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
-        else {
-           showToaster(
-                message = getString(R.string.play_bro_pin_product_failed),
-                type = Toaster.TYPE_ERROR
-            )
-        }
     }
 
     companion object {

@@ -21,7 +21,6 @@ import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -56,19 +55,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     override fun onPinClicked(product: ProductUiModel) {
-        checkPinProduct(product.pinStatus.isPinned){
-            viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
-        }
-    }
-
-    private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
-        if (!viewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
-        else {
-            toaster.showToaster(
-                message = getString(R.string.play_bro_pin_product_failed),
-                type = Toaster.TYPE_ERROR
-            )
-        }
+        viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
