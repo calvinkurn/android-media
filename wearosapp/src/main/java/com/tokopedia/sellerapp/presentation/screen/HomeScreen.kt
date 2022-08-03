@@ -7,16 +7,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
+import com.tokopedia.sellerapp.presentation.theme.defaultBackgroundColor
 
 @Composable
 fun HomeScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Blue),
+            .background(color = MaterialTheme.colors.defaultBackgroundColor),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = "Hello World")
+        Text(text = "Hello World", color = Color.Black)
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.presentation
 
 import SetupNavigation
+import WearAppTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,8 +15,10 @@ class SellerAppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            navController = rememberSwipeDismissableNavController()
-            SetupNavigation(navController = navController)
+            WearAppTheme {
+                navController = rememberSwipeDismissableNavController()
+                SetupNavigation(navController = navController)
+            }
         }
     }
 }

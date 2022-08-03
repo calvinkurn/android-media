@@ -4,13 +4,13 @@ import SplashScreen
 import androidx.navigation.NavGraphBuilder
 import androidx.wear.compose.navigation.composable
 import com.tokopedia.sellerapp.presentation.screen.HomeScreen
-import com.tokopedia.sellerapp.util.Constants
+import com.tokopedia.sellerapp.util.ScreenConstant
 
 fun NavGraphBuilder.splashComposable(
     navigateToHomeScreen: () -> Unit
 ) {
     composable(
-        route = Constants.SPLASH_SCREEN
+        route = ScreenConstant.SPLASH_SCREEN
     ) {
         SplashScreen(navigateToHomeScreen)
     }
@@ -18,7 +18,7 @@ fun NavGraphBuilder.splashComposable(
 
 fun NavGraphBuilder.homeComposable() {
     composable(
-        route = Constants.HOME_SCREEN
+        route = ScreenConstant.HOME_SCREEN
     ) {
         HomeScreen()
     }
