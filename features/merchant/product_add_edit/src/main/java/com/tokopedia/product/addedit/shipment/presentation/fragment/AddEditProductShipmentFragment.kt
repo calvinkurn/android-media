@@ -258,6 +258,7 @@ class AddEditProductShipmentFragment:
                         shipmentOnDemandAdapter.setProductActiveState(it)
                     }
                     isCPLActivated = false
+                    updateLayoutShipment()
                 }
             }
         }
