@@ -339,6 +339,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var globalErrorShopPage: GlobalError? = null
     var listWidgetLayout = mutableListOf<ShopPageWidgetLayoutUiModel>()
+    var initialLayoutData = mutableListOf<ShopPageWidgetLayoutUiModel>()
     var isNeedScrollToTopAfterGetData = true
     val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
 
@@ -533,7 +534,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             viewModel?.setMiniCartData(it)
             val listWidgetData = shopHomeAdapter.data.toMutableList()
             if(listWidgetData.isNotEmpty())
-                viewModel?.getShopWidgetDataWithUpdatedQuantity(it, listWidgetData)
+                viewModel?.getShopWidgetDataWithUpdatedQuantity(listWidgetData)
         })
     }
 
@@ -630,8 +631,28 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         stopMonitoringPltCustomMetric(ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_V2_PREPARE)
         startMonitoringPltCustomMetric(ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_V2_MIDDLE)
         shopPageHomeLayoutUiModel?.let {
+            shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
+                it.masterLayoutId,
+                shopId
+            )
             shopHomeAdapter.hideLoading()
             setShopHomeWidgetLayoutData(it)
+            setWidgetLayoutPlaceholder()
+        }
+    }
+
+    open fun setWidgetLayoutPlaceholder() {
+        val shopHomeWidgetContentData = ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(
+            listWidgetLayout,
+            isOwner,
+            isLogin,
+            isThematicWidgetShown,
+            isEnableDirectPurchase
+        )
+        if (shopHomeWidgetContentData.isNotEmpty()) {
+            shopHomeAdapter.setHomeLayoutData(shopHomeWidgetContentData)
+        } else {
+            shopHomeAdapter.addProductGridListPlaceHolder()
         }
     }
 
@@ -1210,6 +1231,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     open fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
+        initialLayoutData = data.listWidgetLayout.toMutableList()
+        listWidgetLayout = initialLayoutData.toMutableList()
         shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
             data.masterLayoutId,
             shopId
@@ -1678,18 +1701,19 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             // disable owner add their own bundle to cart
             showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
         } else {
-            if (selectedMultipleBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+            if (isLogin) {
+                if (selectedMultipleBundle.isProductsHaveVariant) {
+                    // go to bundling selection page
+                    goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
+                } else {
+                    // atc bundle directly from shop page home
+                    val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
                         widgetId = widgetLayout.widgetId,
                         widgetMasterId = widgetLayout.widgetMasterId,
                         widgetType = widgetLayout.widgetType,
                         widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
+                    )
+                    viewModel?.addBundleToCart(
                         shopId = shopId,
                         userId = userId,
                         bundleId = selectedMultipleBundle.bundleId,
@@ -1697,7 +1721,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                         onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         productQuantity = selectedMultipleBundle.minOrder
-                )
+                    )
+                }
+            } else {
+                redirectToLoginPage()
             }
             shopPageHomeTracking.clickAtcProductBundleMultiple(
                     shopId = shopId,
@@ -1724,18 +1751,19 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             // disable owner add their own bundle to cart
             showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
         } else {
-            if (selectedBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+            if (isLogin) {
+                if (selectedBundle.isProductsHaveVariant) {
+                    // go to bundling selection page
+                    goToBundlingSelectionPage(selectedBundle.bundleId)
+                } else {
+                    // atc bundle directly from shop page home
+                    val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
                         widgetId = widgetLayout.widgetId,
                         widgetMasterId = widgetLayout.widgetMasterId,
                         widgetType = widgetLayout.widgetType,
                         widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
+                    )
+                    viewModel?.addBundleToCart(
                         shopId = shopId,
                         userId = userId,
                         bundleId = selectedBundle.bundleId,
@@ -1743,7 +1771,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                         onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
                         onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
                         productQuantity = selectedBundle.minOrder
-                )
+                    )
+                }
+            } else {
+                redirectToLoginPage()
             }
             shopPageHomeTracking.clickAtcProductBundleSingle(
                     shopId = shopId,
@@ -3375,8 +3406,9 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         endlessRecyclerViewScrollListener.resetState()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
         scrollToTop()
+        listWidgetLayout = initialLayoutData.toMutableList()
+        setWidgetLayoutPlaceholder()
     }
 
     // flash sale widget
@@ -3385,8 +3417,9 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         endlessRecyclerViewScrollListener.resetState()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
-        viewModel?.getShopPageHomeWidgetLayoutData(shopId, extParam)
         scrollToTop()
+        listWidgetLayout = initialLayoutData.toMutableList()
+        setWidgetLayoutPlaceholder()
     }
 
     private fun setNplRemindMeClickedCampaignId(campaignId: String) {
