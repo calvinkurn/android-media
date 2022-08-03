@@ -87,6 +87,8 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+import com.tokopedia.common_digital.atc.DigitalErrorAtcData
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
@@ -445,6 +447,11 @@ class DigitalPDPDataPlanFragment :
                 }
             }
         })
+
+        viewModel.errorAtc.observe(viewLifecycleOwner){
+            hideLoadingDialog()
+            showErrorAtc(it)
+        }
 
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpPaketDataClientNumberWidget?.run {
@@ -1064,6 +1071,38 @@ class DigitalPDPDataPlanFragment :
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR
             ).show()
+        }
+    }
+
+    private fun showErrorAtc(error: ErrorAtc){
+        if (error.atcErrorPage.isShowErrorPage){
+            RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL).also {
+                it.putExtra(
+                    DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA,
+                    viewModel.digitalCheckoutPassData.apply {
+                        errorAtcData = DigitalErrorAtcData(
+                            redirectionLink = error.atcErrorPage.buttons.first().appLinkUrl,
+                            errorTitle = error.title,
+                            errorDescription = error.subTitle,
+                            buttonLabel = error.atcErrorPage.buttons.first().label
+                        )
+                    }
+                )
+            }.apply {
+                startActivity(this)
+            }
+        }else{
+            view?.let {
+                Toaster.build(
+                    it,
+                    error.title,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.common_digital.R.string.digital_common_toaster_button_label)
+                ) {
+                    RouteManager.route(context, error.atcErrorPage.buttons.first().appLinkUrl)
+                }.show()
+            }
         }
     }
 
