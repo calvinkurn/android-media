@@ -1588,6 +1588,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     override fun impressionProductBundleMultiple(
+        shopId: String,
+        warehouseId: String,
         selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
         bundleType: String,
@@ -1615,6 +1617,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     ) {}
 
     override fun onMultipleBundleProductClicked(
+        shopId: String,
+        warehouseId: String,
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
@@ -1650,6 +1654,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     override fun impressionProductBundleSingle(
+        shopId: String,
+        warehouseId: String,
         selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
         selectedProduct: ShopHomeBundleProductUiModel,
         bundleName: String,
@@ -1671,6 +1677,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     override fun onSingleBundleProductClicked(
+        shopId: String,
+        warehouseId: String,
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
@@ -1695,6 +1703,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     override fun addMultipleBundleToCart(
+        shopId: String,
+        warehouseId: String,
         selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
         bundleListSize: Int,
         productDetails: List<ShopHomeBundleProductUiModel>,
@@ -1744,6 +1754,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     override fun addSingleBundleToCart(
+        shopId: String,
+        warehouseId: String,
         selectedBundle: ShopHomeProductBundleDetailUiModel,
         bundleListSize: Int,
         bundleProducts: ShopHomeBundleProductUiModel,

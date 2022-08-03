@@ -258,6 +258,8 @@ class ShopPageCampaignFragment :
     }
 
     override fun onMultipleBundleProductClicked(
+        shopId: String,
+        warehouseId: String,
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
@@ -283,6 +285,8 @@ class ShopPageCampaignFragment :
     }
 
     override fun onSingleBundleProductClicked(
+        shopId: String,
+        warehouseId: String,
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
@@ -331,6 +335,8 @@ class ShopPageCampaignFragment :
     }
 
     override fun impressionProductBundleSingle(
+        shopId: String,
+        warehouseId: String,
         selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
         selectedProduct: ShopHomeBundleProductUiModel,
         bundleName: String,
