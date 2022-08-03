@@ -57,7 +57,7 @@ class SetPinnedProductUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): SetPinnedProduct {
-        return if(!isTimerActive() || productInfo?.pinStatus?.isPinned == true){
+        return if(!isTimerActive() || getPinStatus()){
             super.executeOnBackground()
         } else throw PinnedProductException()
     }
