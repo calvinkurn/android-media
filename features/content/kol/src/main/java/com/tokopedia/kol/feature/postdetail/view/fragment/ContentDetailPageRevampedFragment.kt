@@ -250,8 +250,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        cdpRecyclerView = view.findViewById(kolR.id.cdp_recycler_view)
         setupView(view)
         viewModel.getCDPPostDetailFirstData(postId)
 
@@ -263,11 +261,14 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     }
 
     private fun setupView(view: View) {
+        cdpRecyclerView = view.findViewById(kolR.id.cdp_recycler_view)
+
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
             cdpRecyclerView?.addOnScrollListener(it)
             it.resetState()
         }
+
         cdpRecyclerView?.adapter = adapter
     }
 

@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
-import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendation
@@ -43,7 +42,6 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val likeKolPostUseCase: LikeKolPostUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
-    private val sendReportUseCase: SendReportUseCase,
     private val repository: ContentDetailRepository,
     private val mapper: ContentDetailMapper,
 ): BaseViewModel(dispatcher.main) {

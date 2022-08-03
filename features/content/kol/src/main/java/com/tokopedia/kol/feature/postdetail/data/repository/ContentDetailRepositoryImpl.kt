@@ -46,7 +46,6 @@ class ContentDetailRepositoryImpl @Inject constructor(
                 )
             }
         }
-
     }
 
     override suspend fun addToCart(
