@@ -254,21 +254,17 @@ class UploadPrescriptionViewModel @Inject constructor(
         var successImagesCount = 0
         var failedImageCount = 0
         var approvedImageCount = 0
+        var uploadingImageCount = 0
         val presImageSize  = _prescriptionImages.value?.size ?: 0
         _prescriptionImages.value?.forEach { presImage ->
             when {
-                presImage?.isUploadSuccess == true -> {
-                    successImagesCount += 1
-                }
-                presImage?.isUploadFailed == true -> {
-                    failedImageCount += 1
-                }
-                (presImage?.status == EPharmacyPrescriptionStatus.APPROVED.status) -> {
-                    approvedImageCount += 1
-                }
+                (presImage?.isUploadSuccess == true )-> successImagesCount += 1
+                (presImage?.isUploadFailed == true )-> failedImageCount += 1
+                (presImage?.isUploading == true )-> uploadingImageCount += 1
+                (presImage?.status == EPharmacyPrescriptionStatus.APPROVED.status) -> approvedImageCount += 1
             }
         }
-        val key = if(failedImageCount > 0){
+        val key = if(failedImageCount > 0 || uploadingImageCount > 0){
             EPharmacyButtonKey.DONE_DISABLED.key
         }else {
             if((successImagesCount == presImageSize &&  presImageSize != 0) ||
