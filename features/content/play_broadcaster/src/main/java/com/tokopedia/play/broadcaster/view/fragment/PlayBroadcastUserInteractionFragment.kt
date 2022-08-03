@@ -239,11 +239,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 })
             }
         }
-
-        /**
-         * Hide coachmark everytime there's a dialog (either floating dialog or bottomsheet)
-         */
-        if (childFragment is DialogFragment) gameIconView.cancelCoachMark()
     }
 
     private fun getViewModelProvider(): ViewModelProvider {
@@ -883,7 +878,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             prevConfig == config &&
             prevOnboarding?.firstInteractive == onboarding.firstInteractive) return
 
-        if (state !is InteractiveUiModel.Unknown || config.isNoGameActive()) {
+        if (state !is InteractiveUiModel.Unknown || config.isNoGameActive() || config.availableGameList().isEmpty()) {
             gameIconView.hide()
         }
         else {
@@ -997,6 +992,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             val dialog = InteractiveSetupDialogFragment.get(childFragmentManager)
             if (dialog?.isAdded == true) dialog.dismiss()
         } else {
+            gameIconView.cancelCoachMark()
             InteractiveSetupDialogFragment.getOrCreate(
                 childFragmentManager,
                 requireActivity().classLoader

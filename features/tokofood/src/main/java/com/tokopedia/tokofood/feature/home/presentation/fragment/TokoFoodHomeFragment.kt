@@ -817,10 +817,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun showMiniCartHome() {
+        setRvPadding(isShowMiniCart = true)
         miniCartHome?.show()
     }
 
     private fun hideMiniCartHome() {
+        setRvPadding(isShowMiniCart = false)
         miniCartHome?.hide()
     }
 
@@ -968,6 +970,17 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 showJumpToTop(recyclerView)
             } else {
                 hideJumpToTop()
+            }
+        }
+    }
+
+    private fun setRvPadding(isShowMiniCart: Boolean) {
+        rvHome?.let {
+            if (isShowMiniCart){
+                it.setPadding(0,0, 0, context?.resources?.
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)?: 0)
+            } else {
+                it.setPadding(0,0, 0,0)
             }
         }
     }

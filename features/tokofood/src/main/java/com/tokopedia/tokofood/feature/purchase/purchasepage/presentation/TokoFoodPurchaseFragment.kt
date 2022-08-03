@@ -241,17 +241,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun initializeToolbar() {
         activity?.let {
-            viewBinding?.toolbarPurchase?.removeAllViews()
-            val tokoFoodPurchaseToolbar = TokoFoodPurchaseToolbar(it).apply {
-                listener = this@TokoFoodPurchaseFragment
-            }
-
-            toolbar = tokoFoodPurchaseToolbar
-
+            toolbar = viewBinding?.toolbarPurchase
             toolbar?.let { toolbar ->
-                viewBinding?.toolbarPurchase?.addView(toolbar)
+                toolbar.listener = this@TokoFoodPurchaseFragment
                 toolbar.setContentInsetsAbsolute(Int.ZERO, Int.ZERO);
-                (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbarPurchase)
+                (activity as AppCompatActivity).setSupportActionBar(toolbar)
             }
 
             setToolbarShadowVisibility(false)
@@ -310,7 +304,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         (pair.first as? CheckoutTokoFood)?.let { response ->
                             (pair.second as? Boolean)?.let { isPreviousPopupPromo ->
                                 shopId = response.data.shop.shopId
-                                activityViewModel?.loadCartList(response)
+                                loadCartData(response)
                                 when {
                                     response.data.popupErrorMessage.isNotEmpty() -> {
                                         showToasterError(response.data.popupErrorMessage, getOkayMessage()) {}
@@ -498,9 +492,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                         viewModel.updateNotes(product)
                                     }
 
-                                    val toasterMessage = product.message.takeIf { cartMessage ->
-                                        cartMessage.isNotBlank()
-                                    } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_notes).orEmpty()
+                                    val toasterMessage =
+                                        context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_notes)
+                                            .orEmpty()
                                     showToaster(toasterMessage, getOkayMessage())
                                 }
                             }
@@ -663,6 +657,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             GlobalError.NO_CONNECTION
         } else {
             GlobalError.SERVER_ERROR
+        }
+    }
+
+    private fun loadCartData(response: CheckoutTokoFood) {
+        if (response.isEnabled() && !response.data.summaryDetail.hideSummary) {
+            activityViewModel?.loadCartList(response)
+        } else {
+            activityViewModel?.loadCartList(SOURCE)
         }
     }
 

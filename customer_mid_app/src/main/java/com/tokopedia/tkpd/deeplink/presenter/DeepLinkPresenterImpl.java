@@ -304,7 +304,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String redirectionUrl = uriData.getQueryParameter(REDIRECTION_LINK_PARAM);
         new TopAdsUrlHitter(context).hitClickUrlAndStoreHeader(this.getClass().getCanonicalName(),
                 newUri.toString(), "", "", "", userSession.isLoggedIn());
-        RouteManager.route(context, redirectionUrl);
+        if (redirectionUrl!=null && !redirectionUrl.isEmpty()){
+            RouteManager.route(context, redirectionUrl);
+        }
     }
 
     private static Uri replaceUriParameter(Uri uri, UserSessionInterface userSession) {

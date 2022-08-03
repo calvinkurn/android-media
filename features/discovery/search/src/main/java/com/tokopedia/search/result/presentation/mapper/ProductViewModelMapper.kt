@@ -23,10 +23,9 @@ import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
@@ -34,7 +33,9 @@ import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 
 class ProductViewModelMapper {
@@ -108,7 +109,11 @@ class ProductViewModelMapper {
             dimension90,
             pageTitle,
         )
-        productDataView.lastFilterDataView = convertToLastFilterDataView(searchProductModel)
+        productDataView.lastFilterDataView = convertToLastFilterDataView(
+            searchProductModel,
+            keyword,
+            dimension90,
+        )
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
         productDataView.violation = convertToViolationView(searchProductData.violation)
         productDataView.backendFilters = searchProductModel.backendFilters
@@ -420,12 +425,22 @@ class ProductViewModelMapper {
         )
     }
 
-    private fun convertToLastFilterDataView(searchProductModel: SearchProductModel): LastFilterDataView {
+    private fun convertToLastFilterDataView(
+        searchProductModel: SearchProductModel,
+        keyword: String,
+        dimension90: String,
+    ): LastFilterDataView {
         val lastFilterData = searchProductModel.lastFilter.data
 
         return LastFilterDataView(
             filterList = lastFilterData.filters,
             title = lastFilterData.title,
+            keyword = keyword,
+            applink = lastFilterData.applink,
+            trackingOption = lastFilterData.trackingOption,
+            componentId = lastFilterData.componentId,
+            dimension90 = dimension90,
+            valueName = lastFilterData.title + lastFilterData.filters.joinToString { it.name }
         )
     }
 
