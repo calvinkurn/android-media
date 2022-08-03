@@ -83,6 +83,7 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
@@ -381,6 +382,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     showLoadingDialog()
                 }
             }
+        })
+
+        viewModel.errorAtc.observe(viewLifecycleOwner, {
+            hideLoadingDialog()
+            showErrorAtc(it)
         })
 
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
@@ -887,6 +893,24 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR
             ).show()
+        }
+    }
+
+    private fun showErrorAtc(error: ErrorAtc){
+        if (error.atcErrorPage.isShowErrorPage){
+            //TODO navigate to checkout with params
+        }else{
+            view?.let {
+                Toaster.build(
+                    it,
+                    error.title,
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.common_digital.R.string.digital_common_toaster_button_label)
+                ) {
+                    RouteManager.route(context, error.atcErrorPage.buttons.first().appLinkUrl)
+                }.show()
+            }
         }
     }
 
