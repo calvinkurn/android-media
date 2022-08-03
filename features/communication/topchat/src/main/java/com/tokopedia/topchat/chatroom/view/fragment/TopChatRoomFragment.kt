@@ -1560,7 +1560,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         resultProducts?.let { products ->
             removeSrwBubble()
             removeSrwPreview()
-            topchatViewState?.showChatAreaShimmer()
+            if (isSrwNewDesign()) {
+                topchatViewState?.showChatAreaShimmer()
+            }
             val productIds = products.map { it.productId }
             viewModel.loadProductPreview(productIds)
         }
