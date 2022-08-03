@@ -31,7 +31,7 @@ class SetPinnedProductUseCase @Inject constructor(
     }
 
     private var coolDownTimerJob: Job? = null
-    private val scope = CoroutineScope(dispatcher.main + SupervisorJob())
+    private val scope = CoroutineScope(dispatcher.default)
     private var productInfo: ProductUiModel? = null
 
     private fun addCoolDown() {
@@ -42,10 +42,17 @@ class SetPinnedProductUseCase @Inject constructor(
     }
 
     private fun isTimerActive(): Boolean = coolDownTimerJob?.isActive ?: false
+    private fun getPinStatus(): Boolean = productInfo?.pinStatus?.isPinned ?: false
 
     override fun isResponseSuccess(response: SetPinnedProduct): Boolean {
         val isSuccess = super.isResponseSuccess(response)
-        if(response.data.success && isSuccess && productInfo?.pinStatus?.isPinned == false) addCoolDown()
+        if(response.data.success && isSuccess && !getPinStatus()) {
+            addCoolDown()
+        }
+        else {
+            val action = if (getPinStatus()) "lepas" else "pasang"
+            throw PinnedProductException("Gagal $action pin di produk. Coba lagi, ya.")
+        }
         return isSuccess
     }
 

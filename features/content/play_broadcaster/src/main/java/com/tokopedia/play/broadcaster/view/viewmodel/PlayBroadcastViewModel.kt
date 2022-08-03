@@ -1554,29 +1554,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleClickPin(product: ProductUiModel){
         viewModelScope.launchCatchError(block = {
-            updatePinProduct(isLoading = true, product = product)
-            //for unpin send 0 to unpin all product in channel
+            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = true)))
             val result = repo.setPinProduct(channelId, product)
-            if(result) {
-                updatePinProduct(product = product)
-            } else {
-                val action = if(product.pinStatus.isPinned) "lepas" else "pasang"
-                throw PinnedProductException("Gagal $action pin di produk. Coba lagi, ya.")
-            }
+            if(result)
+                updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = false, isPinned = product.pinStatus.isPinned.switch())))
         }){
-            //switch current status bcz in update UI it'll switch to the OG
-            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
+            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = false)))
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
         }
     }
 
-    private fun updatePinProduct(product: ProductUiModel, isLoading: Boolean = false) {
+    private fun updatePinProduct(product: ProductUiModel) {
         _productSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
                 sectionUiModel.products.map { prod ->
                     if(prod.id == product.id)
-                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isLoading) prod.pinStatus.isPinned else product.pinStatus.isPinned.switch(), isLoading = isLoading))
+                        prod.copy(pinStatus = product.pinStatus)
                     else
                         prod
                 })

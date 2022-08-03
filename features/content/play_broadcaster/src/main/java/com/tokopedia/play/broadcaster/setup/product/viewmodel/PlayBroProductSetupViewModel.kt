@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
-import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
@@ -424,31 +423,23 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     private fun handleClickPin(product: ProductUiModel){
         viewModelScope.launchCatchError(block = {
-            updatePinProduct(isLoading = true, product = product)
+            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = true)))
             val result = repo.setPinProduct(channelId, product)
-            if(result) {
-                updatePinProduct(product = product)
-            } else {
-                val action = if(product.pinStatus.isPinned) "lepas" else "pasang"
-                throw PinnedProductException("Gagal $action pin di produk. Coba lagi, ya.")
-            }
+            if(result)
+                updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = false, isPinned = product.pinStatus.isPinned.switch())))
         }){
-            //switch current status bcz in update UI it'll switch to the OG
-            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
+            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = false)), isFailed = true)
             _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
         }
     }
 
-    private fun updatePinProduct(product: ProductUiModel, isLoading: Boolean = false) {
+    private fun updatePinProduct(product: ProductUiModel, isFailed: Boolean = false) {
         _productTagSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
                 sectionUiModel.products.map { prod ->
-                    if(prod.id == product.id)
-                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isLoading) prod.pinStatus.isPinned else product.pinStatus.isPinned.switch(), isLoading = isLoading))
-                    else
-                        //Reset
-                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = false))
+                    if(prod.id == product.id) prod.copy(pinStatus = product.pinStatus)
+                    else prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isFailed && prod.pinStatus.isPinned) prod.pinStatus.isPinned else false))
                 })
             }
         }
