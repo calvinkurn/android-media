@@ -1559,7 +1559,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             updatePinProduct(isLoading = true, product = product)
             //for unpin send 0 to unpin all product in channel
             val id = if(isPinned) "0" else product.id
-            val result = repo.setPinProduct(channelId, id)
+            val result = repo.setPinProduct(channelId, product)
             if(result) {
                 updatePinProduct(product = product)
                 addCoolDown()

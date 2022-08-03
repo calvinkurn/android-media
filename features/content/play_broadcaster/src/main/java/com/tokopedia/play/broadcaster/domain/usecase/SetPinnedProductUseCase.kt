@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.domain.model.SetPinnedProduct
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import javax.inject.Inject
 
@@ -25,7 +26,8 @@ class SetPinnedProductUseCase @Inject constructor(
         setTypeClass(SetPinnedProduct::class.java)
     }
 
-    fun createParam(channelId: String, productId: String): Map<String, Any> {
+    fun createParam(channelId: String, product: ProductUiModel): Map<String, Any> {
+        val productId = if(product.pinStatus.isPinned) "0" else product.id
         return mapOf(
             PARAM_CHANNEL_ID to channelId.toLongOrZero(),
             PARAM_PRODUCT_ID to productId.toLongOrZero(),
