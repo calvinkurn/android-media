@@ -64,7 +64,8 @@ class AddEmailViewModelTest {
     fun `on mutateAddEmail executed`() {
         val mockParam = mapOf(
                 ProfileCompletionQueryConstant.PARAM_EMAIL to mockEmail,
-                ProfileCompletionQueryConstant.PARAM_OTP_CODE to mockOtp
+                ProfileCompletionQueryConstant.PARAM_OTP_CODE to mockOtp,
+                ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN to mockValidateToken
         )
 
         viewModel.mutateAddEmail(context, mockEmail, mockOtp, mockValidateToken)
