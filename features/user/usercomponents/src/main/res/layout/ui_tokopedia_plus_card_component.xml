@@ -16,7 +16,7 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iconTokopediaPlus"
             android:layout_width="48dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             app:layout_constraintTop_toTopOf="parent"
@@ -47,9 +47,9 @@
                 android:id="@+id/descriptionTokopediaPlus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N600"
+                android:textColor="@color/Unify_NN600"
                 android:layout_marginTop="2dp"
-                app:typographyType="display_3"
+                app:typographyType="small"
                 app:typographyWeight="reguler"/>
 
         </LinearLayout>
