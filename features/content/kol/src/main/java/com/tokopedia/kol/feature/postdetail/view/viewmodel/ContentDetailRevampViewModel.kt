@@ -8,23 +8,23 @@ import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
-import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
-import com.tokopedia.kol.R
+import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendation
 import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationPostUseCase
+import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.NON_LOGIN_USER_ID
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -41,12 +41,12 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val getRecommendationPostUseCase: GetRecommendationPostUseCase,
     private val getPostDetailUseCase: GetPostDetailUseCase,
     private val likeKolPostUseCase: LikeKolPostUseCase,
-    private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
     private val sendReportUseCase: SendReportUseCase,
     private val deletePostUseCase: DeletePostUseCase,
     private val repository: ContentDetailRepository,
+    private val mapper: ContentDetailMapper,
 ): BaseViewModel(dispatcher.main) {
 
     var currentCursor = ""
@@ -54,7 +54,7 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val _getCDPPostRecomData = MutableLiveData<Result<FeedXPostRecommendation>>()
     private val _getCDPPostFirstPostData = MutableLiveData<Result<ContentDetailRevampDataUiModel>>()
     private val _likeKolResp = MutableLiveData<Result<LikeKolViewModel>>()
-    private val _togglefollowUnfollowResp = MutableLiveData<Result<FavoriteShopViewModel>>()
+    private val _followShopObservable = MutableLiveData<ContentDetailResult<ShopFollowModel>>()
     private val _longVideoViewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
     private val _trackVODViewsData = MutableLiveData<Result<ViewsKolModel>>()
     private val _atcResp = MutableLiveData<Result<AtcViewModel>>()
@@ -70,8 +70,8 @@ class ContentDetailRevampViewModel @Inject constructor(
     val getLikeKolResp: LiveData<Result<LikeKolViewModel>>
         get() = _likeKolResp
 
-    val toggleFollowUnfollowResp: LiveData<Result<FavoriteShopViewModel>>
-        get() = _togglefollowUnfollowResp
+    val followShopObservable: LiveData<ContentDetailResult<ShopFollowModel>>
+        get() = _followShopObservable
 
     val longVideoViewTrackResponse: LiveData<Result<ViewsKolModel>>
        get() = _longVideoViewTrackResponse
@@ -188,41 +188,17 @@ class ContentDetailRevampViewModel @Inject constructor(
             throw e
         }
     }
-    fun doToggleFavoriteShop(
-        rowNumber: Int,
-        shopId: String,
-        follow: Boolean = true,
-        isUnfollowFromBottomSheetMenu: Boolean = false
-    ) {
-        launchCatchError(block = {
-            val results = withContext(dispatcher.io) {
-                toggleFavoriteShop(rowNumber, shopId, isUnfollowFromBottomSheetMenu)
-            }
-            _togglefollowUnfollowResp.value = Success(results)
-        }) {
-            if (follow)
-                _togglefollowUnfollowResp.value = Fail(CustomUiMessageThrowable(R.string.feed_unfollow_error_message))
-            else
-                _togglefollowUnfollowResp.value = Fail(CustomUiMessageThrowable(R.string.feed_follow_error_message))
-        }
-        }
 
-    private fun toggleFavoriteShop(
-        rowNumber: Int,
-        shopId: String,
-        isUnfollowClickedFromBottomSheetMenu: Boolean = false
-    ): FavoriteShopViewModel {
-        try {
-            val data = FavoriteShopViewModel()
-            data.rowNumber = rowNumber
-            data.shopId = shopId
-            data.isUnfollowFromShopsMenu = isUnfollowClickedFromBottomSheetMenu
-            val params = ToggleFavouriteShopUseCase.createRequestParam(shopId)
-            val isSuccess = doFavoriteShopUseCase.createObservable(params).toBlocking().first()
-            data.isSuccess = isSuccess
-            return data
-        } catch (e: Throwable) {
-            throw e
+    fun followShop(shopId: String, action: ShopFollowAction, rowNumber: Int) {
+        launchCatchError(block = {
+            repository.followShop(shopId, action)
+            _followShopObservable.value = ContentDetailResult.Success(
+                mapper.mapShopFollow(rowNumber, action)
+            )
+        }) {
+            _followShopObservable.value = ContentDetailResult.Failure(it) {
+                followShop(shopId, action, rowNumber)
+            }
         }
     }
 
@@ -253,7 +229,7 @@ class ContentDetailRevampViewModel @Inject constructor(
         }
     }
 
-    fun doAddToCart(
+    fun addToCart(
         productId: String,
         productName: String,
         price: String,
