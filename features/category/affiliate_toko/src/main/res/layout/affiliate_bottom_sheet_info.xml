@@ -23,7 +23,6 @@
         android:layout_marginHorizontal="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_24"
         android:gravity="center"
-        android:textColor="@color/grey_796"
         app:layout_constraintTop_toBottomOf="@id/info_image"
         app:typographyType="heading_2"
         tools:text="Yuk, ikutan sesi di Akademi Kreator Tokopedia!" />
@@ -35,7 +34,6 @@
         android:layout_marginHorizontal="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_16"
         android:gravity="center"
-        android:textColor="@color/grey_796"
         app:layout_constraintTop_toBottomOf="@id/info_title"
         app:typographyType="body_2"
         tools:text="Mau tahu cara bikin konten sosmed yang bagus &amp; menarik banyak viewers? Yuk, kita belajar bareng!" />
