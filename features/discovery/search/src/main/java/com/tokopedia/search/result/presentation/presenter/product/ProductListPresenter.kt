@@ -1528,6 +1528,7 @@ class ProductListPresenter @Inject constructor(
         val optionSize = activeOptions.size
 
         return when {
+            optionSize == 1 -> activeOptions.first().name
             optionSize > 1 -> "$optionSize ${filter.title}"
             else -> filter.chipName
         }
