@@ -58,8 +58,6 @@ data class AccountHeaderDataModel(
         const val NAV_PROFILE_STATE_LOADING = 98
         const val NAV_PROFILE_STATE_SUCCESS = 97
         const val NAV_PROFILE_STATE_FAILED = 96
-
-        const val PAYLOAD_TOKOPEDIA_PLUS = "payloadTokopediaPlus"
     }
 
     fun setProfileData(userName: String, userImage: String, loginState: Int, isGetUserNameError: Boolean) {
