@@ -67,4 +67,10 @@ class OfficialStoreHomeModule {
     fun provideGetTopAdsHeadlineUseCase(graphqlRepository: GraphqlRepository): GetTopAdsHeadlineUseCase {
         return GetTopAdsHeadlineUseCase(graphqlRepository)
     }
+
+    @Provides
+    @OfficialStoreHomeScope
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
 }

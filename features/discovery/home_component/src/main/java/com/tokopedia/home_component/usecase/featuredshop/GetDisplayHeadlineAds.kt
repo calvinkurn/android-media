@@ -81,10 +81,11 @@ class GetDisplayHeadlineAds @Inject constructor(
         graphqlUseCase.setTypeClass(DisplayHeadlineAdsEntity::class.java)
     }
 
-    fun createParams(widgetParam: String) {
-         params = mutableMapOf<String, Any>().apply{
-             put(PARAMS_QUERY, widgetParam)
-         }
+    fun createParams(widgetParam: String, addressData: Map<String, String> = mapOf()) {
+        val addressDataString = addressData.entries.joinToString("&")
+        params = mutableMapOf<String, Any>().apply {
+            put(PARAMS_QUERY, ("$widgetParam&$addressDataString"))
+        }
     }
 
     override suspend fun executeOnBackground(): List<DisplayHeadlineAdsEntity.DisplayHeadlineAds> {

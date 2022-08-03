@@ -108,11 +108,28 @@ class GetTopAdsHeadlineUseCase constructor(graphqlRepository: GraphqlRepository)
         setGraphqlQuery(GetTopadsHeadlineQuery.GQL_QUERY)
     }
 
-    fun setParams(params: String) {
+    fun setParams(params: String, addressData: Map<String,String>) {
+        val map = params.split("&").associate {
+            val (left, right) = it.split("=")
+            left to right
+        }
+
+        val reqParam = appendAddressParams(map, addressData)
         val queryParams = mutableMapOf(
-                 PARAMS_QUERY to params
+            PARAMS_QUERY to reqParam
         )
         setRequestParams(queryParams)
+    }
+
+    private fun appendAddressParams(
+        map: Map<String, String>,
+        hashMap: Map<String,String>
+    ): String {
+        val params = map.toMutableMap()
+        if (hashMap["src"] != "search") {
+            params.putAll(hashMap)
+        }
+        return params.entries.joinToString("&")
     }
 
     fun createParams(
