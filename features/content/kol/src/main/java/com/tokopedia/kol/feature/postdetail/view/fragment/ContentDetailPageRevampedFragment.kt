@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -97,8 +98,10 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     private lateinit var shareData: LinkerData
     private var shareBottomSheetProduct = false
 
@@ -337,7 +340,11 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         setupView(view)
         viewModel.getCDPPostDetailFirstData(postId)
 
+
+        observeWishlist()
+
     }
+
     private fun setupView(view: View) {
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
@@ -346,6 +353,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         }
         cdpRecyclerView?.adapter = adapter
     }
+
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(cdpRecyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -1063,6 +1071,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             onGoToLogin()
         }
     }
+
     private fun addToWishList(
         postId: String,
         productId: String,
@@ -1077,67 +1086,19 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                viewModel.addWishlistV2(
-                    postId,
-                    productId,
-                    shopId,
-                    0,
-                    type,
-                    isFollowed,
-                    ::onWishListFail,
-                    ::onWishListSuccessV2,
-                    it
-                )
-            } else {
-                viewModel.addWishlist(
-                    postId,
-                    productId,
-                    shopId,
-                    0,
-                    type,
-                    isFollowed,
-                    ::onWishListFail,
-                    ::onWishListSuccess,
-                    getString(kolR.string.wishlist_default_error)
-                )
-            }
-        }
+        viewModel.addToWishlist(productId)
     }
 
-    private fun onWishListFail(s: String) {
-        showToast(s, Toaster.TYPE_ERROR)
-    }
-
-    private fun onWishListSuccess(
-        activityId: String,
-        shopId: String,
-        type: String,
-        isFollowed: Boolean
-    ) {
-        Toaster.build(
-            requireView(),
-            getString(Rwishlist.string.on_success_add_to_wishlist_msg),
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_NORMAL,
-            getString(Rwishlist.string.cta_success_add_to_wishlist),
-            View.OnClickListener {
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            }).show()
-    }
-    private fun onWishListSuccessV2(
-        activityId: String,
-        shopId: String,
-        type: String,
-        isFollowed: Boolean,
-        result: AddToWishlistV2Response.Data.WishlistAddV2
-    ) {
-        context?.let { context ->
-            view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+    private fun observeWishlist() {
+        viewModel.observableWishlist.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(it.data, requireContext(), requireView())
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.throwable)
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, requireView())
+                }
             }
-        }
+        })
     }
 
     private fun onAddToCartSuccess() {

@@ -1,6 +1,5 @@
 package com.tokopedia.kol.feature.postdetail.view.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -25,16 +24,12 @@ import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -49,8 +44,6 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
-    private val addWishListUseCase: AddWishListUseCase,
-    private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val sendReportUseCase: SendReportUseCase,
     private val deletePostUseCase: DeletePostUseCase,
     private val repository: ContentDetailRepository,
@@ -94,6 +87,10 @@ class ContentDetailRevampViewModel @Inject constructor(
 
     val deletePostResp: LiveData<Result<DeletePostViewModel>>
          get() = _deletePostResp
+
+    val observableWishlist: LiveData<Result<AddToWishlistV2Response.Data.WishlistAddV2>>
+        get() = _observableWishlist
+    private val _observableWishlist = MutableLiveData<Result<AddToWishlistV2Response.Data.WishlistAddV2>>()
 
     private val userId: String
             get() = if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
@@ -275,57 +272,10 @@ class ContentDetailRevampViewModel @Inject constructor(
         }
     }
 
-    fun addWishlist(
-        activityId: String,
-        productId: String,
-        shopId: String,
-        position: Int,
-        type: String,
-        isFollowed: Boolean,
-        onFail: (String) -> Unit,
-        onSuccess: (String, String, String, Boolean) -> Unit,
-        defaultMsg: String = ""
-    ) {
-        addWishListUseCase.createObservable(
-            productId, userSession.userId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    onFail.invoke(errorMessage ?: defaultMsg)
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    if (productId != null) {
-                        onSuccess.invoke(activityId, shopId, type, isFollowed)
-                    }
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-
-                override fun onSuccessRemoveWishlist(productId: String?) {}
-
-            })
-    }
-
-    fun addWishlistV2(
-        activityId: String,
-        productId: String,
-        shopId: String,
-        position: Int,
-        type: String,
-        isFollowed: Boolean,
-        onFail: (String) -> Unit,
-        onSuccess: (String, String, String, Boolean, AddToWishlistV2Response.Data.WishlistAddV2) -> Unit,
-        context: Context
-    ) {
-        launch(dispatcher.main) {
-            addToWishlistV2UseCase.setParams(productId, userSession.userId)
-            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
-            if (result is Success) {
-                onSuccess.invoke(activityId, shopId, type, isFollowed, result.data)
-            } else if (result is Fail) {
-                val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                onFail.invoke(errorMessage)
-            }
+    fun addToWishlist(productId: String) {
+        launch {
+            val response = repository.addToWishlist(productId)
+            _observableWishlist.value = response
         }
     }
 
