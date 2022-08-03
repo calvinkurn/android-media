@@ -1627,9 +1627,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if (result) {
                 updatePinProduct(product = product)
                 addCoolDown()
-                if (!isPinned) {
-                    _uiEvent.emit(PlayBroadcastEvent.ImpressPinProduct(product.id))
-                }
             } else {
                 val action = if(isPinned) "lepas" else "pasang"
                 throw MessageErrorException("Gagal $action pin di produk. Coba lagi, ya.")
