@@ -50,7 +50,7 @@ class RightChatMessageUnifyViewHolder(
         ChatbotMessageViewHolderBinder.bindChatReadStatus(message, customChatLayout)
         bindBackground()
         if (message.parentReply != null) {
-            val senderName = mapSenderName(message.parentReply!!)
+            val senderName = mapSenderName(message)
             customChatLayout?.fxChat?.background = backgroundChatWithReplyBubble
             customChatLayout?.fxChat?.bringToFront()
             customChatLayout?.apply {
@@ -62,6 +62,10 @@ class RightChatMessageUnifyViewHolder(
             customChatLayout?.fxChat?.background = backgroundChatWithoutReplyBubble
             customChatLayout?.replyBubbleContainer?.hide()
         }
+    }
+
+    private fun mapSenderName(message: MessageUiModel): String {
+        return message.parentReply?.name ?: ""
     }
 
     private fun setupReplyBubble(senderName: String, message: MessageUiModel) {

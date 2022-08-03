@@ -5,7 +5,6 @@ import android.view.View
 import androidx.cardview.widget.CardView
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
-import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
@@ -47,10 +46,6 @@ abstract class ChatbotMessageUnifyViewHolder(
             replyBubbleListener.showReplyOption(message)
             return@setOnLongClickListener true
         }
-    }
-
-    protected fun mapSenderName(parentReply: ParentReply): String {
-        return parentReply.name
     }
 
     protected fun verifyReplyTime(chat: MessageUiModel) {

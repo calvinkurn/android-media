@@ -1,13 +1,12 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.MessageUiModel
-import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
-import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.domain.pojo.senderinfo.SenderInfoData
 import com.tokopedia.chatbot.util.ViewUtil
@@ -54,7 +53,8 @@ class LeftChatMessageUnifyViewHolder(
         }
 
         if (message.parentReply != null) {
-            val senderName = mapSenderName(message.parentReply!!)
+            val senderName = mapSenderName(message)
+            Log.d("FATAL", "bind: senderName $senderName")
             customChatLayout?.fxChat?.background = backgroundForChat
             customChatLayout?.fxChat?.bringToFront()
             customChatLayout?.background = null
@@ -64,6 +64,16 @@ class LeftChatMessageUnifyViewHolder(
             customChatLayout?.replyBubbleContainer?.hide()
         }
 
+    }
+
+    private fun mapSenderName(messageUiModel: MessageUiModel): String {
+        if (userSession.userId == messageUiModel.parentReply?.senderId)
+            return userSession.name
+        val senderInfoData = convertToSenderInfo(messageUiModel.source)
+        if (senderInfoData != null) {
+            return senderInfoData.name ?: ""
+        }
+        return ""
     }
 
     private fun setupReplyBubble(senderName: String, message: MessageUiModel) {
