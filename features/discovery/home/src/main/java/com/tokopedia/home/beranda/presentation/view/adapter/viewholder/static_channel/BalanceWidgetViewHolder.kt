@@ -25,7 +25,7 @@ class BalanceWidgetViewHolder(itemView: View, val listener: HomeCategoryListener
     private var totalSpan = 2
 
     companion object {
-        var LAYOUT = R.layout.layout_balance_widget
+        val LAYOUT = R.layout.layout_balance_widget
         private const val THRESHOLD_MAX_BALANCE_WIDGET_ITEM = 3
     }
 
