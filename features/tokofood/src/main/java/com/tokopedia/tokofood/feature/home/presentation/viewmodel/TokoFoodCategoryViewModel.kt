@@ -22,7 +22,6 @@ import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodUiState
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_ERROR
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_LOAD_MORE
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_FETCH_MERCHANT_LIST_DATA
-import com.tokopedia.tokofood.feature.home.presentation.uimodel.UiEvent.STATE_LOADING
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
