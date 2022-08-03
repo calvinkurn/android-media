@@ -15,7 +15,6 @@ import com.tokopedia.epharmacy.network.response.EPharmacyUploadPrescriptionIdsRe
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
 import com.tokopedia.epharmacy.usecase.*
 import com.tokopedia.epharmacy.utils.*
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -169,6 +168,7 @@ class UploadPrescriptionViewModel @Inject constructor(
         _prescriptionImages.value.let {
             originalPaths.forEach { localPath ->
                 changeToLoadingState(it,localPath)
+                checkPrescriptionImages()
                 uploadImageWithPath((_prescriptionImages.value?.size ?: 0) - 1,localPath)
             }
             _prescriptionImages.postValue(it)
@@ -348,6 +348,9 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     override fun onCleared() {
         getEPharmacyOrderDetailUseCase.cancelJobs()
+        getEPharmacyCheckoutDetailUseCase.cancelJobs()
+        uploadPrescriptionUseCase.cancelJobs()
+        postPrescriptionIdUseCase.cancelJobs()
         super.onCleared()
     }
 }
