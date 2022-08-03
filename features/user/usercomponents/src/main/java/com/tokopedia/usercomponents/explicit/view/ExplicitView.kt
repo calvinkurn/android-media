@@ -25,71 +25,65 @@ import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitQuestionBind
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitSuccessBinding
 import com.tokopedia.usercomponents.explicit.analytics.ExplicitAnalytics
 import com.tokopedia.usercomponents.explicit.domain.model.Property
-import javax.inject.Inject
 
-class ExplicitView : CardUnify2, ExplicitAction {
+data class ExplicitData(
+    var templateName: String = "",
+    var pageName: String = "",
+    var pagePath: String = "",
+    var pageType: String = ""
+)
 
-    @Inject
-    lateinit var explicitAnalytics: ExplicitAnalytics
+class ExplicitView constructor(
+    context: Context,
+    private val attrs: AttributeSet?
+) : CardUnify2(context, attrs), ExplicitAction {
 
-    @Inject
-    lateinit var viewModel: ExplicitViewContract
+    private lateinit var viewModelContract: ExplicitViewContract
+
+    private val explicitAnalytics by lazy(LazyThreadSafetyMode.NONE) {
+        ExplicitAnalytics
+    }
 
     private var bindingQuestion: LayoutWidgetExplicitQuestionBinding? = null
     private var bindingSuccess: LayoutWidgetExplicitSuccessBinding? = null
     private var bindingFailed: LayoutWidgetExplicitFailedBinding? = null
 
-    private var templateName = ""
-    private var pageName = ""
-    private var pagePath = ""
-    private var pageType = ""
+    private lateinit var explicitData: ExplicitData
     private var preferenceAnswer: Boolean? = null
 
     private var onWidgetDismissListener: (() -> Unit)? = null
     private var onWidgetFinishListener: (() -> Unit)? = null
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        checkAttribute(attrs)
-        initView()
-    }
+    override fun setupView(viewModel: ExplicitViewContract, data: ExplicitData?) {
+        this.viewModelContract = viewModel
 
-    constructor(
-        context: Context,
-        attrs: AttributeSet?,
-        templateName: String,
-        pageName: String,
-        pagePath: String,
-        pageType: String
-    ) : super(
-        context,
-        attrs
-    ) {
-        this.templateName = templateName
-        this.pageName = pageName
-        this.pagePath = pagePath
-        this.pageType = pageType
+        checkAttribute(attrs)
+        data?.let { explicitData = it }
+
         initView()
     }
 
     private fun checkAttribute(attrs: AttributeSet?) {
-
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.ExplicitView,
             0, 0
         ).apply {
-
             try {
-                //you must set template name!
-                templateName = getString(R.styleable.ExplicitView_template_name) ?: ""
-                pageName = getString(R.styleable.ExplicitView_page_name) ?: ""
-                pagePath = getString(R.styleable.ExplicitView_page_path) ?: ""
-                pageType = getString(R.styleable.ExplicitView_page_type) ?: ""
+                // You must set template name!
+                explicitData.templateName = getString(R.styleable.ExplicitView_template_name) ?: ""
+                explicitData.pageName = getString(R.styleable.ExplicitView_page_name) ?: ""
+                explicitData.pagePath = getString(R.styleable.ExplicitView_page_path) ?: ""
+                explicitData.pageType = getString(R.styleable.ExplicitView_page_type) ?: ""
             } finally {
                 recycle()
             }
 
-            val isEmptyRequireAttribute = templateName.isEmpty() || pageName.isEmpty() || pagePath.isEmpty() || pageType.isEmpty()
+            val isEmptyRequireAttribute = explicitData.templateName.isEmpty()
+                    || explicitData.pageName.isEmpty()
+                    || explicitData.pagePath.isEmpty()
+                    || explicitData.pageType.isEmpty()
+
             if (GlobalConfig.DEBUG && isEmptyRequireAttribute)
                 throw IllegalArgumentException(context.getString(R.string.explicit_error_attribute))
         }
@@ -114,11 +108,11 @@ class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     private fun initObserver() {
-        viewModel.getExplicitContent(templateName)
+        viewModelContract.getExplicitContent(explicitData.templateName)
 
         val lifecycleOwner = context as LifecycleOwner
 
-        viewModel.explicitContent.observe(lifecycleOwner) {
+        viewModelContract.explicitContent.observe(lifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.first) {
@@ -134,20 +128,20 @@ class ExplicitView : CardUnify2, ExplicitAction {
             }
         }
 
-        viewModel.statusSaveAnswer.observe(lifecycleOwner) {
+        viewModelContract.statusSaveAnswer.observe(lifecycleOwner) {
             when (it) {
                 is Success -> onSubmitSuccessShow()
                 is Fail -> onFailed()
             }
         }
 
-        viewModel.isQuestionLoading.observe(lifecycleOwner) {
+        viewModelContract.isQuestionLoading.observe(lifecycleOwner) {
             if (it) {
                 onLoading()
             }
         }
 
-        viewModel.statusUpdateState.observeOnce(lifecycleOwner) {
+        viewModelContract.statusUpdateState.observeOnce(lifecycleOwner) {
             onWidgetFinishListener?.invoke()
         }
     }
@@ -165,8 +159,8 @@ class ExplicitView : CardUnify2, ExplicitAction {
     private fun initListener() {
 
         bindingQuestion?.imgDismiss?.setOnClickListener {
-            explicitAnalytics.trackClickDismissButton(pageName, templateName, pagePath, pageType)
-            viewModel.updateState()
+            explicitAnalytics.trackClickDismissButton(explicitData)
+            viewModelContract.updateState()
             onDismiss()
         }
 
@@ -182,7 +176,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
         bindingFailed?.containerLocalLoad?.refreshBtn?.setOnClickListener {
             if (preferenceAnswer == null)
-                viewModel.getExplicitContent(templateName)
+                viewModelContract.getExplicitContent(explicitData.templateName)
             else {
                 onLoading()
                 saveAnswer()
@@ -192,7 +186,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
     private fun saveAnswer() {
         if (preferenceAnswer != null) {
-            viewModel.sendAnswer(preferenceAnswer)
+            viewModelContract.sendAnswer(preferenceAnswer)
         }
     }
 
@@ -232,11 +226,11 @@ class ExplicitView : CardUnify2, ExplicitAction {
             }
         }
         replaceView(bindingQuestion?.root)
-        explicitAnalytics.trackClickCard(pageName, templateName, pagePath, pageType)
+        explicitAnalytics.trackClickCard(explicitData)
     }
 
     override fun onButtonPositiveClicked() {
-        explicitAnalytics.trackClickPositifButton(pageName, templateName, pagePath, pageType)
+        explicitAnalytics.trackClickPositifButton(explicitData)
         bindingQuestion?.apply {
             btnPositifAction.isLoading = true
             btnNegatifAction.isEnabled = false
@@ -246,7 +240,7 @@ class ExplicitView : CardUnify2, ExplicitAction {
     }
 
     override fun onButtonNegativeClicked() {
-        explicitAnalytics.trackClickNegatifButton(pageName, templateName, pagePath, pageType)
+        explicitAnalytics.trackClickNegatifButton(explicitData)
         bindingQuestion?.apply {
             btnNegatifAction.isLoading = true
             btnPositifAction.isEnabled = false
@@ -328,9 +322,9 @@ class ExplicitView : CardUnify2, ExplicitAction {
 
     override fun onCleared() {
         val lifecycleOwner = context as LifecycleOwner
-        viewModel.explicitContent.removeObservers(lifecycleOwner)
-        viewModel.statusSaveAnswer.removeObservers(lifecycleOwner)
-        viewModel.isQuestionLoading.removeObservers(lifecycleOwner)
+        viewModelContract.explicitContent.removeObservers(lifecycleOwner)
+        viewModelContract.statusSaveAnswer.removeObservers(lifecycleOwner)
+        viewModelContract.isQuestionLoading.removeObservers(lifecycleOwner)
         removeAllViews()
         bindingFailed = null
         bindingQuestion = null
