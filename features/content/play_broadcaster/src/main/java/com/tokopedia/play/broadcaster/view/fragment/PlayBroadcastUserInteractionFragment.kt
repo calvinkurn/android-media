@@ -788,7 +788,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowError -> {
                         if(event.error is PinnedProductException)
                             showToaster(
-                                message = getString(R.string.play_bro_pin_product_failed),
+                                message = if (event.error.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.error.message,
                                 type = Toaster.TYPE_ERROR)
                         else showErrorToaster(event.error)
                     }

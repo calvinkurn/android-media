@@ -169,7 +169,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.ShowError -> {
                         if(event.error is PinnedProductException){
                             toaster.showToaster(
-                                message = getString(R.string.play_bro_pin_product_failed),
+                                message = if (event.error.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.error.message,
                                 type = Toaster.TYPE_ERROR
                             )
                         }else {

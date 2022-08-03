@@ -26,7 +26,8 @@ class SetPinnedProductUseCase @Inject constructor(
         setGraphqlQuery(SetPinnedProductUseCaseQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+                .Builder(CacheType.ALWAYS_CLOUD).build()
+        )
         setTypeClass(SetPinnedProduct::class.java)
     }
 
@@ -44,23 +45,25 @@ class SetPinnedProductUseCase @Inject constructor(
     private fun isTimerActive(): Boolean = coolDownTimerJob?.isActive ?: false
     private fun getPinStatus(): Boolean = productInfo?.pinStatus?.isPinned ?: false
 
-    override fun isResponseSuccess(response: SetPinnedProduct): Boolean {
-        val isSuccess = super.isResponseSuccess(response)
-        if(response.data.success && isSuccess && !getPinStatus()) {
-            addCoolDown()
-        }
-        else {
-            val action = if (getPinStatus()) "lepas" else "pasang"
-            throw PinnedProductException("Gagal $action pin di produk. Coba lagi, ya.")
-        }
-        return isSuccess
-    }
 
     override suspend fun executeOnBackground(): SetPinnedProduct {
-        return if(!isTimerActive() || getPinStatus()){
-            super.executeOnBackground()
-        } else throw PinnedProductException()
+        return if (!isTimerActive() || getPinStatus()) {
+            handlingCoolDown(response = super.executeOnBackground())
+        } else {
+            throw PinnedProductException()
+        }
     }
+
+    private fun handlingCoolDown(response: SetPinnedProduct): SetPinnedProduct =
+        if (response.data.success && !getPinStatus()) {
+            addCoolDown()
+            response
+        } else if(!response.data.success) {
+            val action = if (getPinStatus()) "lepas" else "pasang"
+            throw PinnedProductException("Gagal $action pin di produk. Coba lagi, ya.")
+        } else {
+            response
+        }
 
     fun createParam(channelId: String, product: ProductUiModel): Map<String, Any> {
         productInfo = product
