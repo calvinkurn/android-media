@@ -31,16 +31,17 @@ class SetPinnedProductUseCase @Inject constructor(
     }
 
     private var coolDownTimerJob: Job? = null
-    private val scope = CoroutineScope(dispatcher.main + SupervisorJob(coolDownTimerJob))
+    private val scope = CoroutineScope(dispatcher.main + SupervisorJob())
     private var productInfo: ProductUiModel? = null
 
     private fun addCoolDown() {
+        coolDownTimerJob?.cancel()
         coolDownTimerJob = scope.launch {
             delay(COOL_DOWN_TIMER)
         }
     }
 
-    private val isTimerActive: Boolean = coolDownTimerJob?.isActive ?: false
+    private fun isTimerActive(): Boolean = coolDownTimerJob?.isActive ?: false
 
     override fun isResponseSuccess(response: SetPinnedProduct): Boolean {
         val isSuccess = super.isResponseSuccess(response)
@@ -49,7 +50,7 @@ class SetPinnedProductUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): SetPinnedProduct {
-        return if(!isTimerActive || productInfo?.pinStatus?.isPinned == true){
+        return if(!isTimerActive() || productInfo?.pinStatus?.isPinned == true){
             super.executeOnBackground()
         } else throw PinnedProductException()
     }

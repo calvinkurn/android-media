@@ -139,8 +139,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         )
     }
 
-    private var coolDownTimerJob: Job? = null
-
     init {
         getCampaignAndEtalaseList()
 
@@ -456,19 +454,8 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         }
     }
 
-    private fun addCoolDown() {
-        coolDownTimerJob?.cancel()
-        coolDownTimerJob = viewModelScope.launch {
-            delay(COOL_DOWN_TIMER)
-        }
-    }
-
-    fun getCoolDownStatus() : Boolean = coolDownTimerJob?.isActive ?: false
-
     companion object {
         private const val KEY_PRODUCT_SECTIONS = "product_sections"
         private const val KEY_ELIGIBLE_PIN = "eligible_pin_status"
-
-        private const val COOL_DOWN_TIMER = 5000L
     }
 }
