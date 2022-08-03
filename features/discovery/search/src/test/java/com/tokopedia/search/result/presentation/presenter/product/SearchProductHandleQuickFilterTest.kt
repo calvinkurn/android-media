@@ -83,6 +83,7 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
         actualQuickFilterList.listShouldBe(quickFilterList) { actualFilter, expectedFilter ->
             actualFilter.title shouldBe expectedFilter.title
             actualFilter.templateName shouldBe expectedFilter.templateName
+            actualFilter.chipName shouldBe expectedFilter.chipName
 
             assertOptionList(actualFilter.options, expectedFilter.options)
         }
