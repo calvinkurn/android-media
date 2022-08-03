@@ -21,6 +21,7 @@ import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragm
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -252,6 +253,10 @@ class DigitalSignalFragment: DigitalBaseTelcoFragment() {
 
     override fun initAddToCartViewModel() {
         addToCartViewModel = viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java)
+    }
+
+    override fun redirectErrorUnVerifiedNumber(error: ErrorAtc) {
+        /*no op*/
     }
 
     private fun renderClientNumber() {
