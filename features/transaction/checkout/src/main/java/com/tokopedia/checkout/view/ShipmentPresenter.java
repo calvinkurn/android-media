@@ -1,5 +1,10 @@
 package com.tokopedia.checkout.view;
 
+import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_REGULAR_PRODUCT;
+import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_TOKONOW_PRODUCT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -9,16 +14,12 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
-import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel;
-import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest;
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
-import com.tokopedia.checkout.view.uimodel.CrossSellModel;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.data.model.request.changeaddress.DataChangeAddressRequest;
 import com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestMapper;
+import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellItemRequestModel;
+import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.data.model.request.checkout.old.EgoldData;
@@ -54,10 +55,12 @@ import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterCl
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber;
 import com.tokopedia.checkout.view.subscriber.SaveShipmentStateSubscriber;
+import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
@@ -85,6 +88,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.TKPDMapParam;
@@ -110,6 +114,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOn
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnMetadata;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnNote;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult;
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ProductResult;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem;
@@ -150,12 +155,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
-
-import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_REGULAR_PRODUCT;
-import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_TOKONOW_PRODUCT;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.STATE_RED;
 
 /**
  * @author Irfan Khoirul on 24/04/18.
@@ -1924,6 +1923,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         );
     }
 
+    private void hitClearAllBo() {
+        ArrayList<String> currentBo = new ArrayList<>();
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+            if (shipmentCartItemModel != null && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                currentBo.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+            }
+        }
+        clearCacheAutoApplyStackUseCase.setParams(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, currentBo);
+        compositeSubscription.add(
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
+        );
+    }
+
     @Override
     public void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
                                       ChosenAddressModel chosenAddressModel,
@@ -2003,6 +2015,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     getView().setHasRunningApiCall(false);
                                     if (setShippingAddressData.isSuccess()) {
                                         getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
+                                        hitClearAllBo();
                                         getView().renderChangeAddressSuccess(reloadCheckoutPage);
                                     } else {
                                         if (setShippingAddressData.getMessages().size() > 0) {
@@ -2271,7 +2284,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (AddOnResult addOnResult : saveAddOnStateResult.getAddOns()) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 List<CartItemModel> cartItemModelList = shipmentCartItemModel.getCartItemModels();
-                for (int i=0; i<cartItemModelList.size(); i++) {
+                for (int i = 0; i < cartItemModelList.size(); i++) {
                     CartItemModel cartItemModel = cartItemModelList.get(i);
                     String keyProductLevel = cartItemModel.getCartString() + "-" + cartItemModel.getCartId();
                     if (keyProductLevel.equalsIgnoreCase(addOnResult.getAddOnKey())) {
@@ -2287,7 +2300,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult) {
         for (AddOnResult addOnResult : saveAddOnStateResult.getAddOns()) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                if ((shipmentCartItemModel.getCartString()+"-0").equalsIgnoreCase(addOnResult.getAddOnKey()) && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
+                if ((shipmentCartItemModel.getCartString() + "-0").equalsIgnoreCase(addOnResult.getAddOnKey()) && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
                     AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
                     setAddOnsData(addOnsDataModel, addOnResult, 1);
                 }
