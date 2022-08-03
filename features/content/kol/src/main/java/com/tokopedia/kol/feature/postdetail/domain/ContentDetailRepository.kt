@@ -24,4 +24,8 @@ interface ContentDetailRepository {
     suspend fun addToWishlist(
         productId: String
     ): Result<AddToWishlistV2Response.Data.WishlistAddV2>
+
+    suspend fun deleteContent(
+        contentId: String
+    )
 }

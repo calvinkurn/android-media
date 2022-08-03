@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
@@ -19,6 +18,7 @@ import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationP
 import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.NON_LOGIN_USER_ID
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.DeleteContentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
@@ -44,7 +44,6 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
     private val sendReportUseCase: SendReportUseCase,
-    private val deletePostUseCase: DeletePostUseCase,
     private val repository: ContentDetailRepository,
     private val mapper: ContentDetailMapper,
 ): BaseViewModel(dispatcher.main) {
@@ -59,7 +58,7 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val _trackVODViewsData = MutableLiveData<Result<ViewsKolModel>>()
     private val _atcResp = MutableLiveData<Result<AtcViewModel>>()
     private val _reportResponse = MutableLiveData<Result<DeletePostViewModel>>()
-    private val _deletePostResp = MutableLiveData<Result<DeletePostViewModel>>()
+    private val _deletePostResp = MutableLiveData<ContentDetailResult<DeleteContentModel>>()
 
     val cDPPostRecomData: LiveData<Result<FeedXPostRecommendation>>
         get() = _getCDPPostRecomData
@@ -85,7 +84,7 @@ class ContentDetailRevampViewModel @Inject constructor(
     val reportResponse: LiveData<Result<DeletePostViewModel>>
          get() = _reportResponse
 
-    val deletePostResp: LiveData<Result<DeletePostViewModel>>
+    val deletePostResp: LiveData<ContentDetailResult<DeleteContentModel>>
          get() = _deletePostResp
 
     val observableWishlist: LiveData<Result<AddToWishlistV2Response.Data.WishlistAddV2>>
@@ -282,27 +281,18 @@ class ContentDetailRevampViewModel @Inject constructor(
             }
         )
     }
-    fun doDeletePost(id: Int, rowNumber: Int) {
+
+    fun deleteContent(contentId: String, rowNumber: Int) {
+        _deletePostResp.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            val results = withContext(dispatcher.io) {
-                deletePost(id, rowNumber)
-            }
-            _deletePostResp.value = Success(results)
+            repository.deleteContent(contentId)
+            _deletePostResp.value = ContentDetailResult.Success(
+                mapper.mapDeleteContent(rowNumber)
+            )
         }) {
-            _deletePostResp.value = Fail(it)
-        }
-    }
-    private fun deletePost(id: Int, rowNumber: Int): DeletePostViewModel {
-        try {
-            val data = DeletePostViewModel()
-            data.id = id
-            data.rowNumber = rowNumber
-            val params = DeletePostUseCase.createRequestParams(id.toString())
-            val isSuccess = deletePostUseCase.createObservable(params).toBlocking().first()
-            data.isSuccess = isSuccess
-            return data
-        } catch (e: Throwable) {
-            throw e
+            _deletePostResp.value = ContentDetailResult.Failure(it) {
+                deleteContent(contentId, rowNumber)
+            }
         }
     }
 }

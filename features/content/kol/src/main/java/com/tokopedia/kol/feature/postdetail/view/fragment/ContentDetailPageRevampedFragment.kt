@@ -31,7 +31,6 @@ import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.di.DaggerContentDetailComponent
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
@@ -262,27 +261,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     }
                 }
             })
-
-            deletePostResp.observe(viewLifecycleOwner,  {
-                when (it) {
-                    is Success -> {
-                        val data = it.data
-                        if (data.isSuccess) {
-                            onSuccessDeletePost(data.rowNumber)
-                        } else {
-                            data.errorMessage = getString(networkR.string.default_request_error_unknown)
-                            onErrorDeletePost(data)
-                        }
-                    }
-                    is Fail -> {
-                        val message = getString(networkR.string.default_request_error_unknown)
-                        showToast(message, Toaster.TYPE_ERROR)
-                    }
-                }
-            })
-
-
-
         }
     }
 
@@ -304,6 +282,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
         observeWishlist()
         observeFollowShop()
+        observeDeleteContent()
     }
 
     private fun setupView(view: View) {
@@ -701,12 +680,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                         postPosition
                     ) else onGoToLogin()
             }
-            sheet.onDelete = {
-                val media =
-                    if (feedXCard.media.size > feedXCard.lastCarouselIndex) feedXCard.media[feedXCard.lastCarouselIndex] else null
-                createDeleteDialog(postPosition)
-
-            }
+            sheet.onDelete = { createDeleteDialog(feedXCard.id, postPosition) }
             sheet.onDismiss = {
 
             }
@@ -837,7 +811,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         activity?.startActivity(Intent.createChooser(intent, shareData.name))
     }
 
-    private fun createDeleteDialog(rowNumber: Int) {
+    private fun createDeleteDialog(contentId: String, rowNumber: Int) {
         val dialog =
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(kolR.string.feed_delete_post))
@@ -848,7 +822,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {
-          viewModel.doDeletePost(id, rowNumber)
+            viewModel.deleteContent(contentId, rowNumber)
             dialog.dismiss()
         }
         dialog.show()
@@ -1054,7 +1028,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     private fun observeFollowShop() {
         viewModel.followShopObservable.observe(viewLifecycleOwner, Observer {
             when (it) {
-                ContentDetailResult.Loading -> {}
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
                 is ContentDetailResult.Success -> onSuccessFollowShop(it.data)
                 is ContentDetailResult.Failure -> {
                     when (it.error.cause) {
@@ -1083,6 +1059,37 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         })
     }
 
+    private fun observeDeleteContent() {
+        viewModel.deletePostResp.observe(viewLifecycleOwner, {
+            when (it) {
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
+                is ContentDetailResult.Success -> onSuccessDeletePost(it.data.rowNumber)
+                is ContentDetailResult.Failure -> {
+                    when (it.error.cause) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error.cause)
+                            Toaster.build(
+                                requireView(),
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again)
+                            ) { view ->
+                                it.onRetry()
+                            }
+                                .show()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     private fun onAddToCartSuccess() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
@@ -1090,6 +1097,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     private fun onAddToCartFailed(pdpAppLink: String) {
         onGoToLink(pdpAppLink)
     }
+
     private fun onSuccessDeletePost(rowNumber: Int) {
         if (adapter.getList().size > rowNumber) {
             adapter.getList().removeAt(rowNumber)
@@ -1108,19 +1116,5 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 //            onRefresh()
         }
     }
-    private fun onErrorDeletePost(data: DeletePostViewModel) {
-        Toaster.build(
-            requireView(),
-            data.errorMessage,
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_ERROR,
-            getString(com.tokopedia.abstraction.R.string.title_try_again),
-            View.OnClickListener {
-                viewModel.doDeletePost(data.id, data.rowNumber)
-            })
-    }
-
-
-
 
 }

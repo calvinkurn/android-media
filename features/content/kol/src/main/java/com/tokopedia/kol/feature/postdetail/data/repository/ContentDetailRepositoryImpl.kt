@@ -1,11 +1,13 @@
 package com.tokopedia.kol.feature.postdetail.data.repository
 
+import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
+import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
@@ -25,6 +27,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val followShopUseCase: UpdateFollowStatusUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val addToWishlistUseCase: AddToWishlistV2UseCase,
+    private val submitActionContentUseCase: SubmitActionContentUseCase,
 ) : ContentDetailRepository {
 
     override suspend fun followShop(shopId: String, action: ShopFollowAction) {
@@ -72,6 +75,14 @@ class ContentDetailRepositoryImpl @Inject constructor(
         return withContext(dispatcher.io) {
             addToWishlistUseCase.setParams(productId, userSession.userId)
             addToWishlistUseCase.executeOnBackground()
+        }
+    }
+
+    override suspend fun deleteContent(contentId: String) = withContext(dispatcher.io) {
+        submitActionContentUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(contentId))
+        val response = submitActionContentUseCase.executeOnBackground()
+        if (TextUtils.isEmpty(response.content.error).not()) {
+            throw MessageErrorException(response.content.error)
         }
     }
 }
