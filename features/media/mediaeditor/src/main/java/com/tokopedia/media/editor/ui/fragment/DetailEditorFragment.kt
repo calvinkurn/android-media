@@ -2,35 +2,16 @@ package com.tokopedia.media.editor.ui.fragment
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.Matrix
-import android.graphics.Paint
-import android.graphics.RectF
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.graphics.scale
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.core.view.drawToBitmap
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R
@@ -45,7 +26,6 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.BrightnessToolUiComponent
 import com.tokopedia.media.editor.ui.component.ContrastToolsUiComponent
 import com.tokopedia.media.editor.ui.component.CropToolUiComponent
-import com.tokopedia.media.editor.ui.component.EditorDetailPreviewImage
 import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
@@ -54,26 +34,16 @@ import com.tokopedia.media.editor.ui.uimodel.EditorRotateModel
 import com.tokopedia.media.editor.utils.getDestinationUri
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.media.loader.loadImageWithEmptyTarget
-import com.tokopedia.media.loader.loadImageWithTarget
-import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
-import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
-import com.yalantis.ucrop.callback.BitmapCropCallback
-import com.yalantis.ucrop.util.RectUtils
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import kotlin.Exception
-import kotlin.math.abs
-import kotlin.math.ceil
-import kotlin.math.min
 
 class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
@@ -105,7 +75,6 @@ class DetailEditorFragment @Inject constructor(
     private val cropComponent by uiComponent { CropToolUiComponent(it, 0) }
 
     private var data = EditorDetailUiModel()
-//    private var baseBitmap: Bitmap? = null
     private var implementedBaseBitmap: Bitmap? = null
 
     private var removeBackgroundRetryLimit = 3
@@ -175,8 +144,8 @@ class DetailEditorFragment @Inject constructor(
         data.watermarkMode = value
     }
 
-    override fun onRotateValueChanged(value: Float) {
-        rotateFilterRepositoryImpl.rotate(viewBinding?.imgUcropPreview, value, false)
+    override fun onRotateValueChanged(rotateValue: Float) {
+        rotateFilterRepositoryImpl.rotate(viewBinding?.imgUcropPreview, rotateValue, false)
     }
 
     override fun onImageMirror() {
@@ -244,7 +213,8 @@ class DetailEditorFragment @Inject constructor(
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkType ->
             implementedBaseBitmap?.let { bitmap ->
-                val text = if(userSession.shopName.isEmpty()) "Shop Name" else userSession.shopName
+                val text = if (userSession.shopName.isEmpty())
+                    DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
                 val result = watermarkFilterRepositoryImpl.watermark(
                     requireContext(),
                     bitmap,
@@ -294,7 +264,6 @@ class DetailEditorFragment @Inject constructor(
             }
             // ==========
             EditorToolType.WATERMARK -> {
-                val watermarkValue = data.watermarkMode ?: DEFAULT_VALUE_WATERMARK
                 viewBinding?.imgUcropPreview?.apply {
                     initializeWatermark(uri)
                     onLoadComplete = {
@@ -318,25 +287,27 @@ class DetailEditorFragment @Inject constructor(
             }
             // ==========
             EditorToolType.CROP -> {
-                val uri = Uri.fromFile(File(data.originalUrl))
 //                viewBinding?.imgUcropPreview?.initialize(uri)
                 cropComponent.setupView()
             }
         }
     }
 
-    private fun implementPreviousStateBrightness(previousValue: Float?, isRemoveFilter: Boolean = true){
+    private fun implementPreviousStateBrightness(
+        previousValue: Float?,
+        isRemoveFilter: Boolean = true
+    ) {
         val cropView = viewBinding?.imgUcropPreview?.cropImageView
         cropView?.colorFilter = brightnessFilterRepositoryImpl.brightness(previousValue ?: 0f)
 
         // need to remove the filter to prevent any filter trigger re-apply the brightness color filter
-        if(isRemoveFilter) viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()?.let {
+        if (isRemoveFilter) viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()?.let {
             cropView?.clearColorFilter()
             cropView?.setImageBitmap(it)
         }
     }
 
-    private fun implementPreviousStateContrast(previousValue: Float?){
+    private fun implementPreviousStateContrast(previousValue: Float?) {
         viewBinding?.imgUcropPreview?.cropImageView?.let {
             val bitmap = it.drawable.toBitmap()
             it.setImageBitmap(
@@ -348,23 +319,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun implementPreviousStateRotate(rotateData: EditorRotateModel){
-//        viewBinding?.imgUcropPreview?.let {
-//            if(rotateData.scaleX < 0f){
-//                rotateFilterRepositoryImpl.mirror(it)
-//            }
-//            if(rotateData.scaleY < 0f){
-//                rotateFilterRepositoryImpl.rotate(it, RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
-//                rotateFilterRepositoryImpl.mirror(it)
-//            }
-//
-//            it.cropImageView.post {
-//                if(rotateData.orientationChangeNumber > 0){
-//                    rotateFilterRepositoryImpl.rotate(it, rotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
-//                }
-//                rotateFilterRepositoryImpl.rotate(it, rotateData.rotateDegree, false)
-//            }
-//        }
+    private fun implementPreviousStateRotate(rotateData: EditorRotateModel) {
         viewBinding?.imgUcropPreview?.let {
             data.rotateData?.let { rotationData ->
                 val bitmapResult = it.getProcessedBitmap(
@@ -384,10 +339,10 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun readPreviousState(previousState: EditorDetailUiModel){
+    private fun readPreviousState(previousState: EditorDetailUiModel) {
         // if current selected editor not brightness and contrast, implement filter with sequence
         if (!previousState.isToolBrightness() && !previousState.isToolContrast()) {
-            if(previousState.isContrastExecuteFirst == 1){
+            if (previousState.isContrastExecuteFirst == 1) {
                 implementPreviousStateContrast(previousState.contrastValue)
                 implementPreviousStateBrightness(previousState.brightnessValue)
             } else {
@@ -410,32 +365,30 @@ class DetailEditorFragment @Inject constructor(
         }
 
         // === Rotate ===
-        if(previousState.rotateData != null){
+        if (previousState.rotateData != null) {
             implementPreviousStateRotate(previousState.rotateData!!)
         }
 
         // image that already implemented previous filter
         implementedBaseBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
 
-        if(previousState.brightnessValue != null && previousState.isToolBrightness()){
+        if (previousState.brightnessValue != null && previousState.isToolBrightness()) {
             // if current editor is brightness keep the filter color so we can adjust it later
             implementPreviousStateBrightness(previousState.brightnessValue, false)
-        }else if(previousState.contrastValue != null && previousState.isToolContrast()){
-            viewBinding?.imgUcropPreview?.cropImageView?.let {
-                it.setImageBitmap(
-                    contrastFilterRepositoryImpl.contrast(
-                        previousState.contrastValue!!,
-                        implementedBaseBitmap!!.copy(implementedBaseBitmap!!.config, true)
-                    )
+        } else if (previousState.contrastValue != null && previousState.isToolContrast()) {
+            viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(
+                contrastFilterRepositoryImpl.contrast(
+                    previousState.contrastValue!!,
+                    implementedBaseBitmap!!.copy(implementedBaseBitmap!!.config, true)
                 )
-            }
+            )
         }
     }
 
     private fun setWatermarkDrawerItem() {
         implementedBaseBitmap?.let { bitmap ->
-            // todo: implement text from user data
-            var text = if(userSession.shopName.isEmpty()) "Shop Name" else userSession.shopName
+            val text = if (userSession.shopName.isEmpty())
+                DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
             val resultBitmap1 = watermarkFilterRepositoryImpl.watermark(
                 requireContext(),
                 bitmap,
@@ -472,7 +425,7 @@ class DetailEditorFragment @Inject constructor(
                 finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
                 sliderValue = rotateFilterRepositoryImpl.sliderValue,
                 rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
-                if(data.isToolRotate()) data else EditorDetailUiModel()
+                if (data.isToolRotate()) data else EditorDetailUiModel()
             ) {
                 saveImage(it)
             }
@@ -507,7 +460,7 @@ class DetailEditorFragment @Inject constructor(
                 val uri = file.toUri()
                 data.resultUrl = uri.path
 
-                if(isFinish) editingSave()
+                if (isFinish) editingSave()
             } catch (e: Exception) {
             }
         }
@@ -521,5 +474,7 @@ class DetailEditorFragment @Inject constructor(
         private const val DEFAULT_VALUE_CONTRAST = 0f
         private const val DEFAULT_VALUE_BRIGHTNESS = 0f
         private const val DEFAULT_VALUE_WATERMARK = 0f
+
+        private const val DEFAULT_VALUE_SHOP_TEXT = "Shop Name"
     }
 }
