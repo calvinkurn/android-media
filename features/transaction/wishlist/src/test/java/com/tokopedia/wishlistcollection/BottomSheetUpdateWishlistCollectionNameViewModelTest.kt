@@ -35,23 +35,29 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
     @RelaxedMockK
     lateinit var updateWishlistCollectionNameUseCase: UpdateWishlistCollectionNameUseCase
 
-    private var collectionNamesResponseDataStatusOkAndEmptyMessage = GetWishlistCollectionNamesResponse(
+    private var collectionNamesResponseDataStatusOkAndMessageIsEmpty = GetWishlistCollectionNamesResponse(
         getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "OK", errorMessage = emptyList()))
 
-    private var collectionNamesResponseDataStatusOkAndMessageNotEmpty = GetWishlistCollectionNamesResponse(
+    private var collectionNamesResponseDataStatusOkAndMessageIsNotEmpty = GetWishlistCollectionNamesResponse(
         getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "OK", errorMessage = listErrorMessage))
 
-    private var collectionNamesResponseDataStatusErrorAndMessageNotEmpty = GetWishlistCollectionNamesResponse(
+    private var collectionNamesResponseDataStatusErrorAndMessageIsNotEmpty = GetWishlistCollectionNamesResponse(
         getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "ERROR", errorMessage = listErrorMessage))
 
-    private var collectionNamesResponseDataStatusErrorAndEmptyMessage = GetWishlistCollectionNamesResponse(
+    private var collectionNamesResponseDataStatusErrorAndMessageIsEmpty = GetWishlistCollectionNamesResponse(
         getWishlistCollectionNames = GetWishlistCollectionNamesResponse.GetWishlistCollectionNames(status = "ERROR", errorMessage = emptyList()))
 
-    private var updateCollectionNameResponseDataStatusOk = UpdateWishlistCollectionNameResponse(
+    private var updateCollectionNameResponseDataStatusOkAndMessageIsEmpty = UpdateWishlistCollectionNameResponse(
         updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "OK", errorMessage = emptyList()))
 
-    private var updateCollectionNameResponseDataStatusError = UpdateWishlistCollectionNameResponse(
+    private var updateCollectionNameResponseDataStatusOkAndMessageIsNotEmpty = UpdateWishlistCollectionNameResponse(
+        updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "OK", errorMessage = listErrorMessage))
+
+    private var updateCollectionNameResponseDataStatusErrorAndMessageIsNotEmpty = UpdateWishlistCollectionNameResponse(
         updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "ERROR", errorMessage = listErrorMessage))
+
+    private var updateCollectionNameResponseDataStatusErrorAndMessageIsEmpty = UpdateWishlistCollectionNameResponse(
+        updateWishlistCollectionName = UpdateWishlistCollectionNameResponse.UpdateWishlistCollectionName(status = "ERROR", errorMessage = emptyList()))
 
     private val throwable = Fail(Throwable(message = "Error"))
 
@@ -75,7 +81,7 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
         //given
         coEvery {
             getWishlistCollectionNamesUseCase(Unit)
-        } returns collectionNamesResponseDataStatusOkAndEmptyMessage
+        } returns collectionNamesResponseDataStatusOkAndMessageIsEmpty
 
         //when
         bottomSheetUpdateWishlistCollectionNameViewModel.getWishlistCollectionNames()
@@ -90,7 +96,7 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
         //given
         coEvery {
             getWishlistCollectionNamesUseCase(Unit)
-        } returns collectionNamesResponseDataStatusOkAndMessageNotEmpty
+        } returns collectionNamesResponseDataStatusOkAndMessageIsNotEmpty
 
         //when
         bottomSheetUpdateWishlistCollectionNameViewModel.getWishlistCollectionNames()
@@ -104,7 +110,7 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
         //given
         coEvery {
             getWishlistCollectionNamesUseCase(Unit)
-        } returns collectionNamesResponseDataStatusErrorAndEmptyMessage
+        } returns collectionNamesResponseDataStatusErrorAndMessageIsEmpty
 
         //when
         bottomSheetUpdateWishlistCollectionNameViewModel.getWishlistCollectionNames()
@@ -118,7 +124,7 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
         //given
         coEvery {
             getWishlistCollectionNamesUseCase(Unit)
-        } returns collectionNamesResponseDataStatusErrorAndEmptyMessage
+        } returns collectionNamesResponseDataStatusErrorAndMessageIsNotEmpty
 
         //when
         bottomSheetUpdateWishlistCollectionNameViewModel.getWishlistCollectionNames()
@@ -146,7 +152,7 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
         //given
         coEvery {
             updateWishlistCollectionNameUseCase(newCollectionNameParam)
-        } returns updateCollectionNameResponseDataStatusOk
+        } returns updateCollectionNameResponseDataStatusOkAndMessageIsEmpty
 
         //when
         bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionName(newCollectionNameParam)
@@ -157,11 +163,39 @@ class BottomSheetUpdateWishlistCollectionNameViewModelTest {
     }
 
     @Test
-    fun `Execute UpdateWishlistCollectionName Success Status ERROR`() {
+    fun `Execute UpdateWishlistCollectionName Success Status OK And Message is not Empty`() {
         //given
         coEvery {
             updateWishlistCollectionNameUseCase(newCollectionNameParam)
-        } returns updateCollectionNameResponseDataStatusError
+        } returns updateCollectionNameResponseDataStatusOkAndMessageIsNotEmpty
+
+        //when
+        bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionName(newCollectionNameParam)
+
+        //then
+        assert(bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionNameResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute UpdateWishlistCollectionName Status Error And Message is Not Empty`() {
+        //given
+        coEvery {
+            updateWishlistCollectionNameUseCase(newCollectionNameParam)
+        } returns updateCollectionNameResponseDataStatusErrorAndMessageIsNotEmpty
+
+        //when
+        bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionName(newCollectionNameParam)
+
+        //then
+        assert(bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionNameResult.value is Fail)
+    }
+
+    @Test
+    fun `Execute UpdateWishlistCollectionName Status Error And Message is Empty`() {
+        //given
+        coEvery {
+            updateWishlistCollectionNameUseCase(newCollectionNameParam)
+        } returns updateCollectionNameResponseDataStatusErrorAndMessageIsEmpty
 
         //when
         bottomSheetUpdateWishlistCollectionNameViewModel.updateWishlistCollectionName(newCollectionNameParam)
