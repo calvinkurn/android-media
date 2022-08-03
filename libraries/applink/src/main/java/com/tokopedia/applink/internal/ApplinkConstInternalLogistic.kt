@@ -34,4 +34,5 @@ object ApplinkConstInternalLogistic {
 
     const val PROOF_OF_DELIVERY = "$INTERNAL_LOGISTIC/shipping/pod/{orderId}"
 
+    const val PARAM_SOURCE = "source"
 }

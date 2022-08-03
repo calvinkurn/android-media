@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.ActivityManageAddressBinding
@@ -38,8 +38,8 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
     private fun initViews() {
         val bundle = Bundle()
         if (intent != null && intent.extras != null) {
-            if(!intent.hasExtra(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ManageAddressSource.NOTIFICATION.source)
+            if(!intent.hasExtra(PARAM_SOURCE)) {
+                intent.putExtra(PARAM_SOURCE, ManageAddressSource.NOTIFICATION.source)
             }
 
             bundle.putAll(intent.extras)
