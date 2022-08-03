@@ -15,12 +15,14 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignPackageListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +37,7 @@ class CampaignInformationViewModel @Inject constructor(
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
     private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
+    private val getSellerCampaignPackageListUseCase: GetSellerCampaignPackageListUseCase,
     private val dateManager: DateManager,
     private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
@@ -72,6 +75,10 @@ class CampaignInformationViewModel @Inject constructor(
     private val _campaignQuota = MutableLiveData<Result<Int>>()
     val campaignQuota: LiveData<Result<Int>>
         get() = _campaignQuota
+
+    private val _vpsPackages = MutableLiveData<Result<List<VpsPackage>>>()
+    val vpsPackages: LiveData<Result<List<VpsPackage>>>
+        get() = _vpsPackages
 
     private var selectedColor = defaultGradientColor
     private var selectedStartDate = Date()
@@ -425,4 +432,19 @@ class CampaignInformationViewModel @Inject constructor(
     fun isDataChanged(previousData: Selection, currentData: Selection): Boolean {
         return previousData != currentData
     }
+
+    fun getVpsPackages() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getSellerCampaignPackageListUseCase.execute()
+                _vpsPackages.postValue(Success(result))
+            },
+            onError = { error ->
+                _vpsPackages.postValue(Fail(error))
+            }
+        )
+
+    }
+
 }

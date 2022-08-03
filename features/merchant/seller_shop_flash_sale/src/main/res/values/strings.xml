@@ -86,6 +86,7 @@
     <string name="sfs_info_campaign">Info Campaign</string>
     <string name="sfs_campaign_name">Nama campaign</string>
     <string name="sfs_schedule_start_date">Jadwal mulai</string>
+    <string name="sfs_quota_source">Sumber kuota</string>
     <string name="sfs_schedule_end_date">Jadwal berakhir</string>
     <string name="sfs_min_duration">Durasi min. 30 menit</string>
     <string name="sfs_teaser_description">Tampilkan campaign di tokomu sebelum jadwal campaign berlangsung</string>

@@ -196,9 +196,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeCampaignUpdate()
         observeCampaignDetail()
         observeCampaignQuota()
+        observeVpsPackages()
         observeSaveDraft()
         handlePageMode()
         viewModel.getCurrentMonthRemainingQuota()
+        viewModel.getVpsPackages()
     }
 
     private fun observeValidationResult() {
@@ -303,6 +305,21 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
 
+    private fun observeVpsPackages() {
+        viewModel.vpsPackages.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    val remainingQuota = result.data
+
+                }
+                is Fail -> {
+                    binding?.cardView showError result.throwable
+                }
+            }
+        }
+    }
+
+
     private fun setupView() {
         binding?.switchTeaser?.isChecked = true
         setupToolbar()
@@ -310,7 +327,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         setupClickListeners()
         setupTextFields()
         setupDatePicker()
+        setupQuotaSource()
     }
+
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.itemAnimator = null
@@ -402,6 +421,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
             tauStartDate.editText.setOnClickListener { displayStartDatePicker() }
             tauEndDate.editText.setOnClickListener { displayEndDatePicker() }
+        }
+    }
+
+    private fun setupQuotaSource() {
+        binding?.run {
+            tauVpsPackageName.editText.inputType = InputType.TYPE_NULL
+            tauVpsPackageName.editText.isFocusable = false
+            tauVpsPackageName.editText.setOnClickListener { displayEndDatePicker() }
         }
     }
 
@@ -913,5 +940,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun TextFieldUnify2?.applySecondaryColor() {
         val secondaryColorStateList = ColorStateList(binding?.tauEndDate?.disabledStateList, binding?.tauEndDate?.secondaryColorList)
         this?.textInputLayout?.setHelperTextColor(secondaryColorStateList)
+    }
+
+    private fun displayQuotaSourceBottomSheet() {
+
     }
 }
