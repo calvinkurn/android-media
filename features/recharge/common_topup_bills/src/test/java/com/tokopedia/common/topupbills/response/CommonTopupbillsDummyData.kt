@@ -7,6 +7,9 @@ import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNum
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberTrackingData
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
+import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 
 object CommonTopupbillsDummyData {
@@ -129,10 +132,36 @@ object CommonTopupbillsDummyData {
         )
     }
     fun getDummyCartData(isNull: Boolean): ResponseCartData {
-        val id = if (isNull) null else "17211378"
+        val id = if (isNull) null else "id"
         return ResponseCartData(
                 type = "cart",
                 id = id
+        )
+    }
+
+    fun getDummyCartDataWithErrors(): ResponseCartData{
+        return ResponseCartData(
+            type = "cart",
+            id = "id",
+            errors = listOf(
+                ErrorAtc(
+                    0,
+                    "error unverified phone number",
+                    "tokopedia://home",
+                    AtcErrorPage(
+                        true,
+                        "Error unverified phone number",
+                        "your number phone is unverified",
+                        listOf(
+                            AtcErrorButton(
+                                "Verify Number Phone",
+                                "https://tokopedia.com",
+                                "tokopedia://home"
+                            )
+                        )
+                    )
+                )
+            )
         )
     }
 }

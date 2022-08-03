@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData.getDummyCartData
+import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData.getDummyCartDataWithErrors
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel.Companion.MESSAGE_ERROR_NON_LOGIN
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
@@ -97,6 +98,31 @@ class DigitalAddToCartViewModelTest {
         val resultData = digitalAddToCartViewModel.addToCartResult.value
         Assert.assertNotNull(resultData)
         assert(resultData is Success)
+    }
+
+    @Test
+    fun addToCart_loggedIn_returnsErrorAtc(){
+        //Given
+        val dataResponse = DataResponse<ResponseCartData>()
+        dataResponse.data = getDummyCartDataWithErrors()
+
+        val token = object : TypeToken<DataResponse<ResponseCartData>>() {}.type
+        val response = RestResponse(dataResponse, 200, false)
+        val responseMap = mapOf<Type, RestResponse>(token to response)
+
+        coEvery { digitalAddToCartUseCase.executeOnBackground() } returns responseMap
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // When
+        val digitalCheckoutPassData = DigitalCheckoutPassData()
+        digitalCheckoutPassData.categoryId = "1"
+        digitalAddToCartViewModel.addToCart(digitalCheckoutPassData, RequestBodyIdentifier(), DigitalSubscriptionParams())
+
+        // Then
+        val resultData = digitalAddToCartViewModel.errorAtc.value
+        Assert.assertNotNull(resultData)
+        assert(resultData == dataResponse.data.errors.first())
     }
 
     @Test

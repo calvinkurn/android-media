@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.atc.utils.DigitalAtcMapper
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
@@ -36,6 +37,11 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
     val addToCartResult: LiveData<Result<String>>
         get() = _addToCartResult
 
+    private val _errorAtc = MutableLiveData<ErrorAtc>()
+    val errorAtc: LiveData<ErrorAtc>
+        get() = _errorAtc
+
+
     fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,
                   digitalIdentifierParam: RequestBodyIdentifier,
                   digitalSubscriptionParams: DigitalSubscriptionParams) {
@@ -59,8 +65,11 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
                 if (restResponse.id != null) {
                     rechargeAnalytics.eventAddToCart(DigitalAtcMapper.mapToDigitalAtcTrackingModel(restResponse,
                             digitalCheckoutPassData, userSession.userId))
-                    _addToCartResult.postValue(Success(restResponse.relationships?.category?.data?.id
-                            ?: ""))
+                    if (restResponse.errors.isEmpty()){
+                        _addToCartResult.postValue(Success(restResponse.relationships?.category?.data?.id ?: ""))
+                    }else{
+                        _errorAtc.postValue(restResponse.errors.first())
+                    }
                 } else _addToCartResult.postValue(Fail(Throwable(DigitalFailGetCartId())))
 
             }) {
