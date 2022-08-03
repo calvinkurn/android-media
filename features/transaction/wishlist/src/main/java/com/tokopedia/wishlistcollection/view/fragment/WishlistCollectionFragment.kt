@@ -41,6 +41,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_CREATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
+import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_NEED_REFRESH
@@ -115,7 +116,6 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkLogin()
-        checkOnboarding()
     }
 
     private fun checkLogin() {
@@ -250,6 +250,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                         }
                         if (result.data.data.collections.size == 1) {
                             onlyAllCollection = true
+                            checkOnboarding()
                         }
                         collectionAdapter.addList(mapCollection(result.data.data))
                     } else {
@@ -380,11 +381,11 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         showDialogDeleteCollection(collectionId, collectionName)
     }
 
-    override fun onSuccessCreateNewCollection(message: String) {
+    override fun onSuccessCreateNewCollection(dataCreate: CreateWishlistCollectionResponse.CreateWishlistCollection.DataCreate, newCollectionName: String) {
         val detailCollection =
-            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$id"
+            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=${dataCreate.id}"
         val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
-        intentCollectionDetail.putExtra(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, message)
+        intentCollectionDetail.putExtra(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, dataCreate.message)
         startActivity(intentCollectionDetail)
     }
 

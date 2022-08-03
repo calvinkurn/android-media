@@ -134,6 +134,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var searchQuery = ""
     private var activityWishlistV2 = ""
     private var toasterMessageInitial = ""
+    private var newCollectionDetailTitle = ""
     private var isBulkDeleteShow = false
     private var listBulkDelete = arrayListOf<String>()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
@@ -227,10 +228,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkLogin()
         initTrackingQueue()
-        collectionId = arguments?.getString(ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID) ?: ""
-        paramGetCollectionItems.collectionId = collectionId
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -246,6 +244,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
+        checkLogin()
         observingData()
     }
 
@@ -602,12 +601,15 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
-        setToolbarTitle(DEFAULT_TITLE)
+        var titleToolbar = DEFAULT_TITLE
+        activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
+        toasterMessageInitial = arguments?.getString(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, "") as String
+        collectionId = arguments?.getString(ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID) ?: ""
+        paramGetCollectionItems.collectionId = collectionId
+        if (newCollectionDetailTitle.isNotEmpty()) titleToolbar = newCollectionDetailTitle
+        setToolbarTitle(titleToolbar)
         setSwipeRefreshLayout()
         binding?.run {
-            activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
-            toasterMessageInitial = arguments?.getString(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, "") as String
-
             wishlistCollectionDetailSearchbar.searchBarTextField.addTextChangedListener(object :
                 TextWatcher {
                 var searchFor = ""

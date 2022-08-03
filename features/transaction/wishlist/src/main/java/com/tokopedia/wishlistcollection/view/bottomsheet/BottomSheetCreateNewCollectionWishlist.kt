@@ -40,10 +40,12 @@ import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetCreateNewColle
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_IDs
 import javax.inject.Inject
 
-class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<BottomSheetCreateWishlistCollectionComponent> {
+class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
+    HasComponent<BottomSheetCreateWishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetCreateNewWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
-    private var listCollections: List<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames.DataItem> = emptyList()
+    private var listCollections: List<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames.DataItem> =
+        emptyList()
     private var newCollectionName = ""
     private var actionListenerFromPdp: ActionListenerFromPdp? = null
     private var actionListenerFromCollectionPage: ActionListenerFromCollectionPage? = null
@@ -56,7 +58,10 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val createNewCollectionViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[BottomSheetCreateNewCollectionViewModel::class.java]
+        ViewModelProvider(
+            this,
+            viewModelFactory
+        )[BottomSheetCreateNewCollectionViewModel::class.java]
     }
 
     companion object {
@@ -105,9 +110,14 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
     }
 
     private fun initLayout() {
-        binding = BottomsheetCreateNewWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
+        binding = BottomsheetCreateNewWishlistCollectionBinding.inflate(
+            LayoutInflater.from(context),
+            null,
+            false
+        )
         binding?.run {
-            collectionCreateNameInputTextField.editText.addTextChangedListener(object: TextWatcher{
+            collectionCreateNameInputTextField.editText.addTextChangedListener(object :
+                TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -141,7 +151,7 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
             binding?.run {
                 collectionCreateButton.apply {
                     isEnabled = true
-                    setOnClickListener { createNewCollection(newCollectionName)  }
+                    setOnClickListener { createNewCollection(newCollectionName) }
                 }
             }
         }
@@ -151,7 +161,7 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
         binding?.run {
             collectionCreateButton.apply {
                 isEnabled = false
-                setOnClickListener {  }
+                setOnClickListener { }
             }
         }
     }
@@ -170,13 +180,15 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
 
     private fun checkIsCollectionNameExists(checkName: String) {
         if (listCollections.isNotEmpty()) {
-            run check@ {
+            run check@{
                 listCollections.forEach { item ->
                     if (checkName == item.name) {
                         binding?.run {
                             collectionCreateNameInputTextField.isInputError = true
 
-                            val labelMessage = context?.getString(R.string.collection_create_bottomsheet_name_error) ?: ""
+                            val labelMessage =
+                                context?.getString(R.string.collection_create_bottomsheet_name_error)
+                                    ?: ""
                             collectionCreateNameInputTextField.setMessage(labelMessage)
                             disableSaveButton()
                             return@check
@@ -211,7 +223,10 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
         if (userSession.isLoggedIn) {
             getWishlistCollectionNames()
         } else {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            startActivityForResult(
+                RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
         }
     }
 
@@ -237,8 +252,11 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
                     if (result.data.status == OK) {
                         listCollections = result.data.data
                     } else {
-                        val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
-                            R.string.wishlist_common_error_msg) }
+                        val errorMessage = result.data.errorMessage.first().ifEmpty {
+                            context?.getString(
+                                R.string.wishlist_common_error_msg
+                            )
+                        }
                         errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
                     }
                 }
@@ -258,8 +276,11 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
                         actionListenerFromPdp?.onSuccessSaveToNewCollection(result.data.dataItem.message)
                         dismiss()
                     } else {
-                        val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
-                            R.string.wishlist_common_error_msg) }
+                        val errorMessage = result.data.errorMessage.first().ifEmpty {
+                            context?.getString(
+                                R.string.wishlist_common_error_msg
+                            )
+                        }
                         actionListenerFromPdp?.onFailedSaveToNewCollection(errorMessage)
                         dismiss()
                     }
@@ -278,11 +299,17 @@ class BottomSheetCreateNewCollectionWishlist: BottomSheetUnify(), HasComponent<B
             when (result) {
                 is Success -> {
                     if (result.data.status == OK && result.data.dataCreate.success) {
-                        actionListenerFromCollectionPage?.onSuccessCreateNewCollection(result.data.dataCreate.message)
+                        actionListenerFromCollectionPage?.onSuccessCreateNewCollection(
+                            result.data.dataCreate,
+                            newCollectionName
+                        )
                         dismiss()
                     } else {
-                        val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
-                            R.string.wishlist_common_error_msg) }
+                        val errorMessage = result.data.errorMessage.first().ifEmpty {
+                            context?.getString(
+                                R.string.wishlist_common_error_msg
+                            )
+                        }
                         errorMessage?.let { setTextFieldError(it) }
                     }
                 }
