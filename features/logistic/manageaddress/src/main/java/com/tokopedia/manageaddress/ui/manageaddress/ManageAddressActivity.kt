@@ -39,7 +39,7 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
         val bundle = Bundle()
         if (intent != null && intent.extras != null) {
             if(!intent.hasExtra(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ManageAddressSource.NOTIFICATION.value)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ManageAddressSource.NOTIFICATION.source)
             }
 
             bundle.putAll(intent.extras)

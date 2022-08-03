@@ -754,7 +754,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
                 intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState.address.state)
                 intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET, true)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ManageAddressSource.DISTRICT_NOT_MATCH.value)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ManageAddressSource.DISTRICT_NOT_MATCH.source)
                 startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
             }
             AddressState.ERROR_CODE_OPEN_ANA -> {

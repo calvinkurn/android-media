@@ -970,7 +970,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun onTextChangeShippingAddressClicked() {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS).apply {
             putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
-            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ManageAddressSource.TOKOFOOD.value)
+            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ManageAddressSource.TOKOFOOD.source)
         }
         startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }

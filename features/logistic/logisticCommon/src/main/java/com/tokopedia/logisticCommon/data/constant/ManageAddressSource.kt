@@ -1,6 +1,6 @@
 package com.tokopedia.logisticCommon.data.constant
 
-enum class ManageAddressSource(val value: String) {
+enum class ManageAddressSource(val source: String) {
     ACCOUNT("account"),
     CART("cart"),
     CHECKOUT("checkout"),

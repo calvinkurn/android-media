@@ -559,7 +559,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         ChooseAddressTracking.onClickCekAlamatLainnya(userSession.userId)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
         intent.putExtra(EXTRA_IS_LOCALIZATION, true)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.value)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source)
         startActivityForResult(intent, REQUEST_CODE_ADDRESS_LIST)
     }
 
