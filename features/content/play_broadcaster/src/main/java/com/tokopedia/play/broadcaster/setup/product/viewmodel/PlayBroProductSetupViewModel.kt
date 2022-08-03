@@ -423,26 +423,26 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     private fun handleClickPin(product: ProductUiModel){
         viewModelScope.launchCatchError(block = {
-            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = true)))
+            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = true)), needToReset = true)
             val result = repo.setPinProduct(channelId, product)
             if(result)
                 updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = false, isPinned = product.pinStatus.isPinned.switch())))
         }){
-            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = false)), isFailed = true)
+            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isLoading = false)), needToReset = true)
             _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
         }
     }
 
-    private fun updatePinProduct(product: ProductUiModel, isFailed: Boolean = false) {
+    /**
+     * hacky way needToReset -> find better approach
+     */
+    private fun updatePinProduct(product: ProductUiModel, needToReset: Boolean = false) {
         _productTagSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
                 sectionUiModel.products.map { prod ->
-                    when {
-                        prod.id == product.id -> prod.copy(pinStatus = product.pinStatus)
-                        prod.pinStatus.isPinned && isFailed-> prod.copy(pinStatus = prod.pinStatus.copy(isPinned = true))
-                        else -> prod.copy(pinStatus = prod.pinStatus.copy(isPinned = false))
-                    }
+                    if(prod.id == product.id) prod.copy(pinStatus = product.pinStatus)
+                    else prod.copy(pinStatus = prod.pinStatus.copy(isPinned = prod.pinStatus.isPinned && needToReset))
                 })
             }
         }

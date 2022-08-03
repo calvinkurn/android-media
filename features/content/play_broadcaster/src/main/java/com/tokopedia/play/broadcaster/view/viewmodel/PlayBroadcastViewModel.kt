@@ -289,8 +289,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
 
-    private var coolDownTimerJob: Job? = null
-
     private val liveViewStateListener = object : PlayLiveViewStateListener {
         override fun onLivePusherViewStateChanged(viewState: PlayLiveViewState) {
             when {
