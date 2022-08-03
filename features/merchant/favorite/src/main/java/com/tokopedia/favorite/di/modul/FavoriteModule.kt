@@ -123,4 +123,10 @@ class FavoriteModule {
     fun provideTopAdsService(@TopAdsQualifier retrofit: Retrofit): TopAdsService {
         return retrofit.create(TopAdsService::class.java)
     }
+
+    @FavoriteScope
+    @Provides
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
 }
