@@ -13,6 +13,7 @@ import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRep
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -234,6 +235,11 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
     protected fun verifyAddToCartErrorLoading(expectedResponse: RechargeNetworkResult.Loading){
         val actualResponse = viewModel.addToCartResult.value
         Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyAddToCartErrorNotEmpty(expectedResponse: List<ErrorAtc>){
+        val actualResponse = viewModel.errorAtc.value
+        Assert.assertEquals(expectedResponse.first(), actualResponse)
     }
 
     protected fun verifySelectedProductSuccess(expectedResponse: SelectedProduct){

@@ -151,12 +151,20 @@ class PulsaDataFactory {
         )
     }
 
+    fun getAddToCartDataWithErrors(): ResponseCartData{
+        return gson.fromJson(
+            gson.JsonToString(GET_ADD_TO_CART_WITH_ERRORS),
+            ResponseCartData::class.java
+        )
+    }
+
     companion object {
         const val GET_FAVORITE_NUMBER = "common_telco/get_favorite_number_mock.json"
         const val GET_RECOMMENDATION = "common_telco/get_recommendation_mock.json"
         const val GET_PREFIX_OPERATOR = "common_telco/get_prefix_operator_mock.json"
         const val GET_CATALOG_INPUT_MULTITAB = "pulsa/get_catalog_input_multitab_mock.json"
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"
+        const val GET_ADD_TO_CART_WITH_ERRORS = "common_telco/get_add_to_cart_not_empty_error_mock.json"
         const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "common_telco/get_prefix_operator_empty_validation_mock.json"
         const val GET_MENU_DETAIL = "pulsa/get_menu_detail_mock.json"
 

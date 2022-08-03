@@ -492,6 +492,16 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
     }
 
     @Test
+    fun `when getting addToCart should run and return failed with not empty errorAtc`(){
+        val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartDataWithErrors())
+        onGetAddToCart_thenReturn(response)
+
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        verifyAddToCartRepoGetCalled()
+        verifyAddToCartErrorNotEmpty(response.errorAtc)
+    }
+
+    @Test
     fun `when getting addToCart should run and get error ResponseErrorException should return custom message`() {
         val errorMessage = "error"
         val errorResponseException = ResponseErrorException(errorMessage)
