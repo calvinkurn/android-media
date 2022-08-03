@@ -183,6 +183,14 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                     paramData.removeBackgroundUrl = item.removeBackgroundUrl
                     paramData.cropBound = item.cropBound
                     paramData.rotateData = item.rotateData
+
+                    // need to store brightness / contrast implement sequence (result will be diff)
+                    // if contrast is latest filter then isContrastExecuteFirst = false
+                    if (item.editorToolType == EditorToolType.CONTRAST) {
+                        paramData.isContrastExecuteFirst = 0
+                    } else if (item.editorToolType == EditorToolType.BRIGHTNESS) {
+                        paramData.isContrastExecuteFirst = 1
+                    }
                 }
 
                 val intent = Intent(it, DetailEditorActivity::class.java).apply {

@@ -101,7 +101,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
     ) {
         val bitmap = cropImageView.drawable.toBitmap()
 
-        if (cropImageView.currentAngle % 90f == 0f) {
+        if (cropImageView.currentAngle % 90f == 0f && rotateNumber != 0) {
             val scale = getScale()
             val scaleX = scale.first
             val scaleY = scale.second
@@ -127,6 +127,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
             )
 
             onCropFinish(Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true))
+            return
         }
 
         cropImageView.cropAndSaveImage(
@@ -157,7 +158,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         )
     }
 
-    private fun getProcessedBitmap(
+    fun getProcessedBitmap(
         originalBitmap: Bitmap,
         offsetX: Int,
         offsetY: Int,

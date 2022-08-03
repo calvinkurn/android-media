@@ -23,11 +23,14 @@ data class EditorDetailUiModel(
     var contrastValue: Float? = null,
     var watermarkMode: Int? = null,
     var removeBackgroundUrl: String? = null,
+    var isContrastExecuteFirst: Int? = null,
 ) : Parcelable {
     @IgnoredOnParcel
     var cropBound: EditorCropRectModel? = null
     @IgnoredOnParcel
     var rotateData: EditorRotateModel? = null
+
+
 
     constructor(parcel: Parcel) : this(
         originalUrl = parcel.readString() ?: "",
@@ -37,6 +40,7 @@ data class EditorDetailUiModel(
         contrastValue = shouldNull(parcel.readFloat()),
         watermarkMode = shouldNull(parcel.readInt()),
         removeBackgroundUrl = parcel.readString(),
+        isContrastExecuteFirst = parcel.readInt()
     ) {
 
         // crop bound
@@ -70,7 +74,7 @@ data class EditorDetailUiModel(
         val bottomRectPos = parcel.readInt()
         val orientationChangeNumber = parcel.readInt()
 
-        if (rightRectPos != 0) {
+        if (rotateDegree != 0f || orientationChangeNumber != 0 || scaleX != 1f) {
             rotateData = EditorRotateModel(
                 rotateDegree,
                 scaleX,
@@ -89,7 +93,11 @@ data class EditorDetailUiModel(
         brightnessValue = null
         contrastValue = null
         watermarkMode = null
-        rotateData = null
+        rotateData?.apply {
+            rotateDegree = 0f
+            orientationChangeNumber = 0
+            scaleX = 1f
+        }
     }
 
     companion object : Parceler<EditorDetailUiModel> {
@@ -105,6 +113,7 @@ data class EditorDetailUiModel(
             parcel.writeFloat(contrastValue ?: -1f)
             parcel.writeInt(watermarkMode ?: -1)
             parcel.writeString(removeBackgroundUrl)
+            parcel.writeInt(isContrastExecuteFirst ?: 0)
 
             // crop bound
             parcel.writeInt(cropBound?.imageHeight ?: 0)

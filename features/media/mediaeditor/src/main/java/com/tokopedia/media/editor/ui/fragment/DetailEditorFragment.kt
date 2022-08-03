@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorFilter
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
@@ -104,7 +105,8 @@ class DetailEditorFragment @Inject constructor(
     private val cropComponent by uiComponent { CropToolUiComponent(it, 0) }
 
     private var data = EditorDetailUiModel()
-    private var originalBitmap: Bitmap? = null
+//    private var baseBitmap: Bitmap? = null
+    private var implementedBaseBitmap: Bitmap? = null
 
     private var removeBackgroundRetryLimit = 3
 
@@ -206,9 +208,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeContrast() {
         viewModel.contrastFilter.observe(viewLifecycleOwner) {
-            if(originalBitmap == null)
-                originalBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
-            originalBitmap?.let { itBitmap ->
+            implementedBaseBitmap?.let { itBitmap ->
                 val contrastBitmap = contrastFilterRepositoryImpl.contrast(
                     it,
                     itBitmap.copy(itBitmap.config, true)
@@ -243,7 +243,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeWatermark() {
         viewModel.watermarkFilter.observe(viewLifecycleOwner) { watermarkType ->
-            originalBitmap?.let { bitmap ->
+            implementedBaseBitmap?.let { bitmap ->
                 val text = if(userSession.shopName.isEmpty()) "Shop Name" else userSession.shopName
                 val result = watermarkFilterRepositoryImpl.watermark(
                     requireContext(),
@@ -325,52 +325,98 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun initOriginalBitmap(){
-        if(originalBitmap == null)
-            originalBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
+    private fun implementPreviousStateBrightness(previousValue: Float?, isRemoveFilter: Boolean = true){
+        val cropView = viewBinding?.imgUcropPreview?.cropImageView
+        cropView?.colorFilter = brightnessFilterRepositoryImpl.brightness(previousValue ?: 0f)
+
+        // need to remove the filter to prevent any filter trigger re-apply the brightness color filter
+        if(isRemoveFilter) viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()?.let {
+            cropView?.clearColorFilter()
+            cropView?.setImageBitmap(it)
+        }
     }
 
-    private fun readPreviousState(previousState: EditorDetailUiModel){
-        initOriginalBitmap()
-
-        // === Brightness ===
-        if(previousState.brightnessValue != null){
-            viewBinding?.imgUcropPreview?.cropImageView?.colorFilter =
-                brightnessFilterRepositoryImpl.brightness(previousState.brightnessValue!!)
-        }
-        // === Contrast ===
-        if(previousState.contrastValue != null ){
-            viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(
+    private fun implementPreviousStateContrast(previousValue: Float?){
+        viewBinding?.imgUcropPreview?.cropImageView?.let {
+            val bitmap = it.drawable.toBitmap()
+            it.setImageBitmap(
                 contrastFilterRepositoryImpl.contrast(
-                    previousState.contrastValue!!,
-                    originalBitmap!!
+                    previousValue ?: 0f,
+                    bitmap.copy(bitmap.config, true)
                 )
             )
         }
+    }
+
+    private fun implementPreviousStateRotate(rotateData: EditorRotateModel){
+        viewBinding?.imgUcropPreview?.let {
+            if(rotateData.scaleX < 0f){
+                rotateFilterRepositoryImpl.mirror(it)
+            }
+            if(rotateData.scaleY < 0f){
+                rotateFilterRepositoryImpl.rotate(it, RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
+                rotateFilterRepositoryImpl.mirror(it)
+            }
+
+            it.cropImageView.post {
+                if(rotateData.orientationChangeNumber > 0){
+                    rotateFilterRepositoryImpl.rotate(it, rotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
+                }
+                rotateFilterRepositoryImpl.rotate(it, rotateData.rotateDegree, false)
+            }
+        }
+    }
+
+    private fun readPreviousState(previousState: EditorDetailUiModel){
+        // if current selected editor not brightness and contrast, implement filter with sequence
+        if (previousState.editorToolType != EditorToolType.BRIGHTNESS && previousState.editorToolType != EditorToolType.CONTRAST) {
+            if(previousState.isContrastExecuteFirst == 1){
+                implementPreviousStateContrast(previousState.contrastValue)
+                implementPreviousStateBrightness(previousState.brightnessValue)
+            } else {
+                implementPreviousStateBrightness(previousState.brightnessValue)
+                implementPreviousStateContrast(previousState.contrastValue)
+            }
+        } else {
+            // === Contrast ===
+            if (previousState.contrastValue != null
+                && previousState.editorToolType != EditorToolType.CONTRAST
+            ) {
+                implementPreviousStateContrast(previousState.contrastValue ?: 0f)
+            }
+            // === Brightness ===
+            if (previousState.brightnessValue != null
+                && previousState.editorToolType != EditorToolType.BRIGHTNESS
+            ) {
+                implementPreviousStateBrightness(previousState.brightnessValue ?: 0f)
+            }
+        }
+
         // === Rotate ===
         if(previousState.rotateData != null){
-            viewBinding?.imgUcropPreview?.let {
-                val rotateData = previousState.rotateData!!
-                if(rotateData.scaleX < 0f){
-                    rotateFilterRepositoryImpl.mirror(it)
-                }
-                if(rotateData.scaleY < 0f){
-                    rotateFilterRepositoryImpl.rotate(it, RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
-                    rotateFilterRepositoryImpl.mirror(it)
-                }
+            implementPreviousStateRotate(previousState.rotateData!!)
+        }
 
-                it.cropImageView.post {
-                    if(rotateData.orientationChangeNumber > 0){
-                        rotateFilterRepositoryImpl.rotate(it, rotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE, true)
-                    }
-                    rotateFilterRepositoryImpl.rotate(it, rotateData.rotateDegree, false)
-                }
+        // image that already implemented previous filter
+        implementedBaseBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
+
+        if(previousState.brightnessValue != null && previousState.editorToolType == EditorToolType.BRIGHTNESS){
+            // if current editor is brightness keep the filter color so we can adjust it later
+            implementPreviousStateBrightness(previousState.brightnessValue, false)
+        }else if(previousState.contrastValue != null && previousState.editorToolType == EditorToolType.CONTRAST){
+            viewBinding?.imgUcropPreview?.cropImageView?.let {
+                it.setImageBitmap(
+                    contrastFilterRepositoryImpl.contrast(
+                        previousState.contrastValue!!,
+                        implementedBaseBitmap!!.copy(implementedBaseBitmap!!.config, true)
+                    )
+                )
             }
         }
     }
 
     private fun setWatermarkDrawerItem() {
-        originalBitmap?.let { bitmap ->
+        implementedBaseBitmap?.let { bitmap ->
             // todo: implement text from user data
             var text = if(userSession.shopName.isEmpty()) "Shop Name" else userSession.shopName
             val resultBitmap1 = watermarkFilterRepositoryImpl.watermark(
@@ -404,19 +450,13 @@ class DetailEditorFragment @Inject constructor(
         }
 
         viewBinding?.btnSave?.setOnClickListener {
-            if(data.editorToolType == EditorToolType.ROTATE){
-                viewBinding?.imgUcropPreview?.cropRotate(
-                    finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
-                    sliderValue = rotateFilterRepositoryImpl.sliderValue,
-                    rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
-                    data
-                ) {
-                    saveImage(it)
-                }
-            } else {
-                viewBinding?.imgUcropPreview?.let {
-                    saveImage(it.cropImageView.drawable.toBitmap())
-                }
+            viewBinding?.imgUcropPreview?.cropRotate(
+                finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
+                sliderValue = rotateFilterRepositoryImpl.sliderValue,
+                rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
+                data
+            ) {
+                saveImage(it)
             }
         }
     }
