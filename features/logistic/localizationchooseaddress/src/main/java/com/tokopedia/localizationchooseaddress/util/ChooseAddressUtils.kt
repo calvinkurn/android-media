@@ -105,7 +105,6 @@ object ChooseAddressUtils {
             if (latestChooseAddressData.warehouses != localizingAddressStateData.warehouses) validate = true
             if (latestChooseAddressData.service_type != localizingAddressStateData.service_type) validate = true
             if (latestChooseAddressData.version != localizingAddressStateData.version) validate = true
-            if (latestChooseAddressData.tokonow_last_update != localizingAddressStateData.tokonow_last_update) validate = true
         }
         return validate
     }
