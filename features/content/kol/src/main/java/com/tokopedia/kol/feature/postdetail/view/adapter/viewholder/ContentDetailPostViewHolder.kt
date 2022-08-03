@@ -23,6 +23,7 @@ class ContentDetailPostViewHolder(
 
     companion object {
         const val IMAGE_POST_LIKED_UNLIKED = "image_liked_unliked"
+        const val IMAGE_POST_COMMENT_ADD_DELETE = "post_comment_add_delete"
         const val IMAGE_POST_FOLLOW_UNFOLLOW = "image_follow_unfollow"
         const val IMAGE_ITEM_IMPRESSED = "image_item_impressed"
         const val VOD_ITEM_IMPRESSED = "vod_item_impressed"
@@ -57,8 +58,10 @@ class ContentDetailPostViewHolder(
                 else if (media.isVideo || media.isImage)
                     cdpView.bindImageOnImpress()
             }
-        } else if(payloads.containsKey(IMAGE_POST_LIKED_UNLIKED)){
+        } else if (payloads.containsKey(IMAGE_POST_LIKED_UNLIKED)) {
             cdpView.bindLike(feedXCard)
+        } else if (payloads.containsKey(IMAGE_POST_COMMENT_ADD_DELETE)) {
+            cdpView.setCommentCount(feedXCard.comments)
         } else if (payloads.containsKey(IMAGE_POST_FOLLOW_UNFOLLOW)) {
             if (payloads.getBoolean(IMAGE_POST_FOLLOW_UNFOLLOW)) {
                 cdpView.bindHeader(feedXCard)
@@ -111,9 +114,6 @@ class ContentDetailPostViewHolder(
         fun onVolumeClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String)
         fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long)
         fun onSgcVideoTapped(feedXCard: FeedXCard)
-
-
-
     }
 
 }

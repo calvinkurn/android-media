@@ -425,17 +425,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
     }
 
-    private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
-        val newList = adapter.getList()
-        if (newList.size > rowNumber) {
-            val item = newList[rowNumber]
-            item.comments.count = totalNewComment
-            item.comments.countFmt =
-                (item.comments.count).toString()
-        }
-        adapter.notifyItemChanged(rowNumber, DynamicPostNewViewHolder.PAYLOAD_COMMENT)
-    }
-
     private fun showToast(message: String, type: Int, actionText: String? = null) {
         if (actionText?.isEmpty() == false)
             Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
@@ -557,6 +546,21 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 putBoolean(ContentDetailPostViewHolder.IMAGE_POST_LIKED_UNLIKED, true)
             }
             adapter.notifyItemChanged(rowNumber, likePayload)
+        }
+    }
+    private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
+        val newList = adapter.getList()
+        if (newList.size > rowNumber) {
+            val item = newList[rowNumber]
+            item.comments.count = totalNewComment
+            item.comments.countFmt =
+                (item.comments.count).toString()
+
+            val commentPayload = Bundle().apply {
+                putBoolean(ContentDetailPostViewHolder.IMAGE_POST_COMMENT_ADD_DELETE, true)
+            }
+
+            adapter.notifyItemChanged(rowNumber, commentPayload)
         }
     }
 

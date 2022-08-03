@@ -403,10 +403,12 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         presenter.updateCursor(lastcursor)
     }
 
+    /***
+      totalNewComment is number of comment item in adapter excluding first caption item
+     ***/
     override fun onSuccessDeleteComment(adapterPosition: Int) {
         if (adapterPosition <= adapter?.itemCount ?: 0) {
             val numberOfComments = adapter?.itemCount ?: -1
-            /**totalNewComment is number of comment item in adapter excluding first caption item*/
             totalNewComment = if (numberOfComments != -1) numberOfComments - 1 else totalNewComment
             activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
         }

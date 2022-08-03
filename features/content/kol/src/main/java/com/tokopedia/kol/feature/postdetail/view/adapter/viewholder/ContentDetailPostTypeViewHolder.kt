@@ -794,7 +794,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
 
 
-    private fun setCommentCount(comments: FeedXComments) {
+    fun setCommentCount(comments: FeedXComments) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text =
             context.getString(com.tokopedia.feedcomponent.R.string.feed_component_see_all_comments, comments.countFmt)
