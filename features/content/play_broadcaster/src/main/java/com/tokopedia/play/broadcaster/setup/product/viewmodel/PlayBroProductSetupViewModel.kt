@@ -435,9 +435,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             if(result) {
                 updatePinProduct(product = product)
                 addCoolDown()
-                if (!isPinned) {
-                    _uiEvent.emit(PlayBroProductChooserEvent.ImpressPinProduct(product.id))
-                }
             } else {
                 //switch current status bcz in update UI it'll switch to the OG
                 val action = if(isPinned) "lepas" else "pasang"
