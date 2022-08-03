@@ -23,7 +23,8 @@ object OtpConstant {
     val PIN_V2_SALT = getSalt()
 
     private fun getSalt(): String {
-        return if (GlobalConfig.DEBUG && TokopediaUrl.getInstance().GQL.contains("staging") ) {
+        val staging = "staging"
+        return if (GlobalConfig.DEBUG && TokopediaUrl.getInstance().TYPE.value.lowercase() == staging) {
             "c456bbc2c9c746ffaf67787d7c59945d"
         } else {
             "b9f14c8ed04a41c7a5361b648a088b69"
