@@ -72,4 +72,10 @@ class HomeModule {
     fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE)
     }
+
+    @HomeScope
+    @Provides
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
 }
