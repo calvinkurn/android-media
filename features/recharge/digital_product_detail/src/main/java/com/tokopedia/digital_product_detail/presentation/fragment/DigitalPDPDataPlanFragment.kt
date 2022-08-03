@@ -1082,8 +1082,8 @@ class DigitalPDPDataPlanFragment :
                     viewModel.digitalCheckoutPassData.apply {
                         errorAtcData = DigitalErrorAtcData(
                             redirectionLink = error.atcErrorPage.buttons.first().appLinkUrl,
-                            errorTitle = error.title,
-                            errorDescription = error.subTitle,
+                            errorTitle = error.atcErrorPage.title,
+                            errorDescription = error.atcErrorPage.subTitle,
                             buttonLabel = error.atcErrorPage.buttons.first().label
                         )
                     }
@@ -1100,7 +1100,7 @@ class DigitalPDPDataPlanFragment :
                     Toaster.TYPE_ERROR,
                     getString(com.tokopedia.common_digital.R.string.digital_common_toaster_button_label)
                 ) {
-                    RouteManager.route(context, error.atcErrorPage.buttons.first().appLinkUrl)
+                    RouteManager.route(context, error.appLinkUrl)
                 }.show()
             }
         }

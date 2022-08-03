@@ -13,8 +13,8 @@ data class ErrorAtc(
     @SerializedName("title")
     val title: String = "",
 
-    @SerializedName("subtitle")
-    val subTitle: String = "",
+    @SerializedName("applink_url")
+    val appLinkUrl: String = "",
 
     @SerializedName("atc_error_page")
     val atcErrorPage: AtcErrorPage = AtcErrorPage()
@@ -23,6 +23,12 @@ data class ErrorAtc(
 data class AtcErrorPage(
     @SerializedName("show_error_page")
     val isShowErrorPage: Boolean = false,
+
+    @SerializedName("title")
+    val title: String = "",
+
+    @SerializedName("subtitle")
+    val subTitle: String = "",
 
     @SerializedName("buttons")
     val buttons: List<AtcErrorButton> = emptyList()
