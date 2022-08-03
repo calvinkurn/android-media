@@ -382,6 +382,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 chipsLabel
                 hasUsedBenefit
               }
+              boMetadata
             }
             merchantVoucherSummary{
                 animatedInfo{

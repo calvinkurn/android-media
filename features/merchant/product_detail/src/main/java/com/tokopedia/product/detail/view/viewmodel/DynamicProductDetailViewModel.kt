@@ -429,6 +429,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return result
     }
 
+    fun getRatesEstimateBoMetadata(): String {
+        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
+        return p2Data.value?.ratesEstimate?.firstOrNull { productId in it.listfProductId }?.boMetadata
+            ?: ""
+    }
+
     fun getP2RatesBottomSheetData(): ErrorBottomSheet? {
         val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
         var result: ErrorBottomSheet? = null
