@@ -218,7 +218,8 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
     fun `Quick Filter Item Type Is Selected When There Is Active Filter`() {
         val searchProductModel = searchProductModelWithQuickFilter.jsonToObject<SearchProductModel>()
         val selectedFilterIndex = 0
-        val selectedFilterOption = searchProductModel.quickFilterModel.filter[selectedFilterIndex].options[0]
+        val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
+        val selectedFilterOption = selectedFilter.options[0]
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given Set Quick Filter Called`()
@@ -226,13 +227,44 @@ internal class SearchProductHandleQuickFilterTest : ProductListPresenterTestFixt
 
         `When Load Data`()
 
-        `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(selectedFilterIndex)
+        `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(
+            selectedFilterIndex,
+            selectedFilterOption.name,
+        )
     }
 
-    private fun `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(selectedFilterIndex: Int) {
+    @Test
+    fun `Quick Filter Item Type Is Selected When There Is Multiple Active Options In A Single Filter`() {
+        val searchProductModel = searchProductModelWithMultipleOptionQuickFilter.jsonToObject<SearchProductModel>()
+        val selectedFilterIndex = 0
+        val selectedFilter = searchProductModel.quickFilterModel.filter[selectedFilterIndex]
+        val firstSelectedFilterOption = selectedFilter.options[0]
+        val secondSelectedFilterOption = selectedFilter.options[1]
+        val expectedChipName = "2 Jenis Toko"
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given Set Quick Filter Called`()
+        `Given Selected Option will return true`(firstSelectedFilterOption)
+        `Given Selected Option will return true`(secondSelectedFilterOption)
+
+        `When Load Data`()
+
+        `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(
+            selectedFilterIndex,
+            expectedChipName,
+        )
+    }
+
+    private fun `Then Assert Quick Filter That Has Active Option Will Have Selected Type`(
+        selectedFilterIndex: Int,
+        expectedChipName: String,
+    ) {
         val sortFilterItemList = listItemSlot.captured
 
+        val a = sortFilterItemList[selectedFilterIndex].title
+
         assert(sortFilterItemList[selectedFilterIndex].type == ChipsUnify.TYPE_SELECTED)
+        assert(sortFilterItemList[selectedFilterIndex].title == expectedChipName)
     }
 
     private fun `Given Selected Option will return true`(selectedOption: Option) {
