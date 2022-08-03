@@ -168,6 +168,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
                 }
             }
+
+            override fun onImpressPinnedProduct(product: ProductUiModel) {
+                analytic.onImpressPinProductLiveRoom(product.id)
+            }
         })
     }
 
