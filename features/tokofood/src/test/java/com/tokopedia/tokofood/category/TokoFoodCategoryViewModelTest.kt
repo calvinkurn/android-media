@@ -41,6 +41,7 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             val actualResponse =
                 categoryLayoutList.first.data.items.find { it is TokoFoodErrorStateUiModel }
             Assert.assertNotNull(actualResponse)
+            Assert.assertFalse(categoryLayoutList.second)
             result.cancel()
         }
     }
@@ -67,6 +68,9 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             collectorJob.cancel()
         }
         Assert.assertEquals(expectedResult, (actualResponse?.first as Success).data)
+        actualResponse?.second?.let {
+            Assert.assertTrue(it)
+        }
     }
 
     @Test
@@ -87,6 +91,9 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             collectorJob.cancel()
         }
         Assert.assertEquals(expectedResult, (actualResponse?.first as Success).data)
+        actualResponse?.second?.let {
+            Assert.assertTrue(it)
+        }
     }
 
     @Test
@@ -107,6 +114,7 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
 
             val actualResponseEmptyState = viewModel.isShownEmptyState()
             verifyCategoryIsShowingErrorState(actualResponseEmptyState)
+            Assert.assertFalse(categoryLayoutList.second)
             result.cancel()
         }
     }
@@ -135,7 +143,9 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
         Assert.assertEquals(expectedResult, (actualResponse?.first as Success).data)
 
         val actualResponseEmptyState = viewModel.isShownEmptyState()
-
+        actualResponse?.second?.let {
+            Assert.assertTrue(it)
+        }
         verifyCategoryIsNotShowingErrorState(actualResponseEmptyState)
     }
 
@@ -174,6 +184,9 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             viewModel.onScrollProductList(containLastItemIndex, itemCount, localCacheModel = LocalCacheModel())
             collectorJob.cancel()
         }
+        actualResponse?.second?.let {
+            Assert.assertFalse(it)
+        }
         Assert.assertEquals(expectedResult, (actualResponse?.first as Success).data)
     }
 
@@ -200,6 +213,9 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             viewModel.setCategoryLayout(LocalCacheModel())
             viewModel.onScrollProductList(containLastItemIndex, itemCount, localCacheModel = LocalCacheModel())
             collectorJob.cancel()
+        }
+        actualResponse?.second?.let {
+            Assert.assertTrue(it)
         }
         Assert.assertEquals(expectedResult, (actualResponse?.first as Success).data)
     }
@@ -228,6 +244,9 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             viewModel.onScrollProductList(containLastItemIndex, itemCount, localCacheModel = LocalCacheModel())
             collectorJob.cancel()
         }
+        actualResponse?.second?.let {
+            Assert.assertTrue(it)
+        }
         Assert.assertEquals(expectedResult, (actualResponse?.first as Success).data)
     }
 
@@ -255,6 +274,9 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             viewModel.onScrollProductList(containLastItemIndex, itemCount, localCacheModel = LocalCacheModel())
             collectorJob.cancel()
         }
+        actualResponse?.second?.let {
+            Assert.assertTrue(it)
+        }
         Assert.assertEquals(expectedResult, (actualResponse?.first as Success).data)
     }
 
@@ -277,7 +299,11 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             viewModel.setCategoryLayout(LocalCacheModel())
             collectorJob.cancel()
         }
+
         Assert.assertEquals(expectedResult, (actualResponse?.first as Success).data)
+        actualResponse?.second?.let {
+            Assert.assertTrue(it)
+        }
     }
 
     @Test
@@ -301,6 +327,9 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             collectorJob.cancel()
         }
         Assert.assertEquals(expectedResult, (actualResponse?.first as Success).data)
+        actualResponse?.second?.let {
+            Assert.assertTrue(it)
+        }
     }
 
     @Test
@@ -331,6 +360,9 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             collectorJob.cancel()
         }
         Assert.assertEquals(expectedResult, (actualResponse?.first as Success).data)
+        actualResponse?.second?.let {
+            Assert.assertFalse(it)
+        }
     }
 
     @Test
@@ -349,6 +381,9 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             collectorJob.cancel()
         }
         Assert.assertTrue(actualResponse?.first is Fail)
+        actualResponse?.second?.let {
+            Assert.assertTrue(it)
+        }
     }
 
     @Test
@@ -373,6 +408,9 @@ class TokoFoodCategoryViewModelTest : TokoFoodCategoryViewModelTestFixture() {
             collectorJob.cancel()
         }
         Assert.assertTrue(actualResponse?.first is Fail)
+        actualResponse?.second?.let {
+            Assert.assertFalse(it)
+        }
     }
 
     @Test
