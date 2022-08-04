@@ -33,6 +33,11 @@ class LiveTrackingFragment : BaseWebViewFragment() {
             webview?.loadUrl(trackingUrl)
             val callIntent = Intent(ACTION_DIAL)
             callIntent.data = Uri.parse(url)
+            context?.let {
+                if (callIntent.resolveActivity(it.packageManager) != null) {
+                    startActivity(callIntent)
+                }
+            }
             startActivity(callIntent)
         }
         return super.shouldOverrideUrlLoading(webView, url)
