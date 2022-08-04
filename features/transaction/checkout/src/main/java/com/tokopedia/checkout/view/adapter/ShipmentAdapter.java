@@ -230,7 +230,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentTickerErrorViewHolder.Companion.getITEM_VIEW_SHIPMENT_TICKER_ERROR()) {
             ((ShipmentTickerErrorViewHolder) holder).bind((ShipmentTickerErrorModel) data);
         } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
-            ((ShipmentUpsellViewHolder) holder).bind(((ShipmentUpsellModel) data));
+            ((ShipmentUpsellViewHolder) holder).bind((ShipmentUpsellModel) data);
         }
     }
 
