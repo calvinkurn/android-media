@@ -3,10 +3,6 @@ package com.tokopedia.common_digital.cart.view.model
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.common_digital.atc.DigitalErrorAtcData
-import java.lang.reflect.Modifier
-import java.util.*
-import kotlin.collections.HashMap
 
 /**
  * @author anggaprasetiyo on 2/24/17.
@@ -35,7 +31,6 @@ class DigitalCheckoutPassData() : Parcelable {
     var isFromPDP: Boolean = false
     var isSpecialProduct: Boolean = false
     var deviceId: Int = 5
-    var errorAtcData: DigitalErrorAtcData? = null
 
     constructor(parcel: Parcel) : this() {
         action = parcel.readString()
@@ -62,7 +57,6 @@ class DigitalCheckoutPassData() : Parcelable {
         needGetCart = parcel.readByte() != 0.toByte()
         isFromPDP = parcel.readByte() != 0.toByte()
         isSpecialProduct = parcel.readByte() != 0.toByte()
-        errorAtcData = parcel.readParcelable(DigitalErrorAtcData::class.java.classLoader)
     }
 
     private constructor(builder: Builder) : this() {
@@ -86,7 +80,6 @@ class DigitalCheckoutPassData() : Parcelable {
         needGetCart = builder.needGetCart
         isFromPDP = builder.isFromPDP
         isSpecialProduct = builder.isSpecialProduct
-        errorAtcData = builder.errorAtcData
     }
 
     class Builder {
@@ -110,7 +103,6 @@ class DigitalCheckoutPassData() : Parcelable {
         var needGetCart: Boolean = false
         var isFromPDP: Boolean = false
         var isSpecialProduct: Boolean = false
-        var errorAtcData: DigitalErrorAtcData? = null
 
         fun action(`val`: String): Builder {
             action = `val`
@@ -276,23 +268,9 @@ class DigitalCheckoutPassData() : Parcelable {
         parcel.writeByte(if (needGetCart) 1 else 0)
         parcel.writeByte(if (isFromPDP) 1 else 0)
         parcel.writeByte(if (isSpecialProduct) 1 else 0)
-        parcel.writeParcelable(errorAtcData, flags)
     }
 
     override fun describeContents(): Int {
         return 0
-    }
-
-    override fun toString(): String {
-        val s = LinkedList<String>()
-        var clazz: Class<in Any>? = this.javaClass
-        while (clazz != null) {
-            for (prop in clazz.declaredFields.filterNot { Modifier.isStatic(it.modifiers) }) {
-                prop.isAccessible = true
-                s += "${prop.name}=" + prop.get(this)?.toString()?.trim()
-            }
-            clazz = clazz.superclass
-        }
-        return "${this.javaClass.simpleName}=[${s.joinToString(", ")}]"
     }
 }
