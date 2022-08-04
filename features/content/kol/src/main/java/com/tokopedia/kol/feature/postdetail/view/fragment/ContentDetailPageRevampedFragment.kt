@@ -51,6 +51,9 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampAr
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.START_TIME
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.TYPE_CONTENT_PREVIEW_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.VOD_POST
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailRevampViewModel
 import com.tokopedia.kol.feature.video.view.fragment.*
@@ -168,41 +171,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                     }
                 }
             })
-            getLikeKolResp.observe(viewLifecycleOwner, { it ->
-                when (it) {
-                    is Success -> {
-                        val data = it.data
-                        if (data.isSuccess) {
-                            onSuccessLikeDislikeKolPost(data.rowNumber)
-                        } else {
-                            data.errorMessage = getString(kolR.string.feed_like_error_message)
-                            onErrorLikeDislikeKolPost(data.errorMessage)
-                        }
-                    }
-                    is Fail -> {
-                        when (it.throwable.cause) {
-                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
-                                view?.let { v ->
-                                    showNoInterNetDialog(v.context)
-                                }
-                            }
-                            else -> {
-                                val message = getString(kolR.string.feed_like_error_message)
-                                showToast(message, Toaster.TYPE_ERROR)
-                            }
-                        }
-                    }
-                }
-            })
-            vodViewData.observe(viewLifecycleOwner,  {
-                when (it) {
-                    is Success -> {
-                        onSuccessAddViewVODPost(it.data.rowNumber)
-                    }
-                    //TODO fail case
-                    else ->{}
-                }
-            })
             longVideoViewTrackResponse.observe(viewLifecycleOwner,  {
                 when (it) {
                     is Success -> {
@@ -264,10 +232,12 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         viewModel.getCDPPostDetailFirstData(postId)
 
 
+        observeLikeContent()
         observeWishlist()
         observeFollowShop()
         observeDeleteContent()
         observeReportContent()
+        observeTrackVisitChannel()
     }
 
     private fun setupView(view: View) {
@@ -385,7 +355,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         }
     }
 
-    override fun onLikeClicked(feedXCard: FeedXCard, postPosition: Int, isDoubleTap: Boolean) {
+    override fun onLikeClicked(feedXCard: FeedXCard, postPosition : Int) {
         val trackerId = getTrackerID(
             feedXCard,
             trackerIdSgc = if (!feedXCard.like.isLiked) "33260" else "33261",
@@ -417,31 +387,17 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
             )
         )
 
-        if (feedXCard.like.isLiked) {
-            onUnlikeKolClicked(postPosition, id)
-        } else {
-            onLikeKolClicked(postPosition, id)
-        }
-    }
 
-     private fun onLikeKolClicked(
-        rowNumber: Int, id: Int
-    ) {
-        if (userSession.isLoggedIn) {
-            viewModel.doLikeKol(id, rowNumber)
-        } else {
+        if (!userSession.isLoggedIn) {
             onGoToLogin()
+            return
         }
-    }
-
-     private fun onUnlikeKolClicked(
-        rowNumber: Int, id: Int
-    ) {
-        if (userSession.isLoggedIn) {
-            viewModel.doUnlikeKol(id, rowNumber)
-        } else {
-            onGoToLogin()
-        }
+        val contentLikeAction = ContentLikeAction.getLikeAction(feedXCard.like.isLiked)
+        viewModel.likeContent(
+            contentId = feedXCard.id,
+            action = contentLikeAction,
+            rowNumber = postPosition
+        )
     }
 
     private fun showNoInterNetDialog(context: Context) {
@@ -1597,6 +1553,34 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         viewModel.addToWishlist(productId)
     }
 
+    private fun onAddToCartSuccess() {
+        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+    }
+
+    private fun onAddToCartFailed(pdpAppLink: String) {
+        onGoToLink(pdpAppLink)
+    }
+
+    private fun onSuccessDeletePost(rowNumber: Int) {
+        if (adapter.getList().size > rowNumber) {
+            adapter.getList().removeAt(rowNumber)
+            adapter.notifyItemRemoved(rowNumber)
+            Toaster.build(
+                requireView(),
+                getString(kolR.string.feed_post_deleted),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)
+            ).show()
+        }
+        if (adapter.getList().isEmpty()) {
+            //TODO handle empty list view
+//            showRefresh()
+//            onRefresh()
+        }
+    }
+
+    //region observer
     private fun observeWishlist() {
         viewModel.observableWishlist.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -1709,31 +1693,40 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         })
     }
 
-    private fun onAddToCartSuccess() {
-        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+    private fun observeTrackVisitChannel() {
+        viewModel.vodViewData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {}
+                is ContentDetailResult.Success ->  onSuccessAddViewVODPost(it.data.rowNumber)
+                is ContentDetailResult.Failure -> {
+                    //TODO fail case
+                }
+            }
+        })
     }
 
-    private fun onAddToCartFailed(pdpAppLink: String) {
-        onGoToLink(pdpAppLink)
-    }
-
-    private fun onSuccessDeletePost(rowNumber: Int) {
-        if (adapter.getList().size > rowNumber) {
-            adapter.getList().removeAt(rowNumber)
-            adapter.notifyItemRemoved(rowNumber)
-            Toaster.build(
-                requireView(),
-                getString(kolR.string.feed_post_deleted),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)
-            ).show()
-        }
-        if (adapter.getList().isEmpty()) {
-            //TODO handle empty list view
-//            showRefresh()
-//            onRefresh()
-        }
+    private fun observeLikeContent() {
+        viewModel.getLikeKolResp.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {}
+                is ContentDetailResult.Success -> {
+                    onSuccessLikeDislikeKolPost(it.data.rowNumber)
+                }
+                is ContentDetailResult.Failure -> {
+                    when (it.error) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
+                                requireContext().getString(it.error.errorMessageId)
+                            } else ErrorHandler.getErrorMessage(requireContext(), it.error)
+                            showToast(errorMessage, Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            }
+        })
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -1854,4 +1847,5 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
     }
 
+    //endregion
 }

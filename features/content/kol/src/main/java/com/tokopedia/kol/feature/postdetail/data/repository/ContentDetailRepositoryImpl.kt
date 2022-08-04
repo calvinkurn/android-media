@@ -3,11 +3,14 @@ package com.tokopedia.kol.feature.postdetail.data.repository
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
+import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
+import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitReportContentUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -25,12 +28,29 @@ import javax.inject.Inject
 class ContentDetailRepositoryImpl @Inject constructor(
     private  val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
+    private val likeContentUseCase: SubmitLikeContentUseCase,
     private val followShopUseCase: UpdateFollowStatusUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val addToWishlistUseCase: AddToWishlistV2UseCase,
     private val submitActionContentUseCase: SubmitActionContentUseCase,
     private val submitReportContentUseCase: SubmitReportContentUseCase,
+    private val trackVisitChannelUseCase: FeedBroadcastTrackerUseCase,
 ) : ContentDetailRepository {
+
+    override suspend fun likeContent(contentId: String, action: ContentLikeAction) {
+        return withContext(dispatcher.io) {
+            likeContentUseCase.setRequestParams(
+                SubmitLikeContentUseCase.createParam(contentId, action.value)
+            )
+            val response = likeContentUseCase.executeOnBackground()
+            if (response.doLikeKolPost.error.isNotEmpty()) {
+                throw MessageErrorException(response.doLikeKolPost.error)
+            }
+            if (response.doLikeKolPost.data.success != SubmitLikeContentUseCase.SUCCESS) {
+                throw CustomUiMessageThrowable(R.string.feed_like_error_message)
+            }
+        }
+    }
 
     override suspend fun followShop(shopId: String, action: ShopFollowAction) {
         return withContext(dispatcher.io) {
@@ -91,13 +111,23 @@ class ContentDetailRepositoryImpl @Inject constructor(
         contentId: String,
         reasonType: String,
         reasonMessage: String
-    ) {
+    ) = withContext(dispatcher.io) {
         submitReportContentUseCase.setRequestParams(
             SubmitReportContentUseCase.createParam(contentId, reasonType, reasonMessage)
         )
         val response = submitReportContentUseCase.executeOnBackground()
-        if (TextUtils.isEmpty(response.content.errorMessage).not()) {
+        if (response.content.errorMessage.isNotEmpty()) {
             throw MessageErrorException(response.content.errorMessage)
+        }
+    }
+
+    override suspend fun trackVisitChannel(channelId: String): Boolean {
+        return withContext(dispatcher.io) {
+            trackVisitChannelUseCase.setRequestParams(
+                FeedBroadcastTrackerUseCase.createParams(channelId)
+            )
+            val response = trackVisitChannelUseCase.executeOnBackground()
+            response.reportVisitChannelTracking.success
         }
     }
 }
