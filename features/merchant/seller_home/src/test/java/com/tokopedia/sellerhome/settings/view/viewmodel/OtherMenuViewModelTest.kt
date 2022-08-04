@@ -124,7 +124,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             onGetTopAdsKredit_thenThrow()
             onGetFreeShipping_thenThrow()
             onGetShopBadge_thenReturn("")
-
+            onGetNewIklanAndPromotion_thenThrow()
             mViewModel.getAllOtherMenuData()
 
             assert(mViewModel.shouldShowMultipleErrorToaster.value == true)
@@ -241,6 +241,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 isFreeShippingEnabled = false,
                 isInTransitionPeriod = false
             )
+            onGetNewIklanPromotion_thenReturn()
 
             mViewModel.getAllOtherMenuData()
 
@@ -263,6 +264,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             onGetUserShopInfo_thenThrow()
             onGetShopTotalFollowers_thenThrow()
             onGetFreeShipping_thenThrow()
+            onGetNewIklanPromotion_thenError()
+            onGetNewIklanAndPromotion_thenThrow()
 
             mViewModel.getAllOtherMenuData()
 
@@ -741,7 +744,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             val merchantPromotionGetPromoList = MerchantPromotionGetPromoList()
             onGetNewIklanPromotion_thenReturn(merchantPromotionGetPromoList)
 
-            mViewModel.getIsShowTagCentralizePromo()
+            mViewModel.getAllOtherMenuData()
 
             verifyGetNewIklanPromotionCalled()
             assert(mViewModel.isShowTagCentralizePromo.value != null)
@@ -753,7 +756,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             val error = IllegalStateException()
             onGetNewIklanPromotion_thenError(error)
 
-            mViewModel.getIsShowTagCentralizePromo()
+            mViewModel.getAllOtherMenuData()
 
             verifyGetNewIklanPromotionCalled()
             assert(mViewModel.isShowTagCentralizePromo.value != null)
@@ -892,6 +895,10 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         coEvery { getShopFreeShippingInfoUseCase.execute(any()) } throws exception
     }
 
+    private suspend fun onGetNewIklanAndPromotion_thenThrow(exception: Exception = IllegalStateException()) {
+        coEvery { getShopFreeShippingInfoUseCase.execute(any()) } throws exception
+    }
+
     private suspend fun verifyGetFreeShippingCalled(atLeast: Int = 1) {
         coVerify(atLeast = atLeast) { getShopFreeShippingInfoUseCase.execute(any()) }
     }
@@ -924,7 +931,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         coVerify(atLeast = atLeast) { shopShareInfoUseCase.execute(any()) }
     }
 
-    private suspend fun onGetNewIklanPromotion_thenReturn(datPromotionNew: MerchantPromotionGetPromoList) {
+    private suspend fun onGetNewIklanPromotion_thenReturn(datPromotionNew: MerchantPromotionGetPromoList = MerchantPromotionGetPromoList()) {
         coEvery { getNewPromotionUseCase.execute("0") } returns datPromotionNew
     }
 

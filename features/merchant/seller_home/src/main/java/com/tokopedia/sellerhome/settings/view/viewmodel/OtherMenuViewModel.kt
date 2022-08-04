@@ -155,6 +155,9 @@ class OtherMenuViewModel @Inject constructor(
             addSource(_freeShippingLiveData) {
                 value = value?.getUpdatedSuccessMap(OtherMenuDataType.FreeShipping, it)
             }
+            addSource(_isShowTagCentralizePromo) {
+                value = value?.getUpdatedSuccessMap(OtherMenuDataType.IsShowTagCentralizePromo, it)
+            }
         }
 
     private val _shouldShowMultipleErrorToaster = MediatorLiveData<Boolean>().apply {
@@ -219,6 +222,7 @@ class OtherMenuViewModel @Inject constructor(
         getBalanceInfoData()
         getKreditTopAdsData()
         getIsTopAdsAutoTopup()
+        getIsShowTagCentralizePromo()
     }
 
     fun onShownMultipleError(isShown: Boolean = false) {
@@ -358,7 +362,7 @@ class OtherMenuViewModel @Inject constructor(
         _isToasterAlreadyShown.value = isShown
     }
 
-    fun getIsShowTagCentralizePromo() {
+   private fun getIsShowTagCentralizePromo() {
         launchCatchError(
             block = {
                 val data = withContext(dispatcher.io) {

@@ -209,7 +209,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             setStatusBar()
         }
         observeLiveData()
-        viewModel.getIsShowTagCentralizePromo()
     }
 
     override fun onResume() {
