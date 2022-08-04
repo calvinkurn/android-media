@@ -32,6 +32,8 @@ data class UnificationTabModel(
     val title: String = "",
     @SerializedName("isNew")
     val isNew: Boolean = false,
+    @SerializedName("isUnauthorized")
+    val isUnauthorized: Boolean = false,
     @SerializedName("itemCount")
     val itemCount: Int = 0,
     @SerializedName("tooltip")

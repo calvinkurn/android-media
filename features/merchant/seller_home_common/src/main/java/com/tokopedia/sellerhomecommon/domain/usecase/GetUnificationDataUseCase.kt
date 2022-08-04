@@ -173,6 +173,7 @@ class GetUnificationDataUseCase(
                     title
                     isNew
                     itemCount
+                    isUnauthorized
                     tooltip
                     content {
                       widget_type

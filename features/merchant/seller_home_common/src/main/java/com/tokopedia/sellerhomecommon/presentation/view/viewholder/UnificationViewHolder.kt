@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.databinding.ShcEmptyStateCommonBinding
 import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetBinding
 import com.tokopedia.sellerhomecommon.databinding.ShcUnificationWidgetErrorBinding
@@ -128,19 +129,30 @@ class UnificationViewHolder(
                 return@with
             }
 
-            showTableWidget(element, tab)
-            setupDropDownView(element)
-            setupWidgetCta(element, tab)
-            setupLastUpdate(element)
-
-            val isEmpty = tab.data?.isWidgetEmpty().orTrue()
-            if (isEmpty) {
-                showEmptyState(element, tab.config.emptyStateUiModel)
-                setupDropDownView(element)
+            if (tab.isUnauthorized) {
+                showUnauthorizedState(element)
             } else {
-                hideEmptyState()
+                showTableWidget(element, tab)
+                val isEmpty = tab.data?.isWidgetEmpty().orTrue()
+                if (isEmpty) {
+                    showEmptyState(element, tab.config.emptyStateUiModel)
+                } else {
+                    hideEmptyState()
+                }
+                setupWidgetCta(element, tab)
             }
+
+            setupDropDownView(element)
+            setupLastUpdate(element)
         }
+    }
+
+    private fun showUnauthorizedState(element: UnificationWidgetUiModel) {
+        val unauthorizedStateModel = WidgetEmptyStateUiModel(
+            imageUrl = SellerHomeUrl.IMG_NO_ACCESS_STATE,
+            title = getString(R.string.shc_no_access_state_message)
+        )
+        showEmptyState(element, unauthorizedStateModel)
     }
 
     private fun hideEmptyState() {
@@ -155,7 +167,10 @@ class UnificationViewHolder(
             shcViewEmptyStateCommon.visible()
             imgShcEmptyCommon.loadImage(emptyState.imageUrl)
             tvShcEmptyTitleCommon.text = emptyState.title
-            tvShcEmptyDescriptionCommon.text = emptyState.description
+            tvShcEmptyDescriptionCommon.isVisible = emptyState.description.isNotBlank()
+            if (emptyState.description.isNotBlank()) {
+                tvShcEmptyDescriptionCommon.text = emptyState.description
+            }
 
             val shouldShowCta = emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
             btnShcEmptyCommon.isVisible = shouldShowCta
@@ -168,8 +183,10 @@ class UnificationViewHolder(
             }
 
             val tab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
-            root.addOnImpressionListener(tab.impressHolder) {
-                listener.sendUnificationTabImpressionEvent(element)
+            if (!tab.isUnauthorized) {
+                root.addOnImpressionListener(tab.impressHolder) {
+                    listener.sendUnificationTabImpressionEvent(element)
+                }
             }
         }
     }

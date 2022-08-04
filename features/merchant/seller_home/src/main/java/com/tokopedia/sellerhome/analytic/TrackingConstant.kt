@@ -108,6 +108,7 @@ object TrackingConstant {
     const val MULTIPLE = "multiple"
     const val EMPTY = "empty"
     const val NOT_EMPTY = "not empty"
+    const val NO_ACCESS = "No Access"
     const val EMPTY_STATE = "emptystate"
     const val SEPARATOR = " - "
     const val SPACE = " "

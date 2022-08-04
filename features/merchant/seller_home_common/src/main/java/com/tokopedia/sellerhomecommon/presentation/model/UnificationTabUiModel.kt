@@ -12,6 +12,7 @@ data class UnificationTabUiModel(
     var data: BaseDataUiModel? = null,
     val title: String = String.EMPTY,
     val isNew: Boolean = false,
+    val isUnauthorized: Boolean = false,
     val itemCount: Int = Int.ZERO,
     val tooltip: String = String.EMPTY,
     val widgetType: String = String.EMPTY,

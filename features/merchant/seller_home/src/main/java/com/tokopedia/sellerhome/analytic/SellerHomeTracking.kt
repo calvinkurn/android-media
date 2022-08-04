@@ -1030,7 +1030,11 @@ object SellerHomeTracking {
 
     fun sendUnificationTabImpressionEvent(dataKey: String, tab: UnificationTabUiModel?) {
         if (tab == null) return
-        val emptyLabel = getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
+        val emptyLabel = if (tab.isUnauthorized) {
+            TrackingConstant.NO_ACCESS
+        } else {
+            getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
+        }
         val eventMap = createEventMap(
             event = TrackingConstant.VIEW_PG_IRIS,
             category = arrayOf(
@@ -1048,7 +1052,11 @@ object SellerHomeTracking {
     }
 
     fun sendUnificationTabClickEvent(dataKey: String, tab: UnificationTabUiModel) {
-        val emptyLabel = getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
+        val emptyLabel = if (tab.isUnauthorized) {
+            TrackingConstant.NO_ACCESS
+        } else {
+            getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
+        }
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,
             category = arrayOf(
@@ -1066,7 +1074,11 @@ object SellerHomeTracking {
     }
 
     fun sendUnificationTabItemClickEvent(dataKey: String, tab: UnificationTabUiModel) {
-        val emptyLabel = getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
+        val emptyLabel = if (tab.isUnauthorized) {
+            TrackingConstant.NO_ACCESS
+        } else {
+            getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
+        }
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,
             category = arrayOf(
@@ -1084,7 +1096,11 @@ object SellerHomeTracking {
     }
 
     fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {
-        val emptyLabel = getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
+        val emptyLabel = if (tab.isUnauthorized) {
+            TrackingConstant.NO_ACCESS
+        } else {
+            getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
+        }
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,
             category = arrayOf(

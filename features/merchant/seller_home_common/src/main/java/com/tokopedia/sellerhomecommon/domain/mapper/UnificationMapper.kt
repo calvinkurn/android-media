@@ -47,6 +47,7 @@ class UnificationMapper @Inject constructor(
             data = null,
             title = tab.title,
             isNew = tab.isNew,
+            isUnauthorized = tab.isUnauthorized,
             itemCount = tab.itemCount,
             tooltip = tab.tooltip,
             widgetType = tab.content.widgetType,
