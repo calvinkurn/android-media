@@ -13,7 +13,6 @@ import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.data.repository.ColorFilterRepositoryImpl
@@ -108,8 +107,8 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onRemoveBackgroundClicked() {
-        viewBinding?.imgUcropPreview?.cropImageView?.let { cropView ->
-            saveImage(cropView.drawable.toBitmap(), isFinish = false)
+        viewBinding?.imgUcropPreview?.let { editorDetailPreviewImage ->
+            saveImage(editorDetailPreviewImage.getBitmap(), isFinish = false)
             data.resultUrl?.let { it ->
                 viewModel.setRemoveBackground(it) { _ ->
                     viewBinding?.let {
@@ -301,16 +300,16 @@ class DetailEditorFragment @Inject constructor(
         cropView?.colorFilter = brightnessFilterRepositoryImpl.brightness(previousValue ?: 0f)
 
         // need to remove the filter to prevent any filter trigger re-apply the brightness color filter
-        if (isRemoveFilter) viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()?.let {
+        if (isRemoveFilter) viewBinding?.imgUcropPreview?.getBitmap()?.let {
             cropView?.clearColorFilter()
             cropView?.setImageBitmap(it)
         }
     }
 
     private fun implementPreviousStateContrast(previousValue: Float?) {
-        viewBinding?.imgUcropPreview?.cropImageView?.let {
-            val bitmap = it.drawable.toBitmap()
-            it.setImageBitmap(
+        viewBinding?.imgUcropPreview?.let {
+            val bitmap = it.getBitmap()
+            it.cropImageView.setImageBitmap(
                 contrastFilterRepositoryImpl.contrast(
                     previousValue ?: 0f,
                     bitmap.copy(bitmap.config, true)
@@ -321,21 +320,25 @@ class DetailEditorFragment @Inject constructor(
 
     private fun implementPreviousStateRotate(rotateData: EditorRotateModel) {
         viewBinding?.imgUcropPreview?.let {
-            data.rotateData?.let { rotationData ->
-                val bitmapResult = it.getProcessedBitmap(
-                    it.cropImageView.drawable.toBitmap(),
-                    rotationData.leftRectPos,
-                    rotationData.topRectPos,
-                    rotationData.rightRectPos,
-                    rotationData.bottomRectPos,
-                    finalRotationDegree = ((rotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + rotationData.rotateDegree),
-                    sliderValue = rotationData.rotateDegree,
-                    rotateNumber = rotateData.orientationChangeNumber,
-                    null
-                )
+            val isRotate = rotateData.orientationChangeNumber % 2 == 1
+            // need to check if previous value is rotate / not, if rotated then ratio is changed
+            val imageWidth = if (isRotate) rotateData.bottomRectPos else rotateData.rightRectPos
+            val imageHeight = if (isRotate) rotateData.rightRectPos else rotateData.bottomRectPos
+            val finalRotationDegree =
+                ((rotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + rotateData.rotateDegree)
+            val bitmapResult = it.getProcessedBitmap(
+                it.getBitmap(),
+                rotateData.leftRectPos,
+                rotateData.topRectPos,
+                imageWidth,
+                imageHeight,
+                finalRotationDegree,
+                sliderValue = rotateData.rotateDegree,
+                rotateNumber = rotateData.orientationChangeNumber,
+                null
+            )
 
-                it.cropImageView.setImageBitmap(bitmapResult)
-            }
+            it.cropImageView.setImageBitmap(bitmapResult)
         }
     }
 
@@ -370,7 +373,7 @@ class DetailEditorFragment @Inject constructor(
         }
 
         // image that already implemented previous filter
-        implementedBaseBitmap = viewBinding?.imgUcropPreview?.cropImageView?.drawable?.toBitmap()
+        implementedBaseBitmap = viewBinding?.imgUcropPreview?.getBitmap()
 
         if (previousState.brightnessValue != null && previousState.isToolBrightness()) {
             // if current editor is brightness keep the filter color so we can adjust it later
@@ -419,15 +422,21 @@ class DetailEditorFragment @Inject constructor(
             activity?.finish()
         }
 
-        // if current tools editor not rotate then skip crop data set by sent empty object on data
         viewBinding?.btnSave?.setOnClickListener {
-            viewBinding?.imgUcropPreview?.cropRotate(
-                finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
-                sliderValue = rotateFilterRepositoryImpl.sliderValue,
-                rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
-                if (data.isToolRotate()) data else EditorDetailUiModel()
-            ) {
-                saveImage(it)
+            if (data.isToolRotate()) {
+                // if current tools editor not rotate then skip crop data set by sent empty object on data
+                viewBinding?.imgUcropPreview?.cropRotate(
+                    finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
+                    sliderValue = rotateFilterRepositoryImpl.sliderValue,
+                    rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
+                    if (data.isToolRotate()) data else EditorDetailUiModel()
+                ) {
+                    saveImage(it)
+                }
+            } else {
+                viewBinding?.imgUcropPreview?.getBitmap()?.let {
+                    saveImage(it)
+                }
             }
         }
     }

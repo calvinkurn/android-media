@@ -92,6 +92,10 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         overlayView.show()
     }
 
+    fun getBitmap(): Bitmap{
+        return cropImageView.drawable.toBitmap()
+    }
+
     fun cropRotate(
         finalRotationDegree: Float,
         sliderValue: Float,
