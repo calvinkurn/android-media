@@ -174,10 +174,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                             )
                         }else {
                             toaster.showError(
-                                err = event.error,
-                                customErrMessage = getString(
-                                    R.string.play_bro_product_chooser_error_save
-                                )
+                                err = event.error
                             )
                         }
                     }
