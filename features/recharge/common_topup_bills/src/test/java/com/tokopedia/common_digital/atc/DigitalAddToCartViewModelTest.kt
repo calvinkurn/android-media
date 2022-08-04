@@ -122,7 +122,7 @@ class DigitalAddToCartViewModelTest {
         // Then
         val resultData = digitalAddToCartViewModel.errorAtc.value
         Assert.assertNotNull(resultData)
-        assert(resultData == dataResponse.data.errors.first())
+        assert(resultData?.second!! == dataResponse.data.errors.first())
     }
 
     @Test
