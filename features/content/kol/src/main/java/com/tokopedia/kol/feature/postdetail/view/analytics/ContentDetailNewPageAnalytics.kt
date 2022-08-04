@@ -899,7 +899,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             trackerID = "34114"
 
         )
-
     }
 
     fun sendClickThreeDotsMenuLaporkanAsgcEvent (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
@@ -912,29 +911,116 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
+    /**
+    Comment Page Analytics when opened from Content Detail Page
+     ***/
 
-    private fun getPromotionsClickData(
-        id: String, name: String, position: Int, creative: List<String>
-    ): Map<String, Any> {
-        val listPromo: MutableList<Map<String, Any>> = mutableListOf()
-        creative.forEach {
-            listPromo.add(
-                DataLayer.mapOf(
-                    Promotions.CREATIVE, it,
-                    Promotions.ID, id,
-                    Promotions.NAME, name,
-                    Promotions.POSITION, (position + 1).toString()
-                )
-            )
-        }
-
-        return getPromoClickData(
-            getPromotionsData(
-                listPromo
-            )
+    fun openCommentPageAnalytics() {
+        createAnalyticsForOpenScreen(
+            eventName = EventName.OPEN_SCREEN,
+            isLoggedInStatus = userSession.isLoggedIn,
+            screenName = "content detail page - comment detail",
+            trackerID = "33275"
         )
-
     }
+
+
+    fun sendClickHashtagEventCommentPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = EventAction.CLICK_HASHTAG_SGC_IMAGE,
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
+            eventLabel = EventLabel.getPostHashtagLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "33276"
+        )
+    }
+
+
+    fun sendClickBackOnCommentPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - back - sgc image",
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "33277"
+        )
+    }
+
+
+    fun sendClickShopOnConmmentPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - shop - sgc image",
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "33278"
+        )
+    }
+
+
+    fun sendClickCommentCreator (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - comment creator - sgc image",
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "33279"
+        )
+    }
+
+
+    fun sendClickReportOnComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - report - sgc image",
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "33280"
+        )
+    }
+
+    fun sendClickDeleteComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - delete - sgc image",
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "33281"
+        )
+    }
+
+    fun sendClickLikeComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - like - sgc image",
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "33282"
+        )
+    }
+
+    fun sendClickSendComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - send - sgc image",
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "33283"
+        )
+    }
+
+    fun sendClickKembalikanToUndoDeleteSgcImageEvent (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - kembalikan to undo delete - sgc image",
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "33284"
+        )
+    }
+
+    //end comment trackers here
+
 
     private fun getSingleProductList(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
@@ -993,10 +1079,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             Product.PRICE,
             if (feedXProduct.isDiscount) feedXProduct.priceDiscount.toString() else feedXProduct.price.toString(),
         )
-
-    private fun getPromoClickData(data: Any): Map<String, Any> =
-        DataLayer.mapOf(EventName.PROMO_CLICK, data)
-
     private fun getPromoViewData(data: Any): Map<String, Any> =
         DataLayer.mapOf(PROMO_VIEW, data)
 
@@ -1013,30 +1095,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         DataLayer.mapOf(ACTION_FIELD, data)
 
     private fun getListData(data: Any): Map<String, Any> = DataLayer.mapOf(LIST, data)
-
-
-    private fun getPromotionsViewData(
-        channelId: String, name: String, position: Int, creative: List<String>
-    ): Map<String, Any> {
-        val listPromo: MutableList<Map<String, Any>> = mutableListOf()
-        creative.forEach {
-            listPromo.add(
-                DataLayer.mapOf(
-                    Promotions.ID, channelId,
-                    Promotions.NAME, name,
-                    Promotions.CREATIVE, it,
-                    Promotions.POSITION, (position + 1).toString()
-                )
-            )
-        }
-
-        return getPromoViewData(
-            getPromotionsData(
-                listPromo
-            )
-        )
-    }
-
+    
     private fun getImpressionPost(
         contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel,
         itemName: String = ""
@@ -1091,7 +1150,8 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     private fun createAnalyticsForOpenScreen(
         eventName: String,
         isLoggedInStatus: Boolean? = null,
-        screenName: String = ""
+        screenName: String = "",
+        trackerID: String = ""
     ) {
         val generalData = mapOf(
             TrackAppUtils.EVENT to eventName,
@@ -1099,29 +1159,11 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
             USER_ID to userSession.userId.toString(),
             IS_LOGGED_IN to isLoggedInStatus.toString(),
-            SCREEN_NAME to screenName
+            SCREEN_NAME to screenName,
+            TRACKER_ID to trackerID
         )
-        TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, generalData)
 
-    }
-
-    private fun trackEnhancedEcommerceEvent(
-        eventName: String,
-        eventAction: String,
-        eventCategory: String,
-        eventLabel: String,
-        activityId: String, name: String, position: Int, creative: List<String>
-    ) {
-        val eCommerceData =
-            if (eventName == EventName.PROMO_VIEW) {
-                getPromotionsViewData(activityId, name, position, creative)
-            } else {
-                getPromotionsClickData(activityId, name, position, creative)
-            }
-        trackingQueue.putEETracking(
-            getGeneralDataNew(eventName, eventCategory, eventAction, eventLabel)
-                .plus(getEcommerceData(eCommerceData)) as HashMap<String, Any>
-        )
     }
 
     private fun trackEnhancedEcommerceEventWithMap(
@@ -1183,6 +1225,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         const val CONTENT_DETAIL_PAGE_REPORT = "content detail page - report"
         const val CONTENT_DETAIL_PAGE_THREE_DOTS = "content detail page - three dots page"
         const val CONTENT_DETAIL_PAGE_SHARE = "content detail page - share"
+        const val CONTENT_DETAIL_PAGE_COMMENT = "content detail page - comment"
     }
 
     private object EventAction {

@@ -42,8 +42,10 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampAr
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARGS_IS_POST_FOLLOWED
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARGS_POST_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARGS_VIDEO
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.COMMENT_ARGS_POSITION
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.DEFAULT_COMMENT_ARGUMENT_VALUE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.PARAM_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.SHOULD_TRACK
@@ -92,6 +94,8 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
+    private var contentDetailSource = ""
+
     private var rowNumberWhenShareClicked = 0
     private var dissmisByGreyArea = true
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -518,6 +522,8 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         intent.putExtra(ARGS_VIDEO, isVideo)
         intent.putExtra(ARGS_POST_TYPE, type)
         intent.putExtra(ARGS_IS_POST_FOLLOWED, isFollowed)
+        intent.putExtra(ARG_IS_FROM_CONTENT_DETAIL_PAGE, true)
+        intent.putExtra(CONTENT_DETAIL_PAGE_SOURCE, contentDetailSource)
         startActivityForResult(intent, OPEN_KOL_COMMENT)
     }
 

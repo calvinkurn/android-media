@@ -4,12 +4,15 @@ class ContentDetailRevampArgumentModel {
     companion object {
         //region Kol Comment Param
         const val ARGS_AUTHOR_TYPE = "ARGS_AUTHOR_TYPE"
+        const val ARGS_ID = "ARGS_ID"
         const val ARGS_VIDEO = "ARGS_VIDEO"
         const val ARGS_POST_TYPE = "POST_TYPE"
         const val ARGS_IS_POST_FOLLOWED = "IS_FOLLOWED"
         const val COMMENT_ARGS_POSITION = "ARGS_POSITION"
         const val COMMENT_ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT"
         const val DEFAULT_COMMENT_ARGUMENT_VALUE = -1
+        const val ARG_IS_FROM_CONTENT_DETAIL_PAGE = "IS_FROM_CONTENT_DETAIL_PAGE"
+        const val CONTENT_DETAIL_PAGE_SOURCE = "CONTENT_DETAIL_PAGE_SOURCE"
 
         //video detail page param
         const val START_TIME = "start_time"
