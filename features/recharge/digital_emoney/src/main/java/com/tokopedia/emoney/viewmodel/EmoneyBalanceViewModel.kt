@@ -62,9 +62,8 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                         val endTimeBeforeCallGql = System.currentTimeMillis()
                         Log.d("EMONEY_TIME_BEFORE_CALL", "${endTimeBeforeCallGql - startTimeBeforeCallGql} ms")
-                        val startTimeCallGql = System.currentTimeMillis()
 
-                        getEmoneyInquiryBalance(PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes, startTimeCallGql)
+                        getEmoneyInquiryBalance(PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
                     } else {
                         isoDep.close()
                         errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -80,7 +79,8 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     private fun getEmoneyInquiryBalance(paramCommand: String, balanceRawQuery: String, idCard: Int,
-                                        mapAttributesParam: HashMap<String, Any>, startTimeCallGql: Long) {
+                                        mapAttributesParam: HashMap<String, Any>) {
+        val startTimeCallGql = System.currentTimeMillis()
         launchCatchError(block = {
             var mapParam = HashMap<String, Any>()
             mapParam.put(TYPE_CARD, paramCommand)
@@ -97,11 +97,11 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 it.operatorId = EMONEY_OPERATOR_ID
                 it.issuer_id = ISSUER_ID_EMONEY
 
+                val endTimeCallGql = System.currentTimeMillis()
+                Log.d("EMONEY_TIME_CALL", "${endTimeCallGql - startTimeCallGql} ms")
                 if (it.status == 0) {
                     writeBalanceToCard(it.payload, balanceRawQuery, data.emoneyInquiry.id.toInt(), mapAttributesParam)
                 } else {
-                    val endTimeCallGql = System.currentTimeMillis()
-                    Log.d("EMONEY_TIME_CALL", "${endTimeCallGql - startTimeCallGql} ms")
                     emoneyInquiry.postValue(data.emoneyInquiry)
                 }
             }
@@ -111,6 +111,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun writeBalanceToCard(payload: String, balanceRawQuery: String, id: Int, mapAttributes: HashMap<String, Any>) {
+        val startWriteCard = System.currentTimeMillis()
         if (::isoDep.isInitialized && isoDep.isConnected) {
             try {
                 val responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(payload))
@@ -120,12 +121,14 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         // to get card payload
                         val response = NFCUtils.toHex(responseInByte)
                         mapAttributes[PARAM_PAYLOAD] = response
-                        getEmoneyInquiryBalance(PARAM_SEND_COMMAND, balanceRawQuery, id, mapAttributes, 0)
+                        getEmoneyInquiryBalance(PARAM_SEND_COMMAND, balanceRawQuery, id, mapAttributes)
                     } else {
                         isoDep.close()
                         errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
                 }
+                val endWriteCard = System.currentTimeMillis()
+                Log.d("EMONEY_WRITE_CARD", "${endWriteCard - startWriteCard} ms")
             } catch (e: IOException) {
                 isoDep.close()
                 errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
