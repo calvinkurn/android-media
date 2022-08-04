@@ -203,7 +203,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
                         )
                         miniCartProductUiModels.add(miniCartProductUiModel)
                         if (miniCartProductUiModel.isBundlingItem) {
-                            bundleGroupIds.add(miniCartProductUiModel.bundleGroupId)
+                            /**
+                             * Because groupId from minicartV3 is not as expected as BE bundling-now wants
+                             * So we use list of bundleId to exclude product bundling if exist on minicart
+                             */
+                            bundleGroupIds.add(miniCartProductUiModel.bundleId)
                         } else {
                             productIds.add(miniCartProductUiModel.productId)
                         }
