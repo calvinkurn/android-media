@@ -160,8 +160,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_PROD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.THEMATIC_WIDGET_SEE_ALL_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID_CLICK_MULTIPLE_BUNDLE
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID_CLICK_SINGLE_BUNDLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_DELETE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_QUANTITY
