@@ -161,6 +161,7 @@
             android:visibility="visible"
             app:layout_constraintStart_toEndOf="@id/iv_pinned_product_carousel_info"
             app:layout_constraintTop_toTopOf="@id/iv_pinned_product_carousel_info"
+            app:layout_goneMarginStart="@dimen/spacing_lvl4"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:visibility="visible" />
@@ -177,7 +178,7 @@
             app:icon_name="PUSH_PIN_FILLED"
             app:layout_constraintStart_toEndOf="@id/iv_product_summary_image"
             app:layout_constraintTop_toTopOf="@id/iv_product_summary_image"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>
