@@ -860,10 +860,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (prevState == state) return
 
         val sortedList = mutableListOf<ProductUiModel>()
-        val newList = state.filterNot { it.campaignStatus.isUpcoming() }
-            .flatMap { tagSectionUiModel ->
+        val newList = state.flatMap { tagSectionUiModel ->
                 tagSectionUiModel.products
-            }
+        }
 
         val pinnedProduct = newList.filter { it.pinStatus.isPinned }
         if(pinnedProduct.isNotEmpty()) sortedList.add(pinnedProduct.first())
