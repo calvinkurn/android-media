@@ -99,8 +99,10 @@ class VpsPackageBottomSheet : BottomSheetUnify() {
 
     private fun setupClickListeners() {
         binding?.btnSave?.setOnClickListener {
-            val selectedVpsPackage = viewModel.getSelectedVpsPackage() ?: return@setOnClickListener
+            val vpsPackages = vpsPackageAdapter.snapshot()
+            val selectedVpsPackage = viewModel.findSelectedVpsPackage(vpsPackages) ?: return@setOnClickListener
             onVpsPackageClicked(selectedVpsPackage)
+            dismiss()
         }
     }
 
@@ -128,7 +130,6 @@ class VpsPackageBottomSheet : BottomSheetUnify() {
     }
 
     private fun handleVpsPackageSelection(selectedPackage: VpsPackageUiModel) {
-        viewModel.setSelectedVpsPackage(selectedPackage)
         val vpsPackages = vpsPackageAdapter.snapshot()
         val updatedVpsPackages = viewModel.markAsSelected(selectedPackage.packageId, vpsPackages)
 
