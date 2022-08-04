@@ -744,7 +744,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             mViewModel.getIsShowTagCentralizePromo()
 
             verifyGetNewIklanPromotionCalled()
-            assert(mViewModel.isShowTagCentralizePromo.value == false)
+            val result = SettingResponseState.SettingSuccess(true)
+            assert(mViewModel.isShowTagCentralizePromo.value == result)
         }
 
     @Test
@@ -756,7 +757,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             mViewModel.getIsShowTagCentralizePromo()
 
             verifyGetNewIklanPromotionCalled()
-            assert(mViewModel.isShowTagCentralizePromo.value == false)
+            val result = SettingResponseState.SettingError(error)
+            assert(mViewModel.isShowTagCentralizePromo.value == result)
         }
 
     @Test
