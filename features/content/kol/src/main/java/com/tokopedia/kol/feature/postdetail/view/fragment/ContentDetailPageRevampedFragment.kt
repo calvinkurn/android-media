@@ -355,7 +355,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         }
     }
 
-    override fun onLikeClicked(feedXCard: FeedXCard, postPosition : Int) {
+    override fun onLikeClicked(feedXCard: FeedXCard, postPosition: Int, isDoubleTap: Boolean) {
         val trackerId = getTrackerID(
             feedXCard,
             trackerIdSgc = if (!feedXCard.like.isLiked) "33260" else "33261",
