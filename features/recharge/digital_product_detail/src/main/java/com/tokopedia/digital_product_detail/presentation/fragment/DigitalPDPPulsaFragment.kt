@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
@@ -176,6 +177,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         initClientNumberWidget()
         observeData()
         getCatalogMenuDetail()
+        showTickerIsUnVerifiedPhoneNumber()
     }
 
     private fun setupKeyboardWatcher() {
@@ -914,6 +916,25 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                     startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
                 }
             }.show()
+        }
+    }
+
+    //TODO : the toaster will be replace by ticker
+    private fun showTickerIsUnVerifiedPhoneNumber(){
+        if(!userSession.isMsisdnVerified){
+            view?.let {
+                Toaster.build(
+                    it,
+                    "Mohon verifikasi no - HP mu",
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    "Ok"
+                ) {
+                    RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE).apply {
+                        startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
+                    }
+                }.show()
+            }
         }
     }
 

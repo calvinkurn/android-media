@@ -17,6 +17,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
@@ -456,6 +457,25 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     .productId(operator.attributes.defaultProductId)
                     .utmCampaign(categoryId.toString())
                     .build()
+            }
+        }
+    }
+
+    //TODO : the toaster will be replace by ticker
+    private fun showTickerIsUnVerifiedPhoneNumber(){
+        if(!userSession.isMsisdnVerified){
+            view?.let {
+                Toaster.build(
+                    it,
+                    "Mohon verifikasi no - HP mu",
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    "Ok"
+                ) {
+                    RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE).apply {
+                        startActivityForResult(this, REQUEST_CODE_VERIFY_NUMBER)
+                    }
+                }.show()
             }
         }
     }
