@@ -98,8 +98,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
 
-    private val _errorAtc = MutableLiveData<ErrorAtc>()
-    val errorAtc: LiveData<ErrorAtc>
+    private val _errorAtc = MutableLiveData<Pair<String, ErrorAtc>>()
+    val errorAtc: LiveData<Pair<String, ErrorAtc>>
         get() = _errorAtc
 
     private val _clientNumberValidatorMsg = MutableLiveData<String>()
@@ -218,7 +218,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             if (categoryIdAtc.errorAtc.isEmpty()){
                 _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
             }else{
-                _errorAtc.value = categoryIdAtc.errorAtc.first()
+                _errorAtc.value = Pair(categoryIdAtc.categoryId, categoryIdAtc.errorAtc.first())
             }
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {

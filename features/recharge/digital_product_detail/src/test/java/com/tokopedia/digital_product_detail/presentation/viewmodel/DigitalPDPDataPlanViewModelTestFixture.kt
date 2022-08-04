@@ -254,7 +254,7 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
 
     protected fun verifyAddToCartErrorNotEmpty(expectedResponse: List<ErrorAtc>){
         val actualResponse = viewModel.errorAtc.value
-        Assert.assertEquals(expectedResponse.first(), actualResponse)
+        Assert.assertEquals(expectedResponse.first(), actualResponse?.second!!)
     }
 
     protected fun verifyAddToCartError(expectedResponse: Throwable) {

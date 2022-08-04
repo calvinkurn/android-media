@@ -87,7 +87,6 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
-import com.tokopedia.common_digital.atc.DigitalErrorAtcData
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_VERIFY_PHONE_NUMBER
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
@@ -451,7 +450,11 @@ class DigitalPDPDataPlanFragment :
 
         viewModel.errorAtc.observe(viewLifecycleOwner){
             hideLoadingDialog()
-            showErrorAtc(it)
+            if (it.second.atcErrorPage.isShowErrorPage){
+                navigateToCart(it.first)
+            }else{
+                showErrorUnverifiedPhoneNumber(it.second)
+            }
         }
 
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
@@ -1075,37 +1078,19 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun showErrorAtc(error: ErrorAtc){
-        if (error.atcErrorPage.isShowErrorPage){
-            RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL).also {
-                it.putExtra(
-                    DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA,
-                    viewModel.digitalCheckoutPassData.apply {
-                        errorAtcData = DigitalErrorAtcData(
-                            redirectionLink = error.atcErrorPage.buttons.first().appLinkUrl,
-                            errorTitle = error.atcErrorPage.title,
-                            errorDescription = error.atcErrorPage.subTitle,
-                            buttonLabel = error.atcErrorPage.buttons.first().label
-                        )
-                    }
-                )
-            }.apply {
-                startActivity(this)
-            }
-        }else{
-            view?.let {
-                Toaster.build(
-                    it,
-                    error.title,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.common_digital.R.string.digital_common_toaster_button_label)
-                ) {
-                    RouteManager.getIntent(context, error.appLinkUrl).apply {
-                        startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
-                    }
-                }.show()
-            }
+    private fun showErrorUnverifiedPhoneNumber(error: ErrorAtc){
+        view?.let {
+            Toaster.build(
+                it,
+                error.title,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.common_digital.R.string.digital_common_toaster_button_label)
+            ) {
+                RouteManager.getIntent(context, error.appLinkUrl).apply {
+                    startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
+                }
+            }.show()
         }
     }
 

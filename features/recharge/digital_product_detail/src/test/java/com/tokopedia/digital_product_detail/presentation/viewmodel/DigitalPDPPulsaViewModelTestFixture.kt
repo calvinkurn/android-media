@@ -239,7 +239,7 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
 
     protected fun verifyAddToCartErrorNotEmpty(expectedResponse: List<ErrorAtc>){
         val actualResponse = viewModel.errorAtc.value
-        Assert.assertEquals(expectedResponse.first(), actualResponse)
+        Assert.assertEquals(expectedResponse.first(), actualResponse?.second!!)
     }
 
     protected fun verifySelectedProductSuccess(expectedResponse: SelectedProduct){
