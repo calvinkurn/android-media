@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataM
 import com.tokopedia.product.detail.databinding.ItemDynamicGeneralInfoBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.utils.resources.isDarkMode
 
 class ProductGeneralInfoViewHolder(
     val view: View,
@@ -105,8 +106,9 @@ class ProductGeneralInfoViewHolder(
         pdpSee.showWithCondition(element.applink.isNotBlank())
 
         // info icon
-        pdpIcon.shouldShowWithAction(element.parentIcon.isNotEmpty()) {
-            pdpIcon.loadIcon(element.parentIcon)
+        val icon = element.getIconUrl(isDarkModel = binding.root.context.isDarkMode())
+        pdpIcon.shouldShowWithAction(icon.isNotEmpty()) {
+            pdpIcon.loadIcon(icon)
         }
 
         // partner logo

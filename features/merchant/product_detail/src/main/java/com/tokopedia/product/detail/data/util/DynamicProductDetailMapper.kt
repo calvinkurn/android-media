@@ -112,13 +112,11 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.INFO -> {
                     val contentData = component.componentData.firstOrNull()
-                    val content = if (contentData?.content?.isEmpty() == true) listOf(Content()) else contentData?.content
-                    listOfComponent.add(ProductGeneralInfoDataModel(component.componentName, component.type, contentData?.applink
-                            ?: "", contentData?.title ?: "",
-                            contentData?.isApplink ?: true, contentData?.icon
-                            ?: "", content?.firstOrNull()?.subtitle
-                            ?: "", content?.firstOrNull()?.icon ?: "")
-                    )
+                    val customInfoData = mapToGeneralInfo(contentData, component.componentName, component.type)
+
+                    customInfoData?.let {
+                        listOfComponent.add(it)
+                    }
                 }
                 ProductDetailConstant.MINI_SHOP_WIDGET -> {
                     listOfComponent.add(ProductMiniShopWidgetDataModel(type = component.type, name = component.componentName))
@@ -221,6 +219,31 @@ object DynamicProductDetailMapper {
             }
         }
         return listOfComponent
+    }
+
+    /**
+     * mapping P1 General Info to Visitable Model
+     */
+    private fun mapToGeneralInfo(
+        contentData: ComponentData?,
+        type: String,
+        name: String
+    ): ProductGeneralInfoDataModel? {
+        if (contentData == null) return null
+
+        val content = contentData.content.ifEmpty { listOf(Content()) }
+
+        return ProductGeneralInfoDataModel(
+            name = name,
+            type = type,
+            applink = contentData.applink,
+            title = contentData.title,
+            isApplink = contentData.isApplink,
+            parentIcon = contentData.icon ,
+            subtitle = content.firstOrNull()?.subtitle.orEmpty(),
+            lightIcon = contentData.lightIcon,
+            darkIcon = contentData.darkIcon,
+        )
     }
 
     /**
