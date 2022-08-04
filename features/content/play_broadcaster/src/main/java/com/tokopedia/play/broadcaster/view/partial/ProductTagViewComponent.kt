@@ -42,6 +42,10 @@ class ProductTagViewComponent(
             listener.onPinClicked(product)
             hideCoachMark()
         }
+
+        override fun onImpressPinnedProduct(product: ProductUiModel) {
+            listener.onImpressPinnedProduct(product)
+        }
     }
 
     private val adapter = PlayProductTagAdapter(productListener = productListener, pinnedProductListener = pinnedProductListener)
@@ -168,5 +172,6 @@ class ProductTagViewComponent(
         fun impressProductTag(view: ProductTagViewComponent)
         fun scrollProductTag(view: ProductTagViewComponent, product: ProductUiModel, position: Int)
         fun onPinClicked(product: ProductUiModel)
+        fun onImpressPinnedProduct(product: ProductUiModel)
     }
 }

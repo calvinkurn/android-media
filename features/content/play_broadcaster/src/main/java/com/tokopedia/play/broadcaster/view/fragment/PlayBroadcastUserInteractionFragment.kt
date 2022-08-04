@@ -164,7 +164,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
 
             override fun onPinClicked(product: ProductUiModel) {
+                analytic.onClickPinProductLiveRoom(product.id)
                 parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
+            }
+
+            override fun onImpressPinnedProduct(product: ProductUiModel) {
+                analytic.onImpressPinProductLiveRoom(product.id)
             }
         })
     }
@@ -786,11 +791,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             parentViewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.ShowError -> {
-                        if(event.error is PinnedProductException)
-                            showToaster(
-                                message = if (event.error.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.error.message,
-                                type = Toaster.TYPE_ERROR)
-                        else showErrorToaster(event.error)
+                        showErrorToaster(event.error)
                     }
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                     PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
@@ -805,6 +806,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                     is PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget(event.showCoachMark)
                     PlayBroadcastEvent.DismissGameResultCoachMark -> dismissGameResultCoachMark()
+                    is PlayBroadcastEvent.FailPinUnPinProduct -> {
+                        if (event.isPinned) analytic.onImpressFailUnPinProductLiveRoom()
+                        else analytic.onImpressFailPinProductLiveRoom()
+
+                        if(event.throwable is PinnedProductException) {
+                            analytic.onImpressColdDownPinProductSecondEvent(true)
+                            showToaster(
+                                message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
+                                type = Toaster.TYPE_ERROR
+                            )
+                        }
+                        else showErrorToaster(event.throwable)
+                    }
                     else -> {}
                 }
             }
@@ -865,7 +879,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         val pinnedProduct = newList.filter { it.pinStatus.isPinned }
-        if(pinnedProduct.isNotEmpty()) sortedList.add(pinnedProduct.first())
+        if (pinnedProduct.isNotEmpty()) {
+            sortedList.add(pinnedProduct.first())
+        }
         sortedList.addAll(newList.filterNot { it.pinStatus.isPinned })
 
         productTagView.setProducts(

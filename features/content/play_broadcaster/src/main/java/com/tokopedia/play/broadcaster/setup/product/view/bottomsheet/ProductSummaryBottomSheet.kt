@@ -57,7 +57,12 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     override fun onPinClicked(product: ProductUiModel) {
+        analytic.onClickPinProductBottomSheet(product.id)
         viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
+    }
+
+    override fun onImpressPinnedProduct(product: ProductUiModel) {
+        analytic.onImpressPinProductBottomSheet(product.id)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +97,7 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * 0.85f).toInt()
+            height = (getScreenHeight() * SCREEN_HEIGHT_DIVIDER).toInt()
         }
         setTitle(getString(R.string.play_bro_product_summary_title))
         setAction(getString(R.string.play_bro_product_add_more)) {
@@ -166,15 +171,19 @@ class ProductSummaryBottomSheet @Inject constructor(
 
                         showLoading(false)
                     }
-                    is PlayBroProductChooserEvent.ShowError -> {
-                        if(event.error is PinnedProductException){
+                    is PlayBroProductChooserEvent.FailPinUnPinProduct -> {
+                        if (event.isPinned) analytic.onImpressFailUnPinProductBottomSheet()
+                        else analytic.onImpressFailPinProductBottomSheet()
+
+                        if(event.throwable is PinnedProductException){
+                            analytic.onImpressColdDownPinProductSecondEvent(false)
                             toaster.showToaster(
-                                message = if (event.error.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.error.message,
+                                message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
                                 type = Toaster.TYPE_ERROR
                             )
                         }else {
                             toaster.showError(
-                                err = event.error
+                                err = event.throwable
                             )
                         }
                     }
@@ -216,6 +225,7 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "ProductSummaryBottomSheet"
+        private const val SCREEN_HEIGHT_DIVIDER = 0.85f
 
         fun getFragment(
             fragmentManager: FragmentManager,

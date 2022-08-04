@@ -1,0 +1,96 @@
+{
+  "readme": "Play Broadcaster - Pin Product Analytic",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickContent",
+      "eventAction": "click - pin product live room",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": "\\d+"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - pin product bottom sheet",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": "\\d+"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - pin product live room",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": "\\d+"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - pin product bottom sheet",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": "\\d+"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - fail pin product live room",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": "\\d+"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - fail pin product bottom sheet",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": "\\d+"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - fail un-pin product live room",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": "\\d+"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - fail un-pin product bottom sheet",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": "\\d+"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - cold down pin product 5 second",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - (bottom sheet|product carousel)",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": "\\d+"
+    }
+  ]
+}

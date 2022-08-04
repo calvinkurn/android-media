@@ -159,6 +159,7 @@ class ProductCarouselViewHolder private constructor() {
             }
 
             binding.viewPinProduct.showWithCondition(item.pinStatus.canPin)
+            if (item.pinStatus.isPinned) listener.onImpressPinnedProduct(item)
             binding.viewPinProduct.setupPinned(item.pinStatus.isPinned, item.pinStatus.isLoading)
             binding.viewPinProduct.setOnClickListener {
                 listener.onPinClicked(item)
@@ -179,6 +180,7 @@ class ProductCarouselViewHolder private constructor() {
 
         interface Listener {
             fun onPinClicked(product: ProductUiModel)
+            fun onImpressPinnedProduct(product: ProductUiModel)
         }
     }
 
