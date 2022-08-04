@@ -28,6 +28,9 @@ class ContentDetailActivity : BaseSimpleActivity() {
     private fun postId(): String {
         return intent?.data?.lastPathSegment ?: DEFAULT_POST_ID
     }
+    fun getSource(): String {
+        return intent?.extras?.getString(PARAM_SOURCE) ?: "share_link"
+    }
 
     fun setContentDetailMainPostData(card: FeedXCard?) {
         this.contentDetailFirstPostData = card
@@ -55,5 +58,6 @@ class ContentDetailActivity : BaseSimpleActivity() {
     companion object {
         const val PARAM_POST_ID = "post_id"
         const val DEFAULT_POST_ID = "0"
+        const val PARAM_SOURCE = "source"
     }
 }

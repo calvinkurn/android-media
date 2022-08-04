@@ -94,7 +94,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
-    private var contentDetailSource = ""
+
 
     private var rowNumberWhenShareClicked = 0
     private var dissmisByGreyArea = true
@@ -105,6 +105,8 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
     private val adapter = ContentDetailPageRevampAdapter(
         ContentDetailListener = this
     )
+    private val contentDetailSource = (activity as? ContentDetailActivity)?.getSource() ?: ""
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -1800,7 +1802,8 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         mediaUrl = feedXCard.media.firstOrNull()?.mediaUrl ?: "",
         itemName = feedXCard.title,
         duration = duration,
-        feedXProduct = product
+        feedXProduct = product,
+        source = contentDetailSource
     )
 
     private fun getTrackerID(
