@@ -65,9 +65,10 @@ class TokoFoodCategoryViewModel @Inject constructor(
                    }
                 }
             }.catch {
-                when (inputState.uiState){
-                    STATE_FETCH_MERCHANT_LIST_DATA -> emit(Pair(Fail(it), true))
-                    STATE_FETCH_LOAD_MORE -> emit(Pair(Fail(it), false))
+                if (inputState.uiState == STATE_FETCH_MERCHANT_LIST_DATA) emit(Pair(Fail(it), true))
+                else {
+                    emit(getRemovalProgressBar())
+                    emit(Pair(Fail(it), false))
                 }
             }
         }.shareIn(
@@ -226,6 +227,15 @@ class TokoFoodCategoryViewModel @Inject constructor(
             )
 
             return Pair(Success(data), false)
+    }
+
+    private fun getRemovalProgressBar(): Pair<Result<TokoFoodListUiModel>, Boolean> {
+        categoryLayoutItemList.removeProgressBar()
+        val data = TokoFoodListUiModel(
+            items = categoryLayoutItemList,
+            state = TokoFoodLayoutState.LOAD_MORE
+        )
+        return Pair(Success(data), false)
     }
 
     private fun setPageKey(pageNew:String) {
