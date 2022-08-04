@@ -9,6 +9,7 @@ import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_SINGLE
 import com.tokopedia.topads.sdk.UrlTopAdsSdk.getTopAdsImageViewUrl
 import com.tokopedia.topads.sdk.domain.interactor.DIMEN_ID
 import com.tokopedia.topads.sdk.domain.model.TopAdsBannerResponse
@@ -139,7 +140,7 @@ open class TopAdsRepository {
                 bannerName = data.banner?.name ?: ""
                 position = data.banner?.position ?: 0
                 ImpressHolder = data.banner?.shop?.shopImage
-                layoutType = data.banner?.layoutType ?: "single"
+                layoutType = data.banner?.layoutType ?: TYPE_SINGLE
                 adClickUrl = data.adClickUrl ?: ""
                 adViewUrl = data.adViewUrl ?: ""
                 applink = data.applinks

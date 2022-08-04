@@ -713,14 +713,15 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void onTdnBannerResponse(@NonNull List<List<TopAdsImageViewModel>> categoriesList) {
         if (categoriesList.isEmpty()) return;
         if (categoriesList.size() == TOP_ADS_BANNER_COUNT) {
-            topAdsBannerInProductCards = categoriesList.get(TOP_ADS_BANNER_COUNT - 1);
-            toAdsBannerExperimentPosition = topAdsBannerInProductCards.get(0).getPosition() + SHIFTING_INDEX
-                    + getStartProductPosition();
-
+            topAdsBannerInProductCards = categoriesList.get(1);
+            if (!topAdsBannerInProductCards.isEmpty()){
+                toAdsBannerExperimentPosition = topAdsBannerInProductCards.get(0).getPosition() + SHIFTING_INDEX
+                        + getStartProductPosition();
+            }
         } else if (categoriesList.get(0).size() == TOP_ADS_BANNER_COUNT) {
-            topAdsBannerInProductCards = Collections.singletonList(categoriesList.get(0).get(TOP_ADS_BANNER_COUNT - 1));
-            toAdsBannerExperimentPosition = topAdsBannerInProductCards.get(0).getPosition() + SHIFTING_INDEX
-                    + getStartProductPosition();
+            topAdsBannerInProductCards = Collections.singletonList(categoriesList.get(0).get(1));
+                toAdsBannerExperimentPosition = topAdsBannerInProductCards.get(0).getPosition() + SHIFTING_INDEX
+                        + getStartProductPosition();
         }
         adapter.updateTopAdsBanner(categoriesList.get(0));
     }
