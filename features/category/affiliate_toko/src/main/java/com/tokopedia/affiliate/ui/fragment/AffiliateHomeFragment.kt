@@ -320,7 +320,7 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(), P
                 AffiliateAnalytics.ActionKeys.IMPRESSION_TICKER_COMMUNICATION,
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
                 "$tickerType - $tickerId",
-                0,
+                PAGE_ANNOUNCEMENT_HOME,
                 tickerId!!,
                 AffiliateAnalytics.ItemKeys.AFFILIATE_HOME_TICKER_COMMUNICATION,
                 userSessionInterface.userId

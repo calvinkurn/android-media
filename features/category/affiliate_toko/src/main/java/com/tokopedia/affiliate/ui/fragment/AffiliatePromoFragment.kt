@@ -255,7 +255,7 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
                 AffiliateAnalytics.ActionKeys.IMPRESSION_TICKER_COMMUNICATION,
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
                 "$tickerType - $tickerId",
-                0,
+                PAGE_ANNOUNCEMENT_PROMOSIKAN,
                 tickerId!!,
                 AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_TICKER_COMMUNICATION,
                 userSessionInterface.userId

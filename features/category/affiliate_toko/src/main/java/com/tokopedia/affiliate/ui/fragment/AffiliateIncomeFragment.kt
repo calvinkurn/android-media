@@ -190,7 +190,7 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
                 AffiliateAnalytics.ActionKeys.IMPRESSION_TICKER_COMMUNICATION,
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
                 "$tickerType - $tickerId",
-                0,
+                PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY,
                 tickerId!!,
                 AffiliateAnalytics.ItemKeys.AFFILIATE_PENDAPATAN_TICKER_COMMUNICATION,
                UserSession(context).userId

@@ -96,18 +96,22 @@ private fun setTickerView(source:Int, data: AffiliateAnnouncementDataV2.GetAffil
                 val userSession = UserSession(context)
                 var item = ""
                 var category = ""
+                var position = PAGE_ANNOUNCEMENT_ALL
                 when (source) {
                     PAGE_ANNOUNCEMENT_HOME ->{
                         item = AffiliateAnalytics.ItemKeys.AFFILIATE_HOME_TICKER_COMMUNICATION
                         category = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE
+                        position = PAGE_ANNOUNCEMENT_HOME
                     }
                     PAGE_ANNOUNCEMENT_PROMOSIKAN -> {
                         item = AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_TICKER_COMMUNICATION
                         category = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE
+                        position = PAGE_ANNOUNCEMENT_HOME
                     }
                     PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY -> {
                         item = AffiliateAnalytics.ItemKeys.AFFILIATE_PENDAPATAN_TICKER_COMMUNICATION
                         category = AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE
+                        position = PAGE_ANNOUNCEMENT_HOME
                     }
                 }
                 AffiliateAnalytics.sendTickerEvent(
@@ -115,7 +119,7 @@ private fun setTickerView(source:Int, data: AffiliateAnnouncementDataV2.GetAffil
                     AffiliateAnalytics.ActionKeys.CLICK_TICKER_COMMUNICATION,
                     category,
                     "${data?.type} - ${data?.id}",
-                    0,
+                    position,
                     data?.id!!,
                     item,
                     userSession.userId
