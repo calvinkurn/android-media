@@ -1072,7 +1072,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             sendMessage,
             startTime,
             opponentId,
-            replyBubbleContainer?.referredMsg,
+            replyBubbleContainer.referredMsg,
             onSendingMessage(sendMessage, startTime, replyBubbleContainer?.referredMsg)
         )
 
@@ -1519,29 +1519,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             if (list.isNotEmpty()){
                 val filteredList= getViewState()?.clearDuplicate(list)
                 updateHasNextState(chatReplies)
-
-                if (fromOnClick && replyTime.isNotEmpty()) {
-                    updateHasNextAfterState(chatReplies)
-                    filteredList?.let { renderList ->
-                        if((renderList.getOrNull(0) as MessageUiModel).replyTime!! < replyTime){
-                            loadDataOnClickBottomScroll(replyTime)
-                        }
-                    }
-                }
-
                 rvScrollListener?.finishTopLoadingState()
                 filteredList?.let { renderList ->
                     renderTopList(renderList)
                 }
-
+                if (fromOnClick && replyTime.isNotEmpty()) {
+                    updateHasNextAfterState(chatReplies)
+                }
             }else{
                 presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
             }
         }
-    }
-
-    private fun loadDataOnClickBottomScroll(replyTime: String) {
-        presenter.getBottomChat(messageId, onSuccessGetBottomChatData(replyTime = replyTime, fromOnClick = true), onErrorGetBottomChat(), onGetChatRatingListMessageError)
     }
 
     private fun onSuccessGetBottomChatData(replyTime: String = "", fromOnClick: Boolean = false): (ChatroomViewModel,ChatReplies) -> Unit {

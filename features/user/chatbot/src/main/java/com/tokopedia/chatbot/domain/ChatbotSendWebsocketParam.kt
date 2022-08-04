@@ -90,7 +90,7 @@ object ChatbotSendWebsocketParam {
         return json
     }
 
-    fun generateReferredMsg(referredMsg: ParentReply?): JsonElement? {
+    private fun generateReferredMsg(referredMsg: ParentReply?): JsonElement? {
         if (referredMsg == null)
             return null
 
