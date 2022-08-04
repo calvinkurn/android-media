@@ -145,15 +145,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         viewModel.requestCheckoutParam.deviceId =
             cartPassData?.deviceId ?: DEFAULT_ANDROID_DEVICE_ID
 
-        //TODO : will update
-        if (cartPassData?.errorAtcData != null){
-            cartPassData?.errorAtcData?.let {
-                showErrorPage(it.errorTitle, it.errorDescription, it.redirectionLink, it.buttonLabel)
-            }
-        }else{
-            initViews()
-            loadData()
-        }
+        initViews()
+        loadData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
