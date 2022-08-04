@@ -127,6 +127,8 @@ class OrderPriceSummaryBottomSheetRobot {
                 clPaymentFeeView.findViewById<IconUnify>(R.id.img_payment_fee_info).performClick()
             }
         }
+        // Wait for bottom sheet to fully appear
+        Thread.sleep(1000)
         OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 
