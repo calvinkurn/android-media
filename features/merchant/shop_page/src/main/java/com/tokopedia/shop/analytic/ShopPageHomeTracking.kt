@@ -167,6 +167,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_CLICK_QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
@@ -2112,7 +2113,8 @@ class ShopPageHomeTracking(
                             quantity = quantity,
                             shopName = shopName,
                             shopId = productDataModel.shopId,
-                            shopType = shopType
+                            shopType = shopType,
+                            bundleType = VALUE_MULTIPLE_BUNDLING
                     )
             )
         }
@@ -2157,7 +2159,8 @@ class ShopPageHomeTracking(
                             quantity = quantity,
                             shopName = shopName,
                             shopId = productDataModel.shopId,
-                            shopType = shopType
+                            shopType = shopType,
+                            bundleType = VALUE_SINGLE_BUNDLING
                     )
             )
             productId = productDataModel.productId
@@ -2167,6 +2170,7 @@ class ShopPageHomeTracking(
         bundle.putString(TrackAppUtils.EVENT_ACTION, joinDash(CLICK, SINGLE_BUNDLE_WIDGET, BUNDLE_ADD_TO_CART))
         bundle.putString(TrackAppUtils.EVENT_CATEGORY, SHOP_PAGE_BUYER)
         bundle.putString(TrackAppUtils.EVENT_LABEL, joinDash(bundleId, bundleName, bundlePriceCut, selectedPackage))
+        bundle.putString(TRACKER_ID, TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET)
         bundle.putString(BUSINESS_UNIT, PHYSICAL_GOODS)
         bundle.putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
         bundle.putString(SHOP_ID, userId)
@@ -2470,12 +2474,28 @@ class ShopPageHomeTracking(
         sendEnhanceEcommerceDataLayerEvent(CLICK_PG, bundle)
     }
 
-    private fun getItemsBundlingAtc(bundleId: String, cartId: String, bundleName: String, bundlePrice: Long, quantity: String, shopName: String, shopId: String, shopType: String): Bundle {
+    private fun getItemsBundlingAtc(
+            bundleId: String,
+            cartId: String,
+            bundleName: String,
+            bundlePrice: Long,
+            quantity: String,
+            shopName: String,
+            shopId: String,
+            shopType: String,
+            bundleType: String
+    ): Bundle {
+        var _valueBundleType = ""
+        if (bundleType == VALUE_MULTIPLE_BUNDLING) {
+            _valueBundleType = MULTIPLE_TYPE
+        } else {
+            _valueBundleType = SINGLE_TYPE
+        }
         return Bundle().apply {
             putString(CATEGORY_ID, "")
-            putString(DIMENSION_117, VALUE_MULTIPLE_BUNDLING)
+            putString(DIMENSION_117, bundleType)
             putString(DIMENSION_118, bundleId)
-            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, MULTIPLE_TYPE))
+            putString(DIMENSION_40, joinDash(SHOPPAGE, PRODUCT_BUNDLING, _valueBundleType ))
             putString(DIMENSION_45, cartId)
             putString(DIMENSION_87, SHOP_PAGE)
             putString(ITEM_BRAND, "")
