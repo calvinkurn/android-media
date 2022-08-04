@@ -27,6 +27,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
@@ -904,9 +905,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun trackRecentProductRecomAddToCart(productId: String, quantity: Int, cartId: String) {
         homeLayoutItemList.updateProductRecom(productId, quantity)?.let { productRecom ->
             val recomItemList = productRecom.recomWidget.recommendationItemList
-            val product = recomItemList.first { it.productId.toString() == productId }
-            val position = recomItemList.indexOf(product)
-
+            val position = getPositionProductRecom(recomItemList, productId)
             val data = HomeAddToCartTracker(position, quantity, cartId, productRecom)
             _homeAddToCartTracker.postValue(data)
         }
@@ -915,12 +914,18 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun trackRecentProductRecomRemoveCart(productId: String, cartId: String) {
         homeLayoutItemList.updateProductRecom(productId, DEFAULT_QUANTITY)?.let { productRecom ->
             val recomItemList = productRecom.recomWidget.recommendationItemList
-            val product = recomItemList.first { it.productId.toString() == productId }
-            val position = recomItemList.indexOf(product)
-
+            val position = getPositionProductRecom(recomItemList, productId)
             val data = HomeRemoveFromCartTracker(position, DEFAULT_QUANTITY, cartId, productRecom)
             _homeRemoveFromCartTracker.postValue(data)
         }
+    }
+
+    private fun getPositionProductRecom(
+        recomItemList: List<RecommendationItem>,
+        productId: String
+    ): Int {
+        val product = recomItemList.first { it.productId.toString() == productId }
+        return recomItemList.indexOf(product)
     }
 
     private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {
