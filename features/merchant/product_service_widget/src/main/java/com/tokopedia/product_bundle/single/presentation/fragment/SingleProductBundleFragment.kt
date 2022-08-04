@@ -38,8 +38,6 @@ import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
-import com.tokopedia.product_bundle.fragment.EntrypointFragment
-import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.tagFragment
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
@@ -80,8 +78,7 @@ class SingleProductBundleFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId,
-            emptyVariantProductIds)
+        initBundleData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -256,7 +253,7 @@ class SingleProductBundleFragment(
                 setSecondaryCTAClickListener { activity?.finish() }
                 setPrimaryCTAClickListener {
                     dismiss()
-                    refreshPage()
+                    initBundleData()
                 }
             }.let {
                 it.setTitle(dialogStruct.title.orEmpty())
@@ -455,10 +452,9 @@ class SingleProductBundleFragment(
         }
     }
 
-    private fun refreshPage() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.parent_view, EntrypointFragment(), tagFragment)
-            .commit()
+    private fun initBundleData() {
+        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId,
+            emptyVariantProductIds)
     }
 
     companion object {
