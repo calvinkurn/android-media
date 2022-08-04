@@ -33,6 +33,7 @@ class ProductTagViewComponent(
     private val productListener = object : ProductCarouselViewHolder.Product.Listener{
         override fun onPinClicked(product: ProductUiModel) {
             listener.onPinClicked(product)
+            hideCoachMark()
         }
     }
 

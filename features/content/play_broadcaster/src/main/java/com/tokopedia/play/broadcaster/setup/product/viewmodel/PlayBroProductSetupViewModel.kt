@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
@@ -34,7 +33,6 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -139,8 +137,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             productTagSummary = productTagSummary
         )
     }
-
-    private var coolDownTimerJob: Job? = null
 
     init {
         getCampaignAndEtalaseList()
@@ -426,55 +422,39 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleClickPin(product: ProductUiModel){
-        val isPinned = product.pinStatus.isPinned
         viewModelScope.launchCatchError(block = {
-            updatePinProduct(isLoading = true, product = product)
-            //for unpin send 0 to unpin all product in channel
-            val id = if(isPinned) "0" else product.id
-            val result = repo.setPinProduct(channelId, id)
-            if(result) {
-                updatePinProduct(product = product)
-                addCoolDown()
-            } else {
-                //switch current status bcz in update UI it'll switch to the OG
-                val action = if(isPinned) "lepas" else "pasang"
-                throw MessageErrorException("Gagal $action pin di produk. Coba lagi, ya.")
-            }
+            product.updatePinProduct(isLoading = true, needToReset = true)
+            val result = repo.setPinProduct(channelId, product)
+            if(result)
+                product.updatePinProduct(isLoading = false)
         }){
-            updatePinProduct(product = product.copy(pinStatus = product.pinStatus.copy(isPinned = product.pinStatus.isPinned.switch())))
-            _uiEvent.emit(PlayBroProductChooserEvent.FailPinUnPinProduct(it, isPinned))
+            product.updatePinProduct(isLoading = false, needToReset = true)
+            _uiEvent.emit(PlayBroProductChooserEvent.FailPinUnPinProduct(it, product.pinStatus.isPinned))
         }
     }
 
-    private fun updatePinProduct(product: ProductUiModel, isLoading: Boolean = false) {
+    /**
+     * hacky way needToReset -> find better approach
+     */
+    private fun ProductUiModel.updatePinProduct(isLoading: Boolean = false, needToReset: Boolean = false) {
         _productTagSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
                 sectionUiModel.products.map { prod ->
-                    if(prod.id == product.id)
-                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isLoading) prod.pinStatus.isPinned else product.pinStatus.isPinned.switch(), isLoading = isLoading))
-                    else
-                        //Reset
-                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = false))
+                    if(prod.id == this.id)
+                        prod.copy(pinStatus = this.pinStatus.copy(isLoading = isLoading, isPinned =
+                            if(!needToReset) this.pinStatus.isPinned.switch()
+                            else this.pinStatus.isPinned))
+                    else prod.copy(pinStatus = prod.pinStatus.copy(isPinned = prod.pinStatus.isPinned && needToReset))
                 })
             }
         }
     }
 
-    private fun addCoolDown() {
-        coolDownTimerJob?.cancel()
-        coolDownTimerJob = viewModelScope.launch {
-            delay(COOL_DOWN_TIMER)
-        }
-    }
-
-    fun getCoolDownStatus() : Boolean = coolDownTimerJob?.isActive ?: false
-
     companion object {
         private const val KEY_PRODUCT_SECTIONS = "product_sections"
         private const val KEY_ELIGIBLE_PIN = "eligible_pin_status"
 
-        private const val COOL_DOWN_TIMER = 5000L
         private const val STOP_TIME_OUT_MILLIS = 5000L
         private const val DEBOUNCE_TIME_OUT_MILLIS = 300L
     }

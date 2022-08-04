@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroProductSummaryBinding
+import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.model.ProductTagSummaryUiModel
@@ -57,24 +58,13 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     override fun onPinClicked(product: ProductUiModel) {
         analytic.onClickPinProductBottomSheet(product.id)
-        checkPinProduct(product.pinStatus.isPinned){
-            viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
-        }
+        viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
+
+        //For second event I think you can impress from event fail unpin yang PinnedProductException yaa
     }
 
     override fun onImpressPinnedProduct(product: ProductUiModel) {
         analytic.onImpressPinProductBottomSheet(product.id)
-    }
-
-    private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
-        if(!viewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
-        else {
-            analytic.onImpressColdDownPinProductSecondEvent(false)
-            toaster.showToaster(
-                message = getString(R.string.play_bro_pin_product_failed),
-                type = Toaster.TYPE_ERROR
-            )
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -184,9 +174,19 @@ class ProductSummaryBottomSheet @Inject constructor(
                         showLoading(false)
                     }
                     is PlayBroProductChooserEvent.FailPinUnPinProduct -> {
-                        toaster.showError(event.throwable)
                         if (event.isPinned) analytic.onImpressFailUnPinProductBottomSheet()
                         else analytic.onImpressFailPinProductBottomSheet()
+
+                        if(event.throwable is PinnedProductException){
+                            toaster.showToaster(
+                                message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
+                                type = Toaster.TYPE_ERROR
+                            )
+                        }else {
+                            toaster.showError(
+                                err = event.throwable
+                            )
+                        }
                     }
                 }
             }

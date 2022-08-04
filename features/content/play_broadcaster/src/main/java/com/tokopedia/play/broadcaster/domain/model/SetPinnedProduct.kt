@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.network.exception.MessageErrorException
 
 /**
  * @author by astidhiyaa on 13/07/22
@@ -14,3 +15,5 @@ data class SetPinnedProduct(
         val success: Boolean = false,
     )
 }
+
+data class PinnedProductException(override val message: String = ""): MessageErrorException()

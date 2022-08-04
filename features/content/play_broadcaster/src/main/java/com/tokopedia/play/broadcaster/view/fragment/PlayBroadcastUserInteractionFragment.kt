@@ -20,6 +20,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
+import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
@@ -164,9 +165,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             override fun onPinClicked(product: ProductUiModel) {
                 analytic.onClickPinProductLiveRoom(product.id)
-                checkPinProduct(product.pinStatus.isPinned) {
-                    parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
-                }
+                parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
             }
 
             override fun onImpressPinnedProduct(product: ProductUiModel) {
@@ -791,7 +790,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             parentViewModel.uiEvent.collect { event ->
                 when (event) {
-                    is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
+                    is PlayBroadcastEvent.ShowError -> {
+                        if(event.error is PinnedProductException)
+                            showToaster(
+                                message = if (event.error.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.error.message,
+                                type = Toaster.TYPE_ERROR)
+                        else showErrorToaster(event.error)
+                    }
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                     PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
                     PlayBroadcastEvent.ShowLeaderboardBottomSheet -> openLeaderboardSheet()
@@ -806,9 +811,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowInteractiveGameResultWidget -> showInteractiveGameResultWidget(event.showCoachMark)
                     PlayBroadcastEvent.DismissGameResultCoachMark -> dismissGameResultCoachMark()
                     is PlayBroadcastEvent.FailPinUnPinProduct -> {
-                        showErrorToaster(event.throwable)
                         if (event.isPinned) analytic.onImpressFailUnPinProductLiveRoom()
                         else analytic.onImpressFailPinProductLiveRoom()
+                        if(event.throwable is PinnedProductException)
+                            showToaster(
+                                message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
+                                type = Toaster.TYPE_ERROR)
+                        else showErrorToaster(event.throwable)
                     }
                     else -> {}
                 }
@@ -865,10 +874,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (prevState == state) return
 
         val sortedList = mutableListOf<ProductUiModel>()
-        val newList = state.filterNot { it.campaignStatus.isUpcoming() }
-            .flatMap { tagSectionUiModel ->
+        val newList = state.flatMap { tagSectionUiModel ->
                 tagSectionUiModel.products
-            }
+        }
 
         val pinnedProduct = newList.filter { it.pinStatus.isPinned }
         if (pinnedProduct.isNotEmpty()) {
@@ -1146,17 +1154,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             requireContext().classLoader
         )
         ongoingLeaderboardBottomSheet.show(childFragmentManager)
-    }
-
-    private fun checkPinProduct(pinStatus: Boolean, ifTimerIsOn: () -> Unit) {
-        if(!parentViewModel.getCoolDownStatus() || pinStatus) ifTimerIsOn()
-        else {
-            analytic.onImpressColdDownPinProductSecondEvent(true)
-           showToaster(
-                message = getString(R.string.play_bro_pin_product_failed),
-                type = Toaster.TYPE_ERROR
-            )
-        }
     }
 
     companion object {

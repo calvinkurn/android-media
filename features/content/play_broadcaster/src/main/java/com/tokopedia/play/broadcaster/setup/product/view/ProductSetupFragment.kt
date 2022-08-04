@@ -155,6 +155,6 @@ class ProductSetupFragment @Inject constructor(
     interface DataSource {
 
         fun getProductSectionList(): List<ProductTagSectionUiModel>
-        fun isEligibleForPin(): Boolean //TODO(): find better approach
+        fun isEligibleForPin(): Boolean
     }
 }
