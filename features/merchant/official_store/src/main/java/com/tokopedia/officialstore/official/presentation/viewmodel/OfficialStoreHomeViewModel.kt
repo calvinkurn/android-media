@@ -384,7 +384,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
         launchCatchError(coroutineContext, block={
             getDisplayHeadlineAds.createParams(
-                featuredShopDataModel.channelModel.widgetParam
+                featuredShopDataModel.channelModel.widgetParam,
+                topAdsAddressHelper.getAddressData()
             )
             val data = getDisplayHeadlineAds.executeOnBackground()
             if (data.isEmpty()) {

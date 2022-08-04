@@ -84,7 +84,10 @@ class GetDisplayHeadlineAds @Inject constructor(
     fun createParams(widgetParam: String, addressData: Map<String, String> = mapOf()) {
         val addressDataString = addressData.entries.joinToString("&")
         params = mutableMapOf<String, Any>().apply {
-            put(PARAMS_QUERY, ("$widgetParam&$addressDataString"))
+            put(
+                PARAMS_QUERY,
+                ("$widgetParam${if (addressData.isNotEmpty()) "&$addressDataString" else ""}")
+            )
         }
     }
 

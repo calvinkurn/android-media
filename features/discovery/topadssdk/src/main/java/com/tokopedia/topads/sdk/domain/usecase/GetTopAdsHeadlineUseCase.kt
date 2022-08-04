@@ -5,6 +5,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_SRC
+import com.tokopedia.topads.sdk.domain.TopAdsParams.KEY_SRC
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.utils.*
 
@@ -109,27 +111,32 @@ class GetTopAdsHeadlineUseCase constructor(graphqlRepository: GraphqlRepository)
     }
 
     fun setParams(params: String, addressData: Map<String,String>) {
-        val map = params.split("&").associate {
-            val (left, right) = it.split("=")
-            left to right
-        }
-
-        val reqParam = appendAddressParams(map, addressData)
+        val reqParam = appendAddressParams(params, addressData)
         val queryParams = mutableMapOf(
             PARAMS_QUERY to reqParam
         )
         setRequestParams(queryParams)
     }
 
+
     private fun appendAddressParams(
-        map: Map<String, String>,
-        hashMap: Map<String,String>
+        params : String,
+        addressData: Map<String,String>
     ): String {
-        val params = map.toMutableMap()
-        if (hashMap["src"] != "search") {
-            params.putAll(hashMap)
+        return if (addressData.isEmpty()) params
+        else{
+            val map = params.split("&").associate {
+                val (left, right) = it.split("=")
+                left to right
+            }
+
+            val newReqParam = map.toMutableMap()
+
+            if (map[KEY_SRC] != DEFAULT_KEY_SRC ){
+                newReqParam.putAll(addressData)
+            }
+            newReqParam.entries.joinToString("&")
         }
-        return params.entries.joinToString("&")
     }
 
     fun createParams(

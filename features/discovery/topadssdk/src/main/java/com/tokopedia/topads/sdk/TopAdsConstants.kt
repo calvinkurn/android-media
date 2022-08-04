@@ -14,4 +14,13 @@ object TopAdsConstants {
         const val RESPONSE_HEADER_KEY = "Tkp-Enc-Sessionid"
         const val TOP_ADS_SHARED_PREF_KEY = "TopAdsSharedPreference"
     }
+
+    object TopAdsAddressConstant{
+        const val USER_DISTRICT_ID = "user_districtId"
+        const val USER_CITY_ID = "user_cityId"
+        const val USER_POSTCODE = "user_postCode"
+        const val USER_LAT = "user_lat"
+        const val USER_LONG = "user_long"
+        const val USER_ADDRESS_ID = "user_addressId"
+    }
 }
