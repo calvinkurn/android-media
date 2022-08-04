@@ -118,6 +118,10 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         }.executeOnBackground().data.success
     }
 
+    override fun removeCoolDownTimerJob() {
+        setPinnedProductUseCase.cancelTimerJob()
+    }
+
     companion object {
         private const val PRODUCTS_IN_ETALASE_PER_PAGE = 25
         private const val PRODUCTS_IN_CAMPAIGN_PER_PAGE = 25

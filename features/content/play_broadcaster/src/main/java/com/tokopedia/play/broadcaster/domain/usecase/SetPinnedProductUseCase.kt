@@ -36,7 +36,7 @@ class SetPinnedProductUseCase @Inject constructor(
     private var productInfo: ProductUiModel? = null
 
     private fun addCoolDown() {
-        coolDownTimerJob?.cancel()
+        cancelTimerJob()
         coolDownTimerJob = scope.launch {
             delay(COOL_DOWN_TIMER)
         }
@@ -73,6 +73,10 @@ class SetPinnedProductUseCase @Inject constructor(
             PARAM_CHANNEL_ID to channelId.toLongOrZero(),
             PARAM_PRODUCT_ID to productId.toLongOrZero(),
         )
+    }
+
+    fun cancelTimerJob(){
+        coolDownTimerJob?.cancel()
     }
 
     companion object {

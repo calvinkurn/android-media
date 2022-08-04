@@ -369,6 +369,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.cancel()
         livePusherMediator.clearListener()
         livePusherMediator.destroy()
+        repo.removeCoolDownTimerJob()
     }
 
     fun submitAction(event: PlayBroadcastAction) {
