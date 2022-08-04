@@ -42,6 +42,7 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private var listCollections: List<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames.DataItem> = emptyList()
     private var newCollectionName = ""
+    private var _existingCollectionName = ""
     private var actionListener: ActionListener? = null
     private val handler = Handler(Looper.getMainLooper())
     private val checkNameRunnable = Runnable {
@@ -85,6 +86,7 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _existingCollectionName = arguments?.getString(COLLECTION_NAME) ?: ""
         initInjector()
         checkLogin()
     }
@@ -106,10 +108,9 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
     }
 
     private fun initLayout() {
-        val collectionName = arguments?.getString(COLLECTION_NAME) ?: ""
         binding = BottomsheetCreateNewWishlistCollectionBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
-            collectionCreateNameInputTextField.editText.setText(collectionName)
+            collectionCreateNameInputTextField.editText.setText(_existingCollectionName)
             collectionCreateNameInputTextField.editText.addTextChangedListener(object: TextWatcher{
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -162,7 +163,7 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
         if (listCollections.isNotEmpty()) {
             run check@ {
                 listCollections.forEach { item ->
-                    if (checkName == item.name) {
+                    if (checkName == item.name && checkName != _existingCollectionName) {
                         binding?.run {
                             collectionCreateNameInputTextField.isInputError = true
 
