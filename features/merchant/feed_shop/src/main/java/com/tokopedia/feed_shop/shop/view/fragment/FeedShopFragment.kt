@@ -669,7 +669,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             shopId: String,
             mediaType: String,
             isTopads: Boolean,
-            playChannelId: String
+            playChannelId: String,
+            weblink: String
     ) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
