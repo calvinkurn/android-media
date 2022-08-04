@@ -137,8 +137,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                     listener?.onCekSekarangButtonClicked(mData, positionInCdp)
                 }
 
-            }
-
             override fun onImageClicked(viewHolder: CarouselImageViewHolder) {
                 listener?.onImageClicked(mData)
                 changeCTABtnColorAsPerWidget(mData)

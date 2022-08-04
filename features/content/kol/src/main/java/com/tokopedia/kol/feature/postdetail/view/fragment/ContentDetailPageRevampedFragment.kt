@@ -30,7 +30,6 @@ import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.di.DaggerContentDetailComponent
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
@@ -242,51 +241,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     }
                 }
             })
-
-            reportResponse.observe(viewLifecycleOwner, {
-                when (it) {
-                    is Fail -> {
-                        when (it.throwable) {
-                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
-                                view?.let {
-                                    reportBottomSheet.dismiss()
-                                    showNoInterNetDialog(it.context)
-                                }
-                            }
-                            else -> {
-                                val message = it.throwable.localizedMessage ?: ""
-                                showToast(message, Toaster.TYPE_ERROR)
-                            }
-                        }
-
-                    }
-                    is Success -> {
-                        reportBottomSheet.setFinalView()
-                        onSuccessDeletePost(it.data.rowNumber)
-                    }
-                }
-            })
-
-            deletePostResp.observe(viewLifecycleOwner,  {
-                when (it) {
-                    is Success -> {
-                        val data = it.data
-                        if (data.isSuccess) {
-                            onSuccessDeletePost(data.rowNumber)
-                        } else {
-                            data.errorMessage = getString(networkR.string.default_request_error_unknown)
-                            onErrorDeletePost(data)
-                        }
-                    }
-                    is Fail -> {
-                        val message = getString(networkR.string.default_request_error_unknown)
-                        showToast(message, Toaster.TYPE_ERROR)
-                    }
-                }
-            })
-
-
-
         }
     }
 
@@ -300,22 +254,25 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        cdpRecyclerView = view.findViewById(kolR.id.cdp_recycler_view)
         setupView(view)
         viewModel.getCDPPostDetailFirstData(postId)
 
 
         observeWishlist()
         observeFollowShop()
+        observeDeleteContent()
+        observeReportContent()
     }
 
     private fun setupView(view: View) {
+        cdpRecyclerView = view.findViewById(kolR.id.cdp_recycler_view)
+
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
             cdpRecyclerView?.addOnScrollListener(it)
             it.resetState()
         }
+
         cdpRecyclerView?.adapter = adapter
     }
 
@@ -529,7 +486,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     }
 
     private fun onSuccessFollowShop(data: ShopFollowModel) {
-
         val rowNumber = data.rowNumber
         if (rowNumber < adapter.getList().size) {
              val feedXCardData = adapter.getList()[rowNumber]
@@ -822,10 +778,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                                     )
                                     viewModel.sendReport(
                                         postPosition,
-                                        feedXCard.id.toIntOrZero(),
+                                        feedXCard.id,
                                         reasonType,
                                         reasonDesc,
-                                        "content"
                                     )
                                 }
                             })
@@ -883,12 +838,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                         postPosition
                     ) else onGoToLogin()
             }
-            sheet.onDelete = {
-                val media =
-                    if (feedXCard.media.size > feedXCard.lastCarouselIndex) feedXCard.media[feedXCard.lastCarouselIndex] else null
-                createDeleteDialog(feedXCard.id.toIntOrZero(), postPosition)
-
-            }
+            sheet.onDelete = { createDeleteDialog(feedXCard.id, postPosition) }
             sheet.onDismiss = {
                 analyticsTracker.sendClickGreyAreaSgcImageEvent(
                     getContentDetailAnalyticsData(
@@ -1250,7 +1200,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         activity?.startActivity(Intent.createChooser(intent, shareData.name))
     }
 
-    private fun createDeleteDialog(id: Int, rowNumber: Int) {
+    private fun createDeleteDialog(contentId: String, rowNumber: Int) {
         val dialog =
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(kolR.string.feed_delete_post))
@@ -1261,7 +1211,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {
-          viewModel.doDeletePost(id, rowNumber)
+            viewModel.deleteContent(contentId, rowNumber)
             dialog.dismiss()
         }
         dialog.show()
@@ -1568,18 +1518,86 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     private fun observeFollowShop() {
         viewModel.followShopObservable.observe(viewLifecycleOwner, Observer {
             when (it) {
-                ContentDetailResult.Loading -> {}
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
                 is ContentDetailResult.Success -> onSuccessFollowShop(it.data)
                 is ContentDetailResult.Failure -> {
-                    when (it.error.cause) {
+                    when (it.error) {
                         is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
                             showNoInterNetDialog(requireContext())
                         }
                         else -> {
                             val errorMessage = if (it.error is CustomUiMessageThrowable) {
                                 requireContext().getString(it.error.errorMessageId)
-                            } else ErrorHandler.getErrorMessage(requireContext(), it.error.cause)
+                            } else ErrorHandler.getErrorMessage(requireContext(), it.error)
 
+                            Toaster.build(
+                                requireView(),
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again)
+                            ) { view ->
+                                it.onRetry()
+                            }
+                                .show()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun observeDeleteContent() {
+        viewModel.deletePostResp.observe(viewLifecycleOwner, {
+            when (it) {
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
+                is ContentDetailResult.Success -> onSuccessDeletePost(it.data.rowNumber)
+                is ContentDetailResult.Failure -> {
+                    when (it.error) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error)
+                            Toaster.build(
+                                requireView(),
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again)
+                            ) { view ->
+                                it.onRetry()
+                            }
+                                .show()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun observeReportContent() {
+        viewModel.reportResponse.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
+                is ContentDetailResult.Success -> {
+                    reportBottomSheet.setFinalView()
+                    onSuccessDeletePost(it.data.rowNumber)
+                }
+                is ContentDetailResult.Failure -> {
+                    reportBottomSheet.dismiss()
+                    when (it.error) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error)
                             Toaster.build(
                                 requireView(),
                                 errorMessage,
@@ -1604,6 +1622,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     private fun onAddToCartFailed(pdpAppLink: String) {
         onGoToLink(pdpAppLink)
     }
+
     private fun onSuccessDeletePost(rowNumber: Int) {
         if (adapter.getList().size > rowNumber) {
             adapter.getList().removeAt(rowNumber)
@@ -1621,17 +1640,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 //            showRefresh()
 //            onRefresh()
         }
-    }
-    private fun onErrorDeletePost(data: DeletePostViewModel) {
-        Toaster.build(
-            requireView(),
-            data.errorMessage,
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_ERROR,
-            getString(com.tokopedia.abstraction.R.string.title_try_again),
-            View.OnClickListener {
-                viewModel.doDeletePost(data.id, data.rowNumber)
-            })
     }
     private fun getContentDetailAnalyticsData(feedXCard: FeedXCard, postPosition: Int = 0, trackerId : String= "", hashTag: String= "", duration: Long = 0L, product: FeedXProduct = FeedXProduct()) = ContentDetailPageAnalyticsDataModel(
         activityId = if (feedXCard.isTypeVOD) feedXCard.playChannelID else feedXCard.id,
