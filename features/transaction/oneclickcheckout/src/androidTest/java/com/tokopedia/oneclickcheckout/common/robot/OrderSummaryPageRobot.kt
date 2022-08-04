@@ -922,6 +922,8 @@ class OrderSummaryPageRobot {
     }
 
     fun assertInstallmentRevamp(detail: String?) {
+        // Wait for espresso
+        Thread.sleep(1000)
         onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
             override fun describeTo(description: Description?) {
 
