@@ -1,4 +1,4 @@
-package com.tokopedia.usercomponents.explicit.view
+package com.tokopedia.usercomponents.explicit.view.interactor
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.usecase.coroutines.Result
@@ -12,6 +12,5 @@ interface ExplicitViewContract {
 
     val explicitContent: LiveData<Result<Pair<Boolean, Property?>>>
     val statusSaveAnswer: LiveData<Result<String>>
-    val isQuestionLoading: LiveData<Boolean>
     val statusUpdateState: LiveData<Boolean>
 }

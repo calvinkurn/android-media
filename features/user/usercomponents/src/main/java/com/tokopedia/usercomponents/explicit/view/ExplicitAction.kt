@@ -1,5 +1,7 @@
 package com.tokopedia.usercomponents.explicit.view
 
+import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewContract
+
 interface ExplicitAction {
     /**
      * setupView should be called once at the first time.
@@ -8,7 +10,7 @@ interface ExplicitAction {
      */
     fun setupView(
         viewModel: ExplicitViewContract,
-        data: ExplicitData? = null,
+        data: ExplicitData
     )
 
     fun onLoading()

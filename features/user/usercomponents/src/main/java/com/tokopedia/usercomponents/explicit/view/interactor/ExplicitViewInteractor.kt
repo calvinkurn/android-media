@@ -1,4 +1,4 @@
-package com.tokopedia.usercomponents.explicit.view
+package com.tokopedia.usercomponents.explicit.view.interactor
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -18,7 +18,7 @@ import kotlinx.coroutines.cancelChildren
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ExplicitViewViewModel @Inject constructor(
+class ExplicitViewInteractor @Inject constructor(
     private val getQuestionUseCase: GetQuestionUseCase,
     private val saveAnswerUseCase: SaveAnswerUseCase,
     private val updateStateUseCase: UpdateStateUseCase,
@@ -34,9 +34,6 @@ class ExplicitViewViewModel @Inject constructor(
     private val _statusSaveAnswer = SingleLiveEvent<Result<String>>()
     override val statusSaveAnswer: LiveData<Result<String>> get() = _statusSaveAnswer
 
-    private val _isQuestionLoading = SingleLiveEvent<Boolean>()
-    override val isQuestionLoading: LiveData<Boolean> get() = _isQuestionLoading
-
     private val _statusUpdateState = SingleLiveEvent<Boolean>()
     override val statusUpdateState: LiveData<Boolean> get() = _statusUpdateState
 
@@ -45,7 +42,6 @@ class ExplicitViewViewModel @Inject constructor(
     private val preferenceOptions = listOf(OptionsItem(), OptionsItem())
 
     override fun getExplicitContent(templateName: String) {
-        _isQuestionLoading.value = true
         launchCatchError(coroutineContext, {
             val response = getQuestionUseCase(templateName)
             val activeConfig = response.explicitprofileGetQuestion.activeConfig.value
@@ -60,11 +56,8 @@ class ExplicitViewViewModel @Inject constructor(
             } else {
                 _explicitContent.value = Success(Pair(false, null))
             }
-            _isQuestionLoading.value = false
         }, {
             _explicitContent.value = Fail(it)
-
-            _isQuestionLoading.value = false
         })
     }
 

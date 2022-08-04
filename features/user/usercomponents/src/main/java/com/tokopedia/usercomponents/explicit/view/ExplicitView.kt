@@ -14,7 +14,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.usecase.coroutines.Fail
@@ -25,17 +24,11 @@ import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitQuestionBind
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitSuccessBinding
 import com.tokopedia.usercomponents.explicit.analytics.ExplicitAnalytics
 import com.tokopedia.usercomponents.explicit.domain.model.Property
-
-data class ExplicitData(
-    var templateName: String = "",
-    var pageName: String = "",
-    var pagePath: String = "",
-    var pageType: String = ""
-)
+import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewContract
 
 class ExplicitView constructor(
     context: Context,
-    private val attrs: AttributeSet?
+    attrs: AttributeSet?
 ) : CardUnify2(context, attrs), ExplicitAction {
 
     private lateinit var viewModelContract: ExplicitViewContract
@@ -54,44 +47,17 @@ class ExplicitView constructor(
     private var onWidgetDismissListener: (() -> Unit)? = null
     private var onWidgetFinishListener: (() -> Unit)? = null
 
-    override fun setupView(viewModel: ExplicitViewContract, data: ExplicitData?) {
+    override fun setupView(viewModel: ExplicitViewContract, data: ExplicitData) {
         this.viewModelContract = viewModel
 
-        checkAttribute(attrs)
-        data?.let { explicitData = it }
+        explicitData = data
 
         initView()
     }
 
-    private fun checkAttribute(attrs: AttributeSet?) {
-        context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.ExplicitView,
-            0, 0
-        ).apply {
-            try {
-                // You must set template name!
-                explicitData.templateName = getString(R.styleable.ExplicitView_template_name) ?: ""
-                explicitData.pageName = getString(R.styleable.ExplicitView_page_name) ?: ""
-                explicitData.pagePath = getString(R.styleable.ExplicitView_page_path) ?: ""
-                explicitData.pageType = getString(R.styleable.ExplicitView_page_type) ?: ""
-            } finally {
-                recycle()
-            }
-
-            val isEmptyRequireAttribute = explicitData.templateName.isEmpty()
-                    || explicitData.pageName.isEmpty()
-                    || explicitData.pagePath.isEmpty()
-                    || explicitData.pageType.isEmpty()
-
-            if (GlobalConfig.DEBUG && isEmptyRequireAttribute)
-                throw IllegalArgumentException(context.getString(R.string.explicit_error_attribute))
-        }
-    }
-
     private fun initView() {
         initBinding()
-        initInjector()
+        initObserver()
         initListener()
     }
 
@@ -101,13 +67,8 @@ class ExplicitView constructor(
         bindingFailed = LayoutWidgetExplicitFailedBinding.inflate(LayoutInflater.from(context), this, false)
     }
 
-    private fun initInjector() {
-        context?.let {
-            initObserver()
-        }
-    }
-
     private fun initObserver() {
+        onLoading()
         viewModelContract.getExplicitContent(explicitData.templateName)
 
         val lifecycleOwner = context as LifecycleOwner
@@ -135,12 +96,6 @@ class ExplicitView constructor(
             }
         }
 
-        viewModelContract.isQuestionLoading.observe(lifecycleOwner) {
-            if (it) {
-                onLoading()
-            }
-        }
-
         viewModelContract.statusUpdateState.observeOnce(lifecycleOwner) {
             onWidgetFinishListener?.invoke()
         }
@@ -151,8 +106,8 @@ class ExplicitView constructor(
             txtTitle.text = data?.title
             txtDescription.text = data?.subtitle
             imgIcon.urlSrc = data?.image ?: ""
-            btnPositifAction.text = data?.options?.get(0)?.caption
-            btnNegatifAction.text = data?.options?.get(1)?.caption
+            btnPositiveAction.text = data?.options?.get(0)?.caption
+            btnNegativeAction.text = data?.options?.get(1)?.caption
         }
     }
 
@@ -166,19 +121,19 @@ class ExplicitView constructor(
 
         bindingSuccess?.imgSuccessDismiss?.setOnClickListener { onDismiss() }
 
-        bindingQuestion?.btnPositifAction?.setOnClickListener {
+        bindingQuestion?.btnPositiveAction?.setOnClickListener {
             onButtonPositiveClicked()
         }
 
-        bindingQuestion?.btnNegatifAction?.setOnClickListener {
+        bindingQuestion?.btnNegativeAction?.setOnClickListener {
             onButtonNegativeClicked()
         }
 
         bindingFailed?.containerLocalLoad?.refreshBtn?.setOnClickListener {
-            if (preferenceAnswer == null)
+            onLoading()
+            if (preferenceAnswer == null) {
                 viewModelContract.getExplicitContent(explicitData.templateName)
-            else {
-                onLoading()
+            } else {
                 saveAnswer()
             }
         }
@@ -199,8 +154,8 @@ class ExplicitView constructor(
             imgDismiss.invisible()
             txtTitle.invisible()
             txtDescription.invisible()
-            btnPositifAction.invisible()
-            btnNegatifAction.invisible()
+            btnPositiveAction.invisible()
+            btnNegativeAction.invisible()
         }
         replaceView(bindingQuestion?.root)
     }
@@ -214,12 +169,12 @@ class ExplicitView constructor(
             imgDismiss.visible()
             txtTitle.visible()
             txtDescription.visible()
-            btnPositifAction.apply {
+            btnPositiveAction.apply {
                 visible()
                 isLoading = false
                 isEnabled = true
             }
-            btnNegatifAction.apply {
+            btnNegativeAction.apply {
                 visible()
                 isLoading = false
                 isEnabled = true
@@ -230,20 +185,20 @@ class ExplicitView constructor(
     }
 
     override fun onButtonPositiveClicked() {
-        explicitAnalytics.trackClickPositifButton(explicitData)
+        explicitAnalytics.trackClickPositiveButton(explicitData)
         bindingQuestion?.apply {
-            btnPositifAction.isLoading = true
-            btnNegatifAction.isEnabled = false
+            btnPositiveAction.isLoading = true
+            btnNegativeAction.isEnabled = false
         }
         preferenceAnswer = true
         saveAnswer()
     }
 
     override fun onButtonNegativeClicked() {
-        explicitAnalytics.trackClickNegatifButton(explicitData)
+        explicitAnalytics.trackClickNegativeButton(explicitData)
         bindingQuestion?.apply {
-            btnNegatifAction.isLoading = true
-            btnPositifAction.isEnabled = false
+            btnNegativeAction.isLoading = true
+            btnPositiveAction.isEnabled = false
         }
         preferenceAnswer = false
         saveAnswer()
@@ -315,16 +270,10 @@ class ExplicitView constructor(
         this.cardType = if (isShow) TYPE_SHADOW else TYPE_CLEAR
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        onCleared()
-    }
-
     override fun onCleared() {
         val lifecycleOwner = context as LifecycleOwner
         viewModelContract.explicitContent.removeObservers(lifecycleOwner)
         viewModelContract.statusSaveAnswer.removeObservers(lifecycleOwner)
-        viewModelContract.isQuestionLoading.removeObservers(lifecycleOwner)
         removeAllViews()
         bindingFailed = null
         bindingQuestion = null

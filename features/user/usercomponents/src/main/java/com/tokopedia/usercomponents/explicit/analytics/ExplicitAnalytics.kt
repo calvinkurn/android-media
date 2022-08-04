@@ -3,7 +3,6 @@ package com.tokopedia.usercomponents.explicit.analytics
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.usercomponents.explicit.view.ExplicitData
-import javax.inject.Inject
 
 object ExplicitAnalytics {
 
@@ -36,7 +35,7 @@ object ExplicitAnalytics {
         sendData(data)
     }
 
-    fun trackClickPositifButton(param: ExplicitData) {
+    fun trackClickPositiveButton(param: ExplicitData) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT,
             concatVariable(param.pageName, EXPLICIT_WIDGET),
@@ -48,7 +47,7 @@ object ExplicitAnalytics {
         sendData(data)
     }
 
-    fun trackClickNegatifButton(param: ExplicitData) {
+    fun trackClickNegativeButton(param: ExplicitData) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT,
             concatVariable(param.pageName, EXPLICIT_WIDGET),
