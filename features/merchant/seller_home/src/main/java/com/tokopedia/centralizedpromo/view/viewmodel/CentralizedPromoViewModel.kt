@@ -25,12 +25,12 @@ class CentralizedPromoViewModel @Inject constructor(
     val getLayoutResultLiveData: MutableLiveData<MutableMap<LayoutType, Result<BaseUiModel>>> =
         MutableLiveData()
 
-    fun getLayoutData(vararg layoutTypes: LayoutType,tabId:String="0") {
+    fun getLayoutData(vararg layoutTypes: LayoutType, tabId: String) {
         launch(coroutineContext) {
             withContext(dispatcher.io) {
                 val results = mutableMapOf<LayoutType, Result<BaseUiModel>>()
                 layoutTypes.map { type ->
-                    async { results[type] = getResult(type,tabId) }
+                    async { results[type] = getResult(type, tabId) }
                 }.awaitAll()
 
                 getLayoutResultLiveData.postValue(results)
@@ -38,7 +38,7 @@ class CentralizedPromoViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getResult(type: LayoutType,tabId:String) = when (type) {
+    private suspend fun getResult(type: LayoutType, tabId: String) = when (type) {
         LayoutType.ON_GOING_PROMO -> getOnGoingPromotion()
         LayoutType.PROMO_CREATION -> getPromoCreation(tabId)
     }
@@ -54,7 +54,7 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getPromoCreation(tabId: String): Result<BaseUiModel> {
         return try {
-            val response = getPromotionUseCase.execute(userSession.shopId,tabId)
+            val response = getPromotionUseCase.execute(userSession.shopId, tabId)
             val promotionListUiModel = PromoCreationMapper.mapperToPromoCreationUiModel(response)
             Success(promotionListUiModel)
         } catch (t: Throwable) {

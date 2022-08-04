@@ -50,38 +50,6 @@ class PartialCentralizedPromoCreationView(
         setupPromoRecommendation()
     }
 
-    private fun setupPromoRecommendation() = with(promoCreationBinding) {
-
-        rvCentralizedPromoCreation.apply {
-            layoutManager = GridLayoutManager(context, SPAN_COUNT)
-            adapter =
-                this@PartialCentralizedPromoCreationView.adapter.apply { setHasStableIds(true) }
-            isNestedScrollingEnabled = false
-        }
-    }
-
-    private fun setupFilter(dataFilter: List<FilterPromoUiModel>) = with(promoCreationBinding) {
-
-        if (dataFilter.isNotEmpty()){
-            val filterItems = dataFilter.map {
-                SortFilterItem(it.name) {
-                    selectedTab = it
-                    onSelectedFilter?.invoke(it)
-                    adapter.clearAllElements()
-                }
-            }
-            if (selectedTab == null) {
-                filterItems[Int.ZERO].type = ChipsUnify.TYPE_SELECTED
-                selectedTab = dataFilter[Int.ZERO]
-                CentralizedPromoTracking.sendClickFilter(selectedTab?.id.toIntOrZero().toString())
-            } else {
-                filterItems[dataFilter.indexOf(selectedTab)].type = ChipsUnify.TYPE_SELECTED
-            }
-
-            filter.addItem(ArrayList(filterItems))
-        }
-    }
-
     override fun renderError(cause: Throwable) {
         with(promoCreationBinding) {
             when (currentLoadingType) {
@@ -106,8 +74,6 @@ class PartialCentralizedPromoCreationView(
         }
         super.renderError(cause)
     }
-
-
 
     override fun renderLoading(loadingType: LoadingType) = with(promoCreationBinding) {
         currentLoadingType = loadingType
@@ -189,6 +155,38 @@ class PartialCentralizedPromoCreationView(
                 centralizedPromoCreationError.localLoadPromoCreation.progressState = true
                 refreshButtonClickListener.onRefreshPromotionListButtonClicked()
             }
+        }
+    }
+
+    private fun setupPromoRecommendation() = with(promoCreationBinding) {
+
+        rvCentralizedPromoCreation.apply {
+            layoutManager = GridLayoutManager(context, SPAN_COUNT)
+            adapter =
+                this@PartialCentralizedPromoCreationView.adapter.apply { setHasStableIds(true) }
+            isNestedScrollingEnabled = false
+        }
+    }
+
+    private fun setupFilter(dataFilter: List<FilterPromoUiModel>) = with(promoCreationBinding) {
+
+        if (dataFilter.isNotEmpty()){
+            val filterItems = dataFilter.map {
+                SortFilterItem(it.name) {
+                    selectedTab = it
+                    onSelectedFilter?.invoke(it)
+                    adapter.clearAllElements()
+                }
+            }
+            if (selectedTab == null) {
+                filterItems[Int.ZERO].type = ChipsUnify.TYPE_SELECTED
+                selectedTab = dataFilter[Int.ZERO]
+                CentralizedPromoTracking.sendClickFilter(selectedTab?.id.toIntOrZero().toString())
+            } else {
+                filterItems[dataFilter.indexOf(selectedTab)].type = ChipsUnify.TYPE_SELECTED
+            }
+
+            filter.addItem(ArrayList(filterItems))
         }
     }
 

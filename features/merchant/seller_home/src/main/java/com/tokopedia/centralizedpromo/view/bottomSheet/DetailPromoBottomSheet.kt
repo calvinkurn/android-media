@@ -32,8 +32,8 @@ class DetailPromoBottomSheet :
 
         fun createInstance(promoCreationUiModel: PromoCreationUiModel): DetailPromoBottomSheet {
             return DetailPromoBottomSheet().apply {
-                showKnob = true
-                showCloseIcon = false
+                showKnob = false
+                showCloseIcon = true
                 arguments = Bundle().apply {
                     putParcelable(KEY_PROMO, promoCreationUiModel)
                 }

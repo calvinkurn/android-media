@@ -121,7 +121,7 @@ class CentralizedPromoViewModelTest {
             getOnGoingPromotionUseCase.executeOnBackground()
         } returns successResult
 
-        viewModel.getLayoutData(LayoutType.ON_GOING_PROMO)
+        viewModel.getLayoutData(LayoutType.ON_GOING_PROMO, tabId = "0")
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
@@ -139,7 +139,7 @@ class CentralizedPromoViewModelTest {
             getOnGoingPromotionUseCase.executeOnBackground()
         } throws MessageErrorException("")
 
-        viewModel.getLayoutData(LayoutType.ON_GOING_PROMO)
+        viewModel.getLayoutData(LayoutType.ON_GOING_PROMO, tabId = "0")
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
@@ -188,7 +188,7 @@ class CentralizedPromoViewModelTest {
             getPromotionUseCase.execute(any())
         } returns successResult
 
-        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION, tabId = "0")
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
@@ -201,7 +201,7 @@ class CentralizedPromoViewModelTest {
             getPromotionUseCase.execute("")
         } throws MessageErrorException("")
 
-        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION, tabId = "0")
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
         assert(result != null && result is Fail)
