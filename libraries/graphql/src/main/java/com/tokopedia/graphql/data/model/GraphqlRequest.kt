@@ -52,7 +52,7 @@ class GraphqlRequest {
     @Transient
     var isNoCache = false
 
-    @Expose(serialize = false, deserialize = false)
+    @SerializedName(GraphqlConstant.GqlApiKeys.MD5)
     var md5: String
         private set
 
