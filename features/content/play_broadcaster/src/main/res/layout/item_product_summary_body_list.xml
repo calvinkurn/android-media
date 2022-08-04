@@ -56,22 +56,6 @@
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_product_summary_stock"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:textColor="@color/Unify_NN950"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_pinned_product_carousel_info"
-            app:layout_constraintTop_toTopOf="@+id/tv_pinned_product_carousel_info"
-            app:layout_goneMarginStart="@dimen/spacing_lvl4"
-            app:typographyType="small"
-            app:typographyWeight="bold"
-            tools:text="Stok 10"
-            tools:visibility="gone" />
-
-        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_summary_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -83,9 +67,9 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_product_summary_image"
-            app:layout_constraintTop_toBottomOf="@+id/tv_product_summary_stock"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pinned_product_carousel_info"
+            app:layout_goneMarginTop="0dp"
             app:typographyType="body_3"
-            app:layout_goneMarginTop="@dimen/spacing_lvl4"
             tools:text="2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -156,15 +140,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:text="@string/play_bro_pinned_product_info"
-            android:textColor="@color/Unify_G500"
+            android:maxLines="1"
             android:visibility="visible"
             app:layout_constraintStart_toEndOf="@id/iv_pinned_product_carousel_info"
             app:layout_constraintTop_toTopOf="@id/iv_pinned_product_carousel_info"
             app:layout_goneMarginStart="@dimen/spacing_lvl4"
             app:typographyType="small"
             app:typographyWeight="bold"
-            tools:visibility="visible" />
+            tools:text="@string/play_bro_pinned_product_info"
+            tools:textColor="@color/Unify_G500"
+            tools:visibility="gone" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_pinned_product_carousel_info"
