@@ -95,9 +95,4 @@ class HomeRecommendationModule {
         return FirebaseRemoteConfigImpl(context)
     }
 
-    @Provides
-    @HomeRecommendationScope
-    fun provideContext(@ApplicationContext context: Context): Context {
-        return context
-    }
 }
