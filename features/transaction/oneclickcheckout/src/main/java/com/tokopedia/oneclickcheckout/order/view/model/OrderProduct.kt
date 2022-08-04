@@ -35,6 +35,8 @@ data class OrderProduct(
         var preOrderDuration: Int = 0,
         var categoryId: String = "",
         var category: String = "",
+        var lastLevelCategory: String = "",
+        var categoryIdentifier: String = "",
         var productFinsurance: Int = 0,
         var campaignId: String = "",
         var productTrackerData: ProductTrackerData = ProductTrackerData(),

@@ -563,7 +563,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void checkAgeVerificationExtra(Intent intent) {
-        if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS)) {
+        if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS) && !isFinishing()) {
             Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                     intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
                     Snackbar.LENGTH_INDEFINITE,
@@ -865,7 +865,9 @@ public class MainParentActivity extends BaseActivity implements
         } else {
             doubleTapExit = true;
             try {
-                Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+                if(!isFinishing()) {
+                    Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+                }
                 new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1046,7 +1048,9 @@ public class MainParentActivity extends BaseActivity implements
                     clipboard.setPrimaryClip(clip);
                 }
                 try {
-                    Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                    if(!isFinishing()) {
+                        Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

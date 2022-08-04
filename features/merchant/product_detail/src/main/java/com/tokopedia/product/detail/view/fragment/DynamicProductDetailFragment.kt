@@ -3130,7 +3130,7 @@ open class DynamicProductDetailFragment :
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
                     orderValue = it.data.price.value.roundToIntOrZero(),
-                    boCampaignIDs = boCampaignIDs
+                    boCampaignIDs = boCampaignIDs ?: ""
                 )
             )
             shouldRefreshShippingBottomSheet = false
