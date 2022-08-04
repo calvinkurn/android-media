@@ -17,7 +17,7 @@
             android:id="@+id/iconTokopediaPlus"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:scaleType="fitCenter"
+            android:scaleType="centerInside"
             android:adjustViewBounds="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
                 android:id="@+id/titleTokopediaPlus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:typographyType="display_1"
+                app:typographyType="body_3"
                 app:typographyWeight="bold"/>
 
             <com.tokopedia.unifyprinciples.Typography
