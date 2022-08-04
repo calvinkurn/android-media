@@ -397,6 +397,8 @@ class OrderSummaryPageRobot {
                 view.findViewById<View>(R.id.btn_order_detail).performClick()
             }
         }))
+        // Wait for bottom sheet to fully appear
+        Thread.sleep(1000)
         OrderPriceSummaryBottomSheetRobot().apply(func)
     }
 
