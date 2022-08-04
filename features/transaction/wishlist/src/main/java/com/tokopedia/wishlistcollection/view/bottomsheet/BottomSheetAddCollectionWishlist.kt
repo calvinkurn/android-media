@@ -191,7 +191,9 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         setTitle(dataGetBottomSheetCollections.title)
         setAction(dataGetBottomSheetCollections.titleButton.text) {
             if (dataGetBottomSheetCollections.titleButton.action == OPEN_WISHLIST_COLLECTION) {
-                context?.let { c -> goToWishlistPage(c) }
+                context?.let { c ->
+                    dismiss()
+                    goToWishlistPage(c) }
             }
         }
     }
