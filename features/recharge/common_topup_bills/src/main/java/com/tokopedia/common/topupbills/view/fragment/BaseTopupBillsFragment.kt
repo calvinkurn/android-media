@@ -111,8 +111,12 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         })
 
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
+            if (it.second.atcErrorPage.isShowErrorPage){
+                navigateToCart(it.first)
+            }else{
+                redirectErrorUnVerifiedNumber(it.second)
+            }
             onLoadingAtc(false)
-            redirectErrorUnVerifiedNumber(it)
         }
 
         topupBillsViewModel.enquiryData.observe(viewLifecycleOwner, Observer {

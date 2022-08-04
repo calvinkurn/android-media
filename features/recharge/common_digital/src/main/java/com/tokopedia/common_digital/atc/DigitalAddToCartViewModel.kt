@@ -37,8 +37,8 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
     val addToCartResult: LiveData<Result<String>>
         get() = _addToCartResult
 
-    private val _errorAtc = MutableLiveData<ErrorAtc>()
-    val errorAtc: LiveData<ErrorAtc>
+    private val _errorAtc = MutableLiveData<Pair<String, ErrorAtc>>()
+    val errorAtc: LiveData<Pair<String, ErrorAtc>>
         get() = _errorAtc
 
 
@@ -68,7 +68,7 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
                     if (restResponse.errors.isEmpty()){
                         _addToCartResult.postValue(Success(restResponse.relationships?.category?.data?.id ?: ""))
                     }else{
-                        _errorAtc.postValue(restResponse.errors.first())
+                        _errorAtc.postValue(Pair(restResponse.id ?: "", restResponse.errors.first()))
                     }
                 } else _addToCartResult.postValue(Fail(Throwable(DigitalFailGetCartId())))
 

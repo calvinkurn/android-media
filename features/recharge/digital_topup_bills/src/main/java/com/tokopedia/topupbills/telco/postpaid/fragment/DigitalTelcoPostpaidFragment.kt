@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
@@ -528,36 +529,18 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun redirectErrorUnVerifiedNumber(error: ErrorAtc) {
-        if (error.atcErrorPage.isShowErrorPage){
-            RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL).also {
-                it.putExtra(
-                    DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA,
-                    checkoutPassData.apply {
-                        errorAtcData = DigitalErrorAtcData(
-                            redirectionLink = error.atcErrorPage.buttons.first().appLinkUrl,
-                            errorTitle = error.atcErrorPage.title,
-                            errorDescription = error.atcErrorPage.subTitle,
-                            buttonLabel = error.atcErrorPage.buttons.first().label
-                        )
-                    }
-                )
-            }.apply {
-                startActivity(this)
-            }
-        }else{
-            view?.let {
-                Toaster.build(
-                    it,
-                    error.title,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.common_digital.R.string.digital_common_toaster_button_label)
-                ) {
-                    RouteManager.getIntent(context, error.appLinkUrl).apply {
-                        startActivityForResult(this, REQUEST_CODE_VERIFY_NUMBER)
-                    }
-                }.show()
-            }
+        view?.let {
+            Toaster.build(
+                it,
+                error.title,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.common_digital.R.string.digital_common_toaster_button_label)
+            ) {
+                RouteManager.getIntent(context, error.appLinkUrl).apply {
+                    startActivityForResult(this, REQUEST_CODE_VERIFY_NUMBER)
+                }
+            }.show()
         }
     }
 
