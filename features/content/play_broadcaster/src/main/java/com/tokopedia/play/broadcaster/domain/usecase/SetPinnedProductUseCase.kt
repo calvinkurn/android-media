@@ -43,11 +43,11 @@ class SetPinnedProductUseCase @Inject constructor(
     }
 
     private fun isTimerActive(): Boolean = coolDownTimerJob?.isActive ?: false
-    private fun getPinStatus(): Boolean = productInfo?.pinStatus?.isPinned ?: false
+    private fun isCurrentPinned(): Boolean = productInfo?.pinStatus?.isPinned ?: false
 
 
     override suspend fun executeOnBackground(): SetPinnedProduct {
-        return if (!isTimerActive() || getPinStatus()) {
+        return if (!isTimerActive() || isCurrentPinned()) {
             handlingCoolDown(response = super.executeOnBackground())
         } else {
             throw PinnedProductException()
@@ -55,11 +55,11 @@ class SetPinnedProductUseCase @Inject constructor(
     }
 
     private fun handlingCoolDown(response: SetPinnedProduct): SetPinnedProduct =
-        if (response.data.success && !getPinStatus()) {
+        if (response.data.success && !isCurrentPinned()) {
             addCoolDown()
             response
         } else if(!response.data.success) {
-            val action = if (getPinStatus()) "lepas" else "pasang"
+            val action = if (isCurrentPinned()) "lepas" else "pasang"
             throw PinnedProductException("Gagal $action pin di produk. Coba lagi, ya.")
         } else {
             response
