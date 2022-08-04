@@ -86,6 +86,7 @@ class MerchantInfoBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
+        if (this.isAdded) return
         showNow(fragmentManager, this::class.java.simpleName)
     }
 }
