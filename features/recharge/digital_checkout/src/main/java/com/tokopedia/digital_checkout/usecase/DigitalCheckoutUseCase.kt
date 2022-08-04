@@ -1,9 +1,13 @@
 package com.tokopedia.digital_checkout.usecase
 
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
-import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutRequest
-import java.lang.reflect.Type
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
+import com.tokopedia.digital_checkout.data.response.ResponseCheckout
+import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
+import com.tokopedia.network.data.model.response.DataResponse
 import javax.inject.Inject
 
 class DigitalCheckoutUseCase @Inject constructor(
@@ -11,14 +15,32 @@ class DigitalCheckoutUseCase @Inject constructor(
     private val gqlUseCase: DigitalCheckoutGqlUseCase
 ) {
     suspend fun execute(
-        restRequestParams: RequestBodyCheckout,
-        gqlRequestParams: RechargeCheckoutRequest,
+        requestCheckoutParams: DigitalCheckoutDataParameter,
+        digitalIdentifierParams: RequestBodyIdentifier,
+        fintechProduct: FintechProduct?,
         isUseGql: Boolean
-    ): Map<Type, RestResponse?> =
+    ): PaymentPassData =
         if (isUseGql) {
-            emptyMap()
+            gqlUseCase.setParams(requestCheckoutParams, digitalIdentifierParams)
+            val result = gqlUseCase.executeOnBackground()
+
+            if (result.errors.isNotEmpty()) {
+                throw Throwable(result.errors.first().title)
+            }
+
+            DigitalCheckoutMapper.mapToPaymentPassData(result)
         } else {
-            restUseCase.setRequestParams(restRequestParams)
-            restUseCase.executeOnBackground()
+            restUseCase.setRequestParams(
+                DigitalCheckoutMapper.getRequestBodyCheckout(
+                    requestCheckoutParams, digitalIdentifierParams, fintechProduct
+                )
+            )
+            val result = restUseCase.executeOnBackground()
+            val token = object : TypeToken<DataResponse<ResponseCheckout>>() {}.type
+            val restResponse = result[token]
+            val data = restResponse!!.getData<DataResponse<*>>()
+            val responseCheckoutData = data.data as ResponseCheckout
+
+            DigitalCheckoutMapper.mapToPaymentPassData(responseCheckoutData)
         }
 }

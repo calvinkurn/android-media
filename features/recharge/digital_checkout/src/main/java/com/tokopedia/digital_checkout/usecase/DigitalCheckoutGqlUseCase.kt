@@ -1,5 +1,12 @@
 package com.tokopedia.digital_checkout.usecase
 
+import com.google.gson.Gson
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
+import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
+import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutFintechProduct
+import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutRequest
 import com.tokopedia.digital_checkout.data.response.checkout.RechargeCheckoutResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -24,7 +31,40 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
         setTypeClass(RechargeCheckoutResponse::class.java)
     }
 
+    fun setParams(
+        requestCheckoutParams: DigitalCheckoutDataParameter,
+        digitalIdentifierParams: RequestBodyIdentifier
+    ) {
+        val gson = Gson()
+
+        val requestParams = RechargeCheckoutRequest(
+            voucherCode = requestCheckoutParams.voucherCode,
+            transactionAmount = requestCheckoutParams.transactionAmount.toLong(),
+            language = "id",
+            ipAddress = requestCheckoutParams.ipAddress,
+            userAgent = requestCheckoutParams.userAgent,
+            deviceId = requestCheckoutParams.deviceId.toLong(),
+            isHiddenCart = false,
+            userId = digitalIdentifierParams.userId ?: "",
+            cartType = DigitalCheckoutConst.RequestBodyParams.REQUEST_BODY_CHECKOUT_TYPE,
+            cartId = requestCheckoutParams.cartId,
+            createSubscription = requestCheckoutParams.isSubscriptionChecked,
+            fintechProducts = requestCheckoutParams.fintechProducts.map {
+                RechargeCheckoutFintechProduct(
+                    transactionType = it.value.transactionType,
+                    checkoutMetadata = gson.toJson(it.value)
+                )
+            }.toList(),
+            instant = requestCheckoutParams.isInstantCheckout,
+            appVersion = GlobalConfig.VERSION_NAME
+        )
+
+        setRequestParams(mapOf(PARAMS_KEY to requestParams))
+    }
+
     companion object {
+        private const val PARAMS_KEY = "request"
+
         const val QUERY_NAME_RECHARGE_CHECKOUT = "RechargeCheckoutQuery"
         const val QUERY_RECHARGE_CHECKOUT = """
         mutation RechargeCheckout(${'$'}request: RechargeCheckoutRequestV3!) {

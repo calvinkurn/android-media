@@ -20,9 +20,7 @@ import com.tokopedia.digital_checkout.data.PaymentSummary.Payment
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
-import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutRequest
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
-import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.usecase.DigitalCancelVoucherUseCase
@@ -31,7 +29,6 @@ import com.tokopedia.digital_checkout.usecase.DigitalGetCartUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalPatchOtpUseCase
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
-import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper.getRequestBodyCheckout
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -227,6 +224,7 @@ class DigitalCartViewModel @Inject constructor(
 
             //render checkout page
             requestCheckoutParam.transactionAmount = pricePlain
+            requestCheckoutParam.isInstantCheckout = mappedCartData.isInstantCheckout
             _cartDigitalInfoData.postValue(mappedCartData)
 
             //render promo
@@ -394,23 +392,14 @@ class DigitalCartViewModel @Inject constructor(
                 _isNeedOtp.postValue(userSession.phoneNumber)
             } else {
                 launchCatchError(block = {
-                    val checkoutDigitalData = withContext(dispatcher) {
+                    val checkoutData = withContext(dispatcher) {
                         digitalCheckoutUseCase.execute(
-                            restRequestParams = getRequestBodyCheckout(
-                                requestCheckoutParam, digitalIdentifierParam,
-                                it.attributes.fintechProduct.getOrNull(0)
-                            ),
-                            gqlRequestParams = RechargeCheckoutRequest(),
-                            isUseGql = false
+                            requestCheckoutParams = requestCheckoutParam,
+                            digitalIdentifierParams = digitalIdentifierParam,
+                            fintechProduct = it.attributes.fintechProduct.getOrNull(0),
+                            isUseGql = true
                         )
                     }
-
-                    val token = object : TypeToken<DataResponse<ResponseCheckout>>() {}.type
-                    val restResponse = checkoutDigitalData[token]
-                    val data = restResponse!!.getData<DataResponse<*>>()
-                    val responseCheckoutData = data.data as ResponseCheckout
-                    val checkoutData =
-                        DigitalCheckoutMapper.mapToPaymentPassData(responseCheckoutData)
 
                     _paymentPassData.postValue(checkoutData)
 
