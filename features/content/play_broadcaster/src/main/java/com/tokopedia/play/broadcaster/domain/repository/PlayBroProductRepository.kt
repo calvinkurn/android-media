@@ -32,5 +32,7 @@ interface PlayBroProductRepository {
 
     suspend fun getProductTagSummarySection(channelID: String): List<ProductTagSectionUiModel>
 
-    suspend fun setPinProduct(channelId: String, productId: String): Boolean
+    suspend fun setPinProduct(channelId: String, product: ProductUiModel): Boolean
+
+    fun removeCoolDownTimerJob()
 }

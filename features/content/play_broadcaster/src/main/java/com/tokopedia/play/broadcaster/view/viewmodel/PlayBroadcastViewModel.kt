@@ -10,7 +10,6 @@ import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -370,6 +369,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.cancel()
         livePusherMediator.clearListener()
         livePusherMediator.destroy()
+        repo.removeCoolDownTimerJob()
     }
 
     fun submitAction(event: PlayBroadcastAction) {
@@ -1553,26 +1553,24 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleClickPin(product: ProductUiModel){
         viewModelScope.launchCatchError(block = {
-            updatePinProduct(isLoading = true, product = product)
-            val result = repo.setPinProduct(channelId, product.id)
-            if(result) {
-                updatePinProduct(product = product)
-            } else {
-                throw MessageErrorException("Gagal pin product")
-            }
+            product.updatePinProduct(isLoading = true)
+            val result = repo.setPinProduct(channelId, product)
+            if(result)
+                product.updatePinProduct(isLoading = false, needToUpdate = true)
         }){
-            updatePinProduct(product = product)
+            product.updatePinProduct(isLoading = false)
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
         }
     }
 
-    private fun updatePinProduct(product: ProductUiModel, isLoading: Boolean = false) {
+    private fun ProductUiModel.updatePinProduct(isLoading: Boolean = false, needToUpdate: Boolean = false) {
         _productSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
                 sectionUiModel.products.map { prod ->
-                    if(prod.id == product.id)
-                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isLoading) prod.pinStatus.isPinned else prod.pinStatus.isPinned.switch(), isLoading = isLoading))
+                    if(prod.id == this.id)
+                        prod.copy(pinStatus = this.pinStatus.copy(isLoading = isLoading,
+                            isPinned = if(needToUpdate) this.pinStatus.isPinned.switch() else this.pinStatus.isPinned))
                     else
                         prod
                 })

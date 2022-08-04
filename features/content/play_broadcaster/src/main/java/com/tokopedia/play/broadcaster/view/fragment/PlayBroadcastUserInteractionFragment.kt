@@ -20,6 +20,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
+import com.tokopedia.play.broadcaster.domain.model.PinnedProductException
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
@@ -83,7 +84,6 @@ import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import java.util.Collections
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -176,6 +176,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 analytic.onClickInteractiveTool(channelId = parentViewModel.channelId)
                 analytic.onClickGameIconButton(channelId = parentViewModel.channelId, channelTitle = parentViewModel.channelTitle)
                 openSelectInteractiveSheet()
+                productTagView.hideCoachMark()
             }
         })
     }
@@ -234,6 +235,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         return if (::parentViewModel.isInitialized) parentViewModel.productSectionList
                         else emptyList()
                     }
+
+                    override fun isEligibleForPin(): Boolean = true
                 })
             }
             is InteractiveSetupDialogFragment -> {
@@ -275,6 +278,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             gameIconView.cancelCoachMark()
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
+            productTagView.hideCoachMark()
         }
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
             parentViewModel.submitAction(PlayBroadcastAction.EditPinnedMessage)
@@ -781,7 +785,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             parentViewModel.uiEvent.collect { event ->
                 when (event) {
-                    is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
+                    is PlayBroadcastEvent.ShowError -> {
+                        if(event.error is PinnedProductException)
+                            showToaster(
+                                message = if (event.error.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.error.message,
+                                type = Toaster.TYPE_ERROR)
+                        else showErrorToaster(event.error)
+                    }
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                     PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
                     PlayBroadcastEvent.ShowLeaderboardBottomSheet -> openLeaderboardSheet()
@@ -850,10 +860,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (prevState == state) return
 
         val sortedList = mutableListOf<ProductUiModel>()
-        val newList = state.filterNot { it.campaignStatus.isUpcoming() }
-            .flatMap { tagSectionUiModel ->
+        val newList = state.flatMap { tagSectionUiModel ->
                 tagSectionUiModel.products
-            }
+        }
 
         val pinnedProduct = newList.filter { it.pinStatus.isPinned }
         if(pinnedProduct.isNotEmpty()) sortedList.add(pinnedProduct.first())

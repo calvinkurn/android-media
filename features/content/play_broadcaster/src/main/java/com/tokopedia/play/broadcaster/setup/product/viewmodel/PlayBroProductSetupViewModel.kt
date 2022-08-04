@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.setup.product.model.CampaignAndEtalaseUiModel
@@ -51,6 +50,7 @@ import kotlinx.coroutines.launch
 class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val savedStateHandle: SavedStateHandle,
+    @Assisted isEligibleForPin: Boolean,
     private val repo: PlayBroadcastRepository,
     private val configStore: HydraConfigStore,
     userSession: UserSessionInterface,
@@ -62,6 +62,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         fun create(
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
+            isEligibleForPin: Boolean,
         ): PlayBroProductSetupViewModel
     }
 
@@ -69,6 +70,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         if (!savedStateHandle.hasProductSections()) {
             savedStateHandle.setProductSections(productSectionList)
         }
+        savedStateHandle.setEligiblePinStatus(isEligibleForPin)
     }
 
     val channelId: String
@@ -76,6 +78,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     val maxProduct: Int
         get() = configStore.getMaxProduct()
+
+    val isEligibleForPin: Boolean
+        get() = savedStateHandle.isEligibleForPin()
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
     private val _selectedProductList = MutableStateFlow(
@@ -402,34 +407,45 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
         savedStateHandle[KEY_PRODUCT_SECTIONS] = productSectionList
     }
 
+    private fun SavedStateHandle.setEligiblePinStatus(
+        isEligibleForPin: Boolean
+    ) {
+        savedStateHandle[KEY_ELIGIBLE_PIN] = isEligibleForPin
+    }
+
     private fun SavedStateHandle.hasProductSections(): Boolean {
         return savedStateHandle.contains(KEY_PRODUCT_SECTIONS)
     }
 
+    private fun SavedStateHandle.isEligibleForPin(): Boolean {
+        return savedStateHandle[KEY_ELIGIBLE_PIN] ?: true
+    }
+
     private fun handleClickPin(product: ProductUiModel){
         viewModelScope.launchCatchError(block = {
-            updatePinProduct(isLoading = true, product = product)
-            val result = repo.setPinProduct(channelId, product.id)
-            if(result) {
-                updatePinProduct(product = product)
-            } else {
-                throw MessageErrorException("Gagal pin product")
-            }
+            product.updatePinProduct(isLoading = true, needToReset = true)
+            val result = repo.setPinProduct(channelId, product)
+            if(result)
+                product.updatePinProduct(isLoading = false)
         }){
-            updatePinProduct(product = product)
+            product.updatePinProduct(isLoading = false, needToReset = true)
             _uiEvent.emit(PlayBroProductChooserEvent.ShowError(it))
         }
     }
 
-    private fun updatePinProduct(product: ProductUiModel, isLoading: Boolean = false) {
+    /**
+     * hacky way needToReset -> find better approach
+     */
+    private fun ProductUiModel.updatePinProduct(isLoading: Boolean = false, needToReset: Boolean = false) {
         _productTagSectionList.update { sectionList ->
             sectionList.map { sectionUiModel ->
                 sectionUiModel.copy(campaignStatus = sectionUiModel.campaignStatus, products =
                 sectionUiModel.products.map { prod ->
-                    if(prod.id == product.id)
-                        prod.copy(pinStatus = prod.pinStatus.copy(isPinned = if(isLoading) prod.pinStatus.isPinned else prod.pinStatus.isPinned.switch(), isLoading = isLoading))
-                    else
-                        prod
+                    if(prod.id == this.id)
+                        prod.copy(pinStatus = this.pinStatus.copy(isLoading = isLoading, isPinned =
+                            if(!needToReset) this.pinStatus.isPinned.switch()
+                            else this.pinStatus.isPinned))
+                    else prod.copy(pinStatus = prod.pinStatus.copy(isPinned = prod.pinStatus.isPinned && needToReset))
                 })
             }
         }
@@ -437,5 +453,6 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     companion object {
         private const val KEY_PRODUCT_SECTIONS = "product_sections"
+        private const val KEY_ELIGIBLE_PIN = "eligible_pin_status"
     }
 }

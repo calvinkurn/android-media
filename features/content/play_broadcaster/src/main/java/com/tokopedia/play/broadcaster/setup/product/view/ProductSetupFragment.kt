@@ -139,6 +139,7 @@ class ProductSetupFragment @Inject constructor(
                     return productSetupViewModelFactory.create(
                         mDataSource?.getProductSectionList().orEmpty(),
                         handle,
+                        mDataSource?.isEligibleForPin() ?: true,
                     ) as T
                 }
             }
@@ -154,5 +155,6 @@ class ProductSetupFragment @Inject constructor(
     interface DataSource {
 
         fun getProductSectionList(): List<ProductTagSectionUiModel>
+        fun isEligibleForPin(): Boolean
     }
 }
