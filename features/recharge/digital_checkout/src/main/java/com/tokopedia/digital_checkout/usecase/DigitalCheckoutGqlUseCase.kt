@@ -1,10 +1,32 @@
-package com.tokopedia.digital_checkout.data.queries
+package com.tokopedia.digital_checkout.usecase
 
+import com.tokopedia.digital_checkout.data.response.checkout.RechargeCheckoutResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import javax.inject.Inject
 
-@GqlQuery("QueryRechargeCheckout", DigitalCheckoutQuery.QUERY_RECHARGE_CHECKOUT)
-object DigitalCheckoutQuery {
-    const val QUERY_RECHARGE_CHECKOUT = """
+/**
+ * @author Created By : Muhammad Furqan on Aug 5, 2022
+ */
+@GqlQuery(
+    DigitalCheckoutGqlUseCase.QUERY_NAME_RECHARGE_CHECKOUT,
+    DigitalCheckoutGqlUseCase.QUERY_RECHARGE_CHECKOUT
+)
+class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+    GraphqlUseCase<RechargeCheckoutResponse>(graphqlRepository) {
+
+    init {
+        setGraphqlQuery(RechargeCheckoutQuery())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(RechargeCheckoutResponse::class.java)
+    }
+
+    companion object {
+        const val QUERY_NAME_RECHARGE_CHECKOUT = "RechargeCheckoutQuery"
+        const val QUERY_RECHARGE_CHECKOUT = """
         mutation RechargeCheckout(${'$'}request: RechargeCheckoutRequestV3!) {
           rechargeCheckoutV3(body: ${'$'}request) {
             meta {
@@ -52,4 +74,6 @@ object DigitalCheckoutQuery {
           }
         }
     """
+    }
+
 }

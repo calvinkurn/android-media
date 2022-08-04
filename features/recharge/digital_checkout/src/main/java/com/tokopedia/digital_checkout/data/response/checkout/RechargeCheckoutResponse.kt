@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by furqan on 08/03/2022
  */
-class RechargeCheckoutResponse(
+data class RechargeCheckoutResponse(
     @SerializedName("meta")
     @Expose
     val meta: RechargeCheckoutMeta = RechargeCheckoutMeta(),
@@ -27,7 +27,7 @@ class RechargeCheckoutResponse(
     )
 }
 
-class RechargeCheckoutData(
+data class RechargeCheckoutData(
     @SerializedName("type")
     @Expose
     val type: String = "",
@@ -39,7 +39,7 @@ class RechargeCheckoutData(
     val attributes: RechargeCheckoutDataAttribute = RechargeCheckoutDataAttribute()
 )
 
-class RechargeCheckoutDataAttribute(
+data class RechargeCheckoutDataAttribute(
     @SerializedName("redirect_url")
     @Expose
     val redirectUrl: String = "",
@@ -60,7 +60,7 @@ class RechargeCheckoutDataAttribute(
     val parameter: RechargeCheckoutAttributeParameter = RechargeCheckoutAttributeParameter()
 )
 
-class RechargeCheckoutAttributeParameter(
+data class RechargeCheckoutAttributeParameter(
     @SerializedName("merchant_code")
     @Expose
     val merchantCode: String = "",
@@ -130,13 +130,13 @@ class RechargeCheckoutAttributeParameter(
     val paymentsName: List<String> = emptyList()
 )
 
-class RechargeCheckoutMeta(
+data class RechargeCheckoutMeta(
     @SerializedName("order_id")
     @Expose
     val orderId: String = ""
 )
 
-class RechargeCheckoutError(
+data class RechargeCheckoutError(
     @SerializedName("status")
     @Expose
     val status: String = "",

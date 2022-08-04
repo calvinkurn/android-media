@@ -20,6 +20,7 @@ import com.tokopedia.digital_checkout.data.PaymentSummary.Payment
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
+import com.tokopedia.digital_checkout.data.request.checkout.RechargeCheckoutRequest
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
 import com.tokopedia.digital_checkout.data.response.ResponsePatchOtpSuccess
@@ -394,14 +395,14 @@ class DigitalCartViewModel @Inject constructor(
             } else {
                 launchCatchError(block = {
                     val checkoutDigitalData = withContext(dispatcher) {
-                        digitalCheckoutUseCase.setRequestParams(
-                            getRequestBodyCheckout(
+                        digitalCheckoutUseCase.execute(
+                            restRequestParams = getRequestBodyCheckout(
                                 requestCheckoutParam, digitalIdentifierParam,
                                 it.attributes.fintechProduct.getOrNull(0)
-                            )
+                            ),
+                            gqlRequestParams = RechargeCheckoutRequest(),
+                            isUseGql = false
                         )
-
-                        digitalCheckoutUseCase.executeOnBackground()
                     }
 
                     val token = object : TypeToken<DataResponse<ResponseCheckout>>() {}.type

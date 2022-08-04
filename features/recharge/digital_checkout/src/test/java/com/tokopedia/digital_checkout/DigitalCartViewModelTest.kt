@@ -22,7 +22,7 @@ import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCart
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponseDisableVoucher
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.usecase.DigitalCancelVoucherUseCase
-import com.tokopedia.digital_checkout.usecase.DigitalCheckoutUseCase
+import com.tokopedia.digital_checkout.usecase.DigitalCheckoutRestUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalGetCartUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalPatchOtpUseCase
 import com.tokopedia.digital_checkout.utils.DeviceUtil
@@ -79,7 +79,7 @@ class DigitalCartViewModelTest {
     lateinit var digitalPatchOtpUseCase: DigitalPatchOtpUseCase
 
     @RelaxedMockK
-    lateinit var digitalCheckoutUseCase: DigitalCheckoutUseCase
+    lateinit var digitalCheckoutRestUseCase: DigitalCheckoutRestUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -91,7 +91,7 @@ class DigitalCartViewModelTest {
             digitalAnalytics,
             digitalGetCartUseCase,
             digitalCancelVoucherUseCase, digitalPatchOtpUseCase,
-            digitalCheckoutUseCase, userSession, Dispatchers.Unconfined
+            digitalCheckoutRestUseCase, userSession, Dispatchers.Unconfined
         )
     }
 
@@ -816,7 +816,7 @@ class DigitalCartViewModelTest {
         val response = RestResponse(dataResponse, 200, false)
         val responseMap = mapOf<Type, RestResponse>(token to response)
 
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } returns responseMap
+        coEvery { digitalCheckoutRestUseCase.executeOnBackground() } returns responseMap
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
@@ -837,7 +837,7 @@ class DigitalCartViewModelTest {
     @Test
     fun onCheckout_onFailed() {
         // given
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws IOException("error")
+        coEvery { digitalCheckoutRestUseCase.executeOnBackground() } throws IOException("error")
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
@@ -855,7 +855,7 @@ class DigitalCartViewModelTest {
     @Test
     fun onCheckout_onFailedWithPromoCode() {
         // given
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws IOException("error")
+        coEvery { digitalCheckoutRestUseCase.executeOnBackground() } throws IOException("error")
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
@@ -874,7 +874,7 @@ class DigitalCartViewModelTest {
     @Test
     fun onCheckout_onPromoCodeEmptyAndCartEmpty_shouldNotCheckout() {
         // given
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws IOException("error")
+        coEvery { digitalCheckoutRestUseCase.executeOnBackground() } throws IOException("error")
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
@@ -956,7 +956,7 @@ class DigitalCartViewModelTest {
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
         val errorException = ResponseErrorException()
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws errorException
+        coEvery { digitalCheckoutRestUseCase.executeOnBackground() } throws errorException
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
@@ -990,7 +990,7 @@ class DigitalCartViewModelTest {
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
         val errorException = Throwable("dummy error")
-        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws errorException
+        coEvery { digitalCheckoutRestUseCase.executeOnBackground() } throws errorException
 
         digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
             isNeedOtp = false,
