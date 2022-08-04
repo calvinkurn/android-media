@@ -189,7 +189,7 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onErrorActionClicked() {
-        activity?.finish()
+        fetchOrderDetail()
     }
 
     override fun onInvoiceOrderClicked(invoiceNumber: String, invoiceUrl: String) {
