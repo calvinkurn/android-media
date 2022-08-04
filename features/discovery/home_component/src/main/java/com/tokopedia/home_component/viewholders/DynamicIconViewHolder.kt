@@ -31,8 +31,6 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon
-
-
         private const val SCROLLABLE_ITEM = 6
     }
 
