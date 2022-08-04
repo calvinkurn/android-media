@@ -315,8 +315,9 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             when (result) {
                 is Success -> {
                     val vpsPackages = result.data
+                    viewModel.storeVpsPackage(vpsPackages)
                     val defaultSelectedVpsPackage = vpsPackages.firstOrNull()
-
+                    viewModel.setSelectedVpsPackageId(defaultSelectedVpsPackage?.packageId.orZero())
                     updateQuotaSource(defaultSelectedVpsPackage ?: return@observe)
                 }
                 is Fail -> {
@@ -983,7 +984,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun displayQuotaSourceBottomSheet() {
-        val bottomSheet = VpsPackageBottomSheet.newInstance(viewModel.getSelectedVpsPackageId())
+        val vpsPackages = ArrayList(viewModel.getVpsPackages())
+        val bottomSheet = VpsPackageBottomSheet.newInstance(viewModel.getSelectedVpsPackageId(), vpsPackages)
         bottomSheet.setOnVpsPackageClicked { selectedVpsPackage ->
             viewModel.setSelectedVpsPackageId(selectedVpsPackage.packageId)
         }

@@ -2,13 +2,15 @@ package com.tokopedia.shop.flashsale.presentation.creation.information.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemVpsPackageBinding
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemVpsPackageBinding
+import com.tokopedia.shop.flashsale.common.constant.DateConstant
+import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
 
 class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
@@ -17,7 +19,7 @@ class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
 
     private val differCallback = object : DiffUtil.ItemCallback<VpsPackageUiModel>() {
         override fun areItemsTheSame(oldItem: VpsPackageUiModel, newItem: VpsPackageUiModel): Boolean {
-            return oldItem.isSelected == newItem.isSelected
+            return oldItem.packageId == newItem.packageId
         }
 
         override fun areContentsTheSame(oldItem: VpsPackageUiModel, newItem: VpsPackageUiModel): Boolean {
@@ -49,34 +51,33 @@ class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(vpsPackage: VpsPackageUiModel) {
-            binding.radioButton.isSelected =  vpsPackage.isSelected
-
+            binding.radioButton.isChecked = vpsPackage.isSelected
             binding.tpgProductName.text = vpsPackage.packageName
-
-            binding.tpgRemainingQuota.setPackageRemainingQuota(vpsPackage)
-
-            binding.tpgPeriod.setPackagePeriod(vpsPackage)
-            binding.tpgPeriod.isVisible = !vpsPackage.isShopTierBenefit
-
+            handleShopBenefit(vpsPackage)
             binding.root.setOnClickListener { onVpsPackageClicked(vpsPackage) }
         }
 
-        private fun AppCompatTextView.setPackageRemainingQuota(vpsPackage: VpsPackageUiModel) {
-            val quota = String.format(
-                context.getString(R.string.sfs_placeholder_remaining_vps_quota),
-                vpsPackage.currentQuota,
-                vpsPackage.originalQuota
-            )
-            this.text = quota
-        }
-
-        private fun AppCompatTextView.setPackagePeriod(vpsPackage: VpsPackageUiModel) {
-            val quota = String.format(
-                context.getString(R.string.sfs_placeholder_vps_quota_period),
-                vpsPackage.formattedPackageStartTime,
-                vpsPackage.formattedPackageEndTime
-            )
-            this.text = quota
+        private fun handleShopBenefit(vpsPackage: VpsPackageUiModel) {
+            if (vpsPackage.isShopTierBenefit) {
+                val startPeriod = vpsPackage.packageStartTime.formatTo(DateConstant.MONTH)
+                val endPeriod = vpsPackage.packageEndTime.formatTo(DateConstant.MONTH_YEAR)
+                val period = String.format(
+                    binding.tpgRemainingQuota.context.getString(R.string.sfs_placeholder_shop_tier_vps_quota_period),
+                    startPeriod,
+                    endPeriod
+                )
+                binding.tpgRemainingQuota.text = period
+                binding.tpgPeriod.gone()
+            } else {
+                val remainingQuota = String.format(
+                    binding.tpgRemainingQuota.context.getString(R.string.sfs_placeholder_vps_quota_period),
+                    vpsPackage.formattedPackageStartTime,
+                    vpsPackage.formattedPackageEndTime
+                )
+                binding.tpgRemainingQuota.text = remainingQuota
+                binding.tpgRemainingQuota.visible()
+                binding.tpgPeriod.visible()
+            }
         }
     }
 

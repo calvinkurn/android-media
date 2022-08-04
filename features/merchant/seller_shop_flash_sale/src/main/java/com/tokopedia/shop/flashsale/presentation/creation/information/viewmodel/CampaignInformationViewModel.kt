@@ -35,7 +35,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import kotlinx.coroutines.async
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -102,6 +101,7 @@ class CampaignInformationViewModel @Inject constructor(
     private var campaignId: Long = CAMPAIGN_NOT_CREATED_ID
     private var relatedCampaigns: List<RelatedCampaign> = emptyList()
     private var isCampaignRuleSubmit = false
+    private var storedVpsPackages: List<VpsPackageUiModel> = emptyList()
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -531,6 +531,14 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun getSelectedVpsPackageId(): Long {
         return this.vpsPackageId
+    }
+
+    fun storeVpsPackage(vpsPackages: List<VpsPackageUiModel>) {
+        this.storedVpsPackages = vpsPackages
+    }
+
+    fun getVpsPackages(): List<VpsPackageUiModel> {
+        return this.storedVpsPackages
     }
 
 }
