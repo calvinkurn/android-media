@@ -11,7 +11,6 @@ import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductM
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.product.CategoryIdL2ProviderDelegate
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
@@ -92,7 +91,6 @@ internal open class ProductListPresenterTestFixtures {
             BannerPresenterDelegate(pagination),
             RequestParamsGenerator(userSession, pagination),
             pagination,
-            CategoryIdL2ProviderDelegate(),
         )
         productListPresenter.attachView(productListView)
     }

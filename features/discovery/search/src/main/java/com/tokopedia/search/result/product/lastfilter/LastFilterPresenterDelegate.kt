@@ -3,7 +3,6 @@ package com.tokopedia.search.result.product.lastfilter
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterInput
-import com.tokopedia.search.result.product.CategoryIdL2Provider
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.usecase.RequestParams
@@ -15,8 +14,9 @@ class LastFilterPresenterDelegate(
     private val requestParamsGenerator: RequestParamsGenerator,
     private val chooseAddressPresenterDelegate: ChooseAddressPresenterDelegate,
     private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
-    private val categoryIdL2Provider: CategoryIdL2Provider,
 ): LastFilterPresenter {
+    override var categoryIdL2: String = ""
+
     override fun updateLastFilter(
         searchParameter: Map<String, Any>,
         savedOptionList: List<SavedOption>,
@@ -28,7 +28,7 @@ class LastFilterPresenterDelegate(
         val saveLastFilterInput = SaveLastFilterInput(
             lastFilter = savedOptionList,
             mapParameter = searchParams.parameters,
-            categoryIdL2 = categoryIdL2Provider.categoryIdL2,
+            categoryIdL2 = categoryIdL2,
         )
 
         val requestParams = RequestParams.create()
