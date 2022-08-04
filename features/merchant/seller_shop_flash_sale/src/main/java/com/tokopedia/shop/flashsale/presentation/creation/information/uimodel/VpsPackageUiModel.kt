@@ -15,7 +15,5 @@ data class VpsPackageUiModel(
     val packageStartTime: Date,
     val isSelected: Boolean,
     val disabled: Boolean,
-    val isShopTierBenefit: Boolean,
-    val formattedPackageStartTime: String,
-    val formattedPackageEndTime: String
+    val isShopTierBenefit: Boolean
 ) : Parcelable

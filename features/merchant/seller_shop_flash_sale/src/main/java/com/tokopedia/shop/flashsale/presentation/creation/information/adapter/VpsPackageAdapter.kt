@@ -59,27 +59,37 @@ class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
 
         private fun handleShopBenefit(vpsPackage: VpsPackageUiModel) {
             if (vpsPackage.isShopTierBenefit) {
-                val startPeriod = vpsPackage.packageStartTime.formatTo(DateConstant.MONTH)
-                val endPeriod = vpsPackage.packageEndTime.formatTo(DateConstant.MONTH_YEAR)
-                val period = String.format(
-                    binding.tpgRemainingQuota.context.getString(R.string.sfs_placeholder_shop_tier_vps_quota_period),
-                    startPeriod,
-                    endPeriod
-                )
-                binding.tpgRemainingQuota.text = period
-                binding.tpgPeriod.gone()
+                handleShopTierBenefit(vpsPackage)
             } else {
-                val remainingQuota = String.format(
-                    binding.tpgRemainingQuota.context.getString(R.string.sfs_placeholder_vps_quota_period),
-                    vpsPackage.formattedPackageStartTime,
-                    vpsPackage.formattedPackageEndTime
-                )
-                binding.tpgRemainingQuota.text = remainingQuota
-                binding.tpgRemainingQuota.visible()
-                binding.tpgPeriod.visible()
+                handleVpsPackageBenefit(vpsPackage)
             }
+
+        }
+
+        private fun handleShopTierBenefit(vpsPackage: VpsPackageUiModel) {
+            val startPeriod = vpsPackage.packageStartTime.formatTo(DateConstant.MONTH)
+            val endPeriod = vpsPackage.packageEndTime.formatTo(DateConstant.MONTH_YEAR)
+            val period = String.format(
+                binding.tpgRemainingQuota.context.getString(R.string.sfs_placeholder_shop_tier_vps_quota_period),
+                startPeriod,
+                endPeriod
+            )
+            binding.tpgRemainingQuota.text = period
+            binding.tpgPeriod.gone()
+        }
+
+        private fun handleVpsPackageBenefit(vpsPackage: VpsPackageUiModel) {
+            val remainingQuota = String.format(
+                binding.tpgRemainingQuota.context.getString(R.string.sfs_placeholder_vps_quota_period),
+                vpsPackage.packageStartTime.formatTo(DateConstant.MONTH),
+                vpsPackage.packageEndTime.formatTo(DateConstant.MONTH)
+            )
+            binding.tpgRemainingQuota.text = remainingQuota
+            binding.tpgRemainingQuota.visible()
+            binding.tpgPeriod.visible()
         }
     }
+
 
     fun submit(newGradients: List<VpsPackageUiModel>) {
         differ.submitList(newGradients)

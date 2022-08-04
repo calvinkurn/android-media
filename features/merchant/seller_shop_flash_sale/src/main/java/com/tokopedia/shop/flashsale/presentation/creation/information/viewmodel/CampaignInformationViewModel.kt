@@ -8,11 +8,9 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
-import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.extension.epochToDate
-import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.DateManager
@@ -497,9 +495,7 @@ class CampaignInformationViewModel @Inject constructor(
                     vpsPackage.packageStartTime.epochToDate(),
                     vpsPackage.isSelected(selectedPackageId),
                     vpsPackage.isDisabled(),
-                    vpsPackage.isShopTierBenefit() ,
-                    vpsPackage.packageStartTime.epochToDate().formatTo(DateConstant.DATE),
-                    vpsPackage.packageEndTime.epochToDate().formatTo(DateConstant.DATE)
+                    vpsPackage.isShopTierBenefit()
                 )
             }
             .sortedBy { it.packageEndTime.time }
