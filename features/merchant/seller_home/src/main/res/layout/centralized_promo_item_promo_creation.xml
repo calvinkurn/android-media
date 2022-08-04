@@ -50,8 +50,8 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivRecommendedPromo"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/centralized_promo_content_desc_image_recommended_promo"
                 app:layout_constraintEnd_toEndOf="@id/vBackground"
@@ -91,7 +91,7 @@
                 android:id="@+id/tvRecommendedPromoDescription"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="22dp"
                 android:layout_marginBottom="16dp"
                 android:layout_marginStart="12dp"
                 android:ellipsize="end"
