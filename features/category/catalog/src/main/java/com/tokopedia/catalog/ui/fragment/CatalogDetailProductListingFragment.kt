@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,7 @@ import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogSearchApiConst
 import com.tokopedia.catalog.model.util.CatalogUtil
+import com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity
 import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.common_category.constants.CategoryNavConstants
@@ -51,6 +53,9 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -82,6 +87,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener,
         CatalogProductCardListener,
+        ChooseAddressWidget.ChooseAddressWidgetListener,
         WishListActionListener,
         SortFilterBottomSheet.Callback{
 
@@ -115,6 +121,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     var productNavListAdapter: CatalogProductNavListAdapter? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
+    private var chooseAddressWidget: ChooseAddressWidget? = null
+    private var userAddressData: LocalCacheModel? = null
 
     private lateinit var catalogTypeFactory: CatalogTypeFactory
 
@@ -176,6 +184,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         observeData()
         setUpAdapter()
         setupRecyclerView()
+        initChooseAddressWidget(view)
         initSearchQuickSortFilter(view)
         sortFilterBottomSheet = SortFilterBottomSheet()
     }
@@ -183,7 +192,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun initView() {
         userSession = UserSession(activity)
         gcmHandler = GCMHandler(activity)
-
+        fetchUserLatestAddressData()
         activity?.let { observer ->
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             viewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
@@ -224,6 +233,11 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 scrollToPosition(viewModel.lastSeenProductPosition)
             }
         }
+    }
+
+    private fun initChooseAddressWidget(view: View) {
+        chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
+        chooseAddressWidget?.bindChooseAddress(this)
     }
 
     private fun attachScrollListener() {
@@ -434,6 +448,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             putString(CategoryNavConstants.ROWS, PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
+            putString(CategoryNavConstants.CITY_ID, userAddressData?.city_id ?: "")
+            putString(CategoryNavConstants.DISTRICT_ID, userAddressData?.district_id ?: "")
+            putString(CategoryNavConstants.Q, catalogName)
             viewModel.searchParametersMap.value?.let { safeSearchParams ->
                 putAllString(safeSearchParams)
             }
@@ -929,5 +946,61 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun getResultCount(mapParameter: Map<String, String>) {
         sortFilterBottomSheet?.setResultCountText(getString(R.string.catalog_apply_filter))
+    }
+
+    /*******************************  Address Widget **************************/
+
+    private fun updateChooseAddressWidget() {
+        chooseAddressWidget?.updateWidget()
+    }
+
+    private fun checkAddressUpdate() {
+        context?.let {
+            if (userAddressData != null) {
+                if (ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) {
+                    userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+                    refreshPage()
+                }
+            }
+        }
+    }
+
+    private fun refreshPage() {
+        reloadData()
+    }
+
+    private fun fetchUserLatestAddressData() {
+        context?.let {
+            userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
+    override fun onLocalizingAddressUpdatedFromWidget() {
+        updateChooseAddressWidget()
+        checkAddressUpdate()
+    }
+
+    override fun onLocalizingAddressUpdatedFromBackground() {
+
+    }
+
+    override fun onLocalizingAddressServerDown() {
+        chooseAddressWidget?.hide()
+    }
+
+    override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
+
+    }
+
+    override fun getLocalizingAddressHostFragment(): Fragment {
+        return this
+    }
+
+    override fun getLocalizingAddressHostSourceData(): String {
+        return ""
+    }
+
+    override fun onLocalizingAddressLoginSuccess() {
+
     }
 }
