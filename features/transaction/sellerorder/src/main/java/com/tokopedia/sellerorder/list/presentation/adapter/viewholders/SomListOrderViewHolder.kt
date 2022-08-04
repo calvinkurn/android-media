@@ -17,6 +17,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
@@ -135,6 +137,11 @@ open class SomListOrderViewHolder(
             }
         }
         super.bind(element, payloads)
+    }
+
+    override fun onViewRecycled() {
+        binding?.icSomListOrderPlusRibbon?.clearImage()
+        super.onViewRecycled()
     }
 
     protected open fun setupQuickActionButton(element: SomListOrderUiModel) {
@@ -346,19 +353,19 @@ open class SomListOrderViewHolder(
 
     private fun setupOrderPlusRibbon(element: SomListOrderUiModel) {
         val showOrderPlusRibbon = element.orderPlusData?.logoUrl.isNullOrBlank().not()
-        binding?.containerSomListOrderPlusRibbon?.run {
-            setBackgroundResource(R.drawable.ic_som_list_order_plus_ribbon)
-            showWithCondition(showOrderPlusRibbon)
-        }
+        binding?.ivSomListRibbonBackground?.loadImage(R.drawable.ic_som_list_order_plus_ribbon)
         binding?.loaderIcSomListOrderPlusRibbon?.showWithCondition(showOrderPlusRibbon)
         binding?.icSomListOrderPlusRibbon?.run {
-            onUrlLoaded = {
-                binding?.loaderIcSomListOrderPlusRibbon?.gone()
-                Unit
+            loadImage(element.orderPlusData?.logoUrl.orEmpty()) {
+                listener(onSuccess = { _, _ ->
+                    binding?.loaderIcSomListOrderPlusRibbon?.gone()
+                }, onError = {
+                    binding?.loaderIcSomListOrderPlusRibbon?.gone()
+                })
             }
             showWithCondition(showOrderPlusRibbon)
-            urlSrc = element.orderPlusData?.logoUrl.orEmpty()
         }
+        binding?.containerSomListOrderPlusRibbon?.showWithCondition(showOrderPlusRibbon)
     }
 
     protected open fun setupOrderCard(element: SomListOrderUiModel) {
