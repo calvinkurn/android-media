@@ -338,6 +338,10 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
 
     private fun onSuccessGetFirstPostCDPData(contentDetailRevampDataUiModel: ContentDetailRevampDataUiModel){
+        (activity as? ContentDetailActivity)?.setContentDetailMainPostData(
+            contentDetailRevampDataUiModel.postList.firstOrNull()
+        )
+
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         adapter.setItemsAndAnimateChanges(contentDetailRevampDataUiModel.postList)
@@ -406,7 +410,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                     trackerIdSgcRecom = "34283",
                     trackerIdAsgcRecom = "34096",
                     trackerIdSgcVideo = "34613",
-                    trackerIdAsgc = "34108"
+                    trackerIdAsgc = "34108",
+                    trackerIdLongVideo = "34503",
+                    trackerIdLongVideoRecomm = "34521"
                 )
             )
         )
@@ -566,13 +572,22 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
             trackerIdVod = "34153",
             trackerIdVodRecomm = "34171",
             trackerIdSgcRecom = "34284",
-            trackerIdSgcVideo = "34614"
+            trackerIdSgcVideo = "34614",
+            trackerIdLongVideo = "34504",
+            trackerIdLongVideoRecomm = "34522"
+
         )
         if (isSeeMoreComment)
             analyticsTracker.sendClickLehatSemuaCommentClick(
                 getContentDetailAnalyticsData(
                     feedXCard,
-                    trackerId = getTrackerID(feedXCard, trackerIdVod = "34154", trackerIdVodRecomm = "34172" )
+                    trackerId = getTrackerID(
+                        feedXCard,
+                        trackerIdVod = "34154",
+                        trackerIdVodRecomm = "34172",
+                        trackerIdLongVideo = "34505",
+                        trackerIdLongVideoRecomm = "34523"
+                    )
                 )
             )
         else
@@ -609,7 +624,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
             trackerIdAsgcRecom = "34097",
             trackerIdVodRecomm = "34173",
             trackerIdSgcVideo = "34615",
-            trackerIdAsgc = "34109"
+            trackerIdAsgc = "34109",
+            trackerIdLongVideo = "34506",
+            trackerIdLongVideoRecomm = "34524"
         )
         analyticsTracker.sendClickShareSgcImageEvent(getContentDetailAnalyticsData(feedXCard, trackerId = trackerId))
 
@@ -710,7 +727,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                     trackerIdVod = "34166",
                     trackerIdVodRecomm = "34185",
                     trackerIdSgcRecom = "34281",
-                    trackerIdAsgc = "34106"
+                    trackerIdAsgc = "34106",
+                    trackerIdLongVideo = "34517",
+                    trackerIdLongVideoRecomm = "34536"
                 )
             ),
             ""
@@ -747,7 +766,8 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                         trackerIdAsgcRecom = "34086",
                         trackerIdVodRecomm = "34169",
                         trackerIdSgcRecom = "34271",
-                        trackerIdSgcVideo = "34603"
+                        trackerIdSgcVideo = "34603",
+                        trackerIdLongVideoRecomm = "34520"
                     )
                 )
             )
@@ -770,7 +790,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                     trackerIdVodRecomm = "34175",
                     trackerIdSgcRecom = "34285",
                     trackerIdSgcVideo = "34604",
-                    trackerIdAsgc = "34111"
+                    trackerIdAsgc = "34111",
+                    trackerIdLongVideo = "34508",
+                    trackerIdLongVideoRecomm = "34526"
                 )
             )
         )
@@ -806,7 +828,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                             trackerIdSgc = "33291",
                             trackerIdVod = "34158",
                             trackerIdVodRecomm = "34176",
-                            trackerIdSgcRecom = "34307"
+                            trackerIdSgcRecom = "34307",
+                            trackerIdLongVideo = "34509",
+                            trackerIdLongVideoRecomm = "34527"
                         )
                     ), selectedOption = "laporkan"
                 )
@@ -882,7 +906,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                             feedXCard,
                             trackerIdSgc = "33291",
                             trackerIdVod = "34158",
-                            trackerIdSgcRecom = "34307"
+                            trackerIdSgcRecom = "34307",
+                            trackerIdLongVideo = "34509",
+                            trackerIdLongVideoRecomm = "34527"
                         )
                     ), selectedOption = "unfollow"
                 )
@@ -949,14 +975,25 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         isFullScreen: Boolean
     ) {
 
-        if (isFullScreen)
-            analyticsTracker.sendClickFullScreen(
-                getContentDetailAnalyticsData(feedXCard)
-            )
-        else
-            analyticsTracker.sendClickLanjutMenontonVod(
-                getContentDetailAnalyticsData(feedXCard)
-            )
+        if (isFullScreen) {
+            if (feedXCard.isTypeVOD)
+                analyticsTracker.sendClickFullScreenVOD(
+                    getContentDetailAnalyticsData(feedXCard)
+                )
+            else if (feedXCard.isTypeLongVideo)
+                analyticsTracker.sendClickFullScreenLongVideo(
+                    getContentDetailAnalyticsData(feedXCard)
+                )
+        } else {
+            if (feedXCard.isTypeVOD)
+                analyticsTracker.sendClickLanjutMenontonVod(
+                    getContentDetailAnalyticsData(feedXCard)
+                )
+            else if (feedXCard.isTypeLongVideo)
+                analyticsTracker.sendClickLanjutMenontonLongVideo(
+                    getContentDetailAnalyticsData(feedXCard)
+                )
+        }
 
         val finalApplink = if (!shouldTrack) {
             Uri.parse(feedXCard.appLink)
@@ -1006,7 +1043,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                         trackerIdVodRecomm = "34168",
                         trackerIdAsgcRecom = "34085",
                         trackerIdAsgc = "34099",
-                        trackerIdSgcVideo = "34602"
+                        trackerIdSgcVideo = "34602",
+                        trackerIdLongVideo = "34502",
+                        trackerIdLongVideoRecomm = "34519"
                     )
                 )
             )
@@ -1025,7 +1064,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                 trackerId = getTrackerID(
                     feedXCard,
                     trackerIdVod = "34187",
-                    trackerIdVodRecomm = "34189"
+                    trackerIdVodRecomm = "34189",
+                    trackerIdLongVideo = "34538",
+                    trackerIdLongVideoRecomm = "34540"
                 )
             )
         )
@@ -1038,7 +1079,13 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
     }
 
     override fun onVolumeClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String) {
-        val  trackerId = getTrackerID(feedXCard, trackerIdVod = "34159",trackerIdVodRecomm = "34177")
+        val trackerId = getTrackerID(
+            feedXCard,
+            trackerIdVod = "34159",
+            trackerIdVodRecomm = "34177",
+            trackerIdLongVideo = "34510",
+            trackerIdLongVideoRecomm = "34528"
+        )
         analyticsTracker.sendClickSoundSgcPlayLongVideoEvent(getContentDetailAnalyticsData(feedXCard, trackerId = trackerId))
     }
 
@@ -1067,7 +1114,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
             trackerIdSgcRecom = "34275",
             trackerIdVod = "34161",
             trackerIdVodRecomm = "34179",
-            trackerIdAsgc = "34113"
+            trackerIdAsgc = "34113",
+            trackerIdLongVideo = "34512",
+            trackerIdLongVideoRecomm = "34530"
         )
         analyticsTracker.sendClickLihatProdukSgcImageEvent(getContentDetailAnalyticsData(feedXCard, trackerId = trackerId))
         val media =
@@ -1139,7 +1188,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
             trackerIdSgc = "33265",
             trackerIdVod = "34156",
             trackerIdVodRecomm = "34174",
-            trackerIdSgcRecom = "34303"
+            trackerIdSgcRecom = "34303",
+            trackerIdLongVideo = "34507",
+            trackerIdLongVideoRecomm = "34525"
         )
         analyticsTracker.sendClickLihatSelengkapnyaSgcImageEvent(getContentDetailAnalyticsData(feedXCard, trackerId = trackerId))
     }
@@ -1214,7 +1265,11 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
             analyticsTracker.sendImpressionPostVOD(
                 getContentDetailAnalyticsData(
                     feedXCard, postPosition, trackerId = getTrackerID(
-                        feedXCard, trackerIdVod = "34150", trackerIdVodRecomm = "34167"
+                        feedXCard,
+                        trackerIdVod = "34150",
+                        trackerIdVodRecomm = "34167",
+                        trackerIdLongVideo = "34501",
+                        trackerIdLongVideoRecomm = "34518"
                     )
                 )
             )
@@ -1337,7 +1392,8 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                    trackerIdVod = "34157",
                    trackerIdVodRecomm = "34182",
                    trackerIdSgcRecom = "34279",
-                   trackerIdAsgc = "34103"
+                   trackerIdAsgc = "34103",
+                   trackerIdLongVideoRecomm = "34533"
                )
            ))
         val finalID =
@@ -1405,7 +1461,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                     trackerIdSgcRecom = "34277",
                     trackerIdSgcVideo = "34609",
                     trackerIdAsgc = "34100",
-                    trackerIdAsgcRecom = "34089"
+                    trackerIdAsgcRecom = "34089",
+                    trackerIdLongVideo = "34513",
+                    trackerIdLongVideoRecomm = "34531"
                 )
             ),
             postTagItemList
@@ -1437,7 +1495,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                             trackerIdSgcRecom = "34278",
                             trackerIdSgcVideo = "34610",
                             trackerIdAsgcRecom = "34090",
-                            trackerIdAsgc = "34101"
+                            trackerIdAsgc = "34101",
+                            trackerIdLongVideo = "34514",
+                            trackerIdLongVideoRecomm = "34532"
                         )
                     )
                 )
@@ -1470,7 +1530,12 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                         postType = type,
                         mediaType = type,
                         isFollowed = isFollowed
-                    ), trackerIdAsgc = "34112", trackerIdVod = "34165", trackerIdVodRecomm = "34184"
+                    ),
+                    trackerIdAsgc = "34112",
+                    trackerIdVod = "34165",
+                    trackerIdVodRecomm = "34184",
+                    trackerIdLongVideo = "34516",
+                    trackerIdLongVideoRecomm = "34535"
 
                 )
             )
@@ -1519,7 +1584,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                     trackerIdSgcRecom = "34280",
                     trackerIdSgcVideo = "34611",
                     trackerIdAsgc = "34104",
-                    trackerIdAsgcRecom = "34092"
+                    trackerIdAsgcRecom = "34092",
+                    trackerIdLongVideo = "34515",
+                    trackerIdLongVideoRecomm = "34534"
                 )
             )
         )
@@ -1771,10 +1838,12 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         trackerIdVod: String = "",
         trackerIdVodRecomm: String = "",
         trackerIdLongVideo: String = "",
+        trackerIdLongVideoRecomm: String = "",
         trackerIdSgcVideo: String = "",
     ) = when {
         item.postType == TYPE_FEED_X_CARD_PLAY -> trackerIdVod
         item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_LONG_VIDEO -> trackerIdLongVideo
+        item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_LONG_VIDEO && !item.isFollowed -> trackerIdLongVideoRecomm
         item.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && item.isFollowed -> trackerIdAsgc
         item.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT  && !item.isFollowed -> trackerIdAsgcRecom
         item.postType == TYPE_FEED_X_CARD_POST  && item.isFollowed -> trackerIdSgc

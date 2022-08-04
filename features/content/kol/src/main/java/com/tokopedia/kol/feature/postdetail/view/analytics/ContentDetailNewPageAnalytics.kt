@@ -38,7 +38,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         const val SCREEN_NAME = "screenName"
         const val IS_LOGGED_IN = "isLoggedInStatus"
         const val TRACKER_ID = "trackerId"
-        private const val TYPE_IMAGE = "image"
         private const val TYPE_VIDEO = "video"
         private const val TYPE_LONG_VIDEO = "long-video"
         const val ACTION_FIELD = "actionField"
@@ -92,7 +91,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    //asgc recom = 34087
     fun sendAsgcMoreProductClicked(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -214,7 +212,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    //34096
     fun sendClickLikeSgcImageEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -284,7 +281,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    //34097
     fun sendClickShareSgcImageEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -315,7 +311,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    //34156
     fun sendClickLihatSelengkapnyaSgcImageEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -331,7 +326,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    //34088
     fun sendClickXSgcImageEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -348,7 +342,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    //34095
     fun sendClickGreyAreaProductBottomSheet(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -420,7 +413,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
 
     }
 
-    //asgc recom 34091 "34157"
     fun sendClickThreeDotsSgcImageEventForBottomSheet(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -437,7 +429,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    //"34092"
     fun sendClickWishlistSgcImageEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -455,7 +446,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
 
     }
 
-    //34093
     fun sendClickLihatWishlistSgcImageEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -473,7 +463,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     }
 
 
-    //34094
     fun sendClickShareSgcImageBottomSheet(
         contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel,
         shareMedia: String = ""
@@ -527,7 +516,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    //34150
     fun sendImpressionPostVOD(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         trackEnhancedEcommerceEventWithMap(
             eventName = PROMO_VIEW,
@@ -679,7 +667,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    //34112
     fun sendClickAddToCartAsgcEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
 
         val product = contentDetailPageAnalyticsDataModel.feedXProduct
@@ -763,6 +750,20 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "34160" else "34178"
         )
     }
+    fun sendClickLanjutMenontonLongVideo(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - lanjut menonton - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "34511" else "34529"
+        )
+    }
 
     fun eventWatchVideo(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
@@ -776,8 +777,6 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             }",
             eventLabel = EventLabel.getWatchVideoLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
-//            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "34187" else "34189"
-
         )
     }
 
@@ -790,7 +789,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    fun sendClickFullScreen(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickFullScreenVOD(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - full screen - ${
@@ -805,6 +804,22 @@ class ContentDetailNewPageAnalytics @Inject constructor(
 
         )
     }
+    fun sendClickFullScreenLongVideo(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - full screen - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "34537" else "34539"
+
+        )
+    }
+
 
     fun sendClickXShareDetailPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
@@ -857,8 +872,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    //TODO
-    fun sendClickBackSgcVideoEvent (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickBackOnContentDetailpage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData (
             eventName = CLICKPG,
             eventAction = "click - back - sgc video",
