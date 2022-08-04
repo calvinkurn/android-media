@@ -228,7 +228,8 @@ class CampaignInformationViewModel @Inject constructor(
                         showTeaser = selection.showTeaser,
                         firstColor = selection.firstColor,
                         secondColor = selection.secondColor,
-                        paymentType = selection.paymentType
+                        paymentType = selection.paymentType,
+                        packageId = selection.vpsPackageId
                     )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignCreation.postValue(Success(result))
@@ -260,6 +261,7 @@ class CampaignInformationViewModel @Inject constructor(
                         paymentType = selection.paymentType,
                         campaignRelation = relatedCampaigns.map { it.id },
                         isCampaignRuleSubmit = isCampaignRuleSubmit,
+                        packageId = selection.vpsPackageId
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignUpdate.postValue(Success(result))
@@ -293,6 +295,7 @@ class CampaignInformationViewModel @Inject constructor(
                     paymentType = selection.paymentType,
                     campaignRelation = relatedCampaigns.map { it.id },
                     isCampaignRuleSubmit = isCampaignRuleSubmit,
+                    packageId = selection.vpsPackageId
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _saveDraft.postValue(Success(result))

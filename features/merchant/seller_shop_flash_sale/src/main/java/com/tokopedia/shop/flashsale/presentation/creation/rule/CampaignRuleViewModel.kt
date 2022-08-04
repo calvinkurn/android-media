@@ -503,6 +503,7 @@ class CampaignRuleViewModel @Inject constructor(
             paymentType = selectedPaymentType,
             isCampaignRuleSubmit = isCampaignRuleSubmit,
             showTeaser = campaignData.useUpcomingWidget,
+            packageId = campaignData.packageInfo.packageId
         )
     }
 
