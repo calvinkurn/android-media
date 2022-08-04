@@ -1,6 +1,7 @@
 package com.tokopedia.usercomponents.tokopediaplus.ui
 
 import android.content.Context
+import android.text.Html
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -10,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.usercomponents.databinding.UiTokopediaPlusBinding
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusListener
@@ -83,12 +85,12 @@ class TokopediaPlusWidget @JvmOverloads constructor(
 
                     tokopediaPlusComponent.apply {
                         val containerHeight =  if(tokopediaPlusData.isSubscriber) {
-                            HEIGHT_SUBSCRIBER.toDp().toInt()
-                        } else HEIGHT_NON_SUBSCRIBER.toDp().toInt()
-                        containerTokopediaPlus.layoutParams = LayoutParams(containerTokopediaPlus.width, containerHeight)
+                            HEIGHT_SUBSCRIBER.dpToPx().toInt()
+                        } else HEIGHT_NON_SUBSCRIBER.dpToPx().toInt()
+                        containerTokopediaPlus.layoutParams.height = containerHeight
                         iconTokopediaPlus.loadIcon(tokopediaPlusData.iconImageURL)
                         titleTokopediaPlus.text = tokopediaPlusData.title
-                        descriptionTokopediaPlus.text = tokopediaPlusData.subtitle
+                        descriptionTokopediaPlus.text = MethodChecker.fromHtml(tokopediaPlusData.subtitle)
                         descriptionTokopediaPlus.visibility = if (tokopediaPlusData.isSubscriber) GONE else VISIBLE
 
                         setOnClickListener {
@@ -115,12 +117,12 @@ class TokopediaPlusWidget @JvmOverloads constructor(
 
                     tokopediaPlusCardComponent.apply {
                         val containerHeight =  if(tokopediaPlusData.isSubscriber) {
-                            HEIGHT_SUBSCRIBER.toDp().toInt()
-                        } else HEIGHT_NON_SUBSCRIBER.toDp().toInt()
-                        containerTokopediaPlus.layoutParams = LayoutParams(containerTokopediaPlus.width, containerHeight)
+                            HEIGHT_SUBSCRIBER.dpToPx().toInt()
+                        } else HEIGHT_NON_SUBSCRIBER.dpToPx().toInt()
+                        containerTokopediaPlus.layoutParams.height = containerHeight
                         iconTokopediaPlus.loadIcon(tokopediaPlusData.iconImageURL)
                         titleTokopediaPlus.text = tokopediaPlusData.title
-                        descriptionTokopediaPlus.text = tokopediaPlusData.subtitle
+                        descriptionTokopediaPlus.text = MethodChecker.fromHtml(tokopediaPlusData.subtitle)
                         descriptionTokopediaPlus.visibility = if (tokopediaPlusData.isSubscriber) GONE else VISIBLE
 
                         setOnClickListener {
