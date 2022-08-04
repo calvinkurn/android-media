@@ -532,7 +532,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL).also {
                 it.putExtra(
                     DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA,
-                    viewModel.digitalCheckoutPassData.apply {
+                    checkoutPassData.apply {
                         errorAtcData = DigitalErrorAtcData(
                             redirectionLink = error.atcErrorPage.buttons.first().appLinkUrl,
                             errorTitle = error.atcErrorPage.title,
