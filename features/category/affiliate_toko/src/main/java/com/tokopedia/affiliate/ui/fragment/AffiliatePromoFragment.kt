@@ -71,10 +71,11 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     lateinit var userSessionInterface: UserSessionInterface
 
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
-    private val adapter: AffiliateAdapter =
+    private  val adapter: AffiliateAdapter by lazy {
         AffiliateAdapter(AffiliateAdapterFactory(null, null, this),
         source = AffiliateAdapter.SOURCE_PROMOSIKAN,
         userId = userSessionInterface.userId)
+    }
 
     private val tabFragments = arrayListOf<Fragment>()
 
