@@ -5,7 +5,13 @@ import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_LIST
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.data.ProductDetailData
-import com.tokopedia.entertainment.pdp.data.checkout.*
+import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
+import com.tokopedia.entertainment.pdp.data.checkout.CartInfo
+import com.tokopedia.entertainment.pdp.data.checkout.CheckoutGeneralV2InstantParams
+import com.tokopedia.entertainment.pdp.data.checkout.CheckoutGeneralV2Params
+import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
+import com.tokopedia.entertainment.pdp.data.checkout.EventMetaDataCheckout
+import com.tokopedia.entertainment.pdp.data.checkout.ItemMapCheckout
 import com.tokopedia.entertainment.pdp.data.pdp.ItemMapResponse
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.data.pdp.PassengerForm
