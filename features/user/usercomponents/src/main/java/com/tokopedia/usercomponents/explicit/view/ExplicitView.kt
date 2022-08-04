@@ -31,7 +31,7 @@ class ExplicitView constructor(
     attrs: AttributeSet?
 ) : CardUnify2(context, attrs), ExplicitAction {
 
-    private lateinit var viewModelContract: ExplicitViewContract
+    private var explicitViewContract: ExplicitViewContract? = null
 
     private val explicitAnalytics by lazy(LazyThreadSafetyMode.NONE) {
         ExplicitAnalytics
@@ -47,8 +47,8 @@ class ExplicitView constructor(
     private var onWidgetDismissListener: (() -> Unit)? = null
     private var onWidgetFinishListener: (() -> Unit)? = null
 
-    override fun setupView(viewModel: ExplicitViewContract, data: ExplicitData) {
-        this.viewModelContract = viewModel
+    override fun setupView(explicitViewContract: ExplicitViewContract, data: ExplicitData) {
+        this.explicitViewContract = explicitViewContract
 
         explicitData = data
 
@@ -69,11 +69,11 @@ class ExplicitView constructor(
 
     private fun initObserver() {
         onLoading()
-        viewModelContract.getExplicitContent(explicitData.templateName)
+        explicitViewContract?.getExplicitContent(explicitData.templateName)
 
         val lifecycleOwner = context as LifecycleOwner
 
-        viewModelContract.explicitContent.observe(lifecycleOwner) {
+        explicitViewContract?.explicitContent?.observe(lifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.first) {
@@ -89,14 +89,14 @@ class ExplicitView constructor(
             }
         }
 
-        viewModelContract.statusSaveAnswer.observe(lifecycleOwner) {
+        explicitViewContract?.statusSaveAnswer?.observe(lifecycleOwner) {
             when (it) {
                 is Success -> onSubmitSuccessShow()
                 is Fail -> onFailed()
             }
         }
 
-        viewModelContract.statusUpdateState.observeOnce(lifecycleOwner) {
+        explicitViewContract?.statusUpdateState?.observeOnce(lifecycleOwner) {
             onWidgetFinishListener?.invoke()
         }
     }
@@ -115,7 +115,7 @@ class ExplicitView constructor(
 
         bindingQuestion?.imgDismiss?.setOnClickListener {
             explicitAnalytics.trackClickDismissButton(explicitData)
-            viewModelContract.updateState()
+            explicitViewContract?.updateState()
             onDismiss()
         }
 
@@ -132,7 +132,7 @@ class ExplicitView constructor(
         bindingFailed?.containerLocalLoad?.refreshBtn?.setOnClickListener {
             onLoading()
             if (preferenceAnswer == null) {
-                viewModelContract.getExplicitContent(explicitData.templateName)
+                explicitViewContract?.getExplicitContent(explicitData.templateName)
             } else {
                 saveAnswer()
             }
@@ -141,7 +141,7 @@ class ExplicitView constructor(
 
     private fun saveAnswer() {
         if (preferenceAnswer != null) {
-            viewModelContract.sendAnswer(preferenceAnswer)
+            explicitViewContract?.sendAnswer(preferenceAnswer)
         }
     }
 
@@ -272,12 +272,14 @@ class ExplicitView constructor(
 
     override fun onCleared() {
         val lifecycleOwner = context as LifecycleOwner
-        viewModelContract.explicitContent.removeObservers(lifecycleOwner)
-        viewModelContract.statusSaveAnswer.removeObservers(lifecycleOwner)
+        explicitViewContract?.explicitContent?.removeObservers(lifecycleOwner)
+        explicitViewContract?.statusSaveAnswer?.removeObservers(lifecycleOwner)
+        explicitViewContract?.statusUpdateState?.removeObservers(lifecycleOwner)
         removeAllViews()
         bindingFailed = null
         bindingQuestion = null
         bindingSuccess = null
+        explicitViewContract = null
     }
 
     fun setOnWidgetDismissListener(listener: () -> Unit) {
