@@ -83,13 +83,7 @@ class EntrypointFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initApplinkValues()
-
-        viewModel.parentProductID.let {
-            viewModel.getBundleInfo(it, warehouseId)
-        }
-
         setupToolbarActions()
-
         observePageState()
         observeGetBundleInfoResult()
     }
@@ -106,9 +100,16 @@ class EntrypointFragment : BaseDaggerFragment() {
         activity.setBackgroundToWhite()
         setupShimmer(view)
         setupGlobalError(view)
+        loadBundleData()
     }
 
     override fun getScreenName() = null
+
+    private fun loadBundleData() {
+        viewModel.parentProductID.let {
+            viewModel.getBundleInfo(it, warehouseId)
+        }
+    }
 
     private fun setupShimmer(view: View) {
         val totalAmountShimmer: TotalAmount? = view.findViewById(R.id.total_amount)
