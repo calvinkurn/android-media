@@ -23,6 +23,7 @@ import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -112,7 +113,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
             if (it.second.atcErrorPage.isShowErrorPage){
-                navigateToCart(it.first)
+                redirectToCart(it.first)
             }else{
                 redirectErrorUnVerifiedNumber(it.second)
             }
@@ -523,6 +524,17 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
                 startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
             }
+        }
+    }
+
+    // this function used to redirect to cart if getting error from atc Response
+    private fun redirectToCart(categoryId: String){
+        context?.let {
+            RouteManager.route(it, CommonTopupBillsUtil.buildRedirectAppLinkToCheckout(
+                checkoutPassData.productId ?: "",
+                checkoutPassData.clientNumber ?: "",
+                categoryId
+            ))
         }
     }
 

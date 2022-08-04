@@ -453,7 +453,7 @@ class DigitalPDPDataPlanFragment :
         viewModel.errorAtc.observe(viewLifecycleOwner){
             hideLoadingDialog()
             if (it.second.atcErrorPage.isShowErrorPage){
-                navigateToCart(it.first)
+                redirectToCart(it.first)
             }else{
                 showErrorUnverifiedPhoneNumber(it.second)
             }
@@ -994,6 +994,17 @@ class DigitalPDPDataPlanFragment :
                 viewModel.digitalCheckoutPassData
             )
             startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        }
+    }
+
+    // this function used to redirect to cart if getting error from atc Response
+    private fun redirectToCart(categoryId: String){
+        context?.let {
+            RouteManager.route(it, CommonTopupBillsUtil.buildRedirectAppLinkToCheckout(
+                viewModel.digitalCheckoutPassData.productId ?: "",
+                viewModel.digitalCheckoutPassData.clientNumber ?: "",
+                categoryId
+            ))
         }
     }
 
