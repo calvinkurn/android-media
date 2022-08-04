@@ -241,7 +241,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 isFreeShippingEnabled = false,
                 isInTransitionPeriod = false
             )
-            onGetNewIklanPromotion_thenReturn()
+            onGetNewIklanPromotion_thenReturn(userSession.userId)
 
             mViewModel.getAllOtherMenuData()
 
@@ -742,7 +742,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     fun `when getNewIklanAndPromotion is show tag centralize promo value success should set live data sucess`() =
         runBlocking {
             val merchantPromotionGetPromoList = MerchantPromotionGetPromoList()
-            onGetNewIklanPromotion_thenReturn(merchantPromotionGetPromoList)
+            onGetNewIklanPromotion_thenReturn(userSession.userId, merchantPromotionGetPromoList)
 
             mViewModel.getAllOtherMenuData()
 
@@ -931,8 +931,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         coVerify(atLeast = atLeast) { shopShareInfoUseCase.execute(any()) }
     }
 
-    private suspend fun onGetNewIklanPromotion_thenReturn(datPromotionNew: MerchantPromotionGetPromoList = MerchantPromotionGetPromoList()) {
-        coEvery { getNewPromotionUseCase.execute("0") } returns datPromotionNew
+    private suspend fun onGetNewIklanPromotion_thenReturn(userId: String, datPromotionNew: MerchantPromotionGetPromoList = MerchantPromotionGetPromoList()) {
+        coEvery { getNewPromotionUseCase.execute(userId) } returns datPromotionNew
     }
 
     private suspend fun onGetNewIklanPromotion_thenError(exception: Exception = IllegalStateException()) {
