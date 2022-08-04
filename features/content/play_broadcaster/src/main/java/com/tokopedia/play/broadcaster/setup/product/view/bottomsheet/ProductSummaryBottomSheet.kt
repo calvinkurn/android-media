@@ -59,8 +59,10 @@ class ProductSummaryBottomSheet @Inject constructor(
     override fun onPinClicked(product: ProductUiModel) {
         analytic.onClickPinProductBottomSheet(product.id)
         viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
-
-        //For second event I think you can impress from event fail unpin yang PinnedProductException yaa
+        /**
+         * For second event I think you can impress from event fail unpin yang PinnedProductException yaa,
+         * already added but please help to check yaa
+         */
     }
 
     override fun onImpressPinnedProduct(product: ProductUiModel) {
@@ -178,6 +180,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                         else analytic.onImpressFailPinProductBottomSheet()
 
                         if(event.throwable is PinnedProductException){
+                            analytic.onImpressColdDownPinProductSecondEvent(false)
                             toaster.showToaster(
                                 message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
                                 type = Toaster.TYPE_ERROR

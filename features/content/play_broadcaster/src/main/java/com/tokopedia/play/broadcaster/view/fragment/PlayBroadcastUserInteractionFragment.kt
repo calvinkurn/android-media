@@ -166,6 +166,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             override fun onPinClicked(product: ProductUiModel) {
                 analytic.onClickPinProductLiveRoom(product.id)
                 parentViewModel.submitAction(PlayBroadcastAction.ClickPinProduct(product))
+                /**
+                 * For second event I think you can impress from event fail unpin yang PinnedProductException yaa,
+                 * already added but please help to check yaa
+                 */
             }
 
             override fun onImpressPinnedProduct(product: ProductUiModel) {
@@ -791,11 +795,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             parentViewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.ShowError -> {
-                        if(event.error is PinnedProductException)
-                            showToaster(
-                                message = if (event.error.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.error.message,
-                                type = Toaster.TYPE_ERROR)
-                        else showErrorToaster(event.error)
+                        showErrorToaster(event.error)
                     }
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                     PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
@@ -813,10 +813,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.FailPinUnPinProduct -> {
                         if (event.isPinned) analytic.onImpressFailUnPinProductLiveRoom()
                         else analytic.onImpressFailPinProductLiveRoom()
-                        if(event.throwable is PinnedProductException)
+
+                        if(event.throwable is PinnedProductException) {
+                            analytic.onImpressColdDownPinProductSecondEvent(true)
                             showToaster(
                                 message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
-                                type = Toaster.TYPE_ERROR)
+                                type = Toaster.TYPE_ERROR
+                            )
+                        }
                         else showErrorToaster(event.throwable)
                     }
                     else -> {}
