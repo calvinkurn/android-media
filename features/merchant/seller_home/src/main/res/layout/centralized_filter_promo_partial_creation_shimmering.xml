@@ -29,6 +29,4 @@
         app:loader_corner_radius="10dp"
         app:loader_type="line" />
 
-    =
-
 </androidx.constraintlayout.widget.ConstraintLayout>

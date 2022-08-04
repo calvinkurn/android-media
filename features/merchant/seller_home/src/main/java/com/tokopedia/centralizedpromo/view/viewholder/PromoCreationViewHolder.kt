@@ -2,9 +2,12 @@ package com.tokopedia.centralizedpromo.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking.sendImpressionCard
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation

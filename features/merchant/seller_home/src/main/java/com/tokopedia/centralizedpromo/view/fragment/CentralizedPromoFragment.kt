@@ -360,8 +360,6 @@ class CentralizedPromoFragment : BaseDaggerFragment(),
         CentralizedPromoTracking.sendImpressionCard(promoName,currentFilterTab.name)
 
     }
-
-
 }
 
 interface CoachMarkListener {

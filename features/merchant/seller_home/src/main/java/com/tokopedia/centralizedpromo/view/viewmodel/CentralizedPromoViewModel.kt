@@ -3,13 +3,11 @@ package com.tokopedia.centralizedpromo.view.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
-import com.tokopedia.centralizedpromo.domain.usecase.*
+import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.GetPromotionUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationMapper
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/centralized_promo_on_going_item_margin"
-    android:layout_marginBottom="@dimen/centralized_promo_on_going_item_margin"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
     app:card_type="shadow"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
@@ -14,16 +14,16 @@
     app:layout_constraintTop_toBottomOf="@id/tvOnGoingPromoTitle">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="@dimen/centralized_promo_on_going_promo_item_width"
+        android:layout_width="160dp"
         android:layout_height="wrap_content">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvOnGoingPromoTitle"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:padding="@dimen/layout_lvl1"
+            android:padding="8dp"
             android:singleLine="true"
             android:textAllCaps="true"
             android:textColor="@color/Unify_N700_96"
@@ -37,10 +37,10 @@
 
         <ImageView
             android:id="@+id/ivCaret"
-            android:layout_width="@dimen/centralized_promo_on_going_caret_icon_size"
-            android:layout_height="@dimen/centralized_promo_on_going_caret_icon_size"
-            android:paddingStart="@dimen/centralized_promo_dimen_4dp"
-            android:paddingEnd="@dimen/layout_lvl1"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="8dp"
             app:layout_constraintBottom_toBottomOf="@id/tvOnGoingPromoTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -50,8 +50,8 @@
 
         <View
             android:id="@+id/headerDivider"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/centralized_promo_on_going_divider_height"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
             android:background="@color/Unify_N75"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -61,7 +61,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvOnGoingPromoStatus"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"

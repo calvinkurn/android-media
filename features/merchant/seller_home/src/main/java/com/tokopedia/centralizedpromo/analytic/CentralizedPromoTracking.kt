@@ -122,7 +122,7 @@ object CentralizedPromoTracking {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun sendClickOnGoingPromoFooter(widgetName: String, footerText: String) {
+    fun sendClickOnGoingPromoFooter(widgetName: String) {
         val data = createMap(
             event = EVENT_NAME_VIEW_PG_IRIS,
             category = EVENT_CATEGORY_ADS_AND_PROMO,
@@ -377,30 +377,6 @@ object CentralizedPromoTracking {
         ).completeEventInfo()
 
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
-    }
-
-    private fun getNoticeType(transitionPeriod: Boolean): String {
-        return if (transitionPeriod) {
-            EVENT_LABEL_TRANSITION_PERIOD
-        } else {
-            EVENT_LABEL_CHARGE_PERIOD
-        }
-    }
-
-    private fun getShopType(powerMerchant: Boolean): String {
-        return if (powerMerchant) {
-            EVENT_LABEL_PM_ACTIVE
-        } else {
-            EVENT_LABEL_PM_INACTIVE
-        }
-    }
-
-    private fun getEventCategory(): String {
-        return if (GlobalConfig.isSellerApp()) {
-            EVENT_CATEGORY_SELLER_APP
-        } else {
-            EVENT_CATEGORY_MAIN_APP
-        }
     }
 
     private fun MutableMap<String, Any>.completeEventInfo(shopId: String): Map<String, Any> {

@@ -38,7 +38,6 @@ class OtherMenuAdapter(
 
     private var isShowCentralizedPromoTag: Boolean = false
 
-
     private fun generateSettingList() = listOf(
         SettingTitleUiModel(context?.getString(R.string.setting_menu_improve_sales).orEmpty()),
         StatisticMenuItemUiModel(

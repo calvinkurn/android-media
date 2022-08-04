@@ -21,10 +21,10 @@ import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidg
 class DetailPromoBottomSheet :
     BaseBottomSheet<BottomSheetDetailPromoBinding>() {
 
-    private var onCheckBoxListener: ((Boolean) -> Unit?)? =null
-    private var onCreateCampaignTracking: (() -> Unit?)? =null
-    private var onClickPaywallTracking: (() -> Unit?)? =null
-    private var onImpressionPaywallracking: (() -> Unit?)? =null
+    private var onCheckBoxListener: ((Boolean) -> Unit?)? = null
+    private var onCreateCampaignTracking: (() -> Unit?)? = null
+    private var onClickPaywallTracking: (() -> Unit?)? = null
+    private var onImpressionPaywallracking: (() -> Unit?)? = null
 
     companion object {
         private const val TAG = "DetailPromoBottomSheet"
@@ -57,12 +57,12 @@ class DetailPromoBottomSheet :
         val promoCreationUiModel: PromoCreationUiModel? = arguments?.getParcelable(KEY_PROMO)
         promoCreationUiModel?.let {
             setTitle(it.title)
-            if (it.infoText.isNotEmpty()){
+            if (it.infoText.isNotEmpty()) {
                 tickerInfoEligble.show()
                 tickerInfoEligble.setTextDescription(it.infoText)
                 cbDontShowInfo.gone()
                 onImpressionPaywallracking?.invoke()
-            }else{
+            } else {
                 tickerInfoEligble.gone()
                 cbDontShowInfo.show()
                 cbDontShowInfo.setOnCheckedChangeListener { _, _ ->
@@ -73,12 +73,12 @@ class DetailPromoBottomSheet :
             ivBannerImage.loadImage(it.banner)
             tvBottomText.text = it.bottomText
             btnCtaPromo.text = it.ctaText
-            btnCtaPromo.setOnClickListener {  _->
+            btnCtaPromo.setOnClickListener { _ ->
                 dismiss()
-                RouteManager.route(context,it.ctaLink)
-                if (it.infoText.isEmpty()){
+                RouteManager.route(context, it.ctaLink)
+                if (it.infoText.isEmpty()) {
                     onCreateCampaignTracking?.invoke()
-                }else{
+                } else {
                     onClickPaywallTracking?.invoke()
                 }
             }
@@ -91,19 +91,19 @@ class DetailPromoBottomSheet :
         }
     }
 
-    fun onCheckBoxListener(onCheckBoxListener:(Boolean) -> Unit){
+    fun onCheckBoxListener(onCheckBoxListener: (Boolean) -> Unit) {
         this.onCheckBoxListener = onCheckBoxListener
     }
 
-    fun onCreateCampaignTracking(onCreateCampaignTracking:() -> Unit){
+    fun onCreateCampaignTracking(onCreateCampaignTracking: () -> Unit) {
         this.onCreateCampaignTracking = onCreateCampaignTracking
     }
 
-    fun onClickPaywallTracking(onClickPaywallTracking:() -> Unit){
+    fun onClickPaywallTracking(onClickPaywallTracking: () -> Unit) {
         this.onClickPaywallTracking = onClickPaywallTracking
     }
 
-    fun onImpressionPaywallTracking(onImpressionPaywallracking:() -> Unit){
+    fun onImpressionPaywallTracking(onImpressionPaywallracking: () -> Unit) {
         this.onImpressionPaywallracking = onImpressionPaywallracking
     }
 }

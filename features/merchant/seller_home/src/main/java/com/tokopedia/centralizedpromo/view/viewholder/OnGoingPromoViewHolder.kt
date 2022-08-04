@@ -9,7 +9,6 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_on_going_promo
 import com.tokopedia.sellerhome.databinding.CentralizedPromoItemOnGoingPromoBinding
 
@@ -40,24 +39,20 @@ class OnGoingPromoViewHolder(
             tvOnGoingPromoTitle.setOnClickListener {
                 onStatusClicked(
                     element.status.url,
-                    element.title,
-                    element.status.count,
-                    element.status.text
+                    element.title
                 )
             }
             ivCaret.setOnClickListener {
                 onStatusClicked(
                     element.status.url,
-                    element.title,
-                    element.status.count,
-                    element.status.text
+                    element.title
                 )
             }
             tvOnGoingPromoStatus.setOnClickListener {
-                onFooterClicked(element.footer.url, element.title, element.footer.text)
+                onFooterClicked(element.footer.url, element.title)
             }
             tvOnGoingPromoCount.setOnClickListener {
-                onFooterClicked(element.footer.url, element.title, element.footer.text)
+                onFooterClicked(element.footer.url, element.title)
             }
 
             root.addOnImpressionListener(element.impressHolder) {
@@ -68,7 +63,7 @@ class OnGoingPromoViewHolder(
         }
     }
 
-    private fun onStatusClicked(appLink: String, title: String, value: Int, state: String) {
+    private fun onStatusClicked(appLink: String, title: String) {
         if (openApplink(appLink)) {
             CentralizedPromoTracking.sendClickOnGoingPromoStatus(
                 widgetName = title
@@ -76,11 +71,10 @@ class OnGoingPromoViewHolder(
         }
     }
 
-    private fun onFooterClicked(applink: String, title: String, footerText: String) {
+    private fun onFooterClicked(applink: String, title: String) {
         if (openApplink(applink)) {
             CentralizedPromoTracking.sendClickOnGoingPromoFooter(
-                widgetName = title,
-                footerText = footerText
+                widgetName = title
             )
         }
     }
