@@ -86,6 +86,7 @@
     <string name="sfs_info_campaign">Info Campaign</string>
     <string name="sfs_campaign_name">Nama campaign</string>
     <string name="sfs_schedule_start_date">Jadwal mulai</string>
+    <string name="sfs_quota_source">Sumber kuota</string>
     <string name="sfs_schedule_end_date">Jadwal berakhir</string>
     <string name="sfs_min_duration">Durasi min. 30 menit</string>
     <string name="sfs_teaser_description">Tampilkan campaign di tokomu sebelum jadwal campaign berlangsung</string>
@@ -121,6 +122,9 @@
     <string name="sfs_create_campaign_on_another_period">Buat campaign di bulan lain, ya.</string>
     <string name="sfs_min_hex_color_length">Min. 6 karakter</string>
     <string name="sfs_green_dot">Indikator campaign aktif</string>
+    <string name="sfs_placeholder_remaining_vps_quota">Sisa kuota %d/%d Campaign</string>
+    <string name="sfs_placeholder_vps_quota_period">berlaku untuk periode campaign dari %s - %s</string>
+    <string name="sfs_placeholder_shop_tier_vps_quota_period">Kuota %s - %s</string>
 
     <string name="sfs_error_message_schedule_lapsed_title">Jadwal campaign pilihanmu sudah lewat</string>
     <string name="sfs_error_message_schedule_lapsed_description">Yuk, atur ulang jadwal campaignmu dulu!</string>

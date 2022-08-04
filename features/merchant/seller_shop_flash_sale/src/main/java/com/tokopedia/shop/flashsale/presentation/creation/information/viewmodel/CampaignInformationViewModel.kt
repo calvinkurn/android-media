@@ -1,13 +1,16 @@
-package com.tokopedia.shop.flashsale.presentation.creation.information
+package com.tokopedia.shop.flashsale.presentation.creation.information.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MINIMUM_UPCOMING_HOUR
+import com.tokopedia.shop.flashsale.common.extension.epochToDate
 import com.tokopedia.shop.flashsale.common.extension.hourOnly
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.DateManager
@@ -16,11 +19,15 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
+import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
+import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignPackageListUseCase
+import com.tokopedia.shop.flashsale.presentation.creation.information.defaultGradientColor
+import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +42,7 @@ class CampaignInformationViewModel @Inject constructor(
     private val doSellerCampaignCreationUseCase: DoSellerCampaignCreationUseCase,
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
     private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
+    private val getSellerCampaignPackageListUseCase: GetSellerCampaignPackageListUseCase,
     private val dateManager: DateManager,
     private val tracker: ShopFlashSaleTracker
 ) : BaseViewModel(dispatchers.main) {
@@ -43,6 +51,8 @@ class CampaignInformationViewModel @Inject constructor(
         private const val MIN_HEX_COLOR_LENGTH = 6
         private const val MIN_CAMPAIGN_NAME_LENGTH = 5
         private const val ONE_HOUR = 1
+        private const val SHOP_TIER_BENEFIT_PACKAGE_ID = -1
+        private const val EMPTY_QUOTA = 0
     }
 
     private val _currentMonthRemainingQuota = MutableLiveData<Result<Int>>()
@@ -73,6 +83,12 @@ class CampaignInformationViewModel @Inject constructor(
     val campaignQuota: LiveData<Result<Int>>
         get() = _campaignQuota
 
+    private val _vpsPackages = MutableLiveData<Result<List<VpsPackageUiModel>>>()
+    val vpsPackages: LiveData<Result<List<VpsPackageUiModel>>>
+        get() = _vpsPackages
+
+    private var vpsPackageId : Long = 0
+
     private var selectedColor = defaultGradientColor
     private var selectedStartDate = Date()
     private var selectedEndDate = Date()
@@ -83,6 +99,7 @@ class CampaignInformationViewModel @Inject constructor(
     private var campaignId: Long = CAMPAIGN_NOT_CREATED_ID
     private var relatedCampaigns: List<RelatedCampaign> = emptyList()
     private var isCampaignRuleSubmit = false
+    private var storedVpsPackages: List<VpsPackageUiModel> = emptyList()
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -121,7 +138,8 @@ class CampaignInformationViewModel @Inject constructor(
         val firstColor: String,
         val secondColor: String,
         val paymentType: PaymentType,
-        val remainingQuota: Int
+        val remainingQuota: Int,
+        val vpsPackageId: Long
     )
 
     fun validateCampaignName(campaignName: String) : CampaignNameValidationResult {
@@ -135,7 +153,7 @@ class CampaignInformationViewModel @Inject constructor(
         }
 
         if (campaignName.lowercase() in forbiddenWords) {
-            return  CampaignNameValidationResult.CampaignNameHasForbiddenWords
+            return CampaignNameValidationResult.CampaignNameHasForbiddenWords
 
         }
 
@@ -425,4 +443,98 @@ class CampaignInformationViewModel @Inject constructor(
     fun isDataChanged(previousData: Selection, currentData: Selection): Boolean {
         return previousData != currentData
     }
+
+
+/*    fun getPrerequisiteData() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val campaignAttributeDeferred = async { getSellerCampaignAttributeUseCase.execute(
+                    month = dateManager.getCurrentMonth(),
+                    year = dateManager.getCurrentYear()
+                ) }
+
+                val result = async { getSellerCampaignPackageListUseCase.execute() }
+                val vpsPackages = applySelectionRule(selectedPackageId, result)
+                _vpsPackages.postValue(Success(vpsPackages))
+            },
+            onError = { error ->
+                _vpsPackages.postValue(Fail(error))
+            }
+        )
+    }*/
+
+    fun getVpsPackages(selectedPackageId : Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getSellerCampaignPackageListUseCase.execute()
+                val vpsPackages = applySelectionRule(selectedPackageId, result)
+                _vpsPackages.postValue(Success(vpsPackages))
+            },
+            onError = { error ->
+                _vpsPackages.postValue(Fail(error))
+            }
+        )
+
+    }
+
+    private fun applySelectionRule(
+        selectedPackageId: Long,
+        vpsPackages: List<VpsPackage>
+    ): List<VpsPackageUiModel> {
+        return vpsPackages
+            .map { vpsPackage ->
+                VpsPackageUiModel(
+                    vpsPackage.currentQuota,
+                    vpsPackage.isDisabled,
+                    vpsPackage.originalQuota,
+                    vpsPackage.packageEndTime.epochToDate(),
+                    vpsPackage.packageId.toLongOrZero(),
+                    vpsPackage.packageName,
+                    vpsPackage.packageStartTime.epochToDate(),
+                    vpsPackage.isSelected(selectedPackageId),
+                    vpsPackage.isDisabled(),
+                    vpsPackage.isShopTierBenefit()
+                )
+            }
+            .sortedBy { it.packageEndTime.time }
+    }
+
+    private fun VpsPackage.isSelected(selectedPackageId: Long) : Boolean {
+        return selectedPackageId == packageId.toLong()
+    }
+
+    private fun VpsPackage.isShopTierBenefit() : Boolean {
+        return packageId.toIntOrZero() == SHOP_TIER_BENEFIT_PACKAGE_ID
+    }
+
+    private fun VpsPackage.isDisabled(): Boolean {
+        if (isDisabled) {
+            return true
+        }
+
+        if (currentQuota == EMPTY_QUOTA) {
+            return true
+        }
+
+        return false
+    }
+
+    fun setSelectedVpsPackageId(vpsPackageId: Long) {
+        this.vpsPackageId = vpsPackageId
+    }
+
+    fun getSelectedVpsPackageId(): Long {
+        return this.vpsPackageId
+    }
+
+    fun storeVpsPackage(vpsPackages: List<VpsPackageUiModel>) {
+        this.storedVpsPackages = vpsPackages
+    }
+
+    fun getVpsPackages(): List<VpsPackageUiModel> {
+        return this.storedVpsPackages
+    }
+
 }
