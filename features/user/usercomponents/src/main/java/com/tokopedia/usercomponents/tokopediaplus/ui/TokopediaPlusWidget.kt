@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.usercomponents.databinding.UiTokopediaPlusBinding
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
@@ -21,6 +22,11 @@ class TokopediaPlusWidget @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ): ConstraintLayout(context, attributeSet, defStyleAttr) {
 
+    companion object {
+        private const val HEIGHT_NON_SUBSCRIBER = 56f
+        private const val HEIGHT_SUBSCRIBER = 40f
+    }
+
     private var pageSource: String = ""
     var listener: TokopediaPlusListener? = null
 
@@ -31,23 +37,6 @@ class TokopediaPlusWidget @JvmOverloads constructor(
             false
         ).also {
             addView(it.root)
-        }
-
-    var icon = ""
-        set(value) {
-            viewBinding.tokopediaPlusComponent.iconTokopediaPlus.loadIcon(value)
-        }
-
-    var title = ""
-        set(value) {
-            viewBinding.tokopediaPlusComponent.titleTokopediaPlus.text = value
-            field = value
-        }
-
-    var subtitle = ""
-        set(value) {
-            viewBinding.tokopediaPlusComponent.descriptionTokopediaPlus.text = MethodChecker.fromHtml(value)
-            field = value
         }
 
     fun setContent(
@@ -87,16 +76,19 @@ class TokopediaPlusWidget @JvmOverloads constructor(
     private fun renderView(tokopediaPlusDataModel: TokopediaPlusDataModel?) {
         tokopediaPlusDataModel?.let { tokopediaPlusData ->
             if (tokopediaPlusData.title.isNotEmpty() && tokopediaPlusData.iconImageURL.isNotEmpty()) {
-                icon = tokopediaPlusData.iconImageURL
-                title = tokopediaPlusData.title
-                subtitle = tokopediaPlusData.subtitle
-
                 listener?.isShown(tokopediaPlusData.isShown, pageSource, tokopediaPlusDataModel)
                 viewBinding.apply {
                     tokopediaPlusCardComponent.root.hide()
                     root.visibility = if (!tokopediaPlusData.isShown) GONE else VISIBLE
 
                     tokopediaPlusComponent.apply {
+                        val containerHeight =  if(tokopediaPlusData.isSubscriber) {
+                            HEIGHT_SUBSCRIBER.toDp().toInt()
+                        } else HEIGHT_NON_SUBSCRIBER.toDp().toInt()
+                        containerTokopediaPlus.layoutParams = LayoutParams(containerTokopediaPlus.width, containerHeight)
+                        iconTokopediaPlus.loadIcon(tokopediaPlusData.iconImageURL)
+                        titleTokopediaPlus.text = tokopediaPlusData.title
+                        descriptionTokopediaPlus.text = tokopediaPlusData.subtitle
                         descriptionTokopediaPlus.visibility = if (tokopediaPlusData.isSubscriber) GONE else VISIBLE
 
                         setOnClickListener {
@@ -122,6 +114,10 @@ class TokopediaPlusWidget @JvmOverloads constructor(
                     root.visibility = if (!tokopediaPlusData.isShown) GONE else VISIBLE
 
                     tokopediaPlusCardComponent.apply {
+                        val containerHeight =  if(tokopediaPlusData.isSubscriber) {
+                            HEIGHT_SUBSCRIBER.toDp().toInt()
+                        } else HEIGHT_NON_SUBSCRIBER.toDp().toInt()
+                        containerTokopediaPlus.layoutParams = LayoutParams(containerTokopediaPlus.width, containerHeight)
                         iconTokopediaPlus.loadIcon(tokopediaPlusData.iconImageURL)
                         titleTokopediaPlus.text = tokopediaPlusData.title
                         descriptionTokopediaPlus.text = tokopediaPlusData.subtitle
