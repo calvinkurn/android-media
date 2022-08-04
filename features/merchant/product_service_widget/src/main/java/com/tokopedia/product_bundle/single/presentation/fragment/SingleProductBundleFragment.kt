@@ -26,6 +26,7 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product_bundle.activity.ProductBundleActivity
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
@@ -62,7 +63,7 @@ class SingleProductBundleFragment(
     private val selectedBundleId: String = "",
     private val selectedProductId: Long = 0L, // usually variant child productID
     private val emptyVariantProductIds: List<String> = emptyList(),
-    private val pageSource: String = ""
+    private val pageSource: String = "",
 ) : BaseDaggerFragment(), BundleItemListener {
 
     @Inject
@@ -82,8 +83,10 @@ class SingleProductBundleFragment(
         initBundleData()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         return inflater.inflate(R.layout.fragment_single_product_bundle, container, false)
     }
 
@@ -145,7 +148,7 @@ class SingleProductBundleFragment(
 
     override fun onVariantSpinnerClicked(
         selectedVariant: ProductVariant?,
-        selectedProductId: String?
+        selectedProductId: String?,
     ) {
         selectedVariant?.let {
             AtcVariantNavigation.showVariantBottomSheet(this, it, selectedProductId.orEmpty())
@@ -156,7 +159,7 @@ class SingleProductBundleFragment(
         originalPrice: Double,
         discountedPrice: Double,
         quantity: Int,
-        preorderDurationWording: String?
+        preorderDurationWording: String?,
     ) {
         SingleProductBundleTracking.trackSingleBundleOptionClick(
             adapter.getSelectedBundleId(),
@@ -169,7 +172,7 @@ class SingleProductBundleFragment(
 
     override fun onDataChanged(
         selectedData: List<SingleProductBundleSelectedItem>,
-        selectedProductVariant: ProductVariant?
+        selectedProductVariant: ProductVariant?,
     ) {
         val selectedProductId = selectedData.firstOrNull {
             it.isSelected
@@ -459,9 +462,12 @@ class SingleProductBundleFragment(
     }
 
     private fun refreshPage() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.parent_view, EntrypointFragment(), EntrypointFragment.tagFragment)
-            .commit()
+        val parentActivity = activity as? ProductBundleActivity
+        parentActivity?.getEntrypointFragment()?.let {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.parent_view, it, EntrypointFragment.tagFragment)
+                .commit()
+        }
     }
 
     companion object {
@@ -476,7 +482,7 @@ class SingleProductBundleFragment(
             selectedBundleId: String = "",
             selectedProductId: Long = 0L,
             emptyVariantProductIds: List<String> = emptyList(),
-            pageSource: String = ""
+            pageSource: String = "",
         ) =
             SingleProductBundleFragment(parentProductID, bundleInfo, selectedBundleId,
                 selectedProductId, emptyVariantProductIds, pageSource)

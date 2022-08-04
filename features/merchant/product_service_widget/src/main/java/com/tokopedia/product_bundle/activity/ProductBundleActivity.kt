@@ -93,4 +93,5 @@ class ProductBundleActivity : BaseSimpleActivity() {
         }
     }
 
+    fun getEntrypointFragment() = entrypointFragment
 }
