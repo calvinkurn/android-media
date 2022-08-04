@@ -13,6 +13,8 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.utils.TrackerId.Companion.OPEN_SCREEN_ID
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import java.lang.NumberFormatException
@@ -25,12 +27,18 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var remoteConfig : RemoteConfig
+
     private var orderId = DEFAULT_ZERO_VALUE
     private var checkoutId = ""
     private var entryPoint = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
+        if(!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_EPHARMACY_UPLOAD_PAGE, true)) {
+            this.finish()
+        }
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.epharmacy_upload_title))
         userViewUploadPrescriptionPage()
