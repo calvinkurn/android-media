@@ -15,7 +15,12 @@ import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseC
 import com.tokopedia.centralizedpromo.view.FirstPromoDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
-import com.tokopedia.centralizedpromo.view.model.*
+import com.tokopedia.centralizedpromo.view.model.ChatBlastSellerMetadataUiModel
+import com.tokopedia.centralizedpromo.view.model.Footer
+import com.tokopedia.centralizedpromo.view.model.OnGoingPromoListUiModel
+import com.tokopedia.centralizedpromo.view.model.OnGoingPromoUiModel
+import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
+import com.tokopedia.centralizedpromo.view.model.Status
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -24,8 +29,15 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.just
+import io.mockk.mockkObject
+import io.mockk.runs
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -213,6 +225,10 @@ class CentralizedPromoViewModelTest {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
         } returns true
 
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_FLASH_SALE_ENTRY_SELLER, true)
+        } returns true
+
         every {
             resourcesProvider.composeBroadcastChatFreeQuotaLabel(any())
         } returns String.format("%d kuota gratis", 200)
@@ -229,7 +245,7 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[4].extra == "200 kuota gratis")
+                (result.data as PromoCreationListUiModel).items[5].extra == "200 kuota gratis")
     }
 
     @Test
@@ -340,6 +356,10 @@ class CentralizedPromoViewModelTest {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
         } returns true
 
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_FLASH_SALE_ENTRY_SELLER, true)
+        } returns true
+
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
@@ -352,7 +372,7 @@ class CentralizedPromoViewModelTest {
 
         assert(result != null && result is Success &&
                 result.data is PromoCreationListUiModel &&
-                (result.data as PromoCreationListUiModel).items[3].applink == ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+                (result.data as PromoCreationListUiModel).items[4].applink == ApplinkConst.CustomerApp.TOPADS_DASHBOARD
         )
     }
 
@@ -425,6 +445,10 @@ class CentralizedPromoViewModelTest {
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
         } returns true
+        coEvery {
+            remoteConfig.getBoolean(
+                    RemoteConfigKey.ENABLE_FLASH_SALE_ENTRY_SELLER, true)
+        } returns true
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -434,7 +458,7 @@ class CentralizedPromoViewModelTest {
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
         val expectedApplink = "tokopedia-android-internal://sellerapp/create-voucher"
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(5)?.applink == expectedApplink)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(6)?.applink == expectedApplink)
     }
 
     @Test
@@ -509,6 +533,9 @@ class CentralizedPromoViewModelTest {
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
         } returns true
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_FLASH_SALE_ENTRY_SELLER, true)
+        } returns true
 
         // When
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -518,7 +545,51 @@ class CentralizedPromoViewModelTest {
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
         val expectedApplink = "sellerapp://create-voucher-product"
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(7)?.applink == expectedApplink)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.get(8)?.applink == expectedApplink)
+    }
+
+    @Test
+    fun `Success get layout data with remote config flash sale false should hide flash sale`() = runBlocking {
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            slashPriceEligibleUseCase.execute(any())
+        } returns true
+
+        coEvery {
+            checkNonTopAdsUserUseCase.execute(any())
+        } returns false
+
+        coEvery {
+            sellerHomeGetWhiteListedUserUseCase.executeQuery()
+        } returns true
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
+        } returns true
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_FLASH_SALE_ENTRY_SELLER, true)
+        } returns false
+
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.count {
+            it.applink == "sellerapp://shop-flash-sale"
+        } == 0)
     }
 
     @Test
@@ -559,7 +630,7 @@ class CentralizedPromoViewModelTest {
 
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(8) == false)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(9) == false)
     }
 
     @Test
@@ -600,7 +671,7 @@ class CentralizedPromoViewModelTest {
 
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(8) == false)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(9) == false)
     }
 
     @Test
@@ -641,7 +712,7 @@ class CentralizedPromoViewModelTest {
 
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(8) == false)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(9) == false)
     }
 
     @Test
@@ -682,7 +753,7 @@ class CentralizedPromoViewModelTest {
 
         // Then
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
-        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(8) == false)
+        assert(((result as? Success)?.data as? PromoCreationListUiModel)?.items?.size?.equals(9) == false)
     }
 
 

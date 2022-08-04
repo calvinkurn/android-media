@@ -7,7 +7,7 @@ import com.tokopedia.withdraw.auto_withdrawal.di.module.AutoWdModule
 import com.tokopedia.withdraw.auto_withdrawal.di.module.ViewModelModule
 import com.tokopedia.withdraw.auto_withdrawal.di.scope.AutoWithdrawalScope
 import com.tokopedia.withdraw.auto_withdrawal.presentation.activity.AutoWithdrawalActivity
-import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.AutoWDInfoFragment
+import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.AutoWDInfoBottomsheet
 import com.tokopedia.withdraw.auto_withdrawal.presentation.dialog.ExclusiveRekPremFragment
 import com.tokopedia.withdraw.auto_withdrawal.presentation.fragment.AutoWithdrawalSettingsFragment
 import dagger.Component
@@ -25,5 +25,5 @@ interface AutoWithdrawalComponent {
     fun inject(activity: AutoWithdrawalActivity)
     fun inject(autoWithdrawalSettingsFragment: AutoWithdrawalSettingsFragment)
     fun inject(exclusiveRekPremFragment: ExclusiveRekPremFragment)
-    fun inject(autoWDInfoFragment: AutoWDInfoFragment)
+    fun inject(autoWDInfoBottomsheet: AutoWDInfoBottomsheet)
 }

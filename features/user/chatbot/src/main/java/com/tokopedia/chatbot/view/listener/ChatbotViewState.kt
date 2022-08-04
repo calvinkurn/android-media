@@ -78,5 +78,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String,
                          startTime: String,parentReply: ParentReply?)
+    fun hideQuickReplyOnClick()
 
 }

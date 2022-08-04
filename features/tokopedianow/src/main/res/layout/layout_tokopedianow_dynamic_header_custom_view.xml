@@ -35,6 +35,19 @@
         app:typographyType="display_3"
         tools:text="Berakhir dalam" />
 
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/tus_count_down"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tp_subtitle"
+        app:layout_constraintStart_toEndOf="@+id/tp_subtitle"
+        app:layout_constraintTop_toTopOf="@+id/tp_subtitle"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_see_all"
         android:layout_width="wrap_content"

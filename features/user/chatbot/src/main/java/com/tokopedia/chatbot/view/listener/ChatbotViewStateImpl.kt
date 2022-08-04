@@ -14,14 +14,17 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
@@ -40,7 +43,6 @@ import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
 /**
  * @author by nisie on 07/12/18.
@@ -151,6 +153,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     }
 
+    override fun hideQuickReplyOnClick() {
+        hideQuickReply()
+    }
+
     override fun loadAvatar(avatarUrl: String) {
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
         ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
@@ -216,7 +222,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingViewModel) {
         super.onReceiveMessageEvent(visitable)
-       sendAnalytics(ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN)
+        sendAnalytics(ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN)
         showQuickReply(visitable.quickReplies)
     }
 

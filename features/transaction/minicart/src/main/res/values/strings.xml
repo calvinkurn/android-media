@@ -1,6 +1,8 @@
 <resources>
+    <string name="mini_cart_widget_label_purchase_summary">Ringkasan Belanja</string>
     <string name="mini_cart_widget_label_see_cart">Lihat Keranjang</string>
     <string name="mini_cart_widget_label_total_price">Total Harga</string>
+    <string name="mini_cart_widget_label_total_price_unavailable_default">-</string>
     <string name="mini_cart_widget_cta_text_default">Beli</string>
     <string name="mini_cart_label_product_notes">Tulis Catatan</string>
     <string name="mini_cart_label_product_notes_editable">Catatan untuk Barang Ini</string>

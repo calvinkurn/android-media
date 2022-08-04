@@ -16,7 +16,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
@@ -40,6 +40,7 @@ private const val chips = "searchproduct/inspirationcarousel/chips.json"
 private const val dynamicProduct = "searchproduct/inspirationcarousel/dynamic-product.json"
 private const val dynamicProductNoSuggestion = "searchproduct/inspirationcarousel/dynamic-product-no-suggestion.json"
 private const val keywordProduct = "searchproduct/inspirationcarousel/keyword-product.json"
+private const val dealsCarouselWithCardButton = "searchproduct/inspirationcarousel/deals-with-card-button.json"
 
 internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFixtures() {
 
@@ -789,7 +790,10 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             inspirationCarouselOption: SearchProductModel.InspirationCarouselOption,
     ) {
         keyword shouldBe inspirationCarouselOption.title
+        subtitle shouldBe inspirationCarouselOption.subtitle
         applink shouldBe inspirationCarouselOption.applink
+        cardButton.applink shouldBe inspirationCarouselOption.cardButton.applink
+        cardButton.title shouldBe inspirationCarouselOption.cardButton.title
 
         val inspirationCarouselProducts = inspirationCarouselOption.inspirationCarouselProducts
         broadMatchItemDataViewList.size shouldBe inspirationCarouselProducts.size
@@ -826,6 +830,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         topAdsClickUrl shouldBe inspirationCarouselProduct.ads.productClickUrl
         topAdsViewUrl shouldBe inspirationCarouselProduct.ads.productViewUrl
         topAdsWishlistUrl shouldBe inspirationCarouselProduct.ads.productWishlistUrl
+        originalPrice shouldBe inspirationCarouselProduct.originalPrice
+        discountPercentage shouldBe inspirationCarouselProduct.discountPercentage
 
         labelGroupDataList.listShouldBe(inspirationCarouselProduct.labelGroupList) { actual, expected ->
             actual.title shouldBe expected.title
@@ -911,5 +917,20 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             val broadMatchProductType = carouselProductType as BroadMatchProduct
             broadMatchProductType.hasThreeDots shouldBe false
         }
+    }
+
+    @Test
+    fun `Show inspiration carousel deals product`() {
+        val searchProductModel = dealsCarouselWithCardButton.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify view set product list`()
+        `Then assert inspiration carousel product list`(
+            0,
+            searchProductModel,
+            ::assertCarouselProductTypeDynamic
+        )
     }
 }

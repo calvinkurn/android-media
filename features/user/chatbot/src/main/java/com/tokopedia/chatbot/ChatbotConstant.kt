@@ -12,6 +12,7 @@ object ChatbotConstant {
     const val TOKOPEDIA_CARE = "Tokopedia Care"
     const val TANYA = "Tanya"
     const val REPLY_AGENT_NAME = "{.Name}"
+    const val RENDER_INVOICE_LIST_AND_BUTTON_ACTION = 1
 
     object CsatRating {
         const val RATING_ONE = 1
@@ -44,6 +45,7 @@ object ChatbotConstant {
     object AttachmentType {
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
         const val TYPE_REPLY_BUBBLE = "28"
+        const val SESSION_CHANGE = "31"
     }
 
     object ChatbotUnification{
