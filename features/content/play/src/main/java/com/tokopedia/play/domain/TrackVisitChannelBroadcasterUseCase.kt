@@ -12,6 +12,7 @@ import javax.inject.Inject
 
 /**
  * Created by mzennis on 05/02/21.
+ * duplicate: com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
  */
 @GqlQuery(TrackVisitChannelBroadcasterUseCase.QUERY_NAME, TrackVisitChannelBroadcasterUseCase.QUERY)
 class TrackVisitChannelBroadcasterUseCase @Inject constructor(
