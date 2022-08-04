@@ -47,6 +47,7 @@ data class CartItemModel(
         var preOrderInfo: String = "",
         var isFreeShipping: Boolean = false,
         var isFreeShippingExtra: Boolean = false,
+        var freeShippingName: String = "",
         var isShowTicker: Boolean = false,
         var tickerMessage: String = "",
         var isWholesalePrice: Boolean = false,
