@@ -1,4 +1,4 @@
-package com.tokopedia.shop.flashsale.presentation.creation.information
+package com.tokopedia.shop.flashsale.presentation.creation.information.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,6 +23,7 @@ import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCa
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignAttributeUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCase
 import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignPackageListUseCase
+import com.tokopedia.shop.flashsale.presentation.creation.information.defaultGradientColor
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -79,6 +80,8 @@ class CampaignInformationViewModel @Inject constructor(
     private val _vpsPackages = MutableLiveData<Result<List<VpsPackage>>>()
     val vpsPackages: LiveData<Result<List<VpsPackage>>>
         get() = _vpsPackages
+
+    private var vpsPackage : VpsPackage? = null
 
     private var selectedColor = defaultGradientColor
     private var selectedStartDate = Date()
@@ -142,7 +145,7 @@ class CampaignInformationViewModel @Inject constructor(
         }
 
         if (campaignName.lowercase() in forbiddenWords) {
-            return  CampaignNameValidationResult.CampaignNameHasForbiddenWords
+            return CampaignNameValidationResult.CampaignNameHasForbiddenWords
 
         }
 
@@ -445,6 +448,14 @@ class CampaignInformationViewModel @Inject constructor(
             }
         )
 
+    }
+
+    fun setSelectedVpsPackage(vpsPackage: VpsPackage) {
+        this.vpsPackage = vpsPackage
+    }
+
+    fun getVpsPackage(): VpsPackage? {
+        return this.vpsPackage
     }
 
 }

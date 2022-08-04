@@ -122,6 +122,7 @@
     <string name="sfs_create_campaign_on_another_period">Buat campaign di bulan lain, ya.</string>
     <string name="sfs_min_hex_color_length">Min. 6 karakter</string>
     <string name="sfs_green_dot">Indikator campaign aktif</string>
+    <string name="sfs_placeholder_remaining_vps_quota">Sisa kuota %d/%d Campaign</string>
 
     <string name="sfs_error_message_schedule_lapsed_title">Jadwal campaign pilihanmu sudah lewat</string>
     <string name="sfs_error_message_schedule_lapsed_description">Yuk, atur ulang jadwal campaignmu dulu!</string>

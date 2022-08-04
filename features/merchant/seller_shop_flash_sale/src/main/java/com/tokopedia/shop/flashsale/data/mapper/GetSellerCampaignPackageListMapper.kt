@@ -15,7 +15,8 @@ class GetSellerCampaignPackageListMapper @Inject constructor() {
                 currentPackage.packageEndTime,
                 currentPackage.packageId,
                 currentPackage.packageName,
-                currentPackage.packageStartTime
+                currentPackage.packageStartTime,
+                isSelected = false
             )
         }
     }

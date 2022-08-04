@@ -79,8 +79,10 @@ import com.tokopedia.shop.flashsale.presentation.creation.information.bottomshee
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignTeaserInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.ForbiddenWordsInformationBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.TimePickerSelectionMode
+import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.VpsPackageBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelCreateCampaignConfirmationDialog
 import com.tokopedia.shop.flashsale.presentation.creation.information.dialog.CancelEditCampaignConfirmationDialog
+import com.tokopedia.shop.flashsale.presentation.creation.information.viewmodel.CampaignInformationViewModel
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.unifycomponents.TextFieldUnify2
@@ -428,7 +430,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.run {
             tauVpsPackageName.editText.inputType = InputType.TYPE_NULL
             tauVpsPackageName.editText.isFocusable = false
-            tauVpsPackageName.editText.setOnClickListener { displayEndDatePicker() }
+            tauVpsPackageName.textInputLayout.helperText = "Hai"
+            tauVpsPackageName.editText.setOnClickListener { displayQuotaSourceBottomSheet() }
         }
     }
 
@@ -943,6 +946,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun displayQuotaSourceBottomSheet() {
-
+        val bottomSheet = VpsPackageBottomSheet.newInstance(viewModel.getVpsPackage())
+        bottomSheet.setOnVpsPackageClicked { selectedVpsPackage ->
+            viewModel.setSelectedVpsPackage(selectedVpsPackage)
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }
