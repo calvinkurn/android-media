@@ -180,9 +180,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     private var cartDataUpdateJob: Job? = null
     private var uiEventUpdateJob: Job? = null
 
-    override fun getFragmentToolbar(): Toolbar? {
-        return binding?.toolbar
-    }
+    override fun getFragmentToolbar(): Toolbar? = binding?.toolbarMerchantPage
 
     override fun getFragmentTitle(): String {
         return ""
@@ -256,6 +254,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onStart() {
         super.onStart()
+        initializeMiniCartWidget()
         cartDataUpdateJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             collectCartDataFlow()
         }
@@ -266,7 +265,6 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onResume() {
         super.onResume()
-        initializeMiniCartWidget()
         merchantPageAnalytics.openMerchantPage(
             merchantId,
             viewModel.merchantData?.merchantProfile?.opsHourFmt?.isWarning.orFalse()
@@ -276,9 +274,9 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupAppBarLayoutListener()
         setBackgroundDefaultColor()
         setHeaderBackground()
+        setupAppBarLayoutListener()
         setupMerchantLogo()
         setupMerchantProfileCarousel()
         setupProductList()
@@ -300,8 +298,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                 // setup merchant info bottom sheet
                 val name = merchantProfile.name
                 val address = merchantProfile.address
-                val merchantOpsHours =
-                    viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
+                val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+                val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(today, merchantProfile.opsHourDetail)
                 setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
             }
             renderProductList(viewModel.productListItems)
@@ -349,13 +347,13 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setToolbarTransparentColor() {
-        binding?.toolbar?.let {
+        binding?.toolbarMerchantPage?.let {
             it.background = null
         }
     }
 
     private fun setToolbarWhiteColor() {
-        binding?.toolbar?.let {
+        binding?.toolbarMerchantPage?.let {
             it.setBackgroundColor(
                 ContextCompat.getColor(
                     it.context,
@@ -368,11 +366,11 @@ class MerchantPageFragment : BaseMultiFragment(),
     private fun setupAppBarLayoutListener() {
         binding?.toolbarParent?.addOnOffsetChangedListener(object :
             AppBarLayout.OnOffsetChangedListener {
+
             override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
                 if (appBarLayout == null) return
                 val offset = abs(verticalOffset)
-                if (offset >= (appBarLayout.totalScrollRange - binding?.toolbar?.height.orZero()) &&
-                    productListAdapter?.getProductListItems()?.isNotEmpty() == true
+                if (offset >= (appBarLayout.totalScrollRange - binding?.toolbarMerchantPage?.height.orZero())
                 ) {
                     // show sticky filter
                     binding?.cardUnifySticky?.show()
@@ -599,8 +597,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                         // setup merchant info bottom sheet
                         val name = merchantProfile.name
                         val address = merchantProfile.address
-                        val merchantOpsHours =
-                            viewModel.mapOpsHourDetailsToMerchantOpsHours(merchantProfile.opsHourDetail)
+                        val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+                        val merchantOpsHours = viewModel.mapOpsHourDetailsToMerchantOpsHours(today, merchantProfile.opsHourDetail)
                         setupMerchantInfoBottomSheet(name, address, merchantOpsHours)
                         // render product list
                         val isShopClosed = merchantProfile.opsHourFmt.isWarning
@@ -651,9 +649,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private suspend fun collectCartDataFlow() {
         activityViewModel?.cartDataFlow?.collect { cartData ->
-            cartData?.availableSection?.products?.let { products ->
-                viewModel.selectedProducts = products
-            }
+            viewModel.selectedProducts = cartData?.availableSection?.products.orEmpty()
         }
     }
 
@@ -706,12 +702,8 @@ class MerchantPageFragment : BaseMultiFragment(),
                                                 cardPositions?.run {
                                                     productListAdapter?.updateProductUiModel(
                                                         cartTokoFood = cartTokoFood,
-                                                        dataSetPosition = viewModel.getDataSetPosition(
-                                                            this
-                                                        ),
-                                                        adapterPosition = viewModel.getAdapterPosition(
-                                                            this
-                                                        )
+                                                        dataSetPosition = viewModel.getDataSetPosition(this),
+                                                        adapterPosition = viewModel.getAdapterPosition(this)
                                                     )
                                                 }
                                             }
@@ -734,29 +726,20 @@ class MerchantPageFragment : BaseMultiFragment(),
                             (pair.first as? String)?.let { cartId ->
                                 (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()
                                     ?.let { product ->
-                                        val cardPositions =
-                                            viewModel.productMap[product.productId]
+                                        val cardPositions = viewModel.productMap[product.productId]
                                         cardPositions?.run {
-                                            val dataSetPosition =
-                                                viewModel.getDataSetPosition(this)
-                                            val productUiModel =
-                                                productListAdapter?.getProductUiModel(
-                                                    dataSetPosition
-                                                )
+                                            val dataSetPosition = viewModel.getDataSetPosition(this)
+                                            val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
                                             if (productUiModel?.isCustomizable == true) {
                                                 productListAdapter?.removeCustomOrder(
                                                     cartId = cartId,
                                                     dataSetPosition = dataSetPosition,
-                                                    adapterPosition = viewModel.getAdapterPosition(
-                                                        this
-                                                    )
+                                                    adapterPosition = viewModel.getAdapterPosition(this)
                                                 )
                                             } else {
                                                 productListAdapter?.resetProductUiModel(
                                                     dataSetPosition = dataSetPosition,
-                                                    adapterPosition = viewModel.getAdapterPosition(
-                                                        this
-                                                    )
+                                                    adapterPosition = viewModel.getAdapterPosition(this)
                                                 )
                                             }
                                             view?.let { view ->

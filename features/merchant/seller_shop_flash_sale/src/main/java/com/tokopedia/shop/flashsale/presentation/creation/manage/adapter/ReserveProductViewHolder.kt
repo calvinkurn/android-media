@@ -70,6 +70,8 @@ class ReserveProductViewHolder(
         } else if (!isSelected) {
             // set from adapter input enabled
             setListEnable(inputEnabled)
+        } else {
+            setListEnable(true)
         }
     }
 
