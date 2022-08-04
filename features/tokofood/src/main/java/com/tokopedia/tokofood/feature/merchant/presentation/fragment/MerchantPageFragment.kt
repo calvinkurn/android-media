@@ -342,7 +342,7 @@ class MerchantPageFragment : BaseMultiFragment(),
                 } else {
                     com.tokopedia.tokofood.R.drawable.header_background
                 }
-            binding?.bgMerchantHeader?.setBackgroundResource(backgroundResourceId)
+            binding?.bgMerchantHeader?.setImageResource(backgroundResourceId)
         }
     }
 
