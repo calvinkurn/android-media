@@ -211,14 +211,13 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             }
         })
 
-        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
-            val errorAtc = it.second
-            showErrorPage(
-                errorAtc.title,
-                errorAtc.atcErrorPage.subTitle,
-                errorAtc.atcErrorPage.buttons.first().appLinkUrl,
-                errorAtc.atcErrorPage.buttons.first().label
-            )
+        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){ pair ->
+            pair.second.apply { showErrorPage(
+                    title,
+                    atcErrorPage.subTitle,
+                    atcErrorPage.buttons.first().appLinkUrl,
+                    atcErrorPage.buttons.first().label
+                ) }
         }
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
