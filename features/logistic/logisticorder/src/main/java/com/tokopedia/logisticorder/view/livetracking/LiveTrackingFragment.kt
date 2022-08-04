@@ -38,7 +38,6 @@ class LiveTrackingFragment : BaseWebViewFragment() {
                     startActivity(callIntent)
                 }
             }
-            startActivity(callIntent)
         }
         return super.shouldOverrideUrlLoading(webView, url)
     }
