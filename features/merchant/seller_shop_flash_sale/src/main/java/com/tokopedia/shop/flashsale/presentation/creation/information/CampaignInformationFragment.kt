@@ -71,6 +71,7 @@ import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignWithVpsPackages
 import com.tokopedia.shop.flashsale.domain.entity.enums.CampaignStatus
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
@@ -205,7 +206,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         observeSaveDraft()
         handlePageMode()
         viewModel.getCurrentMonthRemainingQuota()
-        viewModel.getVpsPackages(0)
     }
 
     private fun observeValidationResult() {
@@ -328,10 +328,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
 
-    private fun updateQuotaSource(vpsPackage : VpsPackageUiModel) {
-        val helperMessage = if (vpsPackage.isShopTierBenefit) {
-            val startPeriod = vpsPackage.packageStartTime.formatTo(DateConstant.MONTH)
-            val endPeriod = vpsPackage.packageEndTime.formatTo(DateConstant.MONTH_YEAR)
+    private fun updateQuotaSource(vpsPackage : VpsPackageUiModel?) {
+        val isUsingShopTierBenefit = vpsPackage?.isShopTierBenefit.orFalse()
+
+        val helperMessage = if (isUsingShopTierBenefit) {
+            val startPeriod = vpsPackage?.packageStartTime?.formatTo(DateConstant.MONTH)
+            val endPeriod = vpsPackage?.packageEndTime?.formatTo(DateConstant.MONTH_YEAR)
             String.format(
                 getString(R.string.sfs_placeholder_shop_tier_vps_quota_period),
                 startPeriod,
@@ -340,12 +342,12 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         } else {
             String.format(
                 getString(R.string.sfs_placeholder_remaining_vps_quota),
-                vpsPackage.currentQuota.orZero(),
-                vpsPackage.originalQuota.orZero()
+                vpsPackage?.currentQuota.orZero(),
+                vpsPackage?.originalQuota.orZero()
             )
         }
 
-        binding?.tauVpsPackageName?.editText?.setText(vpsPackage.packageName)
+        binding?.tauVpsPackageName?.editText?.setText(vpsPackage?.packageName)
         binding?.tauVpsPackageName?.setMessage(helperMessage)
     }
 
@@ -464,6 +466,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun handlePageMode() {
         if (pageMode == PageMode.CREATE) {
             viewModel.storeAsDefaultSelection(defaultState)
+            viewModel.getVpsPackages(0)
         }
 
         if (pageMode == PageMode.UPDATE) {
@@ -774,13 +777,14 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.tickerLapsedTeaser?.gone()
     }
 
-    private fun displayCampaignDetail(campaign: CampaignUiModel) {
+    private fun displayCampaignDetail(combinedData: CampaignWithVpsPackages) {
+        val campaign = combinedData.campaign
+        val quotaSource = viewModel.findDefaultQuotaSourceOnEditMode(campaign.packageInfo.packageId, combinedData.vpsPackages)
+
         binding?.run {
             tauCampaignName.editText.setText(campaign.campaignName)
 
-            val remainingVpsPackage = String.format(getString(R.string.sfs_placeholder_remaining_vps_quota), 0, 30)
-            tauVpsPackageName.editText.setText(campaign.packageInfo.packageName)
-            tauVpsPackageName.setMessage(remainingVpsPackage)
+            updateQuotaSource(quotaSource)
 
             val isEditDateEnabled = campaign.status == CampaignStatus.DRAFT
             tauStartDate.editText.setText(campaign.startDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
@@ -809,6 +813,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
         viewModel.setSelectedVpsPackageId(campaign.packageInfo.packageId)
+        viewModel.storeVpsPackage(combinedData.vpsPackages)
+        viewModel.setSelectedVpsPackageId(quotaSource?.packageId.orZero())
 
         viewModel.storeAsDefaultSelection(
             CampaignInformationViewModel.Selection(
@@ -984,7 +990,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun displayQuotaSourceBottomSheet() {
-        val vpsPackages = ArrayList(viewModel.getVpsPackages())
+        val vpsPackages = ArrayList(viewModel.getStoredVpsPackages())
         val bottomSheet = VpsPackageBottomSheet.newInstance(viewModel.getSelectedVpsPackageId(), vpsPackages)
         bottomSheet.setOnVpsPackageClicked { selectedVpsPackage ->
             viewModel.setSelectedVpsPackageId(selectedVpsPackage.packageId)

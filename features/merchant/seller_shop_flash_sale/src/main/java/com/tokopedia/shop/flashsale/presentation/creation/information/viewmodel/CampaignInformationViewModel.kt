@@ -20,6 +20,7 @@ import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
+import com.tokopedia.shop.flashsale.domain.entity.aggregate.CampaignWithVpsPackages
 import com.tokopedia.shop.flashsale.domain.entity.enums.PageMode
 import com.tokopedia.shop.flashsale.domain.entity.enums.PaymentType
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignCreationUseCase
@@ -33,6 +34,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.async
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -71,8 +73,8 @@ class CampaignInformationViewModel @Inject constructor(
     val campaignUpdate: LiveData<Result<CampaignCreationResult>>
         get() = _campaignUpdate
 
-    private val _campaignDetail= MutableLiveData<Result<CampaignUiModel>>()
-    val campaignDetail: LiveData<Result<CampaignUiModel>>
+    private val _campaignDetail= MutableLiveData<Result<CampaignWithVpsPackages>>()
+    val campaignDetail: LiveData<Result<CampaignWithVpsPackages>>
         get() = _campaignDetail
 
     private val _saveDraft= MutableLiveData<Result<CampaignCreationResult>>()
@@ -312,10 +314,19 @@ class CampaignInformationViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = getSellerCampaignDetailUseCase.execute(campaignId)
-                relatedCampaigns = result.relatedCampaigns
-                isCampaignRuleSubmit = result.isCampaignRuleSubmit
-                _campaignDetail.postValue(Success(result))
+                val campaignDetailDeferred = async { getSellerCampaignDetailUseCase.execute(campaignId) }
+                val vpsPackagesDeferred = async { getSellerCampaignPackageListUseCase.execute() }
+
+                val campaignDetail = campaignDetailDeferred.await()
+                val vpsPackages = vpsPackagesDeferred.await()
+
+                val updatedVpsPackage = applySelectionRule(campaignDetail.packageInfo.packageId, vpsPackages)
+
+                relatedCampaigns = campaignDetail.relatedCampaigns
+                isCampaignRuleSubmit = campaignDetail.isCampaignRuleSubmit
+
+                val combinedCampaignData = CampaignWithVpsPackages(campaignDetail, updatedVpsPackage)
+                _campaignDetail.postValue(Success(combinedCampaignData))
             },
             onError = { error ->
                 _campaignDetail.postValue(Fail(error))
@@ -536,8 +547,19 @@ class CampaignInformationViewModel @Inject constructor(
         this.storedVpsPackages = vpsPackages
     }
 
-    fun getVpsPackages(): List<VpsPackageUiModel> {
+    fun getStoredVpsPackages(): List<VpsPackageUiModel> {
         return this.storedVpsPackages
     }
+
+    fun findDefaultQuotaSourceOnEditMode(selectedVpsPackageId: Long, vpsPackages: List<VpsPackageUiModel>): VpsPackageUiModel? {
+        val selectedVpsPackage: VpsPackageUiModel? = vpsPackages.find { vpsPackage ->  vpsPackage.packageId == selectedVpsPackageId}
+        return if (selectedVpsPackage == null) {
+            //Backward compatibility: If user edit draft and hasn't select quota source previously, then set to shop tier benefit
+             vpsPackages.firstOrNull()
+        } else {
+            selectedVpsPackage
+        }
+    }
+
 
 }
