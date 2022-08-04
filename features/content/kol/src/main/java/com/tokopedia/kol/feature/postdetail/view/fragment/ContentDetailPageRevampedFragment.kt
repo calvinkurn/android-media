@@ -184,15 +184,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     }
                 }
             })
-            vodViewData.observe(viewLifecycleOwner,  {
-                when (it) {
-                    is Success -> {
-                        onSuccessAddViewVODPost(it.data.rowNumber)
-                    }
-                    //TODO fail case
-                    else ->{}
-                }
-            })
             longVideoViewTrackResponse.observe(viewLifecycleOwner,  {
                 when (it) {
                     is Success -> {
@@ -258,6 +249,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         observeFollowShop()
         observeDeleteContent()
         observeReportContent()
+        observeTrackVisitChannel()
     }
 
     private fun setupView(view: View) {
@@ -1096,6 +1088,18 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                                 .show()
                         }
                     }
+                }
+            }
+        })
+    }
+
+    private fun observeTrackVisitChannel() {
+        viewModel.vodViewData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {}
+                is ContentDetailResult.Success ->  onSuccessAddViewVODPost(it.data.rowNumber)
+                is ContentDetailResult.Failure -> {
+                    //TODO fail case
                 }
             }
         })

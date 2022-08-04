@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.kol.common.util.ContentDetailResult
@@ -14,11 +13,8 @@ import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationPostUseCase
 import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
+import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.NON_LOGIN_USER_ID
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.DeleteContentModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ReportContentModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
@@ -41,7 +37,6 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val getPostDetailUseCase: GetPostDetailUseCase,
     private val likeKolPostUseCase: LikeKolPostUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
-    private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
     private val repository: ContentDetailRepository,
     private val mapper: ContentDetailMapper,
 ): BaseViewModel(dispatcher.main) {
@@ -53,7 +48,7 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val _likeKolResp = MutableLiveData<Result<LikeKolViewModel>>()
     private val _followShopObservable = MutableLiveData<ContentDetailResult<ShopFollowModel>>()
     private val _longVideoViewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
-    private val _trackVODViewsData = MutableLiveData<Result<ViewsKolModel>>()
+    private val _trackVodVisitChannelData = MutableLiveData<ContentDetailResult<VisitChannelModel>>()
     private val _atcResp = MutableLiveData<Result<AtcViewModel>>()
     private val _reportResponse = MutableLiveData<ContentDetailResult<ReportContentModel>>()
     private val _deletePostResp = MutableLiveData<ContentDetailResult<DeleteContentModel>>()
@@ -73,8 +68,8 @@ class ContentDetailRevampViewModel @Inject constructor(
     val longVideoViewTrackResponse: LiveData<Result<ViewsKolModel>>
        get() = _longVideoViewTrackResponse
 
-    val vodViewData: LiveData<Result<ViewsKolModel>>
-        get() = _trackVODViewsData
+    val vodViewData: LiveData<ContentDetailResult<VisitChannelModel>>
+        get() = _trackVodVisitChannelData
 
     val atcRespData: LiveData<Result<AtcViewModel>>
         get() = _atcResp
@@ -199,19 +194,18 @@ class ContentDetailRevampViewModel @Inject constructor(
         }
     }
 
-    fun trackVisitChannel(channelId: String,rowNumber: Int) {
-
-        launchCatchError(dispatcher.io, block = {
-            trackVisitChannelBroadcasterUseCase.setRequestParams(FeedBroadcastTrackerUseCase.createParams(channelId))
-            val trackResponse = trackVisitChannelBroadcasterUseCase.executeOnBackground()
-            val data = ViewsKolModel()
-            data.rowNumber = rowNumber
-            data.isSuccess = trackResponse.reportVisitChannelTracking.success
-            _trackVODViewsData.postValue(Success(data))
+    fun trackVisitChannel(channelId: String, rowNumber: Int) {
+        _trackVodVisitChannelData.value = ContentDetailResult.Loading
+        launchCatchError(block = {
+            repository.trackVisitChannel(channelId)
+            _trackVodVisitChannelData.value = ContentDetailResult.Success(
+                mapper.mapVisitChannel(rowNumber)
+            )
         }) {
-            _trackVODViewsData.postValue(Fail(it))
+            _trackVodVisitChannelData.value = ContentDetailResult.Failure(it)
         }
     }
+
     fun trackLongVideoView(activityId: String, rowNumber: Int) {
 
         launchCatchError(dispatcher.io, block = {

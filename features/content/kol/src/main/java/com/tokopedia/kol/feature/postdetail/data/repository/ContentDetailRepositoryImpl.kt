@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.postdetail.data.repository
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
@@ -30,6 +31,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val addToWishlistUseCase: AddToWishlistV2UseCase,
     private val submitActionContentUseCase: SubmitActionContentUseCase,
     private val submitReportContentUseCase: SubmitReportContentUseCase,
+    private val trackVisitChannelUseCase: FeedBroadcastTrackerUseCase,
 ) : ContentDetailRepository {
 
     override suspend fun followShop(shopId: String, action: ShopFollowAction) {
@@ -91,13 +93,23 @@ class ContentDetailRepositoryImpl @Inject constructor(
         contentId: String,
         reasonType: String,
         reasonMessage: String
-    ) {
+    ) = withContext(dispatcher.io) {
         submitReportContentUseCase.setRequestParams(
             SubmitReportContentUseCase.createParam(contentId, reasonType, reasonMessage)
         )
         val response = submitReportContentUseCase.executeOnBackground()
         if (TextUtils.isEmpty(response.content.errorMessage).not()) {
             throw MessageErrorException(response.content.errorMessage)
+        }
+    }
+
+    override suspend fun trackVisitChannel(channelId: String): Boolean {
+        return withContext(dispatcher.io) {
+            trackVisitChannelUseCase.setRequestParams(
+                FeedBroadcastTrackerUseCase.createParams(channelId)
+            )
+            val response = trackVisitChannelUseCase.executeOnBackground()
+            response.reportVisitChannelTracking.success
         }
     }
 }

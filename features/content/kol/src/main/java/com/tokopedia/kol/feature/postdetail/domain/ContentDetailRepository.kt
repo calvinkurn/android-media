@@ -34,4 +34,8 @@ interface ContentDetailRepository {
         reasonType: String,
         reasonMessage: String,
     )
+
+    suspend fun trackVisitChannel(
+        channelId: String,
+    ): Boolean
 }
