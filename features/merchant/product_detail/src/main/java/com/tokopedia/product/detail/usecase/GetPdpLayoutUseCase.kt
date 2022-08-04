@@ -215,6 +215,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       title
                       isApplink
                       applink
+                      lightIcon
+                      darkIcon
                       content {
                         icon
                         text
