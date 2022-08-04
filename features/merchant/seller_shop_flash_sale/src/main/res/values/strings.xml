@@ -123,6 +123,8 @@
     <string name="sfs_min_hex_color_length">Min. 6 karakter</string>
     <string name="sfs_green_dot">Indikator campaign aktif</string>
     <string name="sfs_placeholder_remaining_vps_quota">Sisa kuota %d/%d Campaign</string>
+    <string name="sfs_placeholder_vps_quota_period">berlaku untuk periode campaign dari %s - %s</string>
+    <string name="sfs_placeholder_shop_tier_vps_quota_period">Kuota %s - %s</string>
 
     <string name="sfs_error_message_schedule_lapsed_title">Jadwal campaign pilihanmu sudah lewat</string>
     <string name="sfs_error_message_schedule_lapsed_description">Yuk, atur ulang jadwal campaignmu dulu!</string>

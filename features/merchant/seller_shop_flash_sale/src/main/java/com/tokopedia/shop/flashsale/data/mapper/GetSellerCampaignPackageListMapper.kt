@@ -1,5 +1,6 @@
 package com.tokopedia.shop.flashsale.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.data.response.GetSellerCampaignPackageListResponse
 import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import javax.inject.Inject
@@ -12,11 +13,10 @@ class GetSellerCampaignPackageListMapper @Inject constructor() {
                 currentPackage.currentQuota,
                 currentPackage.isDisabled,
                 currentPackage.originalQuota,
-                currentPackage.packageEndTime,
+                currentPackage.packageEndTime.toLongOrZero(),
                 currentPackage.packageId,
                 currentPackage.packageName,
-                currentPackage.packageStartTime,
-                isSelected = false
+                currentPackage.packageStartTime.toLongOrZero()
             )
         }
     }

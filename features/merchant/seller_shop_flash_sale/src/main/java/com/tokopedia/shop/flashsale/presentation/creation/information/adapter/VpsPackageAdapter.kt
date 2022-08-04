@@ -6,20 +6,21 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemVpsPackageBinding
-import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
 
 class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
 
-    private var onVpsPackageClicked: (VpsPackage) -> Unit = {}
+    private var onVpsPackageClicked: (VpsPackageUiModel) -> Unit = {}
 
-    private val differCallback = object : DiffUtil.ItemCallback<VpsPackage>() {
-        override fun areItemsTheSame(oldItem: VpsPackage, newItem: VpsPackage): Boolean {
+    private val differCallback = object : DiffUtil.ItemCallback<VpsPackageUiModel>() {
+        override fun areItemsTheSame(oldItem: VpsPackageUiModel, newItem: VpsPackageUiModel): Boolean {
             return oldItem.isSelected == newItem.isSelected
         }
 
-        override fun areContentsTheSame(oldItem: VpsPackage, newItem: VpsPackage): Boolean {
+        override fun areContentsTheSame(oldItem: VpsPackageUiModel, newItem: VpsPackageUiModel): Boolean {
             return oldItem == newItem
         }
     }
@@ -39,7 +40,7 @@ class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
         holder.bind(differ.currentList[position])
     }
 
-    fun setOnVpsPackageClicked(onVpsPackageClicked: (VpsPackage) -> Unit) {
+    fun setOnVpsPackageClicked(onVpsPackageClicked: (VpsPackageUiModel) -> Unit) {
         this.onVpsPackageClicked = onVpsPackageClicked
     }
 
@@ -47,14 +48,20 @@ class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
         private val binding: SsfsItemVpsPackageBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(vpsPackage: VpsPackage) {
+        fun bind(vpsPackage: VpsPackageUiModel) {
             binding.radioButton.isSelected =  vpsPackage.isSelected
+
             binding.tpgProductName.text = vpsPackage.packageName
-            binding.tpgRemainingQuota.setRemainingQuota(vpsPackage)
+
+            binding.tpgRemainingQuota.setPackageRemainingQuota(vpsPackage)
+
+            binding.tpgPeriod.setPackagePeriod(vpsPackage)
+            binding.tpgPeriod.isVisible = !vpsPackage.isShopTierBenefit
+
             binding.root.setOnClickListener { onVpsPackageClicked(vpsPackage) }
         }
 
-        private fun AppCompatTextView.setRemainingQuota(vpsPackage: VpsPackage) {
+        private fun AppCompatTextView.setPackageRemainingQuota(vpsPackage: VpsPackageUiModel) {
             val quota = String.format(
                 context.getString(R.string.sfs_placeholder_remaining_vps_quota),
                 vpsPackage.currentQuota,
@@ -62,13 +69,22 @@ class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
             )
             this.text = quota
         }
+
+        private fun AppCompatTextView.setPackagePeriod(vpsPackage: VpsPackageUiModel) {
+            val quota = String.format(
+                context.getString(R.string.sfs_placeholder_vps_quota_period),
+                vpsPackage.formattedPackageStartTime,
+                vpsPackage.formattedPackageEndTime
+            )
+            this.text = quota
+        }
     }
 
-    fun submit(newGradients: List<VpsPackage>) {
+    fun submit(newGradients: List<VpsPackageUiModel>) {
         differ.submitList(newGradients)
     }
 
-    fun snapshot(): List<VpsPackage> {
+    fun snapshot(): List<VpsPackageUiModel> {
         return differ.currentList
     }
 }
