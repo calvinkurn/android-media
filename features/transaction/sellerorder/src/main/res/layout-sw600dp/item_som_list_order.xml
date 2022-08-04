@@ -12,8 +12,15 @@
         android:layout_marginStart="6dp"
         android:layout_marginTop="6dp"
         app:layout_constraintStart_toStartOf="@id/cardSomOrder"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@drawable/ic_som_list_order_plus_ribbon">
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_som_list_ribbon_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            app:unify_image_corner_radius="0"
+            tools:srcCompat="@drawable/ic_som_list_order_plus_ribbon" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/icSomListOrderPlusRibbon"

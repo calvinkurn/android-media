@@ -30,7 +30,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/checkBoxBulkAction"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         tools:text="2 Pesanan" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -42,6 +42,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6" />
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
