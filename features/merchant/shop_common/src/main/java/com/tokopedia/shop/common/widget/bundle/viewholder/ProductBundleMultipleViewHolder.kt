@@ -77,7 +77,7 @@ class ProductBundleMultipleViewHolder(
         initPreorderAndSoldItem(bundleDetail)
         initShopInfo(bundleDetail.shopInfo, bundle.bundleName)
         initBundleProductsRecyclerView(bundleDetail.products.size, bundle, bundleDetail)
-        initActionButton(bundle.atcButtonText, bundleDetail.isPreOrder)
+        initActionButton(bundle.actionButtonText, bundleDetail.isPreOrder)
         initListener(bundle, bundleDetail, bundleDetail.products)
     }
 

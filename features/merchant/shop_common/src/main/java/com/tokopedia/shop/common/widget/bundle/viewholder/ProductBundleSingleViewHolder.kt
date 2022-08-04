@@ -85,7 +85,7 @@ class ProductBundleSingleViewHolder(
 
         initPreorderAndSoldItem(bundleDetail)
         initShopInfo(bundleDetail.shopInfo, bundle.bundleName)
-        initActionButton(bundle.atcButtonText, bundleDetail.isPreOrder)
+        initActionButton(bundle.actionButtonText, bundleDetail.isPreOrder)
         initListener(bundle, bundleDetail, product)
     }
 
