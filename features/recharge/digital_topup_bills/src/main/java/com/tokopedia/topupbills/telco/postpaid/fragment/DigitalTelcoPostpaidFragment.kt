@@ -138,6 +138,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
             rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
         }
+        showTickerIsUnVerifiedPhoneNumber()
     }
 
     override fun getClientInputNumber(): DigitalClientNumberWidget = postpaidClientNumberWidget
