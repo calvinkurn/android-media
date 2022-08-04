@@ -185,12 +185,16 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
     }
 
     private fun convertToCreateButton() {
+        val arrayProductIds = arrayListOf<String>()
+        if (_productIds.isNotEmpty()) {
+            arrayProductIds.add(_productIds)
+        }
         binding?.run {
             collectionCreateButton.apply {
                 isEnabled = true
                 text = getString(Rwishlist.string.collection_create_bottomsheet_button_label)
                 setOnClickListener {
-                    createNewCollection(newCollectionName)
+                    saveNewCollection(newCollectionName, arrayProductIds)
                 }
             }
         }
@@ -316,20 +320,20 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
             when (result) {
                 is Success -> {
                     if (result.data.status == OK) {
-                        actionListenerFromPdp?.onSuccessSaveToNewCollection(result.data.dataItem.message)
                         dismiss()
+                        actionListenerFromPdp?.onSuccessSaveToNewCollection(result.data.dataItem.message)
                     } else {
+                        dismiss()
                         val errorMessage = result.data.errorMessage.first().ifEmpty {
                             getString(Rwishlist.string.wishlist_common_error_msg)
                         }
                         actionListenerFromPdp?.onFailedSaveToNewCollection(errorMessage)
-                        dismiss()
                     }
                 }
                 is Fail -> {
+                    dismiss()
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     actionListenerFromPdp?.onFailedSaveToNewCollection(errorMessage)
-                    dismiss()
                 }
             }
         }

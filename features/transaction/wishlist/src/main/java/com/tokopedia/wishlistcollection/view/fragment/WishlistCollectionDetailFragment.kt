@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
@@ -428,7 +429,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 showRvWishlist()
                                 isFetchRecommendation = true
                                 hideTotalLabel()
-                                hideSortFilter(collectionDetail.sortFilters)
+                                // hideSortFilter(collectionDetail.sortFilters)
                             }
                         } else {
                             hideLoader(collectionDetail.showDeleteProgress)
@@ -610,6 +611,17 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         setToolbarTitle(titleToolbar)
         setSwipeRefreshLayout()
         binding?.run {
+            wishlistCollectionDetailSearchbar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    searchQuery = wishlistCollectionDetailSearchbar.searchBarTextField.text.toString()
+                    if (searchQuery.isNotEmpty()) {
+                        WishlistV2Analytics.submitSearchFromCariProduk(searchQuery)
+                    }
+                    hideKeyboardFromSearchBar()
+                    triggerSearch()
+                }
+                true
+            }
             wishlistCollectionDetailSearchbar.searchBarTextField.addTextChangedListener(object :
                 TextWatcher {
                 var searchFor = ""

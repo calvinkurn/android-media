@@ -165,7 +165,9 @@ class BottomSheetUpdateWishlistCollectionName: BottomSheetUnify(), HasComponent<
                 listCollections.forEach { item ->
                     if (checkName == item.name && checkName != _existingCollectionName) {
                         binding?.run {
-                            collectionCreateNameInputTextField.isInputError = true
+                            if (checkName != _existingCollectionName) {
+                                collectionCreateNameInputTextField.isInputError = true
+                            }
 
                             val labelMessage = context?.getString(R.string.collection_create_bottomsheet_name_error) ?: ""
                             collectionCreateNameInputTextField.setMessage(labelMessage)
