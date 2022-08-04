@@ -127,6 +127,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 return positionInCdp
             }
         },
+
         imageListener = object : CarouselImageViewHolder.Listener {
             override fun onTopAdsCardClicked(
                 viewHolder: CarouselImageViewHolder,
@@ -136,6 +137,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 if (mData.isTypeProductHighlight && mData.useASGCNewDesign) {
                     listener?.onCekSekarangButtonClicked(mData, positionInCdp)
                 }
+            }
 
             override fun onImageClicked(viewHolder: CarouselImageViewHolder) {
                 listener?.onImageClicked(mData)
