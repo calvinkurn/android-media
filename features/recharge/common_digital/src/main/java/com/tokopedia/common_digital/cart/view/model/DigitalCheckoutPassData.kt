@@ -30,7 +30,8 @@ class DigitalCheckoutPassData() : Parcelable {
     var needGetCart: Boolean = false
     var isFromPDP: Boolean = false
     var isSpecialProduct: Boolean = false
-    var deviceId: Int = 5
+    var deviceId: Int = DEFAULT_DEVICE_ID
+    var atcSource: String? = null
 
     constructor(parcel: Parcel) : this() {
         action = parcel.readString()
@@ -232,6 +233,8 @@ class DigitalCheckoutPassData() : Parcelable {
         val UTM_SOURCE_ANDROID = "android"
         val UTM_MEDIUM_WIDGET = "widget"
         val PARAM_FIELD_LABEL_PREFIX = "field_"
+        val PARAM_ATC_SOURCE = "atc_source"
+        val DEFAULT_DEVICE_ID = 5
 
         @JvmField
         val CREATOR: Parcelable.Creator<DigitalCheckoutPassData> = object : Parcelable.Creator<DigitalCheckoutPassData> {

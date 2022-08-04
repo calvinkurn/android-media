@@ -70,7 +70,7 @@ class BankTransferViewHolder(
 
     private fun bindTransactionTimeData(item: BankTransferPaymentModel) {
         view.apply {
-            cardIcon.urlSrc = item.productImage
+            cardIcon.urlSrc = if(item.productImage != "") item.productImage else CARD_ICON_URL
             tvPaymentTransactionDate.text = item.expiryDate
             tvTransactionExpireTime.text =
                 DateFormatUtils.getFormattedDateSeconds(item.expiryTime, "dd MMM, HH:mm")

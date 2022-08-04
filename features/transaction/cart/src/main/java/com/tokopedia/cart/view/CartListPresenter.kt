@@ -22,7 +22,20 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
-import com.tokopedia.cart.view.subscriber.*
+import com.tokopedia.cart.view.subscriber.AddCartToWishlistSubscriber
+import com.tokopedia.cart.view.subscriber.AddToCartExternalSubscriber
+import com.tokopedia.cart.view.subscriber.AddToCartSubscriber
+import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
+import com.tokopedia.cart.view.subscriber.ClearRedPromosBeforeGoToCheckoutSubscriber
+import com.tokopedia.cart.view.subscriber.FollowShopSubscriber
+import com.tokopedia.cart.view.subscriber.GetRecentViewSubscriber
+import com.tokopedia.cart.view.subscriber.GetRecommendationSubscriber
+import com.tokopedia.cart.view.subscriber.GetWishlistSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateAndReloadCartSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartAndValidateUseSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartSubscriber
+import com.tokopedia.cart.view.subscriber.ValidateUseSubscriber
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
@@ -1150,7 +1163,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemHolderData: CartItemHolderData): EnhancedECommerceProductCartMapData {
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setDimension80(
+            setDimension38(
                     if (cartItemHolderData.trackerAttribution.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
@@ -1182,13 +1195,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setCartId(cartItemHolderData.cartId)
             setPromoCode(cartItemHolderData.promoCodes)
             setPromoDetails(cartItemHolderData.promoDetails)
-            setDimension83(
-                    when {
-                        cartItemHolderData.isFreeShippingExtra -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA
-                        cartItemHolderData.isFreeShipping -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR
-                        else -> EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                    }
-            )
+            setDimension83(cartItemHolderData.freeShippingName)
             setDimension117(cartItemHolderData.bundleType)
             setDimension118(cartItemHolderData.bundleId)
             setCampaignId(cartItemHolderData.campaignId)
