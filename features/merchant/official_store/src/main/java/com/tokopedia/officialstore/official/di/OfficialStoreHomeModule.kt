@@ -67,5 +67,4 @@ class OfficialStoreHomeModule {
     fun provideGetTopAdsHeadlineUseCase(graphqlRepository: GraphqlRepository): GetTopAdsHeadlineUseCase {
         return GetTopAdsHeadlineUseCase(graphqlRepository)
     }
-
 }

@@ -123,5 +123,4 @@ class FavoriteModule {
     fun provideTopAdsService(@TopAdsQualifier retrofit: Retrofit): TopAdsService {
         return retrofit.create(TopAdsService::class.java)
     }
-
 }
