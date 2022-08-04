@@ -37,8 +37,7 @@ import com.tokopedia.kol.feature.postdetail.view.activity.ContentDetailActivity
 import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailPageRevampAdapter
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARGS_AUTHOR_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARGS_IS_POST_FOLLOWED
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARGS_POST_TYPE
@@ -52,8 +51,6 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampAr
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.START_TIME
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.TYPE_CONTENT_PREVIEW_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.VOD_POST
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailRevampViewModel
 import com.tokopedia.kol.feature.video.view.fragment.*
@@ -66,6 +63,10 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -83,10 +84,13 @@ import com.tokopedia.network.R as networkR
  * Created by shruti agarwal on 15/06/22
  */
 
-class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPostViewHolder.CDPListener, ShareCallback, ProductItemInfoBottomSheet.Listener{
+class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheetListener,
+    ContentDetailPostViewHolder.CDPListener, ProductItemInfoBottomSheet.Listener {
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
+    private var rowNumberWhenShareClicked = 0
+    private var dissmisByGreyArea = true
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private lateinit var reportBottomSheet: ReportBottomSheet
     private lateinit var productTagBS: ProductItemInfoBottomSheet
@@ -104,8 +108,10 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     @Inject
     lateinit var analyticsTracker: ContentDetailNewPageAnalytics
 
+    var universalShareBottomSheet: UniversalShareBottomSheet? = null
+
+
     private lateinit var shareData: LinkerData
-    private var shareBottomSheetProduct = false
 
     private val viewModel: ContentDetailRevampViewModel by lazy {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -594,6 +600,8 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
     override fun onSharePostClicked(feedXCard: FeedXCard, postPosition: Int) {
 
+        rowNumberWhenShareClicked = postPosition
+
         val trackerId = getTrackerID(
             feedXCard,
             trackerIdSgc = "33263",
@@ -605,37 +613,90 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         )
         analyticsTracker.sendClickShareSgcImageEvent(getContentDetailAnalyticsData(feedXCard, trackerId = trackerId))
 
+        showUniversalShareBottomSheet(getContentShareDataModel(feedXCard))
+
         activity?.let {
-            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
-                .setName(String.format(getString(kolR.string.feed_share_title), feedXCard.author.name))
-                .setDescription(String.format(getString(kolR.string.feed_share_desc_text), feedXCard.author.name))
+            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder()
+                .setId(feedXCard.id.toString())
+                .setName(
+                    String.format(
+                        getString(kolR.string.feed_share_title),
+                        feedXCard.author.name
+                    )
+                )
+                .setDescription(
+                    String.format(
+                        getString(kolR.string.feed_share_desc_text),
+                        feedXCard.author.name
+                    )
+                )
                 .setDesktopUrl(feedXCard.webLink)
                 .setType(LinkerData.FEED_TYPE)
                 .setImgUri(feedXCard.media.firstOrNull()?.mediaUrl ?: "")
                 .setDeepLink(feedXCard.appLink)
 
-                shareBottomSheetProduct = false
-                shareDataBuilder.apply {
-                    setUri(feedXCard.webLink)
-                }
+            shareDataBuilder.apply {
+                setUri(feedXCard.webLink)
+            }
 
             shareData = shareDataBuilder.build()
-
-            val linkerShareData = DataMapper().getLinkerShareData(shareData)
-            LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(
-                    0,
-                    linkerShareData,
-                    this
-                )
-            )
         }
 
     }
 
+    private fun getContentShareDataModel(feedXCard: FeedXCard) = ContentShareDataModel(
+        id = feedXCard.id,
+        name = feedXCard.author.name,
+        tnTitle =   (String.format(context?.getString(kolR.string.feed_share_title)?:"", feedXCard.author.name)),
+        tnImage = feedXCard.media.firstOrNull()?.mediaUrl ?: "",
+        ogUrl = feedXCard.media.firstOrNull()?.mediaUrl ?: "",
+    )
+
+    private fun getContentShareDataModel(product: ProductPostTagViewModelNew) = ContentShareDataModel(
+        id = product.id,
+        name = product.shopName,
+        tnTitle =   (String.format(context?.getString(kolR.string.feed_share_title)?:"", product.shopName)),
+        tnImage = product.imgUrl,
+        ogUrl = product.imgUrl,
+    )
+
+
+    private fun showUniversalShareBottomSheet(contentShareDataModel: ContentShareDataModel) {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@ContentDetailPageRevampedFragment)
+                setUtmCampaignData(
+                    pageName = "Content Detail Page",
+                    userSession.userId,
+                    contentShareDataModel.id,
+                   "share"
+                )
+
+            setMetaData(
+                tnTitle = contentShareDataModel.tnTitle,
+                tnImage = contentShareDataModel.tnImage
+            )
+        }
+        universalShareBottomSheet?.setOnDismissListener {
+            if (dissmisByGreyArea) {
+                if (adapter.getList().size > rowNumberWhenShareClicked) {
+                    val card = adapter.getList()[rowNumberWhenShareClicked]
+                    analyticsTracker.sendClickGreyAreaShareBottomSheet(
+                        getContentDetailAnalyticsData(
+                            card
+                        )
+                    )
+                }
+            }
+        }
+
+        universalShareBottomSheet?.show(fragmentManager, this, null)
+    }
+
+
     private fun onShareProduct(
         item: ProductPostTagViewModelNew
     ) {
+        rowNumberWhenShareClicked = item.positionInFeed
         analyticsTracker.sendClickShareSgcImageBottomSheet(
             ContentDetailPageAnalyticsDataModel(
                 activityId = item.postId.toString(),
@@ -658,9 +719,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        shareBottomSheetProduct = false
         activity?.let {
-            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+            val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
+                .setId(item.id)
                 .setName(item.text)
                 .setDescription(item.description)
                 .setImgUri(item.imgUrl)
@@ -670,14 +731,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 .setDesktopUrl(item.weblink)
 
             shareData = linkerBuilder.build()
-            val linkerShareData = DataMapper().getLinkerShareData(shareData)
-            LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(
-                    0,
-                    linkerShareData,
-                    this
-                )
-            )
+            showUniversalShareBottomSheet(getContentShareDataModel(item))
         }
 
     }
@@ -1191,14 +1245,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         }
     }
 
-    override fun urlCreated(linkerShareData: LinkerShareResult?) {
-        val intent: Intent = if (shareBottomSheetProduct) {
-            getIntent(linkerShareData?.url ?: "")
-        } else {
-            getIntent()
-        }
-        activity?.startActivity(Intent.createChooser(intent, shareData.name))
-    }
 
     private fun createDeleteDialog(contentId: String, rowNumber: Int) {
         val dialog =
@@ -1256,21 +1302,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         }
     }
 
-    private fun getIntent(shareUrl: String = ""): Intent {
-        val shareUri: String = if (shareUrl.isNotEmpty()) {
-            shareUrl
-        } else {
-            shareData.uri
-        }
-        return Intent().apply {
-            action = Intent.ACTION_SEND
-            type = SHARE_TYPE
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            putExtra(Intent.EXTRA_TITLE, shareData.name)
-            putExtra(Intent.EXTRA_SUBJECT, shareData.name)
-            putExtra(Intent.EXTRA_TEXT, shareData.description + "\n" + shareUri)
-        }
-    }
 
     private fun onGoToLink(link: String) {
         context?.let {
@@ -1285,10 +1316,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 }
             }
         }
-    }
-
-
-    override fun onError(linkerError: LinkerError?) {
     }
 
     override fun onBottomSheetThreeDotsClicked(
@@ -1641,6 +1668,60 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 //            onRefresh()
         }
     }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+         dissmisByGreyArea = false
+        if (adapter.getList().size > rowNumberWhenShareClicked) {
+            val card = adapter.getList()[rowNumberWhenShareClicked]
+            analyticsTracker.sendClickShareOptionInShareBottomSheet(getContentDetailAnalyticsData(card))
+            universalShareBottomSheet?.dismiss()
+        }
+
+        val linkerShareData = DataMapper().getLinkerShareData(shareData)
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    context?.let {
+
+                        var shareString =  shareData.description +"\n" + linkerShareData?.shareUri
+                        SharingUtil.executeShareIntent(
+                            shareModel,
+                            linkerShareData,
+                            activity,
+                            view,
+                            shareString
+                        )
+
+                        when (UniversalShareBottomSheet.getShareBottomSheetType()) {
+                            UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET -> {
+//                                userProfileTracker?.clickChannelScreenshotShareBottomsheet(userId, profileUserId == userId)
+                            }
+                            UniversalShareBottomSheet.CUSTOM_SHARE_SHEET -> {
+                                shareModel.channel?.let { it1 ->
+//                                    userProfileTracker?.clickShareChannel(userId, profileUserId == userId, it1)
+                                }
+                            }
+                        }
+                        universalShareBottomSheet?.dismiss()
+                    }
+                }
+
+                override fun onError(linkerError: LinkerError?) {
+                    //Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
+                }
+            })
+        )
+    }
+
+    override fun onCloseOptionClicked() {
+        dissmisByGreyArea = false
+        if (adapter.getList().size > rowNumberWhenShareClicked) {
+            val card = adapter.getList()[rowNumberWhenShareClicked]
+            analyticsTracker.sendClickXShareDetailPage(getContentDetailAnalyticsData(card))
+
+        }
+    }
+
     private fun getContentDetailAnalyticsData(feedXCard: FeedXCard, postPosition: Int = 0, trackerId : String= "", hashTag: String= "", duration: Long = 0L, product: FeedXProduct = FeedXProduct()) = ContentDetailPageAnalyticsDataModel(
         activityId = if (feedXCard.isTypeVOD) feedXCard.playChannelID else feedXCard.id,
         shopId = feedXCard.author.id,
@@ -1665,11 +1746,13 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         trackerIdVod: String = "",
         trackerIdVodRecomm: String = "",
         trackerIdLongVideo: String = "",
+        trackerIdLongVideoRecomm: String = "",
         trackerIdSgcVideo: String = "",
 
     ) = when {
         feedXCard.isTypeVOD -> trackerIdVod
         feedXCard.isTypeLongVideo -> trackerIdLongVideo
+        feedXCard.isTypeLongVideo && !feedXCard.followers.isFollowed -> trackerIdLongVideoRecomm
         feedXCard.isTypeVOD && feedXCard.followers.isFollowed -> trackerIdVodRecomm
         feedXCard.isTypeProductHighlight && feedXCard.followers.isFollowed -> trackerIdAsgc
         feedXCard.isTypeProductHighlight && !feedXCard.followers.isFollowed -> trackerIdAsgcRecom
@@ -1701,9 +1784,5 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         else -> ""
 
     }
-
-
-
-
 
 }

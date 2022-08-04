@@ -1921,7 +1921,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             }
 
-            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder()
+                .setId(id.toString())
                 .setName(title)
                 .setDescription(description)
                 .setDesktopUrl(urlString)

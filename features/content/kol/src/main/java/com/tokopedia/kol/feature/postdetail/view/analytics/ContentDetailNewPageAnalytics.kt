@@ -806,6 +806,57 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
+    fun sendClickXShareDetailPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_SHARE,
+            eventAction = "click - x - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33285" else "34296"
+
+        )
+    }
+
+    fun sendClickShareOptionInShareBottomSheet (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_SHARE,
+            eventAction = "click - share - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
+            eventLabel = EventLabel.getProductShareLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33286" else "34297"
+
+        )
+    }
+
+    fun sendClickGreyAreaShareBottomSheet (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_SHARE,
+            eventAction = "click - grey area - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33287" else "34298"
+
+        )
+    }
+
     //TODO
     fun sendClickBackSgcVideoEvent (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData (
@@ -1117,6 +1168,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         const val CONTENT_DETAIL_PAGE_BOTTOM_SHEET = "content detail page - bottom sheet"
         const val CONTENT_DETAIL_PAGE_REPORT = "content detail page - report"
         const val CONTENT_DETAIL_PAGE_THREE_DOTS = "content detail page - three dots page"
+        const val CONTENT_DETAIL_PAGE_SHARE = "content detail page - share"
     }
 
     private object EventAction {
