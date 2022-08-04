@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/containerTokopediaPlus"
     android:layout_width="match_parent"
     android:layout_height="56dp"
     tools:layout_height="56dp"
-    xmlns:tools="http://schemas.android.com/tools"
     android:paddingHorizontal="8dp"
     android:background="@drawable/bg_border">
 
