@@ -90,10 +90,16 @@ class QuizWidgetView : ConstraintLayout {
         finalPosition = 9f, stiffness = SpringForce.STIFFNESS_VERY_LOW, dampingRatio = SpringForce.DAMPING_RATIO_LOW_BOUNCY, velocity = 0f
     )
 
+    private val rotateBack = AnimationUtils.addSpringAnim(
+        view = binding.root, property = SpringAnimation.ROTATION, startPosition = 9f,
+        finalPosition = 0f, stiffness = SpringForce.STIFFNESS_LOW, dampingRatio = SpringForce.DAMPING_RATIO_HIGH_BOUNCY, velocity = 200f
+    )
+
     private val rotateEndListener =
-        DynamicAnimation.OnAnimationEndListener { animation, canceled, value, velocity ->
-            rotate.animateToFinalPosition(0f)
-            rotate.skipToEnd()
+        DynamicAnimation.OnAnimationUpdateListener { animation, value, velocity ->
+            if(value > 8f)
+                rotate.skipToEnd()
+                rotateBack.start()
         }
 
     init {
@@ -108,7 +114,7 @@ class QuizWidgetView : ConstraintLayout {
         }
 
         binding.quizHeader.isEditable = false
-        rotate.addEndListener(rotateEndListener)
+        rotate.addUpdateListener(rotateEndListener)
     }
 
     override fun onDetachedFromWindow() {
@@ -194,6 +200,7 @@ class QuizWidgetView : ConstraintLayout {
         rotate.cancel()
         scaleBounceX.cancel()
         scaleBounceY.cancel()
-        rotate.removeEndListener(rotateEndListener)
+        rotateBack.cancel()
+        rotate.removeUpdateListener(rotateEndListener)
     }
 }
