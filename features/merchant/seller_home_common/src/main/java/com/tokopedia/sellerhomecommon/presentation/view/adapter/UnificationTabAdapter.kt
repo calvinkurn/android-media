@@ -4,14 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemUnificationTabBinding
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
+import com.tokopedia.unifycomponents.NotificationUnify
 
 /**
  * Created by @ilhamsuaib on 20/07/22.
@@ -64,13 +65,6 @@ class UnificationTabAdapter(
                 tvShcUnificationTabDescription.text = item.tooltip
                 icShcUnificationTabStatus.isVisible = item.isSelected
 
-                if (item.isVisited) {
-                    imgShcUnificationTabDot.gone()
-                } else {
-                    imgShcUnificationTabDot.visible()
-                    imgShcUnificationTabDot.loadImage(R.drawable.ic_shc_tooltip_chart_dot)
-                }
-
                 val isLastItem = adapterPosition == itemCount.minus(Int.ONE)
                 if (isLastItem) {
                     dividerShcUnificationTab.invisible()
@@ -78,8 +72,39 @@ class UnificationTabAdapter(
                     dividerShcUnificationTab.visible()
                 }
 
+                showTag(item.isNew, item.isUnauthorized)
+
                 root.setOnClickListener {
                     onItemClicked(item)
+                }
+            }
+        }
+
+        private fun showTag(isNew: Boolean, isUnauthorized: Boolean) {
+            with(binding) {
+                when {
+                    isNew -> {
+                        shcUnificationTabTag.visible()
+                        val newTag = root.context.getString(R.string.shc_new)
+                        shcUnificationTabTag.setNotification(
+                            newTag,
+                            NotificationUnify.TEXT_TYPE,
+                            NotificationUnify.COLOR_TEXT_TYPE
+                        )
+                    }
+                    isUnauthorized -> {
+                        shcUnificationTabTag.visible()
+                        val newTag = root.context.getString(R.string.shc_no_access)
+                        shcUnificationTabTag.setNotification(
+                            newTag,
+                            NotificationUnify.TEXT_TYPE,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN100
+                        )
+                        shcUnificationTabTag.setTextColor(
+                            root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                        )
+                    }
+                    else -> shcUnificationTabTag.gone()
                 }
             }
         }

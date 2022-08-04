@@ -152,6 +152,7 @@ class UnificationViewHolder(
             imageUrl = SellerHomeUrl.IMG_NO_ACCESS_STATE,
             title = getString(R.string.shc_no_access_state_message)
         )
+        successStateBinding.btnShcUnificationCta.gone()
         showEmptyState(element, unauthorizedStateModel)
     }
 
@@ -163,6 +164,7 @@ class UnificationViewHolder(
         element: UnificationWidgetUiModel,
         emptyState: WidgetEmptyStateUiModel
     ) {
+        successStateBinding.tableShcUnification.gone()
         with(emptyStateBinding) {
             shcViewEmptyStateCommon.visible()
             imgShcEmptyCommon.loadImage(emptyState.imageUrl)

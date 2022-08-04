@@ -54,5 +54,6 @@
     <string name="shc_last_updated_more_then_yesterday">Update terakhir %1$s</string>
     <string name="shc_last_updated">Update terakhir: %1$s</string>
     <string name="shc_new">Baru</string>
+    <string name="shc_no_access">Tidak ada akses</string>
     <string name="shc_no_access_state_message">Oops, kamu tidak punya izin untuk melihat konten ini</string>
 </resources>
