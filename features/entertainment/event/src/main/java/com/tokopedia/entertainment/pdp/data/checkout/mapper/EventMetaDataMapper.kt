@@ -90,6 +90,7 @@ object EventMetaDataMapper {
                     totalPrice = totalPrice,
                     itemIds = convertStringListtoIntList(itemIds),
                     productNames = productNames,
+                    providerIds = listOf(productDetailData.providerId.toInt()),
                     productIds = convertStringListtoIntList(productIds),
                     itemMap = mapToItemMapCheckout(itemMap,productDetailData,packageV3)
             )
