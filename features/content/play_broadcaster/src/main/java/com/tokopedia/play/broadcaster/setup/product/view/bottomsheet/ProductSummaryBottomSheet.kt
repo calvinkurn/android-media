@@ -59,10 +59,6 @@ class ProductSummaryBottomSheet @Inject constructor(
     override fun onPinClicked(product: ProductUiModel) {
         analytic.onClickPinProductBottomSheet(product.id)
         viewModel.submitAction(ProductSetupAction.ClickPinProduct(product))
-        /**
-         * For second event I think you can impress from event fail unpin yang PinnedProductException yaa,
-         * already added but please help to check yaa
-         */
     }
 
     override fun onImpressPinnedProduct(product: ProductUiModel) {
