@@ -24,7 +24,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.wishlist.R
+import com.tokopedia.wishlist.R as Rwishlist
 import com.tokopedia.wishlist.databinding.BottomsheetCreateNewWishlistCollectionBinding
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionNamesResponse
@@ -47,6 +47,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
     private var listCollections: List<GetWishlistCollectionNamesResponse.GetWishlistCollectionNames.DataItem> =
         emptyList()
     private var newCollectionName = ""
+    private var _productIds = ""
     private var actionListenerFromPdp: ActionListenerFromPdp? = null
     private var actionListenerFromCollectionPage: ActionListenerFromCollectionPage? = null
     private val handler = Handler(Looper.getMainLooper())
@@ -89,6 +90,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _productIds = arguments?.getString(PRODUCT_IDs) ?: ""
         initInjector()
         checkLogin()
     }
@@ -133,14 +135,13 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
             collectionCreateButton.isEnabled = false
         }
         setChild(binding?.root)
-        setTitle(getString(R.string.collection_create_bottomsheet_title))
+        setTitle(getString(Rwishlist.string.collection_create_bottomsheet_title))
     }
 
     private fun enableSaveButton() {
-        val productIds = arguments?.getString(PRODUCT_IDs)
         val arrayProductIds = arrayListOf<String>()
-        if (productIds != null && productIds.isNotEmpty()) {
-            arrayProductIds.add(productIds)
+        if (_productIds.isNotEmpty()) {
+            arrayProductIds.add(_productIds)
             binding?.run {
                 collectionCreateButton.apply {
                     isEnabled = true
@@ -160,8 +161,37 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
     private fun disableSaveButton() {
         binding?.run {
             collectionCreateButton.apply {
+                text = getText(Rwishlist.string.collection_create_bottomsheet_button_label)
                 isEnabled = false
                 setOnClickListener { }
+            }
+        }
+    }
+
+    private fun convertToSaveButton() {
+        val arrayProductIds = arrayListOf<String>()
+        if (_productIds.isNotEmpty()) {
+            arrayProductIds.add(_productIds)
+        }
+        binding?.run {
+            collectionCreateButton.apply {
+                isEnabled = true
+                text = getString(Rwishlist.string.collection_save_to_existing_collection)
+                setOnClickListener {
+                    saveNewCollection(newCollectionName, arrayProductIds)
+                }
+            }
+        }
+    }
+
+    private fun convertToCreateButton() {
+        binding?.run {
+            collectionCreateButton.apply {
+                isEnabled = true
+                text = getString(Rwishlist.string.collection_create_bottomsheet_button_label)
+                setOnClickListener {
+                    createNewCollection(newCollectionName)
+                }
             }
         }
     }
@@ -179,32 +209,45 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
     }
 
     private fun checkIsCollectionNameExists(checkName: String) {
-        if (listCollections.isNotEmpty()) {
-            run check@{
-                listCollections.forEach { item ->
-                    if (checkName == item.name) {
-                        binding?.run {
-                            collectionCreateNameInputTextField.isInputError = true
+        if (checkName.isEmpty()) {
+            disableSaveButton()
+        } else {
+            if (listCollections.isNotEmpty()) {
+                run check@{
+                    listCollections.forEach { item ->
+                        if (checkName == item.name) {
+                            binding?.run {
+                                collectionCreateNameInputTextField.isInputError = _productIds.isEmpty()
 
-                            val labelMessage =
-                                context?.getString(R.string.collection_create_bottomsheet_name_error)
-                                    ?: ""
-                            collectionCreateNameInputTextField.setMessage(labelMessage)
-                            disableSaveButton()
-                            return@check
-                        }
-                    } else {
-                        binding?.run {
-                            collectionCreateNameInputTextField.isInputError = false
-                            collectionCreateNameInputTextField.setMessage("")
-                            enableSaveButton()
+                                val labelMessage =
+                                    getString(Rwishlist.string.collection_create_bottomsheet_name_error)
+                                collectionCreateNameInputTextField.setMessage(labelMessage)
+
+                                if (_productIds.isNotEmpty()) {
+                                    convertToSaveButton()
+                                } else {
+                                    disableSaveButton()
+                                }
+                                return@check
+                            }
+                        } else {
+                            binding?.run {
+                                collectionCreateNameInputTextField.isInputError = false
+                                collectionCreateNameInputTextField.setMessage("")
+
+                                if (_productIds.isNotEmpty()) {
+                                    convertToCreateButton()
+                                } else {
+                                    enableSaveButton()
+                                }
+                            }
                         }
                     }
                 }
+            } else {
+                if (checkName.isNotEmpty()) enableSaveButton()
+                else disableSaveButton()
             }
-        } else {
-            if (checkName.isNotEmpty()) enableSaveButton()
-            else disableSaveButton()
         }
     }
 
@@ -253,11 +296,11 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
                         listCollections = result.data.data
                     } else {
                         val errorMessage = result.data.errorMessage.first().ifEmpty {
-                            context?.getString(
-                                R.string.wishlist_common_error_msg
+                            getString(
+                                Rwishlist.string.wishlist_common_error_msg
                             )
                         }
-                        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                        showToaster(errorMessage, "", Toaster.TYPE_ERROR)
                     }
                 }
                 is Fail -> {
@@ -277,9 +320,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
                         dismiss()
                     } else {
                         val errorMessage = result.data.errorMessage.first().ifEmpty {
-                            context?.getString(
-                                R.string.wishlist_common_error_msg
-                            )
+                            getString(Rwishlist.string.wishlist_common_error_msg)
                         }
                         actionListenerFromPdp?.onFailedSaveToNewCollection(errorMessage)
                         dismiss()
@@ -306,11 +347,9 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
                         dismiss()
                     } else {
                         val errorMessage = result.data.errorMessage.first().ifEmpty {
-                            context?.getString(
-                                R.string.wishlist_common_error_msg
-                            )
+                            getString(Rwishlist.string.wishlist_common_error_msg)
                         }
-                        errorMessage?.let { setTextFieldError(it) }
+                        setTextFieldError(errorMessage)
                     }
                 }
                 is Fail -> {
