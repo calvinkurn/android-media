@@ -15,9 +15,8 @@ import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationP
 import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.NON_LOGIN_USER_ID
+import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,7 +34,6 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getRecommendationPostUseCase: GetRecommendationPostUseCase,
     private val getPostDetailUseCase: GetPostDetailUseCase,
-    private val likeKolPostUseCase: LikeKolPostUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
     private val repository: ContentDetailRepository,
     private val mapper: ContentDetailMapper,
@@ -45,7 +43,7 @@ class ContentDetailRevampViewModel @Inject constructor(
 
     private val _getCDPPostRecomData = MutableLiveData<Result<FeedXPostRecommendation>>()
     private val _getCDPPostFirstPostData = MutableLiveData<Result<ContentDetailRevampDataUiModel>>()
-    private val _likeKolResp = MutableLiveData<Result<LikeKolViewModel>>()
+    private val _likeKolResp = MutableLiveData<ContentDetailResult<LikeContentModel>>()
     private val _followShopObservable = MutableLiveData<ContentDetailResult<ShopFollowModel>>()
     private val _longVideoViewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
     private val _trackVodVisitChannelData = MutableLiveData<ContentDetailResult<VisitChannelModel>>()
@@ -59,7 +57,7 @@ class ContentDetailRevampViewModel @Inject constructor(
     val getCDPPostFirstPostData: LiveData<Result<ContentDetailRevampDataUiModel>>
         get() = _getCDPPostFirstPostData
 
-    val getLikeKolResp: LiveData<Result<LikeKolViewModel>>
+    val getLikeKolResp: LiveData<ContentDetailResult<LikeContentModel>>
         get() = _likeKolResp
 
     val followShopObservable: LiveData<ContentDetailResult<ShopFollowModel>>
@@ -131,53 +129,16 @@ class ContentDetailRevampViewModel @Inject constructor(
             throw e
         }
     }
-    fun doLikeKol(id: Int, rowNumber: Int) {
-        launchCatchError(block = {
-            val results = withContext(dispatcher.io) {
-                likeKol(id, rowNumber)
-            }
-            _likeKolResp.value = Success(results)
-        }) {
-            _likeKolResp.value = Fail(it)
-        }
-    }
 
-    fun doUnlikeKol(id: Int, rowNumber: Int) {
+    fun likeContent(contentId: String, action: ContentLikeAction, rowNumber: Int) {
+        _likeKolResp.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            val results = withContext(dispatcher.io) {
-                unlikeKol(id, rowNumber)
-            }
-            _likeKolResp.value = Success(results)
+            repository.likeContent(contentId, action)
+            _likeKolResp.value = ContentDetailResult.Success(
+                mapper.mapLikeContent(rowNumber, action)
+            )
         }) {
-            _likeKolResp.value = Fail(it)
-        }
-    }
-    private fun likeKol(id: Int, rowNumber: Int): LikeKolViewModel {
-        try {
-            val data = LikeKolViewModel()
-            data.id = id
-            data.rowNumber = rowNumber
-            val params = LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like)
-            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().first()
-            data.isSuccess = isSuccess
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
-    private fun unlikeKol(id: Int, rowNumber: Int): LikeKolViewModel {
-        try {
-            val data = LikeKolViewModel()
-            data.id = id
-            data.rowNumber = rowNumber
-            val params =
-                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike)
-            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().first()
-            data.isSuccess = isSuccess
-            return data
-        } catch (e: Throwable) {
-            throw e
+            _likeKolResp.value = ContentDetailResult.Failure(it)
         }
     }
 
