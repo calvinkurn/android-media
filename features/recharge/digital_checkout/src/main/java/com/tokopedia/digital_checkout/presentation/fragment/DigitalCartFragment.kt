@@ -50,6 +50,7 @@ import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckou
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
