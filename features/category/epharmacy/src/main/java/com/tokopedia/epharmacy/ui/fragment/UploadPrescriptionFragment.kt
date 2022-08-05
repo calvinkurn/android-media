@@ -50,6 +50,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -372,7 +373,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     private fun openOrderPage(orderId : Long) {
         view?.let {
             context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_success_text)?.let { successMessage ->
-                Toaster.build(it,successMessage,LENGTH_LONG,TYPE_ERROR).show()
+                Toaster.build(it,successMessage,LENGTH_LONG, TYPE_NORMAL).show()
             }
         }
         activity?.finish()
