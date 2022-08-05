@@ -29,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -238,5 +239,14 @@ class ManageAddressViewModelTest {
         } answers {
             secondArg<(Throwable)-> Unit>().invoke(Throwable())
         }
+    }
+
+    @Test
+    fun `verify when set page source is correctly`() {
+        val source = "source"
+
+        manageAddressViewModel.setPageSource(source)
+
+        assertEquals(manageAddressViewModel.pageSource, source)
     }
 }

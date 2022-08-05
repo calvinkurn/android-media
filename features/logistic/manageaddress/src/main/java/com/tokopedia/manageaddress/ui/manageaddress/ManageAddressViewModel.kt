@@ -70,8 +70,8 @@ class ManageAddressViewModel @Inject constructor(
 
     private val compositeSubscription = CompositeSubscription()
 
-    fun setPageSource(source: String?){
-        if(source!=null){
+    fun setPageSource(source: String?) {
+        if (source!=null) {
             _pageSource = source
         }
     }
