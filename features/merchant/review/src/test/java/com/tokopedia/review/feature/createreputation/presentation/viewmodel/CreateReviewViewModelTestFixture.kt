@@ -30,7 +30,6 @@ import io.mockk.mockkStatic
 import kotlinx.coroutines.delay
 import org.junit.Before
 import org.junit.Rule
-import org.mockito.ArgumentMatchers
 
 abstract class CreateReviewViewModelTestFixture {
 
@@ -49,7 +48,8 @@ abstract class CreateReviewViewModelTestFixture {
         const val SAMPLE_UPLOAD_ID = "abcd-1234-efgh-5678-ijkl"
         const val SAMPLE_VIDEO_URL = "https://www.tokopedia.com/patrick-belly-dancing.mp4"
 
-        const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW = "json/get_reputation_form_use_case_result_success_valid_to_review.json"
+        const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_NON_EMPTY_KEYWORDS = "json/get_reputation_form_use_case_result_success_valid_to_review_with_non_empty_keywords.json"
+        const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_EMPTY_KEYWORDS = "json/get_reputation_form_use_case_result_success_valid_to_review_with_empty_keywords.json"
         const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_INVALID_TO_REVIEW = "json/get_reputation_form_use_case_result_success_invalid_to_review.json"
         const val SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_PRODUCT_DELETED = "json/get_reputation_form_use_case_result_success_product_deleted.json"
         const val SAMPLE_GET_REVIEW_TEMPLATE_RESULT_SUCCESS_EMPTY = "json/get_review_template_use_case_result_success_empty.json"
@@ -97,8 +97,12 @@ abstract class CreateReviewViewModelTestFixture {
 
     protected lateinit var viewModel: CreateReviewViewModel
 
-    protected val getReputationFormUseCaseResultSuccessValid = createSuccessResponse<ProductRevGetForm>(
-        SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW
+    protected val getReputationFormUseCaseResultSuccessValidWithNonEmptyKeywords = createSuccessResponse<ProductRevGetForm>(
+        SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_NON_EMPTY_KEYWORDS
+    ).getSuccessData<ProductRevGetForm>()
+
+    protected val getReputationFormUseCaseResultSuccessValidWithEmptyKeywords = createSuccessResponse<ProductRevGetForm>(
+        SAMPLE_GET_REPUTATION_FORM_USE_CASE_RESULT_SUCCESS_VALID_TO_REVIEW_WITH_EMPTY_KEYWORDS
     ).getSuccessData<ProductRevGetForm>()
 
     protected val getReputationFormUseCaseResultSuccessInvalid = createSuccessResponse<ProductRevGetForm>(
@@ -187,7 +191,7 @@ abstract class CreateReviewViewModelTestFixture {
     }
 
     protected fun mockSuccessGetReputationForm(
-        response: ProductRevGetForm = getReputationFormUseCaseResultSuccessValid
+        response: ProductRevGetForm = getReputationFormUseCaseResultSuccessValidWithNonEmptyKeywords
     ) {
         coEvery { getProductReputationForm.getReputationForm(any()) } returns response
     }

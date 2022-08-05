@@ -236,14 +236,14 @@ class CreateReviewViewModel @Inject constructor(
 
     // region topics state
     val topicsUiState = combine(
-        canRenderForm, reviewForm, ::mapTopics
+        canRenderForm, reviewForm.filterIsInstance(), ::mapTopics
     ).toStateFlow(CreateReviewTopicsUiState.Hidden)
     // endregion topics state
 
     // region text area state
     private val textAreaHint = combine(
-        rating, isOnlyBadRatingOtherCategorySelected, badRatingCategoriesUiState, reviewForm,
-        ::mapTextAreaHint
+        rating, isOnlyBadRatingOtherCategorySelected, badRatingCategoriesUiState,
+        reviewForm.filterIsInstance(), ::mapTextAreaHint
     ).toStateFlow(StringRes(Int.ZERO))
     private val textAreaHelper = combine(
         reviewText, hasIncentive, hasOngoingChallenge, textAreaHasFocus, ::mapTextAreaHelper
@@ -432,7 +432,7 @@ class CreateReviewViewModel @Inject constructor(
         rating: Int,
         isOnlyBadRatingOtherCategorySelected: Boolean,
         badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState,
-        reviewFormResult: ReviewFormRequestState
+        reviewFormResult: ReviewFormRequestSuccessState
     ): StringRes {
         val badRatingCategoriesShowing = badRatingCategoriesUiState is CreateReviewBadRatingCategoriesUiState.Showing
         return if (rating in CreateReviewFragment.RATING_1..CreateReviewFragment.RATING_2) {
@@ -450,14 +450,10 @@ class CreateReviewViewModel @Inject constructor(
         } else if (rating == CreateReviewFragment.RATING_3) {
             StringRes(R.string.review_form_neutral_helper)
         } else {
-            if (reviewFormResult is RequestState.Success && !reviewFormResult.result.productrevGetForm.placeholder.isNullOrBlank()) {
-                StringRes(
-                    R.string.review_raw_string_format,
-                    listOf(reviewFormResult.result.productrevGetForm.placeholder)
-                )
-            } else {
-                StringRes(R.string.review_form_good_helper)
-            }
+            StringRes(
+                R.string.review_raw_string_format,
+                listOf(reviewFormResult.result.productrevGetForm.placeholder.orEmpty())
+            )
         }
     }
 
@@ -593,9 +589,9 @@ class CreateReviewViewModel @Inject constructor(
 
     private fun mapTopics(
         canRenderForm: Boolean,
-        reviewFormRequestResult: ReviewFormRequestState
+        reviewFormRequestResult: ReviewFormRequestSuccessState
     ): CreateReviewTopicsUiState {
-        return if (canRenderForm && reviewFormRequestResult is RequestState.Success) {
+        return if (canRenderForm) {
             if (reviewFormRequestResult.result.productrevGetForm.keywords.isNullOrEmpty()) {
                 CreateReviewTopicsUiState.Hidden
             } else {

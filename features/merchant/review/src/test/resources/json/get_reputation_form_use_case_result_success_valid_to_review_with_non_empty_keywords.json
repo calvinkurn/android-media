@@ -4,6 +4,14 @@
       "reputationIDStr": "910390101",
       "orderID": "1195866520",
       "validToReview": true,
+      "keywords": [
+        "Kualitas",
+        "Pelayanan",
+        "Harga",
+        "Kemasan",
+        "Pengiriman"
+      ],
+      "placeholder": "Contoh: Kualitas materialnya bagus, bikin panas & matangnya rata. Ukuran ini pas buat masak sehari-hari. Wajib punya, deh 👍",
       "productData": {
         "productIDStr": "626102761",
         "productName": "Pr0duct T3st1n6 3m4s 1m1t4s1 2",

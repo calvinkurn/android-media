@@ -29,6 +29,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTickerUiState
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTopicsUiState
 import com.tokopedia.review.utils.assertInstanceOf
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
@@ -283,13 +284,14 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3`() = runBlockingTest {
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_raw_string_format when selected rating is more than 3`() = runBlockingTest {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 4)
         val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
-        Assert.assertEquals(R.string.review_form_good_helper, textAreaUiState.hint.id)
+        Assert.assertEquals(R.string.review_raw_string_format, textAreaUiState.hint.id)
+        Assert.assertEquals(listOf("Contoh: Kualitas materialnya bagus, bikin panas & matangnya rata. Ukuran ini pas buat masak sehari-hari. Wajib punya, deh \uD83D\uDC4D"), textAreaUiState.hint.params)
     }
 
     @Test
@@ -862,6 +864,42 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         setInitialData()
         viewModel.submitReview()
         assertInstanceOf<PostSubmitUiState.ShowThankYouToaster>(viewModel.postSubmitBottomSheetUiState.first())
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when canRenderForm is false`() = runBlockingTest {
+        mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessProductDeleted)
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when postSubmitReviewResult is not success`() = runBlockingTest {
+        mockErrorGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when keywords is empty`() = runBlockingTest {
+        mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessValidWithEmptyKeywords)
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Showing when keywords is not`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewTopicsUiState.Showing>(viewModel.topicsUiState.first())
     }
 
     @Test
@@ -1578,7 +1616,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockk<Bundle>(relaxed = true) {
             every { this@mockk.get(any()) } answers {
                 when (args.first()) {
-                    "savedStateReviewForm" -> ReviewFormRequestSuccessState(getReputationFormUseCaseResultSuccessValid)
+                    "savedStateReviewForm" -> ReviewFormRequestSuccessState(getReputationFormUseCaseResultSuccessValidWithNonEmptyKeywords)
                     "savedStateIncentiveOvo" -> IncentiveOvoRequestSuccessState(getProductIncentiveOvoUseCaseResultSuccessIncentive)
                     "savedStateReviewTemplate" -> ReviewTemplateRequestSuccessState(emptyList())
                     "savedStateBadRatingCategories" -> BadRatingCategoriesRequestSuccessState(getBadRatingCategoryUseCaseResultSuccessNonEmpty.productrevGetBadRatingCategory.list)
