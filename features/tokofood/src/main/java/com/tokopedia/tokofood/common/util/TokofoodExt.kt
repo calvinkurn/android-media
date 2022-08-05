@@ -116,8 +116,7 @@ object TokofoodExt {
             try {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     view.clearFocus()
-                    val imm =
-                        view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(view.windowToken, 0)
                     true
                 } else false
