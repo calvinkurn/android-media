@@ -863,13 +863,13 @@ class ProductListFragment: BaseDaggerFragment(),
             isOrganicAds = item.isOrganicAds,
             topadsTag = item.topadsTag,
             filterSortParams = filterSortParams,
-            componentId = pageComponentId
+            componentId = pageComponentId,
         )
         SearchTracking.trackEventClickSearchResultProduct(
             item.getProductAsObjectDataLayer(filterSortParams, pageComponentId),
             eventLabel,
             userId,
-            productAnalyticsData
+            productAnalyticsData,
         )
     }
 
