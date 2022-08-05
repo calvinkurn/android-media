@@ -77,13 +77,11 @@ class ResolutionSuccessFragment : TkpdBaseV4Fragment() {
         private const val URL_IMAGE = "https://images.tokopedia.net/img/resolution/icons/resolution_success_state.png"
 
         fun createNewInstance(url: String): Fragment {
-            val fragment = ResolutionSuccessFragment()
-            val bundle = Bundle()
-            bundle.apply {
-                putString(KEY_URL, url)
+            return ResolutionSuccessFragment().apply {
+                arguments = Bundle().apply {
+                    putString(KEY_URL, url)
+                }
             }
-            fragment.arguments = bundle
-            return fragment
         }
     }
 }
