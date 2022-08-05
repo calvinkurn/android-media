@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.util.TokofoodExt
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
@@ -226,7 +225,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                 }
             }
 
-            qtyEditorProduct.editText.adjust()
+            qtyEditorProduct.editText.adjustLengthAndAction()
 
             qtyEditorProduct.renderAlphaProductItem(element)
         }
@@ -248,7 +247,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         }
     }
 
-    private fun EditText.adjust() {
+    private fun EditText.adjustLengthAndAction() {
         addTextChangedListener(textWatcher)
         val maxLength = InputFilter.LengthFilter(TokofoodExt.MAXIMUM_QUANTITY_LENGTH)
         filters = arrayOf(maxLength)
