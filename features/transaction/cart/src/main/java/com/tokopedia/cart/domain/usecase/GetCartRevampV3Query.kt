@@ -134,6 +134,11 @@ const val CART_REVAMP_V3_QUERY =
                       eligible
                       badge_url
                     }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
+                      badge_url
+                    }
                     preorder {
                       is_preorder
                       duration
@@ -350,6 +355,11 @@ const val CART_REVAMP_V3_QUERY =
                         eligible
                         badge_url
                       }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
+                        badge_url
+                      }
                       booking_stock
                       is_product_volume_weight
                       initial_price
@@ -421,6 +431,11 @@ const val CART_REVAMP_V3_QUERY =
                     }
                     free_shipping_extra {
                       eligible
+                      badge_url
+                    }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
                       badge_url
                     }
                     preorder {
@@ -598,6 +613,11 @@ const val CART_REVAMP_V3_QUERY =
                       }
                       free_shipping_extra {
                         eligible
+                        badge_url
+                      }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
                         badge_url
                       }
                       booking_stock

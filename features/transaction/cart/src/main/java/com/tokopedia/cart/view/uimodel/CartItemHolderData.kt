@@ -75,6 +75,7 @@ data class CartItemHolderData(
         var promoDetails: String = "",
         var isFreeShippingExtra: Boolean = false,
         var isFreeShipping: Boolean = false,
+        var freeShippingName: String = "",
         var campaignId: String = "",
         var originalQty: Int = 0,
         var originalNotes: String = "",

@@ -45,7 +45,8 @@ data class CartShipmentAddressFormData(
         var prescriptionShowImageUpload: Boolean = false,
         var prescriptionUploadText: String = "",
         var prescriptionLeftIconUrl: String = "",
-        var prescriptionCheckoutId: String = ""
+        var prescriptionCheckoutId: String = "",
+        var upsell: UpsellData = UpsellData()
 ) : Parcelable {
 
     val getAvailablePurchaseProtection: ArrayList<String>

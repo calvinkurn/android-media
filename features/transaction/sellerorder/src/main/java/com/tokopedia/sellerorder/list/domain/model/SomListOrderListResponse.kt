@@ -93,7 +93,10 @@ data class SomListOrderListResponse(
                 val haveProductBundle: Boolean = false,
                 @Expose
                 @SerializedName("bundle_detail")
-                val bundleDetail: BundleDetail? = BundleDetail()
+                val bundleDetail: BundleDetail? = BundleDetail(),
+                @Expose
+                @SerializedName("plus_data")
+                val plusData: PlusData? = null
             ) {
 
                 data class BundleDetail(
@@ -147,7 +150,14 @@ data class SomListOrderListResponse(
                     val picture: String = "",
                     @Expose
                     @SerializedName("product_qty")
-                    val productQty: Int = 1)
+                    val productQty: Int = 1
+                )
+
+                data class PlusData(
+                    @SerializedName("logo_url")
+                    @Expose
+                    val logoUrl: String? = null
+                )
             }
         }
     }

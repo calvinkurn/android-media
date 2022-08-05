@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.view.viewholder.ShipmentCrossSellViewHolder;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
@@ -36,6 +37,7 @@ import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentUpsellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 import com.tokopedia.checkout.view.viewholder.UploadPrescriptionViewHolder;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -155,6 +157,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return ShipmentTickerErrorViewHolder.Companion.getITEM_VIEW_SHIPMENT_TICKER_ERROR();
         } else if (item instanceof UploadPrescriptionUiModel) {
             return UploadPrescriptionViewHolder.Companion.getITEM_VIEW_UPLOAD();
+        } else if (item instanceof ShipmentUpsellModel) {
+            return ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL;
         }
 
         return super.getItemViewType(position);
@@ -196,6 +200,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentTickerErrorViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == UploadPrescriptionViewHolder.Companion.getITEM_VIEW_UPLOAD()) {
             return new UploadPrescriptionViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
+            return new ShipmentUpsellViewHolder(view, shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -233,6 +239,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentTickerErrorViewHolder) holder).bind((ShipmentTickerErrorModel) data);
         } else if (viewType == UploadPrescriptionViewHolder.Companion.getITEM_VIEW_UPLOAD()) {
             ((UploadPrescriptionViewHolder) holder).bindViewHolder((UploadPrescriptionUiModel) data);
+        } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
+            ((ShipmentUpsellViewHolder) holder).bind((ShipmentUpsellModel) data);
         }
     }
 
@@ -283,6 +291,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             shipmentDataList.add(SECOND_HEADER_POSITION, tickerAnnouncementHolderData);
             this.tickerAnnouncementHolderData = tickerAnnouncementHolderData;
         }
+    }
+
+    public void addUpsellData(ShipmentUpsellModel shipmentUpsellModel) {
+        shipmentDataList.add(shipmentUpsellModel);
     }
 
     public void addAddressShipmentData(RecipientAddressModel recipientAddressModel) {
