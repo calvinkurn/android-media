@@ -9,6 +9,7 @@ import android.view.animation.PathInterpolator
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.databinding.WidgetCreateReviewTopicsBinding
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTopicsUiState
+import com.tokopedia.unifycomponents.toPx
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
@@ -33,6 +34,8 @@ class CreateReviewTopics @JvmOverloads constructor(
         private const val AUTO_SCROLL_TO_START_CUBIC_BEZIER_X2 = 0.19f
         private const val AUTO_SCROLL_TO_START_CUBIC_BEZIER_Y1 = 0.01f
         private const val AUTO_SCROLL_TO_START_CUBIC_BEZIER_Y2 = 1.55f
+
+        private const val TOPIC_INSPIRATION_END_PADDING = 16
     }
 
     private var isFirstShow: Boolean = true
@@ -67,8 +70,8 @@ class CreateReviewTopics @JvmOverloads constructor(
     }
 
     private fun animateScrollToEnd(continuation: Continuation<Unit>) {
-        val topicsEndXPos = binding.tvReviewFormTopics.right
-        val scrollViewWidth = binding.root.width
+        val topicsEndXPos = binding.tvReviewFormTopics.right + TOPIC_INSPIRATION_END_PADDING.toPx()
+        val scrollViewWidth = binding.root.width - TOPIC_INSPIRATION_END_PADDING.toPx()
         val topicsFullScrollDistance = topicsEndXPos - scrollViewWidth
         val scrollerX = topicsFullScrollDistance.coerceAtMost(AUTO_SCROLL_MAX_DISTANCE)
         ValueAnimator.ofInt(Int.ZERO, scrollerX).apply {

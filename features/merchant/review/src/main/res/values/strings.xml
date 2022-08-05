@@ -435,4 +435,6 @@
     <string name="ic_create_review_image_remove_content_description">Buang gambar</string>
     <string name="ic_create_review_video_remove_content_description">Buang video</string>
     <string name="image_review_content_description">Lampiran gambar</string>
+
+    <string name="review_raw_string_format">%s</string>
 </resources>

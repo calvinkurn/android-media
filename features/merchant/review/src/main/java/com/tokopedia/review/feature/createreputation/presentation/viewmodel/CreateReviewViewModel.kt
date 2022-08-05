@@ -236,27 +236,14 @@ class CreateReviewViewModel @Inject constructor(
 
     // region topics state
     val topicsUiState = combine(
-        canRenderForm,
-        flow {
-            delay(500L)
-            emit(listOf(
-                "Packaging",
-                "Kesesuaian",
-                "Berfungsi",
-                "Warna",
-                "Penjual",
-                "Ukuran",
-                "Kualitas",
-                "Pengiriman"
-            ))
-        },
-        ::mapTopics
+        canRenderForm, reviewForm, ::mapTopics
     ).toStateFlow(CreateReviewTopicsUiState.Hidden)
     // endregion topics state
 
     // region text area state
     private val textAreaHint = combine(
-        rating, isOnlyBadRatingOtherCategorySelected, badRatingCategoriesUiState, ::mapTextAreaHint
+        rating, isOnlyBadRatingOtherCategorySelected, badRatingCategoriesUiState, reviewForm,
+        ::mapTextAreaHint
     ).toStateFlow(StringRes(Int.ZERO))
     private val textAreaHelper = combine(
         reviewText, hasIncentive, hasOngoingChallenge, textAreaHasFocus, ::mapTextAreaHelper
@@ -444,7 +431,8 @@ class CreateReviewViewModel @Inject constructor(
     private fun mapTextAreaHint(
         rating: Int,
         isOnlyBadRatingOtherCategorySelected: Boolean,
-        badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState
+        badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState,
+        reviewFormResult: ReviewFormRequestState
     ): StringRes {
         val badRatingCategoriesShowing = badRatingCategoriesUiState is CreateReviewBadRatingCategoriesUiState.Showing
         return if (rating in CreateReviewFragment.RATING_1..CreateReviewFragment.RATING_2) {
@@ -462,7 +450,14 @@ class CreateReviewViewModel @Inject constructor(
         } else if (rating == CreateReviewFragment.RATING_3) {
             StringRes(R.string.review_form_neutral_helper)
         } else {
-            StringRes(R.string.review_form_good_helper)
+            if (reviewFormResult is RequestState.Success && !reviewFormResult.result.productrevGetForm.placeholder.isNullOrBlank()) {
+                StringRes(
+                    R.string.review_raw_string_format,
+                    listOf(reviewFormResult.result.productrevGetForm.placeholder)
+                )
+            } else {
+                StringRes(R.string.review_form_good_helper)
+            }
         }
     }
 
@@ -598,13 +593,13 @@ class CreateReviewViewModel @Inject constructor(
 
     private fun mapTopics(
         canRenderForm: Boolean,
-        topics: List<String>
+        reviewFormRequestResult: ReviewFormRequestState
     ): CreateReviewTopicsUiState {
-        return if (canRenderForm) {
-            if (topics.isEmpty()) {
+        return if (canRenderForm && reviewFormRequestResult is RequestState.Success) {
+            if (reviewFormRequestResult.result.productrevGetForm.keywords.isNullOrEmpty()) {
                 CreateReviewTopicsUiState.Hidden
             } else {
-                CreateReviewTopicsUiState.Showing(topics)
+                CreateReviewTopicsUiState.Showing(reviewFormRequestResult.result.productrevGetForm.keywords)
             }
         } else {
             CreateReviewTopicsUiState.Hidden

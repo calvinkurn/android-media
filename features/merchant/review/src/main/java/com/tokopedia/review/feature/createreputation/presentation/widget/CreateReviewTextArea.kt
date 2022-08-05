@@ -102,7 +102,7 @@ class CreateReviewTextArea @JvmOverloads constructor(
     }
 
     private fun WidgetCreateReviewTextAreaBinding.setupHint(hint: StringRes) {
-        layoutTextArea.root.setPlaceholder(hint.getStringValue(context))
+        layoutTextArea.root.setPlaceholder(hint.getStringValueWithDefaultParam(context))
     }
 
     private fun WidgetCreateReviewTextAreaBinding.setupHelper(helper: StringRes) {
