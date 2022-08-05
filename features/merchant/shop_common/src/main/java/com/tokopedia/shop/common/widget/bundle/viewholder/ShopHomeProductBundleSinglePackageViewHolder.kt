@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.databinding.ItemShopHomeBundleProductSingleBinding
+import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -29,6 +30,15 @@ class ShopHomeProductBundleSinglePackageViewHolder(itemView: View): RecyclerView
     }
 
     fun bind(singleBundleDetailVariant: ShopHomeProductBundleDetailUiModel) {
+        typographyVariantPackage?.text = singleBundleDetailVariant.minOrderWording
+        if (singleBundleDetailVariant.isSelected) {
+            itemView.background = itemView.context.getDrawable(R.drawable.bg_product_bundle_item_single_package_active)
+        } else {
+            itemView.background = itemView.context.getDrawable(R.drawable.bg_product_bundle_item_single_package_inactive)
+        }
+    }
+
+    fun bind(singleBundleDetailVariant: BundleDetailUiModel) {
         typographyVariantPackage?.text = singleBundleDetailVariant.minOrderWording
         if (singleBundleDetailVariant.isSelected) {
             itemView.background = itemView.context.getDrawable(R.drawable.bg_product_bundle_item_single_package_active)

@@ -15,6 +15,7 @@ import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
@@ -419,7 +420,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         super.processMenuDetail(data)
-
+        (activity as? BaseSimpleActivity)?.updateTitle(data.menuLabel)
         renderTicker(data.tickers)
         sendOpenScreenTracking()
         initiateMenuTelco(data.recommendations, data.promos)
@@ -670,10 +671,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     companion object {
-        const val MINIMUM_OPERATOR_PREFIX = 4
-        const val MINIMUM_VALID_NUMBER_LENGTH = 10
-        const val MAXIMUM_VALID_NUMBER_LENGTH = 14
-
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 76
         const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
         const val REQUEST_CODE_CONTACT_PICKER = 78
