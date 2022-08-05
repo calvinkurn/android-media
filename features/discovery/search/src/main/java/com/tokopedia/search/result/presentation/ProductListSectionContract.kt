@@ -122,10 +122,7 @@ interface ProductListSectionContract {
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
     }
 
-    interface Presenter :
-        CustomerPresenter<View>,
-        Pagination,
-        BannerAdsPresenter {
+    interface Presenter : CustomerPresenter<View>, Pagination, BannerAdsPresenter {
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
         val pageComponentId: String
