@@ -139,6 +139,7 @@
             android:layout_height="20dp"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:scaleType="fitStart"
+            app:unify_image_corner_radius="0"
             tools:ignore="ContentDescription" />
 
     </com.google.android.flexbox.FlexboxLayout>

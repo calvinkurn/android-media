@@ -56,5 +56,7 @@ data class Product(
         @SerializedName("product_cashback")
         val productCashback: String = "",
         @SerializedName("selected_unavailable_action_link")
-        val selectedUnavailableActionLink: String = ""
+        val selectedUnavailableActionLink: String = "",
+        @SerializedName("free_shipping_general")
+        val freeShippingGeneral: FreeShippingGeneral = FreeShippingGeneral()
 )
