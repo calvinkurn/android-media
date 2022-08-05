@@ -26,7 +26,7 @@ class CreateReviewTemplate @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewTemplateBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewTemplateBinding>(context, attrs, defStyleAttr) {
 
     private val createReviewTemplateListener = CreateReviewTemplateListener()
     private val layoutManager = StaggeredGridLayoutManager(CreateReviewBottomSheet.TEMPLATES_ROW_COUNT, RecyclerView.HORIZONTAL)

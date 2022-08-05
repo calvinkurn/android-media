@@ -55,7 +55,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewBadRatingCategoryViewHolder
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.SubmitReviewRequestErrorState
-import com.tokopedia.review.feature.createreputation.presentation.widget.BaseCreateReviewCustomView
+import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewAnonymous
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewMediaPicker
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewRating
@@ -915,7 +915,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private inner class BaseCreateReviewCustomViewListener: BaseCreateReviewCustomView.Listener {
+    private inner class BaseCreateReviewCustomViewListener: BaseReviewCustomView.Listener {
         override fun onRequestClearTextAreaFocus() {
             viewModel.updateTextAreaHasFocus(hasFocus = false)
         }

@@ -14,7 +14,7 @@ import com.tokopedia.review.feature.createreputation.di.CreateReviewDaggerInstan
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
-import com.tokopedia.review.feature.createreputation.presentation.widget.BaseCreateReviewCustomView
+import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTemplate
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -200,7 +200,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
         }
     }
 
-    private inner class BaseCreateReviewCustomViewListener: BaseCreateReviewCustomView.Listener {
+    private inner class BaseCreateReviewCustomViewListener: BaseReviewCustomView.Listener {
         override fun onRequestClearTextAreaFocus() {
             viewModel.updateTextAreaHasFocus(hasFocus = false)
         }
