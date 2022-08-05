@@ -663,7 +663,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         setBackButtonType()
     }
 
-    fun setBackButtonColor(color: Int) {
+    private fun setBackButtonColor(color: Int) {
         backDrawable?.let {
             val unwrappedDrawable: Drawable = it
             val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
