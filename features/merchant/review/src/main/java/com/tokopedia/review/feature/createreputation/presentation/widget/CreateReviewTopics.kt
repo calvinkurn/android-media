@@ -15,7 +15,7 @@ import kotlin.coroutines.resume
 
 class CreateReviewTopics @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewTopicsBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewTopicsBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val TOPIC_SEPARATOR = " • "
