@@ -370,6 +370,11 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     }
 
     private fun openOrderPage(orderId : Long) {
+        view?.let {
+            context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_success_text)?.let { successMessage ->
+                Toaster.build(it,successMessage,LENGTH_LONG,TYPE_ERROR).show()
+            }
+        }
         activity?.finish()
     }
 
