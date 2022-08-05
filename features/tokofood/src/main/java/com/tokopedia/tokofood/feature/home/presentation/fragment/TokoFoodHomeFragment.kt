@@ -475,7 +475,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 .addIcon(IconList.ID_LIST_TRANSACTION, onClick = ::onClickListTransactionButton)
                 .addIcon(IconList.ID_NAV_GLOBAL, onClick = {})
         navToolbar?.setIcon(icons)
-
     }
 
     private fun onClickShareButton() {
