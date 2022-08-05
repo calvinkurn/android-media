@@ -8,6 +8,7 @@ import com.tokopedia.reviewcommon.constant.AnalyticConstant
 import com.tokopedia.reviewcommon.extension.appendBusinessUnit
 import com.tokopedia.reviewcommon.extension.appendCurrentSite
 import com.tokopedia.reviewcommon.extension.appendGeneralEventData
+import com.tokopedia.reviewcommon.extension.appendPageSource
 import com.tokopedia.reviewcommon.extension.appendProductID
 import com.tokopedia.reviewcommon.extension.appendProductId
 import com.tokopedia.reviewcommon.extension.appendTrackerIdIfNotBlank
@@ -49,13 +50,13 @@ object ReviewCredibilityTracking {
     }
 
     fun trackOnClickCTAOtherUserCredibility(
-        ctaValue: String, productId: String, viewerUserId: String
+        ctaValue: String, productId: String, viewerUserId: String, reviewerUserId: String
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             AnalyticConstant.EVENT_CLICK_PG,
             ReviewCredibilityTrackingConstant.EVENT_CATEGORY_OTHERS_STATISTICS_BOTTOM_SHEET,
             ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_CTA,
-            String.format(ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_CTA, ctaValue)
+            String.format(ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_CTA, ctaValue, reviewerUserId)
         ).appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
             .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
             .appendUserId(viewerUserId)
@@ -125,7 +126,9 @@ object ReviewCredibilityTracking {
         usersOwnCredibility: Boolean,
         achievements: List<ReviewCredibilityAchievementBoxUiModel.ReviewCredibilityAchievementUiModel>,
         viewerUserId: String,
-        productID: String
+        reviewerUserId: String,
+        productID: String,
+        source: String
     ) {
         Bundle().appendGeneralEventData(
             AnalyticConstant.EVENT_VIEW_ITEM,
@@ -135,11 +138,19 @@ object ReviewCredibilityTracking {
                 ReviewCredibilityTrackingConstant.EVENT_CATEGORY_OTHERS_STATISTICS_BOTTOM_SHEET
             },
             ReviewCredibilityTrackingConstant.EVENT_ACTION_IMPRESS_ACHIEVEMENT_STICKER,
-            ""
+            if (usersOwnCredibility) {
+                ReviewCredibilityTrackingConstant.EVENT_LABEL_PERSONAL_IMPRESS_ACHIEVEMENT_STICKER
+            } else {
+                String.format(
+                    ReviewCredibilityTrackingConstant.EVENT_LABEL_OTHER_IMPRESS_ACHIEVEMENT_STICKER,
+                    reviewerUserId
+                )
+            }
         ).appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
             .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
             .appendUserId(viewerUserId)
             .appendProductID(productID)
+            .appendPageSource(source)
             .appendTrackerIdIfNotBlank(
                 if (usersOwnCredibility) {
                     ReviewCredibilityTrackingConstant.TRACKER_ID_IMPRESS_ACHIEVEMENT_STICKER_SELF

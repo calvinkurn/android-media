@@ -136,7 +136,9 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
             viewModel.isUsersOwnCredibility(),
             achievements,
             viewModel.getUserID(),
-            viewModel.getProductID()
+            viewModel.getReviewerUserID(),
+            viewModel.getProductID(),
+            viewModel.getSource()
         )
     }
 
@@ -157,7 +159,8 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
             ReviewCredibilityTracking.trackOnClickCTAOtherUserCredibility(
                 buttonText,
                 viewModel.getProductID(),
-                viewModel.getUserID()
+                viewModel.getUserID(),
+                viewModel.getReviewerUserID()
             )
         }
         handleRouting(appLink)
