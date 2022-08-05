@@ -1,3 +1,7 @@
+-printusage usage.txt
+-printseeds seeds.txt
+-printconfiguration config.txt
+
 # Obfuscation parameters:
 -dontwarn java.nio.file.Files
 -dontwarn java.nio.file.Path
@@ -38,11 +42,12 @@
 -keep public class com.google.android.gms.common.internal.safeparcel.SafeParcelable {
     public static final *** NULL;
 }
--keepnames @com.google.android.gms.common.annotation.KeepName class *
+-keep @com.google.android.gms.common.annotation.KeepName class *
 -keepclassmembernames class * {
     @com.google.android.gms.common.annotation.KeepName *;
 }
--keepnames class * implements android.os.Parcelable {
+
+-keep class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
 #end com.google.android.gms
@@ -161,8 +166,8 @@
 -dontwarn kotlinx.coroutines.flow.**inlined**
 -dontwarn kotlinx.coroutines.flow.**
 
--keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
--keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keep class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keep class kotlinx.coroutines.CoroutineExceptionHandler {}
 
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
@@ -235,16 +240,16 @@
 -dontwarn com.tokopedia.sortfilter.SortFilter*
 
 # To show pop-up via CM engine
--keepnames class com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
--keepnames class com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
--keepnames class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
--keepnames class com.tokopedia.home_recom.view.fragment.RecommendationFragment
--keepnames class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
--keepnames class com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
--keepnames class com.tokopedia.cart.view.CartFragment
--keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
--keepnames class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
--keepnames class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
+-keep class com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
+-keep class com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
+-keep class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
+-keep class com.tokopedia.home_recom.view.fragment.RecommendationFragment
+-keep class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
+-keep class com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
+-keep class com.tokopedia.cart.view.CartFragment
+-keep class com.tokopedia.dynamicfeatures.DFInstallerFragment
+-keep class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
+-keep class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
 
 # feed_shop
 -keepnames class com.tokopedia.feed_shop.shop.view.fragment.FeedShopFragment
@@ -280,3 +285,16 @@
 -keep class com.newrelic.** { *; }
 -dontwarn com.newrelic.**
 -keepattributes Exceptions, Signature, InnerClasses, LineNumberTable, SourceFile, EnclosingMethod
+
+-keep class com.tokopedia.stability.**{*;}
+-keepclassmembers class **{
+public static com.tokopedia.stability.ChangeDelegate *;
+}
+
+-keepclassmembers,allowobfuscation class * {
+ @com.google.gson.annotations.SerializedName <fields>;
+}
+
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
+-keep class kotlin.coroutines.Continuation
