@@ -227,6 +227,7 @@ public class ShipmentDataRequestConverter {
         productDataCheckoutRequest.setDiscountedPrice(cartItem.getAnalyticsProductCheckoutData().isDiscountedPrice());
         productDataCheckoutRequest.setFreeShipping(cartItem.isFreeShipping());
         productDataCheckoutRequest.setFreeShippingExtra(cartItem.isFreeShippingExtra());
+        productDataCheckoutRequest.setFreeShippingName(cartItem.getFreeShippingName());
         productDataCheckoutRequest.setCampaignId(cartItem.getAnalyticsProductCheckoutData().getCampaignId());
         productDataCheckoutRequest.setProtectionPricePerProduct(cartItem.getProtectionPricePerProduct());
         productDataCheckoutRequest.setProtectionTitle(cartItem.getProtectionTitle());
