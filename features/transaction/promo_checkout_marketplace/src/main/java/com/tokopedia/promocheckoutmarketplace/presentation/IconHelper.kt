@@ -14,6 +14,10 @@ object IconHelper {
         }
     }
 
+    fun isIconFromUrl(dictionary: String): Boolean {
+        return dictionary == PromoInfo.ICON_URL
+    }
+
     fun shouldShowIcon(dictionary: String): Boolean {
         return dictionary != PromoInfo.ICON_NONE
     }

@@ -134,6 +134,8 @@ data class SubSection(
         val subTitle: String = "",
         @SerializedName("icon_unify")
         val iconUnify: String = "",
+        @SerializedName("icon_url")
+        val iconUrl: String = "",
         @SerializedName("is_enabled")
         val isEnabled: Boolean = false,
         @SerializedName("coupons")
@@ -234,6 +236,7 @@ data class PromoInfo(
         const val ICON_TOKO_MEMBER = "TOKOMEMBER"
         const val ICON_DOT = "DOT"
         const val ICON_NONE = "NONE"
+        const val ICON_URL = "URL"
     }
 }
 

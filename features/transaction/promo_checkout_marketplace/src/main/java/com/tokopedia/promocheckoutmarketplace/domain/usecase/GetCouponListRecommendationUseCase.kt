@@ -83,6 +83,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                 title
                                 sub_title
                                 icon_unify
+                                icon_url
                                 is_enabled
                                 id
                                 coupon_groups {

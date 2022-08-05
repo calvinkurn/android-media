@@ -21,11 +21,21 @@ class PromoListHeaderEnabledViewHolder(private val viewBinding: PromoCheckoutMar
 
     override fun bind(element: PromoListHeaderUiModel) {
         with(viewBinding) {
-            if (element.uiData.iconUnify.isNotBlank()) {
-                iconPromoListHeader.setImage(IconHelper.getIcon(element.uiData.iconUnify))
-                iconPromoListHeader.show()
-            } else {
+            if (IconHelper.isIconFromUrl(element.uiData.iconUnify)) {
                 iconPromoListHeader.gone()
+                if (element.uiData.iconUrl.isNotEmpty()) {
+                    imagePromoListHeader.setImage(element.uiData.iconUrl)
+                } else {
+                    imagePromoListHeader.gone()
+                }
+            } else {
+                imagePromoListHeader.gone()
+                if (element.uiData.iconUnify.isNotBlank()) {
+                    iconPromoListHeader.setImage(IconHelper.getIcon(element.uiData.iconUnify))
+                    iconPromoListHeader.show()
+                } else {
+                    iconPromoListHeader.gone()
+                }
             }
 
             labelPromoListHeaderTitle.text = Utils.getHtmlFormat(element.uiData.title)

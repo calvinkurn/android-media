@@ -105,6 +105,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     title = couponSubSection.title
                     subTitle = couponSubSection.subTitle
                     iconUnify = couponSubSection.iconUnify
+                    iconUrl = couponSubSection.iconUrl
                     identifierId = headerIdentifierId
                     tabId = if (isHeaderEnabled) {
                         couponSubSection.id
