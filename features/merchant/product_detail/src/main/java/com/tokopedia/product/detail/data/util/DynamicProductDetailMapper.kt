@@ -112,7 +112,7 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.INFO -> {
                     val contentData = component.componentData.firstOrNull()
-                    val customInfoData = mapToGeneralInfo(contentData, component.componentName, component.type)
+                    val customInfoData = mapToGeneralInfo(contentData, type = component.type, name = component.componentName)
 
                     customInfoData?.let {
                         listOfComponent.add(it)
