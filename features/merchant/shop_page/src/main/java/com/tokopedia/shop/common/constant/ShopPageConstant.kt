@@ -49,4 +49,9 @@ object ShopPageConstant {
         const val CARD_PRODUCT = "Card Product"
         const val CARD_ETALASE = "Card Etalase"
     }
+
+    object BundleType {
+        const val SINGLE_BUNDLE = "Single Bundle"
+        const val MULTIPLE_BUNDLE = "Multiple Bundle"
+    }
 }

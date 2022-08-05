@@ -4,9 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
+import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.formatDate
 import com.tokopedia.sellerorder.filter.domain.SomFilterResponse
 import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
+import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterDateBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
@@ -38,8 +41,6 @@ abstract class SomFilterViewModelTestFixture {
     protected lateinit var somFilterViewModel: SomFilterViewModel
 
     companion object {
-        val mockDate = "14 Okt 2020 - 24 Okt 2020"
-        val mockIdFilter = "Siap Dikirim"
         val SOM_FILTER_SUCCESS_RESPONSE = "json/som_get_order_filter_success_response.json"
     }
 
@@ -70,7 +71,7 @@ abstract class SomFilterViewModelTestFixture {
             SOM_FILTER_SUCCESS_RESPONSE
         )
         return GetSomFilterMapper.mapToSomFilterVisitable(mockResponseSomFilterList).apply {
-            filterIsInstance<SomFilterDateUiModel>().first().date = mockDate
+            filterIsInstance<SomFilterDateUiModel>().first().date = "${Utils.getNPastMonthTimeText(3, SomFilterDateBottomSheet.PATTER_DATE_EDT)} - ${Utils.getNowTimeStamp().formatDate(SomFilterDateBottomSheet.PATTER_DATE_EDT)}"
         }
     }
 }
