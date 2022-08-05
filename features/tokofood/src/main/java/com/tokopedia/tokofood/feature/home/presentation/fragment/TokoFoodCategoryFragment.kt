@@ -350,7 +350,6 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         val icons =
             IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
         navToolbar?.setIcon(icons)
-
     }
 
     private fun onSuccessGetCategoryLayout(data: TokoFoodListUiModel) {
