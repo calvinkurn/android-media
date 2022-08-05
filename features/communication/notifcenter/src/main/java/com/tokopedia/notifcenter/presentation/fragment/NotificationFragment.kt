@@ -471,6 +471,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     override fun onSwipeRefresh() {
         viewModel.cancelAllUseCase()
         containerListener?.refreshNotificationCounter()
+        rvAdapter?.shopAdsWidgetAdded = false
         super.onSwipeRefresh()
     }
 
