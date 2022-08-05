@@ -454,9 +454,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 }
 
                 // Initialize promo tab
-                val promoTabUiModel = uiModelMapper.mapPromoTabsUiModel(response.couponListRecommendation.data.sectionTabs)
-                _promoTabUiModel.value = promoTabUiModel
-                couponList.add(promoTabUiModel)
+//                val promoTabUiModel = uiModelMapper.mapPromoTabsUiModel(response.couponListRecommendation.data.sectionTabs)
+//                _promoTabUiModel.value = promoTabUiModel
+//                couponList.add(promoTabUiModel)
             }
 
             // Initialize promo list header
