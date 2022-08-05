@@ -441,8 +441,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             putString(CategoryNavConstants.ROWS, PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
-            putString(CategoryNavConstants.CITY_ID, userAddressData?.city_id ?: "")
-            putString(CategoryNavConstants.DISTRICT_ID, userAddressData?.district_id ?: "")
+            putString(CategoryNavConstants.USER_CITY_ID, userAddressData?.city_id ?: "")
+            putString(CategoryNavConstants.USER_DISTRICT_ID, userAddressData?.district_id ?: "")
             putString(CategoryNavConstants.Q, catalogName)
             viewModel.searchParametersMap.value?.let { safeSearchParams ->
                 putAllString(safeSearchParams)

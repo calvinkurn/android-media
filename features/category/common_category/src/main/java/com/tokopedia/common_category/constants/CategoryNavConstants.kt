@@ -28,8 +28,8 @@ class CategoryNavConstants {
         const val QUERY = "query"
         const val ST = "st"
         const val FILTER = "filter"
-        const val CITY_ID = "city_id"
-        const val DISTRICT_ID = "district_id"
+        const val USER_CITY_ID = "user_cityId"
+        const val USER_DISTRICT_ID = "user_districtId"
     }
 
 
