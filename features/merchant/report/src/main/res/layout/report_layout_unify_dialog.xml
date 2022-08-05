@@ -27,12 +27,12 @@
         app:layout_constraintTop_toTopOf="@+id/guideline"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <androidx.cardview.widget.CardView android:id="@+id/dialog_card_icon"
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/dialog_card_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:visibility="gone"
-        app:cardCornerRadius="8dp"
         app:cardPreventCornerOverlap="false"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +41,7 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:visibility="visible">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/dialog_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:minWidth="@dimen/dp_80"
             tools:src="@drawable/ic_badge_authorize"/>
 
-    </androidx.cardview.widget.CardView>
+    </com.tokopedia.unifycomponents.CardUnify2>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/dialog_content"
@@ -100,16 +100,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Dengan klik “Lapor”, saya menyatakan bahwa segala informasi yang dilaporkan memang benar"/>
 
-        <Button android:id="@+id/dialog_btn_secondary"
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/dialog_btn_secondary"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:background="@drawable/report_bg_button_white_green_border"
-            android:textColor="@color/Unify_G400"
             android:textAllCaps="false"
             android:layout_marginTop="@dimen/dp_32"
             android:layout_marginEnd="4dp"
             android:visibility="gone"
+            app:unifyButtonVariant="ghost"
             tools:text="CTA Here"
+            tools:visibility="visible"
             app:layout_constraintTop_toBottomOf="@+id/dialog_description"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -117,11 +118,10 @@
             app:layout_constraintEnd_toStartOf="@+id/dialog_btn_primary"
             app:layout_constraintHorizontal_chainStyle="spread"/>
 
-        <Button android:id="@+id/dialog_btn_primary"
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/dialog_btn_primary"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:background="@drawable/bg_button_green"
-            android:textColor="@color/Unify_N0"
             android:textAllCaps="false"
             android:layout_marginLeft="4dp"
             android:layout_marginStart="4dp"
@@ -135,15 +135,16 @@
             app:layout_constraintLeft_toRightOf="@+id/dialog_btn_secondary"
             app:layout_constraintStart_toEndOf="@+id/dialog_btn_secondary"/>
 
-        <Button android:id="@+id/dialog_btn_secondary_long"
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/dialog_btn_secondary_long"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:background="@color/Unify_N0"
-            android:textColor="@color/Unify_N400"
+            app:unifyButtonVariant="text"
             android:textAllCaps="false"
             android:layout_marginTop="8dp"
             android:visibility="gone"
             tools:text="CTA Here"
+            tools:visibility="visible"
             app:layout_constraintTop_toBottomOf="@+id/dialog_btn_primary"
             app:layout_constraintRight_toRightOf="@+id/dialog_btn_primary"
             app:layout_constraintEnd_toEndOf="@+id/dialog_btn_primary"

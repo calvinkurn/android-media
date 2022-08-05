@@ -9,10 +9,10 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import android.view.View
 import android.view.Window
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.report.R
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
 class UnifyDialog(private val activity: Activity,
                   @ActionType private var actionType: Int,
@@ -21,11 +21,11 @@ class UnifyDialog(private val activity: Activity,
     var alertDialog: AlertDialog? = null
         private set
 
-    private var btnPrimary: Button? = null
-    private var btnSecondary: Button? = null
-    private var btnSecondaryLong: Button? = null
+    private var btnPrimary: UnifyButton? = null
+    private var btnSecondary: UnifyButton? = null
+    private var btnSecondaryLong: UnifyButton? = null
     private var dialogImageHeader: CardView? = null
-    private var imageHeader: ImageView? = null
+    private var imageHeader: ImageUnify? = null
     private var dialogContent: ConstraintLayout? = null
     private var dialogTitle: TextView? = null
     private var dialogDescription: TextView? = null
