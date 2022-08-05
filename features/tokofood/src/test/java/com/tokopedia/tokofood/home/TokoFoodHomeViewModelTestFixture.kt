@@ -202,6 +202,32 @@ abstract class TokoFoodHomeViewModelTestFixture {
         Assert.assertTrue(privateHasTickerBeenRemoved)
     }
 
+    protected fun onGetMerchantList_thenReturn(
+        layoutResponse: TokoFoodMerchantListResponse,
+        localCacheModel: LocalCacheModel = LocalCacheModel(),
+        pageKey: String = "0"
+    ) {
+        coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = pageKey) } returns layoutResponse
+    }
+
+    protected fun onGetMerchantList_thenReturn(
+        error: Throwable,
+        localCacheModel: LocalCacheModel = LocalCacheModel(),
+        pageKey: String = "0"
+    ) {
+        coEvery { tokoFoodMerchantListUseCase.execute(localCacheModel = localCacheModel, pageKey = pageKey) } throws error
+    }
+
+    protected fun verifyHomeIsShowingEmptyState(actualResponse: Boolean?) {
+        actualResponse?.let {
+            Assert.assertTrue(actualResponse)
+        }
+    }
+
+    protected fun verifyHomeIsNotShowingEmptyState(actualResponse: Boolean) {
+        Assert.assertFalse(actualResponse)
+    }
+
     inline fun <reified T>Any.getPrivateField(name: String): T {
         return this::class.java.getDeclaredField(name).let {
             it.isAccessible = true

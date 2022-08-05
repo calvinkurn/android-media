@@ -494,4 +494,234 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         Assert.assertTrue(actualResponse is Fail)
     }
+
+    @Test
+    fun `when scrolledToLastItem and hasNext true when onScrollProductList should set loadMore success`() {
+        val containLastItemIndex = 5
+        val itemCount = 6
+        onGetTicker_thenReturn(createTicker())
+        onGetUSP_thenReturn(createUSPResponse())
+        onGetIcons_thenReturn(createDynamicIconsResponse())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), createAddress())
+        onGetMerchantList_thenReturn(createMerchantListResponse(), createAddress())
+
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(listOf(createTickerData())),
+                createUSPModel(createUSPResponse(), state = TokoFoodLayoutState.SHOW),
+                createIconsModel(createDynamicIconsResponse().dynamicIcon.listDynamicIcon, state = TokoFoodLayoutState.SHOW),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                ),
+                TokoFoodHomeMerchantTitleUiModel(MERCHANT_TITLE),
+                createMerchantListModel1(),
+                createMerchantListModel2()
+            ),
+            state = LOAD_MORE
+        )
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            viewModel.setLayoutComponentData(createAddress())
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+
+        verifyCallHomeLayout()
+        verifyCallTicker()
+        verifyCallIcons()
+        verifyCallUSP()
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+
+    @Test
+    fun `when scrolledToLastItem and hasNext true when onScrollProductList but merchant list error should set loadMore failed`() {
+        val containLastItemIndex = 5
+        val itemCount = 6
+        onGetTicker_thenReturn(createTicker())
+        onGetUSP_thenReturn(createUSPResponse())
+        onGetIcons_thenReturn(createDynamicIconsResponse())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), createAddress())
+        onGetMerchantList_thenReturn(NullPointerException(), createAddress())
+
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(listOf(createTickerData())),
+                createUSPModel(createUSPResponse(), state = TokoFoodLayoutState.SHOW),
+                createIconsModel(createDynamicIconsResponse().dynamicIcon.listDynamicIcon, state = TokoFoodLayoutState.SHOW),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                ),
+            ),
+            state = LOAD_MORE
+        )
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            viewModel.setLayoutComponentData(createAddress())
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        verifyCallHomeLayout()
+        verifyCallTicker()
+        verifyCallIcons()
+        verifyCallUSP()
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when check is page showing empty state location should return true`() {
+        var actualResponse: Boolean? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = viewModel.isShownEmptyState()
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = "0"), true)
+            collectorJob.cancel()
+        }
+
+        verifyHomeIsShowingEmptyState(actualResponse)
+    }
+
+    @Test
+    fun `when check is page showing error should return true`() {
+        var actualResponse: Boolean? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = viewModel.isShownEmptyState()
+                }
+            }
+            viewModel.setErrorState(NetworkErrorException())
+            collectorJob.cancel()
+        }
+
+        verifyHomeIsShowingEmptyState(actualResponse)
+    }
+
+    @Test
+    fun `when check is page showing empty state location should return false`() {
+
+        val actualResponse = viewModel.isShownEmptyState()
+
+        verifyHomeIsNotShowingEmptyState(actualResponse)
+    }
+
+    @Test
+    fun `when getting no pin poin state should run and give the success result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        val expectedResponse = createNoPinPoinState()
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = "1"), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting no pin poin state should run and isAddressManuallyUpdated is false and give the loading result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = false
+        val expectedResponse = createLoadingState()
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = "1"), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting no address state should run and give the success result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        val expectedResponse = createNoAddressState()
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting no address state should run and isAddressManuallyUpdated is false and give the loading result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = false
+        val expectedResponse = createLoadingState()
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
 }
