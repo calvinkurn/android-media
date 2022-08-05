@@ -6,6 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -14,6 +17,7 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.AFFILIATE_PAGE_ID
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -84,7 +88,8 @@ class NewShopPageViewModel @Inject constructor(
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
-        private val dispatcherProvider: CoroutineDispatchers)
+        private val dispatcherProvider: CoroutineDispatchers
+)
     : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -574,4 +579,19 @@ class NewShopPageViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
+    fun initAffiliateCookie(
+        affiliateCookieHelper: AffiliateCookieHelper,
+        affiliateUUId: String,
+        affiliateChannel: String,
+        shopId: String
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            affiliateCookieHelper.initCookie(
+                affiliateUUId,
+                affiliateChannel,
+                AffiliatePageDetail(AFFILIATE_PAGE_ID, AffiliateSdkPageSource.Shop(shopId))
+            )
+        }) {
+        }
+    }
 }

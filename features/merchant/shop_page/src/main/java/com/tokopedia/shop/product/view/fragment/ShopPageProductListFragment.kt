@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -73,6 +74,7 @@ import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
+import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -1016,13 +1018,26 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun goToPDP(productId: String, attribution: String?, listNameOfProduct: String) {
+        val pdpAppLink = getPdpAppLink(productId)
         context?.let {
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            val intent = RouteManager.getIntent(context, pdpAppLink)
             startActivity(intent)
         }
+    }
+
+    private fun getPdpAppLink(productId: String): String {
+        val basePdpAppLink = UriUtil.buildUri(
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productId
+        )
+        return createAffiliateLink(basePdpAppLink)
+    }
+
+    private fun createAffiliateLink(basePdpAppLink: String): String {
+        return (activity as? ShopPageSharedListener)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
     }
 
     override fun loadData(page: Int) {
