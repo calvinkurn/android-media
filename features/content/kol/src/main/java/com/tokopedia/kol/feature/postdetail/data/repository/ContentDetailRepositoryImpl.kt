@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
@@ -35,6 +36,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val submitActionContentUseCase: SubmitActionContentUseCase,
     private val submitReportContentUseCase: SubmitReportContentUseCase,
     private val trackVisitChannelUseCase: FeedBroadcastTrackerUseCase,
+    private val trackViewerUseCase: FeedXTrackViewerUseCase,
 ) : ContentDetailRepository {
 
     override suspend fun likeContent(contentId: String, action: ContentLikeAction) {
@@ -128,6 +130,16 @@ class ContentDetailRepositoryImpl @Inject constructor(
             )
             val response = trackVisitChannelUseCase.executeOnBackground()
             response.reportVisitChannelTracking.success
+        }
+    }
+
+    override suspend fun trackViewer(contentId: String): Boolean {
+        return withContext(dispatcher.io) {
+            trackViewerUseCase.setRequestParams(
+                FeedXTrackViewerUseCase.createParams(contentId)
+            )
+            val response = trackViewerUseCase.executeOnBackground()
+            response.feedXTrackViewerResponse.success
         }
     }
 }

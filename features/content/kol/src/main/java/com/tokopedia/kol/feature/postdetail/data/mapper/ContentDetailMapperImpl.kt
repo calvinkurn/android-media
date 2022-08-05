@@ -24,5 +24,5 @@ class ContentDetailMapperImpl : ContentDetailMapper {
 
     override fun mapReportContent(rowNumber: Int) = ReportContentModel(rowNumber)
 
-    override fun mapVisitChannel(rowNumber: Int) = VisitChannelModel(rowNumber)
+    override fun mapVisitChannel(rowNumber: Int) = VisitContentModel(rowNumber)
 }

@@ -82,7 +82,6 @@ import com.tokopedia.network.R as networkR
 /**
  * Created by shruti agarwal on 15/06/22
  */
-
 class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPostViewHolder.CDPListener, ShareCallback, ProductItemInfoBottomSheet.Listener{
 
     private var cdpRecyclerView: RecyclerView? = null
@@ -159,50 +158,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                     }
                 }
             })
-            longVideoViewTrackResponse.observe(viewLifecycleOwner,  {
-                when (it) {
-                    is Success -> {
-                        onSuccessAddViewVODPost(it.data.rowNumber)
-                    }
-                    //TODO fail case
-                    else ->{}
-                }
-            })
-
-            atcRespData.observe(viewLifecycleOwner,  {
-                when (it) {
-                    is Success -> {
-                        val data = it.data
-                        when {
-                            data.isSuccess -> {
-                                Toaster.build(
-                                    requireView(),
-                                    getString(kolR.string.feed_added_to_cart),
-                                    Toaster.LENGTH_LONG,
-                                    Toaster.TYPE_NORMAL,
-                                    getString(kolR.string.feed_go_to_cart),
-                                    View.OnClickListener {
-                                        onAddToCartSuccess()
-                                    }).show()
-                            }
-                            data.errorMsg.isNotEmpty() -> {
-                                showToast(data.errorMsg, Toaster.TYPE_ERROR)
-                            }
-                            else -> {
-                                onAddToCartFailed(data.applink)
-                            }
-                        }
-                    }
-                    is Fail -> {
-                        Timber.e(it.throwable)
-                        val errorMessage = it.throwable.message ?: getString(networkR.string.default_request_error_unknown)
-                        showToast(
-                            errorMessage,
-                            Toaster.TYPE_ERROR
-                        )
-                    }
-                }
-            })
         }
     }
 
@@ -225,7 +180,8 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         observeFollowShop()
         observeDeleteContent()
         observeReportContent()
-        observeTrackVisitChannel()
+        observeVideoViewData()
+        observeAddToCart()
     }
 
     private fun setupView(view: View) {
@@ -919,7 +875,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                 postTagItem.productName,
                 postTagItem.price.toString(),
                 shopId,
-                postTagItem.appLink
             )
         } else {
             onGoToLogin()
@@ -945,10 +900,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
 
     private fun onAddToCartSuccess() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-    }
-
-    private fun onAddToCartFailed(pdpAppLink: String) {
-        onGoToLink(pdpAppLink)
     }
 
     private fun onSuccessDeletePost(rowNumber: Int) {
@@ -1083,7 +1034,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         })
     }
 
-    private fun observeTrackVisitChannel() {
+    private fun observeVideoViewData() {
         viewModel.vodViewData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 ContentDetailResult.Loading -> {}
@@ -1114,6 +1065,34 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
                             showToast(errorMessage, Toaster.TYPE_ERROR)
                         }
                     }
+                }
+            }
+        })
+    }
+
+    private fun observeAddToCart() {
+        viewModel.atcRespData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
+                is ContentDetailResult.Failure -> {
+                    val errorMessage = it.error.message ?: getString(networkR.string.default_request_error_unknown)
+                    showToast(
+                        errorMessage,
+                        Toaster.TYPE_ERROR
+                    )
+                }
+                is ContentDetailResult.Success -> {
+                    Toaster.build(
+                        requireView(),
+                        getString(kolR.string.feed_added_to_cart),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        getString(kolR.string.feed_go_to_cart)
+                    ) {
+                        onAddToCartSuccess()
+                    }.show()
                 }
             }
         })

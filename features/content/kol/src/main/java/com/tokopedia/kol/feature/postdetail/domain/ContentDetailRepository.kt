@@ -44,4 +44,8 @@ interface ContentDetailRepository {
     suspend fun trackVisitChannel(
         channelId: String,
     ): Boolean
+
+    suspend fun trackViewer(
+        contentId: String
+    ): Boolean
 }

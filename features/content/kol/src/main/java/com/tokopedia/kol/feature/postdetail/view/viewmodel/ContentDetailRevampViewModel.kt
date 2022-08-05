@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendation
 import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
@@ -17,7 +15,6 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.NON_LOGIN_USER_ID
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
-import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -34,7 +31,6 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getRecommendationPostUseCase: GetRecommendationPostUseCase,
     private val getPostDetailUseCase: GetPostDetailUseCase,
-    private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
     private val repository: ContentDetailRepository,
     private val mapper: ContentDetailMapper,
 ): BaseViewModel(dispatcher.main) {
@@ -45,9 +41,8 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val _getCDPPostFirstPostData = MutableLiveData<Result<ContentDetailRevampDataUiModel>>()
     private val _likeKolResp = MutableLiveData<ContentDetailResult<LikeContentModel>>()
     private val _followShopObservable = MutableLiveData<ContentDetailResult<ShopFollowModel>>()
-    private val _longVideoViewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
-    private val _trackVodVisitChannelData = MutableLiveData<ContentDetailResult<VisitChannelModel>>()
-    private val _atcResp = MutableLiveData<Result<AtcViewModel>>()
+    private val _trackVodVisitContentData = MutableLiveData<ContentDetailResult<VisitContentModel>>()
+    private val _atcResp = MutableLiveData<ContentDetailResult<Boolean>>()
     private val _reportResponse = MutableLiveData<ContentDetailResult<ReportContentModel>>()
     private val _deletePostResp = MutableLiveData<ContentDetailResult<DeleteContentModel>>()
 
@@ -63,13 +58,10 @@ class ContentDetailRevampViewModel @Inject constructor(
     val followShopObservable: LiveData<ContentDetailResult<ShopFollowModel>>
         get() = _followShopObservable
 
-    val longVideoViewTrackResponse: LiveData<Result<ViewsKolModel>>
-       get() = _longVideoViewTrackResponse
+    val vodViewData: LiveData<ContentDetailResult<VisitContentModel>>
+        get() = _trackVodVisitContentData
 
-    val vodViewData: LiveData<ContentDetailResult<VisitChannelModel>>
-        get() = _trackVodVisitChannelData
-
-    val atcRespData: LiveData<Result<AtcViewModel>>
+    val atcRespData: LiveData<ContentDetailResult<Boolean>>
         get() = _atcResp
 
     val reportResponse: LiveData<ContentDetailResult<ReportContentModel>>
@@ -156,28 +148,26 @@ class ContentDetailRevampViewModel @Inject constructor(
     }
 
     fun trackVisitChannel(channelId: String, rowNumber: Int) {
-        _trackVodVisitChannelData.value = ContentDetailResult.Loading
+        _trackVodVisitContentData.value = ContentDetailResult.Loading
         launchCatchError(block = {
             repository.trackVisitChannel(channelId)
-            _trackVodVisitChannelData.value = ContentDetailResult.Success(
+            _trackVodVisitContentData.value = ContentDetailResult.Success(
                 mapper.mapVisitChannel(rowNumber)
             )
         }) {
-            _trackVodVisitChannelData.value = ContentDetailResult.Failure(it)
+            _trackVodVisitContentData.value = ContentDetailResult.Failure(it)
         }
     }
 
     fun trackLongVideoView(activityId: String, rowNumber: Int) {
-
-        launchCatchError(dispatcher.io, block = {
-            feedXTrackViewerUseCase.setRequestParams(FeedXTrackViewerUseCase.createParams(activityId))
-            val trackResponse = feedXTrackViewerUseCase.executeOnBackground()
-            val data = ViewsKolModel()
-            data.rowNumber = rowNumber
-            data.isSuccess = trackResponse.feedXTrackViewerResponse.success
-            _longVideoViewTrackResponse.postValue(Success(data))
+        _trackVodVisitContentData.value = ContentDetailResult.Loading
+        launchCatchError(block = {
+            repository.trackViewer(activityId)
+            _trackVodVisitContentData.value = ContentDetailResult.Success(
+                mapper.mapVisitChannel(rowNumber)
+            )
         }) {
-            _longVideoViewTrackResponse.postValue(Fail(it))
+            _trackVodVisitContentData.value = ContentDetailResult.Failure(it)
         }
     }
 
@@ -186,17 +176,13 @@ class ContentDetailRevampViewModel @Inject constructor(
         productName: String,
         price: String,
         shopId: String,
-        appLink: String,
     ) {
+        _atcResp.value = ContentDetailResult.Loading
         launchCatchError(block = {
             val isSuccess = repository.addToCart(productId, productName, price, shopId)
-            val atcModel = AtcViewModel(
-                isSuccess = isSuccess,
-                applink = appLink
-            )
-            _atcResp.value = Success(atcModel)
+            _atcResp.value = ContentDetailResult.Success(isSuccess)
         }) {
-            _atcResp.value = Fail(it)
+            _atcResp.value = ContentDetailResult.Failure(it)
         }
     }
 
