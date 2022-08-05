@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogProductNavListAdapter
 import com.tokopedia.catalog.adapter.factory.CatalogTypeFactory
@@ -34,7 +33,6 @@ import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogSearchApiConst
 import com.tokopedia.catalog.model.util.CatalogUtil
-import com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity
 import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
 import com.tokopedia.common_category.constants.CategoryNavConstants
@@ -56,15 +54,14 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -72,15 +69,11 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
-import java.util.*
 import javax.inject.Inject
 
 class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
@@ -997,7 +990,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return ""
+        return CatalogConstant.SOURCE
     }
 
     override fun onLocalizingAddressLoginSuccess() {
