@@ -114,6 +114,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
                 viewModel.isUsersOwnCredibility(),
                 name,
                 viewModel.getUserID(),
+                viewModel.getReviewerUserID(),
                 viewModel.getProductID()
             )
         }
@@ -126,6 +127,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), ReviewCredibilityFooter
                 viewModel.isUsersOwnCredibility(),
                 buttonText,
                 viewModel.getUserID(),
+                viewModel.getReviewerUserID(),
                 viewModel.getProductID()
             )
         }

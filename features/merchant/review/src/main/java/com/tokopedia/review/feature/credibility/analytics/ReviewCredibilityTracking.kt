@@ -66,7 +66,11 @@ object ReviewCredibilityTracking {
     }
 
     fun trackOnClickAchievementSticker(
-        usersOwnCredibility: Boolean, name: String, viewerUserId: String, productID: String
+        usersOwnCredibility: Boolean,
+        name: String,
+        viewerUserId: String,
+        reviewerUserId: String,
+        productID: String
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             AnalyticConstant.EVENT_CLICK_PG,
@@ -76,11 +80,20 @@ object ReviewCredibilityTracking {
                 ReviewCredibilityTrackingConstant.EVENT_CATEGORY_OTHERS_STATISTICS_BOTTOM_SHEET
             },
             ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_ACHIEVEMENT_STICKER,
-            String.format(
-                ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_ACHIEVEMENT_STICKER,
-                name,
-                Int.ZERO
-            )
+            if (usersOwnCredibility) {
+                String.format(
+                    ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_PERSONAL_ACHIEVEMENT_STICKER,
+                    name,
+                    Int.ZERO
+                )
+            } else {
+                String.format(
+                    ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_OTHERS_ACHIEVEMENT_STICKER,
+                    name,
+                    Int.ZERO,
+                    reviewerUserId
+                )
+            }
         ).appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
             .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
             .appendUserId(viewerUserId)
@@ -95,7 +108,11 @@ object ReviewCredibilityTracking {
     }
 
     fun trackOnClickSeeMoreAchievement(
-        usersOwnCredibility: Boolean, buttonText: String, viewerUserId: String, productID: String
+        usersOwnCredibility: Boolean,
+        buttonText: String,
+        viewerUserId: String,
+        reviewerUserId: String,
+        productID: String
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             AnalyticConstant.EVENT_CLICK_PG,
@@ -105,10 +122,18 @@ object ReviewCredibilityTracking {
                 ReviewCredibilityTrackingConstant.EVENT_CATEGORY_OTHERS_STATISTICS_BOTTOM_SHEET
             },
             ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_SEE_MORE_ACHIEVEMENT,
-            String.format(
-                ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_SEE_MORE_ACHIEVEMENT,
-                buttonText
-            )
+            if (usersOwnCredibility) {
+                String.format(
+                    ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_PERSONAL_SEE_MORE_ACHIEVEMENT,
+                    buttonText
+                )
+            } else {
+                String.format(
+                    ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_OTHERS_SEE_MORE_ACHIEVEMENT,
+                    buttonText,
+                    reviewerUserId
+                )
+            }
         ).appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
             .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
             .appendUserId(viewerUserId)
