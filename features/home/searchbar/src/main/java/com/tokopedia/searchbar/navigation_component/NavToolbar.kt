@@ -687,14 +687,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 )
             }
             BACK_TYPE_BACK_WITHOUT_COLOR -> {
-                toolbarThemeCondition(
-                    lightCondition = {
-                        val arrowBackIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK)
-                        navIconBack.setImageDrawable(arrowBackIcon) },
-                    darkCondition = {
-                        val arrowBackIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK)
-                        navIconBack.setImageDrawable(arrowBackIcon) }
-                )
+                val arrowBackIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK)
+                navIconBack.setImageDrawable(arrowBackIcon)
             }
         }
     }
