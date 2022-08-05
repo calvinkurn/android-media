@@ -71,3 +71,7 @@ internal fun LocalCacheModel.toSearchParams(): Map<String, String> {
 
 fun List<LabelGroupDataView>?.getFormattedPositionName(): String =
     this?.joinToString(transform = LabelGroupDataView::getPositionTitle) ?: ""
+
+private val NONE = "none"
+
+internal fun String.orNone() = this.ifEmpty { NONE }
