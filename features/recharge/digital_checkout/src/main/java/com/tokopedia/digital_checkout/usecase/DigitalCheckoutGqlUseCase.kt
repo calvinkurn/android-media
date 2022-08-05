@@ -30,7 +30,6 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
         setGraphqlQuery(RechargeCheckoutQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(RechargeCheckoutResponse::class.java)
-        GraphqlClient.moduleName = RECHARGE_MODULE_NAME
     }
 
     fun setParams(
@@ -62,6 +61,11 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
         )
 
         setRequestParams(mapOf(PARAMS_KEY to requestParams))
+    }
+
+    override suspend fun executeOnBackground(): RechargeCheckoutResponse {
+        GraphqlClient.moduleName = RECHARGE_MODULE_NAME
+        return super.executeOnBackground()
     }
 
     companion object {
