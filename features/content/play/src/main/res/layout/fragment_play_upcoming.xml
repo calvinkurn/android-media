@@ -62,7 +62,7 @@
         app:layout_constraintTop_toTopOf="@id/view_partner_info" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_upcoming_title"
+        android:id="@+id/tv_upcoming_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl4"
