@@ -651,7 +651,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
-    private fun  configureThemeBasedOnAttribute() {
+    private fun configureThemeBasedOnAttribute() {
         if (initialTheme == TOOLBAR_DARK_TYPE) {
             switchToDarkToolbar()
         } else {
