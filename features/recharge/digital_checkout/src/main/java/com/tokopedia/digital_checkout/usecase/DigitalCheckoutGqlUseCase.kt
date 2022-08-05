@@ -11,6 +11,7 @@ import com.tokopedia.digital_checkout.data.response.checkout.RechargeCheckoutRes
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
@@ -29,6 +30,7 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
         setGraphqlQuery(RechargeCheckoutQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(RechargeCheckoutResponse::class.java)
+        GraphqlClient.moduleName = RECHARGE_MODULE_NAME
     }
 
     fun setParams(
@@ -64,6 +66,7 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
 
     companion object {
         private const val PARAMS_KEY = "request"
+        private const val RECHARGE_MODULE_NAME = "recharge"
 
         const val QUERY_NAME_RECHARGE_CHECKOUT = "RechargeCheckoutQuery"
         const val QUERY_RECHARGE_CHECKOUT = """
