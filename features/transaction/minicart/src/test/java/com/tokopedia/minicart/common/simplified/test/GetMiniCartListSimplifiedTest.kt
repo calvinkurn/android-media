@@ -68,7 +68,7 @@ class GetMiniCartListSimplifiedTest {
         val promoId = "promoId"
         val promoCode = "promoCode"
         val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessAllAvailable()
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
         }
@@ -94,7 +94,7 @@ class GetMiniCartListSimplifiedTest {
         val promoId = "promoId"
         val promoCode = "promoCode"
         val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessAllAvailable()
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
         }
@@ -119,7 +119,7 @@ class GetMiniCartListSimplifiedTest {
         val promoCode = "promoCode"
         val errorMessage = "Error Message"
         val exception = ResponseErrorException(errorMessage)
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(exception)
         }
@@ -141,7 +141,7 @@ class GetMiniCartListSimplifiedTest {
         val promoId = "promoId"
         val promoCode = "promoCode"
         val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessAllAvailable()
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
         }
@@ -154,7 +154,7 @@ class GetMiniCartListSimplifiedTest {
 
         val errorMessage = "Error Message"
         val exception = ResponseErrorException(errorMessage)
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(exception)
         }
@@ -174,7 +174,7 @@ class GetMiniCartListSimplifiedTest {
         val promoCode = "promoCode"
         val errorMessage = "Error Message"
         val exception = ResponseErrorException(errorMessage)
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(exception)
         }
@@ -196,7 +196,7 @@ class GetMiniCartListSimplifiedTest {
         val promoId = "promoId"
         val promoCode = "promoCode"
         val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessEmptyData()
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
         }
@@ -219,7 +219,7 @@ class GetMiniCartListSimplifiedTest {
         val promoId = "promoId"
         val promoCode = "promoCode"
         val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessEmptyData()
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
         }
@@ -242,7 +242,7 @@ class GetMiniCartListSimplifiedTest {
         val promoId = "promoId"
         val promoCode = "promoCode"
         val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessAllUnavailable()
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
         }
@@ -265,7 +265,7 @@ class GetMiniCartListSimplifiedTest {
         val promoId = "promoId"
         val promoCode = "promoCode"
         val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessAllUnavailable()
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
         }
@@ -288,7 +288,7 @@ class GetMiniCartListSimplifiedTest {
         val promoId = "promoId"
         val promoCode = "promoCode"
         val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessAvailableAndUnavailable()
-        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any()) } just Runs
+        every { getMiniCartListSimplifiedUseCase.setParams(any(), any(), any(), any(), any()) } just Runs
         coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
             firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
         }
