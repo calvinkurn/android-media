@@ -477,8 +477,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_COLLECTION_DETAIL && resultCode == Activity.RESULT_OK) {
-            val isNeedRefresh = data?.getBooleanExtra(EXTRA_NEED_REFRESH, false)
-            if (isNeedRefresh == true) getWishlistCollections()
+            getWishlistCollections()
+            /*val isNeedRefresh = data?.getBooleanExtra(EXTRA_NEED_REFRESH, false)
+            if (isNeedRefresh == true) getWishlistCollections()*/
 
             val isSuccess = data?.getBooleanExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS, false)
             val messageToaster =
