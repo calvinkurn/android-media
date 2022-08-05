@@ -27,7 +27,7 @@ class RechargeCheckoutRequest(
     val isHiddenCart: Boolean = false,
     @SerializedName("pid")
     @Expose
-    val pid: Long = 0,
+    val pid: Long = -1,
     @SerializedName("back_url")
     @Expose
     val backUrl: String = "",
