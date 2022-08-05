@@ -12,10 +12,15 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemVpsPackageBindin
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
+import com.tokopedia.unifycomponents.Label
 
 class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
 
     private var onVpsPackageClicked: (VpsPackageUiModel) -> Unit = {}
+
+    companion object {
+        private const val EMPTY_QUOTA = 0
+    }
 
     private val differCallback = object : DiffUtil.ItemCallback<VpsPackageUiModel>() {
         override fun areItemsTheSame(oldItem: VpsPackageUiModel, newItem: VpsPackageUiModel): Boolean {
@@ -52,43 +57,50 @@ class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
 
         fun bind(vpsPackage: VpsPackageUiModel) {
             binding.radioButton.isChecked = vpsPackage.isSelected
-            binding.tpgProductName.text = vpsPackage.packageName
+            binding.tpgPackageName.text = vpsPackage.packageName
             handleShopBenefit(vpsPackage)
+            handleRemainingQuota(vpsPackage)
             binding.root.setOnClickListener { onVpsPackageClicked(vpsPackage) }
         }
 
         private fun handleShopBenefit(vpsPackage: VpsPackageUiModel) {
             if (vpsPackage.isShopTierBenefit) {
-                handleShopTierBenefit(vpsPackage)
+                handleShopTierBenefit()
             } else {
                 handleVpsPackageBenefit(vpsPackage)
             }
 
         }
 
-        private fun handleShopTierBenefit(vpsPackage: VpsPackageUiModel) {
-            val startPeriod = vpsPackage.packageStartTime.formatTo(DateConstant.MONTH)
-            val endPeriod = vpsPackage.packageEndTime.formatTo(DateConstant.MONTH_YEAR)
-            val period = String.format(
-                binding.tpgRemainingQuota.context.getString(R.string.sfs_placeholder_shop_tier_vps_quota_period),
-                startPeriod,
-                endPeriod
-            )
-            binding.tpgRemainingQuota.text = period
+        private fun handleShopTierBenefit() {
+            binding.labelRemainingQuota.gone()
             binding.tpgPeriod.gone()
         }
 
         private fun handleVpsPackageBenefit(vpsPackage: VpsPackageUiModel) {
             val remainingQuota = String.format(
-                binding.tpgRemainingQuota.context.getString(R.string.sfs_placeholder_vps_quota_period),
+                binding.labelRemainingQuota.context.getString(R.string.sfs_placeholder_vps_quota_period),
                 vpsPackage.packageStartTime.formatTo(DateConstant.MONTH),
                 vpsPackage.packageEndTime.formatTo(DateConstant.MONTH)
             )
-            binding.tpgRemainingQuota.text = remainingQuota
-            binding.tpgRemainingQuota.visible()
+            binding.labelRemainingQuota.text = remainingQuota
+
+            binding.labelRemainingQuota.visible()
             binding.tpgPeriod.visible()
         }
+
+        private fun handleRemainingQuota(vpsPackage: VpsPackageUiModel) {
+            if (vpsPackage.currentQuota == EMPTY_QUOTA) {
+                binding.labelRemainingQuota.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+                binding.labelRemainingQuota.text = binding.labelRemainingQuota.context.getString(R.string.sfs_empty_quota)
+                binding.tpgPeriod.gone()
+            } else {
+                binding.labelRemainingQuota.setLabelType(Label.HIGHLIGHT_LIGHT_RED)
+            }
+        }
     }
+
+
 
 
     fun submit(newGradients: List<VpsPackageUiModel>) {

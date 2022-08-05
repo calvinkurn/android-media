@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgProductName"
+        android:id="@+id/tpgPackageName"
         android:layout_marginStart="@dimen/unify_space_8"
         android:layout_width="0dp"
         android:layout_marginEnd="@dimen/unify_space_16"
@@ -32,22 +32,19 @@
         tools:text="Keanggotaan PM Pro" />
 
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgRemainingQuota"
-        android:layout_width="0dp"
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelRemainingQuota"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_4"
-        android:paddingBottom="@dimen/unify_space_4"
-        android:layout_marginEnd="@dimen/unify_space_16"
         android:layout_marginStart="@dimen/unify_space_16"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_NN600"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:labelType="highlight_light_green"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioButton"
-        app:typographyType="paragraph_3"
-        tools:text="Sisa kuota 15/30" />
+        tools:text="15/30 Kuota terpakai" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgPeriod"
@@ -57,12 +54,13 @@
         android:layout_marginBottom="@dimen/unify_space_12"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:ellipsize="end"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:maxLines="1"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tpgRemainingQuota"
+        app:layout_constraintTop_toBottomOf="@+id/labelRemainingQuota"
         app:typographyType="small"
         tools:text="berlaku untuk periode campaign dari 1 Agu 2022 - 17 Agu 2022" />
 

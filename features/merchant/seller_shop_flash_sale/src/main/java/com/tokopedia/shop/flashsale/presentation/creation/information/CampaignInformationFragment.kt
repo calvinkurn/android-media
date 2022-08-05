@@ -332,13 +332,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val isUsingShopTierBenefit = vpsPackage?.isShopTierBenefit.orFalse()
 
         val helperMessage = if (isUsingShopTierBenefit) {
-            val startPeriod = vpsPackage?.packageStartTime?.formatTo(DateConstant.MONTH)
-            val endPeriod = vpsPackage?.packageEndTime?.formatTo(DateConstant.MONTH_YEAR)
-            String.format(
-                getString(R.string.sfs_placeholder_shop_tier_vps_quota_period),
-                startPeriod,
-                endPeriod
-            )
+            ""
         } else {
             String.format(
                 getString(R.string.sfs_placeholder_remaining_vps_quota),
