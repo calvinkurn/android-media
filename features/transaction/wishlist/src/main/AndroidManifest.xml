@@ -25,7 +25,6 @@
             android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity"
             android:exported="false"
             android:label="@string/page_name_wishlist_collection"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
@@ -43,7 +42,6 @@
             android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity"
             android:exported="false"
             android:label="@string/page_name_wishlist_collection_detail"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>

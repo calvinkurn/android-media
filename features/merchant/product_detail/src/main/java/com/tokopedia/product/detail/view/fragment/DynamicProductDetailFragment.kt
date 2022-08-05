@@ -35,6 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.BOOLE
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_SRC
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_COLLECTION_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -255,7 +256,6 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistHandler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -833,9 +833,18 @@ open class DynamicProductDetailFragment :
                     val isSuccess = data.getBooleanExtra(BOOLEAN_EXTRA_SUCCESS, false)
                     val messageToaster =
                         data.getStringExtra(STRING_EXTRA_MESSAGE_TOASTER)
+                    val collectionId =
+                        data.getStringExtra(STRING_EXTRA_COLLECTION_ID)
                     if (messageToaster != null) {
                         if (isSuccess) {
-                            view?.showToasterSuccess(messageToaster)
+                            view?.showToasterSuccess(message = messageToaster,
+                                ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+                                ctaListener = {
+                                    if (collectionId != null) {
+                                        goToWishlistCollection(collectionId)
+                                    }
+                                }
+                            )
                         } else {
                             view?.showToasterError(messageToaster)
                         }
@@ -4160,6 +4169,13 @@ open class DynamicProductDetailFragment :
 
     private fun goToWishlist() {
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+    }
+
+    private fun goToWishlistCollection(collectionId: String) {
+        val detailCollection =
+            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$collectionId"
+        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
+        startActivity(intentCollectionDetail)
     }
 
     override fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel) {

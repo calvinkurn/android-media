@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_SRC
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_COLLECTION_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
@@ -87,6 +88,7 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         if (data.status == OK && data.dataItem.success) {
             intent.putExtra(BOOLEAN_EXTRA_SUCCESS, data.dataItem.success)
             intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, data.dataItem.message)
+            intent.putExtra(STRING_EXTRA_COLLECTION_ID, data.dataItem.collectionId)
 
         } else {
             intent.putExtra(BOOLEAN_EXTRA_SUCCESS, false)
@@ -106,11 +108,12 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         activity?.finish()
     }
 
-    override fun onSuccessSaveToNewCollection(message: String) {
+    override fun onSuccessSaveToNewCollection(data: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems.DataItem) {
         bottomSheetCollection.dismiss()
         val intent = Intent()
         intent.putExtra(BOOLEAN_EXTRA_SUCCESS, true)
-        intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, message)
+        intent.putExtra(STRING_EXTRA_MESSAGE_TOASTER, data.message)
+        intent.putExtra(STRING_EXTRA_COLLECTION_ID, data.collectionId)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }

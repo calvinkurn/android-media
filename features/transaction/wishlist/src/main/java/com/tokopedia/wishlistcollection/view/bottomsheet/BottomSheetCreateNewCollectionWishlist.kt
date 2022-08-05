@@ -321,7 +321,7 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
                 is Success -> {
                     if (result.data.status == OK) {
                         dismiss()
-                        actionListenerFromPdp?.onSuccessSaveToNewCollection(result.data.dataItem.message)
+                        actionListenerFromPdp?.onSuccessSaveToNewCollection(result.data.dataItem)
                     } else {
                         dismiss()
                         val errorMessage = result.data.errorMessage.first().ifEmpty {
