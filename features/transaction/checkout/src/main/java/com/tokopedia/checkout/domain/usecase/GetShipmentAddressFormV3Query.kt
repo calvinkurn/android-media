@@ -122,6 +122,11 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                       eligible
                       badge_url
                     }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
+                      badge_url
+                    }
                     preorder {
                       is_preorder
                       duration
@@ -320,6 +325,11 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                       }
                       free_shipping_extra {
                         eligible
+                        badge_url
+                      }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
                         badge_url
                       }
                       product_ticker {
@@ -589,6 +599,13 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 packaging_and_greeting_card
                 only_greeting_card
                 invoice_not_sent_to_recipient
+              }
+              upsell {
+                is_show
+                title
+                description
+                app_link
+                image
               }
             }
           }

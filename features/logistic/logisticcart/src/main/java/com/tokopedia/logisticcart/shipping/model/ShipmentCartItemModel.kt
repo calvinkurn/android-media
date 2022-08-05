@@ -5,7 +5,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiMode
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import kotlinx.parcelize.Parcelize
-import java.util.*
 
 @Parcelize
 class ShipmentCartItemModel(
@@ -29,6 +28,8 @@ class ShipmentCartItemModel(
         var preOrderInfo: String? = null,
         var isFreeShippingExtra: Boolean = false,
         var freeShippingBadgeUrl: String? = null,
+        var isFreeShippingPlus: Boolean = false, // flag for plus badge tracker
+        var hasSeenFreeShippingBadge: Boolean = false, // flag for tracker
         var shopLocation: String? = null,
         var shopAlertMessage: String? = null,
         var shopTypeInfoData: ShopTypeInfoData? = null,

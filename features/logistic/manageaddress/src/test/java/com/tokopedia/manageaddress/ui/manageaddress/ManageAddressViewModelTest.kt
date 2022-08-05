@@ -29,7 +29,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -245,8 +244,8 @@ class ManageAddressViewModelTest {
     fun `verify when set page source is correctly`() {
         val source = "source"
 
-        manageAddressViewModel.setPageSource(source)
+        manageAddressViewModel.source = source
 
-        assertEquals(manageAddressViewModel.pageSource, source)
+        assertEquals(manageAddressViewModel.source, source)
     }
 }
