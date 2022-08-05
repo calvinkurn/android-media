@@ -151,7 +151,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
-        return getLoadingDialogFragment().isVisible
+        return getLoadingDialogFragment()?.isVisible == true
     }
 
     /**
@@ -342,13 +342,13 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun showLoadingView() {
-        getLoadingDialogFragment()
+        getOrCreateLoadingDialogFragment()
             .showNow(childFragmentManager)
     }
 
     private fun hideLoadingView() {
         val loadingDialog = getLoadingDialogFragment()
-        if (loadingDialog.isVisible) loadingDialog.dismiss()
+        loadingDialog?.dismiss()
     }
 
     private fun shouldOpenProductDetail(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int) {
@@ -738,8 +738,12 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun getLoadingDialogFragment(): PlayLoadingDialogFragment {
-        return PlayLoadingDialogFragment.get(
+    private fun getLoadingDialogFragment(): PlayLoadingDialogFragment? {
+        return PlayLoadingDialogFragment.get(childFragmentManager)
+    }
+
+    private fun getOrCreateLoadingDialogFragment(): PlayLoadingDialogFragment {
+        return PlayLoadingDialogFragment.getOrCreate(
             childFragmentManager,
             requireActivity().classLoader
         )

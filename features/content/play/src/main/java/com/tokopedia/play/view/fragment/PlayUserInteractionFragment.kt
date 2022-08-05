@@ -237,7 +237,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private val analyticManager by lazy(LazyThreadSafetyMode.NONE) {
         analyticManagerFactory.create(
-            context = requireContext(),
             productAnalyticHelper = productAnalyticHelper,
         )
     }

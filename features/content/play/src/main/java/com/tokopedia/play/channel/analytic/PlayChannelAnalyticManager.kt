@@ -35,19 +35,17 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
     private val newAnalytic: PlayNewAnalytic,
     private val analytic2Factory: PlayAnalytic2.Factory,
     private val dispatchers: CoroutineDispatchers,
-    @Assisted context: Context,
+    private val trackingQueue: TrackingQueue,
     @Assisted private val productAnalyticHelper: ProductAnalyticHelper,
 ) {
 
     @AssistedFactory
     interface Factory {
         fun create(
-            context: Context,
             productAnalyticHelper: ProductAnalyticHelper,
         ) : PlayChannelAnalyticManager
     }
 
-    private val trackingQueue = TrackingQueue(context)
     private var analytic2 : PlayAnalytic2? = null
 
     private var isAtcFeaturedProduct: Boolean = false

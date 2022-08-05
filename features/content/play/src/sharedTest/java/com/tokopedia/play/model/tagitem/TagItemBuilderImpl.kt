@@ -52,6 +52,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         appLink: String,
         isTokoNow: Boolean,
         isPinned: Boolean,
+        isRilisanSpesial: Boolean,
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -65,6 +66,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         applink = appLink,
         isTokoNow = isTokoNow,
         isPinned = isPinned,
+        isRilisanSpesial = isRilisanSpesial
     )
 
     override fun buildMerchantVoucher(

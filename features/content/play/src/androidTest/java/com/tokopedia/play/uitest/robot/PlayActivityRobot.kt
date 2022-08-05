@@ -4,20 +4,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
-import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
+import com.tokopedia.play.test.espresso.clickOnViewChild
 import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.CoreMatchers.allOf
@@ -49,6 +46,44 @@ class PlayActivityRobot(
         Espresso.onView(
             withId(R.id.view_product_see_more)
         ).perform(ViewActions.click())
+    }
+
+    fun clickPinnedProductCarousel() = chainable {
+        Espresso.onView(
+            withId(R.id.rv_product_featured)
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<ProductCarouselViewHolder.PinnedProduct>(
+                0, ViewActions.click()
+            )
+        )
+    }
+
+    fun clickBuyPinnedProductCarousel() = chainable {
+        Espresso.onView(
+            withId(R.id.rv_product_featured)
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<ProductCarouselViewHolder.PinnedProduct>(
+                0, clickOnViewChild(R.id.btn_buy)
+            )
+        )
+    }
+
+    fun clickAtcPinnedProductCarousel() = chainable {
+        Espresso.onView(
+            withId(R.id.rv_product_featured)
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<ProductCarouselViewHolder.PinnedProduct>(
+                0, clickOnViewChild(R.id.btn_atc)
+            )
+        )
+    }
+
+    fun clickToasterAction() = chainable {
+        Espresso.onView(
+            withId(R.id.snackbar_btn)
+        ).perform(
+            ViewActions.click()
+        )
     }
 
     /**
