@@ -23,18 +23,6 @@ class PlayProductTagUiMapper @Inject constructor() {
         id = input.id,
     )
 
-//    var index = 0
-//
-//    fun mapSection(input: Section): ProductSectionUiModel.Section {
-//        return ProductSectionUiModel.Section(
-//            productList = input.listOfProducts.map { product ->
-//                mapProduct(product, ProductSectionType.getSectionValue(sectionType = input.sectionType), index++ == 1)
-//            },
-//            config = mapConfig(input),
-//            id = input.id,
-//        )
-//    }
-
     private fun mapConfig(input: Section) = ProductSectionUiModel.Section.ConfigUiModel(
         title = input.sectionTitle,
         type = ProductSectionType.getSectionValue(sectionType = input.sectionType),
@@ -81,7 +69,6 @@ class PlayProductTagUiMapper @Inject constructor() {
             applink = input.appLink,
             isTokoNow = input.isTokoNow,
             isPinned = input.isPinned,
-//            isPinned = index++ == 1,
             isRilisanSpesial = sectionType == ProductSectionType.Active || sectionType == ProductSectionType.Upcoming,
         )
     }
