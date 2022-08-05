@@ -7,8 +7,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -121,6 +119,7 @@ class QuizWidgetView : ConstraintLayout {
         super.onDetachedFromWindow()
         binding.layoutTimer.timerQuizOption.pause()
         mListener = null
+        cancelAllAnim()
     }
 
     fun setListener(listener: Listener?) {
@@ -193,8 +192,7 @@ class QuizWidgetView : ConstraintLayout {
         fun onQuizImpressed()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
+    private fun cancelAllAnim() {
         scaleX.cancel()
         scaleY.cancel()
         rotate.cancel()

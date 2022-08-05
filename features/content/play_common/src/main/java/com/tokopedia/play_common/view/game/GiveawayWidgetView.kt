@@ -60,6 +60,7 @@ class GiveawayWidgetView : ConstraintLayout {
         super.onDetachedFromWindow()
         binding.timerRemaining.pause()
         mListener = null
+        cancelAllAnim()
     }
 
     override fun setClickable(clickable: Boolean) {
@@ -138,8 +139,7 @@ class GiveawayWidgetView : ConstraintLayout {
         scaleY.start()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
+    private fun cancelAllAnim() {
         scaleY.cancel()
         scaleX.cancel()
     }
