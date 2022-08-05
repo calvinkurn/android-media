@@ -6,6 +6,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.people.model.UserPostModel
 import javax.inject.Inject
 
+/**
+ * Duplicate with: com.tokopedia.videoTabComponent.domain.usecase.GetPlayContentUseCase
+ */
 const val PLAY_VIDEO_QUERY = """
     query playGetContentSlot(${'$'}group: String, ${'$'}cursor: String, ${'$'}source_type: String, ${'$'}source_id: String) {
                 playGetContentSlot(req: {group:${'$'}group, cursor: ${'$'}cursor, source_type: ${'$'}source_type, source_id: \${'$'}source_id}) {
