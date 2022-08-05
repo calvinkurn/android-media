@@ -32,6 +32,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 }
 
 project.ext {

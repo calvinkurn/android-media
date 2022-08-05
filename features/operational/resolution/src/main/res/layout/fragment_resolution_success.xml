@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ResolutionSuccessActivity">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <ImageView
         android:id="@+id/iv_success_reso"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -18,8 +18,7 @@
         app:layout_constraintVertical_chainStyle="packed"
         android:layout_marginTop="@dimen/unify_space_32"
         android:layout_marginHorizontal="@dimen/unify_space_64"
-        app:layout_constraintBottom_toTopOf="@id/tv_title"
-        android:src="@drawable/img_success_reso"/>
+        app:layout_constraintBottom_toTopOf="@id/tv_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"

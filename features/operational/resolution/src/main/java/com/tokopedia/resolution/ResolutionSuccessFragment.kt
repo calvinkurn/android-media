@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.resolution.databinding.FragmentResolutionSuccessBinding
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.webview.KEY_URL
 
 class ResolutionSuccessFragment : TkpdBaseV4Fragment() {
 
@@ -36,6 +36,8 @@ class ResolutionSuccessFragment : TkpdBaseV4Fragment() {
     }
 
     private fun initView() {
+        binding?.ivSuccessReso?.loadImage(URL_IMAGE)
+
         binding?.btnGoToDetail?.setOnClickListener {
             routeToDetail()
         }
@@ -67,10 +69,13 @@ class ResolutionSuccessFragment : TkpdBaseV4Fragment() {
     }
 
     override fun getScreenName(): String {
-        return getString(com.tokopedia.resolution.R.string.screen_name_resolution) ?: ""
+        return getString(R.string.screen_name_resolution) ?: ""
     }
 
     companion object {
+        private const val KEY_URL = "url"
+        private const val URL_IMAGE = "https://images.tokopedia.net/img/resolution/icons/resolution_success_state.png"
+
         fun createNewInstance(url: String): Fragment {
             val fragment = ResolutionSuccessFragment()
             val bundle = Bundle()
