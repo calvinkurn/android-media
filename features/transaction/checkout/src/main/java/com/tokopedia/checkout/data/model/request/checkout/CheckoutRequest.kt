@@ -363,7 +363,7 @@ object CheckoutRequestMapper {
         if (shopProductCheckoutRequest.freeShippingMetadata.isNotBlank()) {
             orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, shopProductCheckoutRequest.freeShippingMetadata))
         }
-        if(prescriptionIds != null && prescriptionIds.isNotEmpty()){
+        if(shopProductCheckoutRequest.needPrescription && prescriptionIds != null && prescriptionIds.isNotEmpty()){
             orderMetadata.add(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, prescriptionIds.toString()))
         }
         return orderMetadata

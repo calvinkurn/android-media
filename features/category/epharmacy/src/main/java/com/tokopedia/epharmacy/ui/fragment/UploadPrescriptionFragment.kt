@@ -89,7 +89,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
     private val ePharmacyAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { EPharmacyAdapterFactoryImpl(this) }
 
-    private var orderId = 0L
+    private var orderId = DEFAULT_ZERO_VALUE
     private var checkoutId = ""
     private var entryPoint = ""
 
@@ -223,7 +223,8 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 pageSource(PageSource.Epharmacy)
                 modeType(ModeType.IMAGE_ONLY)
                 multipleSelectionMode()
-                maxMediaItem(withMaxMediaItems - 2)
+                maxVideoItem(0)
+                maxMediaItem(withMaxMediaItems)
                 maxImageFileSize(MAX_MEDIA_SIZE_PICKER)
             }
             startActivityForResult(intent, MEDIA_PICKER_REQUEST_CODE)

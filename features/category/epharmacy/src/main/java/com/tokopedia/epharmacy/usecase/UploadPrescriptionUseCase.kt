@@ -3,7 +3,6 @@ package com.tokopedia.epharmacy.usecase
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
@@ -12,7 +11,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.epharmacy.network.request.UploadPrescriptionRequest
 import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
 import com.tokopedia.epharmacy.utils.EPharmacyImageQuality
-import com.tokopedia.usecase.BuildConfig
+import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -62,16 +61,8 @@ class UploadPrescriptionUseCase @Inject constructor(
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
             "${IMAGE_DATA_PREFIX}${encodedString}"
         }catch (e : Exception){
-            logException(e)
+            EPharmacyUtils.logException(e)
             ""
-        }
-    }
-
-    private fun logException(e: Exception) {
-        if (!BuildConfig.DEBUG) {
-            FirebaseCrashlytics.getInstance().recordException(e)
-        } else {
-            e.printStackTrace()
         }
     }
 

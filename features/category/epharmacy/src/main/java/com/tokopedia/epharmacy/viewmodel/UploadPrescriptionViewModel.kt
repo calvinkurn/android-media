@@ -15,7 +15,6 @@ import com.tokopedia.epharmacy.network.response.EPharmacyUploadPrescriptionIdsRe
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
 import com.tokopedia.epharmacy.usecase.*
 import com.tokopedia.epharmacy.utils.*
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -169,6 +168,7 @@ class UploadPrescriptionViewModel @Inject constructor(
         _prescriptionImages.value.let {
             originalPaths.forEach { localPath ->
                 changeToLoadingState(it,localPath)
+                checkPrescriptionImages()
                 uploadImageWithPath((_prescriptionImages.value?.size ?: 0) - 1,localPath)
             }
             _prescriptionImages.postValue(it)
@@ -254,21 +254,17 @@ class UploadPrescriptionViewModel @Inject constructor(
         var successImagesCount = 0
         var failedImageCount = 0
         var approvedImageCount = 0
+        var uploadingImageCount = 0
         val presImageSize  = _prescriptionImages.value?.size ?: 0
         _prescriptionImages.value?.forEach { presImage ->
             when {
-                presImage?.isUploadSuccess == true -> {
-                    successImagesCount += 1
-                }
-                presImage?.isUploadFailed == true -> {
-                    failedImageCount += 1
-                }
-                (presImage?.status == EPharmacyPrescriptionStatus.APPROVED.status) -> {
-                    approvedImageCount += 1
-                }
+                (presImage?.isUploadSuccess == true )-> successImagesCount += 1
+                (presImage?.isUploadFailed == true )-> failedImageCount += 1
+                (presImage?.isUploading == true )-> uploadingImageCount += 1
+                (presImage?.status == EPharmacyPrescriptionStatus.APPROVED.status) -> approvedImageCount += 1
             }
         }
-        val key = if(failedImageCount > 0){
+        val key = if(failedImageCount > 0 || uploadingImageCount > 0){
             EPharmacyButtonKey.DONE_DISABLED.key
         }else {
             if((successImagesCount == presImageSize &&  presImageSize != 0) ||
@@ -352,6 +348,9 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     override fun onCleared() {
         getEPharmacyOrderDetailUseCase.cancelJobs()
+        getEPharmacyCheckoutDetailUseCase.cancelJobs()
+        uploadPrescriptionUseCase.cancelJobs()
+        postPrescriptionIdUseCase.cancelJobs()
         super.onCleared()
     }
 }

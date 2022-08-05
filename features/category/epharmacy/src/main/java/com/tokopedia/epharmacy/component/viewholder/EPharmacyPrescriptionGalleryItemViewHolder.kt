@@ -9,6 +9,7 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
 import com.tokopedia.epharmacy.utils.EPharmacyPrescriptionStatus
+import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -66,11 +67,15 @@ class EPharmacyPrescriptionGalleryItemViewHolder(private val viewItem: View) : R
             val splitBase64 = model.prescriptionData?.value?.split(",")
             if (splitBase64?.size ?: 0 > 1){
                 val base64StringImage = splitBase64?.get(1)
-                val imgByteArray: ByteArray = Base64.decode(base64StringImage, Base64.DEFAULT)
-                Glide.with(viewItem.context)
-                    .asBitmap()
-                    .load(imgByteArray)
-                    .into(image)
+                try {
+                    val imgByteArray: ByteArray = Base64.decode(base64StringImage, Base64.DEFAULT)
+                    Glide.with(viewItem.context)
+                        .asBitmap()
+                        .load(imgByteArray)
+                        .into(image)
+                }catch (e :Exception){
+                    EPharmacyUtils.logException(e)
+                }
             }
 
         }else {
