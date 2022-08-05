@@ -317,9 +317,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 is Success -> {
                     val vpsPackages = result.data
                     viewModel.storeVpsPackage(vpsPackages)
-                    val defaultSelectedVpsPackage = vpsPackages.firstOrNull()
-                    viewModel.setSelectedVpsPackageId(defaultSelectedVpsPackage?.packageId.orZero())
-                    updateQuotaSource(defaultSelectedVpsPackage ?: return@observe)
+
+                    val nearestExpiredVpsPackage = viewModel.findNearestExpiredVpsPackage(vpsPackages) ?: return@observe
+                    viewModel.setSelectedVpsPackage(nearestExpiredVpsPackage)
+                    updateQuotaSource(nearestExpiredVpsPackage)
                 }
                 is Fail -> {
                     binding?.cardView showError result.throwable
@@ -626,12 +627,16 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val minimumDate = dateManager.getCurrentDate().advanceHourBy(TWO_HOURS)
         val maximumEndDate = dateManager.getCurrentDate().advanceMonthBy(THREE_MONTH)
 
+        val selectedVpsPackage = viewModel.getSelectedVpsPackage() ?: return
+        val maximumCampaignEndDate = viewModel.findCampaignMaxEndDate(selectedVpsPackage, maximumEndDate)
+
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
             TimePickerSelectionMode.START_TIME,
             selectedDate,
             minimumDate,
-            maximumEndDate
+            maximumCampaignEndDate
         )
+
         bottomSheet.setOnDateTimePicked { newStartDate ->
             viewModel.setSelectedStartDate(newStartDate)
             binding?.tauStartDate?.editText?.setText(newStartDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
@@ -687,7 +692,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val secondColor = viewModel.getColor().second
         val paymentType = viewModel.getPaymentType()
         val remainingQuota = viewModel.getRemainingQuota()
-        val vpsPackageId = viewModel.getSelectedVpsPackageId()
+        val vpsPackageId = viewModel.getSelectedVpsPackage()?.packageId.orZero()
 
         return CampaignInformationViewModel.Selection(
             binding?.tauCampaignName?.editText?.text.toString(),
@@ -812,9 +817,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         viewModel.setShowTeaser(campaign.useUpcomingWidget)
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
-        viewModel.setSelectedVpsPackageId(campaign.packageInfo.packageId)
         viewModel.storeVpsPackage(combinedData.vpsPackages)
-        viewModel.setSelectedVpsPackageId(quotaSource?.packageId.orZero())
+        viewModel.setSelectedVpsPackage(quotaSource ?: return)
 
         viewModel.storeAsDefaultSelection(
             CampaignInformationViewModel.Selection(
@@ -859,7 +863,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun handleBackConfirmation() {
         val remainingQuota = viewModel.getRemainingQuota()
-        val selectedVpsPackageId = viewModel.getSelectedVpsPackageId()
+        val selectedVpsPackageId = viewModel.getSelectedVpsPackage()?.packageId.orZero()
         val updatedDefaultSelection = viewModel.getDefaultSelection()?.copy(
             remainingQuota = remainingQuota,
             vpsPackageId = selectedVpsPackageId
@@ -990,10 +994,11 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun displayQuotaSourceBottomSheet() {
+        val selectedVpsPackageId = viewModel.getSelectedVpsPackage()?.packageId.orZero()
         val vpsPackages = ArrayList(viewModel.getStoredVpsPackages())
-        val bottomSheet = VpsPackageBottomSheet.newInstance(viewModel.getSelectedVpsPackageId(), vpsPackages)
+        val bottomSheet = VpsPackageBottomSheet.newInstance(selectedVpsPackageId, vpsPackages)
         bottomSheet.setOnVpsPackageClicked { selectedVpsPackage ->
-            viewModel.setSelectedVpsPackageId(selectedVpsPackage.packageId)
+            viewModel.setSelectedVpsPackage(selectedVpsPackage)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }

@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.flashsale.common.constant.Constant.CAMPAIGN_NOT_CREATED_ID
 import com.tokopedia.shop.flashsale.common.constant.QuantityPickerConstant.CAMPAIGN_TEASER_MAXIMUM_UPCOMING_HOUR
@@ -16,7 +15,6 @@ import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
 import com.tokopedia.shop.flashsale.common.util.DateManager
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction
 import com.tokopedia.shop.flashsale.domain.entity.CampaignCreationResult
-import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.Gradient
 import com.tokopedia.shop.flashsale.domain.entity.RelatedCampaign
 import com.tokopedia.shop.flashsale.domain.entity.VpsPackage
@@ -89,7 +87,7 @@ class CampaignInformationViewModel @Inject constructor(
     val vpsPackages: LiveData<Result<List<VpsPackageUiModel>>>
         get() = _vpsPackages
 
-    private var vpsPackageId : Long = 0
+    private var vpsPackage : VpsPackageUiModel? = null
 
     private var selectedColor = defaultGradientColor
     private var selectedStartDate = Date()
@@ -458,26 +456,6 @@ class CampaignInformationViewModel @Inject constructor(
         return previousData != currentData
     }
 
-
-/*    fun getPrerequisiteData() {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val campaignAttributeDeferred = async { getSellerCampaignAttributeUseCase.execute(
-                    month = dateManager.getCurrentMonth(),
-                    year = dateManager.getCurrentYear()
-                ) }
-
-                val result = async { getSellerCampaignPackageListUseCase.execute() }
-                val vpsPackages = applySelectionRule(selectedPackageId, result)
-                _vpsPackages.postValue(Success(vpsPackages))
-            },
-            onError = { error ->
-                _vpsPackages.postValue(Fail(error))
-            }
-        )
-    }*/
-
     fun getVpsPackages(selectedPackageId : Long) {
         launchCatchError(
             dispatchers.io,
@@ -535,12 +513,16 @@ class CampaignInformationViewModel @Inject constructor(
         return false
     }
 
-    fun setSelectedVpsPackageId(vpsPackageId: Long) {
-        this.vpsPackageId = vpsPackageId
+    fun findNearestExpiredVpsPackage(vpsPackages: List<VpsPackageUiModel>): VpsPackageUiModel? {
+        return vpsPackages.minByOrNull { it.packageEndTime.time }
     }
 
-    fun getSelectedVpsPackageId(): Long {
-        return this.vpsPackageId
+    fun setSelectedVpsPackage(vpsPackage: VpsPackageUiModel) {
+        this.vpsPackage = vpsPackage
+    }
+
+    fun getSelectedVpsPackage(): VpsPackageUiModel? {
+        return this.vpsPackage
     }
 
     fun storeVpsPackage(vpsPackages: List<VpsPackageUiModel>) {
@@ -569,8 +551,15 @@ class CampaignInformationViewModel @Inject constructor(
         return false
     }
 
-    private fun isUsingVpsPackage(): Boolean {
-        return vpsPackageId != SHOP_TIER_BENEFIT_PACKAGE_ID
+    fun findCampaignMaxEndDate(selectedVpsPackage : VpsPackageUiModel, endDate: Date): Date {
+        val isUsingVpsPackage = selectedVpsPackage.packageId != SHOP_TIER_BENEFIT_PACKAGE_ID
+
+        return if (isUsingVpsPackage) {
+            selectedVpsPackage.packageEndTime
+        } else {
+            endDate
+        }
     }
+
 
 }
