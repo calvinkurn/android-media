@@ -591,6 +591,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 only_greeting_card
                 invoice_not_sent_to_recipient
               }
+              cart_data
             }
           }
         }"""
