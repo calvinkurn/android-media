@@ -136,6 +136,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -229,6 +230,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var rvLayoutManager : LinearLayoutManager? = null
     private var messageCreateTime : String = ""
     private lateinit var chatbotAdapter: ChatbotAdapter
+    private val onClickOffSetValueForReplyBubble = 1000
 
     @Inject
     lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
@@ -1429,7 +1431,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             smoothScrollToPosition(bubblePosition)
         } else {
             resetData()
-            setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
+            setupBeforeReplyTime(((parentReply.replyTimeMillisOffset).toLongOrZero() + onClickOffSetValueForReplyBubble).toString())
             loadDataOnClick(parentReply.replyTime)
         }
     }
@@ -1524,6 +1526,15 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 rvScrollListener?.finishTopLoadingState()
                 filteredList?.let { renderList ->
                     renderTopList(renderList)
+                    if (fromOnClick) {
+                        val bubblePosition = chatbotAdapter.getBubblePosition(
+                            replyTime
+                        )
+                        if (bubblePosition != RecyclerView.NO_POSITION) {
+                            smoothScrollToPosition(bubblePosition)
+                        }
+
+                    }
                 }
                 if (fromOnClick && replyTime.isNotEmpty()) {
                     updateHasNextAfterState(chatReplies)
@@ -1545,16 +1556,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 rvScrollListener?.finishBottomLoadingState()
                 if (filteredList?.isNotEmpty()==true) {
                     renderBottomList(filteredList)
-
-                    if (fromOnClick) {
-                        val bubblePosition = chatbotAdapter.getBubblePosition(
-                            replyTime
-                        )
-                        if (bubblePosition != RecyclerView.NO_POSITION) {
-                            smoothScrollToPosition(bubblePosition)
-                        }
-
-                    }
                 } else{
                     presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
                 }
