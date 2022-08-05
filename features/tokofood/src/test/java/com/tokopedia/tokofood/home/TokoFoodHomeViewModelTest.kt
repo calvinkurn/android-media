@@ -4,6 +4,7 @@ import android.accounts.NetworkErrorException
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
+import com.tokopedia.tokofood.data.createAddress
 import com.tokopedia.tokofood.data.createChooseAddress
 import com.tokopedia.tokofood.data.createDynamicIconsResponse
 import com.tokopedia.tokofood.data.createDynamicLegoBannerDataModel
@@ -22,15 +23,19 @@ import com.tokopedia.tokofood.data.createNoAddressState
 import com.tokopedia.tokofood.data.createNoPinPoinState
 import com.tokopedia.tokofood.data.createSliderBannerDataModel
 import com.tokopedia.tokofood.data.createTicker
+import com.tokopedia.tokofood.data.createTickerData
 import com.tokopedia.tokofood.data.createUSPModel
 import com.tokopedia.tokofood.data.createUSPResponse
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
+import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState.Companion.LOAD_MORE
+import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState.Companion.SHOW
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState.Companion.UPDATE
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment.Companion.SOURCE
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeMerchantTitleUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
@@ -188,6 +193,302 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
                 }
             }
             viewModel.setUpdatePinPoint("", "", "")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+    }
+
+    @Test
+    fun `when getting error state should run and give the error result`() {
+        val throwable = Throwable("Error Timeout")
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setErrorState(throwable)
+            collectorJob.cancel()
+        }
+
+        val isShownErrorState = (actualResponse as Success).data.items.find { it is TokoFoodErrorStateUiModel }
+        Assert.assertNotNull(isShownErrorState)
+    }
+
+    @Test
+    fun `when getting homeLayout should run and give the success result`() {
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), createAddress())
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(),
+                createUSPModel(state = TokoFoodLayoutState.LOADING),
+                createIconsModel(state = TokoFoodLayoutState.LOADING),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                )
+            ),
+            state = SHOW
+        )
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            collectorJob.cancel()
+        }
+
+        verifyCallHomeLayout()
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting homeLayout should run and then get layout component and give the success result`() {
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), createAddress())
+        onGetUSP_thenReturn(createUSPResponse())
+        onGetIcons_thenReturn(createDynamicIconsResponse())
+        onGetTicker_thenReturn(createTicker())
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(listOf(createTickerData())),
+                createUSPModel(createUSPResponse(), state = TokoFoodLayoutState.SHOW),
+                createIconsModel(createDynamicIconsResponse().dynamicIcon.listDynamicIcon, state = TokoFoodLayoutState.SHOW),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                )
+            ),
+            state = UPDATE
+        )
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            viewModel.setLayoutComponentData(createAddress())
+            collectorJob.cancel()
+        }
+
+        verifyCallHomeLayout()
+        verifyCallTicker()
+        verifyCallIcons()
+        verifyCallUSP()
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when remove ticker should run and give removed the ticker`() {
+        onGetTicker_thenReturn(createTicker())
+        onGetUSP_thenReturn(createUSPResponse())
+        onGetIcons_thenReturn(createDynamicIconsResponse())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), createAddress())
+
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createUSPModel(createUSPResponse(), state = TokoFoodLayoutState.SHOW),
+                createIconsModel(createDynamicIconsResponse().dynamicIcon.listDynamicIcon, state = TokoFoodLayoutState.SHOW),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                )
+            ),
+            state = UPDATE
+        )
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            viewModel.setLayoutComponentData(createAddress())
+            viewModel.setRemoveTicker(TokoFoodHomeStaticLayoutId.TICKER_WIDGET_ID)
+            collectorJob.cancel()
+        }
+
+        verifyCallHomeLayout()
+        verifyCallTicker()
+        verifyCallIcons()
+        verifyCallUSP()
+        verifyTickerHasBeenRemoved()
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting homeLayout and error layoutComponent data should run and give the success result`() {
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), createAddress())
+        onGetTicker_thenReturn(NullPointerException())
+        onGetUSP_thenReturn(NullPointerException())
+        onGetIcons_thenReturn(NullPointerException())
+
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                )
+            ),
+            state = UPDATE
+        )
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            viewModel.setLayoutComponentData(createAddress())
+            collectorJob.cancel()
+        }
+
+        verifyCallHomeLayout()
+        verifyCallTicker()
+        verifyCallIcons()
+        verifyCallUSP()
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+
+    @Test
+    fun `when getting homeLayout and there is unsupported layout should run and give the success result`() {
+        val unknownLayout = TokoFoodItemUiModel(
+            UnknownHomeLayout,
+            TokoFoodLayoutItemState.NOT_LOADED
+        )
+
+        addHomeLayoutItem(unknownLayout)
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setLayoutComponentData(createAddress())
+            collectorJob.cancel()
+        }
+
+        val expectedResponse = TokoFoodListUiModel(
+                items = emptyList(),
+                state = UPDATE
+            )
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting homeLayout and there is null layout should run and give the success result`() {
+        val unknownLayout = TokoFoodItemUiModel(
+            null,
+            TokoFoodLayoutItemState.NOT_LOADED
+        )
+
+        addHomeLayoutItem(unknownLayout)
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setLayoutComponentData(createAddress())
+            collectorJob.cancel()
+        }
+
+        val expectedResponse = TokoFoodListUiModel(
+            items = emptyList(),
+            state = UPDATE
+        )
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting homeLayout and component layout but address empty`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(null, isLoggedIn = true)
+            viewModel.setLayoutComponentData(null)
+            collectorJob.cancel()
+        }
+        Assert.assertNull(actualResponse)
+    }
+
+    @Test
+    fun `when getting homeLayout should throw homeLayout's exception and get the failed result`() {
+        onGetHomeLayoutData_thenReturn(Throwable())
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            viewModel.setLayoutComponentData(createAddress())
             collectorJob.cancel()
         }
 

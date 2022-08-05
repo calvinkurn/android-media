@@ -62,6 +62,14 @@ abstract class TokoFoodHomeViewModelTestFixture {
 
     protected lateinit var viewModel: TokoFoodHomeViewModel
 
+    private val privateHasTickerBeenRemoved by lazy {
+        viewModel.getPrivateField<Boolean>("hasTickerBeenRemoved")
+    }
+
+    private val privateHomeLayoutItemList by lazy {
+        viewModel.getPrivateField<MutableList<TokoFoodItemUiModel>>("homeLayoutItemList")
+    }
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -128,5 +136,84 @@ abstract class TokoFoodHomeViewModelTestFixture {
 
     protected fun verifyIsUpdateAddressManualFalse() {
         Assert.assertFalse(viewModel.isAddressManuallyUpdated)
+    }
+
+    protected fun onGetTicker_thenReturn(tickerResponse: TokoFoodHomeTickerResponse) {
+        coEvery { tokoFoodHomeTickerUseCase.execute(localCacheModel = any()) } returns tickerResponse
+    }
+
+    protected fun onGetTicker_thenReturn(errorThrowable: Throwable) {
+        coEvery {
+            tokoFoodHomeTickerUseCase.execute(localCacheModel = any())
+        } throws errorThrowable
+    }
+
+    protected fun verifyCallTicker() {
+        coVerify { tokoFoodHomeTickerUseCase.execute(any()) }
+    }
+
+    protected fun onGetUSP_thenReturn(uspResponse: TokoFoodHomeUSPResponse) {
+        coEvery { tokoFoodHomeUSPUseCase.execute() } returns uspResponse
+    }
+
+    protected fun onGetUSP_thenReturn(errorThrowable: Throwable) {
+        coEvery {
+            tokoFoodHomeUSPUseCase.execute()
+        } throws errorThrowable
+    }
+
+    protected fun verifyCallUSP() {
+        coVerify { tokoFoodHomeUSPUseCase.execute() }
+    }
+
+    protected fun onGetIcons_thenReturn(iconResponse: TokoFoodHomeDynamicIconsResponse) {
+        coEvery { tokoFoodHomeDynamicIconsUseCase.execute(any()) } returns iconResponse
+    }
+
+    protected fun onGetIcons_thenReturn(errorThrowable: Throwable) {
+        coEvery {
+            tokoFoodHomeDynamicIconsUseCase.execute(any())
+        } throws errorThrowable
+    }
+
+    protected fun verifyCallIcons() {
+        coVerify { tokoFoodHomeDynamicIconsUseCase.execute(any()) }
+    }
+
+    protected fun onGetHomeLayoutData_thenReturn(
+        layoutResponse: TokoFoodHomeLayoutResponse,
+        localCacheModel: LocalCacheModel = LocalCacheModel()
+    ) {
+        coEvery { tokoFoodDynamicChanelUseCase.execute(localCacheModel) } returns layoutResponse
+    }
+
+    protected fun onGetHomeLayoutData_thenReturn(
+        error: Throwable,
+        localCacheModel: LocalCacheModel = LocalCacheModel()
+    ) {
+        coEvery { tokoFoodDynamicChanelUseCase.execute(localCacheModel) } throws error
+    }
+
+    protected fun verifyCallHomeLayout() {
+        coVerify { tokoFoodDynamicChanelUseCase.execute(any()) }
+    }
+
+    protected fun verifyTickerHasBeenRemoved(){
+        Assert.assertTrue(privateHasTickerBeenRemoved)
+    }
+
+    inline fun <reified T>Any.getPrivateField(name: String): T {
+        return this::class.java.getDeclaredField(name).let {
+            it.isAccessible = true
+            return@let it.get(this) as T
+        }
+    }
+
+    protected fun addHomeLayoutItem(item: TokoFoodItemUiModel) {
+        privateHomeLayoutItemList.add(item)
+    }
+
+    object UnknownHomeLayout: TokoFoodHomeLayoutUiModel("1") {
+        override fun type(typeFactory: TokoFoodHomeTypeFactory?) = 0
     }
 }

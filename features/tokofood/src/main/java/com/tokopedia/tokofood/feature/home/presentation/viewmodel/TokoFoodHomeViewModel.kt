@@ -325,7 +325,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         return Success(isSuccess)
     }
 
-    suspend fun getHomeLayout(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
+    private suspend fun getHomeLayout(localCacheModel: LocalCacheModel): Result<TokoFoodListUiModel> {
         homeLayoutItemList.clear()
 
         val homeLayoutResponse = withContext(dispatchers.io) {
@@ -344,7 +344,7 @@ class TokoFoodHomeViewModel @Inject constructor(
         return Success(data)
     }
 
-    suspend fun getLayoutComponentData(
+    private suspend fun getLayoutComponentData(
         uiModel: TokoFoodItemUiModel,
         localCacheModel: LocalCacheModel?
     ): Result<TokoFoodListUiModel> {
