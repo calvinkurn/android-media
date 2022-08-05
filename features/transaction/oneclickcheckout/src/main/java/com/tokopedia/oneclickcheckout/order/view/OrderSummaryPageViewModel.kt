@@ -218,7 +218,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 setProductWeight(orderProduct.weight.toString())
                 setPromoCode(promoCodes)
                 setPromoDetails("")
-                setProductType("")
+                setProductType(orderProduct.freeShippingName)
                 setCartId(orderProduct.cartId)
                 setBuyerAddressId(orderProfile.value.address.addressId.toString())
                 setSpid(orderShipment.value.getRealShipperProductId().toString())

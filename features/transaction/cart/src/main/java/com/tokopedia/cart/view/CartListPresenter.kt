@@ -1171,7 +1171,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemHolderData: CartItemHolderData): EnhancedECommerceProductCartMapData {
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setDimension80(
+            setDimension38(
                     if (cartItemHolderData.trackerAttribution.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
@@ -1203,13 +1203,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setCartId(cartItemHolderData.cartId)
             setPromoCode(cartItemHolderData.promoCodes)
             setPromoDetails(cartItemHolderData.promoDetails)
-            setDimension83(
-                    when {
-                        cartItemHolderData.isFreeShippingExtra -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA
-                        cartItemHolderData.isFreeShipping -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR
-                        else -> EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                    }
-            )
+            setDimension83(cartItemHolderData.freeShippingName)
             setDimension117(cartItemHolderData.bundleType)
             setDimension118(cartItemHolderData.bundleId)
             setCampaignId(cartItemHolderData.campaignId)

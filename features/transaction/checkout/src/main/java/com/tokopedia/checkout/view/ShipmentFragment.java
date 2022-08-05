@@ -89,6 +89,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
@@ -190,32 +191,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_CATEGORY_SELF_PICKUP_ADDRESS_SELECTION_TRADE_IN;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_LABEL_TRADE_IN_CHECKOUT_EE;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_BUSINESS_UNIT;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_SCREEN_NAME;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER_ID;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
-import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
-import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.KERO_TOKEN;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CHOSEN_ADDRESS;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_ERROR;
-import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
-
 /**
  * @author Irfan Khoirul on 23/04/18.
  * Originaly authored by Aghny, Angga, Kris
@@ -273,7 +248,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutTradeInAnalytics checkoutTradeInAnalytics;
     @Inject
     CheckoutEgoldAnalytics checkoutEgoldAnalytics;
-
 
 
     SaveInstanceCacheManager saveInstanceCacheManager;
@@ -530,6 +504,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void initRecyclerViewData(ShipmentTickerErrorModel shipmentTickerErrorModel,
                                       TickerAnnouncementHolderData tickerAnnouncementHolderData,
                                       RecipientAddressModel recipientAddressModel,
+                                      ShipmentUpsellModel shipmentUpsellModel,
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
                                       List<ShipmentCrossSellModel> shipmentCrossSellModelList,
@@ -552,6 +527,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (recipientAddressModel != null) {
             shipmentAdapter.addAddressShipmentData(recipientAddressModel);
+        }
+        if (shipmentUpsellModel.isShow()) {
+            shipmentAdapter.addUpsellData(shipmentUpsellModel);
         }
         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
         StringBuilder cartIdsStringBuilder = new StringBuilder();
@@ -763,14 +741,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }, Emitter.BackpressureMode.BUFFER)
                     .throttleFirst(TOASTER_THROTTLE, TimeUnit.MILLISECONDS)
                     .subscribe(s -> {
-        if (getView() != null && getActivity() != null) {
-            initializeToasterLocation();
-            String actionText = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok);
+                        if (getView() != null && getActivity() != null) {
+                            initializeToasterLocation();
+                            String actionText = getActivity().getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok);
                             View.OnClickListener listener = view -> {
                             };
                             Toaster.build(getView(), s, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, actionText, listener)
-                    .show();
-        }
+                                    .show();
+                        }
                     });
         }
         toasterEmitter.onNext(message);
@@ -859,6 +837,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getShipmentTickerErrorModel(),
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 recipientAddressModel,
+                shipmentPresenter.getShipmentUpsellModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
                 shipmentPresenter.getListShipmentCrossSellModel(),
@@ -892,6 +871,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getShipmentTickerErrorModel(),
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 shipmentPresenter.getRecipientAddressModel(),
+                shipmentPresenter.getShipmentUpsellModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
                 shipmentPresenter.getListShipmentCrossSellModel(),
@@ -2019,7 +1999,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (promoCode != null && promoCode.length() > 0) {
                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
                     if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && !ordersItem.getCodes().contains(promoCode)) {
-                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel()!= null) {
+                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                             // remove previous logistic promo code
                             ordersItem.getCodes().remove(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                         }
@@ -2407,7 +2387,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         mTrackerPurchaseProtection.eventClickOnPelajari(userSessionInterface.getUserId(),
                 cartItemModel.getProtectionTitle(), cartItemModel.getProtectionPricePerProduct(),
                 cartItemModel.getAnalyticsProductCheckoutData().getProductCategoryId());
-        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(),userSessionInterface,
+        CartProtectionInfoBottomSheetHelper.openWebviewInBottomSheet(this, getActivityContext(), userSessionInterface,
                 cartItemModel.getProtectionLinkUrl(), getString(R.string.title_activity_checkout_webview));
     }
 
@@ -3447,6 +3427,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             listCartString.add(cartItemModel.getCartString());
         }
         checkoutAnalyticsCourierSelection.eventViewAddOnsWidget(listCartString.toString());
+    }
+
+    @Override
+    public void onViewUpsellCard(ShipmentUpsellModel shipmentUpsellModel) {
+        checkoutAnalyticsCourierSelection.eventViewGotoplusUpsellTicker();
+    }
+
+    @Override
+    public void onClickUpsellCard(ShipmentUpsellModel shipmentUpsellModel) {
+        if (getContext() != null) {
+            checkoutAnalyticsCourierSelection.eventClickGotoplusUpsellTicker();
+            RouteManager.route(getContext(), shipmentUpsellModel.getAppLink());
+        }
+    }
+
+    @Override
+    public void onViewFreeShippingPlusBadge() {
+        checkoutAnalyticsCourierSelection.eventViewGotoplusTicker();
     }
 
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {

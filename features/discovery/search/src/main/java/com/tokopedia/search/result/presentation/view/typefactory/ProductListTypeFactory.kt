@@ -6,7 +6,7 @@ import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchD
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
