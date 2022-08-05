@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
@@ -28,6 +29,7 @@ object SomNavigator {
     const val REQUEST_CONFIRM_SHIPPING = 997
     const val REQUEST_CONFIRM_REQUEST_PICKUP = 996
     const val REQUEST_CHANGE_COURIER = 995
+    const val REQUEST_RESCHEDULE_PICKUP = 994
 
     fun goToSomOrderDetail(fragment: SomListFragment, orderId: String) {
         fragment.run {
@@ -83,6 +85,13 @@ object SomNavigator {
         }
     }
 
+    fun goToReschedulePickupPage(fragment: Fragment, orderId: String) {
+        fragment.run {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.RESCHEDULE_PICKUP.replace("{order_id}", orderId))
+            startActivityForResult(intent, REQUEST_RESCHEDULE_PICKUP)
+        }
+    }
+
     fun goToPrintAwb(activity: FragmentActivity?, view: View?, orderIds: List<String>, markAsPrinted: Boolean) {
         activity?.run {
             if (GlobalConfig.isSellerApp()) {
@@ -103,5 +112,23 @@ object SomNavigator {
                 }
             }
         }
+    }
+
+    fun openAppLink(context: Context?, appLink: String): Boolean {
+        val intent: Intent? = RouteManager.getIntentNoFallback(context, appLink)
+        return if (intent == null) {
+            if (appLink.startsWith(SomConsts.PREFIX_HTTP)) {
+                openWebView(context, appLink)
+                true
+            } else false
+        } else {
+            context?.startActivity(intent)
+            true
+        }
+    }
+
+    fun openWebView(context: Context?, url: String) {
+        val intent: Intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+        context?.startActivity(intent)
     }
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="tm_cmn_dp_1">1dp</dimen>
+    <dimen name="tm_cmn_dp_108">108dp</dimen>
+    <dimen name="tm_cmn_dp_58">58dp</dimen>
+    <dimen name="tm_cmn_dp_22">22dp</dimen>
+    <dimen name="tm_cmn_dp_14">14dp</dimen>
+    <dimen name="tm_cmn_dp_6">6dp</dimen>
+    <dimen name="tm_cmn_dp_36">36dp</dimen>
+    <dimen name="tm_cmn_dp_20">20dp</dimen>
+    <dimen name="tm_cmn_dp_10">10dp</dimen>
+    <dimen name="tm_cmn_dp_28">28dp</dimen>
+
+</resources>

@@ -182,6 +182,11 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           ticker_courier
           bottom_sheet_description
         }
+        free_shipping_metadata {
+          sent_shipper_partner
+          benefit_class
+          shipping_subsidy
+        }
       }
       promo_stackings {
         is_promo
@@ -223,6 +228,11 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           chosen_courier
           ticker_courier
           bottom_sheet_description
+        }
+        free_shipping_metadata {
+          sent_shipper_partner
+          benefit_class
+          shipping_subsidy
         }
       }
       pre_order {

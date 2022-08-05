@@ -16,7 +16,11 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -118,9 +122,11 @@ class CalculationTest {
         val expectedTotalProductCount = 11
         val productId = "2148476278"
         val bundleId = "36012"
+        val bundleGroupId = "bid:36012-pid:2148476278-pid1:2148476278"
         val productUiModel = MiniCartProductUiModel(
             productId = productId,
             bundleId = bundleId,
+            bundleGroupId = bundleGroupId,
             isBundlingItem = true
         )
         val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
@@ -142,9 +148,11 @@ class CalculationTest {
         val expectedTotalProductCount = 31
         val productId = "2148476278"
         val bundleId = "36012"
+        val bundleGroupId = "bid:36012-pid:2148476278-pid1:2148476278"
         val productUiModel = MiniCartProductUiModel(
             productId = productId,
             bundleId = bundleId,
+            bundleGroupId = bundleGroupId,
             isBundlingItem = true
         )
         val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleVariantSimplifiedSuccessAllAvailable()

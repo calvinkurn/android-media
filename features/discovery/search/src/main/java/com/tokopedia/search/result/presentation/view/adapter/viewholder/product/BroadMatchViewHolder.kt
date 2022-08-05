@@ -4,7 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.carouselproductcard.CarouselViewAllCardData
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
@@ -32,6 +34,7 @@ class BroadMatchViewHolder(
 
     override fun bind(element: BroadMatchDataView) {
         bindTitle(element)
+        bindSubtitle(element)
         bindSeeMore(element)
         setupRecyclerView(element)
     }
@@ -42,6 +45,14 @@ class BroadMatchViewHolder(
         searchBroadMatchTitle.text = getTitle(broadMatchDataView)
         searchBroadMatchTitle.addOnImpressionListener(broadMatchDataView) {
             broadMatchListener.onBroadMatchImpressed(broadMatchDataView)
+        }
+    }
+
+    private fun bindSubtitle(broadMatchDataView: BroadMatchDataView) {
+        val searchBroadMatchSubtitle = binding?.searchBroadMatchSubtitle ?: return
+
+        searchBroadMatchSubtitle.shouldShowWithAction(broadMatchDataView.subtitle.isNotEmpty()) {
+            searchBroadMatchSubtitle.text = broadMatchDataView.subtitle
         }
     }
 
@@ -59,8 +70,12 @@ class BroadMatchViewHolder(
         }
     }
 
-    private fun setupRecyclerView(dataData: BroadMatchDataView){
-        val products = dataData.broadMatchItemDataViewList
+    private fun setupRecyclerView(dataView: BroadMatchDataView){
+        val products = dataView.broadMatchItemDataViewList
+        val viewAllCardData: CarouselViewAllCardData? =
+            if (dataView.cardButton.title.isNotEmpty())
+                CarouselViewAllCardData(dataView.cardButton.title)
+            else null
         broadMatchListener.productCardLifecycleObserver?.let {
             binding?.searchBroadMatchList?.productCardLifecycleObserver = it
         }
@@ -79,6 +94,10 @@ class BroadMatchViewHolder(
                     freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
                     isTopAds = it.isOrganicAds,
                     hasThreeDots = it.carouselProductType.hasThreeDots,
+                    cardInteraction = true,
+                    discountPercentage = if (it.discountPercentage > 0) "${it.discountPercentage}%"
+                                         else "",
+                    slashedPrice = if (it.discountPercentage > 0) it.originalPrice else "",
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
@@ -101,6 +120,12 @@ class BroadMatchViewHolder(
 
                 override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
                     return products.getOrNull(carouselProductCardPosition)
+                }
+            },
+            carouselViewAllCardData = viewAllCardData,
+            carouselViewAllCardClickListener = object: CarouselProductCardListener.OnViewAllCardClickListener {
+                override fun onViewAllCardClick() {
+                    broadMatchListener.onBroadMatchViewAllCardClicked(dataView)
                 }
             }
         )

@@ -71,6 +71,7 @@ class CategoryCategoryChooserFilterTest: CategoryTestFixtures(), CategoryChooser
         `Given category view model`(
             defaultCategoryL1,
             "1333",
+            defaultExternalServiceType,
             mapOf(SearchApiConst.SC to "1332")
         )
 

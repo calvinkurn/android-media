@@ -67,7 +67,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             productView
             wishlistCount
             shopCommitment {
-              result {
+              result {  
                 isNowActive
                 staticMessages {
                   pdpMessage
@@ -84,6 +84,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               scoreMap
             }
             shopInfo {
+              shopMultilocation {
+                warehouseCount
+                eduLink {
+                    appLink
+                }
+              }
               closedInfo {
                 closedNote
                 reason
@@ -335,6 +341,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   products{
                     productID
                     boType
+                    boCampaignIDs
                   }
                   images{
                     boType
@@ -513,6 +520,9 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 componentName
               }
             }
+            shopFinishRate {
+              finishRate
+            }
           }
     }""".trimIndent()
     }
@@ -586,6 +596,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.rating = rating
             p2UiData.ticker = ticker
             p2UiData.navBar = navBar
+            p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
         }
         return p2UiData
     }

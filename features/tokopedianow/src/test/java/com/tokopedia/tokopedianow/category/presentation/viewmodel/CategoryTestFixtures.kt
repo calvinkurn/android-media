@@ -37,6 +37,7 @@ open class CategoryTestFixtures {
 
     protected val defaultCategoryL1 = "123"
     protected val defaultCategoryL2 = ""
+    protected val defaultExternalServiceType = ""
     protected val defaultQueryParamMap = mapOf<String, String>()
     protected val getCategoryFirstPageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
     protected val getCategoryLoadMorePageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
@@ -80,12 +81,14 @@ open class CategoryTestFixtures {
     protected open fun `Given category view model`(
             categoryL1: String = defaultCategoryL1,
             categoryL2: String = defaultCategoryL2,
+            externalServiceType: String = defaultExternalServiceType,
             queryParamMap: Map<String, String> = defaultQueryParamMap,
     ) {
         tokoNowCategoryViewModel = TokoNowCategoryViewModel(
                 CoroutineTestDispatchersProvider,
                 categoryL1,
                 categoryL2,
+                externalServiceType,
                 queryParamMap,
                 getCategoryFirstPageUseCase,
                 getCategoryLoadMorePageUseCase,

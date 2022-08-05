@@ -8,7 +8,6 @@
         order by name
     -->
     <string name="path_change_inactive_phone">/change-inactive-phone</string>
-    <string name="path_choose_account">/choose-account</string>
     <string name="path_withdraw">/withdraw</string>
     <string name="path_autoWithdrawSettings">/autoWithdrawSettings</string>
     <string name="path_add_name_register">/add-name-register</string>
@@ -113,7 +112,6 @@
     <string name="path_ovo_regis_init">/ovo-reg-init</string>
 
     <string name="path_image_picker_insta">/image-picker/v2/</string>
-    <string name="up_path_user_profile_landing">/people/</string>
     <string name="up_path_user_profile_follower">/people/followers/</string>
     <string name="path_data_explorer">/data-explorer</string>
 </resources>

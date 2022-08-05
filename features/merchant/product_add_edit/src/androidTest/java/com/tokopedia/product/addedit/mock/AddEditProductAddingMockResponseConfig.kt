@@ -12,6 +12,7 @@ class AddEditProductAddingMockResponseConfig: MockModelConfig() {
         private const val UPLOADPEDIA_POLICY = "uploadpedia_policy"
         private const val PRODUCT_ADD_RULE = "ProductAddRule"
         private const val PRODUCT_VALIDATE = "ProductValidateV3"
+        private const val MAX_STOCK = "GetIMSMeta"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -33,6 +34,11 @@ class AddEditProductAddingMockResponseConfig: MockModelConfig() {
         addMockResponse(
                 PRODUCT_VALIDATE,
                 InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_product_validate),
+                FIND_BY_CONTAINS
+        )
+        addMockResponse(
+                MAX_STOCK,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_max_stock),
                 FIND_BY_CONTAINS
         )
 

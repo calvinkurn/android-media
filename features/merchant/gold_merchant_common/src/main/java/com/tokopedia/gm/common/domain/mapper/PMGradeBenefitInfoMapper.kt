@@ -36,7 +36,6 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
                 shopScoreMin = it.shopScoreMin.orZero(),
                 shopScoreMax = it.shopScoreMax.orZero(),
                 gradeName = it.gradeName.orEmpty(),
-                imgBadgeUrl = it.imgBadgeUrl.orEmpty(),
                 backgroundUrl = it.backgroundUrl
             )
         }
@@ -64,7 +63,6 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
             return PMCurrentGradeUiModel(
                 gradeName = it.gradeName.orEmpty(),
                 shopLevel = it.shopLevel.orEmpty(),
-                imgBadgeUrl = it.imgBadgeUrl.orEmpty(),
                 backgroundUrl = it.backgroundUrl.orEmpty(),
             )
         }

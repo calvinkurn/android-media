@@ -42,7 +42,6 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
                 "                    }\n" +
                 "                  }\n" +
                 "                  haveNext\n" +
-                "                  totalCount\n" +
                 "                }\n" +
                 "              }\n" +
                 "            }"
@@ -64,8 +63,7 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
                 badgeImageUrl = it.badge?.imageUrl.orEmpty()
             ))
         }
-        val totalCount = responseData.data.totalCount?.toInt()?:0
-        return Pair(favoriteShopList, totalCount>favoriteShopList.size)
+        return Pair(favoriteShopList, responseData.data.hasNext?:false)
     }
 
     private fun generateParam(userId: Int, perPage: Int = PARAM_PER_PAGE_VALUE): Map<String, Any?> {

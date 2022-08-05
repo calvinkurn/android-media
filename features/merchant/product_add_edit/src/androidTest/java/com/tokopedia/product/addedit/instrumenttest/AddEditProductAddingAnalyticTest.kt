@@ -134,6 +134,7 @@ class AddEditProductAddingAnalyticTest {
     private fun testDetailProduct() {
         performReplaceText(R.id.tfu_product_name, "nama produk")
         performReplaceText(R.id.tfu_product_price, "10000")
+        performReplaceText(R.id.tfu_available_stock, "1000")
         performScrollAndClick(R.id.btn_submit)
     }
 

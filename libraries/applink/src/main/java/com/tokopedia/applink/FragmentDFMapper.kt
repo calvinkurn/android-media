@@ -35,6 +35,12 @@ object FragmentDFMapper {
                ))
              */
             add(FragmentDFPattern(
+                    {it == FragmentConst.SHOP_REVIEW_FRAGMENT},
+                    DeeplinkDFMapper.DF_MERCHANT_NONLOGIN,
+                    R.string.shop_review_tab
+            ))
+
+            add(FragmentDFPattern(
                     {it == FragmentConst.SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH},
                     DeeplinkDFMapper.DF_BASE,
                     R.string.shop_showcase_tab

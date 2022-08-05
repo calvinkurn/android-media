@@ -156,6 +156,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     private fun set3DotsWishlistWithAtc(dataItem: DataItem?) {
         if (dataItem?.hasThreeDotsWishlist == true)
             masterProductCardListView?.setThreeDotsWishlistOnClickListener {
+                    masterProductCardItemViewModel.saveProductCardComponent()
                     showProductCardOptions(
                         fragment,
                         masterProductCardItemViewModel.getThreeDotsWishlistOptionsModel()
@@ -165,6 +166,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun setWishlist() {
         masterProductCardGridView?.setThreeDotsOnClickListener {
+            masterProductCardItemViewModel.saveProductCardComponent()
             showProductCardOptions(
                 fragment,
                 masterProductCardItemViewModel.getProductCardOptionsModel()

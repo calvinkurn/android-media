@@ -15,11 +15,11 @@ class WidgetShopGradeUiModel(
         val pmProShopScoreThreshold: Int = 0,
         val itemSoldThreshold: Long,
         val netItemValueThreshold: Long,
-        val autoExtendDateStr: String,
+        val nextMonthlyRefreshDate: String,
         val shopAge: Long = 0L,
-        val gradeBadgeImgUrl: String = "",
         val gradeBackgroundUrl: String = "",
-        val pmStatus: String = ""
+        val pmStatus: String = "",
+        val shopGrade: String = ""
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

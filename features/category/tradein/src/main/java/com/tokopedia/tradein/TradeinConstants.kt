@@ -12,7 +12,8 @@ object TradeinConstants {
     const val TRADE_IN_HOST_TRACKING_SOURCE = "trade in start page"
     const val CAMPAIGN_TAG_SELECTION1PL = "exchange::1pl"
     const val CAMPAIGN_TAG_SELECTION3PL = "exchange::3pl"
-
+    const val TEXT_SIZE_14F = 14.0f
+    const val TRADE_IN_DIAGNOSTIC_REVIEW_LIMIT = 3
 
 
     object UseCase {

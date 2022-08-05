@@ -1,9 +1,11 @@
 package com.tokopedia.digital_deals.view.model.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class EventContentData (
+        @SuppressLint("Invalid Data Type")
         @SerializedName("event_content_by_id")
         @Expose
         val eventContentById: EventContentById = EventContentById()

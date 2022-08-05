@@ -2,10 +2,10 @@ package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
+import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
@@ -72,6 +72,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun handleReplyBox(isEnable: Boolean)
 
-
+    fun hideQuickReplyOnClick()
 
 }

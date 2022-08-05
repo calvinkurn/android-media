@@ -9,7 +9,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
+import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestStatus
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
@@ -39,6 +39,8 @@ import org.junit.Test
 import java.io.File
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
 
 class NewShopPageViewModelTest {
@@ -63,6 +65,9 @@ class NewShopPageViewModelTest {
 
     @RelaxedMockK
     lateinit var getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>
+
+    @RelaxedMockK
+    lateinit var newGetShopPageP1DataUseCase: Lazy<NewGetShopPageP1DataUseCase>
 
     @RelaxedMockK
     lateinit var getShopProductListUseCase: Lazy<GqlGetShopProductUseCase>
@@ -109,6 +114,7 @@ class NewShopPageViewModelTest {
                 gqlGetShopInfobUseCaseCoreAndAssets,
                 shopQuestGeneralTrackerUseCase,
                 getShopPageP1DataUseCase,
+                newGetShopPageP1DataUseCase,
                 getShopProductListUseCase,
                 shopModerateRequestStatusUseCase,
                 shopRequestUnmoderateUseCase,
@@ -143,8 +149,8 @@ class NewShopPageViewModelTest {
     fun `check whether shopPageP1Data value is Success`() {
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
                 shopInfoHomeTypeData = ShopPageGetHomeType(
-                        homeLayoutData = ShopPageGetHomeType.HomeLayoutData(
-                                widgetIdList = listOf(ShopPageGetHomeType.HomeLayoutData.WidgetIdList())
+                        homeLayoutData = HomeLayoutData(
+                                widgetIdList = listOf(WidgetIdList())
                         )
                 )
         )
@@ -171,11 +177,43 @@ class NewShopPageViewModelTest {
     }
 
     @Test
+    fun `check whether shopPageP1Data value is Success when shopId same as user session shopId`() {
+        coEvery { userSessionInterface.shopId } returns SAMPLE_SHOP_ID
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
+            shopInfoHomeTypeData = ShopPageGetHomeType(
+                homeLayoutData = HomeLayoutData(
+                    widgetIdList = listOf(WidgetIdList())
+                )
+            )
+        )
+        coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct(),ShopProduct())
+        )
+        shopPageViewModel.getShopPageTabData(
+            SAMPLE_SHOP_ID,
+            "shop domain",
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            false,
+            addressWidgetData,
+            mockExtParam
+        )
+        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
+        assert(shopPageViewModel.productListData.data.size == 2)
+        assert(shopPageViewModel.homeWidgetLayoutData.widgetIdList.isNotEmpty())
+    }
+
+    @Test
     fun `check whether shopPageP1Data value is Fail is mapper throw exception`() {
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
                 shopInfoHomeTypeData = ShopPageGetHomeType(
-                        homeLayoutData = ShopPageGetHomeType.HomeLayoutData(
-                                widgetIdList = listOf(ShopPageGetHomeType.HomeLayoutData.WidgetIdList())
+                        homeLayoutData = HomeLayoutData(
+                                widgetIdList = listOf(WidgetIdList())
                         )
                 )
         )
@@ -236,6 +274,114 @@ class NewShopPageViewModelTest {
                 true,
                 addressWidgetData,
                 mockExtParam
+        )
+        assertTrue(shopPageViewModel.shopPageP1Data.value != null)
+    }
+
+    @Test
+    fun `check whether new shopPageP1Data value is Success`() {
+        coEvery {
+            newGetShopPageP1DataUseCase.get().executeOnBackground()
+        } returns NewShopPageHeaderP1(
+            shopPageGetDynamicTabResponse = ShopPageGetDynamicTabResponse(
+                ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab(
+                    listOf(
+                        ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData()
+                    )
+                )
+            )
+        )
+        coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct(),ShopProduct())
+        )
+        shopPageViewModel.getNewShopPageTabData(
+            SAMPLE_SHOP_ID,
+            "shop domain",
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            false,
+            addressWidgetData,
+            mockExtParam
+        )
+        coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
+        assert(shopPageViewModel.productListData.data.size == 2)
+    }
+
+    @Test
+    fun `check whether new shopPageP1Data value is Fail is mapper throw exception`() {
+        coEvery {
+            newGetShopPageP1DataUseCase.get().executeOnBackground()
+        } returns NewShopPageHeaderP1(
+            shopPageGetDynamicTabResponse = ShopPageGetDynamicTabResponse(
+                ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab(
+                    listOf(
+                        ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData()
+                    )
+                )
+            )
+        )
+        coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct(),ShopProduct())
+        )
+        mockkObject(NewShopPageHeaderMapper)
+        every {
+            NewShopPageHeaderMapper.mapToNewShopPageP1HeaderData(any(),any(),any(),any(),any())
+        } throws Exception()
+        shopPageViewModel.getNewShopPageTabData(
+            SAMPLE_SHOP_ID,
+            "shop domain",
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            false,
+            addressWidgetData,
+            mockExtParam
+        )
+        coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
+    }
+
+    @Test
+    fun `check whether new shopPageP1Data value is Fail`() {
+        coEvery { newGetShopPageP1DataUseCase.get().executeOnBackground() } throws Exception()
+        shopPageViewModel.getNewShopPageTabData(
+            SAMPLE_SHOP_ID,
+            "shop domain",
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            true,
+            addressWidgetData,
+            mockExtParam
+        )
+        coVerify { newGetShopPageP1DataUseCase.get().executeOnBackground() }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
+    }
+
+    @Test
+    fun `check whether new shopPageP1Data value is not null when shopId is 0 but shopDomain isn't empty`() {
+        coEvery { newGetShopPageP1DataUseCase.get().executeOnBackground() } returns NewShopPageHeaderP1()
+        shopPageViewModel.getNewShopPageTabData(
+            "0",
+            "domain",
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            true,
+            addressWidgetData,
+            mockExtParam
         )
         assertTrue(shopPageViewModel.shopPageP1Data.value != null)
     }
@@ -307,14 +453,13 @@ class NewShopPageViewModelTest {
     fun `check whether shopImagePath value is set when call saveShopImageToPhoneStorage`() {
         val mockBitmap = mockk<Bitmap>()
         val mockTransition = mockk<Transition<in Bitmap>>()
-
-        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+        mockkObject(ShopUtil)
+        every { ShopUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
         mockkStatic(ImageProcessingUtil::class)
-        every {
+        coEvery {
             ImageProcessingUtil.writeImageToTkpdPath(
                     mockBitmap,
                     Bitmap.CompressFormat.PNG)
@@ -340,14 +485,13 @@ class NewShopPageViewModelTest {
     fun `check whether shopImagePath value is null when savedFile is null`() {
         val mockBitmap = mockk<Bitmap>()
         val mockTransition = mockk<Transition<in Bitmap>>()
-
-        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+        mockkObject(ShopUtil)
+        every { ShopUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
         mockkStatic(ImageProcessingUtil::class)
-        every {
+        coEvery {
             ImageProcessingUtil.writeImageToTkpdPath(
                     mockBitmap,
                     Bitmap.CompressFormat.PNG)
@@ -359,9 +503,8 @@ class NewShopPageViewModelTest {
     @Test
     fun `check whether shopImagePath value is null when onLoadCleared is called on saveShopImageToPhoneStorage`() {
         val mockDrawable = mockk<Drawable>()
-
-        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+        mockkObject(ShopUtil)
+        every { ShopUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onLoadCleared(mockDrawable)
         }
 
@@ -372,8 +515,8 @@ class NewShopPageViewModelTest {
 
     @Test
     fun `check whether shopImagePath value is null when ImageHandler loadImageWithTarget throws exception`() {
-        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
-        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } throws Exception()
+        mockkObject(ShopUtil)
+        every { ShopUtil.loadImageWithEmptyTarget(any(), any(), any(), any()) } throws Exception()
         shopPageViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageViewModel.shopImagePath.value == null)
     }

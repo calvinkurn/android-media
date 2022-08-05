@@ -7,6 +7,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ORIGIN_FILTER
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sortfilter.SortFilter
 
@@ -33,6 +34,15 @@ internal fun Map<String, String>.addFilterOrigin(): Map<String, String> =
     toMutableMap().also {
         it[ORIGIN_FILTER] = DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
     }
+
+fun List<Option>?.joinActiveOptionsToString(): String {
+    if (this == null || this.isEmpty()) return ""
+
+    return this.filter { it.inputState.toBoolean() }
+        .groupBy { it.key }
+        .map { "${it.key}=${it.value.joinToString(separator = ","){ option -> option.value} }" }
+        .joinToString(separator = "&")
+}
 
 internal fun createSearchProductDefaultFilter() = Gson().fromJson(SEARCH_PRODUCT_DEFAULT_FILTER_JSON, DynamicFilterModel::class.java)
 internal fun createSearchProductDefaultQuickFilter() = Gson().fromJson(SEARCH_PRODUCT_DEFAULT_QUICK_FILTER_JSON, DataValue::class.java)

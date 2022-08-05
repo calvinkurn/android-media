@@ -51,6 +51,8 @@ class WidgetAdapterFactoryImpl(
         return BannerPMRegistrationViewHolder.LAYOUT
     }
 
+    override fun type(model: WidgetFeeServiceUiModel): Int = FeeServiceWidget.RES_LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(
@@ -70,12 +72,10 @@ class WidgetAdapterFactoryImpl(
             PMDeactivateWidget.RES_LAYOUT -> PMDeactivateWidget(parent, widgetListener)
             UpgradePmProWidget.RES_LAYOUT -> UpgradePmProWidget(
                 parent,
-                widgetListener,
                 powerMerchantTracking
             )
             ExpandableWidget.RES_LAYOUT -> ExpandableWidget(
                 parent,
-                widgetListener,
                 powerMerchantTracking
             )
             ShopGradeWidget.RES_LAYOUT -> ShopGradeWidget(
@@ -96,6 +96,11 @@ class WidgetAdapterFactoryImpl(
                 parent, widgetListener
             )
             BannerPMRegistrationViewHolder.LAYOUT -> BannerPMRegistrationViewHolder(parent)
+            FeeServiceWidget.RES_LAYOUT -> FeeServiceWidget(
+                parent,
+                widgetListener,
+                powerMerchantTracking
+            )
             else -> super.createViewHolder(parent, type)
         }
     }

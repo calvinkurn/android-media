@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.domain.usecase
 
 import com.tokopedia.gm.common.domain.interactor.BaseGqlUseCase
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -16,18 +17,24 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 21/05/21
  */
 
+@GqlQuery("GetPMDeactivationQuestionnaireGqlQuery", GetPMDeactivationQuestionnaireUseCase.QUERY)
 class GetPMDeactivationQuestionnaireUseCase @Inject constructor(
-        private val gqlRepository: GraphqlRepository,
-        private val mapper: PMDeactivationQuestionnaireMapper
+    private val gqlRepository: GraphqlRepository,
+    private val mapper: PMDeactivationQuestionnaireMapper
 ) : BaseGqlUseCase<DeactivationQuestionnaireUiModel>() {
 
     override suspend fun executeOnBackground(): DeactivationQuestionnaireUiModel {
-        val gqlRequest = GraphqlRequest(QUERY, GoldCancellationsQuestionaire::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(
+            GetPMDeactivationQuestionnaireGqlQuery(),
+            GoldCancellationsQuestionaire::class.java,
+            params.parameters
+        )
         val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(GoldCancellationsQuestionaire::class.java)
         if (gqlErrors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GoldCancellationsQuestionaire>(GoldCancellationsQuestionaire::class.java)
+            val data =
+                gqlResponse.getData<GoldCancellationsQuestionaire>(GoldCancellationsQuestionaire::class.java)
             if (data != null) {
                 return mapper.mapRemoteModelToUiModel(data.result)
             } else {
@@ -39,7 +46,7 @@ class GetPMDeactivationQuestionnaireUseCase @Inject constructor(
     }
 
     companion object {
-        private val QUERY = """
+        const val QUERY = """
             query goldCancellationsQuestionaire(${'$'}source: String, ${'$'}pm_tier: Int) {
               goldCancellationsQuestionaire(source: ${'$'}source, pm_tier:${'$'}pm_tier) {
                 data {
@@ -53,8 +60,7 @@ class GetPMDeactivationQuestionnaireUseCase @Inject constructor(
                 }
               }
             }
-        """.trimIndent()
-
+        """
         private const val KEY_SOURCE = "source"
         private const val KEY_PM_TIER = "pm_tier"
 

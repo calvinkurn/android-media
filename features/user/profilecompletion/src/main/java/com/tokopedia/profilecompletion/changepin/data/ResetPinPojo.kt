@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.changepin.data
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 
@@ -11,6 +10,5 @@ import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 
 data class ResetPinResponse(
     @SerializedName("reset_pin")
-    @Expose
     var data: AddChangePinData = AddChangePinData()
 )

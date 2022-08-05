@@ -10,6 +10,7 @@ import com.tokopedia.centralizedpromo.domain.usecase.CheckNonTopAdsUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.SellerHomeGetWhiteListedUserUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.SlashPriceEligibleUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
 import com.tokopedia.centralizedpromo.view.FirstPromoDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
@@ -21,7 +22,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CentralizedPromoViewModel @Inject constructor(
@@ -30,6 +34,7 @@ class CentralizedPromoViewModel @Inject constructor(
     private val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase,
     private val getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase,
     private val voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase,
+    private val slashPriceEligibleUseCase: SlashPriceEligibleUseCase,
     private val checkNonTopAdsUserUseCase: CheckNonTopAdsUserUseCase,
     private val sellerHomeGetWhiteListedUserUseCase: SellerHomeGetWhiteListedUserUseCase,
     private val remoteConfig: FirebaseRemoteConfigImpl,
@@ -74,6 +79,10 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getPromoCreation(): Result<BaseUiModel> {
         return try {
+            val isEnableFlashSaleDeferred = async {
+                remoteConfig.getBoolean(
+                        RemoteConfigKey.ENABLE_FLASH_SALE_ENTRY_SELLER, true)
+            }
             val isFreeShippingEnabledDeferred = async {
                 !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
             }
@@ -109,6 +118,12 @@ class CentralizedPromoViewModel @Inject constructor(
             val isProductCouponEnabledDeffered = async {
                 getIsProductCouponEnabled()
             }
+            val isSlashPriceEnabledDeffered = async {
+                getIsSlashPriceEnabled()
+            }
+            val isSlashPriceEligibleDeffered = async {
+                slashPriceEligibleUseCase.execute(userSession.shopId)
+            }
 
             val isNonTopAdsUserDeferred = async {
                 checkNonTopAdsUserUseCase.execute(userSession.shopId)
@@ -130,6 +145,10 @@ class CentralizedPromoViewModel @Inject constructor(
             val isProductCouponFirstTime = isProductCouponFirstTimeDeferred.await()
             val isTokopediaPlayFirstTime = isTokopediaPlayFirstTimeDeferred.await()
             val isProductCouponEnabled = isProductCouponEnabledDeffered.await()
+            val isSlashPriceEnabled = isSlashPriceEnabledDeffered.await()
+            val isSlashPriceEligible = isSlashPriceEligibleDeffered.await()
+            val isEnableFlashSale = isEnableFlashSaleDeferred.await()
+
             Success(
                 PromoCreationStaticData.provideStaticData(
                     resourceProvider,
@@ -141,7 +160,10 @@ class CentralizedPromoViewModel @Inject constructor(
                     isVoucherCashbackFirstTime,
                     isProductCouponFirstTime,
                     isTokopediaPlayFirstTime,
-                    isProductCouponEnabled
+                    isProductCouponEnabled,
+                    isSlashPriceEnabled,
+                    isSlashPriceEligible,
+                    isEnableFlashSale
                 )
             )
         } catch (t: Throwable) {
@@ -164,6 +186,14 @@ class CentralizedPromoViewModel @Inject constructor(
     private fun getIsProductCouponEnabled(): Boolean {
         return try {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } catch (ex: Exception) {
+            false
+        }
+    }
+
+    private fun getIsSlashPriceEnabled(): Boolean {
+        return try {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLASH_PRICE, true)
         } catch (ex: Exception) {
             false
         }

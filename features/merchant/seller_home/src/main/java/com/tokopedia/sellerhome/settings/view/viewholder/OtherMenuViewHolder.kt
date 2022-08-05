@@ -20,8 +20,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
@@ -40,6 +45,7 @@ import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuShareButtonAnimator
 import com.tokopedia.sellerhome.settings.view.animator.SecondaryShopInfoAnimator
 import com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
+import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -55,6 +61,9 @@ class OtherMenuViewHolder(
 
     companion object {
         const val SCROLLVIEW_INITIAL_POSITION = 0
+
+        private const val ANNIVERSARY_PATTERN_URL = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_lines.png"
+        private const val ANNIVERSARY_ORNAMENT_URL = "https://images.tokopedia.net/img/android/sellerhome/ic_sah_anniv_13th_other_ornament.png"
     }
 
     private val otherMenuAdapter by lazy {
@@ -76,6 +85,8 @@ class OtherMenuViewHolder(
     private var headerShopNextButton: IconUnify? = null
     private var headerShopShareButton: IconUnify? = null
     private var shopStatusCurvedImage: AppCompatImageView? = null
+    private var anniversaryPatternImage: ImageUnify? = null
+    private var anniversaryOrnamentImage: ImageUnify? = null
     private var shopAvatarImage: ImageUnify? = null
     private var shopNameTextView: Typography? = null
     private var shopNextButton: IconUnify? = null
@@ -184,7 +195,7 @@ class OtherMenuViewHolder(
         }
     }
 
-    fun setFreeShippingData(state: SettingResponseState<Pair<Boolean, String>>) {
+    fun setFreeShippingData(state: SettingResponseState<TokoPlusBadgeUiModel>) {
         secondaryInfoRecyclerView?.post {
             secondaryInfoAdapter.setFreeShippingData(state)
         }
@@ -228,6 +239,8 @@ class OtherMenuViewHolder(
             headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
             headerShopShareButton = findViewById(R.id.ic_sah_new_other_header_share)
             shopStatusCurvedImage = findViewById(R.id.iv_sah_new_other_curved_header)
+            anniversaryPatternImage = findViewById(R.id.iv_sah_other_pattern_anniv)
+            anniversaryOrnamentImage = findViewById(R.id.iv_sah_other_ornament_anniv)
             shopAvatarImage = findViewById(R.id.iv_sah_new_other_shop_avatar)
             shopNameTextView = findViewById(R.id.tv_sah_new_other_shop_name)
             shopNextButton = findViewById(R.id.iv_sah_new_other_shop_name)
@@ -250,6 +263,7 @@ class OtherMenuViewHolder(
         setupScrollHeaderAnimator()
         setupShareButtonAnimator()
         setupContentAnimator()
+        setupAnniversaryIllustration()
     }
 
     private fun setupRecyclerView() {
@@ -290,6 +304,11 @@ class OtherMenuViewHolder(
         shareButtonAnimator = OtherMenuShareButtonAnimator(shareButtonImage).also {
             it.setInitialButtonState()
         }
+    }
+
+    private fun setupAnniversaryIllustration() {
+        anniversaryPatternImage?.loadImageWithoutPlaceholder(ANNIVERSARY_PATTERN_URL)
+        anniversaryOrnamentImage?.loadImageWithoutPlaceholder(ANNIVERSARY_ORNAMENT_URL)
     }
 
     private fun setupSecondaryInfoAdapter() {
@@ -510,6 +529,7 @@ class OtherMenuViewHolder(
         fun onShareButtonClicked()
         fun onShopStatusImpression(shopType: ShopType)
         fun onFreeShippingImpression()
+        fun onTokoPlusClicked()
+        fun onTokoPlusImpressed()
     }
-
 }

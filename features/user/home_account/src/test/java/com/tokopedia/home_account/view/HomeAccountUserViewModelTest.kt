@@ -10,9 +10,9 @@ import com.tokopedia.home_account.account_settings.data.model.UserProfileSetting
 import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
-import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
-import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
-import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
+import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
+import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
+import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
@@ -30,12 +30,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusResponseDataModel
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import io.mockk.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.Exception
 
 /**
  * Created by Yoris Prayogo on 14/07/20.
@@ -49,14 +51,11 @@ class HomeAccountUserViewModelTest {
 
     private val homeAccountUserUsecase = mockk<HomeAccountUserUsecase>(relaxed = true)
     private val homeAccountShortcutUseCase = mockk<HomeAccountShortcutUseCase>(relaxed = true)
-    private val homeAccountSafeSettingProfileUseCase =
-        mockk<SafeSettingProfileUseCase>(relaxed = true)
+    private val homeAccountSafeSettingProfileUseCase = mockk<SafeSettingProfileUseCase>(relaxed = true)
     private val homeAccountRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
-    private val centralizedUserAssetConfigUseCase =
-        mockk<GetCentralizedUserAssetConfigUseCase>(relaxed = true)
+    private val centralizedUserAssetConfigUseCase = mockk<GetCentralizedUserAssetConfigUseCase>(relaxed = true)
     private val balanceAndPointUseCase = mockk<GetBalanceAndPointUseCase>(relaxed = true)
-    private val tokopointsBalanceAndPointUseCase =
-        mockk<GetTokopointsBalanceAndPointUseCase>(relaxed = true)
+    private val tokopointsBalanceAndPointUseCase = mockk<GetTokopointsBalanceAndPointUseCase>(relaxed = true)
     private val saldoBalanceUseCase = mockk<GetSaldoBalanceUseCase>(relaxed = true)
     private val coBrandCCBalanceAndPointUseCase = mockk<GetCoBrandCCBalanceAndPointUseCase>(relaxed = true)
     private val getLinkStatusUseCase = mockk<GetLinkStatusUseCase>(relaxed = true)
@@ -65,10 +64,12 @@ class HomeAccountUserViewModelTest {
     private val userProfileSafeModeUseCase = mockk<UserProfileSafeModeUseCase>(relaxed = true)
     private val checkFingerprintToggleUseCase = mockk<CheckFingerprintToggleStatusUseCase>(relaxed = true)
     private val saveAttributeOnLocal = mockk<SaveAttributeOnLocalUseCase>(relaxed = true)
+    private val tokopediaPlusUseCase = mockk<TokopediaPlusUseCase>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
     private val balanceAndPointObserver = mockk<Observer<ResultBalanceAndPoint<WalletappGetAccountBalance>>>(relaxed = true)
+    private val tokopediaPlusObserver = mockk<Observer<Result<TokopediaPlusDataModel>>>(relaxed = true)
 
     private val safeStatusResponse = mockk<Observer<Boolean>>(relaxed = true)
 
@@ -106,6 +107,7 @@ class HomeAccountUserViewModelTest {
             getPhoneUseCase,
             userProfileSafeModeUseCase,
             checkFingerprintToggleUseCase,
+            tokopediaPlusUseCase,
             saveAttributeOnLocal,
             dispatcher
         )
@@ -113,6 +115,7 @@ class HomeAccountUserViewModelTest {
         viewModel.shortcutData.observeForever(shortCutResponse)
         viewModel.safeModeStatus.observeForever(safeStatusResponse)
         viewModel.checkFingerprintStatus.observeForever(checkFingerprintResult)
+        viewModel.tokopediaPlusData.observeForever(tokopediaPlusObserver)
     }
 
     @Test
@@ -833,6 +836,38 @@ class HomeAccountUserViewModelTest {
 
         verify {
             checkFingerprintResult.onChanged(Fail(throwableMock))
+        }
+    }
+
+    @Test
+    fun `Tokopedia Plus - Success Get Widget Data`() {
+        val mockResponse = TokopediaPlusResponseDataModel(
+            TokopediaPlusDataModel(
+                isShown = true
+            )
+        )
+
+        coEvery {
+            tokopediaPlusUseCase(any())
+        } returns mockResponse
+
+        viewModel.getTokopediaWidgetContent()
+
+        coVerify {
+            tokopediaPlusObserver.onChanged(Success(mockResponse.tokopediaPlus))
+        }
+    }
+
+    @Test
+    fun `Tokopedia Plus - Failed Get Widget Data`() {
+        coEvery {
+            tokopediaPlusUseCase(any())
+        } throws throwableResponse
+
+        viewModel.getTokopediaWidgetContent()
+
+        coVerify {
+            tokopediaPlusObserver.onChanged(Fail(throwableResponse))
         }
     }
 

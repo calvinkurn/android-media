@@ -1,7 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp
 
 import android.content.Context
-import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -14,11 +13,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF
-import okhttp3.internal.wait
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.allOf
 
@@ -89,34 +84,37 @@ class EditAddressRevampRobot {
     fun searchKotaKecamatan(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
         onView(withId(R.id.searchbar_textfield))
-                .perform(click(), typeText(keyword), closeSoftKeyboard())
+            .perform(click(), typeText(keyword), closeSoftKeyboard())
         waitForData()
     }
 
     fun clickKotaKecamatanItem() {
         onView(withId(R.id.rv_list_district))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
     }
 
     fun clickPostalCode() {
         onView(withId(R.id.et_kodepos))
-                .perform(click(), closeSoftKeyboard())
+            .perform(click(), closeSoftKeyboard())
     }
 
     fun clickPostalCodeItem() {
         onView(withId(R.id.rv_kodepos_chips))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()), closeSoftKeyboard())
+            .perform(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()),
+                closeSoftKeyboard()
+            )
     }
 
     fun clickChoosePostalCode() {
         onView(withId(R.id.btn_choose_zipcode))
-                .perform(click())
+            .perform(click())
         waitForData()
     }
 
     fun fillAddressNegative(address: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat))))
-                .perform(click(), typeText(address), closeSoftKeyboard())
+            .perform(click(), typeText(address), closeSoftKeyboard())
     }
 
     private fun waitForData() {
@@ -131,4 +129,5 @@ class EditAddressResultRobot {
     }
 }
 
-fun editAddressRevamp(func: EditAddressRevampRobot.() -> Unit) = EditAddressRevampRobot().apply(func)
+fun editAddressRevamp(func: EditAddressRevampRobot.() -> Unit) =
+    EditAddressRevampRobot().apply(func)

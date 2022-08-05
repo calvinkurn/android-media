@@ -8,4 +8,6 @@ interface CampaignStockListener {
 
     fun onVariantStockChanged(productId: String, stock: Int)
     fun onVariantStatusChanged(productId: String, status: ProductStatus)
+
+    fun setSaveButtonEnabled(isEnabled: Boolean)
 }

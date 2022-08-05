@@ -31,7 +31,12 @@ import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -249,7 +254,9 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
         search_input_view.searchBarTextField.setOnClickListener { voucherGameAnalytics.eventClickSearchBox() }
 
-        recycler_view.addItemDecoration(VoucherGameListDecorator(resources.getDimensionPixelOffset(ITEM_DECORATOR_SIZE)))
+        context?.let {
+            recycler_view.addItemDecoration(VoucherGameListDecorator(it.resources.getDimensionPixelOffset(ITEM_DECORATOR_SIZE)))
+        }
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -324,12 +331,9 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             }
             context?.let {
                 promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                promo_banner.setBannerIndicator(Indicator.GREEN)
+                promo_banner.bannerSeeAll.setTextSize(TypedValue.COMPLEX_UNIT_PX, it.resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
             }
-            promo_banner.setBannerIndicator(Indicator.GREEN)
-
-            val seeAllText = promo_banner.bannerSeeAll
-            seeAllText.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
-
             promo_banner.buildView()
             promo_banner.visibility = View.VISIBLE
         } else {

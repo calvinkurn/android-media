@@ -252,6 +252,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isCheckUncheckDirectAction = true
     private var isNavToolbar = false
 
+    // temporary variable to handle case edit bundle
+    // this is useful if there are multiple same bundleId in cart
+    private var toBeDeletedBundleGroupId = ""
+
     companion object {
 
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
@@ -512,8 +516,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val oldBundleId = data?.getStringExtra(KEY_OLD_BUNDLE_ID) ?: ""
             val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
             val isChangeVariant = data?.getBooleanExtra(KEY_IS_CHANGE_VARIANT, false) ?: false
-            if ((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) {
-                val cartItems = cartAdapter.getCartItemByBundleId(oldBundleId)
+            if (((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) && toBeDeletedBundleGroupId.isNotEmpty()) {
+                val cartItems = cartAdapter.getCartItemByBundleGroupId(oldBundleId, toBeDeletedBundleGroupId)
+                toBeDeletedBundleGroupId = ""
                 if (cartItems.isNotEmpty()) {
                     val allCartItemDataList = cartAdapter.allCartItemData
                     dPresenter.processDeleteCartItem(
@@ -1284,6 +1289,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun addOnImpression(productId: String) {
         cartPageAnalytics.eventViewAddOnsWidget(productId)
+    }
+
+    override fun onViewFreeShippingPlusBadge() {
+        cartPageAnalytics.eventViewGotoplusTicker()
     }
 
     private fun onErrorAddWishList(errorMessage: String, productId: String) {
@@ -3185,6 +3194,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    @SuppressLint("Recycle")
     private fun animateProductImageV2(result: AddToWishlistV2Response.Data.WishlistAddV2) {
         val tmpAnimatedImage = binding?.tmpAnimatedImage ?: return
         var target: Pair<Int, Int>? = null
@@ -3847,6 +3857,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let {
             cartPageAnalytics.eventClickUbahInProductBundlingPackageProductCard(cartItemHolderData.bundleId, cartItemHolderData.bundleType)
             val intent = RouteManager.getIntent(it, cartItemHolderData.editBundleApplink)
+            toBeDeletedBundleGroupId = cartItemHolderData.bundleGroupId
             startActivityForResult(intent, NAVIGATION_EDIT_BUNDLE)
         }
     }

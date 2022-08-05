@@ -83,7 +83,6 @@
     <string name="content_desc_error_state_icon">Image error</string>
     <string name="content_desc_error_state_channel">Content error</string>
     <string name="content_desc_home_background">Home background</string>
-    <string name="content_desc_home_category_widget">Category widget</string>
     <string name="content_desc_feed_banner">Feed Banner</string>
     <string name="content_desc_close_review">Tutup Review</string>
     <string name="content_desc_background_spotlight">Background spotlight</string>
@@ -100,6 +99,8 @@
 
     <string name="tag_home_nav_toolbar">home_navigation_toolbar</string>
     <string name="tag_balance_widget">drawerItemType %s</string>
+
+    <string name="balance_widget_failed_to_load">Gagal Dimuat</string>
 
     <!--Test Setup Options-->
     <string name="host_home_setting" translatable="false">home-setting</string>

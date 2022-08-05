@@ -10,6 +10,7 @@ import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
+import com.google.crypto.tink.shaded.protobuf.InvalidProtocolBufferException;
 import com.tokopedia.encryption.security.AeadEncryptor;
 import com.tokopedia.encryption.security.AeadEncryptorImpl;
 import com.tokopedia.logger.ServerLogger;
@@ -20,6 +21,8 @@ import com.tokopedia.user.session.datastore.UserSessionDataStoreClient;
 import com.tokopedia.user.session.datastore.UserSessionKeyMapper;
 import com.tokopedia.user.session.util.EncoderDecoder;
 
+import java.security.GeneralSecurityException;
+import java.security.KeyStoreException;
 import java.util.HashMap;
 
 public class MigratedUserSession {
@@ -175,6 +178,11 @@ public class MigratedUserSession {
     private String encryptString(String message, String keyName) {
         try {
             if (Constants.PII_DATA_SET.contains(keyName)) {
+                // Create backup for PII Data using old encryption
+                String backupData = EncoderDecoder.Encrypt(message, UserSession.KEY_IV);
+                setPiiDataBackup(backupData, keyName);
+
+                // Encryption using google tink
                 String result = aead.encrypt(message, null);
                 if(!result.isEmpty()) {
                     setPiiMigrationStatus(true, keyName);
@@ -201,8 +209,22 @@ public class MigratedUserSession {
                 return EncoderDecoder.Decrypt(message, UserSession.KEY_IV);
             }
         } catch (Exception e) {
-            logUserSessionEvent("decrypt_string_exception", e);
-            return "";
+            if(e instanceof InvalidProtocolBufferException ||
+                    e instanceof GeneralSecurityException ||
+                    e instanceof KeyStoreException ||
+                    e instanceof IllegalArgumentException) {
+                setEncryptionState(true);
+            }
+
+            // Check for backup value
+            String backupValue = EncoderDecoder.Decrypt(getBackupPiiData(keyName), UserSession.KEY_IV);
+            if(!backupValue.isEmpty()) {
+                logUserSessionEvent("decrypt_string_exception_with_backup", e);
+                return backupValue;
+            } else {
+                logUserSessionEvent("decrypt_string_exception_without_backup", e);
+                return "";
+            }
         }
     }
 
@@ -221,6 +243,29 @@ public class MigratedUserSession {
         editor.apply();
     }
 
+    private void setEncryptionState(Boolean isError) {
+        String prefName = "ENCRYPTION_STATE_PREF";
+        String keyName = "KEY_ENCRYPTION_ERROR";
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(keyName, isError);
+        editor.apply();
+    }
+
+    private void setPiiDataBackup(String data, String keyName) {
+        String newPrefName = String.format("%s%s", LOGIN_SESSION, suffix);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(keyName + Constants.PII_BACKUP, data);
+        editor.apply();
+    }
+
+    private String getBackupPiiData(String keyName) {
+        String newPrefName = String.format("%s%s", LOGIN_SESSION, suffix);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(keyName + Constants.PII_BACKUP, "");
+    }
+
     private Boolean isMigratedToGoogleTink(String keyName) {
         if (Constants.PII_DATA_SET.contains(keyName)) {
             String newPrefName = String.format("%s%s", LOGIN_SESSION, suffix);
@@ -230,9 +275,9 @@ public class MigratedUserSession {
         return true;
     }
 
-    private void logUserSessionEvent(String type, @Nullable Exception e) {
+    private void logUserSessionEvent(String method, @Nullable Exception e) {
         HashMap<String, String> data = new HashMap<>();
-        data.put("type", type);
+        data.put("method", method);
         if(e != null) {
             data.put("error", Log.getStackTraceString(e));
         }
@@ -259,7 +304,6 @@ public class MigratedUserSession {
                 internalCleanKey(prefName, keyName);
                 internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
                 UserSessionMap.map.put(key, oldValue);
-                logUserSessionEvent("migrate_from_v1", null);
                 return oldValue;
             }
 
