@@ -9,7 +9,7 @@ import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
 import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
-import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -23,7 +23,7 @@ import org.junit.Rule
 abstract class OtherMenuViewModelTestFixture {
 
     @RelaxedMockK
-    lateinit var getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase
+    lateinit var getTokoPlusBadgeUseCase: GetTokoPlusBadgeUseCase
 
     @RelaxedMockK
     lateinit var getShopOperationalUseCase: GetShopOperationalUseCase
@@ -79,7 +79,7 @@ abstract class OtherMenuViewModelTestFixture {
         mViewModel =
             OtherMenuViewModel(
                 coroutineTestRule.dispatchers,
-                getShopFreeShippingInfoUseCase,
+                getTokoPlusBadgeUseCase,
                 getShopOperationalUseCase,
                 getShopCreatedInfoUseCase,
                 balanceInfoUseCase,
@@ -106,5 +106,4 @@ abstract class OtherMenuViewModelTestFixture {
             shouldSwipeSecondaryInfo.removeObserver(shouldSwipeSecondaryInfoObserver)
         }
     }
-
 }

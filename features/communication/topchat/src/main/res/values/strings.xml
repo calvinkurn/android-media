@@ -242,4 +242,7 @@ yang ditemukan</string>
     <string name="coach_product_bundling_title">Perlu menanyakan terkait produk?</string>
     <string name="coach_product_bundling_desc">Pilih pertanyaan di bawah, dapatkan jawaban otomatis yang cepat dan akurat!</string>
     <string name="topchat_product_bundling_label">Paket isi %s</string>
+
+    <string name="text_area_tab_reply_box_title">Tulis Pesan</string>
+    <string name="text_area_tab_smart_reply_title">Smart Reply</string>
 </resources>
