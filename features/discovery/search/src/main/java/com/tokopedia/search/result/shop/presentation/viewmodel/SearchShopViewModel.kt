@@ -457,7 +457,7 @@ internal class SearchShopViewModel(
             pageSource = Dimension90Utils.getDimension90(getSearchParameter()),
             relatedKeyword = relatedKeyword,
             searchFilter = getSearchParamAsString(),
-            externalReference = getExternalReference()
+            externalReference = getExternalReference(),
         )
         generalSearchTrackingMutableLiveData.postValue(generalSearchTracking)
     }

@@ -192,7 +192,7 @@ class InspirationCarouselDataView(
                     "dimension115", labelGroupDataList.getFormattedPositionName(),
                     "dimension61", filterSortParams,
                     "dimension90", dimension90,
-                    "dimension131", externalReference.orNone()
+                    "dimension131", externalReference.orNone(),
                 )
             }
         }
