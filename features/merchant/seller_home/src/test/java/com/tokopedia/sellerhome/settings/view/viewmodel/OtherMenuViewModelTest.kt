@@ -895,7 +895,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     }
 
     private suspend fun onGetNewIklanAndPromotion_thenThrow(exception: Exception = IllegalStateException()) {
-        coEvery { getShopFreeShippingInfoUseCase.execute(any()) } throws exception
+        coEvery { getNewPromotionUseCase.execute(any()) } throws exception
     }
 
     private suspend fun verifyGetFreeShippingCalled(atLeast: Int = 1) {
