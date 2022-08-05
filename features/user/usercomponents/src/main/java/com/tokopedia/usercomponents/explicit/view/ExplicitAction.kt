@@ -9,9 +9,10 @@ interface ExplicitAction {
      * ExplicitView component.
      */
     fun setupView(
-        viewModel: ExplicitViewContract,
+        explicitViewContract: ExplicitViewContract,
         data: ExplicitData
     )
+    fun isNotYetSetupView(): Boolean
 
     fun onLoading()
     fun onQuestionShow()

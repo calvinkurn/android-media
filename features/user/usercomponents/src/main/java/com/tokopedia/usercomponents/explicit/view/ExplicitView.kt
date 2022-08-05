@@ -28,7 +28,7 @@ import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewContrac
 
 class ExplicitView constructor(
     context: Context,
-    attrs: AttributeSet?
+    attrs: AttributeSet? = null
 ) : CardUnify2(context, attrs), ExplicitAction {
 
     private var explicitViewContract: ExplicitViewContract? = null
@@ -41,11 +41,11 @@ class ExplicitView constructor(
     private var bindingSuccess: LayoutWidgetExplicitSuccessBinding? = null
     private var bindingFailed: LayoutWidgetExplicitFailedBinding? = null
 
-    private lateinit var explicitData: ExplicitData
+    private var explicitData = ExplicitData()
     private var preferenceAnswer: Boolean? = null
 
-    private var onWidgetDismissListener: (() -> Unit)? = null
-    private var onWidgetFinishListener: (() -> Unit)? = null
+    private var onWidgetDismissListener: () -> Unit = {}
+    private var onWidgetFinishListener: () -> Unit = {}
 
     override fun setupView(explicitViewContract: ExplicitViewContract, data: ExplicitData) {
         this.explicitViewContract = explicitViewContract
@@ -54,6 +54,8 @@ class ExplicitView constructor(
 
         initView()
     }
+
+    override fun isNotYetSetupView() = explicitViewContract == null
 
     private fun initView() {
         initBinding()
@@ -97,7 +99,7 @@ class ExplicitView constructor(
         }
 
         explicitViewContract?.statusUpdateState?.observeOnce(lifecycleOwner) {
-            onWidgetFinishListener?.invoke()
+            onWidgetFinishListener.invoke()
         }
     }
 
@@ -119,7 +121,10 @@ class ExplicitView constructor(
             onDismiss()
         }
 
-        bindingSuccess?.imgSuccessDismiss?.setOnClickListener { onDismiss() }
+        bindingSuccess?.imgSuccessDismiss?.setOnClickListener {
+            onDismiss()
+            onWidgetFinishListener.invoke()
+        }
 
         bindingQuestion?.btnPositiveAction?.setOnClickListener {
             onButtonPositiveClicked()
@@ -213,7 +218,7 @@ class ExplicitView constructor(
     override fun onDismiss() {
         this.hide()
         onCleared()
-        onWidgetDismissListener?.invoke()
+        onWidgetDismissListener.invoke()
     }
 
     override fun onFailed() {
