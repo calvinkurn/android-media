@@ -93,7 +93,6 @@ import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.ClassNameProvider
-import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
@@ -105,9 +104,7 @@ import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
-import com.tokopedia.search.result.product.lastfilter.LastFilterListener
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
-import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
@@ -201,7 +198,11 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var recyclerViewUpdater: RecyclerViewUpdater
 
+    @Inject
     lateinit var lastFilterListenerDelegate: LastFilterListenerDelegate
+
+    @Inject
+    lateinit var filterController: FilterController
 
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
@@ -210,7 +211,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private var performanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var redirectionListener: RedirectionListener? = null
     private var searchParameter: SearchParameter? = null
-    private val filterController = FilterController()
     private var irisSession: IrisSession? = null
     private var searchSortFilter: SortFilter? = null
     private var shimmeringView: LinearLayout? = null
@@ -244,7 +244,6 @@ class ProductListFragment: BaseDaggerFragment(),
         loadDataFromArguments()
         initProductCardLifecycleObserver()
         initNetworkMonitor()
-        initLastFilterListenerDelegate()
     }
 
     private fun loadDataFromArguments() {
@@ -279,21 +278,9 @@ class ProductListFragment: BaseDaggerFragment(),
             .baseAppComponent(getComponent(BaseAppComponent::class.java))
             .searchContextModule(SearchContextModule(activity))
             .performanceMonitoringModule(PerformanceMonitoringModule(performanceMonitoring))
+            .productListFragmentModule(ProductListFragmentModule(this))
             .build()
             .inject(this)
-    }
-
-    private fun initLastFilterListenerDelegate() {
-        lastFilterListenerDelegate = LastFilterListenerDelegate(
-            recyclerViewUpdater,
-            iris,
-            this,
-            this,
-            this,
-            filterController,
-            presenter as LastFilterPresenter,
-            presenter as DynamicFilterModelProvider
-        )
     }
     //endregion
 

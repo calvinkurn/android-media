@@ -9,10 +9,13 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import dagger.Lazy
 import rx.Subscriber
+import javax.inject.Inject
+import javax.inject.Named
 
-class LastFilterPresenterDelegate(
+class LastFilterPresenterDelegate @Inject constructor(
     private val requestParamsGenerator: RequestParamsGenerator,
     private val chooseAddressPresenterDelegate: ChooseAddressPresenterDelegate,
+    @param:Named(SearchConstant.SaveLastFilter.SAVE_LAST_FILTER_USE_CASE)
     private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
 ): LastFilterPresenter {
     override var categoryIdL2: String = ""

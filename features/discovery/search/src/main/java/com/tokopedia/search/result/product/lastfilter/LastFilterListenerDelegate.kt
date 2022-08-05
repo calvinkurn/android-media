@@ -9,15 +9,16 @@ import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.track.TrackApp
+import javax.inject.Inject
 
-class LastFilterListenerDelegate(
+class LastFilterListenerDelegate @Inject constructor(
     private val recyclerViewUpdater: RecyclerViewUpdater,
     private val iris: Iris,
     private val queryKeyProvider: QueryKeyProvider,
     private val productListParameterListener: ProductListParameterListener,
     private val searchParameterProvider: SearchParameterProvider,
     private val filterController: FilterController,
-    private val lastFilterPresenterDelegate: LastFilterPresenter,
+    private val lastFilterPresenter: LastFilterPresenterDelegate,
     private val dynamicFilterModelProvider: DynamicFilterModelProvider,
 ) : LastFilterListener {
     private val queryKey: String
@@ -50,7 +51,7 @@ class LastFilterListenerDelegate(
 
         recyclerViewUpdater.productListAdapter?.removeLastFilterWidget()
 
-        lastFilterPresenterDelegate.closeLastFilter(searchParameterMap)
+        lastFilterPresenter.closeLastFilter(searchParameterMap)
     }
 
     fun updateLastFilter() {
@@ -61,7 +62,7 @@ class LastFilterListenerDelegate(
         val savedOptionFromSort = appliedSort?.let { listOf(SavedOption.create(it)) } ?: listOf()
         val savedOptionList = savedOptionFromFilter + savedOptionFromSort
 
-        lastFilterPresenterDelegate.updateLastFilter(
+        lastFilterPresenter.updateLastFilter(
             mapParameter,
             savedOptionList,
         )

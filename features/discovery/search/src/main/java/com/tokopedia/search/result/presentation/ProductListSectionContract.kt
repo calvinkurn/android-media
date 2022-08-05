@@ -16,9 +16,7 @@ import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
-import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
@@ -127,9 +125,7 @@ interface ProductListSectionContract {
     interface Presenter :
         CustomerPresenter<View>,
         Pagination,
-        BannerAdsPresenter,
-        LastFilterPresenter,
-        DynamicFilterModelProvider {
+        BannerAdsPresenter {
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
         val pageComponentId: String
