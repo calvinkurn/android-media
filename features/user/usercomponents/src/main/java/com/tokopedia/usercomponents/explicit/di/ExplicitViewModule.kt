@@ -6,7 +6,7 @@ import com.tokopedia.usercomponents.explicit.domain.GetQuestionUseCase
 import com.tokopedia.usercomponents.explicit.domain.SaveAnswerUseCase
 import com.tokopedia.usercomponents.explicit.domain.UpdateStateUseCase
 import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewContract
-import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewInteractor
+import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewModel
 import dagger.Module
 import dagger.Provides
 
@@ -20,7 +20,7 @@ object ExplicitViewModule {
         updateStateUseCase: UpdateStateUseCase,
         @ApplicationScope dispatchers: CoroutineDispatchers,
     ): ExplicitViewContract {
-        return ExplicitViewInteractor(
+        return ExplicitViewModel(
             getQuestionUseCase,
             saveAnswerUseCase, 
             updateStateUseCase,

@@ -18,7 +18,7 @@ import kotlinx.coroutines.cancelChildren
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ExplicitViewInteractor @Inject constructor(
+class ExplicitViewModel @Inject constructor(
     private val getQuestionUseCase: GetQuestionUseCase,
     private val saveAnswerUseCase: SaveAnswerUseCase,
     private val updateStateUseCase: UpdateStateUseCase,

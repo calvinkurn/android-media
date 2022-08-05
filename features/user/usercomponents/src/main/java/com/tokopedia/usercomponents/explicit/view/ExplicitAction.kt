@@ -12,7 +12,7 @@ interface ExplicitAction {
         explicitViewContract: ExplicitViewContract,
         data: ExplicitData
     )
-    fun isNotYetSetupView(): Boolean
+    fun isViewAttached(): Boolean
 
     fun onLoading()
     fun onQuestionShow()

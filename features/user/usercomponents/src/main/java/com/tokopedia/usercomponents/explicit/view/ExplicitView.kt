@@ -33,10 +33,6 @@ class ExplicitView constructor(
 
     private var explicitViewContract: ExplicitViewContract? = null
 
-    private val explicitAnalytics by lazy(LazyThreadSafetyMode.NONE) {
-        ExplicitAnalytics
-    }
-
     private var bindingQuestion: LayoutWidgetExplicitQuestionBinding? = null
     private var bindingSuccess: LayoutWidgetExplicitSuccessBinding? = null
     private var bindingFailed: LayoutWidgetExplicitFailedBinding? = null
@@ -55,7 +51,7 @@ class ExplicitView constructor(
         initView()
     }
 
-    override fun isNotYetSetupView() = explicitViewContract == null
+    override fun isViewAttached() = explicitViewContract == null
 
     private fun initView() {
         initBinding()
@@ -116,7 +112,7 @@ class ExplicitView constructor(
     private fun initListener() {
 
         bindingQuestion?.imgDismiss?.setOnClickListener {
-            explicitAnalytics.trackClickDismissButton(explicitData)
+            ExplicitAnalytics.trackClickDismissButton(explicitData)
             explicitViewContract?.updateState()
             onDismiss()
         }
@@ -186,11 +182,11 @@ class ExplicitView constructor(
             }
         }
         replaceView(bindingQuestion?.root)
-        explicitAnalytics.trackClickCard(explicitData)
+        ExplicitAnalytics.trackClickCard(explicitData)
     }
 
     override fun onButtonPositiveClicked() {
-        explicitAnalytics.trackClickPositiveButton(explicitData)
+        ExplicitAnalytics.trackClickPositiveButton(explicitData)
         bindingQuestion?.apply {
             btnPositiveAction.isLoading = true
             btnNegativeAction.isEnabled = false
@@ -200,7 +196,7 @@ class ExplicitView constructor(
     }
 
     override fun onButtonNegativeClicked() {
-        explicitAnalytics.trackClickNegativeButton(explicitData)
+        ExplicitAnalytics.trackClickNegativeButton(explicitData)
         bindingQuestion?.apply {
             btnNegativeAction.isLoading = true
             btnPositiveAction.isEnabled = false
