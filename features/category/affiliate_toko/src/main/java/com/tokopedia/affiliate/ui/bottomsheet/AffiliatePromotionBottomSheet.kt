@@ -362,6 +362,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     sendClickPGeventShop("", AffiliateAnalytics.LabelKeys.FAIL, status)
                 }
 
+                Toaster.build(contentView.rootView, getString(R.string.affiliate_link_empty_error),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                sendClickPGevent("", currentServiceFormat, AffiliateAnalytics.LabelKeys.FAIL)
             }
         }
 
