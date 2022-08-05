@@ -230,7 +230,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var rvLayoutManager : LinearLayoutManager? = null
     private var messageCreateTime : String = ""
     private lateinit var chatbotAdapter: ChatbotAdapter
-    private val onClickOffSetValueForReplyBubble = 1000
+    private val onClickOffSetValueForReplyBubble = 5000
 
     @Inject
     lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
