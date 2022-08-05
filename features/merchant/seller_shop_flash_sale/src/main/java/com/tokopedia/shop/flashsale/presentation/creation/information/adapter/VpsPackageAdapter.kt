@@ -80,8 +80,8 @@ class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
         private fun handleVpsPackageBenefit(vpsPackage: VpsPackageUiModel) {
             val remainingQuota = String.format(
                 binding.labelRemainingQuota.context.getString(R.string.sfs_placeholder_vps_quota_period),
-                vpsPackage.packageStartTime.formatTo(DateConstant.MONTH),
-                vpsPackage.packageEndTime.formatTo(DateConstant.MONTH)
+                vpsPackage.packageStartTime.formatTo(DateConstant.DATE),
+                vpsPackage.packageEndTime.formatTo(DateConstant.DATE)
             )
             binding.labelRemainingQuota.text = remainingQuota
 

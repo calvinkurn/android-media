@@ -7,6 +7,5 @@ object DateConstant {
     const val TIME_WIB = "HH.mm 'WIB'"
     const val DATE = "dd MMM yyyy"
     const val MONTH = "MMMM"
-    const val MONTH_YEAR = "MMMM yyyy"
     const val DATE_TIME_TRACKER_FORMAT = "yyyy-MM-dd HH:mm:ss z"
 }

@@ -53,7 +53,7 @@ class CampaignInformationViewModel @Inject constructor(
         private const val MIN_HEX_COLOR_LENGTH = 6
         private const val MIN_CAMPAIGN_NAME_LENGTH = 5
         private const val ONE_HOUR = 1
-        private const val SHOP_TIER_BENEFIT_PACKAGE_ID = -1
+        private const val SHOP_TIER_BENEFIT_PACKAGE_ID: Long= -1
         private const val EMPTY_QUOTA = 0
     }
 
@@ -520,7 +520,7 @@ class CampaignInformationViewModel @Inject constructor(
     }
 
     private fun VpsPackage.isShopTierBenefit() : Boolean {
-        return packageId.toIntOrZero() == SHOP_TIER_BENEFIT_PACKAGE_ID
+        return packageId.toLongOrZero() == SHOP_TIER_BENEFIT_PACKAGE_ID
     }
 
     private fun VpsPackage.isDisabled(): Boolean {
@@ -553,13 +553,24 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun findDefaultQuotaSourceOnEditMode(selectedVpsPackageId: Long, vpsPackages: List<VpsPackageUiModel>): VpsPackageUiModel? {
         val selectedVpsPackage: VpsPackageUiModel? = vpsPackages.find { vpsPackage ->  vpsPackage.packageId == selectedVpsPackageId}
-        return if (selectedVpsPackage == null) {
-            //Backward compatibility: If user edit draft and hasn't select quota source previously, then set to shop tier benefit
+        val shouldUseShopTierBenefit = shouldUseShopTierBenefit(selectedVpsPackage)
+        return if (shouldUseShopTierBenefit) {
              vpsPackages.firstOrNull()
         } else {
             selectedVpsPackage
         }
     }
 
+    private fun shouldUseShopTierBenefit(vpsPackage : VpsPackageUiModel?): Boolean {
+        if (vpsPackage == null) {
+            return true
+        }
+
+        return false
+    }
+
+    private fun isUsingVpsPackage(): Boolean {
+        return vpsPackageId != SHOP_TIER_BENEFIT_PACKAGE_ID
+    }
 
 }

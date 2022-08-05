@@ -113,6 +113,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val REDIRECT_TO_PREVIOUS_PAGE_DELAY : Long = 1_500
         private const val ONE = 1
         private const val VPS_PACKAGE_ID_NOT_SELECTED : Long = 0
+        private const val EMPTY_QUOTA = 0
 
         @JvmStatic
         fun newInstance(pageMode: PageMode, campaignId: Long): CampaignInformationFragment {
@@ -330,6 +331,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
     private fun updateQuotaSource(vpsPackage : VpsPackageUiModel?) {
         val isUsingShopTierBenefit = vpsPackage?.isShopTierBenefit.orFalse()
+        val isUsingVpsPackage = !isUsingShopTierBenefit
 
         val helperMessage = if (isUsingShopTierBenefit) {
             ""
@@ -343,6 +345,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
         binding?.tauVpsPackageName?.editText?.setText(vpsPackage?.packageName)
         binding?.tauVpsPackageName?.setMessage(helperMessage)
+
+        if (isUsingVpsPackage && vpsPackage?.currentQuota == EMPTY_QUOTA) {
+            displayVpsQuotaEmptyError(vpsPackage.originalQuota)
+        }
     }
 
     private fun setupView() {
@@ -990,5 +996,15 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             viewModel.setSelectedVpsPackageId(selectedVpsPackage.packageId)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun displayVpsQuotaEmptyError(originalQuota: Int) {
+        val errorMessage =  String.format(
+            getString(R.string.sfs_placeholder_remaining_vps_quota),
+            originalQuota,
+            originalQuota
+        )
+        binding?.tauVpsPackageName?.setMessage(errorMessage)
+        binding?.tauVpsPackageName?.isInputError = true
     }
 }
