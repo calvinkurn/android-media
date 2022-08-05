@@ -1,9 +1,7 @@
 package com.tokopedia.search.result.presentation.view.fragment
 
 import com.tokopedia.search.di.scope.SearchScope
-import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenter
 import com.tokopedia.search.result.product.ClassNameProvider
-import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
@@ -44,8 +42,4 @@ abstract class ProductListProvidersModule {
     @Binds
     @SearchScope
     abstract fun provideViewUpdater(viewUpdater: RecyclerViewUpdater): ViewUpdater
-
-    @Binds
-    @SearchScope
-    abstract fun provideDynamicFilterModel(provider: ProductListPresenter): DynamicFilterModelProvider
 }
