@@ -600,6 +600,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             imgFreeShipping.setVisibility(View.VISIBLE);
             separatorFreeShipping.setVisibility(View.VISIBLE);
+            if (!shipmentCartItemModel.getHasSeenFreeShippingBadge() && shipmentCartItemModel.isFreeShippingPlus()) {
+                shipmentCartItemModel.setHasSeenFreeShippingBadge(true);
+                mActionListener.onViewFreeShippingPlusBadge();
+            }
         } else {
             imgFreeShipping.setVisibility(View.GONE);
             separatorFreeShipping.setVisibility(View.GONE);
@@ -1430,7 +1434,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
                 voucherLogisticItemUiModel != null) {
             if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate() == 0) {
-                TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, tvShippingFeePrice.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_free_shipping), R.string.content_desc_tv_shipping_fee_price_subtotal);
+                TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(0.0, false)), R.string.content_desc_tv_shipping_fee_price_subtotal);
             } else {
                 TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, getPriceFormat(tvShippingFee, tvShippingFeePrice, shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate()), R.string.content_desc_tv_shipping_fee_price_subtotal);
             }

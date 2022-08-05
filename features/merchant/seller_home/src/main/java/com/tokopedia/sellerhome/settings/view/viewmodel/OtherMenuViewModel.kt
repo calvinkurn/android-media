@@ -34,8 +34,9 @@ import com.tokopedia.sellerhome.domain.usecase.GetNewPromotionUseCase
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
-import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
+import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,7 +49,7 @@ import javax.inject.Inject
 
 class OtherMenuViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
-    private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
+    private val getTokoPlusBadgeUseCase: GetTokoPlusBadgeUseCase,
     private val getShopOperationalUseCase: GetShopOperationalUseCase,
     private val getShopCreatedInfoUseCase: GetShopCreatedInfoUseCase,
     private val balanceInfoUseCase: BalanceInfoUseCase,
@@ -81,7 +82,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _shopShareInfoLiveData = MutableLiveData<OtherMenuShopShareData>()
 
     private val _freeShippingLiveData =
-        MutableLiveData<SettingResponseState<Pair<Boolean, String>>>()
+        MutableLiveData<SettingResponseState<TokoPlusBadgeUiModel>>()
     private val _shopBadgeLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _shopTotalFollowersLiveData = MutableLiveData<SettingResponseState<String>>()
     private val _userShopInfoLiveData = MutableLiveData<SettingResponseState<ShopStatusUiModel>>()
@@ -106,7 +107,7 @@ class OtherMenuViewModel @Inject constructor(
         get() = _kreditTopAdsFormattedLiveData
     val isTopAdsAutoTopupLiveData: LiveData<Result<Boolean>>
         get() = _isTopAdsAutoTopupLiveData
-    val freeShippingLiveData: LiveData<SettingResponseState<Pair<Boolean, String>>>
+    val freeShippingLiveData: LiveData<SettingResponseState<TokoPlusBadgeUiModel>>
         get() = _freeShippingLiveData
     val isShowTagCentralizePromo: LiveData<SettingResponseState<Boolean>>
         get() = _isShowTagCentralizePromo
@@ -385,15 +386,9 @@ class OtherMenuViewModel @Inject constructor(
         launchCatchError(block = {
             val freeShippingPair = withContext(dispatcher.io) {
                 if (freeShippingDisabled || inTransitionPeriod) {
-                    false to ""
+                    TokoPlusBadgeUiModel()
                 } else {
-                    val userId = userSession.userId.toLongOrZero()
-                    val shopId = userSession.shopId.toLongOrZero()
-                    val params =
-                        GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
-                    getShopFreeShippingInfoUseCase.execute(params).first().let {
-                        it.freeShipping.isActive to it.freeShipping.imgUrl
-                    }
+                    getTokoPlusBadgeUseCase.execute(userSession.shopId)
                 }
             }
             _freeShippingLiveData.value = SettingResponseState.SettingSuccess(freeShippingPair)

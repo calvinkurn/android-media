@@ -17,8 +17,8 @@ import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.utils.observeOnce
 import com.tokopedia.sellerhome.utils.verifyStateErrorEquals
 import com.tokopedia.sellerhome.utils.verifyStateSuccessEquals
-import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoFreeShipping
+import com.tokopedia.shop.common.view.model.BadgeUiModel
+import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -94,7 +94,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             mViewModel.getFreeShippingStatus()
 
             verifyGetFreeShippingNotCalled()
-            val expectedResult = SettingResponseState.SettingSuccess(false to "")
+            val expectedResult = SettingResponseState.SettingSuccess(TokoPlusBadgeUiModel())
             mViewModel.freeShippingLiveData.verifyStateSuccessEquals(expectedResult)
         }
     }
@@ -109,7 +109,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             mViewModel.getFreeShippingStatus()
 
             verifyGetFreeShippingNotCalled()
-            val expectedResult = SettingResponseState.SettingSuccess(false to "")
+            val data = TokoPlusBadgeUiModel()
+            val expectedResult = SettingResponseState.SettingSuccess(data)
             mViewModel.freeShippingLiveData.verifyStateSuccessEquals(expectedResult)
         }
     }
@@ -229,12 +230,9 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             onGetUserShopInfo_thenReturn(UserShopInfoWrapper(null))
             onGetShopTotalFollowers_thenReturn(100L)
             onGetFreeShipping_thenReturn(
-                listOf(
-                    ShopInfoFreeShipping.FreeShippingInfo(
-                        FreeOngkir(
-                            isActive = true
-                        )
-                    )
+                TokoPlusBadgeUiModel(
+                    freeShipping = BadgeUiModel(true, "badge_url"),
+                    tokoPlus = BadgeUiModel(true, "badge_url")
                 )
             )
             onGetFreeShippingRemoteConfigDisabled_thenReturn(
@@ -543,7 +541,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             mViewModel.getFreeShippingStatus()
 
             verifyGetFreeShippingNotCalled()
-            val expectedResult = SettingResponseState.SettingSuccess(false to "")
+            val data = TokoPlusBadgeUiModel()
+            val expectedResult = SettingResponseState.SettingSuccess(data)
             mViewModel.freeShippingLiveData.verifyStateSuccessEquals(expectedResult)
         }
     }
@@ -887,12 +886,12 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         coVerify(exactly = 0) { topAdsDashboardDepositUseCase.executeOnBackground() }
     }
 
-    private suspend fun onGetFreeShipping_thenReturn(freeShippingInfo: List<ShopInfoFreeShipping.FreeShippingInfo>) {
-        coEvery { getShopFreeShippingInfoUseCase.execute(any()) } returns freeShippingInfo
+    private suspend fun onGetFreeShipping_thenReturn(freeShippingInfo: TokoPlusBadgeUiModel) {
+        coEvery { getTokoPlusBadgeUseCase.execute(any()) } returns freeShippingInfo
     }
 
     private suspend fun onGetFreeShipping_thenThrow(exception: Exception = IllegalStateException()) {
-        coEvery { getShopFreeShippingInfoUseCase.execute(any()) } throws exception
+        coEvery { getTokoPlusBadgeUseCase.execute(any()) } throws exception
     }
 
     private suspend fun onGetNewIklanAndPromotion_thenThrow(exception: Exception = IllegalStateException()) {
@@ -900,11 +899,11 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     }
 
     private suspend fun verifyGetFreeShippingCalled(atLeast: Int = 1) {
-        coVerify(atLeast = atLeast) { getShopFreeShippingInfoUseCase.execute(any()) }
+        coVerify(atLeast = atLeast) { getTokoPlusBadgeUseCase.execute(any()) }
     }
 
     private suspend fun verifyGetFreeShippingNotCalled() {
-        coVerify(exactly = 0) { getShopFreeShippingInfoUseCase.executeOnBackground() }
+        coVerify(exactly = 0) { getTokoPlusBadgeUseCase.executeOnBackground() }
     }
 
     private suspend fun onGetTopAdsAutoTopup_thenReturn(isAutoTopup: Boolean) {
