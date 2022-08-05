@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.common.util
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import android.text.InputFilter
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -21,6 +22,9 @@ object TokofoodExt {
 
     const val NOT_FOUND_ERROR = "Not Found"
     const val INTERNAL_SERVER_ERROR = "Internal Server Error"
+
+    const val MAXIMUM_QUANTITY = 999999
+    const val MAXIMUM_QUANTITY_LENGTH = 7
 
     fun Throwable.getGlobalErrorType(): Int {
         return when(this) {
@@ -100,6 +104,8 @@ object TokofoodExt {
     }
 
     fun QuantityEditorUnify.setupEditText() {
+        val maxLength = InputFilter.LengthFilter(MAXIMUM_QUANTITY_LENGTH)
+        editText.filters = arrayOf(maxLength)
         editText.imeOptions = EditorInfo.IME_ACTION_DONE
         editText.setOnEditorActionListener { view, actionId, _ ->
             try {
