@@ -5,16 +5,15 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
-import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
-import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
+import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
 class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutInflater) : RecyclerView.ViewHolder(itemView) {
 
@@ -128,7 +127,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         mTvShippingDiscountLabel.text = mTvShippingDiscountLabel.context.getString(com.tokopedia.purchase_platform.common.R.string.label_shipping_discount)
         if (shipmentCost.shippingDiscountAmount > 0) {
             if (shipmentCost.shippingDiscountAmount >= shipmentCost.shippingFee) {
-                mTvShippingFee.setTextAndContentDescription(mTvShippingFee.context.getString(com.tokopedia.purchase_platform.common.R.string.label_free_shipping), R.string.content_desc_tv_shipping_fee_summary)
+                mTvShippingFee.setTextAndContentDescription(convertPriceValueToIdrFormat(0.0, false).removeDecimalSuffix(), R.string.content_desc_tv_shipping_fee_summary)
                 mTvShippingDiscountPrice.visibility = View.GONE
                 mTvShippingDiscountLabel.visibility = View.GONE
             } else {

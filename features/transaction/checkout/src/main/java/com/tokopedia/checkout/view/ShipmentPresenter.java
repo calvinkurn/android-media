@@ -9,6 +9,7 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
@@ -181,6 +182,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
+    private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private ShipmentTickerErrorModel shipmentTickerErrorModel = new ShipmentTickerErrorModel();
     private TickerAnnouncementHolderData tickerAnnouncementHolderData = new TickerAnnouncementHolderData();
@@ -695,6 +697,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .getRecipientAddressModel(cartShipmentAddressFormData);
         setRecipientAddressModel(newAddress);
 
+        this.shipmentUpsellModel = shipmentDataConverter.getShipmentUpsellModel(cartShipmentAddressFormData.getUpsell());
+
         if (cartShipmentAddressFormData.getDonation() != null) {
             ShipmentDonationModel shipmentDonationModel = shipmentDataConverter.getShipmentDonationModel(cartShipmentAddressFormData);
             shipmentDonationModel.setEnabled(!shipmentTickerErrorModel.isError());
@@ -1192,13 +1196,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     enhancedECommerceProductCartMapData.setCodFlag(productDataCheckoutRequest.getCodFlag() != null ? productDataCheckoutRequest.getCodFlag() : "");
                                     enhancedECommerceProductCartMapData.setTokopediaCornerFlag(productDataCheckoutRequest.getTokopediaCornerFlag() != null ? productDataCheckoutRequest.getTokopediaCornerFlag() : "");
                                     enhancedECommerceProductCartMapData.setIsFulfillment(productDataCheckoutRequest.isFulfillment() != null ? productDataCheckoutRequest.isFulfillment() : "");
-                                    if (productDataCheckoutRequest.isFreeShippingExtra()) {
-                                        enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA);
-                                    } else if (productDataCheckoutRequest.isFreeShipping()) {
-                                        enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR);
-                                    } else {
-                                        enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-                                    }
+                                    enhancedECommerceProductCartMapData.setDimension83(productDataCheckoutRequest.getFreeShippingName());
                                     enhancedECommerceProductCartMapData.setCampaignId(String.valueOf(productDataCheckoutRequest.getCampaignId()));
                                     enhancedECommerceProductCartMapData.setPageSource(pageSource);
                                     enhancedECommerceProductCartMapData.setDimension117(productDataCheckoutRequest.getBundleType());
@@ -2343,5 +2341,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         addOnsDataModel.setAddOnsDataItemModelList(listAddOnDataItem);
         getView().updateAddOnsData(addOnsDataModel, identifier);
+    }
+
+    @Override
+    public ShipmentUpsellModel getShipmentUpsellModel() {
+        return shipmentUpsellModel;
     }
 }
