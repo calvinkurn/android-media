@@ -58,6 +58,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckout
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoSuggestionAdapter
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
+import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.showBoPromoBottomSheet
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
@@ -240,6 +241,24 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeApplyPromoResult()
         observeClearPromoResult()
         observeGetPromoSuggestionResult()
+
+        // TODO: TEMPORARY, Remove this after wiring BE
+        context?.let {
+            showBoPromoBottomSheet(
+                fragmentManager = parentFragmentManager,
+                context = it,
+                uiModel = BoPromoBottomSheetUiModel(
+                    "Promo dan Bebas Ongkir",
+                    "https://ecs7.tokopedia.net/img/blog/promo/2022/07/Introduction-Banner.png",
+                    "Lebih mudah pilih Bebas Ongkir di halaman promo",
+                    "<ul><li>Kamu bisa bandingkan keuntungan pakai Bebas Ongkir atau promo lainnya di satu halaman.</li><li>Kalau lihat syarat promo seperti gambar di atas,  pilih pengiriman selain Bebas Ongkir/PLUS.</li></ul>",
+                    "Oke, Saya Mengerti"
+                ),
+                onClickListener = {
+                    // TODO
+                }
+            )
+        }
     }
 
     private fun setBackground() {
