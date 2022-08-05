@@ -20,6 +20,13 @@ object HomeTagHelper {
         )
     }
 
+    fun getSubscriptionBalanceWidgetTag(context: Context): String {
+        return String.format(
+            context.getString(R.string.tag_balance_widget),
+            BalanceDrawerItemModel.TYPE_SUBSCRIPTION.toString()
+        )
+    }
+
     fun getNotifCounterMessage(context: Context): String {
         return String.format(
             context.getString(R.string.tag_counter_id), IconList.NAME_MESSAGE
