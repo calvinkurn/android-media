@@ -220,9 +220,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         return null
     }
 
-    override fun getFragmentToolbar(): Toolbar? {
-        return null
-    }
+    override fun getFragmentToolbar(): Toolbar? = null
 
     override fun navigateToNewFragment(fragment: Fragment) {
         (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
@@ -465,6 +463,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 toolbar.showShadow(true)
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(getString(R.string.tokofood_title))
+                toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
             }
         }
     }
@@ -476,6 +475,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 .addIcon(IconList.ID_LIST_TRANSACTION, onClick = ::onClickListTransactionButton)
                 .addIcon(IconList.ID_NAV_GLOBAL, onClick = {})
         navToolbar?.setIcon(icons)
+
     }
 
     private fun onClickShareButton() {

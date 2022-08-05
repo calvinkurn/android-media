@@ -341,6 +341,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 toolbar.showShadow(true)
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(pageTitle)
+                toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
             }
         }
     }
@@ -349,6 +350,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
         val icons =
             IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
         navToolbar?.setIcon(icons)
+
     }
 
     private fun onSuccessGetCategoryLayout(data: TokoFoodListUiModel) {

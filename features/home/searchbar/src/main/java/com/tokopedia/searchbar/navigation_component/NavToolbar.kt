@@ -26,12 +26,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_BACK
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_CLOSE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_NONE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
@@ -73,6 +75,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val BACK_TYPE_NONE = 0
             const val BACK_TYPE_CLOSE = 1
             const val BACK_TYPE_BACK = 2
+            const val BACK_TYPE_BACK_WITHOUT_COLOR = 3
         }
 
         object ContentType {
@@ -648,7 +651,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
-    private fun configureThemeBasedOnAttribute() {
+    private fun  configureThemeBasedOnAttribute() {
         if (initialTheme == TOOLBAR_DARK_TYPE) {
             switchToDarkToolbar()
         } else {
@@ -660,7 +663,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         setBackButtonType()
     }
 
-    private fun setBackButtonColor(color: Int) {
+    fun setBackButtonColor(color: Int) {
         backDrawable?.let {
             val unwrappedDrawable: Drawable = it
             val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
@@ -681,6 +684,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 toolbarThemeCondition(
                         lightCondition = { navIconBack.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getDarkIconColor()) },
                         darkCondition = { navIconBack.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getLightIconColor()) }
+                )
+            }
+            BACK_TYPE_BACK_WITHOUT_COLOR -> {
+                toolbarThemeCondition(
+                    lightCondition = {
+                        val arrowBackIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK)
+                        navIconBack.setImageDrawable(arrowBackIcon) },
+                    darkCondition = {
+                        val arrowBackIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK)
+                        navIconBack.setImageDrawable(arrowBackIcon) }
                 )
             }
         }
