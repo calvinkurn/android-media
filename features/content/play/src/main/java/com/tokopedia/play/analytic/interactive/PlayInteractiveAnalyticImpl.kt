@@ -61,7 +61,7 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         }
 
         sendCompleteGeneralEvent(
-            event = if(interactiveType is InteractiveUiModel.Quiz) KEY_TRACK_CLICK_CONTENT else KEY_TRACK_CLICK_GROUP_CHAT,
+            event = if(interactiveType is InteractiveUiModel.Giveaway) KEY_TRACK_CLICK_GROUP_CHAT else KEY_TRACK_CLICK_CONTENT,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = eventAction,
             eventLabel = eventLabel
