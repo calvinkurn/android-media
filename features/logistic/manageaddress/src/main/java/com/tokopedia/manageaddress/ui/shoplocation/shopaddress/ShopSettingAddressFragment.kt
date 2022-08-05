@@ -43,6 +43,8 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, Shop
         private const val PARAM_EXTRA_IS_SUCCESS = "is_success"
         private const val PARAM_EXTRA_IS_ADD_NEW = "is_add_new"
 
+        private const val VALID_DATA_SIZE = 3
+
         fun createInstance() = ShopSettingAddressFragment()
     }
 
@@ -163,7 +165,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, Shop
     override fun onIconClicked(item: ShopLocationOldUiModel, pos: Int) {
         val bottomSheetUnify = BottomSheetUnify()
         val view = View.inflate(context, R.layout.bottomsheet_shop_address_item_menu, null)
-        val data = resources.getStringArray(R.array.shop_address_menu_more)
+        val data = context?.resources?.getStringArray(R.array.shop_address_menu_more) ?: emptyArray()
         val listWidgetData = ArrayList<ListItemUnify>().apply {
             addAll(data.map { menu -> ListItemUnify(title = menu, description = "") })
         }
@@ -210,7 +212,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, Shop
         }
     }
 
-    private fun isValidToAdd() = adapter.dataSize < 3
+    private fun isValidToAdd() = adapter.dataSize < VALID_DATA_SIZE
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
