@@ -6,8 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,7 +71,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomshee
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -111,8 +108,6 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -159,7 +154,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
     private var collectionId = ""
     private var collectionName = ""
-    private var detectTextChangeJob: Job? = null
     private var countDelete = 1
     private var toolbarTitle = ""
 
@@ -654,7 +648,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         setSwipeRefreshLayout()
         binding?.run {
             wishlistCollectionDetailSearchbar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     searchQuery =
                         wishlistCollectionDetailSearchbar.searchBarTextField.text.toString()
                     if (searchQuery.isNotEmpty()) {
@@ -665,39 +659,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
                 true
             }
-            wishlistCollectionDetailSearchbar.searchBarTextField.addTextChangedListener(object :
-                TextWatcher {
-                var searchFor = ""
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-                override fun afterTextChanged(s: Editable?) {
-                    detectTextChangeJob?.cancel()
-                    val searchText = s?.toString() ?: "".trim()
-                    if (searchText == searchFor)
-                        return
-
-                    detectTextChangeJob = launchCatchError(block = {
-                        delay(DEBOUNCE_SEARCH_TIME)
-                        searchFor = searchText
-                        searchQuery = searchText
-                        if (searchText.isNotEmpty()) {
-                            WishlistV2Analytics.submitSearchFromCariProduk(searchText)
-                        }
-                        hideKeyboardFromSearchBar()
-                        triggerSearch()
-                    }, onError = {
-                        Timber.d(it)
-                    })
-                }
-            })
 
             val pageSource: String
             val icons: IconBuilder
