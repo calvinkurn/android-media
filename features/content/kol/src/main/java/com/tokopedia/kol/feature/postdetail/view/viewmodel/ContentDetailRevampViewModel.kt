@@ -78,7 +78,6 @@ class ContentDetailRevampViewModel @Inject constructor(
             val results = repository.getContentRecommendation(activityId, currentCursor)
             currentCursor = results.feedXPostRecommendation.nextCursor
             _getCDPPostRecomData.value = Success(results.feedXPostRecommendation)
-
         }) {
             _getCDPPostRecomData.value = Fail(it)
         }

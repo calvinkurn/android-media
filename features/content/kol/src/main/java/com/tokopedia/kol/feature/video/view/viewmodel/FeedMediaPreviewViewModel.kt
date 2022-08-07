@@ -13,7 +13,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCaseSeller
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailWishlistedUseCase
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -50,7 +50,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
         private const val ERROR_CUSTOM_MESSAGE = "Terjadi kesalahan koneksi. Silakan coba lagi."
     }
 
-    val postDetailLive = MutableLiveData<Result<PostDetailViewModel>>()
+    val postDetailLive = MutableLiveData<Result<PostDetailUiModel>>()
     val postFooterLive = MutableLiveData<Pair<PostDetailFooterModel, TemplateFooter?>>()
     val postTagLive = MutableLiveData<PostTag>()
 
@@ -58,8 +58,8 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
         getPostDetailUseCase.execute(GetPostDetailUseCaseSeller
                 .createRequestParams(userSession.userId, "",
                         GetDynamicFeedUseCase.FeedV2Source.Detail, postId),
-                object : Subscriber<PostDetailViewModel>() {
-                    override fun onNext(t: PostDetailViewModel?) {
+                object : Subscriber<PostDetailUiModel>() {
+                    override fun onNext(t: PostDetailUiModel?) {
                         if (t == null) {
                             onError(Throwable(POST_NOT_FOUND))
                             return

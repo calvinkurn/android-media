@@ -10,7 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -23,13 +23,13 @@ class GetPostDetailUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<DynamicFeedDomainModel>(graphqlRepository){
 
-    suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = "") : PostDetailViewModel{
+    suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = "") : PostDetailUiModel {
         try {
-            val dynamicFeedDomainModel =  getDynamicFeedUseCase.execute(cursor, limit, detailId)
-            val postdetailViewModel  = PostDetailViewModel()
-            postdetailViewModel.dynamicPostViewModel = dynamicFeedDomainModel
-            postdetailViewModel.footerModel = convertToPostDetailFooterModel(dynamicFeedDomainModel)
-            return postdetailViewModel
+            val dynamicFeedDomainModel = getDynamicFeedUseCase.execute(cursor, limit, detailId)
+            return PostDetailUiModel(
+                dynamicFeedDomainModel,
+                convertToPostDetailFooterModel(dynamicFeedDomainModel)
+            )
         } catch (e: Throwable) {
             Timber.e(e)
             throw e
