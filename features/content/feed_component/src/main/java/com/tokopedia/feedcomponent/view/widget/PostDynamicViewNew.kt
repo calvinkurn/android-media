@@ -388,6 +388,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 media: FeedXMedia,
                 isMuted: Boolean
             ) {
+                listener?.muteUnmuteVideo(
+                    mData.playChannelID,
+                    isMuted,
+                    mData.author.id,
+                    mData.followers.isFollowed,
+                    mData.isTypeVOD,
+                    media.type,
+                )
 
             }
 

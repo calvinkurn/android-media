@@ -6,5 +6,4 @@ data class ContentShareDataModel(
     val tnTitle: String,
     val tnImage: String,
     val ogUrl: String
-
 )

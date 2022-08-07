@@ -3,6 +3,8 @@ package com.tokopedia.kol.feature.postdetail.view.activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
@@ -29,7 +31,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
         return intent?.data?.lastPathSegment ?: DEFAULT_POST_ID
     }
     fun getSource(): String {
-        return intent?.extras?.getString(PARAM_SOURCE) ?: "share_link"
+        return intent?.extras?.getString(PARAM_SOURCE) ?: SHARE_LINK
     }
 
     fun setContentDetailMainPostData(card: FeedXCard?) {
@@ -37,10 +39,20 @@ class ContentDetailActivity : BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         contentDetailFirstPostData?.let {
             if (it.isTypeSgcVideo)
-            analyticsTracker.sendClickBackOnContentDetailpage(getContentDetailAnalyticsData(it))
+                analyticsTracker.sendClickBackOnContentDetailpage(getContentDetailAnalyticsData(it))
+        }
+        if (getSource() == SHARE_LINK) {
+            goToFeed()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    private fun goToFeed() {
+        this.let {
+            val intent = RouteManager.route(it, ApplinkConst.HOME_FEED)
         }
     }
 
@@ -59,5 +71,6 @@ class ContentDetailActivity : BaseSimpleActivity() {
         const val PARAM_POST_ID = "post_id"
         const val DEFAULT_POST_ID = "0"
         const val PARAM_SOURCE = "source"
+        const val SHARE_LINK = "share_link"
     }
 }

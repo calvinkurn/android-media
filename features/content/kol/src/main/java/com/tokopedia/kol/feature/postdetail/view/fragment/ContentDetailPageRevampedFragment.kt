@@ -105,7 +105,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
     private val adapter = ContentDetailPageRevampAdapter(
         ContentDetailListener = this
     )
-    private val contentDetailSource = (activity as? ContentDetailActivity)?.getSource() ?: ""
+    private var contentDetailSource = ""
 
 
     @Inject
@@ -156,6 +156,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         viewModel.run {
             getCDPPostFirstPostData.observe(viewLifecycleOwner, {
                 when (it) {
@@ -234,6 +235,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        contentDetailSource = (requireActivity() as ContentDetailActivity).getSource()
+
         setupView(view)
         viewModel.getCDPPostDetailFirstData(postId)
 
@@ -625,21 +629,34 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
     }
 
-    private fun getContentShareDataModel(feedXCard: FeedXCard) = ContentShareDataModel(
-        id = feedXCard.id,
-        name = feedXCard.author.name,
-        tnTitle =   (String.format(context?.getString(kolR.string.feed_share_title)?:"", feedXCard.author.name)),
-        tnImage = feedXCard.media.firstOrNull()?.mediaUrl ?: "",
-        ogUrl = feedXCard.media.firstOrNull()?.mediaUrl ?: "",
-    )
+    private fun getContentShareDataModel(feedXCard: FeedXCard): ContentShareDataModel {
+        val mediaUrl =
+            if (feedXCard.isTypeProductHighlight) feedXCard.products.firstOrNull()?.coverURL ?: ""
+            else feedXCard.media.firstOrNull()?.mediaUrl ?: ""
 
-    private fun getContentShareDataModel(product: ProductPostTagViewModelNew) = ContentShareDataModel(
-        id = product.id,
-        name = product.shopName,
-        tnTitle =   (String.format(context?.getString(kolR.string.feed_share_title)?:"", product.shopName)),
-        tnImage = product.imgUrl,
-        ogUrl = product.imgUrl,
-    )
+        return ContentShareDataModel(
+            id = feedXCard.id,
+            name = feedXCard.author.name,
+            tnTitle = (String.format(
+                context?.getString(kolR.string.feed_share_title) ?: "",
+                feedXCard.author.name
+            )),
+            tnImage = mediaUrl,
+            ogUrl = mediaUrl,
+        )
+    }
+
+    private fun getContentShareDataModel(product: ProductPostTagViewModelNew) =
+        ContentShareDataModel(
+            id = product.id,
+            name = product.shopName,
+            tnTitle = (String.format(
+                context?.getString(kolR.string.feed_share_title) ?: "",
+                product.shopName
+            )),
+            tnImage = product.imgUrl,
+            ogUrl = product.imgUrl,
+        )
 
 
     private fun showUniversalShareBottomSheet(contentShareDataModel: ContentShareDataModel) {
@@ -669,8 +686,10 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                 }
             }
         }
-
-        universalShareBottomSheet?.show(fragmentManager, this, null)
+        universalShareBottomSheet?.let {
+            if (!it.isAdded)
+                it.show(fragmentManager, this, null)
+        }
     }
 
 
@@ -709,7 +728,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                 .setDescription(item.description)
                 .setImgUri(item.imgUrl)
                 .setUri(item.weblink)
-                .setDeepLink(item.weblink)
+                .setDeepLink(item.applink)
                 .setType(LinkerData.FEED_TYPE)
                 .setDesktopUrl(item.weblink)
 
@@ -1790,7 +1809,14 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         }
     }
 
-    private fun getContentDetailAnalyticsData(feedXCard: FeedXCard, postPosition: Int = 0, trackerId : String= "", hashTag: String= "", duration: Long = 0L, product: FeedXProduct = FeedXProduct()) = ContentDetailPageAnalyticsDataModel(
+    private fun getContentDetailAnalyticsData(
+        feedXCard: FeedXCard,
+        postPosition: Int = 0,
+        trackerId: String = "",
+        hashTag: String = "",
+        duration: Long = 0L,
+        product: FeedXProduct = FeedXProduct()
+    ) = ContentDetailPageAnalyticsDataModel(
         activityId = if (feedXCard.isTypeVOD) feedXCard.playChannelID else feedXCard.id,
         shopId = feedXCard.author.id,
         rowNumber = postPosition,

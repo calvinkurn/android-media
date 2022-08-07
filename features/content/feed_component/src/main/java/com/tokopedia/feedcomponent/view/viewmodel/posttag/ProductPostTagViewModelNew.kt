@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.view.viewmodel.posttag
 
-import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactory
 
@@ -24,7 +23,7 @@ data class ProductPostTagViewModelNew(
     var priceDiscountFmt: String = "",
     var totalSold: Int = 0,
     val rating: Int = 0,
-    var mods: List<String> = mutableListOf(),
+    var mods: List<String> = emptyList(),
     var shopId: String = "0",
     var shopName: String = "",
     override var feedType: String = "",
