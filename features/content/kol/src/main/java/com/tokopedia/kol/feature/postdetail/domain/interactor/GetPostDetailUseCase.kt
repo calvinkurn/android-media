@@ -9,7 +9,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import timber.log.Timber
 import javax.inject.Inject
@@ -35,13 +35,14 @@ class GetPostDetailUseCase @Inject constructor(
             throw e
         }
     }
-    suspend fun executeForCDPRevamp(cursor: String = "", limit: Int = 5, detailId: String = "") : ContentDetailRevampDataUiModel{
+
+    suspend fun executeForCDPRevamp(cursor: String = "", limit: Int = 5, detailId: String = "") : ContentDetailUiModel{
         try {
-            val feedXData =  getDynamicFeedUseCase.executeForCDP(cursor, limit, detailId)
-            val cdpRevampDataUiModel  = ContentDetailRevampDataUiModel()
-            cdpRevampDataUiModel.postList = feedXData.feedXHome.items
-            cdpRevampDataUiModel.cursor = ""
-            return cdpRevampDataUiModel
+            val feedXData = getDynamicFeedUseCase.executeForCDP(cursor, limit, detailId)
+            return ContentDetailUiModel(
+                postList = feedXData.feedXHome.items,
+                cursor = ""
+            )
         } catch (e: Throwable) {
             Timber.e(e)
             throw e

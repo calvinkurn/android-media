@@ -11,7 +11,8 @@ import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationPostUseCase
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
+import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -43,9 +44,10 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val submitReportContentUseCase: SubmitReportContentUseCase,
     private val trackVisitChannelUseCase: FeedBroadcastTrackerUseCase,
     private val trackViewerUseCase: FeedXTrackViewerUseCase,
+    private val mapper: ContentDetailMapper,
 ) : ContentDetailRepository {
 
-    override suspend fun getContentDetail(contentId: String): ContentDetailRevampDataUiModel {
+    override suspend fun getContentDetail(contentId: String): ContentDetailUiModel {
         return withContext(dispatcher.io) {
             getPostDetailUseCase.executeForCDPRevamp(
                 cursor = "",
@@ -57,11 +59,15 @@ class ContentDetailRepositoryImpl @Inject constructor(
     override suspend fun getContentRecommendation(
         activityId: String,
         cursor: String
-    ): FeedXPostRecommendationData {
+    ): ContentDetailUiModel {
         return withContext(dispatcher.io) {
-            getRecommendationPostUseCase.execute(
+            val response = getRecommendationPostUseCase.execute(
                 cursor = cursor,
                 activityId = activityId
+            )
+            mapper.mapContent(
+                response.feedXPostRecommendation.posts,
+                response.feedXPostRecommendation.nextCursor
             )
         }
     }

@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kol.common.util.ContentDetailResult
-import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendation
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
@@ -19,7 +18,7 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ContentDetailRevampViewModel @Inject constructor(
+class ContentDetailViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val repository: ContentDetailRepository,
     private val mapper: ContentDetailMapper,
@@ -27,8 +26,8 @@ class ContentDetailRevampViewModel @Inject constructor(
 
     var currentCursor = ""
 
-    private val _getCDPPostRecomData = MutableLiveData<Result<FeedXPostRecommendation>>()
-    private val _getCDPPostFirstPostData = MutableLiveData<Result<ContentDetailRevampDataUiModel>>()
+    private val _getCDPPostRecomData = MutableLiveData<Result<ContentDetailUiModel>>()
+    private val _getCDPPostFirstPostData = MutableLiveData<Result<ContentDetailUiModel>>()
     private val _likeKolResp = MutableLiveData<ContentDetailResult<LikeContentModel>>()
     private val _followShopObservable = MutableLiveData<ContentDetailResult<ShopFollowModel>>()
     private val _trackVodVisitContentData = MutableLiveData<ContentDetailResult<VisitContentModel>>()
@@ -36,10 +35,10 @@ class ContentDetailRevampViewModel @Inject constructor(
     private val _reportResponse = MutableLiveData<ContentDetailResult<ReportContentModel>>()
     private val _deletePostResp = MutableLiveData<ContentDetailResult<DeleteContentModel>>()
 
-    val cDPPostRecomData: LiveData<Result<FeedXPostRecommendation>>
+    val cDPPostRecomData: LiveData<Result<ContentDetailUiModel>>
         get() = _getCDPPostRecomData
 
-    val getCDPPostFirstPostData: LiveData<Result<ContentDetailRevampDataUiModel>>
+    val getCDPPostFirstPostData: LiveData<Result<ContentDetailUiModel>>
         get() = _getCDPPostFirstPostData
 
     val getLikeKolResp: LiveData<ContentDetailResult<LikeContentModel>>
@@ -75,9 +74,9 @@ class ContentDetailRevampViewModel @Inject constructor(
 
     fun getContentDetailRecommendation(activityId: String){
         launchCatchError(block = {
-            val results = repository.getContentRecommendation(activityId, currentCursor)
-            currentCursor = results.feedXPostRecommendation.nextCursor
-            _getCDPPostRecomData.value = Success(results.feedXPostRecommendation)
+            val result = repository.getContentRecommendation(activityId, currentCursor)
+            currentCursor = result.cursor
+            _getCDPPostRecomData.value = Success(result)
         }) {
             _getCDPPostRecomData.value = Fail(it)
         }

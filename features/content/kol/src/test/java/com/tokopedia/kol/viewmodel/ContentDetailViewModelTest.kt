@@ -3,7 +3,7 @@ package com.tokopedia.kol.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailRevampViewModel
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailViewModel
 import com.tokopedia.kol.model.ContentDetailModelBuilder
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,7 +29,7 @@ class ContentDetailViewModelTest {
 
     private val mockRepo: ContentDetailRepository = mockk(relaxed = true)
     private val mockMapper: ContentDetailMapper = mockk(relaxed = true)
-    private val viewModel = ContentDetailRevampViewModel(
+    private val viewModel = ContentDetailViewModel(
         testDispatcher,
         mockRepo,
         mockMapper,
@@ -70,13 +70,10 @@ class ContentDetailViewModelTest {
     @Test
     fun `given content recommendation, then content recommendation can be retrieved`() {
         val expectedCursorResult = "123"
-        val expectedResult = builder.getContentRecommendation().copy(
-            nextCursor = expectedCursorResult
+        val expectedResult = builder.getContentDetail(
+            cursor = expectedCursorResult
         )
-        val response = builder.getContentRecommendationData(
-            expectedResult
-        )
-        coEvery { mockRepo.getContentRecommendation(contentId, "") } returns response
+        coEvery { mockRepo.getContentRecommendation(contentId, "") } returns expectedResult
 
         viewModel.getContentDetailRecommendation(contentId)
 

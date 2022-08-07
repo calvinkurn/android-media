@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.postdetail.domain
 
 import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.usecase.coroutines.Result
@@ -14,12 +14,12 @@ interface ContentDetailRepository {
 
     suspend fun getContentDetail(
         contentId: String
-    ): ContentDetailRevampDataUiModel
+    ): ContentDetailUiModel
 
     suspend fun getContentRecommendation(
         activityId: String,
         cursor: String,
-    ): FeedXPostRecommendationData
+    ): ContentDetailUiModel
 
     suspend fun likeContent(
         contentId: String,

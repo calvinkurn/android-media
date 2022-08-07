@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.domain.mapper
 
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
@@ -8,6 +9,8 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
  * Created by meyta.taliti on 03/08/22.
  */
 interface ContentDetailMapper {
+
+    fun mapContent(contents: List<FeedXCard>, cursor: String): ContentDetailUiModel
 
     fun mapLikeContent(rowNumber: Int, action: ContentLikeAction): LikeContentModel
 
