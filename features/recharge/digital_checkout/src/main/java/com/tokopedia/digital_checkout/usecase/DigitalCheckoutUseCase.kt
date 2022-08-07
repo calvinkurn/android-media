@@ -10,6 +10,10 @@ import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.network.data.model.response.DataResponse
 import javax.inject.Inject
 
+
+/**
+ * @author Created By : Muhammad Furqan on Aug 5, 2022
+ */
 class DigitalCheckoutUseCase @Inject constructor(
     private val restUseCase: DigitalCheckoutRestUseCase,
     private val gqlUseCase: DigitalCheckoutGqlUseCase

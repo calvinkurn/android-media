@@ -2,7 +2,7 @@ package com.tokopedia.digital_product_detail.data.repository
 
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common_digital.atc.DigitalAddToCartUseCase
+import com.tokopedia.common_digital.atc.DigitalAddToCartRestUseCase
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ResponseCartData
@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RechargeAddToCartRepositoryImpl @Inject constructor(
-    private val getDigitalAddToCartUseCase: DigitalAddToCartUseCase,
+    private val getDigitalAddToCartRestUseCase: DigitalAddToCartRestUseCase,
     private val mapAtcToResult: DigitalAtcMapper,
     private val dispatchers: CoroutineDispatchers
 ) : RechargeAddToCartRepository {
@@ -27,9 +27,9 @@ class RechargeAddToCartRepositoryImpl @Inject constructor(
         digitalSubscriptionParams: DigitalSubscriptionParams,
         userId: String
     ): DigitalAtcResult = withContext(dispatchers.io) {
-        val addToCart = getDigitalAddToCartUseCase.apply {
+        val addToCart = getDigitalAddToCartRestUseCase.apply {
             setRequestParams(
-                DigitalAddToCartUseCase.getRequestBodyAtcDigital(
+                DigitalAddToCartRestUseCase.getRequestBodyAtcDigital(
                     digitalCheckoutPassData,
                     userId,
                     digitalIdentifierParam,

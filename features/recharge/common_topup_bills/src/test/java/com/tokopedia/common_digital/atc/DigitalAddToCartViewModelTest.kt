@@ -37,7 +37,7 @@ class DigitalAddToCartViewModelTest {
     lateinit var digitalAddToCartViewModel: DigitalAddToCartViewModel
 
     @RelaxedMockK
-    lateinit var digitalAddToCartUseCase: DigitalAddToCartUseCase
+    lateinit var digitalAddToCartRestUseCase: DigitalAddToCartRestUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -49,7 +49,7 @@ class DigitalAddToCartViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         digitalAddToCartViewModel = DigitalAddToCartViewModel(
-                digitalAddToCartUseCase, userSession, dispatcher, rechargeAnalytics)
+                digitalAddToCartRestUseCase, userSession, dispatcher, rechargeAnalytics)
     }
 
     @Test
@@ -83,7 +83,7 @@ class DigitalAddToCartViewModelTest {
         val response = RestResponse(dataResponse, 200, false)
         val responseMap = mapOf<Type, RestResponse>(token to response)
 
-        coEvery { digitalAddToCartUseCase.executeOnBackground() } returns responseMap
+        coEvery { digitalAddToCartRestUseCase.executeOnBackground() } returns responseMap
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
@@ -109,7 +109,7 @@ class DigitalAddToCartViewModelTest {
         val response = RestResponse(dataResponse, 200, false)
         val responseMap = mapOf<Type, RestResponse>(token to response)
 
-        coEvery { digitalAddToCartUseCase.executeOnBackground() } returns responseMap
+        coEvery { digitalAddToCartRestUseCase.executeOnBackground() } returns responseMap
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
@@ -133,7 +133,7 @@ class DigitalAddToCartViewModelTest {
         // Given
         val errorMessage = "this is error message"
         val throwable = Throwable(errorMessage)
-        coEvery { digitalAddToCartUseCase.executeOnBackground() } throws throwable
+        coEvery { digitalAddToCartRestUseCase.executeOnBackground() } throws throwable
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 

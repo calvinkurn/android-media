@@ -3,6 +3,9 @@ package com.tokopedia.common_digital.atc.data.gql.response
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+/**
+ * @author Created By : Muhammad Furqan on Aug 5, 2022
+ */
 class RechargeATCResponse(
     @SerializedName("data")
     @Expose
@@ -51,7 +54,7 @@ class RechargeATCAttribute(
     val pricePlain: Double = 0.0,
     @SerializedName("instant_checkout")
     @Expose
-    val instantCheckout: Boolean = false,
+    val isInstantCheckout: Boolean = false,
     @SerializedName("need_otp")
     @Expose
     val isNeedOtp: Boolean = false,

@@ -3,6 +3,9 @@ package com.tokopedia.common_digital.atc.data.gql.request
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+/**
+ * @author Created By : Muhammad Furqan on Aug 5, 2022
+ */
 class RechargeATCRequest(
     @SerializedName("device_id")
     @Expose
