@@ -14,4 +14,5 @@
     <string name="epharmacy_upload_error">Gagal upload foto resep. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="epharmacy_internet_error">Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="epharmacy_quantity_weight_text">"%s Barang (%s)"</string>
+    <string name="epharmacy_upload_success_text">Berhasil Upload Foto Resep</string>
 </resources>
