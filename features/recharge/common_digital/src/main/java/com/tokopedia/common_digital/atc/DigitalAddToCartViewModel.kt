@@ -49,7 +49,7 @@ class DigitalAddToCartViewModel @Inject constructor(
                         digitalIdentifierParam,
                         digitalSubscriptionParams,
                         digitalCheckoutPassData.idemPotencyKey,
-                        false
+                        true
                     )
                 }
 
