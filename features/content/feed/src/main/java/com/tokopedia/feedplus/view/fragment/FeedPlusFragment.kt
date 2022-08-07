@@ -2535,7 +2535,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 .setName(title)
                 .setDescription(description)
                 .setImgUri(imageUrl)
-                .setUri(applink)
+                .setUri(url)
                 .setDeepLink(applink)
                 .setType(LinkerData.FEED_TYPE)
                 .setDesktopUrl(urlString)
