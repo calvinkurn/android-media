@@ -7,7 +7,11 @@ import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
+import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationPostUseCase
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -29,6 +33,8 @@ import javax.inject.Inject
 class ContentDetailRepositoryImpl @Inject constructor(
     private  val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
+    private val getPostDetailUseCase: GetPostDetailUseCase,
+    private val getRecommendationPostUseCase: GetRecommendationPostUseCase,
     private val likeContentUseCase: SubmitLikeContentUseCase,
     private val followShopUseCase: UpdateFollowStatusUseCase,
     private val addToCartUseCase: AddToCartUseCase,
@@ -38,6 +44,27 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val trackVisitChannelUseCase: FeedBroadcastTrackerUseCase,
     private val trackViewerUseCase: FeedXTrackViewerUseCase,
 ) : ContentDetailRepository {
+
+    override suspend fun getContentDetail(contentId: String): ContentDetailRevampDataUiModel {
+        return withContext(dispatcher.io) {
+            getPostDetailUseCase.executeForCDPRevamp(
+                cursor = "",
+                detailId = contentId
+            )
+        }
+    }
+
+    override suspend fun getContentRecommendation(
+        activityId: String,
+        cursor: String
+    ): FeedXPostRecommendationData {
+        return withContext(dispatcher.io) {
+            getRecommendationPostUseCase.execute(
+                cursor = cursor,
+                activityId = activityId
+            )
+        }
+    }
 
     override suspend fun likeContent(contentId: String, action: ContentLikeAction) {
         return withContext(dispatcher.io) {

@@ -6,31 +6,21 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendation
-import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
-import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
-import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationPostUseCase
 import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.NON_LOGIN_USER_ID
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class ContentDetailRevampViewModel @Inject constructor(
-    private val dispatcher: CoroutineDispatchers,
-    private val userSession: UserSessionInterface,
-    private val getRecommendationPostUseCase: GetRecommendationPostUseCase,
-    private val getPostDetailUseCase: GetPostDetailUseCase,
+    dispatcher: CoroutineDispatchers,
     private val repository: ContentDetailRepository,
     private val mapper: ContentDetailMapper,
 ): BaseViewModel(dispatcher.main) {
@@ -74,51 +64,23 @@ class ContentDetailRevampViewModel @Inject constructor(
         get() = _observableWishlist
     private val _observableWishlist = MutableLiveData<Result<AddToWishlistV2Response.Data.WishlistAddV2>>()
 
-    private val userId: String
-            get() = if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
-
-    fun getCDPPostDetailFirstData(id: String){
+    fun getContentDetail(contentId: String){
         launchCatchError( block = {
-            val results = withContext(dispatcher.io) {
-                getFeedDataResult(id)
-            }
+            val results = repository.getContentDetail(contentId)
             _getCDPPostFirstPostData.value = Success(results)
-
         }) {
             _getCDPPostFirstPostData.value = Fail(it)
-
         }
     }
 
-    fun getCDPRecomData(id: String){
+    fun getContentDetailRecommendation(activityId: String){
         launchCatchError(block = {
-            val results = withContext(dispatcher.io) {
-                getCDPRecomDataResult(id)
-            }
+            val results = repository.getContentRecommendation(activityId, currentCursor)
             currentCursor = results.feedXPostRecommendation.nextCursor
-
             _getCDPPostRecomData.value = Success(results.feedXPostRecommendation)
 
         }) {
             _getCDPPostRecomData.value = Fail(it)
-        }
-
-    }
-    private suspend fun getFeedDataResult(detailId: String): ContentDetailRevampDataUiModel {
-        try {
-            return getPostDetailUseCase.executeForCDPRevamp(cursor = "", detailId = detailId)
-        } catch (e: Throwable) {
-            Timber.e(e)
-            throw e
-        }
-    }
-
-    private suspend fun getCDPRecomDataResult(activityId: String): FeedXPostRecommendationData {
-        try {
-            return getRecommendationPostUseCase.execute(cursor = currentCursor, activityId = activityId )
-        } catch (e: Throwable) {
-            Timber.e(e)
-            throw e
         }
     }
 

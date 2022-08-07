@@ -172,7 +172,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
-        viewModel.getCDPPostDetailFirstData(postId)
+        viewModel.getContentDetail(postId)
 
 
         observeLikeContent()
@@ -199,7 +199,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(cdpRecyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.getCDPRecomData(postId)
+                viewModel.getContentDetailRecommendation(postId)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -255,14 +255,14 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         adapter.setItemsAndAnimateChanges(contentDetailRevampDataUiModel.postList)
-        viewModel.getCDPRecomData(postId)
+        viewModel.getContentDetailRecommendation(postId)
 
     }
+
     private fun onSuccessGetCDPRecomData(contentDetailRevampDataUiModel: ContentDetailRevampDataUiModel){
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         adapter.addItemsAndAnimateChanges(contentDetailRevampDataUiModel.postList)
-
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
@@ -285,7 +285,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
         }
     }
 
-
     override fun getScreenName(): String {
         return "CDP Revamp Fragment"
     }
@@ -299,6 +298,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             .build()
             .inject(this)
     }
+
     private fun onGoToLogin() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
@@ -398,10 +398,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment() , ContentDetailPo
             view.count = view.count + 1
 
         }
-    }
-
-    private fun onErrorLikeDislikeKolPost(errorMessage: String) {
-        showToast(errorMessage, Toaster.TYPE_ERROR)
     }
 
     private fun openCommentPage(

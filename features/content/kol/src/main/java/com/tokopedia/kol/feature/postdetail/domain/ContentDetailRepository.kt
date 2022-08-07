@@ -1,5 +1,7 @@
 package com.tokopedia.kol.feature.postdetail.domain
 
+import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.usecase.coroutines.Result
@@ -9,6 +11,15 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
  * Created by meyta.taliti on 02/08/22.
  */
 interface ContentDetailRepository {
+
+    suspend fun getContentDetail(
+        contentId: String
+    ): ContentDetailRevampDataUiModel
+
+    suspend fun getContentRecommendation(
+        activityId: String,
+        cursor: String,
+    ): FeedXPostRecommendationData
 
     suspend fun likeContent(
         contentId: String,
