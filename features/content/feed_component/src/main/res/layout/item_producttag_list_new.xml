@@ -148,10 +148,11 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/menu"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginEnd="6dp"
-            android:layout_marginBottom="6dp"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
+            android:padding="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/feed_component_dp_6"
+            android:layout_marginBottom="@dimen/feed_component_dp_6"
             app:icon_name="MENU_KEBAB_HORIZONTAL"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

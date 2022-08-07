@@ -2503,6 +2503,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         title: String,
         description: String,
         url: String,
+        applink: String,
         imageUrl: String,
         activityId: String,
         type: String,
@@ -2534,8 +2535,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 .setName(title)
                 .setDescription(description)
                 .setImgUri(imageUrl)
-                .setUri(url)
-                .setDeepLink(url)
+                .setUri(applink)
+                .setDeepLink(applink)
                 .setType(LinkerData.FEED_TYPE)
                 .setDesktopUrl(urlString)
 
@@ -3612,6 +3613,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.text,
                 item.description,
                 item.weblink,
+                item.applink,
                 item.imgUrl,
                 finalID,
                 item.postType,

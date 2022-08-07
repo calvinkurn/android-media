@@ -489,13 +489,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
             } else {
                 feedXCard.appLink
             }
+            val mediaUrl =
+                if (feedXCard.isTypeProductHighlight) feedXCard.products.firstOrNull()?.coverURL ?: ""
+                else feedXCard.media.firstOrNull()?.mediaUrl ?: ""
+
             listener?.onShareClick(
                 positionInFeed,
                 feedXCard.id.toIntOrZero(),
                 feedXCard.author.name + " `post",
                 desc.replace("%s", feedXCard.author.name),
                 url = url,
-                feedXCard.media.firstOrNull()?.mediaUrl ?: "",
+                mediaUrl,
                 feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT,
                 feedXCard.typename,
                 feedXCard.followers.isFollowed,

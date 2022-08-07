@@ -602,7 +602,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
         activity?.let {
             val shareDataBuilder = LinkerData.Builder.getLinkerBuilder()
-                .setId(feedXCard.id.toString())
+                .setId(feedXCard.id)
                 .setName(
                     String.format(
                         getString(kolR.string.feed_share_title),
@@ -727,7 +727,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                 .setName(item.text)
                 .setDescription(item.description)
                 .setImgUri(item.imgUrl)
-                .setUri(item.weblink)
+                .setUri(item.applink)
                 .setDeepLink(item.applink)
                 .setType(LinkerData.FEED_TYPE)
                 .setDesktopUrl(item.weblink)
