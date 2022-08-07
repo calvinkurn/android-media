@@ -463,7 +463,7 @@ class SingleProductBundleFragment(
 
     private fun refreshPage() {
         val parentActivity = activity as? ProductBundleActivity
-        parentActivity?.getEntrypointFragment()?.let {
+        parentActivity?.entrypointFragment?.let {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.parent_view, it, EntrypointFragment.tagFragment)
                 .commit()
