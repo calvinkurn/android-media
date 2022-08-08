@@ -81,12 +81,12 @@ class ProductPreviewViewHolder(
 
     override fun bind(model: TopchatProductAttachmentPreviewUiModel) {
         super.bind(model)
-        bindBackground()
         when {
-            model.isLoading -> bindLoadingState(model)
-            model.isError -> bindErrorState(model)
+            model.isLoading -> bindLoadingState()
+            model.isError -> bindErrorState()
             else -> bindSuccessState(model)
         }
+        bindBackground()
     }
 
     private fun bindSuccessState(model: TopchatProductAttachmentPreviewUiModel) {
@@ -98,15 +98,13 @@ class ProductPreviewViewHolder(
         bindProductVariant(model)
     }
 
-    private fun bindLoadingState(model: TopchatProductAttachmentPreviewUiModel) {
-        // TODO: implement based on design
+    private fun bindLoadingState() {
+        resetPreviewState()
         showLoading(true)
         showError(false)
-        hideProductComponents()
     }
 
-    private fun bindErrorState(model: TopchatProductAttachmentPreviewUiModel) {
-        // TODO: implement based on design
+    private fun bindErrorState() {
         showLoading(false)
         showError(true)
         hideProductComponents()
@@ -185,6 +183,15 @@ class ProductPreviewViewHolder(
 
     private fun bindBackground() {
         container?.background = bg
+    }
+
+    private fun resetPreviewState() {
+        productName?.show()
+        productPrice?.show()
+        productImage?.show()
+        productVariantContainer?.show()
+        productColorVariant?.show()
+        productSizeVariant?.show()
     }
 
     companion object {

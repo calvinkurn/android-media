@@ -51,7 +51,6 @@ import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.CarouselOptionType
 import com.tokopedia.search.result.presentation.model.CarouselProductType
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
@@ -67,6 +66,9 @@ import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
+import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
+import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
+import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
@@ -144,7 +146,8 @@ class ProductListPresenter @Inject constructor(
     private val paginationImpl: PaginationImpl,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
-    Pagination by paginationImpl {
+    Pagination by paginationImpl,
+    BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper){
 
     companion object {
         private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
@@ -1527,7 +1530,7 @@ class ProductListPresenter @Inject constructor(
         return when {
             optionSize == 1 -> activeOptions.first().name
             optionSize > 1 -> "$optionSize ${filter.title}"
-            else -> filter.title
+            else -> filter.chipName
         }
     }
 
@@ -2413,10 +2416,6 @@ class ProductListPresenter @Inject constructor(
         updateLastFilter(searchParameter, listOf())
     }
     //endregion
-
-    override fun shopAdsImpressionCount(impressionCount: Int) {
-        topAdsHeadlineHelper.seenAds = impressionCount
-    }
 
     override fun detachView() {
         super.detachView()
