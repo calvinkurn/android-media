@@ -105,39 +105,45 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
     }
 
     fun eventViewVoidPopup(categoryName: String, productId: String) {
-        val bundle = Bundle().apply {
-            putString(Keys.EVENT_NAME, EventName.VIEW_DIGITAL_IRIS)
-            putString(Keys.EVENT_ACTION, EventAction.VIEW_VOID_POPUP)
-            putString(Keys.EVENT_CATEGORY, DefaultValue.EVENT_CATEGORY)
-            putString(Keys.EVENT_LABEL, "$categoryName - $productId")
-            putString(Keys.BUSINESS_UNIT, DefaultValue.BUSINESS_UNIT)
-            putString(Keys.CURRENT_SITE, DefaultValue.CURRENT_SITE)
-            putString(Keys.USER_ID, "")
-        }
+        val map = mutableMapOf(
+            Keys.EVENT_NAME to EventName.VIEW_DIGITAL_IRIS,
+            Keys.EVENT_ACTION to EventAction.VIEW_VOID_POPUP,
+            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
+            Keys.EVENT_LABEL to "$categoryName - $productId",
+            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
+            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
+            Keys.USER_ID to ""
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
     }
 
     fun eventVoidPopupClickBatalkan(categoryName: String, productId: String) {
-        val bundle = Bundle().apply {
-            putString(Keys.EVENT_NAME, EventName.CLICK_DIGITAL)
-            putString(Keys.EVENT_ACTION, EventAction.CLICK_BATALKAN_VOID_POPUP)
-            putString(Keys.EVENT_CATEGORY, DefaultValue.EVENT_CATEGORY)
-            putString(Keys.EVENT_LABEL, "$categoryName - $productId")
-            putString(Keys.BUSINESS_UNIT, DefaultValue.BUSINESS_UNIT)
-            putString(Keys.CURRENT_SITE, DefaultValue.CURRENT_SITE)
-            putString(Keys.USER_ID, "")
-        }
+        val map = mutableMapOf(
+            Keys.EVENT_NAME to EventName.CLICK_DIGITAL,
+            Keys.EVENT_ACTION to EventAction.CLICK_BATALKAN_VOID_POPUP,
+            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
+            Keys.EVENT_LABEL to "$categoryName - $productId",
+            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
+            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
+            Keys.USER_ID to ""
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
     }
 
     fun eventVoidPopupClickKembali(categoryName: String, productId: String) {
-        val bundle = Bundle().apply {
-            putString(Keys.EVENT_NAME, EventName.CLICK_DIGITAL)
-            putString(Keys.EVENT_ACTION, EventAction.CLICK_KEMBALI_VOID_POPUP)
-            putString(Keys.EVENT_CATEGORY, DefaultValue.EVENT_CATEGORY)
-            putString(Keys.EVENT_LABEL, "$categoryName - $productId")
-            putString(Keys.BUSINESS_UNIT, DefaultValue.BUSINESS_UNIT)
-            putString(Keys.CURRENT_SITE, DefaultValue.CURRENT_SITE)
-            putString(Keys.USER_ID, "")
-        }
+        val map = mutableMapOf(
+            Keys.EVENT_NAME to EventName.CLICK_DIGITAL,
+            Keys.EVENT_ACTION to EventAction.CLICK_KEMBALI_VOID_POPUP,
+            Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
+            Keys.EVENT_LABEL to "$categoryName - $productId",
+            Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
+            Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
+            Keys.USER_ID to ""
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
     }
 
     private fun mapTopAdsProduct(data: RecommendationItem): Bundle =
