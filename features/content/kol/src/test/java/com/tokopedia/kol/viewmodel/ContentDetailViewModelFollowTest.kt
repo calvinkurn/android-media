@@ -3,7 +3,6 @@ package com.tokopedia.kol.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
-import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailViewModel
 import com.tokopedia.kol.model.ContentDetailModelBuilder
@@ -28,11 +27,9 @@ class ContentDetailViewModelFollowTest {
     private val testDispatcher = rule.dispatchers
 
     private val mockRepo: ContentDetailRepository = mockk(relaxed = true)
-    private val mockMapper: ContentDetailMapper = mockk(relaxed = true)
     private val viewModel = ContentDetailViewModel(
         testDispatcher,
         mockRepo,
-        mockMapper,
     )
 
     private val shopId = "1234"

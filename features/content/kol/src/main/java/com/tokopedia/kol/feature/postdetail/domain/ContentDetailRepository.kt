@@ -52,7 +52,8 @@ interface ContentDetailRepository {
         contentId: String,
         reasonType: String,
         reasonMessage: String,
-    )
+        rowNumber: Int,
+    ): ReportContentModel
 
     suspend fun trackVisitChannel(
         channelId: String,

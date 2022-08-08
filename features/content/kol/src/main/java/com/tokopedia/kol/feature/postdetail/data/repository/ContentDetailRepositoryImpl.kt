@@ -155,8 +155,9 @@ class ContentDetailRepositoryImpl @Inject constructor(
     override suspend fun reportContent(
         contentId: String,
         reasonType: String,
-        reasonMessage: String
-    ) = withContext(dispatcher.io) {
+        reasonMessage: String,
+        rowNumber: Int
+    ): ReportContentModel = withContext(dispatcher.io) {
         submitReportContentUseCase.setRequestParams(
             SubmitReportContentUseCase.createParam(contentId, reasonType, reasonMessage)
         )
@@ -164,6 +165,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
         if (response.content.errorMessage.isNotEmpty()) {
             throw MessageErrorException(response.content.errorMessage)
         }
+        mapper.mapReportContent(rowNumber)
     }
 
     override suspend fun trackVisitChannel(channelId: String, rowNumber: Int): VisitContentModel {

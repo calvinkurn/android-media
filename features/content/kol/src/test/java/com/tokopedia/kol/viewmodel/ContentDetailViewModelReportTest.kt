@@ -15,7 +15,7 @@ import org.junit.Test
 /**
  * Created by meyta.taliti on 08/08/22.
  */
-class ContentDetailViewModelDeleteTest {
+class ContentDetailViewModelReportTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -35,15 +35,15 @@ class ContentDetailViewModelDeleteTest {
     private val builder = ContentDetailModelBuilder()
 
     @Test
-    fun `when user delete content, given response success, then it should emit DeleteContentModel`() {
+    fun `when user report content, given response success, then it should emit ReportContentModel`() {
         val rowNumber = 0
-        val expectedResult = builder.getDeleteContentModel(rowNumber)
+        val expectedResult = builder.getReportContentModel(rowNumber)
 
-        coEvery { mockRepo.deleteContent(contentId, rowNumber) } returns expectedResult
+        coEvery { mockRepo.reportContent(contentId, "", "", rowNumber) } returns expectedResult
 
-        viewModel.deleteContent(contentId, rowNumber)
+        viewModel.sendReport(rowNumber, contentId, "", "")
 
-        val result = viewModel.deletePostResp.value
+        val result = viewModel.reportResponse.value
 
         Assertions
             .assertThat(result)
@@ -51,14 +51,14 @@ class ContentDetailViewModelDeleteTest {
     }
 
     @Test
-    fun `when user delete content, given response error, then it should emit error`() {
+    fun `when user report content, given response error, then it should emit error`() {
         val rowNumber = 0
 
-        coEvery { mockRepo.deleteContent(contentId, rowNumber) } throws Throwable()
+        coEvery { mockRepo.reportContent(contentId, "", "", rowNumber) } throws Throwable()
 
-        viewModel.deleteContent(contentId, rowNumber)
+        viewModel.sendReport(rowNumber, contentId, "", "")
 
-        val result = viewModel.deletePostResp.value
+        val result = viewModel.reportResponse.value
 
         Assertions
             .assertThat(result)

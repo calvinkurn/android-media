@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
-import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
@@ -21,7 +20,6 @@ import javax.inject.Inject
 class ContentDetailViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val repository: ContentDetailRepository,
-    private val mapper: ContentDetailMapper,
 ): BaseViewModel(dispatcher.main) {
 
     var currentCursor = ""
@@ -152,10 +150,8 @@ class ContentDetailViewModel @Inject constructor(
         reasonMessage: String,
     ) {
         launchCatchError(block = {
-            repository.reportContent(contentId, reasonType, reasonMessage)
-            _reportResponse.value = ContentDetailResult.Success(
-                mapper.mapReportContent(positionInFeed)
-            )
+            val response = repository.reportContent(contentId, reasonType, reasonMessage, positionInFeed)
+            _reportResponse.value = ContentDetailResult.Success(response)
         }) {
             _reportResponse.value = ContentDetailResult.Failure(it) {
                 sendReport(positionInFeed, contentId, reasonType, reasonMessage)

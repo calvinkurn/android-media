@@ -37,4 +37,6 @@ class ContentDetailModelBuilder {
     fun getVisitContentModel(rowNumber: Int = 0) = VisitContentModel(rowNumber)
 
     fun getDeleteContentModel(rowNumber: Int = 0) = DeleteContentModel(rowNumber)
+
+    fun getReportContentModel(rowNumber: Int = 0) = ReportContentModel(rowNumber)
 }
