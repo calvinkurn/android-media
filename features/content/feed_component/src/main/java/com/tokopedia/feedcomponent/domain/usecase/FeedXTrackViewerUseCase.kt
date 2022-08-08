@@ -16,7 +16,7 @@ class FeedXTrackViewerUseCase @Inject constructor(
 ): GraphqlUseCase<FeedXTrackViewerResponse.Response>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(FeedXTrackViewerUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(FeedXTrackViewerUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(FeedXTrackViewerResponse.Response::class.java)
     }

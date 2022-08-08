@@ -3,7 +3,7 @@ package com.tokopedia.kol.feature.postdetail.view.activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.kol.feature.postdetail.view.fragment.ContentDetailPageRevampedFragment
+import com.tokopedia.kol.feature.postdetail.view.fragment.ContentDetailFragment
 
 class ContentDetailActivity : BaseSimpleActivity() {
 
@@ -13,7 +13,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
                 PARAM_POST_ID, postId()
             )
         }
-        return ContentDetailPageRevampedFragment.newInstance(bundle)
+        return ContentDetailFragment.newInstance(bundle)
     }
 
     private fun postId(): String {

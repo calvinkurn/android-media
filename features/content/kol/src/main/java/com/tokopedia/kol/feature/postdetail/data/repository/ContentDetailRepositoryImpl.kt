@@ -4,9 +4,15 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
+import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationPostUseCase
+import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -28,6 +34,8 @@ import javax.inject.Inject
 class ContentDetailRepositoryImpl @Inject constructor(
     private  val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
+    private val getPostDetailUseCase: GetPostDetailUseCase,
+    private val getRecommendationPostUseCase: GetRecommendationPostUseCase,
     private val likeContentUseCase: SubmitLikeContentUseCase,
     private val followShopUseCase: UpdateFollowStatusUseCase,
     private val addToCartUseCase: AddToCartUseCase,
@@ -35,7 +43,34 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val submitActionContentUseCase: SubmitActionContentUseCase,
     private val submitReportContentUseCase: SubmitReportContentUseCase,
     private val trackVisitChannelUseCase: FeedBroadcastTrackerUseCase,
+    private val trackViewerUseCase: FeedXTrackViewerUseCase,
+    private val mapper: ContentDetailMapper,
 ) : ContentDetailRepository {
+
+    override suspend fun getContentDetail(contentId: String): ContentDetailUiModel {
+        return withContext(dispatcher.io) {
+            getPostDetailUseCase.executeForCDPRevamp(
+                cursor = "",
+                detailId = contentId
+            )
+        }
+    }
+
+    override suspend fun getContentRecommendation(
+        activityId: String,
+        cursor: String
+    ): ContentDetailUiModel {
+        return withContext(dispatcher.io) {
+            val response = getRecommendationPostUseCase.execute(
+                cursor = cursor,
+                activityId = activityId
+            )
+            mapper.mapContent(
+                response.feedXPostRecommendation.posts,
+                response.feedXPostRecommendation.nextCursor
+            )
+        }
+    }
 
     override suspend fun likeContent(contentId: String, action: ContentLikeAction) {
         return withContext(dispatcher.io) {
@@ -128,6 +163,16 @@ class ContentDetailRepositoryImpl @Inject constructor(
             )
             val response = trackVisitChannelUseCase.executeOnBackground()
             response.reportVisitChannelTracking.success
+        }
+    }
+
+    override suspend fun trackViewer(contentId: String): Boolean {
+        return withContext(dispatcher.io) {
+            trackViewerUseCase.setRequestParams(
+                FeedXTrackViewerUseCase.createParams(contentId)
+            )
+            val response = trackViewerUseCase.executeOnBackground()
+            response.feedXTrackViewerResponse.success
         }
     }
 }

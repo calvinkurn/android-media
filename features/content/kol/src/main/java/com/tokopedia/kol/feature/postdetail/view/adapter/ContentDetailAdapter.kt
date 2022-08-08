@@ -9,7 +9,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
 
-class ContentDetailPageRevampAdapter(
+class ContentDetailAdapter(
     ContentDetailListener: ContentDetailPostViewHolder.CDPListener
 ): BaseDiffUtilAdapter<FeedXCard>(true)
 {
