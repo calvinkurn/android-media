@@ -9,7 +9,8 @@ object ReviewCredibilityTrackingConstant {
     const val EVENT_CATEGORY_PERSONAL_STATISTICS_BOTTOM_SHEET = "product detail page - review - personal statistics bottomsheet"
     const val EVENT_CATEGORY_OTHERS_STATISTICS_BOTTOM_SHEET = "product detail page - review - others statistics bottomsheet"
 
-    const val EVENT_LABEL_CLICK_CTA = "value:%s;page_owner:%s;"
+    const val EVENT_LABEL_CLICK_PERSONAL_CTA = "value:%s;"
+    const val EVENT_LABEL_CLICK_OTHERS_CTA = "value:%s;page_owner:%s;"
     const val EVENT_LABEL_CLICK_PERSONAL_ACHIEVEMENT_STICKER = "category:%s;rank:%d;"
     const val EVENT_LABEL_CLICK_OTHERS_ACHIEVEMENT_STICKER = "category:%s;rank:%d;page_owner:%s;"
     const val EVENT_LABEL_CLICK_PERSONAL_SEE_MORE_ACHIEVEMENT = "text:%s;"

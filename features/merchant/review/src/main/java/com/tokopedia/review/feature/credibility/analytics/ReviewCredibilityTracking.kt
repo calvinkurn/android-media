@@ -40,7 +40,7 @@ object ReviewCredibilityTracking {
             AnalyticConstant.EVENT_CLICK_PG,
             ReviewCredibilityTrackingConstant.EVENT_CATEGORY_PERSONAL_STATISTICS_BOTTOM_SHEET,
             ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_CTA,
-            String.format(ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_CTA, ctaValue)
+            String.format(ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_PERSONAL_CTA, ctaValue)
         ).appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
             .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
             .appendUserId(viewerUserId)
@@ -56,7 +56,7 @@ object ReviewCredibilityTracking {
             AnalyticConstant.EVENT_CLICK_PG,
             ReviewCredibilityTrackingConstant.EVENT_CATEGORY_OTHERS_STATISTICS_BOTTOM_SHEET,
             ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_CTA,
-            String.format(ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_CTA, ctaValue, reviewerUserId)
+            String.format(ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_OTHERS_CTA, ctaValue, reviewerUserId)
         ).appendBusinessUnit(ReviewTrackingConstant.BUSINESS_UNIT)
             .appendCurrentSite(ReviewTrackingConstant.CURRENT_SITE)
             .appendUserId(viewerUserId)
