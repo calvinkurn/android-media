@@ -56,6 +56,7 @@ internal fun safeParseColor(color: String): Int {
     }
 }
 
+@Suppress("MagicNumber")
 internal fun BottomSheetUnify.configureBottomSheetHeight() {
     val screenHeight = getScreenHeight()
     val maxHeight = (screenHeight * 0.9f).toInt()
@@ -72,10 +73,8 @@ internal fun View.setMargin(marginLeft: Int = -1, marginTop: Int = -1, marginRig
 
     layoutParams.setMargins(actualMarginLeft, actualMarginTop, actualMarginRight, actualMarginBottom)
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-        layoutParams.marginStart = actualMarginLeft
-        layoutParams.marginEnd = actualMarginRight
-    }
+    layoutParams.marginStart = actualMarginLeft
+    layoutParams.marginEnd = actualMarginRight
 }
 
 internal fun createFilterDividerItemDecoration(context: Context, orientation: Int, leftMargin: Int): RecyclerView.ItemDecoration {
