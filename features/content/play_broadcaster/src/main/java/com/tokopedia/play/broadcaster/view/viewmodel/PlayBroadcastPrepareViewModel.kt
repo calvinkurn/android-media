@@ -87,13 +87,7 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
                 setupDataStore.uploadTitle(hydraConfigStore.getChannelId(), title)
             }
 
-            val event = when(result) {
-                is NetworkResult.Success -> Event(NetworkResult.Success(Unit))
-                is NetworkResult.Fail -> Event(NetworkResult.Fail(result.error))
-                else -> return@launchCatchError
-            }
-
-            _observableUploadTitleEvent.value = event
+            _observableUploadTitleEvent.value = Event(result)
         }) {
             _observableUploadTitleEvent.value = Event(NetworkResult.Fail(it))
         }
