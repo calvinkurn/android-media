@@ -151,8 +151,6 @@
     <string name="driver_call_disabled_title_bottomsheet">Oops, kamu tidak bisa telepon driver</string>
     <string name="driver_call_disabled_desc_bottomsheet">Sesi kamu untuk telpon driver sudah habis.</string>
     <string name="error_message_hit_driver_phone_number">Oops, ada gangguan yang perlu kami bereskan. Balik lagi nanti, ya.</string>
-    <string name="global_error_order_tracking_primary_action_text">Balik</string>
-
 
     <!-- id -->
     <item name="product_ui_model" type="id" />
