@@ -104,6 +104,42 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         )
     }
 
+    fun eventViewVoidPopup(categoryName: String, productId: String) {
+        val bundle = Bundle().apply {
+            putString(Keys.EVENT_NAME, EventName.VIEW_DIGITAL_IRIS)
+            putString(Keys.EVENT_ACTION, EventAction.VIEW_VOID_POPUP)
+            putString(Keys.EVENT_CATEGORY, DefaultValue.EVENT_CATEGORY)
+            putString(Keys.EVENT_LABEL, "$categoryName - $productId")
+            putString(Keys.BUSINESS_UNIT, DefaultValue.BUSINESS_UNIT)
+            putString(Keys.CURRENT_SITE, DefaultValue.CURRENT_SITE)
+            putString(Keys.USER_ID, "")
+        }
+    }
+
+    fun eventVoidPopupClickBatalkan(categoryName: String, productId: String) {
+        val bundle = Bundle().apply {
+            putString(Keys.EVENT_NAME, EventName.CLICK_DIGITAL)
+            putString(Keys.EVENT_ACTION, EventAction.CLICK_BATALKAN_VOID_POPUP)
+            putString(Keys.EVENT_CATEGORY, DefaultValue.EVENT_CATEGORY)
+            putString(Keys.EVENT_LABEL, "$categoryName - $productId")
+            putString(Keys.BUSINESS_UNIT, DefaultValue.BUSINESS_UNIT)
+            putString(Keys.CURRENT_SITE, DefaultValue.CURRENT_SITE)
+            putString(Keys.USER_ID, "")
+        }
+    }
+
+    fun eventVoidPopupClickKembali(categoryName: String, productId: String) {
+        val bundle = Bundle().apply {
+            putString(Keys.EVENT_NAME, EventName.CLICK_DIGITAL)
+            putString(Keys.EVENT_ACTION, EventAction.CLICK_KEMBALI_VOID_POPUP)
+            putString(Keys.EVENT_CATEGORY, DefaultValue.EVENT_CATEGORY)
+            putString(Keys.EVENT_LABEL, "$categoryName - $productId")
+            putString(Keys.BUSINESS_UNIT, DefaultValue.BUSINESS_UNIT)
+            putString(Keys.CURRENT_SITE, DefaultValue.CURRENT_SITE)
+            putString(Keys.USER_ID, "")
+        }
+    }
+
     private fun mapTopAdsProduct(data: RecommendationItem): Bundle =
             Bundle().apply {
                 putString(Keys.INDEX, data.position.toString())
@@ -166,6 +202,10 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
 
             const val IMPRESSION_PRODUCT = "impression product"
             const val CLICK_PRODUCT = "click product"
+
+            const val VIEW_VOID_POPUP = "view void popup"
+            const val CLICK_BATALKAN_VOID_POPUP = "click batalkan void popup"
+            const val CLICK_KEMBALI_VOID_POPUP= "click kembali void popup"
         }
     }
 
@@ -173,8 +213,10 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         companion object {
             const val OPEN_SCREEN = "openScreen"
             const val CLICK_CHECKOUT = "clickCheckout"
+            const val CLICK_DIGITAL = "clickDigital"
             const val VIEW_ITEM_LIST = "view_item_list"
             const val SELECT_CONTENT = "select_content"
+            const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
         }
     }
 
