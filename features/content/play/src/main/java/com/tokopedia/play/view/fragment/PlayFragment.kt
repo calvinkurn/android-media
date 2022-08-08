@@ -313,7 +313,7 @@ class PlayFragment @Inject constructor(
         try {
             val channelData = playParentViewModel.getLatestChannelStorageData(channelId)
             playViewModel.focusPage(channelData)
-            analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType, channelName = channelData.channelDetail.channelInfo.title)
+            analytic.sendScreen(channelId, playViewModel.channelType, channelName = channelData.channelDetail.channelInfo.title)
             newAnalytic.sendDataNow(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}

@@ -16,11 +16,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_SOURCE_ID
-import com.tokopedia.play.PLAY_KEY_SOURCE_TYPE
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.view.fragment.PlayVideoFragment
-import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.player.state.ExoPlayerStateProcessorImpl
@@ -205,18 +203,8 @@ class PlayViewerPiPView : ConstraintLayout {
         )
     }
 
-    private fun getApplinkQueryParams(pipInfo: PiPInfoUiModel): Map<String, Any> {
-        return when (pipInfo.source) {
-            PlaySource.Unknown -> emptyMap()
-            is PlaySource.Shop -> mapOf(
-                    PLAY_KEY_SOURCE_TYPE to pipInfo.source.key,
-                    PLAY_KEY_SOURCE_ID to pipInfo.source.sourceId
-            )
-            else -> mapOf(
-                    PLAY_KEY_SOURCE_TYPE to pipInfo.source.key,
-            )
-        }
-    }
+    private fun getApplinkQueryParams(pipInfo: PiPInfoUiModel): Map<String, Any> =
+        if (pipInfo.sourceId.isNotEmpty()) mapOf(PLAY_KEY_SOURCE_ID to pipInfo.sourceId) else emptyMap()
 
     companion object {
         private const val EXTRA_PLAY_START_TIME = "start_time"

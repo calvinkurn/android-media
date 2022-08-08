@@ -20,7 +20,7 @@ class TrackVisitChannelBroadcasterUseCase @Inject constructor(
 ): GraphqlUseCase<VisitChannelTracking.Response>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(TrackVisitChannelBroadcasterUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(TrackVisitChannelBroadcasterUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(VisitChannelTracking.Response::class.java)
     }
@@ -44,7 +44,6 @@ class TrackVisitChannelBroadcasterUseCase @Inject constructor(
         private const val RETRY_COUNT = 3
 
         private const val PARAMS_CHANNEL_ID = "channelId"
-        private const val PARAMS_ENTRY_POINT = "entryPoint"
 
         const val QUERY_NAME = "TrackVisitChannelBroadcasterUseCaseQuery"
         const val QUERY = """
@@ -57,10 +56,8 @@ class TrackVisitChannelBroadcasterUseCase @Inject constructor(
 
         fun createParams(
                 channelId: String,
-                entryPoint: String,
         ): Map<String, Any> = mapOf(
             PARAMS_CHANNEL_ID to channelId,
-            PARAMS_ENTRY_POINT to entryPoint
         )
     }
 }
