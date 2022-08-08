@@ -55,6 +55,7 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_only_live"
         tools:layout_height="20dp">
@@ -76,13 +77,13 @@
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl1"
+            android:ellipsize="end"
             android:includeFontPadding="false"
+            android:maxLines="1"
             android:textColor="@color/Unify_Static_White"
             android:visibility="visible"
             app:typographyType="small"
             app:typographyWeight="bold"
-            android:ellipsize="end"
-            android:maxLines="1"
             tools:text="Diskon 30%" />
 
     </LinearLayout>
