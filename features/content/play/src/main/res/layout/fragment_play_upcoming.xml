@@ -68,6 +68,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:ellipsize="end"
         android:maxLines="2"
+        android:maxLength="500"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@+id/view_upcoming_timer"
         app:layout_constraintEnd_toEndOf="@id/btn_action"
