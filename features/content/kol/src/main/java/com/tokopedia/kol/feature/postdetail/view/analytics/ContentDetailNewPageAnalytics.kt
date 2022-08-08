@@ -891,7 +891,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             DataLayer.mapOf(
                 EventName.CLICK, mapOf(
                     "actionField" to mapOf(
-                        "list" to "item_list"
+                        "list" to "/cdp - product bottomsheet"
                     ),
                     "products" to getSingleProductList(contentDetailPageAnalyticsDataModel)
                 )
