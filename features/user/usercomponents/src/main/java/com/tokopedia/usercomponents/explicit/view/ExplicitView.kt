@@ -182,7 +182,7 @@ class ExplicitView constructor(
             }
         }
         replaceView(bindingQuestion?.root)
-        ExplicitAnalytics.trackClickCard(explicitData)
+        ExplicitAnalytics.trackQuestionShow(explicitData)
     }
 
     override fun onButtonPositiveClicked() {

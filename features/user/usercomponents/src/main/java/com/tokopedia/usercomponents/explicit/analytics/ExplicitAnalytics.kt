@@ -23,7 +23,7 @@ object ExplicitAnalytics {
 
     private const val EXPLICIT_WIDGET = "explicit widget"
 
-    fun trackClickCard(param: ExplicitData) {
+    fun trackQuestionShow(param: ExplicitData) {
         val data = TrackAppUtils.gtmData(
             EVENT_VIEW_ACCOUNT_IRIS,
             concatVariable(param.pageName, EXPLICIT_WIDGET),
