@@ -8,6 +8,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.BuildConfig
 import com.tokopedia.play.R
@@ -18,8 +19,14 @@ import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.play.test.factory.TestFragmentFactory
+import com.tokopedia.play.test.factory.TestViewModelFactory
 import com.tokopedia.play.test.util.isSiblingWith
 import com.tokopedia.play.view.activity.PlayActivity
+import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
+import com.tokopedia.play.view.fragment.PlayFragment
+import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
+import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.*
@@ -28,12 +35,20 @@ import com.tokopedia.play.view.uimodel.mapper.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
+import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
+import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
+import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
 import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -52,6 +67,8 @@ class PlayViewerIdGenerator {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+
+    private val userSession: UserSessionInterface = mockk(relaxed = true)
 
     private val repo: PlayViewerRepository = mockk(relaxed = true)
 
@@ -131,6 +148,7 @@ class PlayViewerIdGenerator {
                     castAnalyticHelper = mockk(relaxed = true),
                     performanceClassConfig = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
+                    analyticManagerFactory = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {

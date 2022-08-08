@@ -116,10 +116,10 @@ class PlayPinnedProductAnalyticTest {
 
         val robot = createRobot()
         with(robot) {
-            delay(3000)
+            delay(CASUAL_DELAY)
             clickPinnedProductCarousel()
             trackingQueue.sendAll()
-            delay(3000)
+            delay(CASUAL_DELAY)
         }
 
         assertCassavaByEventAction("click pinned featured product tagging")
@@ -133,9 +133,9 @@ class PlayPinnedProductAnalyticTest {
 
         val robot = createRobot()
         with(robot) {
-            delay(3000)
+            delay(CASUAL_DELAY)
             trackingQueue.sendAll()
-            delay(3000)
+            delay(CASUAL_DELAY)
         }
 
         assertCassavaByEventAction("view on pinned featured product")
@@ -152,10 +152,10 @@ class PlayPinnedProductAnalyticTest {
 
         val robot = createRobot()
         with(robot) {
-            delay(3000)
+            delay(CASUAL_DELAY)
             clickBuyPinnedProductCarousel()
             trackingQueue.sendAll()
-            delay(3000)
+            delay(CASUAL_DELAY)
         }
 
         assertCassavaByEventAction("click buy pinned product")
@@ -172,10 +172,10 @@ class PlayPinnedProductAnalyticTest {
 
         val robot = createRobot()
         with(robot) {
-            delay(3000)
+            delay(CASUAL_DELAY)
             clickAtcPinnedProductCarousel()
             trackingQueue.sendAll()
-            delay(3000)
+            delay(CASUAL_DELAY)
         }
 
         assertCassavaByEventAction("click atc pinned product")
@@ -192,10 +192,10 @@ class PlayPinnedProductAnalyticTest {
 
         val robot = createRobot()
         with(robot) {
-            delay(3000)
+            delay(CASUAL_DELAY)
             clickAtcPinnedProductCarousel()
             trackingQueue.sendAll()
-            delay(3000)
+            delay(CASUAL_DELAY)
         }
 
         assertCassavaByEventAction("view - pinned lihat keranjang")
@@ -212,11 +212,11 @@ class PlayPinnedProductAnalyticTest {
 
         val robot = createRobot()
         with(robot) {
-            delay(3000)
+            delay(CASUAL_DELAY)
             clickAtcPinnedProductCarousel()
             clickToasterAction()
             trackingQueue.sendAll()
-            delay(3000)
+            delay(CASUAL_DELAY)
         }
 
         assertCassavaByEventAction("click - pinned lihat keranjang")
@@ -265,5 +265,9 @@ class PlayPinnedProductAnalyticTest {
             cassavaTestRule.validate(analyticFile),
             containsEventAction(eventAction)
         )
+    }
+
+    companion object {
+        private const val CASUAL_DELAY = 1000L
     }
 }

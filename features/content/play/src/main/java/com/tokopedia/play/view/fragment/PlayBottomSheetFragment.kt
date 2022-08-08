@@ -77,7 +77,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
-    private val dispatchers: CoroutineDispatchers,
 ) : TkpdBaseV4Fragment(),
     PlayFragmentContract,
     ProductSheetViewComponent.Listener,
