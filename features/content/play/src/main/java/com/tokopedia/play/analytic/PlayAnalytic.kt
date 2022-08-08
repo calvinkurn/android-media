@@ -31,12 +31,14 @@ class PlayAnalytic(
     private var mChannelId: String = ""
     private var mChannelType: PlayChannelType = PlayChannelType.Unknown
     private val mSessionId: String = generateSwipeSession()
+    private var mSourceType = ""
     private var mChannelName = ""
 
-    fun sendScreen(channelId: String, channelType: PlayChannelType, channelName: String = "") {
+    fun sendScreen(channelId: String, channelType: PlayChannelType, sourceType: String = "", channelName: String = "") {
         this.mChannelId = channelId
         this.mChannelType = channelType
         this.mChannelName = channelName
+        if (sourceType.isNotEmpty() && sourceType.isNotBlank()) this.mSourceType = sourceType
         TrackApp.getInstance().gtm.sendScreenAuthenticated("/${KEY_TRACK_SCREEN_NAME}/$channelId/${channelType.value}")
     }
 
@@ -49,7 +51,7 @@ class PlayAnalytic(
                         KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "swipe channel",
-                        KEY_EVENT_LABEL to "$mSessionId - $mChannelId - ${mChannelType.value}",
+                        KEY_EVENT_LABEL to "$mSessionId - $mChannelId - ${mChannelType.value} - $mSourceType",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
