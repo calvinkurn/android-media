@@ -24,6 +24,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROWTH
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_PG
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_REMOVE_FROM_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROWTH_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM
@@ -107,6 +108,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_6_VIEW_ALL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_MORE_SENDER_REFERRAL_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_LEFT_CAROUSEL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM_REMOVE_FROM_CART
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_QUEST_CARD_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_REWARD_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SEARCH_BAR
@@ -186,6 +188,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             "click add to cart on tokonow product recom homepage"
         const val EVENT_ACTION_CLICK_LEFT_CAROUSEL_ADD_TO_CART =
             "click add to cart on left carousel"
+        const val EVENT_ACTION_CLICK_PRODUCT_RECOM_REMOVE_FROM_CART = "click delete on tokonow product recom homepage"
         const val EVENT_ACTION_IMPRESSION_LEFT_CAROUSEL = "impression left carousel widget"
         const val EVENT_ACTION_CLICK_BANNER_LEFT_CAROUSEL =
             "click left banner on left carousel widget"
@@ -472,6 +475,38 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             productId = recommendationItem.productId.toString()
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
+    }
+
+    fun onClickProductRecomRemoveFromCart(
+        channelId: String,
+        headerName: String,
+        quantity: String,
+        recommendationItem: RecommendationItem,
+        position: String
+    ) {
+        val item = productItemDataLayer(
+            index = position,
+            productId = recommendationItem.productId.toString(),
+            productName = recommendationItem.name,
+            price = recommendationItem.price.filter { it.isDigit() }.toLongOrZero()
+        ).apply {
+            putString(KEY_QUANTITY, quantity)
+            putString(KEY_SHOP_ID, recommendationItem.shopId.toString())
+            putString(KEY_SHOP_NAME, recommendationItem.shopName)
+            putString(KEY_SHOP_TYPE, recommendationItem.type)
+            putString(KEY_CATEGORY_ID, "")
+        }
+
+        val dataLayer = getEcommerceDataLayer(
+            event = EVENT_REMOVE_FROM_CART,
+            action = EVENT_ACTION_CLICK_PRODUCT_RECOM_REMOVE_FROM_CART,
+            category = EVENT_CATEGORY_RECOM_HOME_PAGE,
+            label = "$channelId - $headerName",
+            items = arrayListOf(item),
+            productId = recommendationItem.productId.toString(),
+            pageSource = ""
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_REMOVE_FROM_CART, dataLayer)
     }
 
     fun onClickLeftCarouselAddToCart(

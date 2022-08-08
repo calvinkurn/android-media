@@ -1,9 +1,8 @@
 package com.tokopedia.search.result.product.videowidget
 
 import android.content.Context
-import com.tokopedia.search.analytics.InspirationCarouselTrackingUnification
-import com.tokopedia.search.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
-import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.videowidget.VideoCarouselDataViewMapper.toProductModel
