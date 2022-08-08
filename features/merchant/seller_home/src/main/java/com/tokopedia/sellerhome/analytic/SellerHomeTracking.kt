@@ -1073,12 +1073,8 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendUnificationTabItemClickEvent(dataKey: String, tab: UnificationTabUiModel) {
-        val emptyLabel = if (tab.isUnauthorized) {
-            TrackingConstant.NO_ACCESS
-        } else {
-            getEmptyLabel(tab.data?.isWidgetEmpty().orTrue())
-        }
+    fun sendUnificationTableItemClickEvent(dataKey: String, tab: UnificationTabUiModel) {
+        val emptyLabel = TrackingConstant.NOT_EMPTY
         val eventMap = createEventMap(
             event = TrackingConstant.CLICK_PG,
             category = arrayOf(

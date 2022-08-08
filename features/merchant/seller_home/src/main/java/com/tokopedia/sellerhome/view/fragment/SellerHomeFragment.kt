@@ -78,7 +78,6 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
-import com.tokopedia.sellerhomecommon.domain.model.UnificationDataFetchModel
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
@@ -659,7 +658,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendUnificationTableItemClickEvent(element: UnificationWidgetUiModel) {
         val selectedTab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
-        SellerHomeTracking.sendUnificationTabItemClickEvent(element.dataKey, selectedTab)
+        SellerHomeTracking.sendUnificationTableItemClickEvent(element.dataKey, selectedTab)
     }
 
     override fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {
