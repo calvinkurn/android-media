@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.type
 
 /**
- * @author by astidhiyaa on 08/08/22
+ * Created by jegul on 19/02/21
  */
-data class PlaySource (val sourceId: String, val sourceType: String)
+data class PlaySource (val id: String, val type: String)

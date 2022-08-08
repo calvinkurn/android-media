@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_SOURCE_ID
+import com.tokopedia.play.PLAY_KEY_SOURCE_TYPE
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.view.fragment.PlayVideoFragment
@@ -200,9 +201,18 @@ class PlayViewerPiPView : ConstraintLayout {
         )
     }
 
-    private fun getAppLink(pipInfo: PiPInfoUiModel): String = UriUtil.buildUriAppendParams(
-                ApplinkConst.PLAY_DETAIL,
-                if (pipInfo.sourceId.isNotEmpty()) mapOf(PLAY_KEY_SOURCE_ID to pipInfo.sourceId) else null)
+    private fun getAppLink(pipInfo: PiPInfoUiModel): String {
+        val map = mutableMapOf<String, Any>().apply {
+            if (pipInfo.source.id.isNotEmpty()) this[PLAY_KEY_SOURCE_ID] = pipInfo.source.id
+            if (pipInfo.source.type.isNotEmpty()) this[PLAY_KEY_SOURCE_TYPE] = pipInfo.source.type
+        }
+
+        return UriUtil.buildUriAppendParams(
+            ApplinkConst.PLAY_DETAIL,
+            if (map.isNotEmpty()) map
+            else null
+        )
+    }
 
     companion object {
         private const val EXTRA_PLAY_START_TIME = "start_time"

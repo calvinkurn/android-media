@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
+import com.tokopedia.play.view.type.PlaySource
 import javax.inject.Inject
 
 /**
@@ -31,7 +32,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
 
     sealed class ChannelDetailNextKey {
 
-        data class ChannelId(val channelId: String, val sourceId: String) : ChannelDetailNextKey()
+        data class ChannelId(val channelId: String, val source: PlaySource) : ChannelDetailNextKey()
         data class Cursor(val cursor: String) : ChannelDetailNextKey()
     }
 
@@ -46,6 +47,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
               playGetChannelDetailsWithRecom(req: {
                 origin_id: ${'$'}$PARAM_CHANNEL_ID,
                 cursor: ${'$'}$PARAM_CURSOR,
+                source_type: ${'$'}$PARAM_SOURCE_TYPE,
                 source_id: ${'$'}$PARAM_SOURCE_ID
               }) {
                 meta {
@@ -158,16 +160,17 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
             return when (nextKey) {
                 is ChannelDetailNextKey.ChannelId -> createParamsWithChannelId(
                         nextKey.channelId,
-                        nextKey.sourceId
+                        nextKey.source
                 )
                 is ChannelDetailNextKey.Cursor -> createParamsWithCursor(nextKey.cursor)
             }
         }
 
-        private fun createParamsWithChannelId(channelId: String, sourceId: String): Map<String, Any> = mutableMapOf(
-                PARAM_CHANNEL_ID to channelId
+        private fun createParamsWithChannelId(channelId: String, playSource: PlaySource): Map<String, Any> = mutableMapOf(
+                PARAM_CHANNEL_ID to channelId,
+                PARAM_SOURCE_TYPE to playSource.type
         ).apply {
-            if (sourceId.isNotEmpty()) put(PARAM_SOURCE_ID, sourceId)
+            if (playSource.id.isNotEmpty()) put(PARAM_SOURCE_ID, playSource.id)
         }
 
         private fun createParamsWithCursor(cursor: String): Map<String, Any> = mapOf(

@@ -29,12 +29,13 @@ class PlayViewerBroTrackerRepositoryImpl @Inject constructor(
 
     override suspend fun trackVisitChannel(
         channelId: String,
+        sourceType: String,
     ) {
         withContext(dispatchers.io) {
             trackVisitChannelBroadcasterUseCase.apply {
                 setRequestParams(
                     TrackVisitChannelBroadcasterUseCase.createParams(
-                        channelId
+                        channelId, sourceType
                     )
                 )
             }.executeOnBackground()

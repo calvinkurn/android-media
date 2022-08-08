@@ -5,10 +5,12 @@ import androidx.lifecycle.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.PLAY_KEY_SOURCE_ID
+import com.tokopedia.play.PLAY_KEY_SOURCE_TYPE
 import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
+import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play_common.model.result.PageInfo
 import com.tokopedia.play_common.model.result.PageResult
@@ -68,8 +70,11 @@ class PlayParentViewModel constructor(
         get() = _observableFirstChannelEvent
     private val _observableFirstChannelEvent = MutableLiveData<Event<Unit>>()
 
-    val sourceId: String
-        get() = handle[PLAY_KEY_SOURCE_ID] ?: ""
+    val source: PlaySource
+        get() = PlaySource(
+                type = handle[PLAY_KEY_SOURCE_TYPE] ?: "",
+                id = handle[PLAY_KEY_SOURCE_ID] ?: ""
+        )
 
     val startingChannelId: String?
         get() = handle[PLAY_KEY_CHANNEL_ID]
@@ -82,7 +87,7 @@ class PlayParentViewModel constructor(
 
     private var mNextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey = getNextChannelIdKey(
             channelId = startingChannelId ?: error("Channel ID must be provided"),
-            sourceId = sourceId
+            source = source
     )
 
     init {
@@ -97,11 +102,12 @@ class PlayParentViewModel constructor(
 
         if (!isFromPiP && !channelId.isNullOrEmpty()) {
             handle.set(PLAY_KEY_CHANNEL_ID, channelId)
+            handle.set(PLAY_KEY_SOURCE_TYPE, bundle.get(PLAY_KEY_SOURCE_TYPE))
             handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
             handle.set(KEY_START_TIME, bundle.get(KEY_START_TIME))
             handle.set(KEY_SHOULD_TRACK, bundle.get(KEY_SHOULD_TRACK))
 
-            mNextKey = getNextChannelIdKey(channelId, sourceId)
+            mNextKey = getNextChannelIdKey(channelId, source)
             loadNextPage()
         }
     }
@@ -141,7 +147,8 @@ class PlayParentViewModel constructor(
                 playChannelMapper.map(response, PlayChannelDetailsWithRecomMapper.ExtraParams(
                         channelId = startingChannelId,
                         videoStartMillis = mVideoStartMillis?.toLong() ?: 0,
-                        shouldTrack = shouldTrack?.toBoolean() ?: true
+                        shouldTrack = shouldTrack?.toBoolean() ?: true,
+                        sourceType = source.type
                     )
                 ).forEach {
                     playChannelStateStorage.setData(it.id, it)
@@ -170,14 +177,14 @@ class PlayParentViewModel constructor(
         })
     }
 
-    private fun getNextChannelIdKey(channelId: String, sourceId: String) = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId(
+    private fun getNextChannelIdKey(channelId: String, source: PlaySource) = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.ChannelId(
             channelId = channelId,
-            sourceId = sourceId
+            source = source
     )
 
     fun refreshChannel() {
         startingChannelId?.let {
-            mNextKey = getNextChannelIdKey(it, sourceId)
+            mNextKey = getNextChannelIdKey(it, source)
             loadNextPage()
         }
     }

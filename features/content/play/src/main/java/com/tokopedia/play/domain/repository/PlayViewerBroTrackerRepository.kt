@@ -10,5 +10,6 @@ interface PlayViewerBroTrackerRepository {
 
     suspend fun trackVisitChannel(
         channelId: String,
+        sourceType: String,
     )
 }

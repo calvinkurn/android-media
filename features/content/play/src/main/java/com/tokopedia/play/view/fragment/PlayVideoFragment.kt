@@ -290,7 +290,7 @@ class PlayVideoFragment @Inject constructor(
                 videoOrientation = playViewModel.videoOrientation,
                 pipInfoUiModel = PiPInfoUiModel(
                         channelId = channelId,
-                        sourceId = playParentViewModel.sourceId,
+                        source = playParentViewModel.source,
                         partnerId = playViewModel.partnerId,
                         channelType = playViewModel.channelType,
                         videoPlayer = videoMeta.videoPlayer,
