@@ -23,12 +23,12 @@ import javax.inject.Inject
     RechargeAddToCartGqlUseCase.QUERY_RECHARGE_ATC
 )
 class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<RechargeATCResponse>(graphqlRepository) {
+    GraphqlUseCase<RechargeATCResponse.Response>(graphqlRepository) {
 
     init {
         setGraphqlQuery(RechargeAddToCartQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(RechargeATCResponse::class.java)
+        setTypeClass(RechargeATCResponse.Response::class.java)
     }
 
     fun setParams(
@@ -84,7 +84,7 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
         setRequestParams(mapOf(PARAMS_KEY to requestParams))
     }
 
-    override suspend fun executeOnBackground(): RechargeATCResponse {
+    override suspend fun executeOnBackground(): RechargeATCResponse.Response {
         GraphqlClient.moduleName = RECHARGE_MODULE_NAME
         return super.executeOnBackground()
     }

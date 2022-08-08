@@ -13,7 +13,13 @@ class RechargeATCResponse(
     @SerializedName("errors")
     @Expose
     val errors: List<RechargeATCError> = emptyList()
-)
+) {
+    class Response(
+        @SerializedName("rechargeAddToCartV2")
+        @Expose
+        val atcResponse: RechargeATCResponse = RechargeATCResponse()
+    )
+}
 
 class RechargeATCData(
     @SerializedName("type")

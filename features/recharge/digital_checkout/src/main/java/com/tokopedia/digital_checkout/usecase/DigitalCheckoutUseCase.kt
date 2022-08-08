@@ -26,7 +26,7 @@ class DigitalCheckoutUseCase @Inject constructor(
     ): PaymentPassData =
         if (isUseGql) {
             gqlUseCase.setParams(requestCheckoutParams, digitalIdentifierParams)
-            val result = gqlUseCase.executeOnBackground()
+            val result = gqlUseCase.executeOnBackground().rechargeCheckoutV3
 
             if (result.errors.isNotEmpty()) {
                 throw Throwable(result.errors.first().title)

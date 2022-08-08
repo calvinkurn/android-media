@@ -32,7 +32,7 @@ class DigitalAddToCartUseCase @Inject constructor(
             gqlUseCase.setParams(
                 digitalCheckoutPassData, userId, digitalIdentifierParam
             )
-            val result = gqlUseCase.executeOnBackground()
+            val result = gqlUseCase.executeOnBackground().atcResponse
 
             if (result.errors.isNotEmpty()) {
                 throw Throwable(result.errors.first().title)
