@@ -2,7 +2,6 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
@@ -509,7 +508,7 @@ class ChatbotPresenterTest {
     @Test
     fun `sendReadEvent success`() {
         mockkObject(RxWebSocket)
-        mockkObject(SendWebsocketParam)
+        mockkObject(SendChatbotWebsocketParam)
 
         every {
             SendChatbotWebsocketParam.getReadMessage(any())
@@ -519,7 +518,7 @@ class ChatbotPresenterTest {
             RxWebSocket.send(SendChatbotWebsocketParam.getReadMessage(any()), any())
         } just runs
 
-        presenter.sendReadEvent("")
+        presenter.sendReadEvent("123")
 
         verify {
             RxWebSocket.send(SendChatbotWebsocketParam.getReadMessage(any()), any())
@@ -530,7 +529,7 @@ class ChatbotPresenterTest {
     @Test
     fun `sendMessageWithWebsocket success`() {
         mockkObject(RxWebSocket)
-        mockkObject(SendWebsocketParam)
+        mockkObject(SendChatbotWebsocketParam)
 
         every {
             SendChatbotWebsocketParam.generateParamSendMessage(any(), any(), any(), any())
@@ -547,7 +546,7 @@ class ChatbotPresenterTest {
             )
         } just runs
 
-        presenter.sendMessageWithWebsocket("", "", "", "")
+        presenter.sendMessageWithWebsocket("123", "", "", "")
 
         verify {
             RxWebSocket.send(
