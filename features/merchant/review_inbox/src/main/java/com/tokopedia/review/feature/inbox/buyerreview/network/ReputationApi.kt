@@ -12,8 +12,4 @@ import rx.Observable
 interface ReputationApi {
     @GET(ReputationBaseURL.PATH_GET_INBOX_REPUTATION)
     fun getInbox(@QueryMap params: Map<String, String>): Observable<Response<TokopediaWsV4Response?>?>
-
-    @POST(ReputationBaseURL.PATH_SEND_REPUTATION_SMILEY)
-    @FormUrlEncoded
-    fun sendSmiley(@FieldMap params: Map<String, String>): Observable<Response<TokopediaWsV4Response?>?>
 }
