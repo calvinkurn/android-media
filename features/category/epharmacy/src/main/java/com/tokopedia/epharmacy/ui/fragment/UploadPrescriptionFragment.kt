@@ -30,6 +30,7 @@ import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyPrescriptionDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.PrescriptionImage
+import com.tokopedia.epharmacy.ui.activity.EPharmacyActivity
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.utils.TrackerId.Companion.IMAGE_UPLOAD_FAILED_ID
 import com.tokopedia.epharmacy.utils.TrackerId.Companion.IMAGE_UPLOAD_SUCCESS_ID
@@ -417,6 +418,9 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 EPharmacyButtonKey.CHECK.key -> {
                     hideAllButtons()
                     ePharmacyUiUpdater.prescriptionInfoMap?.isReUpload = false
+                    context?.resources?.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_title_view_only)?.let { title ->
+                        (activity as? EPharmacyActivity)?.updateTitle(title)
+                    }
                     reloadPrescriptionUI()
                 }
             }
