@@ -33,6 +33,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
@@ -1161,7 +1162,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             AccountConstants.SettingCode.SETTING_ACCOUNT_ADDRESS_ID -> {
                 homeAccountAnalytic.eventClickAccountSetting(ADDRESS_LIST)
                 homeAccountAnalytic.eventClickAccountSettingListAddress()
-                goToApplink(item.applink)
+                goToApplink(ApplinkConstInternalLogistic.MANAGE_ADDRESS_FROM_ACCOUNT)
             }
             AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID -> {
                 homeAccountAnalytic.eventClickPaymentSetting(ACCOUNT_BANK)
