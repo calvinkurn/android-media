@@ -379,7 +379,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         showPromoTicker()
 
         checkoutBottomViewWidget.setCheckoutButtonListener {
-            viewModel.proceedToCheckout(getDigitalIdentifierParam())
+            viewModel.proceedToCheckout(
+                getDigitalIdentifierParam(),
+                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+            )
         }
 
         checkoutBottomViewWidget.setOnClickConsentListener {
