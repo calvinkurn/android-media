@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
@@ -267,7 +268,13 @@ class OperationalInsightBottomSheet(
     
     private fun initTarget() {
         val tvReplyRateTarget: Typography? = childView?.findViewById(R.id.tv_target_rate_reply)
-        val textReplyRateTarget = ">${ticker.target?.chatRepliedTarget?.removeDecimal()}%"
+        val replyRateTarget = ticker.target?.chatRepliedTarget.toIntSafely()
+        val textReplyRate = "${ticker.target?.chatRepliedTarget?.removeDecimal()}%"
+        val textReplyRateTarget = if (replyRateTarget < LIMIT) {
+            ">$textReplyRate"
+        } else {
+            textReplyRate
+        }
         tvReplyRateTarget?.let {
             it.text = textReplyRateTarget
         }
@@ -383,6 +390,7 @@ class OperationalInsightBottomSheet(
     }
 
     companion object {
+        private const val LIMIT = 100
         private const val DECIMAL_FORMAT = "#"
         private const val SHOP_PERFORMANCE = "Performa Toko"
     }
