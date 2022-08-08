@@ -112,6 +112,7 @@ includeIfEnabled("features:merchant:talk")
 includeIfEnabled("features:merchant:youtube_common")
 includeIfEnabled("features:merchant:voucher_creation")
 includeIfEnabled("features:merchant:seller_shop_flash_sale")
+includeIfEnabled("features:merchant:seller_tokopedia_flash_sale")
 includeIfEnabled("features:merchant:seller_feedback")
 includeIfEnabled("features:merchant:campaign_list")
 
