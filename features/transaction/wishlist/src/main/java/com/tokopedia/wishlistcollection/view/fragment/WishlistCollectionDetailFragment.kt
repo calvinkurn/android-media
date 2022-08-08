@@ -2217,13 +2217,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun onFailedSaveItemToCollection(errorMessage: String) {
         showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+        turnOffBulkDeleteMode()
     }
 
-    override fun onSuccessSaveToNewCollection(message: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems.DataItem) {
-        TODO("Not yet implemented")
+    override fun onSuccessSaveToNewCollection(dataItem: AddWishlistCollectionItemsResponse.AddWishlistCollectionItems.DataItem) {
+        showToaster(dataItem.message, "", Toaster.TYPE_NORMAL)
     }
 
     override fun onFailedSaveToNewCollection(errorMessage: String?) {
-        TODO("Not yet implemented")
+        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
     }
 }
