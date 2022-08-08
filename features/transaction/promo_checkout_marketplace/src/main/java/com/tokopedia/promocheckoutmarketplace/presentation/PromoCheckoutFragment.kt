@@ -785,6 +785,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             } else {
                 it.containerActionBottom.gone()
             }
+            it.containerTickerBoClashing.gone()
         }
     }
 
@@ -801,7 +802,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             it.buttonApplyPromo.show()
             it.buttonApplyNoPromo.gone()
 
-            // todo show ticker here
+            if ((fragmentUiModel.uiState.hasSelectedBo || fragmentUiModel.uiState.hasSelectedBoClashingPromo) && fragmentUiModel.uiData.boClashingMessage.isNotEmpty()) {
+                it.labelBoClashing.text = fragmentUiModel.uiData.boClashingMessage
+                it.containerTickerBoClashing.show()
+            } else {
+                it.containerTickerBoClashing.gone()
+            }
             it.containerActionBottom.show()
         }
     }

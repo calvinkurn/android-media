@@ -1115,9 +1115,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // Perform clash calculation
             calculateClash(promoItem)
 
-            // Update BO clashing state
-            updateBoClashingState(element)
-
             // Calculate total benefit
             calculateAndRenderTotalBenefit()
         }
@@ -1126,10 +1123,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun updateBoClashingState(element: PromoListItemUiModel) {
         val fragmentUiModel = fragmentUiModel.value
         val boClashingInfo = element.uiData.boClashingInfos.firstOrNull()
+
         fragmentUiModel?.let {
-            it.uiData.boClashingMessage = boClashingInfo?.message ?: ""
-            it.uiState.hasSelectedBo = element.uiState.isBebasOngkir
-            it.uiState.hasSelectedBoClashingPromo = boClashingInfo != null
+            if (boClashingInfo != null) {
+                it.uiData.boClashingMessage = boClashingInfo.message
+                it.uiState.hasSelectedBo = element.uiState.isBebasOngkir
+                it.uiState.hasSelectedBoClashingPromo = true
+            } else {
+                it.uiData.boClashingMessage = ""
+                it.uiState.hasSelectedBo = element.uiState.isBebasOngkir
+                it.uiState.hasSelectedBoClashingPromo = false
+            }
 
             _fragmentUiModel.value = it
         }
@@ -1396,6 +1400,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         if (clashResult) {
             selectedItem.uiState.isCausingOtherPromoClash = true
         }
+
+        // update BO clashing state
+        updateBoClashingState(selectedItem)
     }
 
     private fun checkAndSetClashOnUnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
