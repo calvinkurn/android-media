@@ -37,7 +37,7 @@ class DigitalAddToCartViewModelTest {
     lateinit var digitalAddToCartViewModel: DigitalAddToCartViewModel
 
     @RelaxedMockK
-    lateinit var digitalAddToCartRestUseCase: DigitalAddToCartRestUseCase
+    lateinit var digitalAddToCartUseCase: DigitalAddToCartUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -49,7 +49,8 @@ class DigitalAddToCartViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         digitalAddToCartViewModel = DigitalAddToCartViewModel(
-                digitalAddToCartRestUseCase, userSession, dispatcher, rechargeAnalytics)
+            digitalAddToCartUseCase, userSession, dispatcher, rechargeAnalytics
+        )
     }
 
     @Test
@@ -59,9 +60,10 @@ class DigitalAddToCartViewModelTest {
 
         // When
         digitalAddToCartViewModel.addToCart(
-                DigitalCheckoutPassData(),
-                RequestBodyIdentifier(),
-                DigitalSubscriptionParams()
+            DigitalCheckoutPassData(),
+            RequestBodyIdentifier(),
+            DigitalSubscriptionParams(),
+            false
         )
 
         // Then
@@ -83,15 +85,17 @@ class DigitalAddToCartViewModelTest {
         val response = RestResponse(dataResponse, 200, false)
         val responseMap = mapOf<Type, RestResponse>(token to response)
 
-        coEvery { digitalAddToCartRestUseCase.executeOnBackground() } returns responseMap
+        coEvery { digitalAddToCartUseCase.execute(any(), any(), any(), any(), any(), any()) } returns responseMap
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
         // When
         val digitalCheckoutPassData = DigitalCheckoutPassData()
         digitalCheckoutPassData.categoryId = "1"
-        digitalAddToCartViewModel.addToCart(digitalCheckoutPassData,
-                RequestBodyIdentifier(), DigitalSubscriptionParams())
+        digitalAddToCartViewModel.addToCart(
+            digitalCheckoutPassData,
+            RequestBodyIdentifier(), DigitalSubscriptionParams()
+        )
 
         // Then
         val resultData = digitalAddToCartViewModel.addToCartResult.value
@@ -116,8 +120,10 @@ class DigitalAddToCartViewModelTest {
         // When
         val digitalCheckoutPassData = DigitalCheckoutPassData()
         digitalCheckoutPassData.categoryId = "1"
-        digitalAddToCartViewModel.addToCart(digitalCheckoutPassData,
-                RequestBodyIdentifier(), DigitalSubscriptionParams())
+        digitalAddToCartViewModel.addToCart(
+            digitalCheckoutPassData,
+            RequestBodyIdentifier(), DigitalSubscriptionParams()
+        )
 
         // Then
         val resultData = digitalAddToCartViewModel.addToCartResult.value
@@ -140,8 +146,10 @@ class DigitalAddToCartViewModelTest {
         // When
         val digitalCheckoutPassData = DigitalCheckoutPassData()
         digitalCheckoutPassData.categoryId = "1"
-        digitalAddToCartViewModel.addToCart(digitalCheckoutPassData,
-                RequestBodyIdentifier(), DigitalSubscriptionParams())
+        digitalAddToCartViewModel.addToCart(
+            digitalCheckoutPassData,
+            RequestBodyIdentifier(), DigitalSubscriptionParams()
+        )
 
         // Then
         val resultData = digitalAddToCartViewModel.addToCartResult.value

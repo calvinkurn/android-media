@@ -36,7 +36,8 @@ class DigitalAddToCartViewModel @Inject constructor(
     fun addToCart(
         digitalCheckoutPassData: DigitalCheckoutPassData,
         digitalIdentifierParam: RequestBodyIdentifier,
-        digitalSubscriptionParams: DigitalSubscriptionParams
+        digitalSubscriptionParams: DigitalSubscriptionParams,
+        isUseGql: Boolean
     ) {
         if (!userSession.isLoggedIn) {
             _addToCartResult.postValue(Fail(MessageErrorException(MESSAGE_ERROR_NON_LOGIN)))
@@ -49,7 +50,7 @@ class DigitalAddToCartViewModel @Inject constructor(
                         digitalIdentifierParam,
                         digitalSubscriptionParams,
                         digitalCheckoutPassData.idemPotencyKey,
-                        true
+                        isUseGql
                     )
                 }
 
