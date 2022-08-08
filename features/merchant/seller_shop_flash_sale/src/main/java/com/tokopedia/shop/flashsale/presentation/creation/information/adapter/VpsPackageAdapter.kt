@@ -2,123 +2,164 @@ package com.tokopedia.shop.flashsale.presentation.creation.information.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemShopTierBenefitBinding
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemVpsPackageBinding
+import com.tokopedia.seller_shop_flash_sale.databinding.SsfsVpsBenefitQuotaEmptyBinding
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
-import com.tokopedia.shop.flashsale.common.extension.disable
 import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
 import com.tokopedia.unifycomponents.Label
 
-class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
+class VpsPackageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var onVpsPackageClicked: (VpsPackageUiModel) -> Unit = {}
 
     companion object {
         private const val EMPTY_QUOTA = 0
+        private const val SHOP_TIER_BENEFIT_VIEW_TYPE = 1
+        private const val VPS_PACKAGE_VIEW_TYPE = 2
+        private const val EMPTY_VPS_PACKAGE_VIEW_TYPE = 3
     }
 
     private val differCallback = object : DiffUtil.ItemCallback<VpsPackageUiModel>() {
-        override fun areItemsTheSame(oldItem: VpsPackageUiModel, newItem: VpsPackageUiModel): Boolean {
+        override fun areItemsTheSame(
+            oldItem: VpsPackageUiModel,
+            newItem: VpsPackageUiModel
+        ): Boolean {
             return oldItem.packageId == newItem.packageId
         }
 
-        override fun areContentsTheSame(oldItem: VpsPackageUiModel, newItem: VpsPackageUiModel): Boolean {
+        override fun areContentsTheSame(
+            oldItem: VpsPackageUiModel,
+            newItem: VpsPackageUiModel
+        ): Boolean {
             return oldItem == newItem
         }
     }
 
     private val differ = AsyncListDiffer(this, differCallback)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = SsfsItemVpsPackageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when(viewType) {
+            SHOP_TIER_BENEFIT_VIEW_TYPE -> {
+                val binding = SsfsItemShopTierBenefitBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ShopTierBenefitViewHolder(binding)
+            }
+            VPS_PACKAGE_VIEW_TYPE -> {
+                val binding = SsfsItemVpsPackageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                VpsBenefitViewHolder(binding)
+            }
+            else -> {
+                val binding = SsfsVpsBenefitQuotaEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                EmptyQuotaViewHolder(binding)
+            }
+        }
+    }
+
+    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
+        val benefitPackage = differ.currentList[position]
+        when (getItemViewType(position)) {
+            SHOP_TIER_BENEFIT_VIEW_TYPE -> {
+                val shopTierViewHolder = viewHolder as? ShopTierBenefitViewHolder ?: return
+                shopTierViewHolder.bind(benefitPackage)
+            }
+            VPS_PACKAGE_VIEW_TYPE -> {
+                val vpsBenefitViewHolder = viewHolder as? VpsBenefitViewHolder ?: return
+                vpsBenefitViewHolder.bind(benefitPackage)
+            }
+            else -> {
+                val emptyQuotaViewHolder = viewHolder as? EmptyQuotaViewHolder ?: return
+                emptyQuotaViewHolder.bind(benefitPackage)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return differ.currentList.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(differ.currentList[position])
+    override fun getItemViewType(position: Int): Int {
+        val benefitPackage = differ.currentList[position]
+        return when {
+            benefitPackage.isShopTierBenefit -> SHOP_TIER_BENEFIT_VIEW_TYPE
+            benefitPackage.currentQuota == EMPTY_QUOTA -> EMPTY_VPS_PACKAGE_VIEW_TYPE
+            else -> VPS_PACKAGE_VIEW_TYPE
+        }
     }
+
 
     fun setOnVpsPackageClicked(onVpsPackageClicked: (VpsPackageUiModel) -> Unit) {
         this.onVpsPackageClicked = onVpsPackageClicked
     }
 
-    inner class ViewHolder(
-        private val binding: SsfsItemVpsPackageBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class EmptyQuotaViewHolder(private val binding: SsfsVpsBenefitQuotaEmptyBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(vpsPackage: VpsPackageUiModel) {
+            binding.tpgPackageName.text = vpsPackage.packageName
+            binding.labelRemainingQuota.setLabelType(Label.HIGHLIGHT_LIGHT_RED)
+            binding.labelRemainingQuota.text = binding.labelRemainingQuota.context.getString(R.string.sfs_empty_quota)
+        }
+    }
+
+    inner class ShopTierBenefitViewHolder(private val binding: SsfsItemShopTierBenefitBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(vpsPackage: VpsPackageUiModel) {
             binding.radioButton.isChecked = vpsPackage.isSelected
             binding.tpgPackageName.text = vpsPackage.packageName
-            handleShopBenefit(vpsPackage)
             handleRadioButton(vpsPackage)
-            binding.root.isEnabled = !vpsPackage.disabled
-            binding.root.setOnClickListener {
-                onVpsPackageClicked(vpsPackage)
-            }
+            binding.root.setOnClickListener { onVpsPackageClicked(vpsPackage) }
         }
 
         private fun handleRadioButton(vpsPackage: VpsPackageUiModel) {
             binding.radioButton.setOnCheckedChangeListener(null)
             binding.radioButton.isChecked = vpsPackage.isSelected
         }
+    }
 
-        private fun handleShopBenefit(vpsPackage: VpsPackageUiModel) {
-            if (vpsPackage.isShopTierBenefit) {
-                handleShopTierBenefit()
-            } else {
-                handleVpsPackageBenefit(vpsPackage)
-            }
+    inner class VpsBenefitViewHolder(
+        private val binding: SsfsItemVpsPackageBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
+        fun bind(vpsPackage: VpsPackageUiModel) {
+            binding.radioButton.isChecked = vpsPackage.isSelected
+            binding.tpgPackageName.text = vpsPackage.packageName
+            handleRadioButton(vpsPackage)
+            binding.root.isEnabled = !vpsPackage.disabled
+            binding.root.setOnClickListener { onVpsPackageClicked(vpsPackage) }
+            binding.labelRemainingQuota.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+            binding.labelRemainingQuota.setRemainingQuota(vpsPackage)
+            binding.tpgPeriod.setPeriod(vpsPackage)
         }
 
-        private fun handleShopTierBenefit() {
-            binding.labelRemainingQuota.gone()
-            binding.tpgPeriod.gone()
+        private fun TextView.setRemainingQuota(vpsPackage: VpsPackageUiModel) {
+            val remainingQuota = String.format(
+                binding.labelRemainingQuota.context.getString(R.string.sfs_placeholder_remaining_vps_quota),
+                vpsPackage.currentQuota,
+                vpsPackage.originalQuota
+            )
+
+            this.text = remainingQuota
         }
 
-        private fun handleVpsPackageBenefit(vpsPackage: VpsPackageUiModel) {
-            binding.labelRemainingQuota.visible()
-            binding.tpgPeriod.visible()
-            handleRemainingQuota(vpsPackage)
+        private fun TextView.setPeriod(vpsPackage: VpsPackageUiModel) {
+            val period = String.format(
+                binding.tpgPeriod.context.getString(R.string.sfs_placeholder_vps_quota_period),
+                vpsPackage.packageStartTime.formatTo(DateConstant.DATE),
+                vpsPackage.packageEndTime.formatTo(DateConstant.DATE)
+            )
+            this.text = period
         }
 
-        private fun handleRemainingQuota(vpsPackage: VpsPackageUiModel) {
-            if (vpsPackage.currentQuota == EMPTY_QUOTA) {
-                binding.tpgPackageName.disable()
-                binding.radioButton.disable()
-
-                binding.labelRemainingQuota.setLabelType(Label.HIGHLIGHT_LIGHT_RED)
-                binding.labelRemainingQuota.text = binding.labelRemainingQuota.context.getString(R.string.sfs_empty_quota)
-
-                binding.tpgPeriod.gone()
-
-            } else {
-                val remainingQuota = String.format(
-                    binding.labelRemainingQuota.context.getString(R.string.sfs_placeholder_remaining_vps_quota),
-                    vpsPackage.currentQuota,
-                    vpsPackage.originalQuota
-                )
-                binding.labelRemainingQuota.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
-                binding.labelRemainingQuota.text = remainingQuota
-
-                val period = String.format(
-                    binding.tpgPeriod.context.getString(R.string.sfs_placeholder_vps_quota_period),
-                    vpsPackage.packageStartTime.formatTo(DateConstant.DATE),
-                    vpsPackage.packageEndTime.formatTo(DateConstant.DATE)
-                )
-                binding.tpgPeriod.text = period
-                binding.tpgPeriod.visible()
-            }
+        private fun handleRadioButton(vpsPackage: VpsPackageUiModel) {
+            binding.radioButton.setOnCheckedChangeListener(null)
+            binding.radioButton.isChecked = vpsPackage.isSelected
         }
     }
 
