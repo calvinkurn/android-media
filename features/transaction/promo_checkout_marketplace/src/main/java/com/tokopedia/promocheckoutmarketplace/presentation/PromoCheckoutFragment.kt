@@ -235,30 +235,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeEmptyStateUiModel()
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
+        observeBoPromoBottomSheetUiModel()
 
         // Observe network call result
         observeGetCouponRecommendationResult()
         observeApplyPromoResult()
         observeClearPromoResult()
         observeGetPromoSuggestionResult()
-
-        // TODO: TEMPORARY, Remove this after wiring BE
-        context?.let {
-            showBoPromoBottomSheet(
-                fragmentManager = parentFragmentManager,
-                context = it,
-                uiModel = BoPromoBottomSheetUiModel(
-                    "Promo dan Bebas Ongkir",
-                    "https://ecs7.tokopedia.net/img/blog/promo/2022/07/Introduction-Banner.png",
-                    "Lebih mudah pilih Bebas Ongkir di halaman promo",
-                    "<ul><li>Kamu bisa bandingkan keuntungan pakai Bebas Ongkir atau promo lainnya di satu halaman.</li><li>Kalau lihat syarat promo seperti gambar di atas,  pilih pengiriman selain Bebas Ongkir/PLUS.</li></ul>",
-                    "Oke, Saya Mengerti"
-                ),
-                onClickListener = {
-                    // TODO
-                }
-            )
-        }
     }
 
     private fun setBackground() {
@@ -673,6 +656,18 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
             }
         })
+    }
+
+    private fun observeBoPromoBottomSheetUiModel() {
+        viewModel.boPromoBottomSheetUiModel.observe(viewLifecycleOwner) { uiModel ->
+            context?.let {
+                showBoPromoBottomSheet(
+                    fragmentManager = parentFragmentManager,
+                    context = it,
+                    uiModel = uiModel
+                )
+            }
+        }
     }
 
     private fun showPromoCheckoutSuggestionBottomSheet(data: PromoSuggestionUiModel) {

@@ -12,8 +12,7 @@ import com.tokopedia.utils.htmltags.HtmlUtil
 fun showBoPromoBottomSheet(
     fragmentManager: FragmentManager,
     context: Context,
-    uiModel: BoPromoBottomSheetUiModel,
-    onClickListener: () -> Unit
+    uiModel: BoPromoBottomSheetUiModel
 ) {
     BottomSheetUnify().apply {
         val binding = LayoutBottomsheetBoPromoBinding.inflate(LayoutInflater.from(context))
@@ -29,7 +28,6 @@ fun showBoPromoBottomSheet(
             contentDescription.movementMethod = LinkMovementMethod.getInstance()
             buttonAction.text = uiModel.buttonText
             buttonAction.setOnClickListener {
-                onClickListener.invoke()
                 dismiss()
             }
         }

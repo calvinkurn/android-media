@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.mapper
 
 import com.tokopedia.promocheckoutmarketplace.data.response.BenefitDetail
+import com.tokopedia.promocheckoutmarketplace.data.response.BottomSheet
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.Coupon
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendation
@@ -10,6 +11,7 @@ import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionRe
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.SectionTab
 import com.tokopedia.promocheckoutmarketplace.data.response.SubSection
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.BoPromoBottomSheetUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEligibilityHeaderUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel
@@ -259,6 +261,16 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     isInitialization = true
                     selectedTabPosition = 0
                 }
+        )
+    }
+
+    fun mapBoPromoBottomSheetUiModel(bottomSheet: BottomSheet): BoPromoBottomSheetUiModel {
+        return BoPromoBottomSheetUiModel(
+            title = bottomSheet.title,
+            contentTitle = bottomSheet.contentTitle,
+            contentDescription = bottomSheet.contentDescription,
+            imageUrl = bottomSheet.imageUrl,
+            buttonText = bottomSheet.buttonText
         )
     }
 }
