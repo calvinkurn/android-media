@@ -48,6 +48,7 @@ object WishlistV2Analytics {
     private const val ITEM_VARIANT = "item_variant"
     private const val ITEM_CATEGORY = "item_category"
     private const val WISHLIST = "/wishlist"
+    private const val SCREEN_NAME_WISHLIST = "wishlist"
     private const val USER_ID = "userId"
     private const val WISHLIST_ID = "wishlistId"
     private const val ITEMS = "items"
@@ -110,6 +111,9 @@ object WishlistV2Analytics {
     private const val IMPRESSION_EMPTY_LIST = "/wishlist - rekomendasi untuk anda - empty_wishlist - %s"
     private const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION = "click on product recommendation"
     private const val IMPRESSION_LIST_RECOMMENDATION = "/wishlist - rekomendasi untuk anda - %s%s"
+    private const val RECOMMENDATION_CLICK_ITEM_TRACK = "/wishlist - rekomendasi untuk anda"
+    private const val RECOMMENDATION_CLICK_TOPADS_ITEM_TRACK = " - product topads"
+    private const val RECOMMENDATION_CLICK_HORIZONTAL_ITEM_TRACK = " - custom horizontal"
     private const val CLICK_COMMUNICATION = "clickCommunication"
     private const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
     private const val CLICK_SHARE_BUTTON = "click - share button"
@@ -508,24 +512,36 @@ object WishlistV2Analytics {
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    fun clickRecommendationItem(item: RecommendationItem, position: Int){
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT, PRODUCT_CLICK,
-                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
-                        EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
-                        EVENT_LABEL, "",
-                        ECOMMERCE, DataLayer.mapOf(
-                            CLICK, DataLayer.listOf(
-                                convertRecommendationItemToDataClickObject(
-                                        item = item,
-                                        list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) " - product topads" else ""),
-                                        position = position
-                                )
-                            )
-                        )
-                )
-        )
+    fun clickRecommendationItem(item: RecommendationItem, position: Int, userId: String){
+        var list = RECOMMENDATION_CLICK_ITEM_TRACK
+        if (item.isTopAds) list += RECOMMENDATION_CLICK_TOPADS_ITEM_TRACK
+
+        val arrayListBundleItems = arrayListOf<Bundle>()
+        val bundleClick = Bundle().apply {
+            putString(ITEM_NAME, item.name)
+            putString(ITEM_ID, item.productId.toString())
+            putString(PRICE, item.price)
+            putString(ITEM_BRAND, VALUE_NONE_OTHER)
+            putString(ITEM_CATEGORY, item.categoryBreadcrumbs)
+            putString(ITEM_VARIANT, VALUE_NONE_OTHER)
+            putString(INDEX, position.toString())
+        }
+        arrayListBundleItems.add(bundleClick)
+
+        val bundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_CATEGORY, EVENT_WISHLIST_PAGE)
+            putString(EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION)
+            putString(EVENT_LABEL, "")
+            putString(SCREEN_NAME, SCREEN_NAME_WISHLIST)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(USER_ID, userId)
+            putString(BUSINESS_UNIT, PURCHASE_PLATFORM)
+            putString(CURRENCY_CODE, IDR)
+            putString(ITEM_LIST, list)
+            putParcelableArrayList(ITEMS, arrayListBundleItems)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
@@ -593,24 +609,37 @@ object WishlistV2Analytics {
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    fun clickCarouselRecommendationItem(item: RecommendationItem, position: Int){
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT, PRODUCT_CLICK,
-                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
-                        EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
-                        EVENT_LABEL, "",
-                        ECOMMERCE, DataLayer.mapOf(
-                            CLICK, DataLayer.listOf(
-                                convertRecommendationItemToDataClickObject(
-                                        item = item,
-                                        list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) " - product topads" else ""),
-                                        position = position
-                                )
-                            )
-                        )
-                )
-        )
+    fun clickCarouselRecommendationItem(item: RecommendationItem, position: Int, userId: String){
+        var list = RECOMMENDATION_CLICK_ITEM_TRACK
+        if (item.isTopAds) list += RECOMMENDATION_CLICK_TOPADS_ITEM_TRACK
+        list += RECOMMENDATION_CLICK_HORIZONTAL_ITEM_TRACK
+
+        val arrayListBundleItems = arrayListOf<Bundle>()
+        val bundleClick = Bundle().apply {
+            putString(ITEM_NAME, item.name)
+            putString(ITEM_ID, item.productId.toString())
+            putString(PRICE, item.price)
+            putString(ITEM_BRAND, VALUE_NONE_OTHER)
+            putString(ITEM_CATEGORY, item.categoryBreadcrumbs)
+            putString(ITEM_VARIANT, VALUE_NONE_OTHER)
+            putString(INDEX, position.toString())
+        }
+        arrayListBundleItems.add(bundleClick)
+
+        val bundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_CATEGORY, EVENT_WISHLIST_PAGE)
+            putString(EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION)
+            putString(EVENT_LABEL, "")
+            putString(SCREEN_NAME, SCREEN_NAME_WISHLIST)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(USER_ID, userId)
+            putString(BUSINESS_UNIT, PURCHASE_PLATFORM)
+            putString(CURRENCY_CODE, IDR)
+            putString(ITEM_LIST, list)
+            putParcelableArrayList(ITEMS, arrayListBundleItems)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     fun clickShareLinkProduct(wishlistId: String, productId: String, userId: String){

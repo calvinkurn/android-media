@@ -50,7 +50,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     private val imgOperatorResult: ImageView
     private val layoutResult: ConstraintLayout
     private var favoriteNumbers: List<TopupBillsSeamlessFavNumberItem> = listOf()
-    private var textFieldStaticLabel: String = context.getString(R.string.digital_client_label)
+    private var textFieldStaticLabel: String = context.getString(R.string.digital_client_label_telco)
     protected val view: View
 
     private lateinit var listener: ActionListener
@@ -283,6 +283,15 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
     }
 
+    fun hideContactIcon() {
+        inputNumberField.icon1.hide()
+    }
+
+    fun setTextFieldStaticLabel(label: String) {
+        textFieldStaticLabel = label
+        inputNumberField.textInputLayout.hint = textFieldStaticLabel
+    }
+
     private fun initClientNumberAutoComplete(context: Context) {
         autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
             context,
@@ -309,7 +318,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 contactName
             }
         } else {
-            context.getString(R.string.digital_client_label)
+            textFieldStaticLabel
         }
     }
 

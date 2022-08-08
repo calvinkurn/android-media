@@ -8,9 +8,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodExt
+import com.tokopedia.tokofood.common.util.TokofoodExt.setupEditText
 import com.tokopedia.tokofood.databinding.TokofoodProductCardLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
+import com.tokopedia.unifycomponents.CardUnify
 
 class ProductCardViewHolder(
     private val binding: TokofoodProductCardLayoutBinding,
@@ -71,6 +74,8 @@ class ProductCardViewHolder(
             )
         }
 
+        binding.qeuProductQtyEditor.setupEditText()
+        binding.qeuProductQtyEditor.maxValue = TokofoodExt.MAXIMUM_QUANTITY
         binding.qeuProductQtyEditor.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -78,7 +83,7 @@ class ProductCardViewHolder(
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val productUiModel = binding.root.getTag(R.id.product_ui_model) as ProductUiModel
                 val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
-                val quantity = p0.toString().toIntOrZero()
+                val quantity = binding.qeuProductQtyEditor.getValue().orZero()
                 if (quantity != productUiModel.orderQty && quantity >= Int.ONE) {
                     clickListener.onUpdateProductQty(
                             productId = productUiModel.id,
@@ -137,11 +142,9 @@ class ProductCardViewHolder(
             }
             // product is already added to cart
             if (productUiModel.isAtc) {
-                val greenColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
-                binding.productCell.setCardBackgroundColor(greenColor)
+                binding.productCell.cardType = CardUnify.TYPE_SHADOW_ACTIVE
             } else {
-                val whiteColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-                binding.productCell.setCardBackgroundColor(whiteColor)
+                binding.productCell.cardType = CardUnify.TYPE_SHADOW
             }
         }
         // product card attributes

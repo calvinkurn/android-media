@@ -12,6 +12,7 @@
 
     <LinearLayout
         android:id="@+id/toolbar_container"
+        app:layout_constraintBottom_toTopOf="@id/divider"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
@@ -101,7 +102,9 @@
 
     <View
         android:id="@+id/divider"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_container"
+        app:layout_constraintBottom_toTopOf="@id/view_stub_content_layout"
         app:layout_constraintHorizontal_bias="0"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -110,12 +113,22 @@
     <ViewStub
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/mini_cart"
         android:id="@+id/view_stub_content_layout"
+        app:layout_constraintRight_toRightOf="parent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout="@layout/new_shop_page_fragment_content_layout"
-        />
+        android:layout="@layout/new_shop_page_fragment_content_layout" />
+
+    <com.tokopedia.minicart.common.widget.general.MiniCartGeneralWidget
+        android:id="@+id/mini_cart"
+        app:layout_constraintTop_toBottomOf="@id/view_stub_content_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_weight="0"
+        app:layout_constraintVertical_bias="1"
+        android:visibility="gone" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/shop_page_lottie"

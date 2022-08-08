@@ -136,7 +136,7 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
         if (product.isPinned) analytic2?.clickPinnedProductInCarousel(product, position)
 
         if (product.isTokoNow) {
-            newAnalytic.clickFeaturedProduct(product, position)
+            newAnalytic.clickFeaturedProductNow(product, position)
         } else {
             analytic.clickFeaturedProduct(product, position)
         }

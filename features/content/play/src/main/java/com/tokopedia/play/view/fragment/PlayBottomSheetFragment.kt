@@ -196,7 +196,7 @@ class PlayBottomSheetFragment @Inject constructor(
         sectionInfo: ProductSectionUiModel.Section
     ) {
         if(playViewModel.bottomInsets.isProductSheetsShown) {
-            if(sectionInfo.config.type == ProductSectionType.TokoNow) newAnalytic.impressProductBottomSheet(products, sectionInfo)
+            if(sectionInfo.config.type == ProductSectionType.TokoNow) newAnalytic.impressProductBottomSheetNow(products, sectionInfo)
             else analytic.impressBottomSheetProducts(products, sectionInfo)
         }
     }
@@ -406,7 +406,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun doOpenProductDetail(product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
             if(configUiModel.config.type == ProductSectionType.TokoNow)
-                newAnalytic.clickProductBottomSheet(product, configUiModel, position)
+                newAnalytic.clickProductBottomSheetNow(product, configUiModel, position)
             else analytic.clickProduct(product, configUiModel, position)
             openPageByApplink(product.applink, pipMode = true)
         }
@@ -554,7 +554,7 @@ class PlayBottomSheetFragment @Inject constructor(
                             val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
 
                             if(sectionInfo.config.type == ProductSectionType.TokoNow)
-                                newAnalytic.clickBeli(
+                                newAnalytic.clickBeliNowProduct(
                                     product = event.product,
                                     cartId = event.cartId,
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
@@ -627,7 +627,6 @@ class PlayBottomSheetFragment @Inject constructor(
                                         newAnalytic.clickLihatNowToaster()
                                         analytic.clickSeeToasterAfterAtc()
                                     }
-                                    else if(!event.product.isTokoNow) newAnalytic.clickGlobalToaster()
                                     else analytic.clickSeeToasterAfterAtc()
                                 }
                             )
@@ -637,7 +636,7 @@ class PlayBottomSheetFragment @Inject constructor(
                             val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
 
                             if(sectionInfo.config.type == ProductSectionType.TokoNow)
-                                newAnalytic.clickAtc(
+                                newAnalytic.clickAtcNowProduct(
                                     product = event.product,
                                     cartId = event.cartId,
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,

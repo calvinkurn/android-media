@@ -128,9 +128,9 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 binding.btnTipping.text = getString(com.tokopedia.logisticorder.R.string.button_tipping_payment)
 
                 val chipsLayoutManagerTipping = ChipsLayoutManager.newBuilder(binding.root.context)
-                        .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                        .setRowStrategy(ChipsLayoutManager.STRATEGY_FILL_VIEW)
-                        .build()
+                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                    .build()
 
                 ViewCompat.setLayoutDirection(binding.rvChipsTip, ViewCompat.LAYOUT_DIRECTION_LTR)
                 tippingValueAdapter = TippingValueAdapter(this)
@@ -143,7 +143,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                             super.getItemOffsets(outRect, view, parent, state)
                             val itemWidth = parent.measuredWidth / TIPPING_WIDTH_DIVIDER
-                            view.layoutParams.width = itemWidth
+                            view.layoutParams.width = itemWidth.toInt()
                         }
                     })
                 }
@@ -269,7 +269,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
     companion object {
         private const val TIPPING_SPACING = 8
-        private const val TIPPING_WIDTH_DIVIDER = 4
+        private const val TIPPING_WIDTH_DIVIDER = 3.2
         private const val TIPPING_DESCRIPTION_BULLET_GAP_WIDTH = 16
     }
 }

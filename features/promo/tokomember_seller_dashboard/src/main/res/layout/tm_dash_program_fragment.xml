@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/viewFlipperProgramList">
+
+    <include layout="@layout/tm_program_list_shimmer_layout"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingBottom="@dimen/unify_space_32"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.8"
+        android:id="@+id/rv_program"
+        tools:itemCount="6"
+        tools:listitem="@layout/tm_dash_program_item"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_32"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnCreateProgram"
+        android:text="@string/tm_buat_program"
+        android:layout_marginTop="@dimen/tm_dash_dp_16"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/tm_dash_dp_96"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include layout="@layout/tm_layout_no_access"/>
+
+</ViewFlipper>

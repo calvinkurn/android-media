@@ -55,6 +55,102 @@ class PlayViewerIdGenerator {
 
     private val repo: PlayViewerRepository = mockk(relaxed = true)
 
+    private val decodeHtml = DefaultHtmlTextTransformer()
+
+    private val mapper = PlayUiModelMapper(
+        productTagMapper = PlayProductTagUiMapper(),
+        merchantVoucherMapper = PlayMerchantVoucherUiMapper(),
+        chatMapper = PlayChatUiMapper(userSession),
+        channelStatusMapper = PlayChannelStatusMapper(),
+        channelInteractiveMapper = PlayChannelInteractiveMapper(),
+        interactiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(decodeHtml),
+        cartMapper = PlayCartMapper(),
+        playUserReportMapper = PlayUserReportReasoningMapper(),
+        interactiveMapper = PlayInteractiveMapper(decodeHtml),
+    )
+
+    private val mockViewModelFactory = TestViewModelFactory(
+        mapOf(
+            PlayInteractionViewModel::class.java to {
+                mockk<PlayInteractionViewModel>(relaxed = true)
+            },
+            PlayBottomSheetViewModel::class.java to {
+                PlayBottomSheetViewModel(
+                    userSession,
+                )
+            }
+        )
+    )
+
+    private val playViewModelFactory = object : PlayViewModel.Factory {
+        override fun create(channelId: String): PlayViewModel {
+            return PlayViewModel(
+                channelId = "12345",
+                playVideoBuilder = mockk(relaxed = true),
+                videoStateProcessorFactory = mockk(relaxed = true),
+                channelStateProcessorFactory = mockk(relaxed = true),
+                videoBufferGovernorFactory = mockk(relaxed = true),
+                getReportSummariesUseCase = mockk(relaxed = true),
+                playSocketToModelMapper = mockk(relaxed = true),
+                playUiModelMapper = mapper,
+                userSession = mockk(relaxed = true),
+                dispatchers = CoroutineDispatchersProvider,
+                remoteConfig = mockk(relaxed = true),
+                playPreference = mockk(relaxed = true),
+                videoLatencyPerformanceMonitoring = mockk(relaxed = true),
+                playChannelWebSocket = mockk(relaxed = true),
+                repo = mockk(relaxed = true),
+                playAnalytic = mockk(relaxed = true),
+                timerFactory = mockk(relaxed = true),
+                castPlayerHelper = mockk(relaxed = true),
+                playShareExperience = mockk(relaxed = true),
+                playLog = mockk(relaxed = true),
+                chatStreamsFactory = mockk(relaxed = true),
+                liveRoomMetricsCommon = mockk(relaxed = true),
+            )
+        }
+    }
+
+    private val fragmentFactory = TestFragmentFactory(
+        mapOf(
+            PlayFragment::class.java to {
+                PlayFragment(
+                    playViewModelFactory,
+                    mockk(relaxed = true),
+                    mockk(relaxed = true),
+                    mockk(relaxed = true),
+                )
+            },
+            PlayUserInteractionFragment::class.java to {
+                PlayUserInteractionFragment(
+                    viewModelFactory = mockViewModelFactory,
+                    dispatchers = CoroutineDispatchersProvider,
+                    pipAnalytic = mockk(relaxed = true),
+                    analytic = mockk(relaxed = true),
+                    multipleLikesIconCacheStorage = mockk(relaxed = true),
+                    castAnalyticHelper = mockk(relaxed = true),
+                    performanceClassConfig = mockk(relaxed = true),
+                    newAnalytic = mockk(relaxed = true),
+                )
+            },
+            PlayBottomSheetFragment::class.java to {
+                PlayBottomSheetFragment(
+                    viewModelFactory = mockViewModelFactory,
+                    analytic = mockk(relaxed = true),
+                    newAnalytic = mockk(relaxed = true),
+                )
+            },
+            PlayVideoFragment::class.java to {
+                PlayVideoFragment(
+                    dispatchers = CoroutineDispatchersProvider,
+                    pipAnalytic = mockk(relaxed = true),
+                    analytic = mockk(relaxed = true),
+                    pipSessionStorage = mockk(relaxed = true),
+                    playLog = mockk(relaxed = true),
+                )
+            }
+        )
+    )
     private val uiModelBuilder = UiModelBuilder.get()
 
     private val printConditions = listOf(

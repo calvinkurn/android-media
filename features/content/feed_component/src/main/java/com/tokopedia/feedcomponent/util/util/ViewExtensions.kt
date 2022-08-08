@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.util.util
 
 import android.content.Context
+import android.graphics.Rect
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -56,3 +57,10 @@ inline fun convertDpToPixel(dp: Float, context: Context): Int {
     val r = context.resources
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.displayMetrics).toInt()
 }
+
+val View.globalVisibleRect: Rect
+    get() {
+        val rect = Rect()
+        getGlobalVisibleRect(rect)
+        return rect
+    }
