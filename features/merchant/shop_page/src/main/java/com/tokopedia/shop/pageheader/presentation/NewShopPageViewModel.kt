@@ -17,7 +17,6 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant.AFFILIATE_PAGE_ID
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -589,7 +588,7 @@ class NewShopPageViewModel @Inject constructor(
             affiliateCookieHelper.initCookie(
                 affiliateUUId,
                 affiliateChannel,
-                AffiliatePageDetail(AFFILIATE_PAGE_ID, AffiliateSdkPageSource.Shop(shopId))
+                AffiliatePageDetail(shopId, AffiliateSdkPageSource.Shop(shopId))
             )
         }) {
         }
