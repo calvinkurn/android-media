@@ -317,6 +317,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         title
         subTitle
         text
+        webLink
         appLink
         appLinkProductList
         webLinkProductList

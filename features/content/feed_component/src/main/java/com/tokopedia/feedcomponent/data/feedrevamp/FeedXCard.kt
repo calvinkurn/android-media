@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.data.feedrevamp
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -115,6 +116,10 @@ data class FeedXCard(
         get() = typename == TYPE_FEED_X_CARD_VOD
     val isTypeLongVideo: Boolean
         get() =  media.isNotEmpty() && media.first().type == TYPE_LONG_VIDEO
+    val isTypeSgcVideo: Boolean
+        get() =  media.isNotEmpty() && media.first().type == TYPE_VIDEO
+    val isTypeSGC: Boolean
+        get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty() && media.first().type != TYPE_LONG_VIDEO
 
 
     val useASGCNewDesign: Boolean
@@ -170,6 +175,7 @@ data class FeedXCard(
         private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT = "FeedXCardProductsHighlight"
         private const val TYPE_FEED_X_CARD_VOD = "FeedXCardPlay"
         private const val TYPE_LONG_VIDEO: String = "long-video"
+        private const val TYPE_VIDEO: String = "video"
 
 
         private const val USE_ASGC_NEW_DESIGN: String = "use_new_design"

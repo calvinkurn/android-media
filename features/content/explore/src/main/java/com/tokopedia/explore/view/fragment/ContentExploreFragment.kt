@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -52,12 +54,14 @@ class ContentExploreFragment :
 
         const val PARAM_CATEGORY_ID = "category_id"
         private const val DEFAULT_CATEGORY = "0"
+        private const val SOURCE = "source"
         private const val PEFORMANCE_EXPLORE = "mp_explore"
         private const val CATEGORY_POSITION_NONE = -1
 
         private const val IMAGE_SPAN_COUNT = 3
         private const val IMAGE_SPAN_SINGLE = 1
         private const val LOAD_MORE_THRESHOLD = 2
+        private const val EXPLORE_TAB = "explore_tab"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): ContentExploreFragment {
@@ -337,11 +341,13 @@ class ContentExploreFragment :
     }
 
     override fun goToKolPostDetail(postId: Int, name: String, recomId: Int) {
-        RouteManager.route(
-                requireContext(),
-                ApplinkConst.CONTENT_DETAIL,
-                postId.toString()
-        )
+        val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, postId.toString())
+        val finaAppLink = Uri.parse(contentAppLink)
+                .buildUpon()
+                .appendQueryParameter(SOURCE, EXPLORE_TAB)
+                .build().toString()
+
+        RouteManager.route(requireContext(), finaAppLink)
         analytics.eventTrackExploreItem(name, postId, recomId)
     }
 

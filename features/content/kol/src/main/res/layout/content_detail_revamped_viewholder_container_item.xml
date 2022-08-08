@@ -26,11 +26,11 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_badge"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="@dimen/feed_component_dp_14"
+            android:layout_height="@dimen/feed_component_dp_14"
+            android:layout_marginTop="@dimen/unify_space_8"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="@dimen/unify_space_8"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/follow_count"
             app:layout_constraintStart_toEndOf="@id/shop_image"
@@ -43,12 +43,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constrainedWidth="true"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="@dimen/unify_space_4"
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:maxLines="1"
             android:lineSpacingExtra="0dp"
-            android:paddingBottom="2dp"
+            android:paddingBottom="@dimen/unify_space_2"
             android:textColor="@color/Unify_N700"
             app:layout_constraintBottom_toBottomOf="@id/shop_badge"
             app:layout_constraintEnd_toStartOf="@id/menu_button"
@@ -71,8 +71,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/menu_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/unify_space_24"
+            android:layout_height="@dimen/unify_space_24"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             app:icon_name="MENU_KEBAB_HORIZONTAL"
             app:layout_constraintBottom_toBottomOf="@id/shop_image"
@@ -84,8 +84,8 @@
         android:id="@+id/gridList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/header"
@@ -125,15 +125,59 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/scroll_host_carousel" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_ads_detail_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_NN50"
+        android:paddingTop="@dimen/unify_space_8"
+        android:paddingBottom="@dimen/unify_space_8"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/feed_vod_viewholder"
+        tools:visibility="visible"
+        >
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/top_ads_product_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/feeds_cek_sekarang"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/chevron"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/chevron"
+            android:layout_width="@dimen/unify_space_24"
+            android:layout_height="@dimen/unify_space_24"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/like_button"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_12"
         app:icon_name="THUMB"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/feed_vod_viewholder" />
+        app:layout_constraintTop_toBottomOf="@id/top_ads_detail_card" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/comment_button"
@@ -160,7 +204,7 @@
         android:id="@+id/share_button"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
         app:icon_name="SHARE_MOBILE"
         app:layout_constraintBottom_toBottomOf="@id/like_button"
         app:layout_constraintEnd_toEndOf="parent"
@@ -171,7 +215,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -184,7 +228,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
@@ -197,7 +241,7 @@
         android:id="@+id/timestamp_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:textColor="@color/Unify_N700_32"
         app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="@id/caption_text"

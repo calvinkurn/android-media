@@ -23,9 +23,11 @@ class ContentDetailPostViewHolder(
 
     companion object {
         const val IMAGE_POST_LIKED_UNLIKED = "image_liked_unliked"
+        const val IMAGE_POST_COMMENT_ADD_DELETE = "post_comment_add_delete"
         const val IMAGE_POST_FOLLOW_UNFOLLOW = "image_follow_unfollow"
         const val IMAGE_ITEM_IMPRESSED = "image_item_impressed"
         const val VOD_ITEM_IMPRESSED = "vod_item_impressed"
+        private const val IMAGE_ASGC_CTA_IMPRESSED = "image_asgc_cta_impressed"
 
 
         fun create(
@@ -57,8 +59,12 @@ class ContentDetailPostViewHolder(
                 else if (media.isVideo || media.isImage)
                     cdpView.bindImageOnImpress()
             }
-        } else if(payloads.containsKey(IMAGE_POST_LIKED_UNLIKED)){
+        } else if (payloads.containsKey(IMAGE_ASGC_CTA_IMPRESSED)) {
+            cdpView.onCTAVisible(feedXCard)
+        } else if (payloads.containsKey(IMAGE_POST_LIKED_UNLIKED)) {
             cdpView.bindLike(feedXCard)
+        } else if (payloads.containsKey(IMAGE_POST_COMMENT_ADD_DELETE)) {
+            cdpView.setCommentCount(feedXCard.comments)
         } else if (payloads.containsKey(IMAGE_POST_FOLLOW_UNFOLLOW)) {
             if (payloads.getBoolean(IMAGE_POST_FOLLOW_UNFOLLOW)) {
                 cdpView.bindHeader(feedXCard)
@@ -66,8 +72,8 @@ class ContentDetailPostViewHolder(
         }
     }
     interface CDPListener {
-        fun onLikeClicked(feedXCard: FeedXCard, postPosition: Int)
-        fun onCommentClicked(feedXCard: FeedXCard, postPosition: Int)
+        fun onLikeClicked(feedXCard: FeedXCard, postPosition: Int, isDoubleTap: Boolean = false)
+        fun onCommentClicked(feedXCard: FeedXCard, postPosition: Int, isSeeMoreComment: Boolean = false)
         fun onSharePostClicked(feedXCard: FeedXCard, postPosition: Int)
         fun onFollowUnfollowClicked(feedXCard: FeedXCard, postPosition: Int)
         fun onClickOnThreeDots(feedXCard: FeedXCard, postPosition: Int)
@@ -75,10 +81,11 @@ class ContentDetailPostViewHolder(
             feedXCard: FeedXCard,
             postPosition: Int,
             currentTime: Long,
-            shouldTrack: Boolean
+            shouldTrack: Boolean,
+            isFullScreenBtn: Boolean
         )
 
-        fun onShopHeaderItemClicked(link: String)
+        fun onShopHeaderItemClicked(feedXCard: FeedXCard, isShopNameBelow: Boolean = false)
         fun addViewsToVOD(
             feedXCard: FeedXCard,
             rowNumber: Int,
@@ -97,9 +104,19 @@ class ContentDetailPostViewHolder(
             postPosition: Int
         )
 
-        fun onPostTagBubbleClicked(redirectUrl: String)
-
-
+        fun onPostTagBubbleClicked(
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+        )
+        fun onCarouselItemImpressed(feedXCard: FeedXCard, postPosition: Int)
+        fun onPostImpressed(feedXCard: FeedXCard, postPosition: Int)
+        fun onImageClicked(feedXCard: FeedXCard)
+        fun onReadMoreClicked(feedXCard: FeedXCard)
+        fun onHashtagClicked(hashTag: String, feedXCard: FeedXCard)
+        fun onVolumeClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String)
+        fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long)
+        fun onSgcVideoTapped(feedXCard: FeedXCard)
     }
 
 }

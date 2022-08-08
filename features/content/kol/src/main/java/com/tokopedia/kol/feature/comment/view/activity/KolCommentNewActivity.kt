@@ -10,6 +10,15 @@ import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent
 import com.tokopedia.kol.feature.comment.di.KolCommentModule
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentNewFragment
+import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_AUTHOR_TYPE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_ID
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_IS_POST_FOLLOWED
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_POST_TYPE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_VIDEO
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_POSITION
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import javax.inject.Inject
 
@@ -25,6 +34,9 @@ class KolCommentNewActivity : BaseSimpleActivity() {
 
     @Inject
     internal lateinit var feedAnalytics: FeedAnalyticTracker
+
+    @Inject
+    lateinit var analyticsTracker: ContentDetailNewPageAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -51,8 +63,8 @@ class KolCommentNewActivity : BaseSimpleActivity() {
         }
 
         //because all extras are retrieved as String from deeplink
-        val rowPosition = bundle[ARGS_POSITION]
-        if (rowPosition is String) bundle.putInt(ARGS_POSITION, rowPosition.toInt())
+        val rowPosition = bundle[COMMENT_ARGS_POSITION]
+        if (rowPosition is String) bundle.putInt(COMMENT_ARGS_POSITION, rowPosition.toInt())
 
         val colPosition = bundle[ARGS_POSITION_COLUMN]
         if (colPosition is String) bundle.putInt(ARGS_POSITION_COLUMN, colPosition.toInt())
@@ -69,24 +81,33 @@ class KolCommentNewActivity : BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        feedAnalytics.clickBackButtonCommentPage(
-            postId ?: "0",
-            intent.getStringExtra(ARGS_AUTHOR_TYPE) ?: "",
-            intent.getBooleanExtra(ARGS_VIDEO, false),
-            intent.getBooleanExtra(IS_POST_FOLLOWED, true),
-            intent.getStringExtra(POST_TYPE) ?: ""
-        )
+        val isFromContentDetailPage = intent.getBooleanExtra(ARG_IS_FROM_CONTENT_DETAIL_PAGE, false)
+        val shopId = intent.getStringExtra(ARGS_AUTHOR_TYPE) ?: ""
+        val type = intent.getStringExtra(ARGS_POST_TYPE) ?: ""
+        val isFollowed = intent.getBooleanExtra(ARGS_IS_POST_FOLLOWED, true)
+        val isVideo = intent.getBooleanExtra(ARGS_VIDEO, false)
+        if (isFromContentDetailPage)
+            analyticsTracker.sendClickBackOnCommentPage(
+                ContentDetailPageAnalyticsDataModel(
+                    activityId = postId ?: "0",
+                    shopId = shopId,
+                    type = type,
+                    isFollowed = isFollowed
+                )
+            )
+        else
+            feedAnalytics.clickBackButtonCommentPage(
+                postId ?: "0",
+                intent.getStringExtra(ARGS_AUTHOR_TYPE) ?: "",
+                intent.getBooleanExtra(ARGS_VIDEO, false),
+                intent.getBooleanExtra(ARGS_IS_POST_FOLLOWED, true),
+                intent.getStringExtra(ARGS_POST_TYPE) ?: ""
+            )
         super.onBackPressed()
     }
 
     companion object {
-        private const val ARGS_POSITION = "ARGS_POSITION"
-        const val ARGS_ID = "ARGS_ID"
         private const val ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
-        const val ARGS_AUTHOR_TYPE = "ARGS_AUTHOR_TYPE"
-        const val ARGS_VIDEO = "ARGS_VIDEO"
-        const val POST_TYPE = "POST_TYPE"
-        const val IS_POST_FOLLOWED = "IS_FOLLOWED"
 
 
         @JvmStatic
@@ -94,14 +115,14 @@ class KolCommentNewActivity : BaseSimpleActivity() {
             val intent = Intent(context, KolCommentNewActivity::class.java)
             val bundle = Bundle()
             bundle.putInt(ARGS_ID, id)
-            bundle.putInt(ARGS_POSITION, rowNumber)
+            bundle.putInt(COMMENT_ARGS_POSITION, rowNumber)
             bundle.putBoolean(ARGS_VIDEO, true)
             bundle.putString(ARGS_AUTHOR_TYPE, authorId)
-            bundle.putString(POST_TYPE, postType)
+            bundle.putString(ARGS_POST_TYPE, postType)
             if (isFollowed != null)
-                bundle.putBoolean(IS_POST_FOLLOWED, isFollowed)
+                bundle.putBoolean(ARGS_IS_POST_FOLLOWED, isFollowed)
             else
-                bundle.putBoolean(IS_POST_FOLLOWED, true)
+                bundle.putBoolean(ARGS_IS_POST_FOLLOWED, true)
 
             intent.putExtras(bundle)
             return intent

@@ -378,9 +378,25 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     isMuted,
                     mData.author.id,
                     mData.followers.isFollowed,
-                    true,
+                    mData.isTypeVOD,
                     media.type,
                 )
+            }
+
+            override fun onVideoSurfaceTapped(
+                viewHolder: CarouselVideoViewHolder,
+                media: FeedXMedia,
+                isMuted: Boolean
+            ) {
+                listener?.muteUnmuteVideo(
+                    mData.playChannelID,
+                    isMuted,
+                    mData.author.id,
+                    mData.followers.isFollowed,
+                    mData.isTypeVOD,
+                    media.type,
+                )
+
             }
 
             override fun onVideoStopTrack(viewHolder: CarouselVideoViewHolder, lastPosition: Long) {
@@ -473,20 +489,25 @@ class PostDynamicViewNew @JvmOverloads constructor(
             } else {
                 feedXCard.appLink
             }
+            val mediaUrl =
+                if (feedXCard.isTypeProductHighlight) feedXCard.products.firstOrNull()?.coverURL ?: ""
+                else feedXCard.media.firstOrNull()?.mediaUrl ?: ""
+
             listener?.onShareClick(
                 positionInFeed,
                 feedXCard.id.toIntOrZero(),
                 feedXCard.author.name + " `post",
                 desc.replace("%s", feedXCard.author.name),
                 url = url,
-                feedXCard.media.firstOrNull()?.mediaUrl ?: "",
+                mediaUrl,
                 feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT,
                 feedXCard.typename,
                 feedXCard.followers.isFollowed,
                 feedXCard.author.id,
                 feedXCard.media.firstOrNull()?.type?:"",
                 feedXCard.isTopAds,
-                feedXCard.playChannelID
+                feedXCard.playChannelID,
+                feedXCard.webLink
             )
         }
     }

@@ -33,6 +33,7 @@ object FeedScrollListenerNew {
     private const val TOTAL_VIDEO_HEIGHT_PERCENT = 100
     private const val PAYLOAD_POST_TOPADS_VISIBLE= 77
     private const val IMAGE_ITEM_IMPRESSED = "image_item_impressed"
+    private const val IMAGE_ASGC_CTA_IMPRESSED = "image_asgc_cta_impressed"
     private const val VOD_ITEM_IMPRESSED = "vod_item_impressed"
 
     private const val CTA_BUTTON_VISIBLE_PERCENT_THRESHOLD = 50
@@ -153,8 +154,16 @@ object FeedScrollListenerNew {
         if (ctaRect.top >= rvRect.top &&
             ctaRect.bottom <= rvRect.bottom &&
                 ctaVisiblePercent > CTA_BUTTON_VISIBLE_PERCENT_THRESHOLD / 100f) {
-            Objects.requireNonNull(recyclerView.adapter)
-                .notifyItemChanged(i, DynamicPostNewViewHolder.PAYLOAD_CTA_VISIBLE)
+            if (isCDPScroll) {
+                val impressCTAPayload = Bundle().apply {
+                    putBoolean(IMAGE_ASGC_CTA_IMPRESSED, true)
+                }
+                Objects.requireNonNull(recyclerView.adapter)
+                    .notifyItemChanged(i, impressCTAPayload)
+            } else {
+                Objects.requireNonNull(recyclerView.adapter)
+                    .notifyItemChanged(i, DynamicPostNewViewHolder.PAYLOAD_CTA_VISIBLE)
+            }
         }
     }
 

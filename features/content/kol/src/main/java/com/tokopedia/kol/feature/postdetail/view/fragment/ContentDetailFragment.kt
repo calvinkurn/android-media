@@ -25,11 +25,10 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.bottomsheets.*
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
+import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.di.DaggerContentDetailComponent
@@ -37,13 +36,16 @@ import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
 import com.tokopedia.kol.feature.postdetail.view.activity.ContentDetailActivity
 import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailAdapter
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel
+import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
+import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_AUTHOR_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_IS_POST_FOLLOWED
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_POST_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_VIDEO
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_POSITION
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.DEFAULT_COMMENT_ARGUMENT_VALUE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.PARAM_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.SHOULD_TRACK
@@ -66,6 +68,10 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -82,10 +88,15 @@ import com.tokopedia.network.R as networkR
 /**
  * Created by shruti agarwal on 15/06/22
  */
-class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder.CDPListener, ShareCallback, ProductItemInfoBottomSheet.Listener{
+
+class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder.CDPListener, ProductItemInfoBottomSheet.Listener, ShareBottomsheetListener {
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
+
+
+    private var rowNumberWhenShareClicked = 0
+    private var dissmisByGreyArea = true
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private lateinit var reportBottomSheet: ReportBottomSheet
     private lateinit var productTagBS: ProductItemInfoBottomSheet
@@ -93,6 +104,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
     private val adapter = ContentDetailAdapter(
         ContentDetailListener = this
     )
+    private var contentDetailSource = ""
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -100,8 +113,13 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var analyticsTracker: ContentDetailNewPageAnalytics
+
+    var universalShareBottomSheet: UniversalShareBottomSheet? = null
+
+
     private lateinit var shareData: LinkerData
-    private var shareBottomSheetProduct = false
 
     private val viewModel: ContentDetailViewModel by lazy {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
@@ -114,7 +132,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         private const val OPEN_KOL_COMMENT = 101
         const val OPEN_VIDEO_DETAIL = 1311
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
-        private const val SHARE_TYPE = "text/plain"
 
 
         @JvmStatic
@@ -137,6 +154,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         viewModel.run {
             getCDPPostFirstPostData.observe(viewLifecycleOwner, {
                 when (it) {
@@ -171,6 +189,9 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        contentDetailSource = (requireActivity() as ContentDetailActivity).getSource()
+
         setupView(view)
         viewModel.getContentDetail(postId)
 
@@ -252,6 +273,10 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
 
     private fun onSuccessGetFirstPostCDPData(data: ContentDetailUiModel){
+        (activity as? ContentDetailActivity)?.setContentDetailMainPostData(
+            data.postList.firstOrNull()
+        )
+
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         adapter.setItemsAndAnimateChanges(data.postList)
@@ -263,17 +288,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         adapter.addItemsAndAnimateChanges(data.postList)
-    }
-
-    private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
-        val newList = adapter.getList()
-        if (newList.size > rowNumber) {
-            val item = newList[rowNumber]
-            item.comments.count = totalNewComment
-            item.comments.countFmt =
-                (item.comments.count).toString()
-        }
-        adapter.notifyItemChanged(rowNumber, DynamicPostNewViewHolder.PAYLOAD_COMMENT)
     }
 
     private fun showToast(message: String, type: Int, actionText: String? = null) {
@@ -306,7 +320,39 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         }
     }
 
-    override fun onLikeClicked(feedXCard: FeedXCard, postPosition : Int) {
+    override fun onLikeClicked(feedXCard: FeedXCard, postPosition: Int, isDoubleTap: Boolean) {
+        val trackerId = getTrackerID(
+            feedXCard,
+            trackerIdSgc = if (!feedXCard.like.isLiked) "33260" else "33261",
+            trackerIdSgcRecom = if (!feedXCard.like.isLiked) "34304" else "34305"
+        )
+        if (isDoubleTap)
+            analyticsTracker.sendClickDoubleTapLikeUnlikeSgcImageEvent(
+                getContentDetailAnalyticsData(
+                    feedXCard,
+                    trackerId = trackerId
+                ),
+                !feedXCard.like.isLiked
+            )
+        else analyticsTracker.sendClickLikeSgcImageEvent(
+            getContentDetailAnalyticsData(
+                feedXCard,
+                trackerId = getTrackerID(
+                    feedXCard,
+                    trackerIdSgc = "33259",
+                    trackerIdVod = "34152",
+                    trackerIdVodRecomm = "34170",
+                    trackerIdSgcRecom = "34283",
+                    trackerIdAsgcRecom = "34096",
+                    trackerIdSgcVideo = "34613",
+                    trackerIdAsgc = "34108",
+                    trackerIdLongVideo = "34503",
+                    trackerIdLongVideoRecomm = "34521"
+                )
+            )
+        )
+
+
         if (!userSession.isLoggedIn) {
             onGoToLogin()
             return
@@ -321,8 +367,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
     private fun showNoInterNetDialog(context: Context) {
         val sheet = FeedNetworkErrorBottomSheet.newInstance(false)
+        if (!sheet.isAdded )
         sheet.show(childFragmentManager, "")
-
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
@@ -354,6 +400,21 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 putBoolean(ContentDetailPostViewHolder.IMAGE_POST_LIKED_UNLIKED, true)
             }
             adapter.notifyItemChanged(rowNumber, likePayload)
+        }
+    }
+    private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
+        val newList = adapter.getList()
+        if (newList.size > rowNumber) {
+            val item = newList[rowNumber]
+            item.comments.count = totalNewComment
+            item.comments.countFmt =
+                (item.comments.count).toString()
+
+            val commentPayload = Bundle().apply {
+                putBoolean(ContentDetailPostViewHolder.IMAGE_POST_COMMENT_ADD_DELETE, true)
+            }
+
+            adapter.notifyItemChanged(rowNumber, commentPayload)
         }
     }
 
@@ -418,10 +479,44 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         intent.putExtra(ARGS_VIDEO, isVideo)
         intent.putExtra(ARGS_POST_TYPE, type)
         intent.putExtra(ARGS_IS_POST_FOLLOWED, isFollowed)
+        intent.putExtra(ARG_IS_FROM_CONTENT_DETAIL_PAGE, true)
+        intent.putExtra(CONTENT_DETAIL_PAGE_SOURCE, contentDetailSource)
         startActivityForResult(intent, OPEN_KOL_COMMENT)
     }
 
-    override fun onCommentClicked(feedXCard: FeedXCard, postPosition : Int) {
+    override fun onCommentClicked(feedXCard: FeedXCard, postPosition : Int, isSeeMoreComment: Boolean) {
+        val trackerId = getTrackerID(
+            feedXCard,
+            trackerIdSgc = "33262",
+            trackerIdVod = "34153",
+            trackerIdVodRecomm = "34171",
+            trackerIdSgcRecom = "34284",
+            trackerIdSgcVideo = "34614",
+            trackerIdLongVideo = "34504",
+            trackerIdLongVideoRecomm = "34522"
+
+        )
+        if (isSeeMoreComment)
+            analyticsTracker.sendClickLehatSemuaCommentClick(
+                getContentDetailAnalyticsData(
+                    feedXCard,
+                    trackerId = getTrackerID(
+                        feedXCard,
+                        trackerIdVod = "34154",
+                        trackerIdVodRecomm = "34172",
+                        trackerIdLongVideo = "34505",
+                        trackerIdLongVideoRecomm = "34523"
+                    )
+                )
+            )
+        else
+            analyticsTracker.sendClickCommentSgcImageEvent(
+                getContentDetailAnalyticsData(
+                    feedXCard,
+                    trackerId = trackerId
+                )
+            )
+
         val media = feedXCard.media.firstOrNull()
         var authId = ""
         val authorType = feedXCard.author.type
@@ -438,81 +533,181 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
     }
 
     override fun onSharePostClicked(feedXCard: FeedXCard, postPosition: Int) {
+
+        rowNumberWhenShareClicked = postPosition
+
+        val trackerId = getTrackerID(
+            feedXCard,
+            trackerIdSgc = "33263",
+            trackerIdVod = "34155",
+            trackerIdAsgcRecom = "34097",
+            trackerIdVodRecomm = "34173",
+            trackerIdSgcVideo = "34615",
+            trackerIdAsgc = "34109",
+            trackerIdLongVideo = "34506",
+            trackerIdLongVideoRecomm = "34524"
+        )
+        analyticsTracker.sendClickShareSgcImageEvent(getContentDetailAnalyticsData(feedXCard, trackerId = trackerId))
+
+        showUniversalShareBottomSheet(getContentShareDataModel(feedXCard))
+
         activity?.let {
-            val urlString = when {
-                feedXCard.isTypeProductHighlight -> {
-                    String.format(getString(kolR.string.feed_share_asgc_weblink), id.toString())
-                }
-                feedXCard.isTypeVOD -> {
-                    String.format(getString(kolR.string.feed_vod_share_weblink), feedXCard.playChannelID)
-                }
-                else -> {
-                    String.format(getString(kolR.string.feed_share_weblink), id.toString())
-                }
-            }
-            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
-                .setName(String.format(getString(kolR.string.feed_share_title), feedXCard.author.name))
-                .setDescription(String.format(getString(kolR.string.feed_share_desc_text), feedXCard.author.name))
-                .setDesktopUrl(urlString)
+            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder()
+                .setId(feedXCard.id)
+                .setName(
+                    String.format(
+                        getString(kolR.string.feed_share_title),
+                        feedXCard.author.name
+                    )
+                )
+                .setDescription(
+                    String.format(
+                        getString(kolR.string.feed_share_desc_text),
+                        feedXCard.author.name
+                    )
+                )
+                .setDesktopUrl(feedXCard.webLink)
                 .setType(LinkerData.FEED_TYPE)
                 .setImgUri(feedXCard.media.firstOrNull()?.mediaUrl ?: "")
                 .setDeepLink(feedXCard.appLink)
 
-                shareBottomSheetProduct = false
-                shareDataBuilder.apply {
-                    setUri(urlString)
-                }
+            shareDataBuilder.apply {
+                setUri(feedXCard.webLink)
+            }
 
             shareData = shareDataBuilder.build()
-
-            val linkerShareData = DataMapper().getLinkerShareData(shareData)
-            LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(
-                    0,
-                    linkerShareData,
-                    this
-                )
-            )
         }
 
     }
 
+    private fun getContentShareDataModel(feedXCard: FeedXCard): ContentShareDataModel {
+        val mediaUrl =
+            if (feedXCard.isTypeProductHighlight) feedXCard.products.firstOrNull()?.coverURL ?: ""
+            else feedXCard.media.firstOrNull()?.mediaUrl ?: ""
+
+        return ContentShareDataModel(
+            id = feedXCard.id,
+            name = feedXCard.author.name,
+            tnTitle = (String.format(
+                context?.getString(kolR.string.feed_share_title) ?: "",
+                feedXCard.author.name
+            )),
+            tnImage = mediaUrl,
+            ogUrl = mediaUrl,
+        )
+    }
+
+    private fun getContentShareDataModel(product: ProductPostTagViewModelNew) =
+        ContentShareDataModel(
+            id = product.id,
+            name = product.shopName,
+            tnTitle = (String.format(
+                context?.getString(kolR.string.feed_share_title) ?: "",
+                product.shopName
+            )),
+            tnImage = product.imgUrl,
+            ogUrl = product.imgUrl,
+        )
+
+
+    private fun showUniversalShareBottomSheet(contentShareDataModel: ContentShareDataModel) {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@ContentDetailFragment)
+                setUtmCampaignData(
+                    pageName = "Content Detail Page",
+                    userSession.userId,
+                    contentShareDataModel.id,
+                   "share"
+                )
+
+            setMetaData(
+                tnTitle = contentShareDataModel.tnTitle,
+                tnImage = contentShareDataModel.tnImage
+            )
+        }
+        universalShareBottomSheet?.setOnDismissListener {
+            if (dissmisByGreyArea) {
+                if (adapter.getList().size > rowNumberWhenShareClicked) {
+                    val card = adapter.getList()[rowNumberWhenShareClicked]
+                    analyticsTracker.sendClickGreyAreaShareBottomSheet(
+                        getContentDetailAnalyticsData(
+                            card
+                        )
+                    )
+                }
+            }
+        }
+        universalShareBottomSheet?.let {
+            if (!it.isAdded)
+                it.show(fragmentManager, this, null)
+        }
+    }
+
+
     private fun onShareProduct(
-        id: Int,
-        title: String,
-        description: String,
-        url: String,
-        imageUrl: String,
+        item: ProductPostTagViewModelNew
     ) {
+        rowNumberWhenShareClicked = item.positionInFeed
+        analyticsTracker.sendClickShareSgcImageBottomSheet(
+            ContentDetailPageAnalyticsDataModel(
+                activityId = item.postId.toString(),
+                shopId = item.shopId,
+                isFollowed = item.isFollowed,
+                type = item.postType,
+                productId = item.id,
+                trackerId = getTrackerID(
+                    item,
+                    trackerIdSgc = "33272",
+                    trackerIdAsgcRecom = "34094",
+                    trackerIdVod = "34166",
+                    trackerIdVodRecomm = "34185",
+                    trackerIdSgcRecom = "34281",
+                    trackerIdAsgc = "34106",
+                    trackerIdLongVideo = "34517",
+                    trackerIdLongVideoRecomm = "34536"
+                ),
+                source = contentDetailSource
+            ),
+            ""
+        )
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        shareBottomSheetProduct = false
         activity?.let {
-            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
-                .setName(title)
-                .setDescription(description)
-                .setImgUri(imageUrl)
-                .setUri(url)
-                .setDeepLink(url)
+            val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
+                .setId(item.id)
+                .setName(item.text)
+                .setDescription(item.description)
+                .setImgUri(item.imgUrl)
+                .setUri(item.applink)
+                .setDeepLink(item.applink)
                 .setType(LinkerData.FEED_TYPE)
-                .setDesktopUrl(url)
+                .setDesktopUrl(item.weblink)
 
             shareData = linkerBuilder.build()
-            val linkerShareData = DataMapper().getLinkerShareData(shareData)
-            LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(
-                    0,
-                    linkerShareData,
-                    this
-                )
-            )
+            showUniversalShareBottomSheet(getContentShareDataModel(item))
         }
 
     }
 
     override fun onFollowUnfollowClicked(feedXCard: FeedXCard, postPosition : Int) {
+        if (!feedXCard.followers.isFollowed)
+            analyticsTracker.sendClickFollowAsgcRecomEvent(
+                getContentDetailAnalyticsData(
+                    feedXCard,
+                    postPosition,
+                    trackerId = getTrackerID(
+                        feedXCard,
+                        trackerIdAsgcRecom = "34086",
+                        trackerIdVodRecomm = "34169",
+                        trackerIdSgcRecom = "34271",
+                        trackerIdSgcVideo = "34603",
+                        trackerIdLongVideoRecomm = "34520"
+                    )
+                )
+            )
+
         viewModel.followShop(
             shopId = feedXCard.author.id,
             action = ShopFollowAction.getFollowAction(feedXCard.followers.isFollowed),
@@ -521,14 +716,60 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
     }
 
     override fun onClickOnThreeDots(feedXCard: FeedXCard, postPosition : Int) {
+        analyticsTracker.sendClickThreeDotsSgcImageEvent(
+            getContentDetailAnalyticsData(
+                feedXCard,
+                trackerId = getTrackerID(
+                    feedXCard,
+                    trackerIdSgc = "33255",
+                    trackerIdVod = "34157",
+                    trackerIdVodRecomm = "34175",
+                    trackerIdSgcRecom = "34285",
+                    trackerIdSgcVideo = "34604",
+                    trackerIdAsgc = "34111",
+                    trackerIdLongVideo = "34508",
+                    trackerIdLongVideoRecomm = "34526"
+                )
+            )
+        )
         if (context != null) {
             val sheet = MenuOptionsBottomSheet.newInstance(
                 feedXCard.reportable, feedXCard.followers.isFollowed,
                 feedXCard.deletable
             )
+            if (!sheet.isAdded)
             sheet.show(childFragmentManager, "")
             sheet.onReport = {
-
+                if (feedXCard.isTypeProductHighlight && feedXCard.followers.isFollowed)
+                    analyticsTracker.sendClickThreeDotsMenuLaporkanAsgcEvent(
+                        getContentDetailAnalyticsData(feedXCard)
+                    )
+                else
+                    analyticsTracker.sendClickReportSgcImageEvent(
+                        getContentDetailAnalyticsData(
+                            feedXCard,
+                            trackerId = getTrackerID(
+                                feedXCard,
+                                trackerIdSgc = "33293",
+                                trackerIdSgcRecom = "34309",
+                                trackerIdSgcVideo = "34605"
+                            )
+                        )
+                    )
+                analyticsTracker.sendClickThreeDotsMenuSgcImageEvent(
+                    getContentDetailAnalyticsData(
+                        feedXCard,
+                        trackerId = getTrackerID(
+                            feedXCard,
+                            trackerIdSgc = "33291",
+                            trackerIdVod = "34158",
+                            trackerIdVodRecomm = "34176",
+                            trackerIdSgcRecom = "34307",
+                            trackerIdLongVideo = "34509",
+                            trackerIdLongVideoRecomm = "34527"
+                        )
+                    ), selectedOption = "laporkan"
+                )
                 if (userSession.isLoggedIn) {
                     context?.let {
                         reportBottomSheet = ReportBottomSheet.newInstance(
@@ -538,6 +779,17 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                                     reasonType: String,
                                     reasonDesc: String
                                 ) {
+                                    analyticsTracker.sendClickReportReasonSgcImageEvent(
+                                        getContentDetailAnalyticsData(
+                                            feedXCard,
+                                            trackerId = getTrackerID(
+                                                feedXCard,
+                                                trackerIdSgc = "33288",
+                                                trackerIdSgcRecom = "34300"
+                                            )
+                                        ),
+                                        reportReason = reasonDesc
+                                    )
                                     viewModel.sendReport(
                                         postPosition,
                                         feedXCard.id,
@@ -546,6 +798,33 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                                     )
                                 }
                             })
+                        reportBottomSheet.onClosedClicked = {
+                            analyticsTracker.sendClickCancelReportSgcImageEvent(
+                                getContentDetailAnalyticsData(
+                                    feedXCard,
+                                    trackerId = getTrackerID(
+                                        feedXCard,
+                                        trackerIdSgcRecom = getTrackerID(
+                                            feedXCard,
+                                            trackerIdSgc = "34299"
+                                        )
+                                    )
+                                )
+                            )
+                        }
+                        reportBottomSheet.onDismiss = {
+                            analyticsTracker.sendClickGreyAreaReportBottomSheet(
+                                getContentDetailAnalyticsData(
+                                    feedXCard,
+                                    trackerId = getTrackerID(
+                                        feedXCard,
+                                        trackerIdSgc = "33289",
+                                        trackerIdSgcRecom = "34301",
+                                    )
+                                ),
+                            )
+
+                        }
                         reportBottomSheet.show(
                             childFragmentManager,
                             ""
@@ -556,6 +835,19 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 }
             }
             sheet.onFollow = {
+                analyticsTracker.sendClickThreeDotsMenuSgcImageEvent(
+                    getContentDetailAnalyticsData(
+                        feedXCard,
+                        trackerId = getTrackerID(
+                            feedXCard,
+                            trackerIdSgc = "33291",
+                            trackerIdVod = "34158",
+                            trackerIdSgcRecom = "34307",
+                            trackerIdLongVideo = "34509",
+                            trackerIdLongVideoRecomm = "34527"
+                        )
+                    ), selectedOption = "unfollow"
+                )
                 if (userSession.isLoggedIn)
                     onFollowUnfollowClicked(
                         feedXCard,
@@ -564,6 +856,25 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
             }
             sheet.onDelete = { createDeleteDialog(feedXCard.id, postPosition) }
             sheet.onDismiss = {
+                analyticsTracker.sendClickGreyAreaSgcImageEvent(
+                    getContentDetailAnalyticsData(
+                        feedXCard,
+                        trackerId = getTrackerID(
+                            feedXCard,
+                            trackerIdSgc = "33273",
+                        )
+                    )
+                )
+                analyticsTracker.sendClickGreyAreaThreeDotsMenu(
+                    getContentDetailAnalyticsData(
+                        feedXCard,
+                        trackerId = getTrackerID(
+                            feedXCard,
+                            trackerIdSgc = "33292",
+                            trackerIdSgcRecom = "34308"
+                        )
+                    )
+                )
 
             }
             sheet.onEdit = {
@@ -571,8 +882,24 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
             }
 
             sheet.onClosedClicked = {
-
-
+                analyticsTracker.sendClickXThreeDotsBottomSHeet(
+                    getContentDetailAnalyticsData(
+                        feedXCard,
+                        trackerId = getTrackerID(
+                            feedXCard,
+                            trackerIdSgc = "33290",
+                            trackerIdSgcRecom = "34306"
+                        )
+                    )
+                )
+                analyticsTracker.sendClickCancelReportSgcImageEvent(
+                    getContentDetailAnalyticsData(
+                        feedXCard,
+                        trackerId = getTrackerID(
+                            feedXCard, trackerIdSgc = "33294", trackerIdSgcRecom = "34600"
+                        )
+                    )
+                )
             }
         }
     }
@@ -580,8 +907,30 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         feedXCard: FeedXCard,
         postPosition: Int,
         currentTime: Long,
-        shouldTrack: Boolean
+        shouldTrack: Boolean,
+        isFullScreen: Boolean
     ) {
+
+        if (isFullScreen) {
+            if (feedXCard.isTypeVOD)
+                analyticsTracker.sendClickFullScreenVOD(
+                    getContentDetailAnalyticsData(feedXCard)
+                )
+            else if (feedXCard.isTypeLongVideo)
+                analyticsTracker.sendClickFullScreenLongVideo(
+                    getContentDetailAnalyticsData(feedXCard)
+                )
+        } else {
+            if (feedXCard.isTypeVOD)
+                analyticsTracker.sendClickLanjutMenontonVod(
+                    getContentDetailAnalyticsData(feedXCard)
+                )
+            else if (feedXCard.isTypeLongVideo)
+                analyticsTracker.sendClickLanjutMenontonLongVideo(
+                    getContentDetailAnalyticsData(feedXCard)
+                )
+        }
+
         val finalApplink = if (!shouldTrack) {
             Uri.parse(feedXCard.appLink)
                 .buildUpon()
@@ -608,8 +957,35 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
             onGoToLink(finalApplink)
     }
 
-    override fun onShopHeaderItemClicked(link: String) {
-        onGoToLink(link)
+    override fun onShopHeaderItemClicked(feedXCard: FeedXCard, isShopNameBelow: Boolean) {
+        if (isShopNameBelow)
+            analyticsTracker.sendClickShopNameBelowSgcImageEvent(
+                getContentDetailAnalyticsData(
+                    feedXCard,
+                    trackerId = getTrackerID(
+                        feedXCard, trackerIdSgc = "33264", trackerIdSgcRecom = "34302"
+                )
+            )
+            )
+        else
+            analyticsTracker.sendClickShopSgcImageEvent(
+                getContentDetailAnalyticsData(
+                    feedXCard,
+                    trackerId = getTrackerID(
+                        feedXCard,
+                        trackerIdSgc = "33254",
+                        trackerIdSgcRecom = "34272",
+                        trackerIdVod = "34151",
+                        trackerIdVodRecomm = "34168",
+                        trackerIdAsgcRecom = "34085",
+                        trackerIdAsgc = "34099",
+                        trackerIdSgcVideo = "34602",
+                        trackerIdLongVideo = "34502",
+                        trackerIdLongVideoRecomm = "34519"
+                    )
+                )
+            )
+        onGoToLink(feedXCard.author.appLink)
     }
 
     override fun addViewsToVOD(
@@ -618,6 +994,18 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         time: Long,
         hitTrackerApi: Boolean
     ) {
+        analyticsTracker.eventWatchVideo(
+            getContentDetailAnalyticsData(
+                feedXCard,
+                trackerId = getTrackerID(
+                    feedXCard,
+                    trackerIdVod = "34187",
+                    trackerIdVodRecomm = "34189",
+                    trackerIdLongVideo = "34538",
+                    trackerIdLongVideoRecomm = "34540"
+                )
+            )
+        )
         if (hitTrackerApi) {
             if (feedXCard.isTypeLongVideo)
                 viewModel.trackLongVideoView(feedXCard.id, rowNumber)
@@ -626,11 +1014,47 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         }
     }
 
+    override fun onVolumeClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String) {
+        val trackerId = getTrackerID(
+            feedXCard,
+            trackerIdVod = "34159",
+            trackerIdVodRecomm = "34177",
+            trackerIdLongVideo = "34510",
+            trackerIdLongVideoRecomm = "34528"
+        )
+        analyticsTracker.sendClickSoundSgcPlayLongVideoEvent(getContentDetailAnalyticsData(feedXCard, trackerId = trackerId))
+    }
+
+    override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
+        analyticsTracker.eventWatchVideo(
+            getContentDetailAnalyticsData(
+                feedXCard,
+                duration = duration,
+                trackerId = getTrackerID(feedXCard, trackerIdSgcVideo = "34607")
+            )
+        )
+    }
+
+    override fun onSgcVideoTapped(feedXCard: FeedXCard) {
+        analyticsTracker.sendClickVideoSgcVideoEvent(getContentDetailAnalyticsData(feedXCard))
+    }
+
     override fun onLihatProdukClicked(
         feedXCard: FeedXCard,
         postPosition: Int,
         products: List<FeedXProduct>
     ) {
+        val trackerId = getTrackerID(
+            feedXCard,
+            trackerIdSgc = "33256",
+            trackerIdSgcRecom = "34275",
+            trackerIdVod = "34161",
+            trackerIdVodRecomm = "34179",
+            trackerIdAsgc = "34113",
+            trackerIdLongVideo = "34512",
+            trackerIdLongVideoRecomm = "34530"
+        )
+        analyticsTracker.sendClickLihatProdukSgcImageEvent(getContentDetailAnalyticsData(feedXCard, trackerId = trackerId))
         val media =
             if (feedXCard.lastCarouselIndex < feedXCard.media.size) feedXCard.media[feedXCard.lastCarouselIndex] else null
         if (products.isNotEmpty()) {
@@ -649,14 +1073,85 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 mediaType = media?.type?:""
             )
             productTagBS.closeClicked = {
+                analyticsTracker.sendClickXSgcImageEvent(
+                    getContentDetailAnalyticsData(
+                        feedXCard,
+                        trackerId = getTrackerID(
+                            feedXCard,
+                            trackerIdSgc = "33266",
+                            trackerIdSgcRecom = "34276",
+                            trackerIdAsgcRecom = "34088",
+                            trackerIdAsgc = "34102",
+                        )
+                    )
+                )
 
             }
             productTagBS.disMissed = {
+                analyticsTracker.sendClickGreyAreaProductBottomSheet(
+                    getContentDetailAnalyticsData(
+                        feedXCard,
+                        trackerId = getTrackerID(
+                            feedXCard,
+                            trackerIdSgc = "33266",
+                            trackerIdSgcRecom = "34282",
+                            trackerIdAsgcRecom = "34095",
+                            trackerIdAsgc = "34107"
+                        )
+                    )
+                )
+
             }
         }
     }
 
+    override fun onImageClicked(feedXCard: FeedXCard) {
+        analyticsTracker.sendClickImageSgcImageEvent(
+            getContentDetailAnalyticsData(
+                feedXCard,
+                trackerId = getTrackerID(
+                    feedXCard,
+                    trackerIdSgc = "33257",
+                    trackerIdSgcRecom = "34273"
+                )
+            )
+        )
+    }
+
+    override fun onReadMoreClicked(feedXCard: FeedXCard) {
+        val trackerId = getTrackerID(
+            feedXCard,
+            trackerIdSgc = "33265",
+            trackerIdVod = "34156",
+            trackerIdVodRecomm = "34174",
+            trackerIdSgcRecom = "34303",
+            trackerIdLongVideo = "34507",
+            trackerIdLongVideoRecomm = "34525"
+        )
+        analyticsTracker.sendClickLihatSelengkapnyaSgcImageEvent(getContentDetailAnalyticsData(feedXCard, trackerId = trackerId))
+    }
+
+    override fun onHashtagClicked(hashTag: String, feedXCard: FeedXCard) {
+        analyticsTracker.sendClickHashtagSgcImageEvent(
+            getContentDetailAnalyticsData (
+                feedXCard,
+                hashTag = hashTag,
+                trackerId = getTrackerID(feedXCard, trackerIdSgc = "33295")
+            )
+        )
+    }
+
     override fun onCekSekarangButtonClicked(feedXCard: FeedXCard, postPosition: Int) {
+        analyticsTracker.sendAsgcMoreProductClicked(
+            getContentDetailAnalyticsData(
+                feedXCard,
+                trackerId = getTrackerID(
+                    feedXCard,
+                    trackerIdAsgcRecom = "34087",
+                    trackerIdAsgc = "34110"
+                )
+            )
+        )
         val intent = RouteManager.getIntent(context, feedXCard.appLinkProductList)
         intent.putExtra(
             ContentDetailArgumentModel.IS_FOLLOWED,
@@ -670,8 +1165,65 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
     }
 
-    override fun onPostTagBubbleClicked(redirectUrl: String) {
+    override fun onPostTagBubbleClicked(
+        positionInFeed: Int,
+        redirectUrl: String,
+        postTagItem: FeedXProduct
+    ) {
+        if (adapter.getList().size > positionInFeed) {
+            val item = (adapter.getList()[positionInFeed])
+            analyticsTracker.sendClickProductTagAsgcEvent(
+                getContentDetailAnalyticsData(
+                    item,
+                    product = postTagItem
+                )
+            )
+        }
+
+
         onGoToLink(redirectUrl)
+    }
+
+    override fun onCarouselItemImpressed(feedXCard: FeedXCard, postPosition: Int) {
+        analyticsTracker.sendImpressionImageSgcImageEvent(
+            getContentDetailAnalyticsData(
+                feedXCard,
+                postPosition,
+                trackerId = getTrackerID(
+                    feedXCard, trackerIdSgc = "33258", trackerIdSgcRecom = "34274"
+                )
+            )
+        )
+    }
+
+    override fun onPostImpressed(feedXCard: FeedXCard, postPosition: Int) {
+        if (feedXCard.isTypeVOD)
+            analyticsTracker.sendImpressionPostVOD(
+                getContentDetailAnalyticsData(
+                    feedXCard, postPosition, trackerId = getTrackerID(
+                        feedXCard,
+                        trackerIdVod = "34150",
+                        trackerIdVodRecomm = "34167",
+                        trackerIdLongVideo = "34501",
+                        trackerIdLongVideoRecomm = "34518"
+                    )
+                )
+            )
+        else
+            analyticsTracker.sendImpressionPost(
+                getContentDetailAnalyticsData(
+                    feedXCard,
+                    postPosition,
+                    trackerId = getTrackerID(
+                        feedXCard,
+                        trackerIdSgc = "33274",
+                        trackerIdAsgc = "34098",
+                        trackerIdAsgcRecom = "34084",
+                        trackerIdSgcRecom = "34270",
+                        trackerIdSgcVideo = "34601"
+                    )
+                )
+            )
     }
 
     override fun onDestroyView() {
@@ -684,14 +1236,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         }
     }
 
-    override fun urlCreated(linkerShareData: LinkerShareResult?) {
-        val intent: Intent = if (shareBottomSheetProduct) {
-            getIntent(linkerShareData?.url ?: "")
-        } else {
-            getIntent()
-        }
-        activity?.startActivity(Intent.createChooser(intent, shareData.name))
-    }
 
     private fun createDeleteDialog(contentId: String, rowNumber: Int) {
         val dialog =
@@ -749,21 +1293,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         }
     }
 
-    private fun getIntent(shareUrl: String = ""): Intent {
-        val shareUri: String = if (shareUrl.isNotEmpty()) {
-            shareUrl
-        } else {
-            shareData.uri
-        }
-        return Intent().apply {
-            action = Intent.ACTION_SEND
-            type = SHARE_TYPE
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            putExtra(Intent.EXTRA_TITLE, shareData.name)
-            putExtra(Intent.EXTRA_SUBJECT, shareData.name)
-            putExtra(Intent.EXTRA_TEXT, shareData.description + "\n" + shareUri)
-        }
-    }
 
     private fun onGoToLink(link: String) {
         context?.let {
@@ -780,28 +1309,41 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         }
     }
 
-
-    override fun onError(linkerError: LinkerError?) {
-    }
-
     override fun onBottomSheetThreeDotsClicked(
         item: ProductPostTagViewModelNew,
         context: Context,
         shopId: String
     ) {
+        analyticsTracker.sendClickThreeDotsSgcImageEventForBottomSheet(
+           ContentDetailPageAnalyticsDataModel(
+               activityId = item.postId.toString(),
+               shopId = item.shopId,
+               isFollowed = item.isFollowed,
+               type = item.postType,
+               productId = item.id,
+               mediaType = item.mediaType,
+               trackerId = getTrackerID(
+                   item,
+                   trackerIdSgc = "33269",
+                   trackerIdAsgcRecom = "34091",
+                   trackerIdVod = "34157",
+                   trackerIdVodRecomm = "34182",
+                   trackerIdSgcRecom = "34279",
+                   trackerIdAsgc = "34103",
+                   trackerIdLongVideoRecomm = "34533"
+               ),
+               source = contentDetailSource
+           ))
         val finalID =
             if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
         val sheet = ProductActionBottomSheet.newInstance(bundle)
+        if (!sheet.isAdded)
         sheet.show(childFragmentManager, "")
         sheet.shareProductCB = {
             onShareProduct(
-                item.id.toIntOrZero(),
-                item.text,
-                item.description,
-                item.weblink,
-                item.imgUrl
+                item
             )
         }
         sheet.addToCartCB = {
@@ -838,7 +1380,34 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         isFollowed: Boolean,
         mediaType: String
     ) {
-        //add analytic for impression
+        analyticsTracker.sendImpressionProductSgcImageEvent(
+            ContentDetailPageAnalyticsDataModel(
+                activityId = activityId,
+                type = type,
+                shopId = shopId,
+                isFollowed = isFollowed,
+                mediaType = mediaType,
+                productId = postTagItemList.firstOrNull()?.id ?: "",
+                trackerId = getTrackerID(
+                    ProductPostTagViewModelNew(
+                        postType = type,
+                        mediaType = type,
+                        isFollowed = isFollowed
+                    ),
+                    trackerIdSgc = "33267",
+                    trackerIdVod = "34162",
+                    trackerIdVodRecomm = "34180",
+                    trackerIdSgcRecom = "34277",
+                    trackerIdSgcVideo = "34609",
+                    trackerIdAsgc = "34100",
+                    trackerIdAsgcRecom = "34089",
+                    trackerIdLongVideo = "34513",
+                    trackerIdLongVideoRecomm = "34531"
+                ),
+                source = contentDetailSource
+            ),
+            postTagItemList
+        )
     }
 
     override fun onTaggedProductCardClicked(
@@ -848,6 +1417,34 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         itemPosition: Int,
         mediaType: String
     ) {
+        if (adapter.getList().size > positionInFeed) {
+            val item = adapter.getList()[positionInFeed]
+            if (item.tags.isNotEmpty())
+                analyticsTracker.sendClickProductSgcImageEvent(
+                    ContentDetailPageAnalyticsDataModel(
+                        activityId = item.id,
+                        feedXProduct = postTagItem,
+                        isFollowed = item.followers.isFollowed,
+                        shopId = item.author.id,
+                        type = item.typename,
+                        productId = postTagItem.id,
+                        trackerId = getTrackerID(
+                            item,
+                            trackerIdSgc = "33268",
+                            trackerIdVod = "34163",
+                            trackerIdVodRecomm = "34181",
+                            trackerIdSgcRecom = "34278",
+                            trackerIdSgcVideo = "34610",
+                            trackerIdAsgcRecom = "34090",
+                            trackerIdAsgc = "34101",
+                            trackerIdLongVideo = "34514",
+                            trackerIdLongVideoRecomm = "34532"
+                        ),
+                        source = contentDetailSource
+                    )
+                )
+        }
+
         onGoToLink(redirectUrl)
     }
     private fun onTagSheetItemBuy(
@@ -861,6 +1458,32 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         shopName: String,
         mediaType: String
     ) {
+        analyticsTracker.sendClickAddToCartAsgcEvent(
+            ContentDetailPageAnalyticsDataModel(
+                activityId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else activityId,
+                rowNumber = positionInFeed,
+                feedXProduct = postTagItem,
+                productId = postTagItem.id,
+                shopId = shopId,
+                isFollowed = isFollowed,
+                shopName = shopName,
+                mediaType = mediaType,
+                trackerId = getTrackerID(
+                    ProductPostTagViewModelNew(
+                        postType = type,
+                        mediaType = type,
+                        isFollowed = isFollowed
+                    ),
+                    trackerIdAsgc = "34112",
+                    trackerIdVod = "34165",
+                    trackerIdVodRecomm = "34184",
+                    trackerIdLongVideo = "34516",
+                    trackerIdLongVideoRecomm = "34535"
+
+                ),
+                source = contentDetailSource
+            )
+        )
         if (userSession.isLoggedIn) {
             if (::productTagBS.isInitialized) {
                 productTagBS.dismissedByClosing = true
@@ -886,7 +1509,33 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         playChannelId: String,
         mediaType: String
     ) {
-        val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
+        analyticsTracker.sendClickWishlistSgcImageEvent(
+            ContentDetailPageAnalyticsDataModel(
+                activityId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId,
+                type = type,
+                isFollowed = isFollowed,
+                mediaType = mediaType,
+                productId = productId,
+                shopId = shopId,
+                trackerId = getTrackerID(
+                    ProductPostTagViewModelNew(
+                        postType = type,
+                        mediaType = type,
+                        isFollowed = isFollowed
+                    ),
+                    trackerIdSgc = "33270",
+                    trackerIdVod = "34164",
+                    trackerIdVodRecomm = "34183",
+                    trackerIdSgcRecom = "34280",
+                    trackerIdSgcVideo = "34611",
+                    trackerIdAsgc = "34104",
+                    trackerIdAsgcRecom = "34092",
+                    trackerIdLongVideo = "34515",
+                    trackerIdLongVideoRecomm = "34534"
+                ),
+                source = contentDetailSource
+            )
+        )
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
@@ -1065,6 +1714,129 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
             }
         })
     }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+         dissmisByGreyArea = false
+        if (adapter.getList().size > rowNumberWhenShareClicked) {
+            val card = adapter.getList()[rowNumberWhenShareClicked]
+            analyticsTracker.sendClickShareOptionInShareBottomSheet(getContentDetailAnalyticsData(card))
+            universalShareBottomSheet?.dismiss()
+        }
+
+        val linkerShareData = DataMapper().getLinkerShareData(shareData)
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    context?.let {
+
+                        var shareString =  shareData.description +"\n" + linkerShareData?.shareUri
+                        SharingUtil.executeShareIntent(
+                            shareModel,
+                            linkerShareData,
+                            activity,
+                            view,
+                            shareString
+                        )
+
+                        universalShareBottomSheet?.dismiss()
+                    }
+                }
+
+                override fun onError(linkerError: LinkerError?) {
+                    //Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
+                }
+            })
+        )
+    }
+
+    override fun onCloseOptionClicked() {
+        dissmisByGreyArea = false
+        if (adapter.getList().size > rowNumberWhenShareClicked) {
+            val card = adapter.getList()[rowNumberWhenShareClicked]
+            analyticsTracker.sendClickXShareDetailPage(getContentDetailAnalyticsData(card))
+
+        }
+    }
+
+    private fun getContentDetailAnalyticsData(
+        feedXCard: FeedXCard,
+        postPosition: Int = 0,
+        trackerId: String = "",
+        hashTag: String = "",
+        duration: Long = 0L,
+        product: FeedXProduct = FeedXProduct()
+    ) = ContentDetailPageAnalyticsDataModel(
+        activityId = if (feedXCard.isTypeVOD) feedXCard.playChannelID else feedXCard.id,
+        shopId = feedXCard.author.id,
+        productId= product.id,
+        rowNumber = postPosition,
+        isFollowed = feedXCard.followers.isFollowed,
+        type = feedXCard.typename,
+        mediaType = if (feedXCard.lastCarouselIndex < feedXCard.media.size) feedXCard.media[feedXCard.lastCarouselIndex].type else "",
+        trackerId = trackerId,
+        hashtag = hashTag,
+        mediaUrl = feedXCard.media.firstOrNull()?.mediaUrl ?: "",
+        itemName = feedXCard.title,
+        duration = duration,
+        feedXProduct = product,
+        source = contentDetailSource
+    )
+
+    private fun getTrackerID(
+        feedXCard: FeedXCard,
+        trackerIdSgc: String = "",
+        trackerIdSgcRecom: String = "",
+        trackerIdAsgc: String = "",
+        trackerIdAsgcRecom: String = "",
+        trackerIdVod: String = "",
+        trackerIdVodRecomm: String = "",
+        trackerIdLongVideo: String = "",
+        trackerIdLongVideoRecomm: String = "",
+        trackerIdSgcVideo: String = "",
+
+    ) = when {
+        feedXCard.isTypeVOD -> trackerIdVod
+        feedXCard.isTypeLongVideo -> trackerIdLongVideo
+        feedXCard.isTypeLongVideo && !feedXCard.followers.isFollowed -> trackerIdLongVideoRecomm
+        feedXCard.isTypeVOD && feedXCard.followers.isFollowed -> trackerIdVodRecomm
+        feedXCard.isTypeProductHighlight && feedXCard.followers.isFollowed -> trackerIdAsgc
+        feedXCard.isTypeProductHighlight && !feedXCard.followers.isFollowed -> trackerIdAsgcRecom
+        feedXCard.isTypeSGC && feedXCard.followers.isFollowed -> trackerIdSgc
+        feedXCard.isTypeSGC && !feedXCard.followers.isFollowed -> trackerIdSgcRecom
+        feedXCard.isTypeSgcVideo && feedXCard.followers.isFollowed -> trackerIdSgcVideo
+        else -> ""
+
+    }
+    private fun getTrackerID(
+        item: ProductPostTagViewModelNew,
+        trackerIdSgc: String = "",
+        trackerIdSgcRecom: String = "",
+        trackerIdAsgc: String = "",
+        trackerIdAsgcRecom: String = "",
+        trackerIdVod: String = "",
+        trackerIdVodRecomm: String = "",
+        trackerIdLongVideo: String = "",
+        trackerIdLongVideoRecomm: String = "",
+        trackerIdSgcVideo: String = "",
+    ) = when {
+        item.postType == TYPE_FEED_X_CARD_PLAY -> trackerIdVod
+        item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_LONG_VIDEO -> trackerIdLongVideo
+        item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_LONG_VIDEO && !item.isFollowed -> trackerIdLongVideoRecomm
+        item.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && item.isFollowed -> trackerIdAsgc
+        item.postType == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT  && !item.isFollowed -> trackerIdAsgcRecom
+        item.postType == TYPE_FEED_X_CARD_POST  && item.isFollowed -> trackerIdSgc
+        item.postType == TYPE_FEED_X_CARD_POST && !item.isFollowed -> trackerIdSgcRecom
+        item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_VIDEO  -> trackerIdSgcVideo
+
+        else -> ""
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        analyticsTracker.sendPendingAnalytics()
+    }
+
 
     private fun observeAddToCart() {
         viewModel.atcRespData.observe(viewLifecycleOwner, Observer {

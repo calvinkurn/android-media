@@ -104,10 +104,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         val desc = context?.getString(R.string.feed_share_default_text)
         val itemList: MutableList<ProductPostTagViewModelNew> = mutableListOf()
         for (postTagItem in postTagItemList) {
-            if (postTagItem.isTopads){
                 postDescription = desc?.replace("%s", postTagItem.authorName).toString()
                 adClickUrl = postTagItem.adClickUrl
-            }
             val item = ProductPostTagViewModelNew(
                 postTagItem.id,
                 postTagItem.name,
@@ -172,6 +170,12 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         this.mediaType = mediaType
         show(fragmentManager, "")
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        listener = null
+    }
+
     interface Listener {
         fun onBottomSheetThreeDotsClicked(
             item: ProductPostTagViewModelNew,

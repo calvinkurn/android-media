@@ -673,7 +673,8 @@ open class DynamicPostViewHolder(v: View,
             shopId: String = "",
             mediaType: String = "",
             isTopads:Boolean = false,
-            playChannelId: String = ""
+            playChannelId: String = "",
+            weblink: String = ""
         )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)

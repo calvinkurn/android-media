@@ -161,12 +161,13 @@ class FeedVODViewHolder @JvmOverloads constructor(
             isPaused = true
             vodLanjutMemontomBtn.gone()
             vodFrozenView.gone()
+            val currentTime = videoPlayer?.getExoPlayer()?.currentPosition
             mFeedXCard?.let {  card ->
                 mListener?.onFullScreenBtnClicked(
                     card,
                     mPostionInFeed,
                     card.appLink,
-                    0L,
+                    currentTime?:0L,
                     shouldTrack = true,
                     true
                 )
@@ -428,7 +429,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
         mOnClickVolumeListener = callback
     }
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    internal fun onPause() {
+    fun onPause() {
         videoPlayer?.pause()
         secondCountDownTimer?.cancel()
         if (feedAddViewJob != null) {
@@ -437,7 +438,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
         }
     }
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    internal fun onResume() {
+    fun onResume() {
         videoPlayer?.resume()
     }
 
