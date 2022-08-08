@@ -14,6 +14,7 @@ import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.LikeContentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.VisitContentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -167,23 +168,23 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun trackVisitChannel(channelId: String): Boolean {
+    override suspend fun trackVisitChannel(channelId: String, rowNumber: Int): VisitContentModel {
         return withContext(dispatcher.io) {
             trackVisitChannelUseCase.setRequestParams(
                 FeedBroadcastTrackerUseCase.createParams(channelId)
             )
-            val response = trackVisitChannelUseCase.executeOnBackground()
-            response.reportVisitChannelTracking.success
+            trackVisitChannelUseCase.executeOnBackground()
+            mapper.mapVisitChannel(rowNumber)
         }
     }
 
-    override suspend fun trackViewer(contentId: String): Boolean {
+    override suspend fun trackViewer(contentId: String, rowNumber: Int): VisitContentModel {
         return withContext(dispatcher.io) {
             trackViewerUseCase.setRequestParams(
                 FeedXTrackViewerUseCase.createParams(contentId)
             )
-            val response = trackViewerUseCase.executeOnBackground()
-            response.feedXTrackViewerResponse.success
+            trackViewerUseCase.executeOnBackground()
+            mapper.mapVisitChannel(rowNumber)
         }
     }
 }

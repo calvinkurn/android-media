@@ -4,6 +4,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.LikeContentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.VisitContentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 
@@ -35,4 +36,6 @@ class ContentDetailModelBuilder {
         rowNumber = rowNumber,
         action = followAction,
     )
+
+    fun getVisitContentModel(rowNumber: Int = 0) = VisitContentModel(rowNumber)
 }

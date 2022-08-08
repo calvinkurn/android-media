@@ -106,10 +106,8 @@ class ContentDetailViewModel @Inject constructor(
     fun trackVisitChannel(channelId: String, rowNumber: Int) {
         _trackVodVisitContentData.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            repository.trackVisitChannel(channelId)
-            _trackVodVisitContentData.value = ContentDetailResult.Success(
-                mapper.mapVisitChannel(rowNumber)
-            )
+            val response = repository.trackVisitChannel(channelId, rowNumber)
+            _trackVodVisitContentData.value = ContentDetailResult.Success(response)
         }) {
             _trackVodVisitContentData.value = ContentDetailResult.Failure(it)
         }
@@ -118,10 +116,8 @@ class ContentDetailViewModel @Inject constructor(
     fun trackLongVideoView(activityId: String, rowNumber: Int) {
         _trackVodVisitContentData.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            repository.trackViewer(activityId)
-            _trackVodVisitContentData.value = ContentDetailResult.Success(
-                mapper.mapVisitChannel(rowNumber)
-            )
+            val response = repository.trackViewer(activityId, rowNumber)
+            _trackVodVisitContentData.value = ContentDetailResult.Success(response)
         }) {
             _trackVodVisitContentData.value = ContentDetailResult.Failure(it)
         }

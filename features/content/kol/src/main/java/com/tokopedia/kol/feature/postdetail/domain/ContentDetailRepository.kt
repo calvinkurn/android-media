@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.postdetail.domain
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.LikeContentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.VisitContentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.usecase.coroutines.Result
@@ -57,9 +58,11 @@ interface ContentDetailRepository {
 
     suspend fun trackVisitChannel(
         channelId: String,
-    ): Boolean
+        rowNumber: Int,
+    ): VisitContentModel
 
     suspend fun trackViewer(
-        contentId: String
-    ): Boolean
+        contentId: String,
+        rowNumber: Int,
+    ): VisitContentModel
 }
