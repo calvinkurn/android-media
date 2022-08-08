@@ -46,11 +46,6 @@ class LivenessDetectionAnalytics @Inject constructor() {
         const val labelConnectionTimeout= "connection timeout"
     }
 
-    const val BUSINESS_UNIT = "businessUnit"
-    const val USER_PLATFORM = "user platform"
-    const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
-    const val CURRENT_SITE = "currentSite"
-    const val TRACKER_ID = "trackerId"
 
     fun eventViewFaceInCenter(projectID: String, isSuccess: Boolean, message: String = "") {
         track(TrackAppUtils.gtmData(
@@ -257,5 +252,11 @@ class LivenessDetectionAnalytics @Inject constructor() {
         private const val PROJECT_ID_GO_CICIL = "21"
         private const val TYPE_ALA_CARTE = "ala carte"
         private const val TYPE_CKYC = "ckyc"
+
+        const val BUSINESS_UNIT = "businessUnit"
+        const val USER_PLATFORM = "user platform"
+        const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+        const val CURRENT_SITE = "currentSite"
+        const val TRACKER_ID = "trackerId"
     }
 }
