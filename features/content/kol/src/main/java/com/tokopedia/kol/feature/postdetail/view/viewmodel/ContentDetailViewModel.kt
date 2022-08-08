@@ -94,10 +94,8 @@ class ContentDetailViewModel @Inject constructor(
 
     fun followShop(shopId: String, action: ShopFollowAction, rowNumber: Int) {
         launchCatchError(block = {
-            repository.followShop(shopId, action)
-            _followShopObservable.value = ContentDetailResult.Success(
-                mapper.mapShopFollow(rowNumber, action)
-            )
+            val response = repository.followShop(shopId, action, rowNumber)
+            _followShopObservable.value = ContentDetailResult.Success(response)
         }) {
             _followShopObservable.value = ContentDetailResult.Failure(it) {
                 followShop(shopId, action, rowNumber)

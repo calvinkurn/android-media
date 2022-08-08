@@ -13,6 +13,7 @@ import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationP
 import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.LikeContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -92,7 +93,11 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun followShop(shopId: String, action: ShopFollowAction) {
+    override suspend fun followShop(
+        shopId: String,
+        action: ShopFollowAction,
+        rowNumber: Int
+    ): ShopFollowModel {
         return withContext(dispatcher.io) {
             followShopUseCase.params = UpdateFollowStatusUseCase.createParams(
                 shopId,
@@ -105,6 +110,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
                     else R.string.feed_unfollow_error_message
                 )
             }
+            mapper.mapShopFollow(rowNumber, action)
         }
     }
 

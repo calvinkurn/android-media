@@ -1,8 +1,8 @@
 package com.tokopedia.kol.feature.postdetail.domain
 
-import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.LikeContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.usecase.coroutines.Result
@@ -31,7 +31,8 @@ interface ContentDetailRepository {
     suspend fun followShop(
         shopId: String,
         action: ShopFollowAction,
-    )
+        rowNumber: Int,
+    ): ShopFollowModel
 
     suspend fun addToCart(
         productId: String,
