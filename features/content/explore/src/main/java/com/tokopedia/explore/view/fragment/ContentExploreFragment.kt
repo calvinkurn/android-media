@@ -341,12 +341,12 @@ class ContentExploreFragment :
 
     override fun goToKolPostDetail(postId: Int, name: String, recomId: Int) {
         val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, postId.toString())
-        val finalink = Uri.parse(contentAppLink)
+        val finaAppLink = Uri.parse(contentAppLink)
                 .buildUpon()
                 .appendQueryParameter(SOURCE, "explore_tab")
                 .build().toString()
 
-        RouteManager.route(requireContext(), finalink)
+        RouteManager.route(requireContext(), finaAppLink)
         analytics.eventTrackExploreItem(name, postId, recomId)
     }
 

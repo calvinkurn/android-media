@@ -158,16 +158,16 @@ class KolCommentNewCardView : LinearLayout {
         }
         comment.text = tagConverter.convertToLinkifyHashtag(
             SpannableString(MethodChecker.fromHtml(commentText)), colorLinkHashtag
-        ) { hashtag -> onHashtagClicked(hashtag, element.id ?: "0") }
+        ) { hashtag -> onHashtagClicked(hashtag) }
 
         comment.movementMethod = LinkMovementMethod.getInstance()
     }
 
 
-    private fun onHashtagClicked(hashtag: String, id: String) {
+    private fun onHashtagClicked(hashtag: String) {
         val encodeHashtag = URLEncoder.encode(hashtag)
         RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
-        listener?.onHashtagClicked(hashtag, id)
+        listener?.onHashtagClicked(hashtag)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -225,7 +225,7 @@ class KolCommentNewCardView : LinearLayout {
     }
 
     interface Listener {
-        fun onHashtagClicked(hashtag: String, id: String)
+        fun onHashtagClicked(hashtag: String)
         fun onAvatarClicked(profileUrl: String, userId: String?)
         fun onMentionedProfileClicked(authorId: String)
         fun onTokopediaUrlClicked(url: String)

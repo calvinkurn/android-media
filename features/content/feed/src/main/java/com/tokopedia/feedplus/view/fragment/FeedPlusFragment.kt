@@ -1125,7 +1125,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
-            if (position >= 0 && list.size > position && list[position] is DynamicPostUiModel) {
+            if (position in 0 until (list.size) && list[position] is DynamicPostUiModel) {
                 return (list[position] as DynamicPostUiModel).feedXCard.media.firstOrNull()
             }
         } catch (e: Exception) {
@@ -1136,7 +1136,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun isImageCard(list: List<Visitable<*>>, position: Int): Boolean {
 
-        if (position >= 0 && list.size > position && list[position] is DynamicPostUiModel) {
+        if (position in 0 until (list.size) && list[position] is DynamicPostUiModel) {
             val item = (list[position] as DynamicPostUiModel).feedXCard
             return (item.typename == TYPE_FEED_X_CARD_POST
                     && (item.media.isNotEmpty()
@@ -1145,7 +1145,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         return false
     }
     private fun isVOD(list: List<Visitable<*>>, position: Int): Boolean {
-        if (position >= 0 && list.size > position && list[position] is DynamicPostUiModel) {
+        if (position in 0 until (list.size) && list[position] is DynamicPostUiModel) {
             val item = (list[position] as DynamicPostUiModel).feedXCard
             return (item.typename == TYPE_FEED_X_CARD_PLAY)
         }
@@ -1154,7 +1154,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun getTopadsCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
-            if (position >= 0 && list.size > position && list[position] is TopadsHeadLineV2Model) {
+            if (position in 0 until (list.size) && list[position] is TopadsHeadLineV2Model) {
                 return (list[position] as TopadsHeadLineV2Model).feedXCard.media.firstOrNull()
             }
         } catch (e: Exception) {
@@ -1165,7 +1165,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun isTopadsImageCard(list: List<Visitable<*>>, position: Int): Boolean {
 
-        if (position >= 0 && list.size > position && list[position] is TopadsHeadLineV2Model) {
+        if (position in 0 until (list.size) && list[position] is TopadsHeadLineV2Model) {
             val item = (list[position] as TopadsHeadLineV2Model).feedXCard
             return (item.typename == TYPE_TOPADS_HEADLINE_NEW
                     && (item.media.isNotEmpty()

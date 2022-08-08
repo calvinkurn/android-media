@@ -328,7 +328,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         KeyboardHandler.showSoftKeyboard(activity)
     }
 
-    override fun onHashTagClicked(hashTag: String?, id: String?) {
+    override fun onHashTagClicked(hashTag: String?) {
         if (isFromContentDetailPage)
             analyticsTracker.sendClickHashtagEventCommentPage(
                 getContentDetailAnalyticsData(
