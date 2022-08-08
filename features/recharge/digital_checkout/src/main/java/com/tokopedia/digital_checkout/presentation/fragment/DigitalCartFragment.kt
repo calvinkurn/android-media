@@ -23,6 +23,7 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -205,12 +206,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         })
 
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner){ pair ->
-            pair.second.apply { showErrorPage(
-                    title,
-                    atcErrorPage.subTitle,
-                    atcErrorPage.buttons.first().appLinkUrl,
-                    atcErrorPage.buttons.first().label
-                ) }
+            showErrorPage(pair.second)
         }
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
@@ -418,18 +414,18 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
     }
 
-    private fun showErrorPage(title: String, desc: String, urlRedirection: String, buttonLabel: String){
+    private fun showErrorPage(error: ErrorAtc){
         viewEmptyState?.let {
             hideContent()
 
-            it.setType(GlobalError.AUTHENTICATION_ERROR)
             it.setButtonFull(true)
-            it.errorAction.text = buttonLabel
-            it.errorTitle.text = title
-            it.errorDescription.text = desc
+            it.errorIllustration.loadImage(error.atcErrorPage.imageUrl)
+            it.errorAction.text = error.atcErrorPage.buttons.first().label
+            it.errorTitle.text = error.atcErrorPage.title
+            it.errorDescription.text = error.atcErrorPage.subTitle
 
             it.setActionClickListener {
-                RouteManager.getIntent(context, urlRedirection).apply {
+                RouteManager.getIntent(context, error.atcErrorPage.buttons.first().appLinkUrl).apply {
                     startActivityForResult(this, REQUEST_VERIFY_PHONE_NUMBER)
                 }
             }
