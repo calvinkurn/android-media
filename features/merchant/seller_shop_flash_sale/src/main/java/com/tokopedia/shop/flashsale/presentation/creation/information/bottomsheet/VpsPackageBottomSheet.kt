@@ -110,7 +110,7 @@ class VpsPackageBottomSheet : BottomSheetUnify() {
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity ?: return)
             adapter = vpsPackageAdapter
-            attachDividerItemDecoration()
+            attachDividerItemDecoration(insetLeft = 16, insetRight = 16)
         }
 
         populateVpsPackages()
