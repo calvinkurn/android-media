@@ -39,7 +39,7 @@ class TrackProductTagBroadcasterUseCase @Inject constructor(
     }
 
     private suspend fun getResponse(): Boolean = withContext(dispatcher.io) {
-        val gqlRequest = GraphqlRequest(TrackProductTagBroadcasterUseCaseQuery.GQL_QUERY, ProductTracking.Response::class.java, params)
+        val gqlRequest = GraphqlRequest(TrackProductTagBroadcasterUseCaseQuery(), ProductTracking.Response::class.java, params)
         val gqlResponse = graphqlRepository.response(
                 listOf(gqlRequest),
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
