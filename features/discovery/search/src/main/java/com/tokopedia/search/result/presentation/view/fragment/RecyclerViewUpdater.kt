@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.SeparatorItemDecoration
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
@@ -18,7 +19,7 @@ class RecyclerViewUpdater @Inject constructor(
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     @SearchContext
     context: Context,
-): ViewUpdater,
+) : ViewUpdater,
     ProductListAdapter.OnItemChangeView,
     ContextProvider by WeakReferenceContextProvider(context) {
 
@@ -55,6 +56,7 @@ class RecyclerViewUpdater @Inject constructor(
             layoutManager = rvLayoutManager
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
+            addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
             addOnScrollListener(rvOnScrollListener)
         }
     }

@@ -97,9 +97,6 @@ object SomConsts {
     const val STATUS_CODE_READY_TO_SEND = 520
     const val STATUS_CODE_RECEIPT_CHANGED = 530
 
-    const val SORT_ASCENDING = 0
-    const val SORT_DESCENDING = 2
-
     const val NOT_YET_PRINTED_LABEL = "Belum Dicetak"
     const val ALREADY_PRINT_LABEL = "Sudah Dicetak"
     const val NOT_YET_PRINTED = 1

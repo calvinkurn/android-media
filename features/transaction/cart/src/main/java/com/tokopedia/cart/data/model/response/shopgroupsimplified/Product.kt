@@ -122,6 +122,8 @@ data class Product(
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
         val freeShippingExtra: FreeShipping = FreeShipping(),
+        @SerializedName("free_shipping_general")
+        val freeShippingGeneral: FreeShippingGeneral = FreeShippingGeneral(),
         @SerializedName("selected_unavailable_action_link")
         val selectedUnavailableActionLink: String = "",
         @SerializedName("warehouse_id")
