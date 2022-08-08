@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author Created By : Muhammad Furqan on Aug 5, 2022
  */
-class RechargeATCResponse(
+data class RechargeATCResponse(
     @SerializedName("data")
     @Expose
     val data: RechargeATCData = RechargeATCData(),
@@ -14,7 +14,7 @@ class RechargeATCResponse(
     @Expose
     val errors: List<RechargeATCError> = emptyList()
 ) {
-    class Response(
+    data class Response(
         @SerializedName("rechargeAddToCartV2")
         @Expose
         val atcResponse: RechargeATCResponse = RechargeATCResponse()
@@ -81,7 +81,7 @@ class RechargeATCAttribute(
     val isEnableVoucher: Boolean = false,
     @SerializedName("is_coupon_active")
     @Expose
-    val isCouponActive: Boolean = false,
+    val isCouponActive: Int = 0,
     @SerializedName("default_promo_dialog_tab")
     @Expose
     val defaultPromoDialogTab: String = "",
