@@ -8,6 +8,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
+import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.ui.base.BaseProductDetailUiTest
 import com.tokopedia.product.detail.ui.base.ProductDetailActivityMock
@@ -82,8 +83,12 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
             }
     ) + printConditions
 
-    private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition, customIdPrefix = "P")
-    private val vhViewPrinter = ViewHierarchyPrinter(printConditions, customIdPrefix = "P")
+    private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition,
+            customIdPrefix = "P",
+            packageName = BuildConfig.LIBRARY_PACKAGE_NAME)
+    private val vhViewPrinter = ViewHierarchyPrinter(printConditions,
+            customIdPrefix = "P",
+            packageName = BuildConfig.LIBRARY_PACKAGE_NAME)
 
     @Test
     fun captureParentFragmentId() {
@@ -106,7 +111,9 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
         val rvSize = activityCommonRule.activity.getPdpFragment().productAdapter?.currentList?.size
                 ?: 0
 
-        repeat(rvSize) {
+        Thread.sleep(2000)
+
+        repeat(rvSize - 1) {
             findViewHolderAndDo(com.tokopedia.product.detail.R.id.rv_pdp, it) { viewResult ->
                 viewResult?.let { view ->
                     printCsvAndSave(view, "product_detail_vh_$it", vhViewPrinter)

@@ -1294,6 +1294,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventViewAddOnsWidget(productId)
     }
 
+    override fun onViewFreeShippingPlusBadge() {
+        cartPageAnalytics.eventViewGotoplusTicker()
+    }
+
     private fun onErrorAddWishList(errorMessage: String, productId: String) {
         showToastMessageRed(errorMessage)
         cartAdapter.notifyByProductId(productId, false)

@@ -27,10 +27,10 @@ class AddEditProductDetailConstants {
         const val DEBOUNCE_DELAY_MILLIS = 500L
         const val MIN_PRODUCT_PRICE_LIMIT = 100
         const val MIN_PRODUCT_STOCK_LIMIT = 1
-        const val MAX_PRODUCT_STOCK_LIMIT = 999999
         const val MAX_MIN_ORDER_QUANTITY = 10000
         const val MIN_MIN_ORDER_QUANTITY = 1
         const val MIN_PREORDER_DURATION = 1
+        const val MAX_WHOLESALE_QUANTITY = 10000
         const val MAX_PREORDER_DAYS = 90
         const val MAX_PREORDER_WEEKS = 13
         const val MAX_SPECIFICATION_COUNTER = 5

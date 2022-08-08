@@ -97,6 +97,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private var promoCheckoutMarketplaceHanselHelper: PromoCheckoutMarketplaceHanselHelper? = null
     private var promoCheckoutSuggestionBottomSheet: BottomSheetBehavior<FrameLayout>? = null
+    private var promoInputBottomSheet: PromoInputBottomSheet? = null
     private var showBottomsheetJob: Job? = null
     private var clearSelectionActionFlagJob: Job? = null
     private var keyboardHeight = 0
@@ -181,7 +182,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         recyclerView = getRecyclerView(view)
         recyclerView?.addItemDecoration(itemDecorator)
         (recyclerView?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        addViewTreeGlobalLayoutListener(view)
         return view
     }
 
@@ -516,7 +516,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observePromoInputUiModel() {
         viewModel.promoInputUiModel.observe(viewLifecycleOwner, {
-            addOrModify(it)
+            if (promoInputBottomSheet?.isVisible == true) {
+                promoInputBottomSheet?.setInputUiModel(it)
+            }
         })
     }
 
@@ -754,8 +756,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun renderLoadPromoFailed(fragmentUiModel: FragmentUiModel) {
         viewBinding?.let {
-            toolbar?.disableResetButton()
-            toolbar?.hideResetButton()
             fragmentUiModel.uiData.exception?.let { throwable ->
                 it.layoutGlobalError.setType(getGlobalErrorType(throwable))
                 if (throwable is AkamaiErrorException) {
@@ -776,8 +776,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun renderHasNoPromoSelected(fragmentUiModel: FragmentUiModel) {
         viewBinding?.let {
-            toolbar?.disableResetButton()
-            toolbar?.showResetButton()
             if (fragmentUiModel.uiState.hasPreAppliedPromo) {
                 it.labelTotalPromoInfo.gone()
                 it.labelTotalPromoAmount.gone()
@@ -792,8 +790,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun renderHasAnyPromoSelected(fragmentUiModel: FragmentUiModel) {
         viewBinding?.let {
-            toolbar?.enableResetButton()
-            toolbar?.showResetButton()
             it.labelTotalPromoInfo.show()
             it.labelTotalPromoAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false).removeDecimalSuffix()
             it.labelTotalPromoAmount.show()
@@ -812,8 +808,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun reloadData() {
         viewModel.resetPromoInput()
-        toolbar?.disableResetButton()
-        toolbar?.hideResetButton()
         viewBinding?.containerActionBottom?.gone()
         adapter.clearAllElements()
         viewBinding?.layoutMainContainer?.show()
@@ -1015,8 +1009,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
-    override fun onClickResetPromo() {
-        viewModel.resetPromo()
+    override fun onClickInputCode() {
+        if (promoInputBottomSheet == null) {
+            promoInputBottomSheet = PromoInputBottomSheet()
+        }
+        viewModel.promoInputUiModel.value?.let {
+            promoInputBottomSheet?.show(parentFragmentManager, "", it, this)
+        }
     }
 
     override fun onClickApplyRecommendedPromo() {

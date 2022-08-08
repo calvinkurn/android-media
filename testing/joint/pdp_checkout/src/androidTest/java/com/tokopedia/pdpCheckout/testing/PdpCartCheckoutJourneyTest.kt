@@ -10,7 +10,11 @@ import com.tokopedia.pdpCheckout.testing.cart.robot.CartPageMocks
 import com.tokopedia.pdpCheckout.testing.cart.robot.cartPage
 import com.tokopedia.pdpCheckout.testing.checkout.robot.CheckoutPageMocks
 import com.tokopedia.pdpCheckout.testing.checkout.robot.checkoutPage
-import com.tokopedia.pdpCheckout.testing.product.detail.*
+import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailIntentRule
+import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailInterceptor
+import com.tokopedia.pdpCheckout.testing.product.detail.ProductDetailRobot
+import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P1_PATH
+import com.tokopedia.pdpCheckout.testing.product.detail.RESPONSE_P2_DATA_PATH
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockInterceptor
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig

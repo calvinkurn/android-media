@@ -67,6 +67,7 @@
         android:visibility="gone"
         android:background="@color/Unify_Background">
         <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_product_manage_variant_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/product_manage_save"

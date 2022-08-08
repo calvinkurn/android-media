@@ -282,7 +282,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         sendAnalyticsPromoPageLoaded()
 
-        setPromoInputErrorIfAny(response)
+        setPromoInputState(response, tmpPromoCode)
 
         val hasPreSelectedPromo = checkHasPreSelectedPromo()
         val preSelectedPromoCodes = getPreSelectedPromoList()
@@ -305,7 +305,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             handleEmptyStateDataAvailable(attemptedPromoCode, response)
         }
 
-        setPromoInputErrorIfAny(response)
+        setPromoInputState(response, attemptedPromoCode)
     }
 
     private fun handleEmptyStateDataNotAvailable(attemptedPromoCode: String, response: CouponListRecommendationResponse) {
@@ -414,7 +414,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         return tmpHasPreSelectedPromo
     }
 
-    private fun setPromoInputErrorIfAny(response: CouponListRecommendationResponse) {
+    private fun setPromoInputState(response: CouponListRecommendationResponse, tmpPromoCode: String) {
         val attemptedPromoCodeError = response.couponListRecommendation.data.attemptedPromoCodeError
         if (attemptedPromoCodeError.code.isNotBlank() && attemptedPromoCodeError.message.isNotBlank()) {
             sendAnalyticsOnErrorAttemptPromo(attemptedPromoCodeError.code, attemptedPromoCodeError.message)
@@ -423,6 +423,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 it.uiData.promoCode = attemptedPromoCodeError.code
                 it.uiState.isError = true
                 it.uiState.isButtonSelectEnabled = true
+                it.uiState.isLoading = false
+
+                _promoInputUiModel.value = it
+            }
+        } else if (tmpPromoCode.isNotEmpty()) {
+            promoInputUiModel.value?.let {
+                it.uiState.needToDismissBottomsheet = true
                 it.uiState.isLoading = false
 
                 _promoInputUiModel.value = it
@@ -1216,6 +1223,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         promoInputUiModel.value?.let {
             it.uiState.isLoading = true
             it.uiState.isButtonSelectEnabled = true
+            it.uiState.needToDismissBottomsheet = false
             it.uiData.promoCode = promoCode
 
             _tmpUiModel.value = Update(it)

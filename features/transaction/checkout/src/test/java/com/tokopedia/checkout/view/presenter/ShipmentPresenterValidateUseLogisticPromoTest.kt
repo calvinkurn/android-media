@@ -135,6 +135,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -167,6 +168,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -207,6 +209,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -245,6 +248,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -264,7 +268,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
                 )
         )
         presenter.setLatValidateUseRequest(validateUsePromoRequest)
-        presenter.doValidateUseLogisticPromo(cartPosition, "", validateUsePromoRequest)
+        presenter.doValidateUseLogisticPromo(cartPosition, "", validateUsePromoRequest, "")
 
         // Then
         verifySequence {

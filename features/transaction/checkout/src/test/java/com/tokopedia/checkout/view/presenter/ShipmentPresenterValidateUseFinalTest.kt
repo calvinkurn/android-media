@@ -144,6 +144,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -174,6 +175,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -183,7 +185,7 @@ class ShipmentPresenterValidateUseFinalTest {
 
         // Then
         verifyOrder {
-            view.showToastError(message)
+            view.showToastNormal(message)
             view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
@@ -211,6 +213,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -247,6 +250,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -277,6 +281,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -307,6 +312,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -344,6 +350,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )
@@ -417,6 +424,7 @@ class ShipmentPresenterValidateUseFinalTest {
         every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
                 ValidateUsePromoRevampUiModel(
                         status = "OK",
+                        errorCode = "200",
                         promoUiModel = promoUiModel
                 )
         )

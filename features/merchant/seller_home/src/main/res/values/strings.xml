@@ -97,6 +97,13 @@
     <string name="centralized_promo_promo_creation_tokomember_title">TokoMember</string>
     <string name="centralized_promo_promo_creation_tokomember_description">Tingkatin pendapatan toko dengan beri keanggotaan eksklusif ke pembeli setia.</string>
     <string name="centralized_promo_promo_creation_tokomember_tag_label">Baru</string>
+    <string name="centralized_promo_promo_creation_slash_price_new_info">Khusus PM PRO Expert</string>
+    <string name="centralized_promo_promo_creation_slash_price_tag_label">Baru</string>
+
+    <string name="centralized_promo_promo_creation_flash_sale_toko_title">Flash Sale Toko</string>
+    <string name="centralized_promo_promo_creation_flash_sale_toko_description">Buat campaign Flash Sale sendiri khusus di halaman tokomu.</string>
+    <string name="centralized_promo_promo_creation_flash_sale_toko_new_info">Khusus PM PRO dan OS</string>
+    <string name="centralized_promo_promo_creation_flash_sale_toko_tag_label">Baru</string>
 
     <!-- First merchant voucher -->
     <string name="centralized_promo_first_voucher_label">First Voucher</string>

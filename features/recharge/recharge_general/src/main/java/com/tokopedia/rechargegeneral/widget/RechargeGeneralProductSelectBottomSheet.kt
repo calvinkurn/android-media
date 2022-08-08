@@ -68,8 +68,8 @@ class RechargeGeneralProductSelectBottomSheet @JvmOverloads constructor(@NotNull
             fun bind(element: RechargeGeneralProductSelectData) {
                 with(itemView) {
                     product_select_item_title.text = element.title
-                    product_select_item_price.text = element.price
 
+                    toggleVisibility(product_select_item_price, element.price)
                     toggleVisibility(product_select_item_label, element.label)
                     toggleVisibility(product_select_item_desc, MethodChecker.fromHtml(element.description))
                     toggleVisibility(product_select_item_original_price, element.slashedPrice)

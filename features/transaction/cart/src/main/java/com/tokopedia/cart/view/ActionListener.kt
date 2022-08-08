@@ -97,4 +97,6 @@ interface ActionListener {
     fun onClickAddOnCart(productId: String, addOnId: String)
 
     fun addOnImpression(productId: String)
+
+    fun onViewFreeShippingPlusBadge()
 }
