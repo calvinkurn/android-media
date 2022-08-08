@@ -657,6 +657,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendUnificationEmptyStateCtaClickEvent(element.dataKey, selectedTab)
     }
 
+    override fun sendUnificationTableItemClickEvent(element: UnificationWidgetUiModel) {
+        val selectedTab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
+        SellerHomeTracking.sendUnificationTabItemClickEvent(element.dataKey, selectedTab)
+    }
+
     override fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {
         SellerHomeTracking.sendUnificationSeeMoreClickEvent(dataKey, tab)
     }
@@ -785,7 +790,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     applyUnificationTabSelected(element, selectedTab)
                 }
                 bottomSheet.dismiss()
-                SellerHomeTracking.sendUnificationTabItemClickEvent(element.dataKey, selectedTab)
             }
             .show(childFragmentManager)
 
@@ -1262,7 +1266,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun observeShopLocationLiveData() {
-        sellerHomeViewModel.shopLocation.observe(viewLifecycleOwner, { result ->
+        sellerHomeViewModel.shopLocation.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> setOnSuccessGetShopLocation(result.data)
                 is Fail -> {
@@ -1278,7 +1282,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
             setProgressBarVisibility(false)
-        })
+        }
 
         setProgressBarVisibility(true)
         sellerHomeViewModel.getShopLocation()
@@ -1294,7 +1298,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun observeWidgetLayoutLiveData() {
-        sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, { result ->
+        sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     stopLayoutCustomMetric(result.data)
@@ -1308,7 +1312,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     setOnErrorGetLayout(result.throwable)
                 }
             }
-        })
+        }
 
         setProgressBarVisibility(true)
     }
@@ -1623,7 +1627,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun observeTickerLiveData() {
-        sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner, {
+        sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     stopCustomMetric(
@@ -1650,7 +1654,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     binding?.relTicker?.gone()
                 }
             }
-        })
+        }
         startCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE)
         sellerHomeViewModel.getTicker()
     }
@@ -1715,7 +1719,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         liveData: LiveData<Result<List<D>>>,
         type: String
     ) {
-        liveData.observe(viewLifecycleOwner, { result ->
+        liveData.observe(viewLifecycleOwner) { result ->
             startHomeLayoutRenderMonitoring()
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
@@ -1726,7 +1730,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
             loadNextUnloadedWidget()
-        })
+        }
     }
 
     /**

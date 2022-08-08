@@ -214,6 +214,7 @@ class UnificationViewHolder(
             }
             tableShcUnification.addOnHtmlClickListener { url, _ ->
                 openAppLink(url)
+                listener.sendUnificationTableItemClickEvent(element)
             }
             tableShcUnification.addOnImpressionListener(tab.impressHolder) {
                 listener.sendUnificationTabImpressionEvent(element)
@@ -311,5 +312,7 @@ class UnificationViewHolder(
         fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {}
 
         fun sendUnificationEmptyStateCtaClickEvent(element: UnificationWidgetUiModel) {}
+
+        fun sendUnificationTableItemClickEvent(element: UnificationWidgetUiModel) {}
     }
 }
