@@ -1120,20 +1120,14 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun updateBoClashingState(element: PromoListItemUiModel) {
-        val fragmentUiModel = fragmentUiModel.value
-        val boClashingInfo = element.uiData.boClashingInfos.firstOrNull()
+    private fun updateBoClashingState() {
+        val currentFragmentModelData = fragmentUiModel.value
+        val selectedBoClashingPromo = promoListUiModel.value?.firstOrNull { it is PromoListItemUiModel && it.uiState.isSelected && it.uiData.boClashingInfos.isNotEmpty() } as PromoListItemUiModel?
 
-        fragmentUiModel?.let {
-            if (boClashingInfo != null) {
-                it.uiData.boClashingMessage = boClashingInfo.message
-                it.uiState.hasSelectedBo = element.uiState.isBebasOngkir
-                it.uiState.hasSelectedBoClashingPromo = true
-            } else {
-                it.uiData.boClashingMessage = ""
-                it.uiState.hasSelectedBo = element.uiState.isBebasOngkir
-                it.uiState.hasSelectedBoClashingPromo = false
-            }
+        currentFragmentModelData?.let {
+            it.uiData.boClashingMessage = selectedBoClashingPromo?.uiData?.boClashingInfos?.firstOrNull()?.message ?: ""
+            it.uiState.hasSelectedBo = selectedBoClashingPromo?.uiState?.isBebasOngkir ?: false
+            it.uiState.hasSelectedBoClashingPromo = selectedBoClashingPromo != null
 
             _fragmentUiModel.value = it
         }
@@ -1402,7 +1396,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
 
         // update BO clashing state
-        updateBoClashingState(selectedItem)
+        updateBoClashingState()
     }
 
     private fun checkAndSetClashOnUnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
@@ -1432,7 +1426,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private fun checkAndSetClashOnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel): Boolean {
         var clashResult = false
-        // todo
         val clashingInfo = promoListItemUiModel.uiData.clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
         if (clashingInfo != null) {
             if (!promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
