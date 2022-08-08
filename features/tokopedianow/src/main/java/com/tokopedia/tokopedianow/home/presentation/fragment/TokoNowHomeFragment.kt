@@ -1127,6 +1127,16 @@ class TokoNowHomeFragment: Fragment(),
             }
         }
 
+        observe(viewModelTokoNow.homeRemoveFromCartTracker) {
+            when(it.data) {
+                is HomeProductRecomUiModel -> trackProductRecomRemoveFromCart(
+                    it.quantity,
+                    it.position,
+                    it.data
+                )
+            }
+        }
+
         observe(viewModelTokoNow.openScreenTracker) { screenName ->
             TokoNowCommonAnalytics.onOpenScreen(
                 isLoggedInStatus = userSession.isLoggedIn,
@@ -1211,6 +1221,16 @@ class TokoNowHomeFragment: Fragment(),
             recommendationItem = productRecomModel.recomWidget.recommendationItemList[position],
             position = position.toString(),
             cartId = cartId
+        )
+    }
+
+    private fun trackProductRecomRemoveFromCart(quantity: Int, position: Int, productRecomModel: HomeProductRecomUiModel) {
+        analytics.onClickProductRecomRemoveFromCart(
+            channelId = productRecomModel.id,
+            headerName = productRecomModel.recomWidget.title,
+            quantity = quantity.toString(),
+            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position],
+            position = position.toString()
         )
     }
 

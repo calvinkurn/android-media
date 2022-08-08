@@ -68,6 +68,7 @@ class OfficialHomeContainerFragment
         const val KEY_CATEGORY = "key_category"
         const val PARAM_ACTIVITY_OFFICIAL_STORE = "param_activity_official_store"
         const val PARAM_HOME = "home"
+        private const val FORMAT_APPLINK_SEARCHBAR = "%s&hint=%s"
     }
 
     private var binding: FragmentOfficialHomeBinding? by viewBinding()
@@ -416,7 +417,10 @@ class OfficialHomeContainerFragment
             setIcon(getToolbarIcons())
             setupSearchbar(
                     hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
-                    applink = ApplinkConstant.OFFICIAL_SEARCHBAR
+                    applink = FORMAT_APPLINK_SEARCHBAR.format(
+                        ApplinkConstant.OFFICIAL_SEARCHBAR,
+                        getString(R.string.os_query_search)
+                    )
             )
             show()
         }
