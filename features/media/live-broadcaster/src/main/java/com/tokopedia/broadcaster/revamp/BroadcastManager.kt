@@ -565,7 +565,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     }
 
     override fun videoPacketsLost(connectionId: Int): Long? {
-        return mStreamer?.getVideoPacketsSent(connectionId)
+        return mStreamer?.getVideoPacketsLost(connectionId)
     }
 
     override fun udpPacketsLost(connectionId: Int): Long? {
