@@ -30,6 +30,9 @@ data class AtcErrorPage(
     @SerializedName("subtitle")
     val subTitle: String = "",
 
+    @SerializedName("image_url")
+    val imageUrl:String = "",
+
     @SerializedName("buttons")
     val buttons: List<AtcErrorButton> = emptyList()
 )
@@ -42,5 +45,8 @@ data class AtcErrorButton(
     val url: String = "",
 
     @SerializedName("applink_url")
-    val appLinkUrl: String = ""
+    val appLinkUrl: String = "",
+
+    @SerializedName("type")
+    val type: String = ""
 )
