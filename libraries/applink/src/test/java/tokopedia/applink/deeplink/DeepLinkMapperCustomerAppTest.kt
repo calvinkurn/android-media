@@ -2438,7 +2438,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check resolution success applink customerapp`() {
         val expectedDeepLink =
-                "${DeeplinkConstant.SCHEME_INTERNAL}://resolution//success-create?url=https://tokopedia.com/resolution-center/6932"
+                "${DeeplinkConstant.SCHEME_INTERNAL}://resolution/success-create?url=https://tokopedia.com/resolution-center/6932"
         val appLink = UriUtil.buildUri(ApplinkConst.RESOLUTION_SUCCESS, "https://tokopedia.com/resolution-center/6932")
 
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
