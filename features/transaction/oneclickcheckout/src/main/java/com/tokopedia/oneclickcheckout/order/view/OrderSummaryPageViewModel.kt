@@ -428,6 +428,36 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         orderShipment.value = logisticProcessor.resetBbo(orderShipment.value)
     }
 
+    fun validateBboStacking() {
+        validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.let {
+            for (voucherOrderUiModel in it) {
+                if (voucherOrderUiModel.shippingId > 0)
+                    if (voucherOrderUiModel.messageUiModel.state == "red") {
+                        unApplyBbo(voucherOrderUiModel.code)
+                    } else if (voucherOrderUiModel.messageUiModel.state == "green") {
+                        applyBbo(voucherOrderUiModel.code)
+                    }
+            }
+        }
+    }
+
+    private fun unApplyBbo(code: String) {
+        orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
+        promoProcessor.clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest, code)
+    }
+
+    private fun applyBbo(code: String) {
+        if (orderShipment.value.logisticPromoViewModel == null ||
+            orderShipment.value.logisticPromoViewModel!!.promoCode != code
+        ) {
+            orderShipment.value = orderShipment.value.copy(
+                isApplyLogisticPromo = true,
+                logisticPromoViewModel = LogisticPromoUiModel(promoCode = code)
+            )
+        }
+    }
+
+
     fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
         val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, orderShipment.value)
         newOrderShipment?.let {
