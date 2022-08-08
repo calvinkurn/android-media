@@ -7,12 +7,11 @@ import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
-import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationPostUseCase
 import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -72,7 +71,11 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun likeContent(contentId: String, action: ContentLikeAction) {
+    override suspend fun likeContent(
+        contentId: String,
+        action: ContentLikeAction,
+        rowNumber: Int
+    ): LikeContentModel {
         return withContext(dispatcher.io) {
             likeContentUseCase.setRequestParams(
                 SubmitLikeContentUseCase.createParam(contentId, action.value)
@@ -84,10 +87,15 @@ class ContentDetailRepositoryImpl @Inject constructor(
             if (response.doLikeKolPost.data.success != SubmitLikeContentUseCase.SUCCESS) {
                 throw CustomUiMessageThrowable(R.string.feed_like_error_message)
             }
+            mapper.mapLikeContent(rowNumber, action)
         }
     }
 
-    override suspend fun followShop(shopId: String, action: ShopFollowAction) {
+    override suspend fun followShop(
+        shopId: String,
+        action: ShopFollowAction,
+        rowNumber: Int
+    ): ShopFollowModel {
         return withContext(dispatcher.io) {
             followShopUseCase.params = UpdateFollowStatusUseCase.createParams(
                 shopId,
@@ -100,6 +108,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
                     else R.string.feed_unfollow_error_message
                 )
             }
+            mapper.mapShopFollow(rowNumber, action)
         }
     }
 
@@ -134,19 +143,21 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteContent(contentId: String) = withContext(dispatcher.io) {
+    override suspend fun deleteContent(contentId: String, rowNumber: Int): DeleteContentModel = withContext(dispatcher.io) {
         submitActionContentUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(contentId))
         val response = submitActionContentUseCase.executeOnBackground()
         if (TextUtils.isEmpty(response.content.error).not()) {
             throw MessageErrorException(response.content.error)
         }
+        mapper.mapDeleteContent(rowNumber)
     }
 
     override suspend fun reportContent(
         contentId: String,
         reasonType: String,
-        reasonMessage: String
-    ) = withContext(dispatcher.io) {
+        reasonMessage: String,
+        rowNumber: Int
+    ): ReportContentModel = withContext(dispatcher.io) {
         submitReportContentUseCase.setRequestParams(
             SubmitReportContentUseCase.createParam(contentId, reasonType, reasonMessage)
         )
@@ -154,25 +165,26 @@ class ContentDetailRepositoryImpl @Inject constructor(
         if (response.content.errorMessage.isNotEmpty()) {
             throw MessageErrorException(response.content.errorMessage)
         }
+        mapper.mapReportContent(rowNumber)
     }
 
-    override suspend fun trackVisitChannel(channelId: String): Boolean {
+    override suspend fun trackVisitChannel(channelId: String, rowNumber: Int): VisitContentModel {
         return withContext(dispatcher.io) {
             trackVisitChannelUseCase.setRequestParams(
                 FeedBroadcastTrackerUseCase.createParams(channelId)
             )
-            val response = trackVisitChannelUseCase.executeOnBackground()
-            response.reportVisitChannelTracking.success
+            trackVisitChannelUseCase.executeOnBackground()
+            mapper.mapVisitChannel(rowNumber)
         }
     }
 
-    override suspend fun trackViewer(contentId: String): Boolean {
+    override suspend fun trackViewer(contentId: String, rowNumber: Int): VisitContentModel {
         return withContext(dispatcher.io) {
             trackViewerUseCase.setRequestParams(
                 FeedXTrackViewerUseCase.createParams(contentId)
             )
-            val response = trackViewerUseCase.executeOnBackground()
-            response.feedXTrackViewerResponse.success
+            trackViewerUseCase.executeOnBackground()
+            mapper.mapVisitChannel(rowNumber)
         }
     }
 }
