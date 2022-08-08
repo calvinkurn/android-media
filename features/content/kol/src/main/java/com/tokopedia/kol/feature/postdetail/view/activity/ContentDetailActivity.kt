@@ -56,6 +56,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
             val intent = RouteManager.getIntent(it, ApplinkConst.HOME_FEED)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+            finishAffinity()
         }
     }
 
