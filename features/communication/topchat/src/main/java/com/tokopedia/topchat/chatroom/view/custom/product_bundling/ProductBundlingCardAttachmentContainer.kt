@@ -75,22 +75,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         )
     }
 
-    private val bgSender: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
-        ViewUtil.generateBackgroundWithShadow(
-                this,
-                com.tokopedia.unifyprinciples.R.color.Unify_Background,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-                R.dimen.dp_topchat_2,
-                R.dimen.dp_topchat_1,
-                Gravity.CENTER,
-                com.tokopedia.unifyprinciples.R.color.Unify_G200,
-                getStrokeWidthSenderDimenRes()
-            )
-    }
+    private var bgSender: Drawable? = null
 
     private val defaultMarginLeft: Int by lazy(LazyThreadSafetyMode.NONE) {
         (layoutParams as? LinearLayout.LayoutParams)?.leftMargin ?: 0
@@ -379,10 +364,33 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
 
     private fun bindBackground(element: ProductBundlingUiModel) {
         background = if (element.isSender) {
+            setSellerBackground()
             bgSender
         } else {
             bgOpposite
         }
+    }
+
+    private fun setSellerBackground() {
+        val stroke = if (source == BundlingSource.PRODUCT_ATTACHMENT) {
+            com.tokopedia.unifyprinciples.R.color.Unify_G200
+        } else {
+            null
+        }
+        bgSender = ViewUtil.generateBackgroundWithShadow(
+            this,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            stroke,
+            getStrokeWidthSenderDimenRes()
+        )
     }
 
     /**
