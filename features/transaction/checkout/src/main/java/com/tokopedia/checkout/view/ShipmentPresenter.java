@@ -205,6 +205,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private boolean isPurchaseProtectionPage = false;
     private boolean isShowOnboarding;
     private boolean isIneligiblePromoDialogEnabled;
+    private String cartData = "";
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
     private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
@@ -740,6 +741,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
+
+        cartData = cartShipmentAddressFormData.getCartData();
     }
 
     public void setPurchaseProtection(boolean isPurchaseProtectionPage) {
@@ -2064,6 +2067,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .codHistory(counter)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
+                .cartData(cartData)
                 .mvc("");
 
         if (!skipMvc) {
@@ -2115,6 +2119,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         return mvc.replace("\n", "").replace(" ", "");
+    }
+
+    @Override
+    public String getCartDataForRates() {
+        return cartData;
     }
 
     @NonNull
