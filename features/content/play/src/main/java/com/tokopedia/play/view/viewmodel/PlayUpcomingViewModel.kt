@@ -258,7 +258,7 @@ class PlayUpcomingViewModel @Inject constructor(
                     val status: Boolean
 
                     withContext(dispatchers.io) {
-                        playChannelReminderUseCase.setRequestParams(PlayChannelReminderUseCase.createParams(it.id, true))
+                        playChannelReminderUseCase.setRequestParams(PlayChannelReminderUseCase.createParams(it.id, !isReminderSet))
                         val response = playChannelReminderUseCase.executeOnBackground()
                         status = PlayChannelReminderUseCase.checkRequestSuccess(response)
                     }
@@ -266,7 +266,7 @@ class PlayUpcomingViewModel @Inject constructor(
                     if(!status) failedRemindMe()
                     else {
                         _upcomingState.emit(if (isReminderSet) PlayUpcomingState.RemindMe else PlayUpcomingState.Reminded)
-                        _upcomingInfo.setValue { copy(isReminderSet = if(status) !isReminderSet else status) }
+                        _upcomingInfo.setValue { copy(isReminderSet = !isReminderSet) }
 
                         _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(
                             if (!isReminderSet) R.string.play_cancel_remind_me_success else R.string.play_remind_me_success),
