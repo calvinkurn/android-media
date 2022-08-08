@@ -97,7 +97,7 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
 
         const val QUERY_NAME_RECHARGE_ATC = "RechargeAddToCartQuery"
         const val QUERY_RECHARGE_ATC = """
-                mutation RechargeAddToCart(${'$'}request: RechargeAddToCartRequestV2!) {
+            mutation rechargeAddToCartV2(${'$'}request:RechargeAddToCartRequestV2!) {
                   rechargeAddToCartV2(body: ${'$'}request) {
                     data {
                       type
@@ -116,7 +116,7 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
                         sms_state
                         voucher_autocode
                         user_input_price
-                        user_open_payment{
+                        user_open_payment {
                           min_payment_text
                           max_payment_text
                           min_payment
@@ -131,8 +131,6 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
                           label
                           value
                         }
-                        url
-                        applink_url
                       }
                     }
                     errors {
