@@ -589,7 +589,7 @@ class NewShopPageViewModel @Inject constructor(
             affiliateCookieHelper.initCookie(
                 affiliateUUId,
                 affiliateChannel,
-                AffiliatePageDetail(AFFILIATE_PAGE_ID, AffiliateSdkPageSource.Shop(shopId))
+                AffiliatePageDetail(shopId, AffiliateSdkPageSource.Shop(shopId))
             )
         }) {
         }
