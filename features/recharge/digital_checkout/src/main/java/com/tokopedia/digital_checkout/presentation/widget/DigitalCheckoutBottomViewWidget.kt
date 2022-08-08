@@ -122,7 +122,7 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
 
     private fun setLinkMovement(){
 
-        fun redirectToConsentUrl(url: String) = "tokopedia://webview?url=$url&titlebar=false"
+        fun redirectToConsentUrl(url: String) = "tokopedia://webview?url=$url"
 
         view_consent_goto_plus.setOnClickUrl(
             Pair(context.getString(R.string.digital_cart_goto_plus_tos), {
