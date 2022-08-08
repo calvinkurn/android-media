@@ -18,11 +18,12 @@ class LastFilterListenerDelegate @Inject constructor(
     private val productListParameterListener: ProductListParameterListener,
     private val searchParameterProvider: SearchParameterProvider,
     private val filterController: FilterController,
-    private val lastFilterPresenter: LastFilterPresenterDelegate,
+    private val lastFilterPresenter: LastFilterPresenter,
     private val dynamicFilterModelProvider: DynamicFilterModelProvider,
-) : LastFilterListener {
-    private val queryKey: String
-        get() = queryKeyProvider.queryKey
+) : LastFilterListener,
+    QueryKeyProvider by queryKeyProvider,
+    ProductListParameterListener by productListParameterListener,
+    SearchParameterProvider by searchParameterProvider {
 
     override fun onImpressedLastFilter(lastFilterDataView: LastFilterDataView) {
         lastFilterDataView.impress(iris)
@@ -34,9 +35,9 @@ class LastFilterListenerDelegate @Inject constructor(
         filterController.setFilter(lastFilterDataView.filterOptions())
 
         val queryParams = filterController.getParameter() + lastFilterDataView.sortParameter()
-        productListParameterListener.refreshSearchParameter(queryParams)
+        refreshSearchParameter(queryParams)
 
-        productListParameterListener.reloadData()
+        reloadData()
     }
 
     override fun closeLastFilter(lastFilterDataView: LastFilterDataView) {
@@ -46,8 +47,7 @@ class LastFilterListenerDelegate @Inject constructor(
             lastFilterDataView.dimension90,
         )
 
-        val searchParameterMap =
-            searchParameterProvider.getSearchParameter()?.getSearchParameterMap() ?: mapOf()
+        val searchParameterMap = getSearchParameter()?.getSearchParameterMap() ?: mapOf()
 
         recyclerViewUpdater.productListAdapter?.removeLastFilterWidget()
 
@@ -55,7 +55,7 @@ class LastFilterListenerDelegate @Inject constructor(
     }
 
     fun updateLastFilter() {
-        val mapParameter = searchParameterProvider.getSearchParameter()?.getSearchParameterMap() ?: mapOf()
+        val mapParameter = getSearchParameter()?.getSearchParameterMap() ?: mapOf()
         val appliedSort = dynamicFilterModelProvider.dynamicFilterModel?.getAppliedSort(mapParameter)
 
         val savedOptionFromFilter = filterController.getActiveSavedOptionList()

@@ -8,6 +8,7 @@ import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
 class LastFilterDataView(
@@ -28,6 +29,25 @@ class LastFilterDataView(
         componentId = componentId,
         dimension90 = dimension90,
     ) {
+
+    companion object {
+        fun create(
+            lastFilterData: LastFilterModel.Data,
+            keyword: String,
+            dimension90: String,
+        ): LastFilterDataView {
+            return LastFilterDataView(
+                filterList = lastFilterData.filters,
+                title = lastFilterData.title,
+                keyword = keyword,
+                applink = lastFilterData.applink,
+                trackingOption = lastFilterData.trackingOption,
+                componentId = lastFilterData.componentId,
+                dimension90 = dimension90,
+                valueName = lastFilterData.title + lastFilterData.filters.joinToString { it.name }
+            )
+        }
+    }
 
     fun shouldShow() = filterList.isNotEmpty()
 

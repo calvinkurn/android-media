@@ -2,15 +2,19 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.ProductListSectionContract
+import com.tokopedia.search.result.product.DynamicFilterModelProvider
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 
 @Module
-class ProductListPresenterModule {
+abstract class ProductListPresenterModule {
 
     @SearchScope
-    @Provides
-    fun provideProductListPresenter(presenter: ProductListPresenter): ProductListSectionContract.Presenter {
-        return presenter
-    }
+    @Binds
+    abstract fun provideProductListPresenter(presenter: ProductListPresenter): ProductListSectionContract.Presenter
+
+    @SearchScope
+    @Binds
+    abstract fun provideDynamicFilterModel(provider: ProductListPresenter): DynamicFilterModelProvider
 }

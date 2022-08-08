@@ -11,6 +11,7 @@ import dagger.Lazy
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
+import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.INPUT_PARAMS
 
 class LastFilterPresenterDelegate @Inject constructor(
     private val requestParamsGenerator: RequestParamsGenerator,
@@ -18,7 +19,7 @@ class LastFilterPresenterDelegate @Inject constructor(
     @param:Named(SearchConstant.SaveLastFilter.SAVE_LAST_FILTER_USE_CASE)
     private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
 ): LastFilterPresenter {
-    override var categoryIdL2: String = ""
+    var categoryIdL2: String = ""
 
     override fun updateLastFilter(
         searchParameter: Map<String, Any>,
@@ -35,7 +36,7 @@ class LastFilterPresenterDelegate @Inject constructor(
         )
 
         val requestParams = RequestParams.create()
-        requestParams.putObject(SearchConstant.SaveLastFilter.INPUT_PARAMS, saveLastFilterInput)
+        requestParams.putObject(INPUT_PARAMS, saveLastFilterInput)
 
         saveLastFilterUseCase.get().unsubscribe()
         saveLastFilterUseCase.get().execute(requestParams, emptySubscriber())
