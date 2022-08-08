@@ -18,7 +18,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutLogger
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoErrorException
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
-import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.BoPromoBottomSheetUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.BoInfoBottomSheetUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
@@ -91,9 +91,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         get() = _promoListUiModel
 
     // BO Promo Bottom Sheet UI Model
-    private val _boPromoBottomSheetUiModel = MutableLiveData<BoPromoBottomSheetUiModel>()
-    val boPromoBottomSheetUiModel: LiveData<BoPromoBottomSheetUiModel>
-        get() = _boPromoBottomSheetUiModel
+    private val _boInfoBottomSheetUiModel = MutableLiveData<BoInfoBottomSheetUiModel>()
+    val boInfoBottomSheetUiModel: LiveData<BoInfoBottomSheetUiModel>
+        get() = _boInfoBottomSheetUiModel
 
     // Temporary single data. This live data is used for modify or delete single item
     private val _tmpUiModel = MutableLiveData<Action<Visitable<*>>>()
@@ -512,7 +512,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private fun initBoPromoBottomSheet(response: CouponListRecommendationResponse) {
         val boPromoBottomSheetUiModel = uiModelMapper.mapBoPromoBottomSheetUiModel(response.couponListRecommendation.data.bottomSheet)
-        _boPromoBottomSheetUiModel.value = boPromoBottomSheetUiModel
+        _boInfoBottomSheetUiModel.value = boPromoBottomSheetUiModel
     }
 
     private fun getAllPreSelectedPromo(response: CouponListRecommendationResponse): ArrayList<String> {

@@ -131,8 +131,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val DELAY_DEFAULT_IN_MILIS = 500L
 
         private const val PREFERENCES_NAME = "promo_coachmark_preferences"
+        private const val PREFERENCES_NAME_PROMO_INFO = "promo_info_preferences"
 
         private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
+        private const val KEY_HAS_SEEN_BO_INFO_BOTTOM_SHEET = "has_seen_bo_unstack_info_bottom_sheet"
+
         private const val DESTINATION_BACK = "back"
         private const val DESTINATION_REFRESH = "refresh"
 
@@ -235,7 +238,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeEmptyStateUiModel()
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
-        observeBoPromoBottomSheetUiModel()
+        observeBoInfoBottomSheetUiModel()
 
         // Observe network call result
         observeGetCouponRecommendationResult()
@@ -658,14 +661,17 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         })
     }
 
-    private fun observeBoPromoBottomSheetUiModel() {
-        viewModel.boPromoBottomSheetUiModel.observe(viewLifecycleOwner) { uiModel ->
-            context?.let {
-                showBoPromoBottomSheet(
-                    fragmentManager = parentFragmentManager,
-                    context = it,
-                    uiModel = uiModel
-                )
+    private fun observeBoInfoBottomSheetUiModel() {
+        viewModel.boInfoBottomSheetUiModel.observe(viewLifecycleOwner) { uiModel ->
+            if (!hasSeenBoPromoBottomSheet()) {
+                context?.let {
+                    showBoPromoBottomSheet(
+                        fragmentManager = parentFragmentManager,
+                        context = it,
+                        uiModel = uiModel
+                    )
+                }
+                setHasSeenBoInfoBottomSheet()
             }
         }
     }
@@ -1176,5 +1182,17 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(tmpIndex, tabHeight)
             }
         }
+    }
+
+    private fun hasSeenBoPromoBottomSheet() : Boolean {
+        return context?.getSharedPreferences(PREFERENCES_NAME_PROMO_INFO, Context.MODE_PRIVATE)
+            ?.getBoolean(KEY_HAS_SEEN_BO_INFO_BOTTOM_SHEET, false) ?: false
+    }
+
+    private fun setHasSeenBoInfoBottomSheet() {
+        context?.getSharedPreferences(PREFERENCES_NAME_PROMO_INFO, Context.MODE_PRIVATE)
+            ?.edit()
+            ?.putBoolean(KEY_HAS_SEEN_BO_INFO_BOTTOM_SHEET, true)
+            ?.apply()
     }
 }

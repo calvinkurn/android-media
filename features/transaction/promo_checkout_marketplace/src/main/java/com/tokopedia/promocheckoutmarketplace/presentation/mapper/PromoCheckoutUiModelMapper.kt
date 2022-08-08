@@ -11,7 +11,7 @@ import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionRe
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.SectionTab
 import com.tokopedia.promocheckoutmarketplace.data.response.SubSection
-import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.BoPromoBottomSheetUiModel
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.BoInfoBottomSheetUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEligibilityHeaderUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel
@@ -264,8 +264,8 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapBoPromoBottomSheetUiModel(bottomSheet: BottomSheet): BoPromoBottomSheetUiModel {
-        return BoPromoBottomSheetUiModel(
+    fun mapBoPromoBottomSheetUiModel(bottomSheet: BottomSheet): BoInfoBottomSheetUiModel {
+        return BoInfoBottomSheetUiModel(
             title = bottomSheet.title,
             contentTitle = bottomSheet.contentTitle,
             contentDescription = bottomSheet.contentDescription,
