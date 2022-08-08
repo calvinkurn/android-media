@@ -138,18 +138,6 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
                     errors {
                       status
                       title
-                      atc_error_page {
-                        show_error_page
-                        title
-                        subtitle
-                        image_url
-                        buttons {
-                          label
-                          url
-                          applink_url
-                          type
-                        }
-                      }
                     }
                   }
                 }
