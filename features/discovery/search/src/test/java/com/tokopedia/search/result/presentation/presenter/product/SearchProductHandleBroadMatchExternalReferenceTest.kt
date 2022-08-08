@@ -21,13 +21,13 @@ private const val dynamicProductCarousel = "searchproduct/inspirationcarousel/dy
 internal class SearchProductHandleBroadMatchExternalReferenceTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
-    private val className = "SearchClassName"
-    private var externalReference = ""
 
-    private fun `Given View already load data with broad match`(searchProductModel: SearchProductModel) {
+    private fun `Given View already load data with broad match`(
+        searchProductModel: SearchProductModel,
+        externalReference: String = ""
+    ) {
         `Given Search Product API will return SearchProductModel`(searchProductModel)
-        `Given class name`()
-        `Given view already load data`()
+        `Given view already load data`(externalReference)
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -36,11 +36,7 @@ internal class SearchProductHandleBroadMatchExternalReferenceTest: ProductListPr
         }
     }
 
-    private fun `Given class name`() {
-        every { productListView.className } returns className
-    }
-
-    private fun `Given view already load data`() {
+    private fun `Given view already load data`(externalReference: String) {
         every { productListView.setProductList(capture(visitableListSlot)) } just runs
 
         productListPresenter.loadData(mapOf(
@@ -58,13 +54,13 @@ internal class SearchProductHandleBroadMatchExternalReferenceTest: ProductListPr
 
     @Test
     fun `Top ads broad match item with externalReference`() {
-        externalReference = "1234567"
+        val expectedExternalReference = "1234567"
         val searchProductModel = broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
-        `Given View already load data with broad match`(searchProductModel)
+        `Given View already load data with broad match`(searchProductModel, expectedExternalReference)
 
         val broadMatchAds = findBroadMatchItemFromVisitableList(true)
 
-        `Then verify externalReference`(broadMatchAds.externalReference)
+        `Then verify externalReference`(broadMatchAds.externalReference, expectedExternalReference)
     }
 
     @Test
@@ -79,13 +75,13 @@ internal class SearchProductHandleBroadMatchExternalReferenceTest: ProductListPr
 
     @Test
     fun `Broad match item with externalReference`() {
-        externalReference = "1234567"
+        val expectedExternalReference = "1234567"
         val searchProductModel = broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
-        `Given View already load data with broad match`(searchProductModel)
+        `Given View already load data with broad match`(searchProductModel, expectedExternalReference)
 
         val broadMatchNotAds = findBroadMatchItemFromVisitableList(false)
 
-        `Then verify externalReference`(broadMatchNotAds.externalReference)
+        `Then verify externalReference`(broadMatchNotAds.externalReference, expectedExternalReference)
     }
 
     @Test
@@ -100,13 +96,13 @@ internal class SearchProductHandleBroadMatchExternalReferenceTest: ProductListPr
 
     @Test
     fun `Dynamic carousel as broad match with externalReference`() {
-        externalReference = "1234567"
+        val expectedExternalReference = "1234567"
         val searchProductModel = dynamicProductCarousel.jsonToObject<SearchProductModel>()
-        `Given View already load data with broad match`(searchProductModel)
+        `Given View already load data with broad match`(searchProductModel, expectedExternalReference)
 
         val dynamicProductCarousel = findBroadMatchItemFromVisitableList(false)
 
-        `Then verify externalReference`(dynamicProductCarousel.externalReference)
+        `Then verify externalReference`(dynamicProductCarousel.externalReference, expectedExternalReference)
     }
 
     @Test
@@ -119,7 +115,10 @@ internal class SearchProductHandleBroadMatchExternalReferenceTest: ProductListPr
         `Then verify externalReference`(dynamicProductCarousel.externalReference)
     }
 
-    private fun `Then verify externalReference`(actualExternalReference: String) {
-        actualExternalReference shouldBe externalReference
+    private fun `Then verify externalReference`(
+        actualExternalReference: String,
+        expectedExternalReference: String = "",
+    ) {
+        actualExternalReference shouldBe expectedExternalReference
     }
 }

@@ -19,21 +19,14 @@ private const val searchProductWithTopAdsResponseJSON = "searchproduct/with-topa
 internal class SearchProductHandleProductExternalReferenceTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
-    private val className = "SearchClassName"
-    private var externalReference = ""
 
-    private fun `Configure should show coachmark`(
-            shouldShow: Boolean
+    private fun `Given View already load data`(
+        responseJSON: String,
+        externalReference: String = "",
     ) {
-        every { searchCoachMarkLocalCache.shouldShowBoeCoachmark() } answers { shouldShow }
-    }
-
-    private fun `Given View already load data`(responseJSON: String, shouldShowCoachmark: Boolean = false) {
         val searchProductModel = responseJSON.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
-        `Configure should show coachmark`(shouldShowCoachmark)
-        `Given className from view`()
-        `Given view already load data`()
+        `When view load data`(externalReference)
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -42,11 +35,7 @@ internal class SearchProductHandleProductExternalReferenceTest: ProductListPrese
         }
     }
 
-    private fun `Given className from view`() {
-        every { productListView.className } returns className
-    }
-
-    private fun `Given view already load data`() {
+    private fun `When view load data`(externalReference: String) {
         every { productListView.setProductList(capture(visitableListSlot)) } just runs
 
         productListPresenter.loadData(mapOf(
@@ -60,24 +49,27 @@ internal class SearchProductHandleProductExternalReferenceTest: ProductListPrese
         return visitableList.find { it is ProductItemDataView && it.isTopAds == isTopAds && it.isOrganicAds == isOrganicAds } as ProductItemDataView
     }
 
-    private fun `Then verify externalReference`(actualExternalReference: String) {
-        actualExternalReference shouldBe externalReference
+    private fun `Then verify externalReference`(
+        actualExternalReference: String,
+        expectedExternalReference: String = "",
+    ) {
+        actualExternalReference shouldBe expectedExternalReference
     }
 
     @Test
     fun `Organic Product with external Reference`() {
-        externalReference = "1234567"
+        val expectedExternalReference = "1234567"
 
-        `Given View already load data`(searchProductWithTopAdsResponseJSON, false)
+        `Given View already load data`(searchProductWithTopAdsResponseJSON)
 
         val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = false)
 
-        `Then verify externalReference`(productItemViewModel.dimension131)
+        `Then verify externalReference`(productItemViewModel.dimension131, expectedExternalReference)
     }
 
     @Test
     fun `Organic Product without external Reference`() {
-        `Given View already load data`(searchProductWithTopAdsResponseJSON, false)
+        `Given View already load data`(searchProductWithTopAdsResponseJSON)
 
         val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = false)
 
@@ -86,18 +78,18 @@ internal class SearchProductHandleProductExternalReferenceTest: ProductListPrese
 
     @Test
     fun `Organic Ads with external Reference`() {
-        externalReference = "1234567"
+        val expectedExternalReference = "1234567"
 
-        `Given View already load data`(searchProductWithTopAdsResponseJSON, false)
+        `Given View already load data`(searchProductWithTopAdsResponseJSON)
 
         val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = true)
 
-        `Then verify externalReference`(productItemViewModel.dimension131)
+        `Then verify externalReference`(productItemViewModel.dimension131, expectedExternalReference)
     }
 
     @Test
     fun `Organic Ads without external Reference`() {
-        `Given View already load data`(searchProductWithTopAdsResponseJSON, false)
+        `Given View already load data`(searchProductWithTopAdsResponseJSON)
 
         val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = true)
 
@@ -106,18 +98,18 @@ internal class SearchProductHandleProductExternalReferenceTest: ProductListPrese
 
     @Test
     fun `Top Ads with external Reference`() {
-        externalReference = "1234567"
+        val expectedExternalReference = "1234567"
 
-        `Given View already load data`(searchProductWithTopAdsResponseJSON, false)
+        `Given View already load data`(searchProductWithTopAdsResponseJSON)
 
         val productItemViewModel = findProductItemFromVisitableList(isTopAds = true, isOrganicAds = false)
 
-        `Then verify externalReference`(productItemViewModel.dimension131)
+        `Then verify externalReference`(productItemViewModel.dimension131, expectedExternalReference)
     }
 
     @Test
     fun `Top Ads without external Reference`() {
-        `Given View already load data`(searchProductWithTopAdsResponseJSON, false)
+        `Given View already load data`(searchProductWithTopAdsResponseJSON)
 
         val productItemViewModel = findProductItemFromVisitableList(isTopAds = true, isOrganicAds = false)
 
