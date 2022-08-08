@@ -156,10 +156,7 @@ class PlayViewerPiPView : ConstraintLayout {
                 removePiP()
                 val intent = RouteManager.getIntent(
                         context,
-                        UriUtil.buildUriAppendParams(
-                                ApplinkConst.PLAY_DETAIL,
-                                getApplinkQueryParams(pipInfo)
-                        ),
+                        getAppLink(pipInfo),
                         pipInfo.channelId
                 ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         .putExtra(EXTRA_PLAY_START_TIME, mVideoPlayer.getCurrentPosition().toString())
@@ -203,8 +200,9 @@ class PlayViewerPiPView : ConstraintLayout {
         )
     }
 
-    private fun getApplinkQueryParams(pipInfo: PiPInfoUiModel): Map<String, Any> =
-        if (pipInfo.sourceId.isNotEmpty()) mapOf(PLAY_KEY_SOURCE_ID to pipInfo.sourceId) else emptyMap()
+    private fun getAppLink(pipInfo: PiPInfoUiModel): String = UriUtil.buildUriAppendParams(
+                ApplinkConst.PLAY_DETAIL,
+                if (pipInfo.sourceId.isNotEmpty()) mapOf(PLAY_KEY_SOURCE_ID to pipInfo.sourceId) else null)
 
     companion object {
         private const val EXTRA_PLAY_START_TIME = "start_time"
