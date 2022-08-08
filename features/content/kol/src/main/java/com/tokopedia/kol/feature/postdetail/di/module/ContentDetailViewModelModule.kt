@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.kol.feature.postdetail.di.ContentDetailScope
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailRevampViewModel
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -21,7 +21,7 @@ abstract class ContentDetailViewModelModule {
     @ContentDetailScope
     @Binds
     @IntoMap
-    @ViewModelKey(ContentDetailRevampViewModel::class)
-    internal abstract fun bindViewModel(viewModel: ContentDetailRevampViewModel): ViewModel
+    @ViewModelKey(ContentDetailViewModel::class)
+    internal abstract fun bindViewModel(viewModel: ContentDetailViewModel): ViewModel
 
 }

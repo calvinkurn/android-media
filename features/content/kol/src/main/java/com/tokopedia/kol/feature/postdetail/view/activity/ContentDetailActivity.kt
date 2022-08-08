@@ -4,12 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.kol.feature.postdetail.view.fragment.ContentDetailFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
-import com.tokopedia.kol.feature.postdetail.view.fragment.ContentDetailPageRevampedFragment
 import javax.inject.Inject
 
 class ContentDetailActivity : BaseSimpleActivity() {
@@ -25,7 +25,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
                 PARAM_POST_ID, postId()
             )
         }
-        return ContentDetailPageRevampedFragment.newInstance(bundle)
+        return ContentDetailFragment.newInstance(bundle)
     }
 
     private fun postId(): String {

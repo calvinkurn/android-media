@@ -35,7 +35,7 @@ import com.tokopedia.kol.common.di.KolComponent
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.adapter.MediaPagerAdapter
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.kol.feature.video.view.adapter.MediaTagAdapter
 import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
 import com.tokopedia.kolcommon.util.TimeConverter
@@ -49,7 +49,6 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.fragment_media_preview.*
@@ -155,7 +154,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         super.onDestroyView()
     }
 
-    private fun onSuccessGetDetail(data: PostDetailViewModel) {
+    private fun onSuccessGetDetail(data: PostDetailUiModel) {
         val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?
         dynamicPost?.let {
             bindToolbar(it)

@@ -1,6 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.view.datamodel
 
-class ContentDetailRevampArgumentModel {
+class ContentDetailArgumentModel {
     companion object {
         //region Kol Comment Param
         const val ARGS_AUTHOR_TYPE = "ARGS_AUTHOR_TYPE"

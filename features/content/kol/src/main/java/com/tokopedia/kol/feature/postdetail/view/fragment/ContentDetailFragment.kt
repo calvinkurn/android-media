@@ -34,7 +34,7 @@ import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.di.DaggerContentDetailComponent
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
 import com.tokopedia.kol.feature.postdetail.view.activity.ContentDetailActivity
-import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailPageRevampAdapter
+import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailAdapter
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
@@ -57,7 +57,7 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDa
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailRevampViewModel
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailViewModel
 import com.tokopedia.kol.feature.video.view.fragment.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
@@ -89,8 +89,7 @@ import com.tokopedia.network.R as networkR
  * Created by shruti agarwal on 15/06/22
  */
 
-class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheetListener,
-    ContentDetailPostViewHolder.CDPListener, ProductItemInfoBottomSheet.Listener {
+class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder.CDPListener, ShareCallback, ProductItemInfoBottomSheet.Listener{
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
@@ -102,7 +101,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
     private lateinit var reportBottomSheet: ReportBottomSheet
     private lateinit var productTagBS: ProductItemInfoBottomSheet
 
-    private val adapter = ContentDetailPageRevampAdapter(
+    private val adapter = ContentDetailAdapter(
         ContentDetailListener = this
     )
     private var contentDetailSource = ""
@@ -122,9 +121,9 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
     private lateinit var shareData: LinkerData
 
-    private val viewModel: ContentDetailRevampViewModel by lazy {
+    private val viewModel: ContentDetailViewModel by lazy {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory)
-        viewModelProvider.get(ContentDetailRevampViewModel::class.java)
+        viewModelProvider.get(ContentDetailViewModel::class.java)
     }
 
     companion object {
@@ -137,8 +136,8 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
 
         @JvmStatic
-        fun newInstance(bundle: Bundle?): ContentDetailPageRevampedFragment {
-            val fragment = ContentDetailPageRevampedFragment()
+        fun newInstance(bundle: Bundle?): ContentDetailFragment {
+            val fragment = ContentDetailFragment()
             fragment.arguments = bundle
             return fragment
         }
@@ -171,54 +170,10 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
             cDPPostRecomData.observe(viewLifecycleOwner, {
                 when (it) {
                     is Success -> {
-                        onSuccessGetCDPRecomData(ContentDetailRevampDataUiModel(postList = it.data.posts))
+                        onSuccessGetCDPRecomData(it.data)
                     }
                     else -> {
                         showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
-                    }
-                }
-            })
-            longVideoViewTrackResponse.observe(viewLifecycleOwner,  {
-                when (it) {
-                    is Success -> {
-                        onSuccessAddViewVODPost(it.data.rowNumber)
-                    }
-                    //TODO fail case
-                    else ->{}
-                }
-            })
-
-            atcRespData.observe(viewLifecycleOwner,  {
-                when (it) {
-                    is Success -> {
-                        val data = it.data
-                        when {
-                            data.isSuccess -> {
-                                Toaster.build(
-                                    requireView(),
-                                    getString(kolR.string.feed_added_to_cart),
-                                    Toaster.LENGTH_LONG,
-                                    Toaster.TYPE_NORMAL,
-                                    getString(kolR.string.feed_go_to_cart),
-                                    View.OnClickListener {
-                                        onAddToCartSuccess()
-                                    }).show()
-                            }
-                            data.errorMsg.isNotEmpty() -> {
-                                showToast(data.errorMsg, Toaster.TYPE_ERROR)
-                            }
-                            else -> {
-                                onAddToCartFailed(data.applink)
-                            }
-                        }
-                    }
-                    is Fail -> {
-                        Timber.e(it.throwable)
-                        val errorMessage = it.throwable.message ?: getString(networkR.string.default_request_error_unknown)
-                        showToast(
-                            errorMessage,
-                            Toaster.TYPE_ERROR
-                        )
                     }
                 }
             })
@@ -239,7 +194,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         contentDetailSource = (requireActivity() as ContentDetailActivity).getSource()
 
         setupView(view)
-        viewModel.getCDPPostDetailFirstData(postId)
+        viewModel.getContentDetail(postId)
 
 
         observeLikeContent()
@@ -247,7 +202,8 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         observeFollowShop()
         observeDeleteContent()
         observeReportContent()
-        observeTrackVisitChannel()
+        observeVideoViewData()
+        observeAddToCart()
     }
 
     private fun setupView(view: View) {
@@ -265,7 +221,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(cdpRecyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.getCDPRecomData(postId)
+                viewModel.getContentDetailRecommendation(postId)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -317,22 +273,22 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
     }
 
 
-    private fun onSuccessGetFirstPostCDPData(contentDetailRevampDataUiModel: ContentDetailRevampDataUiModel){
+    private fun onSuccessGetFirstPostCDPData(data: ContentDetailUiModel){
         (activity as? ContentDetailActivity)?.setContentDetailMainPostData(
             contentDetailRevampDataUiModel.postList.firstOrNull()
         )
 
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
-        adapter.setItemsAndAnimateChanges(contentDetailRevampDataUiModel.postList)
-        viewModel.getCDPRecomData(postId)
+        adapter.setItemsAndAnimateChanges(data.postList)
+        viewModel.getContentDetailRecommendation(postId)
 
     }
-    private fun onSuccessGetCDPRecomData(contentDetailRevampDataUiModel: ContentDetailRevampDataUiModel){
+
+    private fun onSuccessGetCDPRecomData(data: ContentDetailUiModel){
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
-        adapter.addItemsAndAnimateChanges(contentDetailRevampDataUiModel.postList)
-
+        adapter.addItemsAndAnimateChanges(data.postList)
     }
 
     private fun showToast(message: String, type: Int, actionText: String? = null) {
@@ -343,7 +299,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
         }
     }
-
 
     override fun getScreenName(): String {
         return "CDP Revamp Fragment"
@@ -358,6 +313,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
             .build()
             .inject(this)
     }
+
     private fun onGoToLogin() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
@@ -504,10 +460,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
             view.count = view.count + 1
 
         }
-    }
-
-    private fun onErrorLikeDislikeKolPost(errorMessage: String) {
-        showToast(errorMessage, Toaster.TYPE_ERROR)
     }
 
     private fun openCommentPage(
@@ -1201,13 +1153,13 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         )
         val intent = RouteManager.getIntent(context, feedXCard.appLinkProductList)
         intent.putExtra(
-            ContentDetailRevampArgumentModel.IS_FOLLOWED,
+            ContentDetailArgumentModel.IS_FOLLOWED,
             feedXCard.followers.isFollowed
         )
-        intent.putExtra(ContentDetailRevampArgumentModel.PARAM_SHOP_ID, feedXCard.author.id)
-        intent.putExtra(ContentDetailRevampArgumentModel.SHOP_NAME, feedXCard.author.name)
-        intent.putExtra(ContentDetailRevampArgumentModel.PARAM_ACTIVITY_ID, postId)
-        intent.putExtra(ContentDetailRevampArgumentModel.PARAM_POST_TYPE, feedXCard.typename)
+        intent.putExtra(ContentDetailArgumentModel.PARAM_SHOP_ID, feedXCard.author.id)
+        intent.putExtra(ContentDetailArgumentModel.SHOP_NAME, feedXCard.author.name)
+        intent.putExtra(ContentDetailArgumentModel.PARAM_ACTIVITY_ID, postId)
+        intent.putExtra(ContentDetailArgumentModel.PARAM_POST_TYPE, feedXCard.typename)
         requireActivity().startActivity(intent)
 
     }
@@ -1533,7 +1485,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
                 postTagItem.productName,
                 postTagItem.price.toString(),
                 shopId,
-                postTagItem.appLink
             )
         } else {
             onGoToLogin()
@@ -1582,10 +1533,6 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
     private fun onAddToCartSuccess() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-    }
-
-    private fun onAddToCartFailed(pdpAppLink: String) {
-        onGoToLink(pdpAppLink)
     }
 
     private fun onSuccessDeletePost(rowNumber: Int) {
@@ -1720,7 +1667,7 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
         })
     }
 
-    private fun observeTrackVisitChannel() {
+    private fun observeVideoViewData() {
         viewModel.vodViewData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 ContentDetailResult.Loading -> {}
@@ -1882,5 +1829,33 @@ class ContentDetailPageRevampedFragment : BaseDaggerFragment(), ShareBottomsheet
 
     }
 
+
+    private fun observeAddToCart() {
+        viewModel.atcRespData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                ContentDetailResult.Loading -> {
+                    // todo: add loading state?
+                }
+                is ContentDetailResult.Failure -> {
+                    val errorMessage = it.error.message ?: getString(networkR.string.default_request_error_unknown)
+                    showToast(
+                        errorMessage,
+                        Toaster.TYPE_ERROR
+                    )
+                }
+                is ContentDetailResult.Success -> {
+                    Toaster.build(
+                        requireView(),
+                        getString(kolR.string.feed_added_to_cart),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        getString(kolR.string.feed_go_to_cart)
+                    ) {
+                        onAddToCartSuccess()
+                    }.show()
+                }
+            }
+        })
+    }
     //endregion
 }

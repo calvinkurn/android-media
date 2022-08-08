@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailRepositoryModule
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailViewModelModule
-import com.tokopedia.kol.feature.postdetail.view.fragment.ContentDetailPageRevampedFragment
+import com.tokopedia.kol.feature.postdetail.view.fragment.ContentDetailFragment
 import dagger.Component
 
 /**
@@ -21,6 +21,6 @@ import dagger.Component
 )
 interface ContentDetailComponent {
 
-    fun inject(fragment: ContentDetailPageRevampedFragment)
+    fun inject(fragment: ContentDetailFragment)
 
 }

@@ -6,7 +6,7 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
-import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class GetPostDetailUseCaseSeller @Inject constructor(
         @ApplicationContext val context: Context,
         private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-) : UseCase<PostDetailViewModel>() {
+) : UseCase<PostDetailUiModel>() {
 
     companion object {
 
@@ -41,8 +41,8 @@ class GetPostDetailUseCaseSeller @Inject constructor(
 
     }
 
-    override fun createObservable(requestParams: RequestParams): Observable<PostDetailViewModel> {
-        val domain = PostDetailViewModel()
+    override fun createObservable(requestParams: RequestParams): Observable<PostDetailUiModel> {
+        val domain = PostDetailUiModel.Empty
         return getPostDetail(domain, createParamDynamicFeed(requestParams))
                 .flatMap { addFooter(domain) }
     }
@@ -58,8 +58,8 @@ class GetPostDetailUseCaseSeller @Inject constructor(
         )
     }
 
-    private fun getPostDetail(domain: PostDetailViewModel, requestParams: RequestParams):
-            Observable<PostDetailViewModel> {
+    private fun getPostDetail(domain: PostDetailUiModel, requestParams: RequestParams):
+            Observable<PostDetailUiModel> {
         return getDynamicFeedUseCase.createObservable(requestParams).flatMap { dynamicFeed ->
             domain.dynamicPostViewModel.cursor = dynamicFeed.cursor
             domain.dynamicPostViewModel.hasNext = dynamicFeed.hasNext
@@ -68,11 +68,10 @@ class GetPostDetailUseCaseSeller @Inject constructor(
         }.flatMap { addFooter(domain) }
     }
 
-    private fun addFooter(domain: PostDetailViewModel): Observable<PostDetailViewModel> {
-        val footerModel: PostDetailFooterModel =
-                convertToPostDetailFooterModel(domain.dynamicPostViewModel)
-        domain.footerModel = footerModel
-        return Observable.just(domain)
+    private fun addFooter(domain: PostDetailUiModel): Observable<PostDetailUiModel> {
+        return Observable.just(domain.copy(
+            footerModel = convertToPostDetailFooterModel(domain.dynamicPostViewModel)
+        ))
 
     }
 
