@@ -1,7 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.domain
 
-import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.usecase.coroutines.Result
@@ -24,12 +23,14 @@ interface ContentDetailRepository {
     suspend fun likeContent(
         contentId: String,
         action: ContentLikeAction,
-    )
+        rowNumber: Int,
+    ): LikeContentModel
 
     suspend fun followShop(
         shopId: String,
         action: ShopFollowAction,
-    )
+        rowNumber: Int,
+    ): ShopFollowModel
 
     suspend fun addToCart(
         productId: String,
@@ -43,20 +44,24 @@ interface ContentDetailRepository {
     ): Result<AddToWishlistV2Response.Data.WishlistAddV2>
 
     suspend fun deleteContent(
-        contentId: String
-    )
+        contentId: String,
+        rowNumber: Int,
+    ): DeleteContentModel
 
     suspend fun reportContent(
         contentId: String,
         reasonType: String,
         reasonMessage: String,
-    )
+        rowNumber: Int,
+    ): ReportContentModel
 
     suspend fun trackVisitChannel(
         channelId: String,
-    ): Boolean
+        rowNumber: Int,
+    ): VisitContentModel
 
     suspend fun trackViewer(
-        contentId: String
-    ): Boolean
+        contentId: String,
+        rowNumber: Int,
+    ): VisitContentModel
 }

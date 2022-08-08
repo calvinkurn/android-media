@@ -1,9 +1,9 @@
 package com.tokopedia.kol.model
 
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
-import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendation
-import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.*
+import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
+import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 
 /**
  * Created by meyta.taliti on 07/08/22.
@@ -18,17 +18,25 @@ class ContentDetailModelBuilder {
         cursor = cursor,
     )
 
-    fun getContentRecommendation(
-        contents: List<FeedXCard> = emptyList(),
-        nextCursor: String = "",
-    ) = FeedXPostRecommendation(
-        posts = contents,
-        nextCursor = nextCursor
+    fun getLikeContentModel(
+        likeAction: ContentLikeAction,
+        rowNumber: Int = 0,
+    ) = LikeContentModel(
+        rowNumber = rowNumber,
+        action = likeAction
     )
 
-    fun getContentRecommendationData(
-        postRecommendation: FeedXPostRecommendation
-    ) = FeedXPostRecommendationData(
-        postRecommendation
+    fun getShopFollowModel(
+        followAction: ShopFollowAction,
+        rowNumber: Int = 0,
+    ) = ShopFollowModel(
+        rowNumber = rowNumber,
+        action = followAction,
     )
+
+    fun getVisitContentModel(rowNumber: Int = 0) = VisitContentModel(rowNumber)
+
+    fun getDeleteContentModel(rowNumber: Int = 0) = DeleteContentModel(rowNumber)
+
+    fun getReportContentModel(rowNumber: Int = 0) = ReportContentModel(rowNumber)
 }

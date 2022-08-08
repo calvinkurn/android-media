@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
-import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
@@ -21,7 +20,6 @@ import javax.inject.Inject
 class ContentDetailViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val repository: ContentDetailRepository,
-    private val mapper: ContentDetailMapper,
 ): BaseViewModel(dispatcher.main) {
 
     var currentCursor = ""
@@ -85,10 +83,8 @@ class ContentDetailViewModel @Inject constructor(
     fun likeContent(contentId: String, action: ContentLikeAction, rowNumber: Int) {
         _likeKolResp.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            repository.likeContent(contentId, action)
-            _likeKolResp.value = ContentDetailResult.Success(
-                mapper.mapLikeContent(rowNumber, action)
-            )
+            val response = repository.likeContent(contentId, action, rowNumber)
+            _likeKolResp.value = ContentDetailResult.Success(response)
         }) {
             _likeKolResp.value = ContentDetailResult.Failure(it)
         }
@@ -96,10 +92,8 @@ class ContentDetailViewModel @Inject constructor(
 
     fun followShop(shopId: String, action: ShopFollowAction, rowNumber: Int) {
         launchCatchError(block = {
-            repository.followShop(shopId, action)
-            _followShopObservable.value = ContentDetailResult.Success(
-                mapper.mapShopFollow(rowNumber, action)
-            )
+            val response = repository.followShop(shopId, action, rowNumber)
+            _followShopObservable.value = ContentDetailResult.Success(response)
         }) {
             _followShopObservable.value = ContentDetailResult.Failure(it) {
                 followShop(shopId, action, rowNumber)
@@ -110,10 +104,8 @@ class ContentDetailViewModel @Inject constructor(
     fun trackVisitChannel(channelId: String, rowNumber: Int) {
         _trackVodVisitContentData.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            repository.trackVisitChannel(channelId)
-            _trackVodVisitContentData.value = ContentDetailResult.Success(
-                mapper.mapVisitChannel(rowNumber)
-            )
+            val response = repository.trackVisitChannel(channelId, rowNumber)
+            _trackVodVisitContentData.value = ContentDetailResult.Success(response)
         }) {
             _trackVodVisitContentData.value = ContentDetailResult.Failure(it)
         }
@@ -122,10 +114,8 @@ class ContentDetailViewModel @Inject constructor(
     fun trackLongVideoView(activityId: String, rowNumber: Int) {
         _trackVodVisitContentData.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            repository.trackViewer(activityId)
-            _trackVodVisitContentData.value = ContentDetailResult.Success(
-                mapper.mapVisitChannel(rowNumber)
-            )
+            val response = repository.trackViewer(activityId, rowNumber)
+            _trackVodVisitContentData.value = ContentDetailResult.Success(response)
         }) {
             _trackVodVisitContentData.value = ContentDetailResult.Failure(it)
         }
@@ -160,10 +150,8 @@ class ContentDetailViewModel @Inject constructor(
         reasonMessage: String,
     ) {
         launchCatchError(block = {
-            repository.reportContent(contentId, reasonType, reasonMessage)
-            _reportResponse.value = ContentDetailResult.Success(
-                mapper.mapReportContent(positionInFeed)
-            )
+            val response = repository.reportContent(contentId, reasonType, reasonMessage, positionInFeed)
+            _reportResponse.value = ContentDetailResult.Success(response)
         }) {
             _reportResponse.value = ContentDetailResult.Failure(it) {
                 sendReport(positionInFeed, contentId, reasonType, reasonMessage)
@@ -174,10 +162,8 @@ class ContentDetailViewModel @Inject constructor(
     fun deleteContent(contentId: String, rowNumber: Int) {
         _deletePostResp.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            repository.deleteContent(contentId)
-            _deletePostResp.value = ContentDetailResult.Success(
-                mapper.mapDeleteContent(rowNumber)
-            )
+            val response = repository.deleteContent(contentId, rowNumber)
+            _deletePostResp.value = ContentDetailResult.Success(response)
         }) {
             _deletePostResp.value = ContentDetailResult.Failure(it) {
                 deleteContent(contentId, rowNumber)
