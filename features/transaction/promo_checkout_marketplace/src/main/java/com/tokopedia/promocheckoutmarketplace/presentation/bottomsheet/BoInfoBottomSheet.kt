@@ -1,7 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet
 
 import android.content.Context
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.promocheckoutmarketplace.databinding.LayoutBottomsheetBoInfoBinding
@@ -12,7 +11,7 @@ import com.tokopedia.utils.htmltags.HtmlUtil
 fun showBoInfoBottomSheet(
     fragmentManager: FragmentManager,
     context: Context,
-    uiModel: BoInfoBottomSheetUiModel
+    uiData: BoInfoBottomSheetUiModel.UiData
 ) {
     BottomSheetUnify().apply {
         val binding = LayoutBottomsheetBoInfoBinding.inflate(LayoutInflater.from(context))
@@ -20,19 +19,18 @@ fun showBoInfoBottomSheet(
         showCloseIcon = true
         showHeader = true
 
-        setTitle(uiModel.title)
+        setTitle(uiData.title)
         with(binding) {
-            imageBanner.setImageUrl(uiModel.imageUrl)
-            contentTitle.text = uiModel.contentTitle
-            contentDescription.text = HtmlUtil.fromHtml(uiModel.contentDescription).trim()
-            contentDescription.movementMethod = LinkMovementMethod.getInstance()
-            buttonAction.text = uiModel.buttonText
+            imageBanner.setImageUrl(uiData.imageUrl)
+            contentTitle.text = uiData.contentTitle
+            contentDescription.text = HtmlUtil.fromHtml(uiData.contentDescription).trim()
+            buttonAction.text = uiData.buttonText
             buttonAction.setOnClickListener {
                 dismiss()
             }
         }
 
         setChild(binding.root)
-        show(fragmentManager, "BO Promo")
+        show(fragmentManager, "BO Info")
     }
 }

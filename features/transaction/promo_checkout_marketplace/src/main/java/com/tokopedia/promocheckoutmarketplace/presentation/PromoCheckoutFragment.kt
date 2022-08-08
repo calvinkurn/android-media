@@ -663,12 +663,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeBoInfoBottomSheetUiModel() {
         viewModel.boInfoBottomSheetUiModel.observe(viewLifecycleOwner) { uiModel ->
-            if (!hasSeenBoInfoBottomSheet()) {
+            if (!hasSeenBoInfoBottomSheet() && uiModel.uiState.isVisible) {
                 context?.let {
                     showBoInfoBottomSheet(
                         fragmentManager = parentFragmentManager,
                         context = it,
-                        uiModel = uiModel
+                        uiData = uiModel
                     )
                 }
                 setHasSeenBoInfoBottomSheet()

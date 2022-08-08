@@ -266,11 +266,18 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
 
     fun mapBoInfoBottomSheetUiModel(bottomSheet: BottomSheet): BoInfoBottomSheetUiModel {
         return BoInfoBottomSheetUiModel(
-            title = bottomSheet.title,
-            contentTitle = bottomSheet.contentTitle,
-            contentDescription = bottomSheet.contentDescription,
-            imageUrl = bottomSheet.imageUrl,
-            buttonText = bottomSheet.buttonText
+            uiData = BoInfoBottomSheetUiModel.UiData(
+                title = bottomSheet.title,
+                contentTitle = bottomSheet.contentTitle,
+                contentDescription = bottomSheet.contentDescription,
+                imageUrl = bottomSheet.imageUrl,
+                buttonText = bottomSheet.buttonText,
+            ),
+            uiState = BoInfoBottomSheetUiModel.UiState(
+                isVisible = bottomSheet.title.isNotBlank() && bottomSheet.contentTitle.isNotBlank() &&
+                        bottomSheet.contentDescription.isNotBlank() && bottomSheet.imageUrl.isNotBlank() &&
+                        bottomSheet.buttonText.isNotBlank()
+            )
         )
     }
 }
