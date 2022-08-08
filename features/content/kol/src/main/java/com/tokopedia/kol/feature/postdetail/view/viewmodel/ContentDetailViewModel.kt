@@ -85,10 +85,8 @@ class ContentDetailViewModel @Inject constructor(
     fun likeContent(contentId: String, action: ContentLikeAction, rowNumber: Int) {
         _likeKolResp.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            repository.likeContent(contentId, action)
-            _likeKolResp.value = ContentDetailResult.Success(
-                mapper.mapLikeContent(rowNumber, action)
-            )
+            val response = repository.likeContent(contentId, action, rowNumber)
+            _likeKolResp.value = ContentDetailResult.Success(response)
         }) {
             _likeKolResp.value = ContentDetailResult.Failure(it)
         }

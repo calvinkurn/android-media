@@ -7,12 +7,12 @@ import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
-import com.tokopedia.kol.feature.postdetail.data.FeedXPostRecommendationData
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationPostUseCase
 import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.LikeContentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -72,7 +72,11 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun likeContent(contentId: String, action: ContentLikeAction) {
+    override suspend fun likeContent(
+        contentId: String,
+        action: ContentLikeAction,
+        rowNumber: Int
+    ): LikeContentModel {
         return withContext(dispatcher.io) {
             likeContentUseCase.setRequestParams(
                 SubmitLikeContentUseCase.createParam(contentId, action.value)
@@ -84,6 +88,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
             if (response.doLikeKolPost.data.success != SubmitLikeContentUseCase.SUCCESS) {
                 throw CustomUiMessageThrowable(R.string.feed_like_error_message)
             }
+            mapper.mapLikeContent(rowNumber, action)
         }
     }
 
