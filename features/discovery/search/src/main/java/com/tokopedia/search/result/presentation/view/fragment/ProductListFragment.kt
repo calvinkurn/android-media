@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.view.fragment
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -67,10 +66,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PRODUCT_CARD_VIEWSTUB
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
-import com.tokopedia.search.analytics.InspirationCarouselAnalyticsData
-import com.tokopedia.search.analytics.InspirationCarouselTrackingUnification
-import com.tokopedia.search.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
-import com.tokopedia.search.analytics.InspirationCarouselTrackingUnificationDataMapper.getSortFilterParamStringFromSearchParameter
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.search.analytics.ProductClickAnalyticsData
 import com.tokopedia.search.analytics.RecommendationTracking
 import com.tokopedia.search.analytics.SearchEventTracking
@@ -79,7 +76,7 @@ import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView

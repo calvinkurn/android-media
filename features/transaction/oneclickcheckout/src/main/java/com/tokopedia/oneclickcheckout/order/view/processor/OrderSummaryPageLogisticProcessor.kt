@@ -58,6 +58,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         if (shipping == null) return null to overweight
         return RatesParam.Builder(listShopShipment, shipping).build().apply {
             occ = "1"
+            cart_data = orderCart.cartData
         } to 0.0
     }
 

@@ -13,11 +13,26 @@ import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OrderEnableAddressFeature
+import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -338,7 +353,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.getRates()
@@ -377,7 +392,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.getRates()
@@ -609,7 +624,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.getRates()
@@ -648,7 +663,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
         coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When
@@ -691,7 +706,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.getRates()
@@ -981,7 +996,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1005,7 +1020,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
             PromoCheckoutVoucherOrdersItemUiModel(code = promoSelected.promoCode, messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(promoSelected)
@@ -1034,7 +1049,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1057,7 +1072,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1084,7 +1099,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1114,7 +1129,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1138,7 +1153,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green")),
                 PromoCheckoutVoucherOrdersItemUiModel(code = "123", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1165,7 +1180,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.getRates()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        )), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1190,7 +1205,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.getRates()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        )), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1212,7 +1227,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val promoErrorMessage = "error promo"
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "red", text = promoErrorMessage))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1231,7 +1246,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK")
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1309,7 +1324,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1332,7 +1347,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
                         DetailsItemUiModel(amount = discountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
                 ))
-        )), globalSuccess = true), status = "OK")
+        )), globalSuccess = true), status = "OK", errorCode = "200")
         coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When Choose Logistic Promo
@@ -1345,6 +1360,8 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val firstTotal = orderSummaryPageViewModel.orderTotal.value
         assertEquals(discountAmount, firstTotal.orderCost.shippingDiscountAmount)
         assertEquals(2000.0, firstTotal.orderCost.shippingFee, 0.0)
+
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // When Unchoose Logistic Promo
         orderSummaryPageViewModel.chooseDuration(helper.firstDuration.serviceData.serviceId, helper.secondCourierFirstDuration, false)
@@ -1373,7 +1390,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
 
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -1408,7 +1425,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
                         DetailsItemUiModel(amount = firstDiscountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
                 ))
-        )), globalSuccess = true), status = "OK")
+        )), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When Choose Logistic Promo
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1429,7 +1446,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 SummariesItemUiModel(type = SummariesUiModel.TYPE_DISCOUNT, details = listOf(
                         DetailsItemUiModel(amount = secondDiscountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
                 ))
-        )), globalSuccess = true), status = "OK")
+        )), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When Update Quantity
         orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
@@ -1458,7 +1475,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
 
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -1490,12 +1507,12 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.getRates()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "red"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
@@ -1519,7 +1536,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.getRates()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         val throwable = Throwable()
@@ -1545,7 +1562,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        )), status = "OK", errorCode = "200")
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         orderSummaryPageViewModel.getRates()
         val throwable = Throwable()
@@ -1574,7 +1591,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.getRates()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -1731,7 +1748,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ), globalSuccess = true), status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1761,7 +1778,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        )), status = "OK")
+        )), status = "OK", errorCode = "200")
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
         orderSummaryPageViewModel.orderShipment.value = orderSummaryPageViewModel.orderShipment.value.copy(logisticPromoShipping = null)
 

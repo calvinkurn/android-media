@@ -3105,13 +3105,17 @@ open class DynamicProductDetailFragment :
                 isCod
             )
             val boData = viewModel.getBebasOngkirDataByProductId()
+
+            val productId = it.basic.productID
+            val boCampaignIDs = viewModel.p2Data.value?.getBebasOngkirCampaignIDsByProductId(productId)
+
             sharedViewModel?.setRequestData(
                 RatesEstimateRequest(
                     productWeight = it.basic.weight.toFloat(),
                     shopDomain = viewModel.getShopInfo().shopCore.domain,
                     origin = viewModel.getMultiOriginByProductId().getOrigin(),
                     shopId = it.basic.shopID,
-                    productId = it.basic.productID,
+                    productId = productId,
                     productWeightUnit = it.basic.weightUnit,
                     isFulfillment = viewModel.getMultiOriginByProductId().isFulfillment,
                     destination = generateUserLocationRequestRates(viewModel.getUserLocationCache()),
@@ -3125,7 +3129,8 @@ open class DynamicProductDetailFragment :
                     isTokoNow = it.basic.isTokoNow,
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
-                    orderValue = it.data.price.value.roundToIntOrZero()
+                    orderValue = it.data.price.value.roundToIntOrZero(),
+                    boCampaignIDs = boCampaignIDs ?: ""
                 )
             )
             shouldRefreshShippingBottomSheet = false

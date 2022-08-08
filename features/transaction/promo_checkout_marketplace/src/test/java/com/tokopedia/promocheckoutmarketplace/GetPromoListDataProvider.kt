@@ -39,6 +39,10 @@ object GetPromoListDataProvider {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_apply_manual_failed.json"), CouponListRecommendationResponse::class.java)
     }
 
+    fun provideGetPromoListResponseApplyManualSuccess(): CouponListRecommendationResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_apply_manual_success.json"), CouponListRecommendationResponse::class.java)
+    }
+
     fun provideGetPromoListResponseError(): CouponListRecommendationResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_promo_list_response_error.json"), CouponListRecommendationResponse::class.java)
     }
