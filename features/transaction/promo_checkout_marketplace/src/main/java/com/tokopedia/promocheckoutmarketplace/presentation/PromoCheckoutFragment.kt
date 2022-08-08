@@ -668,7 +668,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     showBoInfoBottomSheet(
                         fragmentManager = parentFragmentManager,
                         context = it,
-                        uiData = uiModel
+                        uiData = uiModel.uiData
                     )
                 }
                 setHasSeenBoInfoBottomSheet()
