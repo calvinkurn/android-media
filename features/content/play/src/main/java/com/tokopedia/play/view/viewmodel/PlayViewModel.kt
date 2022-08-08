@@ -251,6 +251,44 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
+    private val _featuredProducts = _tagItems.map { tagItems ->
+        /**
+         * Get first found Pinned Product if any
+         */
+        var pinnedProduct: PlayProductUiModel.Product? = null
+        run {
+            tagItems.product.productSectionList.forEach { section ->
+                if (section is ProductSectionUiModel.Section) {
+                    pinnedProduct = section.productList.firstOrNull { it.isPinned }
+                    if (pinnedProduct != null) return@run
+                }
+            }
+        }
+
+        /**
+         * Get original featured products including the pinned one
+         */
+        val products = mutableListOf<PlayProductUiModel.Product>()
+        tagItems.product.productSectionList.forEach { section ->
+            if (section is ProductSectionUiModel.Section) {
+                products.addAll(
+                    section.productList.take(
+                        (tagItems.maxFeatured - products.size).coerceAtLeast(0)
+                    )
+                )
+            }
+            if (products.size >= tagItems.maxFeatured) return@forEach
+        }
+
+        /**
+         * Move pinned product to the first index if any
+         */
+        pinnedProduct?.let { pinned ->
+            listOf(pinned) + products.filterNot { it.isPinned }
+        } ?: products
+
+    }.flowOn(dispatchers.computation)
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -273,9 +311,11 @@ class PlayViewModel @AssistedInject constructor(
         _selectedVariant,
         _loadingBuy,
         _addressUiState,
+        _featuredProducts.distinctUntilChanged(),
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
-        status, quickReply, selectedVariant, isLoadingBuy, address ->
+        status, quickReply, selectedVariant, isLoadingBuy, address,
+        featuredProducts ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -291,7 +331,8 @@ class PlayViewModel @AssistedInject constructor(
             quickReply = quickReply,
             selectedVariant = selectedVariant,
             isLoadingBuy = isLoadingBuy,
-            address = address
+            address = address,
+            featuredProducts = featuredProducts,
         )
     }.stateIn(
         viewModelScope,

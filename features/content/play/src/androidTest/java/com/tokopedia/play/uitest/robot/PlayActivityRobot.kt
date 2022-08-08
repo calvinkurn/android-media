@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
 import com.tokopedia.play.test.espresso.clickOnViewChild
 import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
@@ -46,6 +47,14 @@ class PlayActivityRobot(
         Espresso.onView(
             withId(R.id.view_product_see_more)
         ).perform(ViewActions.click())
+    }
+
+    fun scrollProductBottomSheet(section: Int) = chainable {
+        Espresso.onView(
+            withId(R.id.rv_product_list)
+        ).perform(
+            RecyclerViewActions.scrollToPosition<ProductSectionViewHolder>(section)
+        )
     }
 
     fun clickPinnedProductCarousel() = chainable {
@@ -129,8 +138,7 @@ class PlayActivityRobot(
 
         Espresso.onView(
             allOf(
-                RecyclerViewMatcher(R.id.rv_product)
-                    .atPosition(0),
+                withId(R.id.rv_product),
                 hasDescendant(withText(containsString(productName)))
             )
         ).check(

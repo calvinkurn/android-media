@@ -228,10 +228,11 @@ class PlayPinnedProductUiTest {
         val robot = PlayActivityRobot(channelId)
         robot
             .openProductBottomSheet()
-            .assertHasPinnedItemInCarousel(
-            true,
-            buildMockProductName(sectionPinned, productPinned)
-        )
+            .scrollProductBottomSheet(sectionPinned)
+            .assertHasPinnedItemInProductBottomSheet(
+                buildMockProductName(sectionPinned, productPinned),
+                true,
+            )
     }
 
     private fun buildTagItemWithPinned(
