@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -52,7 +53,9 @@ class ContentDetailActivity : BaseSimpleActivity() {
 
     private fun goToFeed() {
         this.let {
-            val intent = RouteManager.route(it, ApplinkConst.HOME_FEED)
+            val intent = RouteManager.getIntent(it, ApplinkConst.HOME_FEED)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
         }
     }
 

@@ -61,6 +61,7 @@ class ContentExploreFragment :
         private const val IMAGE_SPAN_COUNT = 3
         private const val IMAGE_SPAN_SINGLE = 1
         private const val LOAD_MORE_THRESHOLD = 2
+        private const val EXPLORE_TAB = "explore_tab"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): ContentExploreFragment {
@@ -343,7 +344,7 @@ class ContentExploreFragment :
         val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, postId.toString())
         val finaAppLink = Uri.parse(contentAppLink)
                 .buildUpon()
-                .appendQueryParameter(SOURCE, "explore_tab")
+                .appendQueryParameter(SOURCE, EXPLORE_TAB)
                 .build().toString()
 
         RouteManager.route(requireContext(), finaAppLink)
