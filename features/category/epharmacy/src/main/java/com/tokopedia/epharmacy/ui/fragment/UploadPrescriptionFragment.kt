@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -18,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.epharmacy.R
@@ -61,7 +63,9 @@ import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
+import kotlin.concurrent.schedule
 
 class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
 
@@ -377,7 +381,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 Toaster.build(it,successMessage,LENGTH_LONG, TYPE_NORMAL).show()
             }
         }
-        activity?.finish()
+        Timer().schedule(DELAY_IN_MILLS_FOR_SNACKBAR_VIEW){ activity?.finish() }
     }
 
     private fun onSuccessEPharmacyData(it: Success<EPharmacyDataModel>) {
@@ -454,6 +458,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
     override fun initInjector() = getComponent(EPharmacyComponent::class.java).inject(this)
 
     companion object {
+        const val DELAY_IN_MILLS_FOR_SNACKBAR_VIEW = 2000L
         @JvmStatic
         fun newInstance(bundle: Bundle): UploadPrescriptionFragment {
             val fragment = UploadPrescriptionFragment()
