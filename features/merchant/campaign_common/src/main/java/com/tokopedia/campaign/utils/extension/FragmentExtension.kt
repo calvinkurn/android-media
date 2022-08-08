@@ -9,7 +9,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 
-
 fun Fragment.doOnDelayFinished(delay: Long, operation: () -> Unit) {
     viewLifecycleOwner.lifecycleScope.launch {
         delay(delay)
@@ -23,13 +22,6 @@ fun Fragment.doOnDelayFinished(delay: Long, operation: () -> Unit) {
 fun Fragment.routeToUrl(url : String) {
     if (!isAdded) return
     val encodedUrl = URLEncoder.encode(url, "UTF-8")
-    val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+    val route = kotlin.String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
     RouteManager.route(activity ?: return, route)
-}
-
-fun Fragment.applyUnifyBackgroundColor() {
-    activity?.run {
-        val backgroundColor = ContextCompat.getColor(context ?: return, com.tokopedia.unifyprinciples.R.color.Unify_Background)
-        window.decorView.setBackgroundColor(backgroundColor)
-    }
 }
