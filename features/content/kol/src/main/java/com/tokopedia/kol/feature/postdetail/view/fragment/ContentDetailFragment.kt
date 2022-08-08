@@ -654,6 +654,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 shopId = item.shopId,
                 isFollowed = item.isFollowed,
                 type = item.postType,
+                productId = item.id,
                 trackerId = getTrackerID(
                     item,
                     trackerIdSgc = "33272",
@@ -664,7 +665,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     trackerIdAsgc = "34106",
                     trackerIdLongVideo = "34517",
                     trackerIdLongVideoRecomm = "34536"
-                )
+                ),
+                source = contentDetailSource
             ),
             ""
         )
@@ -1318,6 +1320,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                shopId = item.shopId,
                isFollowed = item.isFollowed,
                type = item.postType,
+               productId = item.id,
                mediaType = item.mediaType,
                trackerId = getTrackerID(
                    item,
@@ -1328,7 +1331,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                    trackerIdSgcRecom = "34279",
                    trackerIdAsgc = "34103",
                    trackerIdLongVideoRecomm = "34533"
-               )
+               ),
+               source = contentDetailSource
            ))
         val finalID =
             if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
@@ -1383,6 +1387,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 shopId = shopId,
                 isFollowed = isFollowed,
                 mediaType = mediaType,
+                productId = postTagItemList.firstOrNull()?.id ?: "",
                 trackerId = getTrackerID(
                     ProductPostTagViewModelNew(
                         postType = type,
@@ -1398,7 +1403,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     trackerIdAsgcRecom = "34089",
                     trackerIdLongVideo = "34513",
                     trackerIdLongVideoRecomm = "34531"
-                )
+                ),
+                source = contentDetailSource
             ),
             postTagItemList
         )
@@ -1421,6 +1427,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                         isFollowed = item.followers.isFollowed,
                         shopId = item.author.id,
                         type = item.typename,
+                        productId = postTagItem.id,
                         trackerId = getTrackerID(
                             item,
                             trackerIdSgc = "33268",
@@ -1432,7 +1439,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                             trackerIdAsgc = "34101",
                             trackerIdLongVideo = "34514",
                             trackerIdLongVideoRecomm = "34532"
-                        )
+                        ),
+                        source = contentDetailSource
                     )
                 )
         }
@@ -1455,6 +1463,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 activityId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else activityId,
                 rowNumber = positionInFeed,
                 feedXProduct = postTagItem,
+                productId = postTagItem.id,
                 shopId = shopId,
                 isFollowed = isFollowed,
                 shopName = shopName,
@@ -1471,7 +1480,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     trackerIdLongVideo = "34516",
                     trackerIdLongVideoRecomm = "34535"
 
-                )
+                ),
+                source = contentDetailSource
             )
         )
         if (userSession.isLoggedIn) {
@@ -1505,6 +1515,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 type = type,
                 isFollowed = isFollowed,
                 mediaType = mediaType,
+                productId = productId,
+                shopId = shopId,
                 trackerId = getTrackerID(
                     ProductPostTagViewModelNew(
                         postType = type,
@@ -1520,7 +1532,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     trackerIdAsgcRecom = "34092",
                     trackerIdLongVideo = "34515",
                     trackerIdLongVideoRecomm = "34534"
-                )
+                ),
+                source = contentDetailSource
             )
         )
         if (::productTagBS.isInitialized) {
@@ -1725,16 +1738,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                             shareString
                         )
 
-                        when (UniversalShareBottomSheet.getShareBottomSheetType()) {
-                            UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET -> {
-//                                userProfileTracker?.clickChannelScreenshotShareBottomsheet(userId, profileUserId == userId)
-                            }
-                            UniversalShareBottomSheet.CUSTOM_SHARE_SHEET -> {
-                                shareModel.channel?.let { it1 ->
-//                                    userProfileTracker?.clickShareChannel(userId, profileUserId == userId, it1)
-                                }
-                            }
-                        }
                         universalShareBottomSheet?.dismiss()
                     }
                 }
@@ -1826,6 +1829,11 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
         else -> ""
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        analyticsTracker.sendPendingAnalytics()
     }
 
 

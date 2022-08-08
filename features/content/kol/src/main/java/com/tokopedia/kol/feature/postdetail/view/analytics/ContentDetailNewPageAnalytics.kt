@@ -1180,6 +1180,14 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
+    /**
+     * Send all pending analytics in trackingQueue
+     */
+    fun sendPendingAnalytics() {
+        trackingQueue.sendAll()
+    }
+
+
     private fun getPostType(
         type: String,
         isFollowed: Boolean,
