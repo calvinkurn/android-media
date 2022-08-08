@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemVpsPackageBinding
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
+import com.tokopedia.shop.flashsale.common.extension.disable
 import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
 import com.tokopedia.unifycomponents.Label
@@ -59,8 +61,16 @@ class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
             binding.radioButton.isChecked = vpsPackage.isSelected
             binding.tpgPackageName.text = vpsPackage.packageName
             handleShopBenefit(vpsPackage)
-            handleRemainingQuota(vpsPackage)
-            binding.root.setOnClickListener { onVpsPackageClicked(vpsPackage) }
+            handleRadioButton(vpsPackage)
+            binding.root.isEnabled = !vpsPackage.disabled
+            binding.root.setOnClickListener {
+                onVpsPackageClicked(vpsPackage)
+            }
+        }
+
+        private fun handleRadioButton(vpsPackage: VpsPackageUiModel) {
+            binding.radioButton.setOnCheckedChangeListener(null)
+            binding.radioButton.isChecked = vpsPackage.isSelected
         }
 
         private fun handleShopBenefit(vpsPackage: VpsPackageUiModel) {
@@ -73,34 +83,45 @@ class VpsPackageAdapter : RecyclerView.Adapter<VpsPackageAdapter.ViewHolder>() {
         }
 
         private fun handleShopTierBenefit() {
-            binding.labelRemainingQuota.gone()
+            binding.labelRemainingQuota.invisible()
             binding.tpgPeriod.gone()
         }
 
         private fun handleVpsPackageBenefit(vpsPackage: VpsPackageUiModel) {
-            val remainingQuota = String.format(
-                binding.labelRemainingQuota.context.getString(R.string.sfs_placeholder_vps_quota_period),
-                vpsPackage.packageStartTime.formatTo(DateConstant.DATE),
-                vpsPackage.packageEndTime.formatTo(DateConstant.DATE)
-            )
-            binding.labelRemainingQuota.text = remainingQuota
-
             binding.labelRemainingQuota.visible()
             binding.tpgPeriod.visible()
+            handleRemainingQuota(vpsPackage)
         }
 
         private fun handleRemainingQuota(vpsPackage: VpsPackageUiModel) {
             if (vpsPackage.currentQuota == EMPTY_QUOTA) {
-                binding.labelRemainingQuota.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
-                binding.labelRemainingQuota.text = binding.labelRemainingQuota.context.getString(R.string.sfs_empty_quota)
-                binding.tpgPeriod.gone()
-            } else {
+                binding.tpgPackageName.disable()
+                binding.radioButton.disable()
+
                 binding.labelRemainingQuota.setLabelType(Label.HIGHLIGHT_LIGHT_RED)
+                binding.labelRemainingQuota.text = binding.labelRemainingQuota.context.getString(R.string.sfs_empty_quota)
+
+                binding.tpgPeriod.gone()
+
+            } else {
+                val remainingQuota = String.format(
+                    binding.labelRemainingQuota.context.getString(R.string.sfs_placeholder_remaining_vps_quota),
+                    vpsPackage.currentQuota,
+                    vpsPackage.originalQuota
+                )
+                binding.labelRemainingQuota.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+                binding.labelRemainingQuota.text = remainingQuota
+
+                val period = String.format(
+                    binding.tpgPeriod.context.getString(R.string.sfs_placeholder_vps_quota_period),
+                    vpsPackage.packageStartTime.formatTo(DateConstant.DATE),
+                    vpsPackage.packageEndTime.formatTo(DateConstant.DATE)
+                )
+                binding.tpgPeriod.text = period
+                binding.tpgPeriod.visible()
             }
         }
     }
-
-
 
 
     fun submit(newGradients: List<VpsPackageUiModel>) {

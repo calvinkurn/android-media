@@ -479,7 +479,6 @@ class CampaignInformationViewModel @Inject constructor(
             .map { vpsPackage ->
                 VpsPackageUiModel(
                     vpsPackage.currentQuota,
-                    vpsPackage.isDisabled,
                     vpsPackage.originalQuota,
                     vpsPackage.packageEndTime.epochToDate(),
                     vpsPackage.packageId.toLongOrZero(),

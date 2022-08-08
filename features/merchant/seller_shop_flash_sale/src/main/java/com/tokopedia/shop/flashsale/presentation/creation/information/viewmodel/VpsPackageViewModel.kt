@@ -14,7 +14,7 @@ class VpsPackageViewModel @Inject constructor() : ViewModel() {
             if (vpsPackage.packageId == selectedVpsPackageId) {
                 vpsPackage.copy(isSelected = true)
             } else {
-                vpsPackage
+                vpsPackage.copy(isSelected = false)
             }
         }
     }
