@@ -14,7 +14,7 @@ import org.junit.Test
 /**
  * Created by meyta.taliti on 08/08/22.
  */
-class ContentDetailViewModelAtcTest {
+class ContentDetailViewModelAddToCartTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
