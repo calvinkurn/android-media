@@ -9,6 +9,7 @@ import com.tokopedia.wishlist.databinding.AddWishlistCollectionItemBinding
 import com.tokopedia.wishlist.databinding.AddWishlistCollectionMainSectionTextItemBinding
 import com.tokopedia.wishlistcollection.data.model.BottomSheetWishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ADDITIONAL_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_ITEM
@@ -101,6 +102,10 @@ class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.V
     }
 
     fun setActionListener(fragment: WishlistCollectionHostBottomSheetFragment) {
+        this.actionListener = fragment
+    }
+
+    fun setActionListener(fragment: WishlistCollectionDetailFragment) {
         this.actionListener = fragment
     }
 }

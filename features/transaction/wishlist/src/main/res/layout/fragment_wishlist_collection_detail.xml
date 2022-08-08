@@ -138,34 +138,52 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/container_delete_collection_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:background="@drawable/bg_delete_wishlist_v2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout">
+        app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout"
+        android:orientation="horizontal"
+        android:weightSum="2">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/delete_button_collection"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/wishlist_v2_delete_text"
             android:clickable="true"
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginLeft="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:enabled="true"
             app:unifyButtonVariant="filled"
             app:unifyButtonType="main"
-            app:unifyButtonSize="medium"/>
-    </FrameLayout>
+            app:unifyButtonSize="medium"
+            android:layout_weight="1"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/add_button_collection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/wishlist_v2_delete_text"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:enabled="true"
+            app:unifyButtonVariant="filled"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium"
+            android:layout_weight="1"/>
+    </LinearLayout>
 
     <View
         android:id="@+id/bottom_layout_shadow_wishlist_collection"

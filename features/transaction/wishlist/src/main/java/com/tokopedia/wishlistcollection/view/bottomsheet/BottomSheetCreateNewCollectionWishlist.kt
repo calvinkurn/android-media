@@ -33,6 +33,7 @@ import com.tokopedia.wishlistcollection.di.BottomSheetCreateWishlistCollectionMo
 import com.tokopedia.wishlistcollection.di.DaggerBottomSheetCreateWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
+import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
@@ -86,6 +87,10 @@ class BottomSheetCreateNewCollectionWishlist : BottomSheetUnify(),
 
     fun setListener(fragment: WishlistCollectionFragment) {
         this.actionListenerFromCollectionPage = fragment
+    }
+
+    fun setListener(fragment: WishlistCollectionDetailFragment) {
+        this.actionListenerFromPdp = fragment
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
