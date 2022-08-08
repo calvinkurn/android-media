@@ -91,7 +91,6 @@ class ValidateUsePromoCheckoutMapper {
             return voucherOrders.map { mapToVoucherOrdersItemUiModel(it) }
         }
 
-        //temporary set shipping id and spId hardcode for dummy development
         private fun mapToVoucherOrdersItemUiModel(voucherOrdersItem: VoucherOrdersItem): PromoCheckoutVoucherOrdersItemUiModel {
             return PromoCheckoutVoucherOrdersItemUiModel(
                     success = voucherOrdersItem.success,
@@ -99,8 +98,8 @@ class ValidateUsePromoCheckoutMapper {
                     type = voucherOrdersItem.type,
                     uniqueId = voucherOrdersItem.uniqueId,
                     messageUiModel = mapMessageUiModel(voucherOrdersItem.message),
-                    shippingId = 18,//
-                    spId = 2,//
+                    shippingId = voucherOrdersItem.shippingId,
+                    spId = voucherOrdersItem.spId,
             )
         }
 
