@@ -11,6 +11,7 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -586,7 +587,7 @@ class NewShopPageViewModel @Inject constructor(
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             affiliateCookieHelper.initCookie(
-                affiliateUUId,
+                affiliateUUId.decodeToUtf8(),
                 affiliateChannel,
                 AffiliatePageDetail(shopId, AffiliateSdkPageSource.Shop(shopId))
             )
