@@ -152,8 +152,10 @@ class CMHomeWidget @JvmOverloads constructor(
         this.cmHomeWidgetCloseClickListener = cmHomeWidgetCloseClickListener
         binding.ivCmHomeWidgetClose.setOnClickListener {
             cmHomeWidgetData?.cMHomeWidgetPaymentData?.let {
-                it[paymentDataIndex].isWidgetClosePress = true
-                binding.rvCmHomeWidget.adapter?.notifyDataSetChanged()
+                if (it.isNotEmpty()) {
+                    it[paymentDataIndex].isWidgetClosePress = true
+                    binding.rvCmHomeWidget.adapter?.notifyDataSetChanged()
+                }
             }
             cmHomeWidgetData?.let {
                 cmHomeWidgetCloseClickListener.onCMHomeWidgetDismissClick(
