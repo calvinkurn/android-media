@@ -5,7 +5,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 
 
-private const val CHATBOT_MESSAGE_ID = "CHATBOT_MESSAGE_ID"
+private const val CHATBOT_MESSAGE_ID = "CHATBOT_MESSAGE_ID_ERROR"
 
 fun String?.convertMessageIdToLong(): Long {
     val convertedMessageId = this.toLongOrZero()
