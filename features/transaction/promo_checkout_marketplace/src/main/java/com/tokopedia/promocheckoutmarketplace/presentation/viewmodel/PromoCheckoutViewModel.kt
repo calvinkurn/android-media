@@ -285,7 +285,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         initGetPromoListResponseAction()
         setGetPromoListResponseActionClearData(tmpPromoCode)
         initPromoList(response)
-        initBoPromoBottomSheet(response)
+        initBoInfoBottomSheet(response)
 
         sendAnalyticsPromoPageLoaded()
 
@@ -510,9 +510,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         _promoListUiModel.value = couponList
     }
 
-    private fun initBoPromoBottomSheet(response: CouponListRecommendationResponse) {
-        val boPromoBottomSheetUiModel = uiModelMapper.mapBoPromoBottomSheetUiModel(response.couponListRecommendation.data.bottomSheet)
-        _boInfoBottomSheetUiModel.value = boPromoBottomSheetUiModel
+    private fun initBoInfoBottomSheet(response: CouponListRecommendationResponse) {
+        val boInfoBottomSheetUiModel = uiModelMapper.mapBoInfoBottomSheetUiModel(response.couponListRecommendation.data.bottomSheet)
+        _boInfoBottomSheetUiModel.value = boInfoBottomSheetUiModel
     }
 
     private fun getAllPreSelectedPromo(response: CouponListRecommendationResponse): ArrayList<String> {

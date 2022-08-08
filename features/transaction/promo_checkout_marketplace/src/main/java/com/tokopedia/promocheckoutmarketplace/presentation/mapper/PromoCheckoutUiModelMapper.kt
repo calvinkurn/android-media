@@ -264,7 +264,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapBoPromoBottomSheetUiModel(bottomSheet: BottomSheet): BoInfoBottomSheetUiModel {
+    fun mapBoInfoBottomSheetUiModel(bottomSheet: BottomSheet): BoInfoBottomSheetUiModel {
         return BoInfoBottomSheetUiModel(
             title = bottomSheet.title,
             contentTitle = bottomSheet.contentTitle,

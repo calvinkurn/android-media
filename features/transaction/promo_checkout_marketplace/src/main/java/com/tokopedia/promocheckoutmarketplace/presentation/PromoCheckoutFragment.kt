@@ -58,7 +58,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckout
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoSuggestionAdapter
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
-import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.showBoPromoBottomSheet
+import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.showBoInfoBottomSheet
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
@@ -663,9 +663,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeBoInfoBottomSheetUiModel() {
         viewModel.boInfoBottomSheetUiModel.observe(viewLifecycleOwner) { uiModel ->
-            if (!hasSeenBoPromoBottomSheet()) {
+            if (!hasSeenBoInfoBottomSheet()) {
                 context?.let {
-                    showBoPromoBottomSheet(
+                    showBoInfoBottomSheet(
                         fragmentManager = parentFragmentManager,
                         context = it,
                         uiModel = uiModel
@@ -1184,7 +1184,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
-    private fun hasSeenBoPromoBottomSheet() : Boolean {
+    private fun hasSeenBoInfoBottomSheet() : Boolean {
         return context?.getSharedPreferences(PREFERENCES_NAME_PROMO_INFO, Context.MODE_PRIVATE)
             ?.getBoolean(KEY_HAS_SEEN_BO_INFO_BOTTOM_SHEET, false) ?: false
     }

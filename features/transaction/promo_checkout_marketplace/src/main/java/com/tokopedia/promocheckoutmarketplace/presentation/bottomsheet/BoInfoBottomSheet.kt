@@ -9,7 +9,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.BoInfoBottomS
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.htmltags.HtmlUtil
 
-fun showBoPromoBottomSheet(
+fun showBoInfoBottomSheet(
     fragmentManager: FragmentManager,
     context: Context,
     uiModel: BoInfoBottomSheetUiModel
