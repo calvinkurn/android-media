@@ -345,6 +345,16 @@ object DeeplinkMapperMerchant {
         return removedPathLink == ApplinkConst.SellerApp.SELLER_SHOP_FLASH_SALE
     }
 
+    fun isSellerTokopediaFlashSaleApplink(deeplink: String): Boolean {
+        val path = Uri.parse(deeplink).path.orEmpty()
+        val removedPathLink = if (path.isEmpty()) {
+            deeplink // already removed
+        } else {
+            deeplink.split(path).firstOrNull()
+        }
+        return removedPathLink == ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE
+    }
+
     fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {
         val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.VOUCHER_PRODUCT_LIST, lastSegment)
@@ -358,6 +368,11 @@ object DeeplinkMapperMerchant {
     fun getRegisteredNavigationForSellerShopFlashSale(deeplink: String): String {
         val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
         return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_SHOP_FLASH_SALE, lastSegment)
+    }
+
+    fun getRegisteredNavigationForSellerTokopediaFlashSale(deeplink: String): String {
+        val lastSegment = Uri.parse(deeplink).lastPathSegment.orEmpty()
+        return UriUtil.buildUri(ApplinkConstInternalSellerapp.SELLER_TOKOPEDIA_FLASH_SALE, lastSegment)
     }
 
     fun getRegisteredNavigationForCreateShowcase(deeplink: String): String {
