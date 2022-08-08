@@ -11,10 +11,7 @@ import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetRecommendationPostUseCase
 import com.tokopedia.kol.feature.postdetail.domain.mapper.ContentDetailMapper
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.LikeContentModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.VisitContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
@@ -146,12 +143,13 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteContent(contentId: String) = withContext(dispatcher.io) {
+    override suspend fun deleteContent(contentId: String, rowNumber: Int): DeleteContentModel = withContext(dispatcher.io) {
         submitActionContentUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(contentId))
         val response = submitActionContentUseCase.executeOnBackground()
         if (TextUtils.isEmpty(response.content.error).not()) {
             throw MessageErrorException(response.content.error)
         }
+        mapper.mapDeleteContent(rowNumber)
     }
 
     override suspend fun reportContent(

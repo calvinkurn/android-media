@@ -166,10 +166,8 @@ class ContentDetailViewModel @Inject constructor(
     fun deleteContent(contentId: String, rowNumber: Int) {
         _deletePostResp.value = ContentDetailResult.Loading
         launchCatchError(block = {
-            repository.deleteContent(contentId)
-            _deletePostResp.value = ContentDetailResult.Success(
-                mapper.mapDeleteContent(rowNumber)
-            )
+            val response = repository.deleteContent(contentId, rowNumber)
+            _deletePostResp.value = ContentDetailResult.Success(response)
         }) {
             _deletePostResp.value = ContentDetailResult.Failure(it) {
                 deleteContent(contentId, rowNumber)

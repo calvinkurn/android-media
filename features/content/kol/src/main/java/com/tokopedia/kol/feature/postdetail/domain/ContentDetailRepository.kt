@@ -1,9 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.domain
 
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.LikeContentModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.VisitContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.usecase.coroutines.Result
@@ -47,8 +44,9 @@ interface ContentDetailRepository {
     ): Result<AddToWishlistV2Response.Data.WishlistAddV2>
 
     suspend fun deleteContent(
-        contentId: String
-    )
+        contentId: String,
+        rowNumber: Int,
+    ): DeleteContentModel
 
     suspend fun reportContent(
         contentId: String,
