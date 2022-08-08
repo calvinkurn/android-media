@@ -38,22 +38,22 @@ import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailAdapter
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARGS_AUTHOR_TYPE
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARGS_IS_POST_FOLLOWED
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARGS_POST_TYPE
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARGS_VIDEO
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.COMMENT_ARGS_POSITION
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.DEFAULT_COMMENT_ARGUMENT_VALUE
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.PARAM_TYPE
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.SHOULD_TRACK
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.SOURCE_TYPE
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.START_TIME
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.TYPE_CONTENT_PREVIEW_PAGE
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampArgumentModel.Companion.VOD_POST
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailRevampDataUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_AUTHOR_TYPE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_IS_POST_FOLLOWED
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_POST_TYPE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_VIDEO
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_POSITION
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.DEFAULT_COMMENT_ARGUMENT_VALUE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.PARAM_TYPE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.SHOULD_TRACK
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.SOURCE_TYPE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.START_TIME
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.TYPE_CONTENT_PREVIEW_PAGE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.VOD_POST
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
@@ -89,7 +89,7 @@ import com.tokopedia.network.R as networkR
  * Created by shruti agarwal on 15/06/22
  */
 
-class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder.CDPListener, ShareCallback, ProductItemInfoBottomSheet.Listener{
+class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder.CDPListener, ProductItemInfoBottomSheet.Listener, ShareBottomsheetListener {
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
@@ -132,7 +132,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         private const val OPEN_KOL_COMMENT = 101
         const val OPEN_VIDEO_DETAIL = 1311
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
-        private const val SHARE_TYPE = "text/plain"
 
 
         @JvmStatic
@@ -275,7 +274,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
     private fun onSuccessGetFirstPostCDPData(data: ContentDetailUiModel){
         (activity as? ContentDetailActivity)?.setContentDetailMainPostData(
-            contentDetailRevampDataUiModel.postList.firstOrNull()
+            data.postList.firstOrNull()
         )
 
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
@@ -613,7 +612,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
     private fun showUniversalShareBottomSheet(contentShareDataModel: ContentShareDataModel) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@ContentDetailPageRevampedFragment)
+            init(this@ContentDetailFragment)
                 setUtmCampaignData(
                     pageName = "Content Detail Page",
                     userSession.userId,
