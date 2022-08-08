@@ -294,7 +294,7 @@ class PlayUpcomingFragment @Inject constructor(
                 upcomingTimer.stopTimer()
                 actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.WATCH_NOW)
             }
-            PlayUpcomingState.Reminded, PlayUpcomingState.Unknown, PlayUpcomingState.WaitingRefreshDuration -> {
+            PlayUpcomingState.Unknown, PlayUpcomingState.WaitingRefreshDuration -> {
                 actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
             }
             PlayUpcomingState.Refresh -> {
@@ -302,6 +302,9 @@ class PlayUpcomingFragment @Inject constructor(
             }
             PlayUpcomingState.Loading -> {
                 actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.LOADING)
+            }
+            PlayUpcomingState.Reminded -> {
+                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REMINDED)
             }
         }
     }

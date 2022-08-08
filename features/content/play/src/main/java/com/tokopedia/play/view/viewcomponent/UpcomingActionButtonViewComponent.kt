@@ -3,6 +3,7 @@ package com.tokopedia.play.view.viewcomponent
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import com.tokopedia.play.R
+import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -61,6 +62,11 @@ class UpcomingActionButtonViewComponent(
             Status.HIDDEN -> {
                 invisible()
             }
+            Status.REMINDED -> {
+                setButtonMode(false)
+                button.text = getString(R.string.play_remind_me_cancel)
+                show()
+            }
         }
     }
 
@@ -80,7 +86,7 @@ class UpcomingActionButtonViewComponent(
     }
 
     enum class Status {
-        REMIND_ME, WATCH_NOW, HIDDEN, REFRESH, LOADING
+        REMIND_ME, WATCH_NOW, HIDDEN, REFRESH, LOADING, REMINDED
     }
 
     interface Listener {

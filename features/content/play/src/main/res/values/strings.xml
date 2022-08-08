@@ -68,6 +68,8 @@
     <string name="play_will_start_on">Akan mulai dalam</string>
     <string name="play_failed_remind_me">Oops, gagal tersambung</string>
     <string name="play_try_again">Coba Lagi</string>
+    <string name="play_remind_me_cancel">Batalkan Pengingat</string>
+    <string name="play_cancel_remind_me_success">Yaah, pengingat batal dikirim.</string>
 
     <!--Chromecast-->
     <string name="play_connecting_chromecast">Connecting to Chromecast</string>

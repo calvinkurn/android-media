@@ -235,11 +235,13 @@ class PlayUpcomingViewModel @Inject constructor(
             PlayUpcomingState.WatchNow -> handleWatchNowUpcomingChannel()
             PlayUpcomingState.RemindMe -> handleRemindMeUpcomingChannel(userClick = true)
             PlayUpcomingState.Refresh -> handleRefreshUpcomingChannel()
+            PlayUpcomingState.Reminded -> handleRemindMeUpcomingChannel(userClick = false)
             else -> {}
         }
     }
 
     private fun handleRemindMeUpcomingChannel(userClick: Boolean)  {
+        val currentState: PlayUpcomingState = _upcomingState.value
 
         suspend fun failedRemindMe() {
             _upcomingState.emit(PlayUpcomingState.RemindMe)
@@ -247,6 +249,9 @@ class PlayUpcomingViewModel @Inject constructor(
         }
 
         if(userClick) playAnalytic.clickRemindMe(mChannelId)
+        /**
+         * Need to ask is there any tracker? for batal; user click?
+         */
 
         needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
             viewModelScope.launchCatchError(block = {
@@ -262,10 +267,12 @@ class PlayUpcomingViewModel @Inject constructor(
 
                     if(!status) failedRemindMe()
                     else {
-                        _upcomingState.emit(PlayUpcomingState.Reminded)
+                        _upcomingState.emit(if (currentState == PlayUpcomingState.Reminded) PlayUpcomingState.RemindMe else PlayUpcomingState.Reminded)
                         _upcomingInfo.setValue { copy(isReminderSet = status) }
 
-                        _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
+                        _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(
+                            if (currentState == PlayUpcomingState.Reminded) R.string.play_cancel_remind_me_success else R.string.play_remind_me_success),
+                            isSuccess = status))
                     }
                 } ?: failedRemindMe()
             }) {
