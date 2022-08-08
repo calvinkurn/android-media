@@ -41,6 +41,7 @@ import com.tokopedia.play.view.viewcomponent.ShareExperienceViewComponent
 import com.tokopedia.play.view.viewcomponent.ToolbarRoomViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
+import com.tokopedia.play.view.viewcomponent.UpcomingDescriptionViewComponent
 import com.tokopedia.play.view.viewcomponent.partnerinfo.PartnerInfoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayUpcomingViewModel
@@ -51,7 +52,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.flow.collect
@@ -69,7 +69,8 @@ class PlayUpcomingFragment @Inject constructor(
     PartnerInfoViewComponent.Listener,
     UpcomingActionButtonViewComponent.Listener,
     UpcomingTimerViewComponent.Listener,
-    ShareExperienceViewComponent.Listener
+    ShareExperienceViewComponent.Listener,
+    UpcomingDescriptionViewComponent.Listener
 {
 
     private val toolbarView by viewComponent { ToolbarRoomViewComponent(it, R.id.view_toolbar_room, this) }
@@ -77,13 +78,13 @@ class PlayUpcomingFragment @Inject constructor(
     private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
     private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), dispatchers) }
+    private val description by viewComponent { UpcomingDescriptionViewComponent(it, R.id.tv_upcoming_description, this) }
 
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(it.requireView(), it.viewLifecycleOwner) },
     )
 
     private lateinit var ivUpcomingCover: ImageUnify
-    private lateinit var tvUpcomingDescription: Typography
 
     private lateinit var playUpcomingViewModel: PlayUpcomingViewModel
     private lateinit var playParentViewModel: PlayParentViewModel
@@ -156,7 +157,6 @@ class PlayUpcomingFragment @Inject constructor(
 
     private fun initView(view: View) {
         ivUpcomingCover = view.findViewById(R.id.iv_upcoming_cover)
-        tvUpcomingDescription = view.findViewById(R.id.tv_upcoming_description)
     }
 
     private fun setupObserver() {
@@ -280,7 +280,7 @@ class PlayUpcomingFragment @Inject constructor(
             currState.info.let {
                 if(it.coverUrl.isNotEmpty()) ivUpcomingCover.setImageUrl(it.coverUrl)
 
-                tvUpcomingDescription.text = it.description
+                description.setupText(it.description)
 
                 upcomingTimer.setupTimer(it.startTime)
             }
@@ -355,6 +355,10 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onHandleShareFallback(view: ShareExperienceViewComponent) {
         playUpcomingViewModel.submitAction(CopyLinkUpcomingAction)
+    }
+
+    override fun onTextClicked(isExpand: Boolean, view: UpcomingDescriptionViewComponent) {
+        //TODO("Not yet implemented")
     }
 
     private fun copyToClipboard(content: String) {

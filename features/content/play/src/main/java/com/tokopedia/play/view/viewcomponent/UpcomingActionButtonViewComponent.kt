@@ -3,7 +3,6 @@ package com.tokopedia.play.view.viewcomponent
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.ViewComponent
