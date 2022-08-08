@@ -241,10 +241,10 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun handleRemindMeUpcomingChannel(userClick: Boolean)  {
-        val currentState: PlayUpcomingState = _upcomingState.value
+        val isReminded = _upcomingInfo.value.isReminderSet
 
         suspend fun failedRemindMe() {
-            _upcomingState.emit(PlayUpcomingState.RemindMe)
+            _upcomingState.emit(PlayUpcomingState.RemindMe) //need to Handle it as well
             _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
         }
 
@@ -267,11 +267,11 @@ class PlayUpcomingViewModel @Inject constructor(
 
                     if(!status) failedRemindMe()
                     else {
-                        _upcomingState.emit(if (currentState == PlayUpcomingState.Reminded) PlayUpcomingState.RemindMe else PlayUpcomingState.Reminded)
+                        _upcomingState.emit(if (isReminded) PlayUpcomingState.RemindMe else PlayUpcomingState.Reminded)
                         _upcomingInfo.setValue { copy(isReminderSet = status) }
 
                         _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(
-                            if (currentState == PlayUpcomingState.Reminded) R.string.play_cancel_remind_me_success else R.string.play_remind_me_success),
+                            if (isReminded) R.string.play_cancel_remind_me_success else R.string.play_remind_me_success),
                             isSuccess = status))
                     }
                 } ?: failedRemindMe()
