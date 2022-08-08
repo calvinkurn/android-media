@@ -325,6 +325,7 @@ class ReviewPendingFragment :
     override fun onReviewCredibilityWidgetClicked(appLink: String, title: String, position: Int) {
         if (appLink.isBlank()) {
             goToCredibility()
+            ReviewPendingTracking.trackClickCheckReviewContribution()
         } else {
             RouteManager.route(context, appLink)
         }

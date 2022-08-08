@@ -6,7 +6,9 @@ import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.reviewcommon.extension.appendBusinessUnit
 import com.tokopedia.reviewcommon.extension.appendCurrentSite
 import com.tokopedia.reviewcommon.extension.appendGeneralEventData
+import com.tokopedia.reviewcommon.extension.appendTrackerIdIfNotBlank
 import com.tokopedia.reviewcommon.extension.appendUserId
+import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 import com.tokopedia.track.TrackApp
 
 object ReviewPendingTracking {
@@ -61,6 +63,21 @@ object ReviewPendingTracking {
             .appendBannerPromotions(position, title)
             .appendUserId(userId)
             .sendEnhancedEcommerce(ReviewPendingTrackingConstants.EVENT_NAME_VALUE_VIEW_ITEM)
+    }
+
+    fun trackClickCheckReviewContribution() {
+        mutableMapOf<String, Any>()
+            .appendGeneralEventData(
+                eventName = ReviewPendingTrackingConstants.EVENT_NAME_CLICK_INBOX_REVIEW,
+                eventCategory = ReviewPendingTrackingConstants.EVENT_CATEGORY_VALUE_REVIEW_PAGE_PENDING_REVIEW,
+                eventAction = ReviewPendingTrackingConstants.EVENT_ACTION_VALUE_CLICK_CHECK_REVIEW_CONTRIBUTION,
+                eventLabel = ""
+            )
+            .appendBusinessUnit(ReviewPendingTrackingConstants.PDP_BUSINESS_UNIT)
+            .appendCurrentSite(ReviewPendingTrackingConstants.CREDIBILITY_CURRENT_SITE)
+            .appendUserId("")
+            .appendTrackerIdIfNotBlank(ReviewPendingTrackingConstants.TRACKER_ID_CLICK_CHECK_REVIEW_CONTRIBUTION)
+            .sendGeneralEvent()
     }
 
     private fun generateTrackingMap(label: String, action: String, userId: String, source: String): Map<String, String> {
