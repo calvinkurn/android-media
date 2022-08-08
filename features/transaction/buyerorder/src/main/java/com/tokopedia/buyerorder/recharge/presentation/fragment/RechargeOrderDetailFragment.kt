@@ -482,7 +482,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 rechargeViewModel.voidEmoneyData(orderId)
                 rechargeOrderDetailAnalytics.eventVoidPopupClickBatalkan(
                     OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                    ""
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
                 )
             }
             dialog.setSecondaryCTAText(getString(R.string.dialog_void_emoney_secondary_cta_label))
@@ -490,13 +490,13 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 dialog.dismiss()
                 rechargeOrderDetailAnalytics.eventVoidPopupClickKembali(
                     OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                    ""
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
                 )
             }
             dialog.setOnShowListener {
                 rechargeOrderDetailAnalytics.eventViewVoidPopup(
                     OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
-                    ""
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
                 )
             }
             dialog.setOverlayClose(false)
