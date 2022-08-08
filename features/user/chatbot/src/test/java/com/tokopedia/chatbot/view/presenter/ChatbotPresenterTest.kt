@@ -11,10 +11,22 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
-import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
-import com.tokopedia.chatbot.domain.usecase.*
+import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
+import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
+import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
+import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
+import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -22,7 +34,16 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.mockkObject
+import io.mockk.runs
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
@@ -491,17 +512,17 @@ class ChatbotPresenterTest {
         mockkObject(SendWebsocketParam)
 
         every {
-            SendWebsocketParam.getReadMessage(any())
+            SendChatbotWebsocketParam.getReadMessage(any())
         } returns mockk(relaxed = true)
 
         every {
-            RxWebSocket.send(SendWebsocketParam.getReadMessage(any()), any())
+            RxWebSocket.send(SendChatbotWebsocketParam.getReadMessage(any()), any())
         } just runs
 
         presenter.sendReadEvent("")
 
         verify {
-            RxWebSocket.send(SendWebsocketParam.getReadMessage(any()), any())
+            RxWebSocket.send(SendChatbotWebsocketParam.getReadMessage(any()), any())
         }
 
     }
@@ -512,12 +533,12 @@ class ChatbotPresenterTest {
         mockkObject(SendWebsocketParam)
 
         every {
-            SendWebsocketParam.generateParamSendMessage(any(), any(), any(), any())
+            SendChatbotWebsocketParam.generateParamSendMessage(any(), any(), any(), any())
         } returns mockk(relaxed = true)
 
         every {
             RxWebSocket.send(
-                SendWebsocketParam.generateParamSendMessage(
+                SendChatbotWebsocketParam.generateParamSendMessage(
                     any(),
                     any(),
                     any(),
@@ -530,7 +551,7 @@ class ChatbotPresenterTest {
 
         verify {
             RxWebSocket.send(
-                SendWebsocketParam.generateParamSendMessage(
+                SendChatbotWebsocketParam.generateParamSendMessage(
                     any(),
                     any(),
                     any(),
