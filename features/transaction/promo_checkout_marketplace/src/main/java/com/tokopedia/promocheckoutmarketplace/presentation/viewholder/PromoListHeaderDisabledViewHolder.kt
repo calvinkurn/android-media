@@ -23,7 +23,7 @@ class PromoListHeaderDisabledViewHolder(private val viewBinding: PromoCheckoutMa
             if (IconHelper.isIconFromUrl(element.uiData.iconUnify)) {
                 iconPromoListHeader.gone()
                 if (element.uiData.iconUrl.isNotEmpty()) {
-                    imagePromoListHeader.setImage(element.uiData.iconUrl)
+                    imagePromoListHeader.setImageUrl(element.uiData.iconUrl)
                 } else {
                     imagePromoListHeader.gone()
                 }
