@@ -380,7 +380,7 @@ class DigitalCartViewModel @Inject constructor(
         _payment.postValue(paymentSummary)
     }
 
-    fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier) {
+    fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier, isUseGql: Boolean) {
         val promoCode = promoData.value?.promoCode ?: ""
         val cartDigitalInfoData = _cartDigitalInfoData.value
         cartDigitalInfoData?.let {
@@ -397,7 +397,7 @@ class DigitalCartViewModel @Inject constructor(
                             requestCheckoutParams = requestCheckoutParam,
                             digitalIdentifierParams = digitalIdentifierParam,
                             fintechProduct = it.attributes.fintechProduct.getOrNull(0),
-                            isUseGql = true
+                            isUseGql = isUseGql
                         )
                     }
 
