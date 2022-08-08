@@ -1768,6 +1768,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
     ) = ContentDetailPageAnalyticsDataModel(
         activityId = if (feedXCard.isTypeVOD) feedXCard.playChannelID else feedXCard.id,
         shopId = feedXCard.author.id,
+        productId= product.id,
         rowNumber = postPosition,
         isFollowed = feedXCard.followers.isFollowed,
         type = feedXCard.typename,
