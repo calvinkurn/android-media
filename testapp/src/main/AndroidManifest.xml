@@ -27,7 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity" />
         <activity android:name="com.tokopedia.tkpd.ErrorMessageActivity" />
 
         <meta-data
