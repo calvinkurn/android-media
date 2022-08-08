@@ -4,10 +4,10 @@ import com.tokopedia.common_digital.atc.data.gql.request.RechargeATCField
 import com.tokopedia.common_digital.atc.data.gql.request.RechargeATCIdentifier
 import com.tokopedia.common_digital.atc.data.gql.request.RechargeATCRequest
 import com.tokopedia.common_digital.atc.data.gql.response.RechargeATCResponse
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
@@ -18,6 +18,10 @@ import javax.inject.Inject
 /**
  * @author Created By : Muhammad Furqan on Aug 5, 2022
  */
+@GqlQuery(
+    RechargeAddToCartGqlUseCase.QUERY_NAME_RECHARGE_ATC,
+    RechargeAddToCartGqlUseCase.QUERY_RECHARGE_ATC
+)
 class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<RechargeATCResponse>(graphqlRepository) {
 
