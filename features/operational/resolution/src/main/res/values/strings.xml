@@ -6,4 +6,5 @@
     <string name="title_btn_home">Balik Ke Homepage</string>
     <string name="title_toolbar_resolution">Komplain diajukan</string>
     <string name="screen_name_resolution">ResolutionFragment</string>
+    <string name="content_desc_success_reso">Success Create Reso</string>
 </resources>
