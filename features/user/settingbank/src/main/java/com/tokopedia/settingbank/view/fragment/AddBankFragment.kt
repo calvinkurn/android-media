@@ -46,7 +46,6 @@ import javax.inject.Inject
 class AddBankFragment : BaseDaggerFragment() {
 
 
-    private val REQUEST_OTP: Int = 103
 
     override fun getScreenName(): String? = null
 
@@ -419,7 +418,7 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun isAccountNameLengthValid(accountHolderName: String): Boolean {
-        if (accountHolderName.length in 3..128) {
+        if (accountHolderName.length in BANK_ACC_START_IDX..BANK_ACC_LAST_IDX) {
             return true
         }
         return false
@@ -518,6 +517,10 @@ class AddBankFragment : BaseDaggerFragment() {
         const val ARG_OUT_ACCOUNT_NUMBER = "ARG_OUT_ACCOUNT_NUMBER"
         const val ARG_OUT_ACCOUNT_HOLDER_NAME = "ARG_OUT_ACCOUNT_HOLDER_NAME"
         const val ARG_OUT_ACCOUNT_NAME_IS_MANUAL = "ARG_OUT_ACCOUNT_NAME_IS_MANUAL"
+        private const val REQUEST_OTP = 103
+
+        const val BANK_ACC_START_IDX = 3
+        const val BANK_ACC_LAST_IDX = 128
     }
 
     private fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
