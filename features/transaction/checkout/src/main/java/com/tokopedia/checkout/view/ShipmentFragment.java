@@ -1275,16 +1275,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             } else {
                 // todo: check do we need to reset/apply BO?
                 shipmentPresenter.setCouponStateChanged(true);
-                ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
-                if (validateUsePromoRevampUiModel != null) {
-                    String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
-                    if (messageInfo.length() > 0) {
-                        showToastNormal(messageInfo);
-                    }
-                    shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
-                    updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), false);
-                }
-
                 ValidateUsePromoRequest validateUsePromoRequest = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_LAST_VALIDATE_USE_REQUEST);
                 if (validateUsePromoRequest != null) {
                     boolean stillHasPromo = false;
@@ -1312,6 +1302,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
+                ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
+                if (validateUsePromoRevampUiModel != null) {
+                    String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
+                    if (messageInfo.length() > 0) {
+                        showToastNormal(messageInfo);
+                    }
+                    shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
+                    // todo check red state
+//                    shipmentPresenter.validateBo(validateUsePromoRevampUiModel);
+//                        if (state == red) {
+//                            doUnapplyBo()
+//                        } else if (state == green) {
+//                            doAutoApplyBo()
+//                        }
+                    updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), false);
+                }
+
                 ClearPromoUiModel clearPromoUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CLEAR_PROMO_RESULT);
                 if (clearPromoUiModel != null) {
                     PromoUiModel promoUiModel = new PromoUiModel();
@@ -1326,6 +1333,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
                     doUpdateButtonPromoCheckout(promoUiModel);
                     shipmentPresenter.setValidateUsePromoRevampUiModel(null);
+                    // todo: reset BO -> if (voucherLogisticItemUiModel != null) voucherLogisticItemUiModel = null
+                    // todo: flow auto unapply BO
+//                    doUnapplyBo()
                     shipmentAdapter.checkHasSelectAllCourier(false, -1, "", false);
                 }
 

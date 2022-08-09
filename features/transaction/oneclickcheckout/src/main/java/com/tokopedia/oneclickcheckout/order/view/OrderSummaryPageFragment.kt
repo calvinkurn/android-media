@@ -226,8 +226,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
                 }
 
-                // todo: check do we need to reset/apply BO?
-                // todo: show toaster from validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
                 val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
                 if (validateUsePromoRevampUiModel != null) {
                     viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
@@ -252,6 +250,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     viewModel.updatePromoState(PromoUiModel().apply {
                         titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
                     })
+                    // todo: reset BO -> if isApplyLogisticPromo == true then isApplyLogisticPromo = false
+                    // todo: flow auto unapply BO
                     //refresh shipping section and calculate total
                     viewModel.reloadRates()
                 }
