@@ -84,6 +84,9 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                 }
                 iuFreeShipping.contentDescription = binding.root.context.getString(contentDescriptionStringResource)
                 separatorFreeShipping.visible()
+                if (shop.isFreeOngkirPlus) {
+                    orderSummaryAnalytics.eventViewGoToPlusBadge()
+                }
             } else {
                 iuFreeShipping.gone()
                 separatorFreeShipping.gone()

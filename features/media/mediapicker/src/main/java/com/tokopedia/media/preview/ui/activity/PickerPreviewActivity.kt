@@ -110,6 +110,11 @@ class PickerPreviewActivity : BaseActivity()
         if (param.get().isMultipleSelectionType()) {
             onBackPickerIntent()
         } else {
+            if (uiModel.isEmpty()) {
+                cancelIntent()
+                return
+            }
+
             onCancelOrRetakeMedia(uiModel.first())
         }
     }
@@ -248,6 +253,11 @@ class PickerPreviewActivity : BaseActivity()
                 binding?.drawerSelector?.setThumbnailSelected(nextIndex = drawerIndexSelected)
             }
         } else {
+            if (uiModel.isEmpty()) {
+                cancelIntent()
+                return
+            }
+
             val media = uiModel.first()
             retakeButtonAction(media)
         }
