@@ -4,7 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.broadcaster.LiveBroadcasterManager
+import com.tokopedia.broadcaster.revamp.BroadcastManager
+import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
@@ -16,18 +17,14 @@ import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProduct
 import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
-import com.tokopedia.play.broadcaster.pusher.mediator.LiveBroadcasterMediator
-import com.tokopedia.play.broadcaster.pusher.mediator.PlayLivePusherMediator
-import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
-import com.tokopedia.play.broadcaster.pusher.mediator.rollence.AbTestBroadcaster
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.util.cover.ImageTransformer
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtilImpl
 import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransformer
+import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
+import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
@@ -55,13 +52,10 @@ class PlayBroadcastModule {
         return UpdateChannelUseCase(graphqlRepository)
     }
 
+    @ActivityRetainedScope
     @Provides
-    fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler, playLivePusherTimer: PlayLivePusherTimer): PusherMediator {
-        return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
-            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler, playLivePusherTimer)
-        } else {
-            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler, playLivePusherTimer)
-        }
+    fun provideBroadcaster(): Broadcaster {
+        return BroadcastManager()
     }
 
     @Provides
@@ -129,13 +123,14 @@ class PlayBroadcastModule {
 
     @ActivityRetainedScope
     @Provides
-    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer): PlayBroadcastMapper {
-        return PlayBroadcastUiMapper(htmlTextTransformer)
+    fun provideUriParser(): UriParser {
+        return DefaultUriParser()
+    }
 
-        /**
-         * If you want mock
-         */
-//        return PlayBroadcastMockMapper()
+    @ActivityRetainedScope
+    @Provides
+    fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer, uriParser: UriParser): PlayBroadcastMapper {
+        return PlayBroadcastUiMapper(htmlTextTransformer, uriParser)
     }
 
     @ActivityRetainedScope
