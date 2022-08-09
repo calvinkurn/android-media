@@ -1,37 +1,20 @@
-package com.tokopedia.tkpd.flashsale.presentation.landing
+package com.tokopedia.tkpd.flashsale.presentation.list.fragment
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.seller_tokopedia_flash_sale.R
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsActivityLandingBinding
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
-import com.tokopedia.tkpd.flashsale.presentation.list.bottomsheet.CampaignDetailBottomSheet
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import javax.inject.Inject
 
-class LandingContainerFragment : BaseDaggerFragment() {
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = LandingContainerFragment()
-    }
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+class CampaignTimelineFragment: BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<StfsFragmentLandingContainerBinding>()
-    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(LandingContainerViewModel::class.java) }
 
-    override fun getScreenName(): String = LandingContainerFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName() = ""
 
     override fun initInjector() {
         DaggerTokopediaFlashSaleComponent.builder()
@@ -50,14 +33,5 @@ class LandingContainerFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
-
-        CampaignDetailBottomSheet().show(childFragmentManager, "")
-    }
-
-    private fun setupView() {
-        binding?.run {
-            header.setNavigationOnClickListener { activity?.finish() }
-        }
     }
 }
