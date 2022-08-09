@@ -1,6 +1,5 @@
 package com.tokopedia.loginregister.registerinitial.view.fragment
 
-import android.accounts.AccountManager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -313,19 +312,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         }
     }
 
-    val emailListOfAccountsUserHasLoggedInto: List<String>
-        get() {
-            val listOfAddresses: MutableSet<String> = LinkedHashSet()
-            val emailPattern = Patterns.EMAIL_ADDRESS
-            val accounts = AccountManager.get(activity).getAccountsByType("com.google")
-            for (account in accounts) {
-                if (emailPattern.matcher(account.name).matches()) {
-                    listOfAddresses.add(account.name)
-                }
-            }
-            return ArrayList(listOfAddresses)
-        }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun setViewListener() {
         wrapperPassword?.textFieldInput?.setOnEditorActionListener { v: TextView?, id: Int, event: KeyEvent? ->
@@ -473,21 +459,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         registerButton?.clearFocus()
     }
 
-    private val isEmailAddressFromDevice: Boolean
-        private get() {
-            val list = emailListOfAccountsUserHasLoggedInto
-            var result = false
-            if (list.size > 0) {
-                for (e in list) {
-                    if (e == wrapperEmail?.textFieldInput?.text.toString()) {
-                        result = true
-                        break
-                    }
-                }
-            }
-            return result
-        }
-
     fun showInfo() {
         dismissLoadingProgress()
         val view: Typography? = redirectView?.findViewById(R.id.body)
@@ -544,10 +515,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         registerAnalytics?.trackFailedClickEmailSignUpButton(errorMessage?.removeErrorCode() ?: "")
         registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage?.removeErrorCode() ?: "")
     }
-
-    val isAutoVerify: Int
-        get() = if (isEmailAddressFromDevice) 1 else 0
-
 
     fun onBackPressed() {
         registerAnalytics?.trackClickOnBackButtonRegisterEmail()
