@@ -38,7 +38,6 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterInput
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
@@ -52,7 +51,6 @@ import com.tokopedia.search.result.presentation.model.CarouselProductType
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -70,6 +68,8 @@ import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.pagination.PaginationImpl
@@ -254,6 +254,11 @@ class ProductListPresenter @Inject constructor(
     //endregion
 
     //region Load Data / Load More / Recommendations
+    override fun clearData() {
+        postProcessingFilter.resetCount()
+        paginationImpl.clearData()
+    }
+
     override fun onViewCreated() {
         val isFirstActiveTab = view.isFirstActiveTab
 
