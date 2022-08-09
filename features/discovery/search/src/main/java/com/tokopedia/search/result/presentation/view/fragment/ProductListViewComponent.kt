@@ -18,7 +18,6 @@ import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterU
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
-import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegateModule
 import com.tokopedia.search.result.product.pagination.PaginationModule
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.utils.ProductionSchedulersProviderModule
@@ -49,7 +48,6 @@ import dagger.Component
     ProductListPresenterModule::class,
     FilterControllerModule::class,
     ProductListPresenterModule::class,
-    LastFilterPresenterDelegateModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

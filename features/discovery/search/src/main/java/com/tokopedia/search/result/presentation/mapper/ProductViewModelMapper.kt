@@ -430,10 +430,8 @@ class ProductViewModelMapper {
         keyword: String,
         dimension90: String,
     ): LastFilterDataView {
-        val lastFilterData = searchProductModel.lastFilter.data
-
         return LastFilterDataView.create(
-            lastFilterData,
+            searchProductModel.lastFilter,
             keyword,
             dimension90
         )

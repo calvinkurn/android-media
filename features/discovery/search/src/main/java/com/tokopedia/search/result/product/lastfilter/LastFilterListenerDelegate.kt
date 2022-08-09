@@ -14,9 +14,9 @@ import javax.inject.Inject
 class LastFilterListenerDelegate @Inject constructor(
     private val recyclerViewUpdater: RecyclerViewUpdater,
     private val iris: Iris,
-    private val queryKeyProvider: QueryKeyProvider,
-    private val productListParameterListener: ProductListParameterListener,
-    private val searchParameterProvider: SearchParameterProvider,
+    queryKeyProvider: QueryKeyProvider,
+    productListParameterListener: ProductListParameterListener,
+    searchParameterProvider: SearchParameterProvider,
     private val filterController: FilterController,
     private val lastFilterPresenter: LastFilterPresenter,
     private val dynamicFilterModelProvider: DynamicFilterModelProvider,

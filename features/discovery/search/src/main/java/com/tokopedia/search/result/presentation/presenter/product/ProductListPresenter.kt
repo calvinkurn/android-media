@@ -643,8 +643,6 @@ class ProductListPresenter @Inject constructor(
         suggestionKeyword = searchProductModel.searchProduct.data.suggestion.suggestion
         pageComponentId = productDataView.pageComponentId
 
-        lastFilterPresenterDelegate.updateLastFilter(mapOf(), listOf())
-
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
 

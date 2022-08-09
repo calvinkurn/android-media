@@ -32,10 +32,12 @@ class LastFilterDataView(
 
     companion object {
         fun create(
-            lastFilterData: LastFilterModel.Data,
+            lastFilter: LastFilterModel.LastFilter,
             keyword: String,
             dimension90: String,
         ): LastFilterDataView {
+            val lastFilterData = lastFilter.data
+
             return LastFilterDataView(
                 filterList = lastFilterData.filters,
                 title = lastFilterData.title,
