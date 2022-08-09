@@ -11,11 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_12"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgPackageName"

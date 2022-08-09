@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemShopTierBenefitBinding
+import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemVpsBenefitQuotaEmptyBinding
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemVpsPackageBinding
-import com.tokopedia.seller_shop_flash_sale.databinding.SsfsVpsBenefitQuotaEmptyBinding
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
 import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
@@ -55,7 +55,7 @@ class VpsPackageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 VpsBenefitViewHolder(binding)
             }
             else -> {
-                val binding = SsfsVpsBenefitQuotaEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                val binding = SsfsItemVpsBenefitQuotaEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 EmptyQuotaViewHolder(binding)
             }
         }
@@ -97,7 +97,7 @@ class VpsPackageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         this.onVpsPackageClicked = onVpsPackageClicked
     }
 
-    inner class EmptyQuotaViewHolder(private val binding: SsfsVpsBenefitQuotaEmptyBinding) :
+    inner class EmptyQuotaViewHolder(private val binding: SsfsItemVpsBenefitQuotaEmptyBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(vpsPackage: VpsPackageUiModel) {
