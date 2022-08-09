@@ -320,7 +320,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
                     val nearestExpiredVpsPackage = viewModel.findNearestExpiredVpsPackage(vpsPackages) ?: return@observe
                     viewModel.setSelectedVpsPackage(nearestExpiredVpsPackage)
-                    updateQuotaSource(nearestExpiredVpsPackage)
+                    displaySelectedVpsPackage(nearestExpiredVpsPackage)
                 }
                 is Fail -> {
                     binding?.cardView showError result.throwable
@@ -330,7 +330,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
 
-    private fun updateQuotaSource(vpsPackage : VpsPackageUiModel?) {
+    private fun displaySelectedVpsPackage(vpsPackage : VpsPackageUiModel?) {
         val isUsingShopTierBenefit = vpsPackage?.isShopTierBenefit.orFalse()
         val isUsingVpsPackage = !isUsingShopTierBenefit
 
@@ -789,7 +789,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         binding?.run {
             tauCampaignName.editText.setText(campaign.campaignName)
 
-            updateQuotaSource(quotaSource)
+            displaySelectedVpsPackage(quotaSource)
 
             val isEditDateEnabled = campaign.status == CampaignStatus.DRAFT
             tauStartDate.editText.setText(campaign.startDate.formatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
@@ -1006,9 +1006,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val vpsPackages = ArrayList(viewModel.getStoredVpsPackages())
         val bottomSheet = VpsPackageBottomSheet.newInstance(selectedVpsPackageId, vpsPackages)
         bottomSheet.setOnVpsPackageClicked { selectedVpsPackage ->
-
             viewModel.setSelectedVpsPackage(selectedVpsPackage)
-            binding?.tauVpsPackageName?.editText?.setText(selectedVpsPackage.packageName)
+            displaySelectedVpsPackage(selectedVpsPackage)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }

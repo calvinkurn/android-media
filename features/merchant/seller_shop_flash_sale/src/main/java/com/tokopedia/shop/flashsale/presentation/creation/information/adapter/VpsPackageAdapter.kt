@@ -111,15 +111,10 @@ class VpsPackageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(vpsPackage: VpsPackageUiModel) {
+            binding.radioButton.setOnCheckedChangeListener { _, _ -> onVpsPackageClicked(vpsPackage) }
             binding.radioButton.isChecked = vpsPackage.isSelected
             binding.tpgPackageName.text = vpsPackage.packageName
-            handleRadioButton(vpsPackage)
             binding.root.setOnClickListener { onVpsPackageClicked(vpsPackage) }
-        }
-
-        private fun handleRadioButton(vpsPackage: VpsPackageUiModel) {
-            binding.radioButton.setOnCheckedChangeListener(null)
-            binding.radioButton.isChecked = vpsPackage.isSelected
         }
     }
 
@@ -128,9 +123,9 @@ class VpsPackageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(vpsPackage: VpsPackageUiModel) {
-            binding.radioButton.isChecked = vpsPackage.isSelected
             binding.tpgPackageName.text = vpsPackage.packageName
-            handleRadioButton(vpsPackage)
+            binding.radioButton.setOnCheckedChangeListener { _, _ -> onVpsPackageClicked(vpsPackage) }
+            binding.radioButton.isChecked = vpsPackage.isSelected
             binding.root.isEnabled = !vpsPackage.disabled
             binding.root.setOnClickListener { onVpsPackageClicked(vpsPackage) }
             binding.labelRemainingQuota.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
@@ -155,11 +150,6 @@ class VpsPackageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 vpsPackage.packageEndTime.formatTo(DateConstant.DATE)
             )
             this.text = period
-        }
-
-        private fun handleRadioButton(vpsPackage: VpsPackageUiModel) {
-            binding.radioButton.setOnCheckedChangeListener(null)
-            binding.radioButton.isChecked = vpsPackage.isSelected
         }
     }
 
