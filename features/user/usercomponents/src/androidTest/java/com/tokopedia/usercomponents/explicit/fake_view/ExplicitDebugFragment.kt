@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.usercomponents.explicit.ExplicitTest
-import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.view.ExplicitData
 import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewContract
 import com.tokopedia.usercomponents.test.R
@@ -34,10 +32,10 @@ class ExplicitDebugFragment : BaseDaggerFragment() {
         binding?.fakeExplicit?.setupView(
             explicitViewContract,
             ExplicitData(
-                "halal_single",
-                "halal_single_name",
-                "halal_single_path",
-                "halal_single_type"
+                TEMPLATE_NAME,
+                PAGE_NAME,
+                PAGE_PATH,
+                PAGE_TYPE
             )
         )
     }
@@ -47,5 +45,12 @@ class ExplicitDebugFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         ExplicitTest.component?.inject(this)
+    }
+
+    companion object {
+        private const val TEMPLATE_NAME = "halal_single"
+        private const val PAGE_NAME = "halal_single_name"
+        private const val PAGE_PATH = "halal_single_path"
+        private const val PAGE_TYPE = "halal_single_type"
     }
 }

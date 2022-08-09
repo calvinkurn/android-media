@@ -2,11 +2,9 @@ package com.tokopedia.usercomponents.explicit.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
-import com.tokopedia.usercomponents.explicit.ExplicitTest
 import com.tokopedia.usercomponents.explicit.di.module.FakeExplicitModule
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugFragment
 import dagger.Component
@@ -22,5 +20,4 @@ interface FakeExplicitComponent : BaseAppComponent {
     fun repository(): GraphqlRepository
 
     fun inject(fragment: ExplicitDebugFragment)
-    fun inject(test: ExplicitTest)
 }
