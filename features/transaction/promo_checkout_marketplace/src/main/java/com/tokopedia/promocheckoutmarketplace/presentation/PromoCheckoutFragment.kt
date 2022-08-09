@@ -227,7 +227,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         // Observe visitable data changes
         observeFragmentUiModel()
         observePromoRecommendationUiModel()
-//        observePromoTabUiModel()
         observePromoInputUiModel()
         observePromoListUiModel()
         observeErrorStateUiModel()

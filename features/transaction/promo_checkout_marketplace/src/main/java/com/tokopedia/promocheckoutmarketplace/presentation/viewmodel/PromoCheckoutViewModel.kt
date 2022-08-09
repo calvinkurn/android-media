@@ -459,11 +459,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     _promoRecommendationUiModel.value = promoRecommendationUiModel
                     couponList.add(promoRecommendationUiModel)
                 }
-
-                // Initialize promo tab
-//                val promoTabUiModel = uiModelMapper.mapPromoTabsUiModel(response.couponListRecommendation.data.sectionTabs)
-//                _promoTabUiModel.value = promoTabUiModel
-//                couponList.add(promoTabUiModel)
             }
 
             // Initialize promo list header
@@ -1134,10 +1129,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun updateBoClashingState(selectedItem: PromoListItemUiModel) {
-        // if item selected & item bo clashing then hasselectedbo true
-        // if item selected & item not bo clashing then do nothing
-        // if item unselected & item bo clashing then reset hasselected bo to false
-        // if item unselected & item not bo clashing then do nothing
         if (selectedItem.uiData.boClashingInfos.isNotEmpty()) {
             fragmentUiModel.value?.let {
                 it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.firstOrNull()?.message ?: ""
