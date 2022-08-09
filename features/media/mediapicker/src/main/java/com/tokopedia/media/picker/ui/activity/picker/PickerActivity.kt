@@ -293,10 +293,12 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        container.cameraFragment().run {
+        if (!param.get().isIncludeVideoFile()) return false
+
+        container.cameraFragment()?.run {
             val cameraFragment = this
 
-            if (cameraFragment != null && cameraFragment.isAdded) {
+            if (cameraFragment.isAdded && cameraFragment.view != null) {
                 cameraFragment.gestureDetector.onTouchEvent(ev)
             }
         }
@@ -308,6 +310,7 @@ open class PickerActivity : BaseActivity()
         if (container.isFragmentActive(FragmentType.GALLERY)) {
             pickerAnalytics.clickCloseButton()
         }
+
         finish()
     }
 

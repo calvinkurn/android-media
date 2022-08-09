@@ -563,13 +563,6 @@ class PlayUserInteractionFragment @Inject constructor(
         if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             invalidateChatListBounds(shouldForceInvalidate = true)
         }
-
-        if (isHidingInsets && rtnView?.isAnimating() == true && rtnView?.isAnimatingHide() != true) {
-            val height = rtnView?.getRtnHeight() ?: return
-            chatListView?.setMask(height.toFloat() + offset8, false)
-        } else {
-            chatListView?.setMask(MASK_NO_CUT_HEIGHT, false)
-        }
     }
 
     private fun initAnalytic() {

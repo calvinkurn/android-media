@@ -448,6 +448,12 @@ data class DataItem(
         @SerializedName("show_timer")
         var showTimer: Boolean? = null,
 
+        @SerializedName("show_three_dots_button")
+        var show3Dots: Boolean? = null,
+
+        @SerializedName("atc_button_cta")
+        var atcButtonCTA: String? = null,
+
         @SerializedName("time_description")
         val timeDescription: String? = null,
 

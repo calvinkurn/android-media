@@ -143,6 +143,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             val addressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (addressDataModel != null) {
                 setChosenAddressANA(addressDataModel)
+                view?.let { Toaster.build(it, getString(R.string.add_address_success), Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
             } else {
                 performSearch(binding?.searchInputView?.searchBarTextField?.text?.toString() ?: "", null)
             }

@@ -3,7 +3,7 @@ package com.tokopedia.search.result.product.requestparamgenerator
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.network.authentication.AuthHelper
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.utils.getValueString
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.topads.sdk.TopAdsConstants
