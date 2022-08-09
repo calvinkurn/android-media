@@ -76,7 +76,6 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
@@ -232,7 +231,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
 
-    private lateinit var localCache: LocalCacheModel
+    private var localCache: LocalCacheModel = LocalCacheModel()
 
     /**
      * Animation
@@ -275,6 +274,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onStart() {
         super.onStart()
         viewSize.rootView.requestApplyInsetsWhenAttached()
+        initAddress()
     }
 
     override fun onPause() {
@@ -328,6 +328,7 @@ class PlayUserInteractionFragment @Inject constructor(
         super.onResume()
         isOpened = true
         invalidateSystemUiVisibility()
+        initAddress()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -506,7 +507,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, ProductSectionUiModel.Section.ConfigUiModel.Empty, position))
-        if(product.isTokoNow) newAnalytic.clickFeaturedProduct(product, position)
+        if(product.isTokoNow) newAnalytic.clickFeaturedProductNow(product, position)
         else analytic.clickFeaturedProduct(product, position)
     }
 
@@ -561,13 +562,6 @@ class PlayUserInteractionFragment @Inject constructor(
          */
         if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             invalidateChatListBounds(shouldForceInvalidate = true)
-        }
-
-        if (isHidingInsets && rtnView?.isAnimating() == true && rtnView?.isAnimatingHide() != true) {
-            val height = rtnView?.getRtnHeight() ?: return
-            chatListView?.setMask(height.toFloat() + offset8, false)
-        } else {
-            chatListView?.setMask(MASK_NO_CUT_HEIGHT, false)
         }
     }
 
@@ -1799,13 +1793,14 @@ class PlayUserInteractionFragment @Inject constructor(
      */
 
     private fun initAddress() {
-        localCache = ChooseAddressUtils.getLocalizingAddressData(context = requireContext())
+        if(ChooseAddressUtils.isLocalizingAddressHasUpdated(context = requireContext(), localizingAddressStateData = localCache)) {
+            localCache = ChooseAddressUtils.getLocalizingAddressData(context = requireContext())
+            val warehouseId = localCache.warehouses.find {
+                it.service_type == localCache.service_type
+            }?.warehouse_id ?: 0
 
-        val warehouseId = localCache.warehouses.find {
-            it.service_type == localCache.service_type
-        }?.warehouse_id ?: 0
-
-        playViewModel.submitAction(SendWarehouseId(isOOC = localCache.isOutOfCoverage(), id = warehouseId.toString()))
+            playViewModel.submitAction(SendWarehouseId(isOOC = localCache.isOutOfCoverage(), id = warehouseId.toString()))
+        }
     }
 
     override fun onAddressUpdated(view: ChooseAddressViewComponent) {
@@ -1814,22 +1809,22 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onInfoClicked(view: ChooseAddressViewComponent) {
-        newAnalytic.clickInfoAddressWidget()
+        newAnalytic.clickInfoAddressWidgetNow()
         playViewModel.submitAction(OpenFooterUserReport(
             TokopediaUrl.getInstance().WEB +
                 getString(R.string.play_tokonow_info_weblink)))
     }
 
     override fun onImpressedAddressWidget(view: ChooseAddressViewComponent) {
-        newAnalytic.impressAddressWidget()
+        newAnalytic.impressAddressWidgetNow()
     }
 
     override fun onImpressedBtnChoose(view: ChooseAddressViewComponent) {
-        newAnalytic.impressChooseAddress()
+        newAnalytic.impressChooseAddressNow()
     }
 
     override fun onBtnChooseClicked(view: ChooseAddressViewComponent) {
-        newAnalytic.clickChooseAddress()
+        newAnalytic.clickChooseAddressNow()
     }
 
     override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {

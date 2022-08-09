@@ -11,6 +11,7 @@ import java.util.ArrayList
 object TopChatAnalyticsKt {
 
     var sourcePage = ""
+    const val PUSH_NOTIF = "push_notif"
 
     fun eventClickOCCButton(
         element: ProductAttachmentUiModel,
@@ -220,6 +221,20 @@ object TopChatAnalyticsKt {
         )
     }
 
+    fun eventClickReplyChatFromNotif() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                action = Action.CLICK_SEND_MSG_ON_NOTIF,
+                category = Category.PUSH_NOTIF_CHAT,
+                label = "",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "34310"
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -227,7 +242,8 @@ object TopChatAnalyticsKt {
         label: String,
         businessUnit: String,
         currentSite: String?,
-        userId: String? = null
+        userId: String? = null,
+        trackerId: String? = null
     ): Map<String, Any> {
         val data = mutableMapOf(
             TrackAppUtils.EVENT to event,
@@ -242,6 +258,9 @@ object TopChatAnalyticsKt {
         if (userId != null) {
             data[USER_ID] = userId
         }
+        if (trackerId != null) {
+            data[TRACKER_ID] = trackerId
+        }
         return data
     }
 
@@ -253,6 +272,7 @@ object TopChatAnalyticsKt {
 
     object Category {
         const val CHAT_DETAIL = "chat detail"
+        const val PUSH_NOTIF_CHAT = "push notification chat"
     }
 
     object Action {
@@ -268,6 +288,7 @@ object TopChatAnalyticsKt {
         const val CLICK_CLOSE_SRW_ONBOARDING = "click close on srw onboarding"
         const val VIEW_BUNDLING_PRODUCT_CARD = "view on bundling product card"
         const val CLICK_BUNDLING_PRODUCT_CTA = "click on bundling product card"
+        const val CLICK_SEND_MSG_ON_NOTIF = "click sent msg on notifpush"
     }
 
     //Event Name
@@ -286,6 +307,7 @@ object TopChatAnalyticsKt {
     private const val CURRENT_SITE = "topchat"
     private const val COMMUNICATION_MEDIA = "Communication & Media"
     private const val CURRENT_SITE_TOKOPEDIA = "tokopediamarketplace"
+    private const val COMMUNICATION = "communication"
 
     //General Keys
     private const val KEY_BUSINESS_UNIT = "businessUnit"
@@ -319,4 +341,5 @@ object TopChatAnalyticsKt {
     private const val SHOP_TYPE = "shop_type"
     private const val PRODUCT_ID = "productId"
     private const val USER_ID = "userId"
+    private const val TRACKER_ID = "trackerId"
 }

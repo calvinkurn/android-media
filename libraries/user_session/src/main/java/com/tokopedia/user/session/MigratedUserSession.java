@@ -222,7 +222,6 @@ public class MigratedUserSession {
                 logUserSessionEvent("decrypt_string_exception_with_backup", e);
                 return backupValue;
             } else {
-                logUserSessionEvent("decrypt_string_exception_without_backup", e);
                 return "";
             }
         }
@@ -304,7 +303,6 @@ public class MigratedUserSession {
                 internalCleanKey(prefName, keyName);
                 internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
                 UserSessionMap.map.put(key, oldValue);
-                logUserSessionEvent("migrate_from_v1", null);
                 return oldValue;
             }
 

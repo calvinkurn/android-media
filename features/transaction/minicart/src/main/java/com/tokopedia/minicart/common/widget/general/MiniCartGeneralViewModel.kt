@@ -82,13 +82,13 @@ class MiniCartGeneralViewModel @Inject constructor(
 
     // API Call
 
-    fun getLatestWidgetState(shopIds: List<String>? = null) {
+    fun getLatestWidgetState(shopIds: List<String>? = null, delay: Long = 0) {
         if (shopIds != null) {
             initializeShopIds(shopIds)
-            getMiniCartListSimplifiedUseCase.setParams(shopIds, currentSource, isShopDirectPurchase)
+            getMiniCartListSimplifiedUseCase.setParams(shopIds, currentSource, isShopDirectPurchase, delay)
         } else {
             val tmpShopIds = getCurrentShopIds()
-            getMiniCartListSimplifiedUseCase.setParams(tmpShopIds, currentSource, isShopDirectPurchase)
+            getMiniCartListSimplifiedUseCase.setParams(tmpShopIds, currentSource, isShopDirectPurchase, delay)
         }
         getMiniCartListSimplifiedUseCase.execute(
             onSuccess = {
