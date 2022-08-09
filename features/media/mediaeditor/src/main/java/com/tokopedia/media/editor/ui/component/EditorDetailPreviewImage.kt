@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRectModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorRotateModel
 import com.tokopedia.media.editor.utils.getDestinationUri
@@ -69,6 +70,12 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         initListener()
     }
 
+    fun initializeCrop(uriSource: Uri){
+        val resultDestination = getDestinationUri(context)
+        cropImageView.setImageUri(uriSource, resultDestination)
+        initListener()
+    }
+
     @SuppressLint("ClickableViewAccessibility")
             /**
              * Component will lose the ability to interact with user input via touch
@@ -96,24 +103,27 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         return cropImageView.drawable.toBitmap()
     }
 
+    // conditional crop function for rotate feature
     fun cropRotate(
         finalRotationDegree: Float,
         sliderValue: Float,
         rotateNumber: Int,
         data: EditorDetailUiModel?,
-        onCropFinish: (cropResult: Bitmap) -> Unit
+        isRotate: Boolean,
+        onCropFinish: (cropResult: Bitmap) -> Unit,
     ) {
         val bitmap = cropImageView.drawable.toBitmap()
+        val cropViewScale = getScale()
+        val cropViewScaleX = cropViewScale.first
+        val cropViewScaleY = cropViewScale.second
 
-        if (cropImageView.currentAngle % 90f == 0f && rotateNumber != 0) {
-            val scale = getScale()
-            val scaleX = scale.first
-            val scaleY = scale.second
-
+        // if rotated image is same with original ratio without overflow, ucrop will skip it
+        // need to manually crop & save
+        if (cropImageView.currentAngle % 90f == 0f && rotateNumber != 0 && isRotate) {
             val matrix = Matrix()
             matrix.preScale(
-                scaleX,
-                scaleY
+                cropViewScaleX,
+                cropViewScaleY
             )
 
             matrix.postRotate(abs(finalRotationDegree))
@@ -121,8 +131,8 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
             // set crop area on data that will be pass to landing pass for state
             data?.rotateData = EditorRotateModel(
                 sliderValue,
-                scaleX,
-                scaleY,
+                cropViewScaleX,
+                cropViewScaleY,
                 0,
                 0,
                 bitmap.width,
@@ -134,6 +144,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
             return
         }
 
+        // if rotated image is overflow from the original ratio then we can use ucrop crop feature
         cropImageView.cropAndSaveImage(
             Bitmap.CompressFormat.PNG,
             100,
@@ -145,14 +156,16 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
                     imageWidth: Int,
                     imageHeight: Int
                 ) {
-                    onCropFinish(getProcessedBitmap(
-                        bitmap,
-                        offsetX, offsetY, imageWidth, imageHeight,
-                        finalRotationDegree = finalRotationDegree,
-                        sliderValue = sliderValue,
-                        rotateNumber = rotateNumber,
-                        data = data
-                    ))
+                    onCropFinish(
+                        getProcessedBitmap(
+                            bitmap,
+                            offsetX, offsetY, imageWidth, imageHeight,
+                            finalRotationDegree = finalRotationDegree,
+                            sliderValue = sliderValue,
+                            rotateNumber = if(isRotate) rotateNumber else  -1,
+                            data = data
+                        )
+                    )
                 }
 
                 override fun onCropFailure(t: Throwable) {
@@ -162,6 +175,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         )
     }
 
+    // crop function that support mirroring feature
     fun getProcessedBitmap(
         originalBitmap: Bitmap,
         offsetX: Int,
@@ -203,18 +217,33 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         )
 
         // set crop area on data that will be pass to landing pass for state
-        data?.rotateData = EditorRotateModel(
-            sliderValue,
-            scaleX,
-            scaleY,
-            offsetX,
-            offsetY,
-            imageWidth,
-            imageHeight,
-            rotateNumber
-        )
+        if (rotateNumber >= 0){
+            data?.rotateData = EditorRotateModel(
+                sliderValue,
+                scaleX,
+                scaleY,
+                offsetX,
+                offsetY,
+                imageWidth,
+                imageHeight,
+                rotateNumber
+            )
+        } else {
+            data?.cropBound = EditorCropRectModel(
+                offsetX,
+                offsetY,
+                imageWidth,
+                imageHeight,
+                cropImageView.currentScale,
+                ""
+            )
+        }
 
         return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
+//        return if (rotateNumber != -1)
+//            Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
+//        else
+//            Bitmap.createBitmap(rotatedBitmap, offsetX, 0, imageWidth, imageHeight)
     }
 
     private fun initListener(){

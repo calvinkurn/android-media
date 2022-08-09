@@ -2,8 +2,10 @@ package com.tokopedia.media.editor.ui.fragment
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.data.repository.ColorFilterRepositoryImpl
@@ -28,6 +31,7 @@ import com.tokopedia.media.editor.ui.component.CropToolUiComponent
 import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
 import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRectModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorRotateModel
 import com.tokopedia.media.editor.utils.getDestinationUri
@@ -38,6 +42,7 @@ import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
+import com.yalantis.ucrop.callback.BitmapCropCallback
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -49,7 +54,7 @@ class DetailEditorFragment @Inject constructor(
     private val userSession: UserSessionInterface
 ) : BaseEditorFragment(), BrightnessToolUiComponent.Listener, ContrastToolsUiComponent.Listener,
     RemoveBackgroundToolUiComponent.Listener, WatermarkToolUiComponent.Listener,
-    RotateToolUiComponent.Listener {
+    RotateToolUiComponent.Listener, CropToolUiComponent.Listener {
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
@@ -71,7 +76,7 @@ class DetailEditorFragment @Inject constructor(
     private val contrastComponent by uiComponent { ContrastToolsUiComponent(it, this) }
     private val watermarkComponent by uiComponent { WatermarkToolUiComponent(it, this) }
     private val rotateComponent by uiComponent { RotateToolUiComponent(it, this) }
-    private val cropComponent by uiComponent { CropToolUiComponent(it, 0) }
+    private val cropComponent by uiComponent { CropToolUiComponent(it, this) }
 
     private var data = EditorDetailUiModel()
     private var implementedBaseBitmap: Bitmap? = null
@@ -157,6 +162,50 @@ class DetailEditorFragment @Inject constructor(
             RotateToolUiComponent.ROTATE_BTN_DEGREE,
             true
         )
+    }
+
+    override fun onCropRatioClicked(ratio: Float) {
+        viewBinding?.imgUcropPreview?.let {
+            val overlayView = it.overlayView
+            val cropView = it.cropImageView
+
+            overlayView.setTargetAspectRatio(ratio)
+            cropView.targetAspectRatio = ratio
+            Handler().postDelayed({
+                cropView.setCropRect(overlayView.cropViewRect)
+                cropView.setImageToWrapCropBounds()
+            },1000)
+//            if(ratio == 1f/1f){
+//                it.cropImageView.zoomOutImage(it.cropImageView.minScale + 0.01f)
+//                it.cropImageView.setImageToWrapCropBounds()
+//            } else if(ratio == 3f/4f){
+//                val x = 0
+//            } else {
+//                val bitmap = it.getBitmap()
+//                val ratio = bitmap.width.toFloat() / bitmap.height
+//                val overlayOld = it.overlayView?.cropViewRect
+//
+//                it.overlayView.setTargetAspectRatio(ratio)
+//                it.cropImageView.targetAspectRatio = ratio
+//
+//                it.cropImageView.setImageToWrapCropBounds()
+//                it.overlayView.setupCropBounds()
+//
+//                it.overlayView.post {
+//                    it.cropImageView.setCropRect(RectF(
+//                        overlayOld.left,
+//                        overlayOld.top,
+//                        overlayOld.left + implementedBaseBitmap!!.width,
+//                        overlayOld.top + implementedBaseBitmap!!.height
+//                    ))
+//
+//                    it.cropImageView.postDelayed({
+//                        it.cropImageView.setImageToWrapCropBounds()
+//                    }, 500)
+//                }
+//            }
+
+        }
     }
 
     override fun initObserver() {
@@ -286,7 +335,12 @@ class DetailEditorFragment @Inject constructor(
             }
             // ==========
             EditorToolType.CROP -> {
-//                viewBinding?.imgUcropPreview?.initialize(uri)
+                viewBinding?.imgUcropPreview?.apply {
+                    initializeCrop(uri)
+                    onLoadComplete = {
+                        readPreviousState(data)
+                    }
+                }
                 cropComponent.setupView()
             }
         }
@@ -320,25 +374,90 @@ class DetailEditorFragment @Inject constructor(
 
     private fun implementPreviousStateRotate(rotateData: EditorRotateModel) {
         viewBinding?.imgUcropPreview?.let {
-            val isRotate = rotateData.orientationChangeNumber % 2 == 1
-            // need to check if previous value is rotate / not, if rotated then ratio is changed
-            val imageWidth = if (isRotate) rotateData.bottomRectPos else rotateData.rightRectPos
-            val imageHeight = if (isRotate) rotateData.rightRectPos else rotateData.bottomRectPos
-            val finalRotationDegree =
-                ((rotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + rotateData.rotateDegree)
-            val bitmapResult = it.getProcessedBitmap(
-                it.getBitmap(),
-                rotateData.leftRectPos,
-                rotateData.topRectPos,
-                imageWidth,
-                imageHeight,
-                finalRotationDegree,
-                sliderValue = rotateData.rotateDegree,
-                rotateNumber = rotateData.orientationChangeNumber,
-                null
-            )
+            val originalAsset = it.getBitmap()
 
-            it.cropImageView.setImageBitmap(bitmapResult)
+            val cropView = it.cropImageView
+            val overlayView = it.overlayView
+
+            val rotateDegree = (rotateData.rotateDegree + (rotateData.orientationChangeNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE))
+
+            // read previous value & implement if current editor is rotate
+            if(data.isToolRotate() || data.isToolCrop()){
+                cropView.post {
+                    // need to check if previous value is rotate / not, if rotated then ratio is changed
+                    val isRotate = rotateData.orientationChangeNumber % 2 == 1
+
+                    val originalWidth = originalAsset.width.toFloat()
+                    val originalHeight = originalAsset.height.toFloat()
+
+                    val ratio = if(isRotate) originalHeight / originalWidth else originalWidth / originalHeight
+
+                    cropView.scaleX = rotateData.scaleX
+                    cropView.scaleY = rotateData.scaleY
+                    rotateFilterRepositoryImpl.rotate(it, rotateDegree, isRotate)
+                    rotateFilterRepositoryImpl.previousDegree = rotateData.rotateDegree
+                    rotateFilterRepositoryImpl.rotateNumber = rotateData.orientationChangeNumber
+                    rotateFilterRepositoryImpl.sliderValue = rotateData.rotateDegree
+
+                    overlayView.setTargetAspectRatio(ratio)
+
+                    cropView.setImageToWrapCropBounds()
+                }
+            }else {
+                val normalizeDegree = rotateDegree * (rotateData.scaleX * rotateData.scaleY)
+                val imageWidth = rotateData.rightRectPos
+                val imageHeight = rotateData.bottomRectPos
+
+                val bitmapResult = it.getProcessedBitmap(
+                    originalAsset,
+                    rotateData.leftRectPos,
+                    rotateData.topRectPos,
+                    imageWidth,
+                    imageHeight,
+                    normalizeDegree,
+                    sliderValue = rotateData.rotateDegree,
+                    rotateNumber = rotateData.orientationChangeNumber,
+                    null
+                )
+
+                cropView.setImageBitmap(bitmapResult)
+            }
+        }
+
+    }
+
+    private fun implementPreviousStateCrop(editorUiModel: EditorDetailUiModel){
+        val cropBound = editorUiModel.cropBound ?: return
+        if(data.isToolCrop()){
+            viewBinding?.imgUcropPreview?.let {
+                val overlayView = it.overlayView
+                val cropView = it.cropImageView
+
+                Handler().postDelayed({
+                    overlayView.setTargetAspectRatio(cropBound.imageWidth / cropBound.imageHeight.toFloat())
+                    cropView.zoomInImage(cropBound.scale)
+                    cropView.postTranslate(cropBound.imageWidth * cropBound.scale, cropBound.imageHeight * cropBound.scale)
+                    cropView.setImageToWrapCropBounds()
+                    Handler().postDelayed({
+                        cropView.postTranslate(-cropBound.offsetX * cropBound.scale, -cropBound.offsetY * cropBound.scale)
+                    },2000)
+                },2000)
+
+            }
+        }
+        else {
+            val rotateData = editorUiModel.rotateData
+            val temp = EditorRotateModel(
+                rotateData?.rotateDegree ?: 0f,
+                rotateData?.scaleX ?: 1f,
+                rotateData?.scaleY ?: 1f,
+                cropBound.offsetX,
+                cropBound.offsetY,
+                cropBound.imageWidth,
+                cropBound.imageHeight,
+                editorUiModel?.rotateData?.orientationChangeNumber ?: 0
+            )
+            implementPreviousStateRotate(temp)
         }
     }
 
@@ -372,6 +491,11 @@ class DetailEditorFragment @Inject constructor(
             implementPreviousStateRotate(previousState.rotateData!!)
         }
 
+        // === Crop ===
+        if(previousState.cropBound != null) {
+            implementPreviousStateCrop(previousState)
+        }
+
         // image that already implemented previous filter
         implementedBaseBitmap = viewBinding?.imgUcropPreview?.getBitmap()
 
@@ -386,6 +510,8 @@ class DetailEditorFragment @Inject constructor(
                 )
             )
         }
+
+//        viewBinding?.imgUcropPreview?.cropImageView?.setImageToWrapCropBounds()
     }
 
     private fun setWatermarkDrawerItem() {
@@ -423,16 +549,50 @@ class DetailEditorFragment @Inject constructor(
         }
 
         viewBinding?.btnSave?.setOnClickListener {
-            if (data.isToolRotate()) {
+            if (data.isToolRotate() || data.isToolCrop()) {
+                if(data.isToolCrop()) viewBinding?.imgUcropPreview?.cropImageView?.setImageToWrapCropBounds()
                 // if current tools editor not rotate then skip crop data set by sent empty object on data
                 viewBinding?.imgUcropPreview?.cropRotate(
                     finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
                     sliderValue = rotateFilterRepositoryImpl.sliderValue,
                     rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
-                    if (data.isToolRotate()) data else EditorDetailUiModel()
+                    data,
+                    data.isToolRotate()
                 ) {
                     saveImage(it)
                 }
+            } else if(data.isToolCrop()){
+                viewBinding?.imgUcropPreview?.cropImageView?.cropAndSaveImage(
+                    Bitmap.CompressFormat.PNG,
+                    100,
+                    object: BitmapCropCallback{
+                        override fun onBitmapCropped(
+                            resultUri: Uri,
+                            offsetX: Int,
+                            offsetY: Int,
+                            imageWidth: Int,
+                            imageHeight: Int
+                        ) {
+                            val newCropBound = EditorCropRectModel(
+                                offsetX,
+                                offsetY,
+                                imageWidth,
+                                imageHeight,
+                                viewBinding?.imgUcropPreview?.cropImageView?.currentScale ?: 1f,
+                                resultUri.path ?: ""
+                            )
+
+                            data.resultUrl = resultUri.path
+                            data.cropBound = newCropBound
+
+                            editingSave()
+                        }
+
+                        override fun onCropFailure(t: Throwable) {
+                            Toast.makeText(context, "crop failed", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                )
             } else {
                 viewBinding?.imgUcropPreview?.getBitmap()?.let {
                     saveImage(it)
@@ -468,6 +628,7 @@ class DetailEditorFragment @Inject constructor(
 
                 val uri = file.toUri()
                 data.resultUrl = uri.path
+                if(data.isToolCrop()) data.cropBound?.croppedUrl = uri.path ?: ""
 
                 if (isFinish) editingSave()
             } catch (e: Exception) {

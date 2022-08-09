@@ -73,7 +73,10 @@ class EditorActivity : BaseEditorActivity() {
             arrayListOf(
                 "/storage/emulated/0/Pictures/iN76Hq7.jpeg",
                 "/storage/emulated/0/Pictures/aaditya-ailawadhi-D6pgxi3gwNQ-unsplash 1.png",
-                "/storage/emulated/0/Pictures/Screen Shot 2021-07-12 at 15.23.45.png"
+                "/storage/emulated/0/Pictures/Screen Shot 2021-07-12 at 15.23.45.png",
+                "/storage/emulated/0/Pictures/Screen Shot 2022-08-09 at 08.56.58.png",
+                "/storage/emulated/0/Pictures/Screen Shot 2022-08-09 at 08.56.40.png",
+                "/storage/emulated/0/Pictures/Screen Shot 2022-08-09 at 08.57.09.png"
             )
         )
     }
