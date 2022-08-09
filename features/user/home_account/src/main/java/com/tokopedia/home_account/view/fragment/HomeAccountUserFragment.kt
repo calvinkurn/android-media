@@ -1162,7 +1162,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             AccountConstants.SettingCode.SETTING_ACCOUNT_ADDRESS_ID -> {
                 homeAccountAnalytic.eventClickAccountSetting(ADDRESS_LIST)
                 homeAccountAnalytic.eventClickAccountSettingListAddress()
-                goToApplink(ApplinkConstInternalLogistic.MANAGE_ADDRESS_FROM_ACCOUNT)
+                goToApplink(item.applink)
             }
             AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID -> {
                 homeAccountAnalytic.eventClickPaymentSetting(ACCOUNT_BANK)
