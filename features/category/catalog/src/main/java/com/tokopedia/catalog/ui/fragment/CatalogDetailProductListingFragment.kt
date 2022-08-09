@@ -712,7 +712,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun hasThreeDots() = true
 
-    override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
+    override fun onSortAppliedEvent(selectedSortName: String, sortValue: String) {
 
     }
 
