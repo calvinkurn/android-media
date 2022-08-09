@@ -24,8 +24,14 @@ buildscript {
 }
 
 android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
     defaultConfig {
         multiDexEnabled true
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 
