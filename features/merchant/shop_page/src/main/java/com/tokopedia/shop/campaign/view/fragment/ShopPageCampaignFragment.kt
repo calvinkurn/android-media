@@ -576,9 +576,9 @@ class ShopPageCampaignFragment :
             }
             val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
             gradient.cornerRadius = 0f
-            topView?.setBackgroundColor(Color.parseColor(listBackgroundColor.firstOrNull()))
+            topView?.setBackgroundColor(parseColor(listBackgroundColor.firstOrNull().orEmpty()))
             centerView?.background = gradient
-            bottomView?.setBackgroundColor(Color.parseColor(listBackgroundColor.lastOrNull()))
+            bottomView?.setBackgroundColor(parseColor(listBackgroundColor.lastOrNull().orEmpty()))
         } else {
             topView?.hide()
             centerView?.hide()
