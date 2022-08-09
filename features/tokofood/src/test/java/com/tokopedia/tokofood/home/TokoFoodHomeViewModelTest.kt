@@ -37,9 +37,11 @@ import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState.
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment.Companion.SOURCE
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodHomeMerchantTitleUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodItemUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodListUiModel
+import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodProgressBarUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -459,7 +461,7 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when getting homeLayout and component layout but address empty`() {
+    fun `when getting homeLayout, component layout, merchant list but address empty`() {
         var actualResponse: Result<TokoFoodListUiModel>? = null
 
         runBlockingTest {
@@ -470,6 +472,7 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
             }
             viewModel.setHomeLayout(null, isLoggedIn = true)
             viewModel.setLayoutComponentData(null)
+            viewModel.setMerchantList(null)
             collectorJob.cancel()
         }
         Assert.assertNull(actualResponse)
@@ -724,4 +727,458 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
 
+    @Test
+    fun `when scrolledToLastItem number not last, has next true is empty should not load more`() {
+        val containLastItemIndex = 4
+        val itemCount = 6
+        onGetTicker_thenReturn(createTicker())
+        onGetUSP_thenReturn(createUSPResponse())
+        onGetIcons_thenReturn(createDynamicIconsResponse())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), createAddress())
+        onGetMerchantList_thenReturn(NullPointerException(), createAddress())
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(listOf(createTickerData())),
+                createUSPModel(createUSPResponse(), state = TokoFoodLayoutState.SHOW),
+                createIconsModel(createDynamicIconsResponse().dynamicIcon.listDynamicIcon, state = TokoFoodLayoutState.SHOW),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                ),
+            ),
+            state = UPDATE
+        )
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            viewModel.setLayoutComponentData(createAddress())
+            viewModel.setPageKey("")
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        verifyCallHomeLayout()
+        verifyCallTicker()
+        verifyCallIcons()
+        verifyCallUSP()
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when scrolledToLastItem and itemCount number less than 0, has next true is empty should not load more`() {
+        val containLastItemIndex = -1
+        val itemCount = -2
+        onGetTicker_thenReturn(createTicker())
+        onGetUSP_thenReturn(createUSPResponse())
+        onGetIcons_thenReturn(createDynamicIconsResponse())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), createAddress())
+        onGetMerchantList_thenReturn(NullPointerException(), createAddress())
+
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(listOf(createTickerData())),
+                createUSPModel(createUSPResponse(), state = TokoFoodLayoutState.SHOW),
+                createIconsModel(createDynamicIconsResponse().dynamicIcon.listDynamicIcon, state = TokoFoodLayoutState.SHOW),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                ),
+            ),
+            state = UPDATE
+        )
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            viewModel.setLayoutComponentData(createAddress())
+            viewModel.setPageKey("")
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        verifyCallHomeLayout()
+        verifyCallTicker()
+        verifyCallIcons()
+        verifyCallUSP()
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when containLastItemIndex number less than 0, has next true is empty should not load more`() {
+        val containLastItemIndex = -1
+        val itemCount = 0
+        onGetTicker_thenReturn(createTicker())
+        onGetUSP_thenReturn(createUSPResponse())
+        onGetIcons_thenReturn(createDynamicIconsResponse())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), createAddress())
+        onGetMerchantList_thenReturn(NullPointerException(), createAddress())
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(listOf(createTickerData())),
+                createUSPModel(createUSPResponse(), state = TokoFoodLayoutState.SHOW),
+                createIconsModel(createDynamicIconsResponse().dynamicIcon.listDynamicIcon, state = TokoFoodLayoutState.SHOW),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                ),
+            ),
+            state = UPDATE
+        )
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            viewModel.setLayoutComponentData(createAddress())
+            viewModel.setPageKey("")
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        verifyCallHomeLayout()
+        verifyCallTicker()
+        verifyCallIcons()
+        verifyCallUSP()
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when scrolledToLastItem and hasNext true when onScrollProductList but next page is not initial should not return more than one merchant main title`() {
+        val containLastItemIndex = 5
+        val itemCount = 6
+        onGetTicker_thenReturn(createTicker())
+        onGetUSP_thenReturn(createUSPResponse())
+        onGetIcons_thenReturn(createDynamicIconsResponse())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), createAddress())
+        onGetMerchantList_thenReturn(createMerchantListResponse(), createAddress())
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(listOf(createTickerData())),
+                createUSPModel(createUSPResponse(), state = TokoFoodLayoutState.SHOW),
+                createIconsModel(createDynamicIconsResponse().dynamicIcon.listDynamicIcon, state = TokoFoodLayoutState.SHOW),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                ),
+                TokoFoodHomeMerchantTitleUiModel(MERCHANT_TITLE),
+                createMerchantListModel1(),
+                createMerchantListModel2()
+            ),
+            state = LOAD_MORE
+        )
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            viewModel.setLayoutComponentData(createAddress())
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        verifyCallHomeLayout()
+        verifyCallTicker()
+        verifyCallIcons()
+        verifyCallUSP()
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+
+        /** second flow */
+
+        onGetMerchantList_thenReturn(createMerchantListResponse(), createAddress(), pageKey = "1")
+
+        val nextExpectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(listOf(createTickerData())),
+                createUSPModel(createUSPResponse(), state = TokoFoodLayoutState.SHOW),
+                createIconsModel(createDynamicIconsResponse().dynamicIcon.listDynamicIcon, state = TokoFoodLayoutState.SHOW),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                ),
+                TokoFoodHomeMerchantTitleUiModel(MERCHANT_TITLE),
+                createMerchantListModel1(),
+                createMerchantListModel2(),
+                createMerchantListModel1(),
+                createMerchantListModel2(),
+            ),
+            state = LOAD_MORE
+        )
+
+        var nextActualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    nextActualResponse = it
+                }
+            }
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(nextExpectedResponse, (nextActualResponse as Success).data)
+    }
+
+    @Test
+    fun `when scrolledToLastItem and hasNext true when onScrollProductList, and has next page, but next merchant call is error should not return error`() {
+        val containLastItemIndex = 5
+        val itemCount = 6
+        onGetTicker_thenReturn(createTicker())
+        onGetUSP_thenReturn(createUSPResponse())
+        onGetIcons_thenReturn(createDynamicIconsResponse())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), createAddress())
+        onGetMerchantList_thenReturn(createMerchantListResponse(), createAddress())
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(listOf(createTickerData())),
+                createUSPModel(createUSPResponse(), state = TokoFoodLayoutState.SHOW),
+                createIconsModel(createDynamicIconsResponse().dynamicIcon.listDynamicIcon, state = TokoFoodLayoutState.SHOW),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                ),
+                TokoFoodHomeMerchantTitleUiModel(MERCHANT_TITLE),
+                createMerchantListModel1(),
+                createMerchantListModel2()
+            ),
+            state = LOAD_MORE
+        )
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(createAddress(), true)
+            viewModel.setLayoutComponentData(createAddress())
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        verifyCallHomeLayout()
+        verifyCallTicker()
+        verifyCallIcons()
+        verifyCallUSP()
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+
+        /** second flow */
+
+        onGetMerchantList_thenReturn(NullPointerException(), createAddress(), pageKey = "2")
+
+        val nextExpectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(listOf(createTickerData())),
+                createUSPModel(createUSPResponse(), state = TokoFoodLayoutState.SHOW),
+                createIconsModel(createDynamicIconsResponse().dynamicIcon.listDynamicIcon, state = TokoFoodLayoutState.SHOW),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                ),
+                TokoFoodHomeMerchantTitleUiModel(MERCHANT_TITLE),
+                createMerchantListModel1(),
+                createMerchantListModel2(),
+            ),
+            state = LOAD_MORE
+        )
+
+        var nextActualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    nextActualResponse = it
+                }
+            }
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(nextExpectedResponse, (nextActualResponse as Success).data)
+    }
+
+    @Test
+    fun `when there is no address state and user request load more should not load more`() {
+        val noAddressLayout = TokoFoodItemUiModel(
+            TokoFoodHomeEmptyStateLocationUiModel(id = TokoFoodHomeStaticLayoutId.EMPTY_STATE_NO_ADDRESS),
+            TokoFoodLayoutItemState.NOT_LOADED
+        )
+
+        addHomeLayoutItem(noAddressLayout)
+        val containLastItemIndex = 5
+        val itemCount = 6
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        Assert.assertNull(actualResponse)
+    }
+
+
+    @Test
+    fun `when there is error state and user request load more should not load more`() {
+        val errorStateLayout = TokoFoodItemUiModel(
+            TokoFoodErrorStateUiModel(id = TokoFoodHomeStaticLayoutId.ERROR_STATE, Throwable()),
+            TokoFoodLayoutItemState.NOT_LOADED
+        )
+
+        addHomeLayoutItem(errorStateLayout)
+        val containLastItemIndex = 5
+        val itemCount = 6
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        Assert.assertNull(actualResponse)
+    }
+
+
+    @Test
+    fun `when there is load more state and user request load more should not load more`() {
+        val errorStateLayout = TokoFoodItemUiModel(
+            TokoFoodProgressBarUiModel(id = TokoFoodHomeStaticLayoutId.PROGRESS_BAR),
+            TokoFoodLayoutItemState.NOT_LOADED
+        )
+
+        addHomeLayoutItem(errorStateLayout)
+        val containLastItemIndex = 5
+        val itemCount = 6
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        Assert.assertNull(actualResponse)
+    }
+
+    @Test
+    fun `when has page key is empty and user request load more should not load more`() {
+        val errorStateLayout = TokoFoodItemUiModel(
+            TokoFoodProgressBarUiModel(id = TokoFoodHomeStaticLayoutId.PROGRESS_BAR),
+            TokoFoodLayoutItemState.NOT_LOADED
+        )
+
+        addHomeLayoutItem(errorStateLayout)
+        val containLastItemIndex = 5
+        val itemCount = 6
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setPageKey("")
+            viewModel.onScrollProductList(containLastItemIndex, itemCount, createAddress())
+            collectorJob.cancel()
+        }
+
+        Assert.assertNull(actualResponse)
+    }
 }
