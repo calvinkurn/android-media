@@ -4352,18 +4352,39 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
+        activity?.let { parentView ->
+            // create instance of loadingProgressDialog when null
+            createProgressDialog(parentView, onCancelClicked)
+            // is progress dialog is showing
+            val loadingDialogIsShowing = loadingProgressDialog?.isShowing == true
+            // show progress dialog if activity no finished yet and loading not showing yet
+            val showProgressDialog = !parentView.isFinishing && !loadingDialogIsShowing
+            // is [showProgressDialog] is true
+            if (showProgressDialog) {
+                // ignore failed if in block throw a throwable
+                runCatching {
+                    // show progress dialog
+                    loadingProgressDialog?.show()
+                }
+            }
+        }
+    }
+
+    /**
+     * create instance of progress dialog
+     */
+    private fun createProgressDialog(
+        activity: Activity,
+        onCancelClicked: (() -> Unit)?
+    ) {
         if (loadingProgressDialog == null) {
-            loadingProgressDialog = activity?.createDefaultProgressDialog(
+            loadingProgressDialog = activity.createDefaultProgressDialog(
                 getString(com.tokopedia.abstraction.R.string.title_loading),
                 cancelable = onCancelClicked != null,
                 onCancelClicked = {
                     onCancelClicked?.invoke()
-                })
-        }
-        loadingProgressDialog?.run {
-            if (!isShowing) {
-                show()
-            }
+                }
+            )
         }
     }
 
