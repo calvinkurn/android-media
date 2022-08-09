@@ -1,33 +1,35 @@
 package com.tokopedia.play.broadcaster.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
-import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
-import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
-import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
+import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
-import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
-import com.tokopedia.play.broadcaster.util.assertEmpty
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMockMapper
+import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
-import com.tokopedia.play.broadcaster.util.assertTrue
-import com.tokopedia.play.broadcaster.util.assertType
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.play.broadcaster.util.logger.PlayLogger
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
+import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,10 +47,11 @@ class PlayBroadcasterViewModelTest {
     private val testDispatcher = rule.dispatchers
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockLivePusherMediator: PusherMediator = mockk(relaxed = true)
+    private val mockSharedPref: HydraSharedPreferences = mockk(relaxed = true)
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
-    private val mockBroadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
-    private val mockUserSessionInterface: UserSessionInterface = mockk(relaxed = true)
+    private val mockMapper: PlayBroadcastMapper = mockk(relaxed = true)
 
     private val uiModelBuilder = UiModelBuilder()
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
@@ -121,526 +124,170 @@ class PlayBroadcasterViewModelTest {
         }
     }
 
-    /**
-     * Live Streaming State
-     */
     @Test
-    fun `when user trigger resume livestream from onResume Fragment, then it should show resume dialog`() {
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-        )
+    fun `when user stop livestreaming and some error occur, it should emit error event`() {
+        val mockWebsocket = mockk<PlayWebSocket>(relaxed = true)
+        val mockException = uiModelBuilder.buildException()
 
-        robot.use {
-            val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = false)))
-            }
-
-            events
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.ShowResumeLiveDialog)
-        }
-    }
-
-    @Test
-    fun `when user trigger resume livestream and there is a livestream started before, and it should continue broadcast, then its ready to start broadcast`() {
-        val mockChannel = mockChannel.copy(
-            basic = mockChannel.basic.copy(
-                status = GetChannelResponse.ChannelBasicStatus(
-                    id = "3", // channel status pause
-                )
-            )
-        )
-
-        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
+        coEvery { mockWebsocket.close() } throws mockException
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-        )
-
-        robot.use {
-            val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = true)))
-            }
-
-            events
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.BroadcastReady(""))
-        }
-    }
-
-    @Test
-    fun `when user trigger resume livestream and there is a livestream started before, but it should not continue livestream, then it should show resume dialog`() {
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-        )
-
-        robot.use {
-            val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = false)))
-            }
-
-            events
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.ShowResumeLiveDialog)
-        }
-    }
-
-    @Test
-    fun `when user trigger resume livestream and there is a livestream started before, and its before past pause duration, then it should show resume dialog`() {
-        every { mockBroadcastTimer.isPastPauseDuration } returns false
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            broadcastTimer = mockBroadcastTimer,
-        )
-
-        robot.use {
-            val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = false)))
-            }
-
-            events
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.ShowResumeLiveDialog)
-        }
-    }
-
-    @Test
-    fun `when user trigger resume livestream and there is a livestream started before but its already past pause duration, then it should show live ended dialog`() {
-        every { mockBroadcastTimer.isPastPauseDuration } returns true
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            broadcastTimer = mockBroadcastTimer,
-        )
-
-        robot.use {
-            val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = true)))
-
-            }
-
-            events
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.ShowLiveEndedDialog)
-        }
-    }
-
-    @Test
-    fun `when user trigger resume livestream and there is no livestream started before, and its before past pause duration, given channel status pause, then its ready to start broadcast`() {
-        val mockChannel = mockChannel.copy(
-            basic = mockChannel.basic.copy(
-                status = GetChannelResponse.ChannelBasicStatus(
-                    id = "3", // channel status pause
-                )
-            )
-        )
-
-        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
-        every { mockBroadcastTimer.isPastPauseDuration } returns false
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            broadcastTimer = mockBroadcastTimer,
-        )
-
-        robot.use {
-            val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)))
-            }
-
-            events
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.BroadcastReady(""))
-        }
-    }
-
-    @Test
-    fun `when user trigger resume livestream and there is no livestream started before, but its already past pause duration, given channel status pause, then its ready to start broadcast`() {
-        val mockChannel = mockChannel.copy(
-            basic = mockChannel.basic.copy(
-                status = GetChannelResponse.ChannelBasicStatus(
-                    id = "3", // channel status pause
-                )
-            )
-        )
-
-        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
-        every { mockBroadcastTimer.isPastPauseDuration } returns false
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-            broadcastTimer = mockBroadcastTimer,
-        )
-
-        robot.use {
-            val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)))
-
-            }
-
-            events
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.BroadcastReady(""))
-        }
-    }
-
-    @Test
-    fun `when user resume livestream, given channel status pause, and it should not continue live stream, then it should show resume dialog`() {
-        val mockChannel = mockChannel.copy(
-            basic = mockChannel.basic.copy(
-                status = GetChannelResponse.ChannelBasicStatus(
-                    id = "3", // channel status pause
-                )
-            )
-        )
-
-        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-        )
-
-        robot.use {
-            val events = robot.recordEvent {
-                it.getViewModel().doResumeBroadcaster(shouldContinue = false)
-            }
-
-            events
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.ShowResumeLiveDialog)
-        }
-    }
-
-
-    @Test
-    fun `when user resume livestream, given channel status live, and it should not continue live stream, then it should show resume dialog`() {
-        val mockChannel = mockChannel.copy(
-            basic = mockChannel.basic.copy(
-                status = GetChannelResponse.ChannelBasicStatus(
-                    id = "2", // channel status live
-                )
-            )
-        )
-
-        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-        )
-
-        robot.use {
-            val events = robot.recordEvent {
-                it.getViewModel().doResumeBroadcaster(shouldContinue = false)
-            }
-
-            events
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.ShowResumeLiveDialog)
-        }
-    }
-
-    @Test
-    fun `when user resume livestream, given channel status stop, then it should show live ended dialog`() {
-        val mockChannel = mockChannel.copy(
-            basic = mockChannel.basic.copy(
-                status = GetChannelResponse.ChannelBasicStatus(
-                    id = "4", // channel status stop
-                )
-            )
-        )
-
-        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-        )
-
-        robot.use {
-            val events = robot.recordEvent {
-                it.getViewModel().doResumeBroadcaster(shouldContinue = false)
-            }
-
-            events
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.ShowLiveEndedDialog)
-        }
-    }
-
-    @Test
-    fun `when user resume livestream, given channel error, then it should show error`() {
-
-        val errorThrowable = DefaultErrorThrowable()
-
-        coEvery { mockGetChannelUseCase.executeOnBackground() } throws errorThrowable
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            channelRepo = mockRepo,
+            playBroadcastWebSocket = mockWebsocket,
         )
 
         robot.use {
             val event = robot.recordEvent {
-                it.getViewModel().doResumeBroadcaster(true)
+                it.getViewModel().stopLiveStream()
             }
 
-            event
-                .last()
-                .assertType<PlayBroadcastEvent.ShowError>()
+            event.last().assertEqualTo(PlayBroadcastEvent.ShowError(mockException))
         }
     }
 
     @Test
-    fun `when broadcaster error, then it should show broadcast error`() {
+    fun `when user wants to switch camera, it should trigger live pusher mediator switch camera`() {
+
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
+            livePusherMediator = mockLivePusherMediator,
+            channelRepo = mockRepo,
         )
 
-        val errorThrowable = DefaultErrorThrowable()
-
         robot.use {
-            val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Error(errorThrowable)))
-            }
+            robot.getViewModel().switchCamera()
 
-            event
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.ShowBroadcastError(errorThrowable))
+            verify { mockLivePusherMediator.switchCamera() }
         }
     }
 
     @Test
-    fun `when broadcaster is recovered, given channel status pause, then it should notify ui that broadcaster is recovered`() {
-        val mockChannel = mockChannel.copy(
-            basic = mockChannel.basic.copy(
-                status = GetChannelResponse.ChannelBasicStatus(
-                    id = "3",
-                )
-            )
+    fun `when user wants to start preview, it should trigger live pusher mediator switch on camera changed`() {
+
+        val mockSurfaceView = mockk<SurfaceAspectRatioView>(relaxed = true)
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            livePusherMediator = mockLivePusherMediator,
+            channelRepo = mockRepo,
         )
 
-        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
+        robot.use {
+            robot.getViewModel().startPreview(mockSurfaceView)
+
+            verify { mockLivePusherMediator.onCameraChanged(mockSurfaceView) }
+        }
+    }
+
+    @Test
+    fun `when user wants to stop preview, it should trigger live pusher mediator switch on camera destroyed`() {
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            livePusherMediator = mockLivePusherMediator,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            robot.getViewModel().stopPreview()
+
+            verify { mockLivePusherMediator.onCameraDestroyed() }
+        }
+    }
+
+    @Test
+    fun `when user start livestreaming for the first time, it should trigger shared pref and set not first stream anymore`() {
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            sharedPref = mockSharedPref,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            robot.getViewModel().setFirstTimeLiveStreaming()
+
+            verify { mockSharedPref.setNotFirstStreaming() }
+        }
+    }
+
+    @Test
+    fun `when user wants to continue livestream when theres no livestraming, it should trigger start live stream function`() {
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             getChannelUseCase = mockGetChannelUseCase,
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            playBroadcastMapper = mockMapper,
+            livePusherMediator = mockLivePusherMediator,
+            channelRepo = mockRepo,
         )
 
         robot.use {
-            val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
-            }
+            it.getViewModel().continueLiveStream()
 
-            event
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.BroadcastRecovered)
+            verify { mockLivePusherMediator.startLiveStreaming("", true) }
         }
     }
 
     @Test
-    fun `when broadcaster is recovered, given channel status live, then it should notify ui that broadcaster is recovered`() {
-        val mockChannel = mockChannel.copy(
-            basic = mockChannel.basic.copy(
-                status = GetChannelResponse.ChannelBasicStatus(
-                    id = "2",
-                )
-            )
-        )
+    fun `when user wants to reconnect livestream, it should resume the livestream`() {
 
-        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-        )
-
-        robot.use {
-            val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
-            }
-
-            event
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.BroadcastRecovered)
-        }
-    }
-
-    @Test
-    fun `when broadcaster is recovered, given channel status stop, then it should show live ended dialog`() {
-        val mockChannel = mockChannel.copy(
-            basic = mockChannel.basic.copy(
-                status = GetChannelResponse.ChannelBasicStatus(
-                    id = "4",
-                )
-            )
-        )
-
-        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-        )
-
-        robot.use {
-            val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
-            }
-
-            event
-                .last()
-                .assertEqualTo(PlayBroadcastEvent.ShowLiveEndedDialog)
-        }
-    }
-
-    @Test
-    fun `when broadcaster is recovered, given channel error, then it should show error`() {
-        val errorThrowable = DefaultErrorThrowable()
-
-        coEvery { mockGetChannelUseCase.executeOnBackground() } throws errorThrowable
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            getChannelUseCase = mockGetChannelUseCase,
-            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
-        )
-
-        robot.use {
-            val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
-            }
-
-            event
-                .last()
-                .assertType<PlayBroadcastEvent.ShowError>()
-        }
-    }
-
-    @Test
-    fun `when seller stop live streaming, then isBroadcastStopped should return true`() {
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-        )
-
-        robot.use {
-            it.stopLive()
-
-            it.getViewModel().isBroadcastStopped.assertTrue()
-        }
-    }
-
-    /**
-     * User Session
-     */
-    @Test
-    fun `given user session logged in true, then it should return true`() {
-        every { mockUserSessionInterface.isLoggedIn } returns true
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            userSession = mockUserSessionInterface,
-        )
-
-        robot.use {
-            it.getViewModel().isUserLoggedIn.assertTrue()
-        }
-    }
-
-    @Test
-    fun `given user session shop avatar is empty, then it should return empty`() {
-        every { mockUserSessionInterface.shopAvatar } returns ""
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            userSession = mockUserSessionInterface,
-        )
-
-        robot.use {
-            it.getViewModel().getShopIconUrl().assertEmpty()
-        }
-    }
-
-    @Test
-    fun `given user session shop name is empty, then it should return empty`() {
-        every { mockUserSessionInterface.shopName } returns ""
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            userSession = mockUserSessionInterface,
-        )
-
-        robot.use {
-            it.getViewModel().getShopName().assertEmpty()
-        }
-    }
-
-    /**
-     * Logger
-     */
-    @Test
-    fun `when send broadcaster metrics, then it should call logger sendBroadcasterLog`() {
-        val mockMetric = BroadcasterMetric.Empty
-        val mockLogger: PlayLogger = mockk(relaxed = true)
-
-        val mappedMetric = PlayBroadcasterMetric(
-            authorId = "",
+        val mockChannelInfo = ChannelInfoUiModel(
             channelId = "",
-            videoBitrate = mockMetric.videoBitrate,
-            audioBitrate = mockMetric.audioBitrate,
-            resolution = "${mockMetric.resolutionWidth}x${mockMetric.resolutionHeight}",
-            traffic = mockMetric.traffic,
-            bandwidth = mockMetric.bandwidth,
-            fps = mockMetric.fps,
-            packetLossIncreased = mockMetric.packetLossIncreased,
-            videoBufferTimestamp = mockMetric.videoBufferTimestamp,
-            audioBufferTimestamp = mockMetric.audioBufferTimestamp,
+            title = "",
+            description = "",
+            coverUrl = "",
+            ingestUrl = "",
+            status = PlayChannelStatusType.Pause
         )
+
+        coEvery { mockMapper.mapChannelInfo(any()) } returns mockChannelInfo
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            logger = mockLogger,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            playBroadcastMapper = mockMapper,
+            livePusherMediator = mockLivePusherMediator,
+            channelRepo = mockRepo,
         )
 
         robot.use {
-            it.getViewModel().sendBroadcasterLog(mockMetric)
+            it.getViewModel().reconnectLiveStream()
 
-            verify { mockLogger.sendBroadcasterLog(mappedMetric) }
+            verify { mockLivePusherMediator.resume() }
         }
     }
 
     @Test
-    fun `when send all logs, then it should call logger sendAll`() {
-        val mockLogger: PlayLogger = mockk(relaxed = true)
+    fun `when user tries to reconnect livestream but theres no live channel, it should trigget stop livestream`() {
+
+        val mockChannelInfo = ChannelInfoUiModel(
+            channelId = "",
+            title = "",
+            description = "",
+            coverUrl = "",
+            ingestUrl = "",
+            status = PlayChannelStatusType.Draft
+        )
+
+        coEvery { mockMapper.mapChannelInfo(any()) } returns mockChannelInfo
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            logger = mockLogger,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            playBroadcastMapper = mockMapper,
+            livePusherMediator = mockLivePusherMediator,
+            channelRepo = mockRepo,
         )
 
         robot.use {
-            it.getViewModel().sendLogs()
+            it.getViewModel().reconnectLiveStream()
 
-            verify { mockLogger.sendAll("") }
+            verify { mockLivePusherMediator.stopLiveStreaming() }
         }
     }
 }

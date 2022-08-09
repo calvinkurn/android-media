@@ -8,9 +8,7 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
-import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
-import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
-import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
+import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
@@ -18,10 +16,10 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
-import com.tokopedia.play.broadcaster.util.TestUriParser
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -42,6 +40,7 @@ import java.io.Closeable
 internal class PlayBroadcastViewModelRobot(
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
     handle: SavedStateHandle = SavedStateHandle(),
+    livePusherMediator: PusherMediator = mockk(relaxed = true),
     mDataStore: PlayBroadcastDataStore = mockk(relaxed = true),
     hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
     sharedPref: HydraSharedPreferences = mockk(relaxed = true),
@@ -50,16 +49,16 @@ internal class PlayBroadcastViewModelRobot(
     getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastWebSocket: PlayWebSocket = mockk(relaxed = true),
-    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser()),
+    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer()),
     playInteractiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(TestHtmlTextTransformer()),
     productMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
-    broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),
 ) : Closeable {
 
     private val viewModel = PlayBroadcastViewModel(
         handle,
+        livePusherMediator,
         mDataStore,
         hydraConfigStore,
         sharedPref,
@@ -74,7 +73,6 @@ internal class PlayBroadcastViewModelRobot(
         playInteractiveMapper,
         channelRepo,
         logger,
-        broadcastTimer,
     )
 
     fun recordState(fn: suspend PlayBroadcastViewModelRobot.() -> Unit): PlayBroadcastUiState {
@@ -115,9 +113,7 @@ internal class PlayBroadcastViewModelRobot(
 
     fun getConfig() = viewModel.getConfiguration()
 
-    fun startLive() = viewModel.submitAction(BroadcastStateChanged(PlayBroadcasterState.Started))
-
-    fun stopLive() = viewModel.submitAction(BroadcastStateChanged(PlayBroadcasterState.Stopped))
+    fun startLive() = viewModel.startLiveStream()
 
     suspend fun setPinned(message: String) = act {
         viewModel.submitAction(PlayBroadcastAction.SetPinnedMessage(message))

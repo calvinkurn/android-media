@@ -19,7 +19,7 @@
             android:id="@+id/tv_status_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/stream_status"
+            android:text="Stream Status: "
             android:textColor="@color/Unify_Static_White"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -37,7 +37,7 @@
             tools:text="STARTED" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_debug_view_push_updated_info"
+            android:id="@+id/tv_debug_view_push_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
@@ -45,6 +45,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvt_status"
+            app:typographyType="body_1"
+            tools:text="init live stream config" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_debug_view_push_updated_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_debug_view_push_info"
             app:typographyType="body_1"
             tools:text="init live stream config" />
 

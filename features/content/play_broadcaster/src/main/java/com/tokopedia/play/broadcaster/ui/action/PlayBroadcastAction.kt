@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.ui.action
 
-import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import java.util.*
@@ -58,5 +57,3 @@ sealed interface PlayBroadcastAction {
     object ClickGameResultWidget : PlayBroadcastAction
     object Ignore : PlayBroadcastAction
 }
-
-data class BroadcastStateChanged(val state: PlayBroadcasterState) : PlayBroadcastAction

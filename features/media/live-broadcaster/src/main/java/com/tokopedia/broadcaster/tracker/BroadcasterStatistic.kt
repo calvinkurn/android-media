@@ -11,7 +11,6 @@ import com.tokopedia.config.GlobalConfig
 import java.util.*
 import kotlin.math.ceil
 
-@Suppress("MagicNumber")
 class BroadcasterStatistic : LivePusherStatistic {
 
     private var mStreamer: LarixStreamer? = null
@@ -53,7 +52,6 @@ class BroadcasterStatistic : LivePusherStatistic {
         mPrevBytes = mStreamer?.getBytesSent(mConnectionId.orZero()).orZero()
     }
 
-    @Suppress("MagicNumber")
     override fun getBandwidth(): String {
         return when {
             mBps < 1000 -> String.format(mLocale, "%4dbps", mBps)
@@ -63,7 +61,6 @@ class BroadcasterStatistic : LivePusherStatistic {
         }
     }
 
-    @Suppress("MagicNumber")
     override fun getTraffic(): String {
         return when {
             mPrevBytes < 1024 -> String.format(mLocale, "%4dB", mPrevBytes)
@@ -80,7 +77,6 @@ class BroadcasterStatistic : LivePusherStatistic {
 
     private fun isPacketLossIncreasing(): Boolean = mPacketLossIncreased
 
-    @Suppress("MagicNumber")
     fun update(context: Context?, url: String, config: BroadcasterConfig) {
         val streamer = mStreamer ?: return
         val connectionId = mConnectionId ?: return

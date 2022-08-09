@@ -81,7 +81,8 @@ class UiModelBuilder {
     fun buildConfigurationUiModel(
         streamAllowed: Boolean = true,
         channelId: String = "",
-        channelStatus: ChannelStatus = ChannelStatus.Draft,
+        channelType: ChannelType = ChannelType.Draft,
+        remainingTime: Long = 0L,
         durationConfig: DurationConfigUiModel = buildDurationConfigUiModel(),
         productTagConfig: ProductTagConfigUiModel = buildProductTagConfigUiModel(),
         coverConfig: CoverConfigUiModel = buildCoverConfigUiModel(),
@@ -91,7 +92,8 @@ class UiModelBuilder {
     ) = ConfigurationUiModel(
         streamAllowed = streamAllowed,
         channelId = channelId,
-        channelStatus = channelStatus,
+        channelType = channelType,
+        remainingTime = remainingTime,
         durationConfig = durationConfig,
         productTagConfig = productTagConfig,
         coverConfig = coverConfig,
@@ -101,15 +103,15 @@ class UiModelBuilder {
     )
 
     fun buildDurationConfigUiModel(
-        remainingDuration: Long = 0L,
+        duration: Long = 0L,
         pauseDuration: Long = 0L,
-        maxDuration: Long = 0L,
-        maxDurationDesc: String = ""
+        maxDurationDesc: String = "",
+        errorMessage: String = "",
     ) = DurationConfigUiModel(
-        remainingDuration = remainingDuration,
+        duration = duration,
         pauseDuration = pauseDuration,
-        maxDuration = maxDuration,
         maxDurationDesc = maxDurationDesc,
+        errorMessage = errorMessage,
     )
 
     fun buildProductTagConfigUiModel(
