@@ -71,7 +71,7 @@ class GetProductBundleRecommendationTest {
     }
 
     @Test
-    fun `WHEN first load mini cart list success THEN flag product bundle recom should be loaded`() {
+    fun `WHEN first load mini cart list and get product bundle recom success THEN product bundle recom should be loaded`() {
         runBlocking {
             /**
              * Given
@@ -84,7 +84,7 @@ class GetProductBundleRecommendationTest {
             }
 
             // mock product bundle data response
-            val mockProductBundleResponse = DataProvider.provideProductBundleRecommendation()
+            val mockProductBundleResponse = DataProvider.provideProductBundleRecomResponse()
             coEvery {
                 getProductBundleRecomUseCase.execute(
                     productIds = any(),
@@ -93,7 +93,7 @@ class GetProductBundleRecommendationTest {
             } returns mockProductBundleResponse
 
             // mock product bundle ui model
-            val mockProductBundleUiModel = DataProvider.provideProductBundleRecommendationData()
+            val mockProductBundleUiModel = DataProvider.provideProductBundleRecomData(mockProductBundleResponse)
             coEvery {
                 miniCartListUiModelMapper.mapToProductBundleUiModel(any())
             } returns mockProductBundleUiModel
@@ -112,6 +112,54 @@ class GetProductBundleRecommendationTest {
              */
             // check availability of product bundle recom value
             Assert.assertTrue(viewModel.miniCartListBottomSheetUiModel.value?.visitables?.firstOrNull { it is MiniCartProductBundleRecomUiModel } is MiniCartProductBundleRecomUiModel)
+
+            //remove observer
+            viewModel.miniCartListBottomSheetUiModel.removeObserver(observer)
+        }
+    }
+
+    @Test
+    fun `WHEN first load mini cart list success and get product bundle recom not success THEN product bundle recom should be hiden`() {
+        runBlocking {
+            /**
+             * Given
+             */
+            // mock mini cart list data response
+            val mockMiniCartListResponse = DataProvider.provideGetMiniCartListSuccessAllAvailable()
+            coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+            coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
+                firstArg<(MiniCartData) -> Unit>().invoke(mockMiniCartListResponse)
+            }
+
+            // mock product bundle data response
+            val mockProductBundleResponse = DataProvider.provideProductBundleRecomEmptyListResponse()
+            coEvery {
+                getProductBundleRecomUseCase.execute(
+                    productIds = any(),
+                    excludeBundleIds = any()
+                )
+            } returns mockProductBundleResponse
+
+            // mock product bundle ui model
+            val mockProductBundleUiModel = DataProvider.provideProductBundleRecomData(mockProductBundleResponse)
+            coEvery {
+                miniCartListUiModelMapper.mapToProductBundleUiModel(any())
+            } returns mockProductBundleUiModel
+
+            //observe value from postValue
+            val observer = mockk<Observer<MiniCartListUiModel>>(relaxed = true)
+            viewModel.miniCartListBottomSheetUiModel.observeForever(observer)
+
+            /**
+             * When
+             */
+            viewModel.getCartList(isFirstLoad = true)
+
+            /**
+             * Then
+             */
+            // check availability of product bundle recom value
+            Assert.assertTrue(viewModel.miniCartListBottomSheetUiModel.value?.visitables?.firstOrNull { it is MiniCartProductBundleRecomUiModel } !is MiniCartProductBundleRecomUiModel)
 
             //remove observer
             viewModel.miniCartListBottomSheetUiModel.removeObserver(observer)

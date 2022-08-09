@@ -252,7 +252,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 excludeBundleIds = miniCartListUiModel.availableBundleIds
             )
 
-            showProductBundleRecom(miniCartListUiModel, response)
+            showProductBundleRecom(miniCartListUiModel, response.tokonowBundleWidget.data.widgetData.isNotEmpty(), response)
         }, onError = {
             hideProductBundleRecomShimmering(miniCartListUiModel)
         })
@@ -263,8 +263,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         updateVisitablesBackgroundState(miniCartListUiModel.visitables)
     }
 
-    private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, response: MiniCartProductBundleRecomResponse) {
-        if (response.tokonowBundleWidget.data.widgetData.isNotEmpty()) {
+    private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, isWidgetDataNotEmpty: Boolean, response: MiniCartProductBundleRecomResponse) {
+        if (isWidgetDataNotEmpty) {
             val productBundleRecom = miniCartListUiModelMapper.mapToProductBundleUiModel(response)
             miniCartListUiModel.visitables.removeFirst { it is MiniCartProductBundleRecomShimmeringUiModel }
             miniCartListUiModel.visitables.add(productBundleRecom)

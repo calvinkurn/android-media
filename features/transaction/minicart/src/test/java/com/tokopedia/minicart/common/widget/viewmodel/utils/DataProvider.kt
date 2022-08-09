@@ -173,16 +173,23 @@ object DataProvider {
         return json.updateCartData
     }
 
-    fun provideProductBundleRecommendation(): MiniCartProductBundleRecomResponse {
+    fun provideProductBundleRecomResponse(): MiniCartProductBundleRecomResponse {
         return gson.fromJson(
             fileUtil.getJsonFromAsset("assets/get_product_bundle_recommendation"),
             MiniCartProductBundleRecomResponse::class.java
         )
     }
 
-    fun provideProductBundleRecommendationData(): MiniCartProductBundleRecomUiModel {
+    fun provideProductBundleRecomEmptyListResponse(): MiniCartProductBundleRecomResponse {
+        return gson.fromJson(
+            fileUtil.getJsonFromAsset("assets/get_product_bundle_recommendation_empty_list"),
+            MiniCartProductBundleRecomResponse::class.java
+        )
+    }
+
+    fun provideProductBundleRecomData(response: MiniCartProductBundleRecomResponse): MiniCartProductBundleRecomUiModel {
         return miniCartListUiModelMapper.mapToProductBundleUiModel(
-            widgetResponse = provideProductBundleRecommendation()
+            widgetResponse = response
         )
     }
 
