@@ -6,13 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.ConvertResourceIdUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ConvertResourceIdViewHolder(
-    itemView: View
-) : AbstractViewHolder<ConvertResourceIdUiModel>(itemView) {
+    private val view: View
+) : AbstractViewHolder<ConvertResourceIdUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -28,7 +30,13 @@ class ConvertResourceIdViewHolder(
         val tvResultResourceName = itemView.findViewById<Typography>(R.id.tvResultResourceName)
 
         btnConvertResourceId.setOnClickListener {
-            tvResultResourceName.text = convertResourceIdToResourceName(tvInputResourceId.textFieldInput.text.toString())
+            val resourceName = convertResourceIdToResourceName(tvInputResourceId.textFieldInput.text.toString())
+            if (resourceName.isNotBlank()) {
+                tvResultResourceName.text = resourceName
+                tvResultResourceName.show()
+            } else {
+                tvResultResourceName.hide()
+            }
         }
     }
 
@@ -40,9 +48,9 @@ class ConvertResourceIdViewHolder(
             } else {
                 Integer.parseInt(resourceId, RADIX_DEFAULT)
             }
-            itemView.resources.getResourceName(parseResourceId)
+            view.resources.getResourceName(parseResourceId)
         } catch (e: Exception) {
-            ""
+            e.localizedMessage.orEmpty()
         }
     }
 }

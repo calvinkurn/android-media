@@ -21,7 +21,8 @@
         android:id="@+id/tvResultResourceName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        android:textIsSelectable="true"
         app:typographyWeight="reguler"
         app:typographyType="display_2"
         tools:text="@string/prefix_resource_name"/>
