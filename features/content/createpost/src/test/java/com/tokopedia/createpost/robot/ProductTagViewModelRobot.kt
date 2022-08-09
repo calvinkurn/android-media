@@ -1,12 +1,12 @@
 package com.tokopedia.createpost.robot
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.createpost.producttag.util.preference.ProductTagPreference
-import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
-import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
-import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagUiState
-import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
+import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
+import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
+import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
+import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk

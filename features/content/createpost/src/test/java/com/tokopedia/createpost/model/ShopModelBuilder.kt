@@ -1,6 +1,6 @@
 package com.tokopedia.createpost.model
 
-import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.ShopUiModel
 
 /**
  * Created By : Jonathan Darwin on May 30, 2022

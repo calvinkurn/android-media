@@ -1,7 +1,7 @@
 package com.tokopedia.createpost.util
 
-import com.tokopedia.createpost.producttag.view.uimodel.PagedState
-import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
+import com.tokopedia.content.common.producttag.view.uimodel.PagedState
+import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import org.assertj.core.api.Assertions
 
 /**

@@ -1,8 +1,9 @@
 package com.tokopedia.createpost.model
 
-import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
-import com.tokopedia.createpost.producttag.model.PagedGlobalSearchShopResponse
-import com.tokopedia.createpost.producttag.view.uimodel.*
+import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.content.common.producttag.model.PagedGlobalSearchProductResponse
+import com.tokopedia.content.common.producttag.model.PagedGlobalSearchShopResponse
+import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.filter.common.data.*
 
 /**

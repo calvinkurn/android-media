@@ -1,7 +1,7 @@
 package com.tokopedia.createpost.util
 
-import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
-import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagUiState
+import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
+import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState
 
 /**
  * Created By : Jonathan Darwin on May 30, 2022

@@ -1,6 +1,6 @@
 package com.tokopedia.createpost.viewmodel.producttag
 
-import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.robot.ProductTagViewModelRobot
 import com.tokopedia.createpost.util.andThen
 import com.tokopedia.createpost.util.assertEqualTo

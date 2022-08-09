@@ -2,9 +2,9 @@ package com.tokopedia.createpost.viewmodel.producttag
 
 import com.tokopedia.createpost.model.CommonModelBuilder
 import com.tokopedia.createpost.model.GlobalSearchModelBuilder
-import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
-import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
+import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.robot.ProductTagViewModelRobot
 import com.tokopedia.createpost.util.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule

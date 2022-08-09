@@ -9,10 +9,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.createpost.createpost.databinding.ActivityProductTagBinding
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
-import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.createpost.producttag.view.uimodel.SearchParamUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
 import javax.inject.Inject
 
 /**

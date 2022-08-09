@@ -1,7 +1,7 @@
 package com.tokopedia.createpost.model
 
-import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.PagedDataUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 
 /**
  * Created By : Jonathan Darwin on May 30, 2022
