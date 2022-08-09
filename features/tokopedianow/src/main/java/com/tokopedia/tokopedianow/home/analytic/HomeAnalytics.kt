@@ -32,19 +32,13 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_PG_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_TOKONOW_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_WAREHOUSE_ID
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ACTION_FIELD
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ADD
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_AFFINITY_LABEL
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BRAND
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CAMPAIGN_CODE
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CHANNEL_ID
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CLICK
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CREATIVE_NAME
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CREATIVE_SLOT
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENCY_CODE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_104
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_38
@@ -54,9 +48,6 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_79
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_82
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_90
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ECOMMERCE
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ID
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_IMPRESSIONS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_INDEX
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEMS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_BRAND
@@ -65,12 +56,8 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_LIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_NAME
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_VARIANT
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_LIST
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_NAME
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PAGE_SOURCE
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_POSITION
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PRICE
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCTS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCT_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PROMOTIONS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_QUANTITY
@@ -78,11 +65,9 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_NAME
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_TYPE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_USER_ID
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_VARIANT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_SHARING_EXPERIENCE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENCY_CODE_IDR
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_CATEGORY_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_NULL_VALUE
@@ -564,35 +549,33 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         data: TokoNowProductCardUiModel,
         products: List<TokoNowProductCardUiModel>
     ) {
-        val productList = arrayListOf<Bundle>().apply {
+        val items = arrayListOf<Bundle>().apply {
             products.forEachIndexed { position, item ->
                 add(
                     productCardItemDataLayer(
                         position = position.toString(),
                         id = item.productId,
                         name = item.product.productName,
-                        price = item.product.formattedPrice,
-                        list = LIST_HOME_PAGE_PAST_PURCHASE_WIDGET
+                        price = item.product.formattedPrice
                     )
                 )
             }
         }
 
         val eventLabel = getProductCardLabel(data)
-        val ecommerceDataLayer = getEcommerceImpressionDataLayer(productList)
-
         val dataLayer = getProductDataLayer(
             event = EVENT_VIEW_ITEM_LIST,
             action = EVENT_ACTION_IMPRESSION_PAST_PURCHASE,
             category = EVENT_CATEGORY_HOME_PAGE,
             label = eventLabel,
-            ecommerceDataLayer = ecommerceDataLayer
+            items = items,
+            itemList = LIST_HOME_PAGE_PAST_PURCHASE_WIDGET
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
     }
 
     fun onClickRepurchase(position: Int, data: TokoNowProductCardUiModel) {
-        val products = arrayListOf(
+        val items = arrayListOf(
             productCardItemDataLayer(
                 position = position.toString(),
                 id = data.productId,
@@ -602,22 +585,21 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         )
 
         val eventLabel = getProductCardLabel(data)
-        val ecommerceDataLayer = getEcommerceClickDataLayer(products)
 
         val dataLayer = getProductDataLayer(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_PAST_PURCHASE,
             category = EVENT_CATEGORY_HOME_PAGE,
             label = eventLabel,
-            ecommerceDataLayer = ecommerceDataLayer
+            items = items,
+            itemList = LIST_HOME_PAGE_PAST_PURCHASE_WIDGET
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun onRepurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
-        val products = arrayListOf(
+    fun onRepurchaseAddToCart(quantity: Int, data: TokoNowProductCardUiModel) {
+        val items = arrayListOf(
             productCardItemDataLayer(
-                position = position.toString(),
                 id = data.productId,
                 name = data.product.productName,
                 price = data.product.formattedPrice
@@ -631,14 +613,12 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         )
 
         val eventLabel = getProductCardLabel(data)
-        val ecommerceDataLayer = getEcommerceATCDataLayer(products)
-
         val dataLayer = getProductDataLayer(
             event = EVENT_ADD_TO_CART,
             action = EVENT_ACTION_ATC_PAST_PURCHASE,
             category = EVENT_CATEGORY_HOME_PAGE,
             label = eventLabel,
-            ecommerceDataLayer = ecommerceDataLayer
+            items = items
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
@@ -1545,8 +1525,9 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         action: String,
         category: String,
         label: String = "",
+        itemList: String = "",
         affinityLabel: String = "",
-        ecommerceDataLayer: Bundle
+        items: ArrayList<Bundle>
     ): Bundle {
         return Bundle().apply {
             putString(TrackAppUtils.EVENT, event)
@@ -1556,34 +1537,12 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(KEY_AFFINITY_LABEL, affinityLabel)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
-            putParcelable(KEY_ECOMMERCE, ecommerceDataLayer)
+            if (itemList.isNotBlank()) {
+                putString(KEY_ITEM_LIST, itemList)
+            }
+            putParcelableArrayList(KEY_ITEMS, items)
             putString(KEY_USER_ID, userSession.userId)
         }
-    }
-
-    private fun getEcommerceImpressionDataLayer(products: ArrayList<Bundle>): Bundle {
-        return Bundle().apply {
-            putString(KEY_CURRENCY_CODE, CURRENCY_CODE_IDR)
-            putParcelableArrayList(KEY_IMPRESSIONS, products)
-        }
-    }
-
-    private fun getEcommerceClickDataLayer(products: ArrayList<Bundle>): Bundle {
-        val list = Bundle().apply {
-            putString(KEY_LIST, LIST_HOME_PAGE_PAST_PURCHASE_WIDGET)
-        }
-
-        val click = Bundle().apply {
-            putParcelable(KEY_ACTION_FIELD, list)
-            putParcelableArrayList(KEY_PRODUCTS, products)
-        }
-
-        return Bundle().apply { putParcelable(KEY_CLICK, click) }
-    }
-
-    private fun getEcommerceATCDataLayer(products: ArrayList<Bundle>): Bundle {
-        val click = Bundle().apply { putParcelableArrayList(KEY_PRODUCTS, products) }
-        return Bundle().apply { putParcelable(KEY_ADD, click) }
     }
 
     private fun productItemDataLayer(
@@ -1609,28 +1568,28 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     private fun productCardItemDataLayer(
-        position: String,
+        position: String = "",
         id: String,
         name: String,
         price: String,
-        list: String = "",
         brand: String = "",
         category: String = "",
         variant: String = ""
     ): Bundle {
         return Bundle().apply {
-            putString(KEY_BRAND, brand)
-            putString(KEY_CATEGORY, category)
-            putString(KEY_ID, id)
-
-            if (list.isNotEmpty()) {
-                putString(KEY_LIST, list)
+            putString(KEY_DIMENSION_104, "")
+            putString(KEY_DIMENSION_38, "")
+            putString(KEY_DIMENSION_79, "")
+            putString(KEY_DIMENSION_82, "")
+            if (position.isNotBlank()) {
+                putString(KEY_INDEX, position)
             }
-
-            putString(KEY_NAME, name)
-            putString(KEY_POSITION, position)
+            putString(KEY_ITEM_BRAND, brand)
+            putString(KEY_ITEM_CATEGORY, category)
+            putString(KEY_ITEM_ID, id)
+            putString(KEY_ITEM_NAME, name)
+            putString(KEY_ITEM_VARIANT, variant)
             putString(KEY_PRICE, price)
-            putString(KEY_VARIANT, variant)
         }
     }
 

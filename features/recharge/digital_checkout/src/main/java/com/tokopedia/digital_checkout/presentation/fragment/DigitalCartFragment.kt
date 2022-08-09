@@ -375,7 +375,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
 
         checkoutBottomViewWidget.setOnClickConsentListener {
-            RouteManager.route(context, GOTO_PLUS_TNC_APPLINK)
+            RouteManager.route(context, it)
         }
 
     }
@@ -813,9 +813,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
         private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
         private const val LEADING_MARGIN_SPAN = 16
-
-        private const val TNC_URL = "https://www.tokopedia.com/help/article/tnc-gotoplus"
-        private const val GOTO_PLUS_TNC_APPLINK = "tokopedia://webview?url=$TNC_URL&titlebar=false"
 
         fun newInstance(
             passData: DigitalCheckoutPassData?,
