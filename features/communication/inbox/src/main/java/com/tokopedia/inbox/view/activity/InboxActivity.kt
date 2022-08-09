@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.view.activity
 
+import android.content.Context
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -11,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst.Inbox.*
@@ -615,6 +617,11 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
 
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {
         navigator?.onPageSelected(page)
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
     companion object {

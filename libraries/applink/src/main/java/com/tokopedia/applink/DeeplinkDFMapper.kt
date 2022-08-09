@@ -226,7 +226,7 @@ object DeeplinkDFMapper : CoroutineScope {
     val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
             // Base
-            add(DFP({ it.startsWith(ONBOARDING) }, DF_BASE, R.string.applink_title_on_boarding))
+            add(DFP({ it.startsWithPattern(ONBOARDING) }, DF_BASE, R.string.applink_title_on_boarding))
             // Category
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DF_BASE, R.string.applink_title_age_restriction))
             add(DFP({ it.startsWith(TRADEIN) }, DF_CATEGORY_TRADE_IN, R.string.applink_title_tradein))
@@ -534,7 +534,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalMarketplace.TOPCHAT)
             }, DF_BASE, R.string.title_topchat))
-            add(DFP({ it.startsWith(INBOX) }, DF_BASE, R.string.title_inbox))
+            add(DFP({ it.startsWithPattern(INBOX) }, DF_BASE, R.string.title_inbox))
 
             add(DFP({ it.startsWith(INBOX_TALK) }, DF_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(SHOP_TALK) }, DF_BASE, R.string.talk_title))
