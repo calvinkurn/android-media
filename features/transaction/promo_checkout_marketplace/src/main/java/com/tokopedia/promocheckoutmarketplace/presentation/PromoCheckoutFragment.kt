@@ -58,6 +58,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckout
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoSuggestionAdapter
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
+import com.tokopedia.promocheckoutmarketplace.presentation.bottomsheet.showBoInfoBottomSheet
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
@@ -130,8 +131,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val DELAY_DEFAULT_IN_MILIS = 500L
 
         private const val PREFERENCES_NAME = "promo_coachmark_preferences"
+        private const val PREFERENCES_NAME_PROMO_INFO = "promo_info_preferences"
 
         private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
+        private const val KEY_HAS_SEEN_BO_INFO_BOTTOM_SHEET = "has_seen_bo_unstack_info_bottom_sheet"
+
         private const val DESTINATION_BACK = "back"
         private const val DESTINATION_REFRESH = "refresh"
 
@@ -234,6 +238,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeEmptyStateUiModel()
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
+        observeBoInfoBottomSheetUiModel()
 
         // Observe network call result
         observeGetCouponRecommendationResult()
@@ -654,6 +659,21 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
             }
         })
+    }
+
+    private fun observeBoInfoBottomSheetUiModel() {
+        viewModel.boInfoBottomSheetUiModel.observe(viewLifecycleOwner) { uiModel ->
+            if (!hasSeenBoInfoBottomSheet() && uiModel.uiState.isVisible) {
+                context?.let {
+                    showBoInfoBottomSheet(
+                        fragmentManager = parentFragmentManager,
+                        context = it,
+                        uiData = uiModel.uiData
+                    )
+                }
+                setHasSeenBoInfoBottomSheet()
+            }
+        }
     }
 
     private fun showPromoCheckoutSuggestionBottomSheet(data: PromoSuggestionUiModel) {
@@ -1162,5 +1182,17 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(tmpIndex, tabHeight)
             }
         }
+    }
+
+    private fun hasSeenBoInfoBottomSheet() : Boolean {
+        return context?.getSharedPreferences(PREFERENCES_NAME_PROMO_INFO, Context.MODE_PRIVATE)
+            ?.getBoolean(KEY_HAS_SEEN_BO_INFO_BOTTOM_SHEET, false) ?: false
+    }
+
+    private fun setHasSeenBoInfoBottomSheet() {
+        context?.getSharedPreferences(PREFERENCES_NAME_PROMO_INFO, Context.MODE_PRIVATE)
+            ?.edit()
+            ?.putBoolean(KEY_HAS_SEEN_BO_INFO_BOTTOM_SHEET, true)
+            ?.apply()
     }
 }

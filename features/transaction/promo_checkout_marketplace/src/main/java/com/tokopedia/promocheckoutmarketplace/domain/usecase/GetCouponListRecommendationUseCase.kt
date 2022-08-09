@@ -138,6 +138,13 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                             id
                             title
                         }
+                        bottom_sheet {
+                            title
+                            content_title
+                            content_description
+                            image_url
+                            button_txt
+                        }
                     }
                 }
             }
