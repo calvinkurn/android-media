@@ -13,8 +13,8 @@ fun initQuestionDisplayed() {
         R.id.img_dismiss,
         R.id.txt_title,
         R.id.txt_description,
-        R.id.btn_positif_action,
-        R.id.btn_negatif_action
+        R.id.btn_positive_action,
+        R.id.btn_negative_action
     )
     isTextDisplayed(
         "Kamu hanya konsumsi kuliner halal?",
@@ -48,8 +48,8 @@ fun isHideQuestion() {
         R.id.img_dismiss,
         R.id.txt_title,
         R.id.txt_description,
-        R.id.btn_positif_action,
-        R.id.btn_negatif_action,
+        R.id.btn_positive_action,
+        R.id.btn_negative_action,
         R.id.img_success_background,
         R.id.img_success_icon,
         R.id.img_success_dismiss,
@@ -58,7 +58,7 @@ fun isHideQuestion() {
 }
 
 fun clickButtonAnswer(isPositive: Boolean) {
-    clickOnButton(if (isPositive) R.id.btn_positif_action else R.id.btn_negatif_action)
+    clickOnButton(if (isPositive) R.id.btn_positive_action else R.id.btn_negative_action)
 }
 
 //if onQuestionPage = false then click dismiss on success page

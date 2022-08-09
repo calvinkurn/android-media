@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
 import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
+import com.tokopedia.usercomponents.explicit.di.FakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.di.FakeExplicitModule
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugActivity
 import com.tokopedia.usercomponents.explicit.stub.data.ExplicitRepositoryStub
@@ -36,14 +37,13 @@ class ExplicitTest {
 
     @Before
     fun before() {
-        val fakeBaseComponent = DaggerFakeExplicitComponent.builder()
+        component = DaggerFakeExplicitComponent.builder()
             .fakeAppModule(FakeAppModule(applicationContext))
-            .fakeExplicitModule(FakeExplicitModule())
             .build()
 
         ApplicationProvider.getApplicationContext<BaseMainApplication>()
-            .setComponent(fakeBaseComponent)
-        repositoryStub = fakeBaseComponent.repo() as ExplicitRepositoryStub
+            .setComponent(component)
+        repositoryStub = component?.repo() as ExplicitRepositoryStub
     }
 
     @Test
@@ -165,6 +165,10 @@ class ExplicitTest {
 
         //THEN
         isHideQuestion()
+    }
+
+    companion object {
+        var component: FakeExplicitComponent? = null
     }
 
 }
