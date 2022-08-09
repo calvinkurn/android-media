@@ -32,7 +32,7 @@ data class Shop(
         val location: String = "",
 
         @SerializedName("id")
-        val id: Int = -1,
+        val id: String = "",
 
         @SerializedName("url")
         val url: String = "",

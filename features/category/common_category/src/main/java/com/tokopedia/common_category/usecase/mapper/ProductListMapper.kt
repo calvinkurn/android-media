@@ -23,7 +23,7 @@ class ProductListMapper {
                                 name = dataItem.product?.name ?: "",
                                 shop = Shop(
                                     city = dataItem.shop.city,
-                                    id = dataItem.shop.id.toInt(),
+                                    id = dataItem.shop.id,
                                     location = dataItem.shop.location,
                                     goldmerchant = dataItem.shop.goldShop,
                                     name = dataItem.shop.name
