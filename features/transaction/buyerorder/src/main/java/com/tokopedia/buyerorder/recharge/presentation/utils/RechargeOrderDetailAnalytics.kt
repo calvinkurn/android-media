@@ -112,7 +112,7 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
             Keys.EVENT_LABEL to "$categoryName - $productId",
             Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
             Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-            Keys.USER_ID to ""
+            Keys.USER_ID to userSession.userId
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
@@ -126,7 +126,7 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
             Keys.EVENT_LABEL to "$categoryName - $productId",
             Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
             Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-            Keys.USER_ID to ""
+            Keys.USER_ID to userSession.userId
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
@@ -140,7 +140,7 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
             Keys.EVENT_LABEL to "$categoryName - $productId",
             Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT,
             Keys.CURRENT_SITE to DefaultValue.CURRENT_SITE,
-            Keys.USER_ID to ""
+            Keys.USER_ID to userSession.userId
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
