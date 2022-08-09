@@ -85,7 +85,7 @@ class SingleProductBundleFragment(
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_single_product_bundle, container, false)
     }
@@ -148,7 +148,7 @@ class SingleProductBundleFragment(
 
     override fun onVariantSpinnerClicked(
         selectedVariant: ProductVariant?,
-        selectedProductId: String?,
+        selectedProductId: String?
     ) {
         selectedVariant?.let {
             AtcVariantNavigation.showVariantBottomSheet(this, it, selectedProductId.orEmpty())
@@ -159,7 +159,7 @@ class SingleProductBundleFragment(
         originalPrice: Double,
         discountedPrice: Double,
         quantity: Int,
-        preorderDurationWording: String?,
+        preorderDurationWording: String?
     ) {
         SingleProductBundleTracking.trackSingleBundleOptionClick(
             adapter.getSelectedBundleId(),
@@ -172,7 +172,7 @@ class SingleProductBundleFragment(
 
     override fun onDataChanged(
         selectedData: List<SingleProductBundleSelectedItem>,
-        selectedProductVariant: ProductVariant?,
+        selectedProductVariant: ProductVariant?
     ) {
         val selectedProductId = selectedData.firstOrNull {
             it.isSelected
