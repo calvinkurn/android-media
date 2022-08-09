@@ -51,7 +51,7 @@ class ExplicitView constructor(
         initView()
     }
 
-    override fun isViewAttached() = explicitViewContract == null
+    override fun isViewAttached() = explicitViewContract != null
 
     private fun initView() {
         initBinding()
