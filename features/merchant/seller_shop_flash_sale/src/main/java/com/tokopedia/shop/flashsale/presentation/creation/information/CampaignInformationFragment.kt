@@ -346,6 +346,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
         binding?.tauVpsPackageName?.editText?.setText(vpsPackage?.packageName)
         binding?.tauVpsPackageName?.setMessage(helperMessage)
+        binding?.tauVpsPackageName?.isInputError = !vpsPackage?.disabled.orFalse()
 
         if (isUsingVpsPackage && vpsPackage?.currentQuota == EMPTY_QUOTA) {
             displayVpsQuotaEmptyError(vpsPackage.originalQuota)
