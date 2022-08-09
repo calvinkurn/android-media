@@ -437,7 +437,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         searchProductRequestParams.apply {
             putString(CategoryNavConstants.START, (start * PAGING_ROW_COUNT).toString())
             putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
-            putString(CategoryNavConstants.USER_ID, getUserId())
+            putString(CategoryNavConstants.USER_ID, userSession.userId)
             putString(CategoryNavConstants.ROWS, PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
@@ -720,6 +720,12 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         productNavListAdapter?.onPause()
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateChooseAddressWidget()
+        checkAddressUpdate(false)
+    }
+
     override fun hasThreeDots() = true
 
     override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
@@ -947,12 +953,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         chooseAddressWidget?.updateWidget()
     }
 
-    private fun checkAddressUpdate() {
+    private fun checkAddressUpdate(isReload: Boolean = false) {
         context?.let {
             if (userAddressData != null) {
                 if (ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) {
                     userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
-                    refreshPage()
+                    if(isReload)
+                        refreshPage()
                 }
             }
         }
