@@ -79,8 +79,6 @@ private const val TITLE_OTHER = "Lainnya"
 
 class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, ShareCallback {
     private lateinit var recyclerView: RecyclerView
-    private lateinit var shareButton: ImageButton
-    private lateinit var seeShopButton: Typography
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerviewScrollListener: EndlessScrollRecycleListener
     private lateinit var layoutManager: LinearLayoutManager

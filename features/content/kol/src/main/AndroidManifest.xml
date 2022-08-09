@@ -42,11 +42,8 @@
         </activity>
         <activity
             android:name=".feature.postdetail.view.activity.ContentDetailActivity"
-            android:label="@string/kol_title_post_detail"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:exported="false">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

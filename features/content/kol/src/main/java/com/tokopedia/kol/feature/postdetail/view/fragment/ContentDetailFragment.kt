@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -189,8 +190,22 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val activity = requireActivity() as ContentDetailActivity
+        contentDetailSource = activity.getSource()
 
-        contentDetailSource = (requireActivity() as ContentDetailActivity).getSource()
+        val backBtn = activity.getHeaderView()?.findViewById<AppCompatImageView>(kolR.id.content_detail_back_icon)
+        backBtn?.setOnClickListener {
+            viewModel.getCDPPostFirstPostData.value?.let {
+                if (it is Success && it.data.postList.firstOrNull()?.isTypeSgcVideo == true) {
+                    analyticsTracker.sendClickBackOnContentDetailpage(
+                        getContentDetailAnalyticsData(
+                            it.data.postList.first()
+                        )
+                    )
+                }
+            }
+            activity.onBackPressed()
+        }
 
         setupView(view)
         viewModel.getContentDetail(postId)
