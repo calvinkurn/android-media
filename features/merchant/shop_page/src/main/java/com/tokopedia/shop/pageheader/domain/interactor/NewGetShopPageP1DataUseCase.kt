@@ -148,7 +148,14 @@ class NewGetShopPageP1DataUseCase @Inject constructor(
         latitude: String,
         longitude: String
     ): GraphqlRequest {
-        val params = GqlShopPageGetDynamicTabUseCase.createParams(shopId.toIntOrZero(), extParam)
+        val params = GqlShopPageGetDynamicTabUseCase.createParams(
+            shopId.toIntOrZero(),
+            extParam,
+            districtId,
+            cityId,
+            latitude,
+            longitude
+        )
         return createGraphqlRequest<ShopPageGetDynamicTabResponse>(
                 GqlShopPageGetDynamicTabUseCase.QUERY,
                 params.parameters
