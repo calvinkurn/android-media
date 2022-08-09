@@ -10,16 +10,17 @@ import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
 import timber.log.Timber
 
-class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View,
-                                         private val presenter: ShipmentContract.Presenter,
-                                         private val shipperId: Int,
-                                         private val spId: Int,
-                                         private val itemPosition: Int,
-                                         private val shippingCourierConverter: ShippingCourierConverter,
-                                         private val shipmentCartItemModel: ShipmentCartItemModel,
-                                         private val isInitialLoad: Boolean,
-                                         private val isTradeInDropOff: Boolean,
-                                         private val isForceReloadRates: Boolean) : Subscriber<ShippingRecommendationData?>() {
+class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContract.View,
+                                                private val presenter: ShipmentContract.Presenter,
+                                                private val promoCode: String,
+                                                private val shipperId: Int,
+                                                private val spId: Int,
+                                                private val itemPosition: Int,
+                                                private val shippingCourierConverter: ShippingCourierConverter,
+                                                private val shipmentCartItemModel: ShipmentCartItemModel,
+                                                private val isInitialLoad: Boolean,
+                                                private val isTradeInDropOff: Boolean,
+                                                private val isForceReloadRates: Boolean) : Subscriber<ShippingRecommendationData?>() {
     override fun onCompleted() {}
     override fun onError(e: Throwable) {
         Timber.d(e)
@@ -28,6 +29,12 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
         } else {
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
+
+        presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode)
+        view.resetCourier(itemPosition)
+        presenter.clearPromoCodeFromLastValidateUseRequest(promoCode)
+        view.onNeedUpdateViewItem(itemPosition)
+
         view.logOnErrorLoadCourier(e, itemPosition)
     }
 
@@ -73,6 +80,8 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                         }
                     }
                 }
+
+                shipmentCartItemModel.voucherLogisticItemUiModel?.copy(code )
             }
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
             view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
@@ -106,7 +115,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
 
         // Auto apply Promo Stacking Logistic
         val logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
-            ((it.shipperId == shipperId && it.shipperProductId == spId) || shipmentCartItemModel.isAutoCourierSelection)
+            (shipmentCartItemModel.boCode == it.promoCode || shipmentCartItemModel.isAutoCourierSelection)
                     && it.promoCode.isNotEmpty() && !it.disabled
         }
         logisticPromoChosen?.let {

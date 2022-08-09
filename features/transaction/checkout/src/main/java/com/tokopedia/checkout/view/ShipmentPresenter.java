@@ -52,6 +52,7 @@ import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper;
 import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
+import com.tokopedia.checkout.view.subscriber.GetBoPromoCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber;
 import com.tokopedia.checkout.view.subscriber.SaveShipmentStateSubscriber;
@@ -148,6 +149,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -2373,5 +2375,138 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ShipmentUpsellModel getShipmentUpsellModel() {
         return shipmentUpsellModel;
+    }
+
+    @Override
+    public void validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel: validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+            final long shippingId = voucherOrdersItemUiModel.getShippingId();
+            final long spId = voucherOrdersItemUiModel.getSpId();
+            // assuming voucher with shippingId and spId not empty as voucher for BO
+            if (shippingId != -1 && spId != -1) {
+                if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
+                    doUnapplyBo(voucherOrdersItemUiModel);
+                } else {
+                    doApplyBo(voucherOrdersItemUiModel);
+                }
+            }
+        }
+    }
+
+    private int getShipmentCartItemPositionByUniqueId(List<ShipmentCartItemModel> shipmentCartItemModels, String uniqueId) {
+        for (int i = 0; i < shipmentCartItemModels.size(); i++) {
+            if (Objects.equals(shipmentCartItemModels.get(i).getCartString(), uniqueId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void doUnapplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel) {
+        final int itemPosition =
+                getShipmentCartItemPositionByUniqueId(shipmentCartItemModelList, voucherOrdersItemUiModel.getUniqueId());
+        if (itemPosition != -1) {
+            getView().resetCourier(itemPosition);
+            clearPromoCodeFromLastValidateUseRequest(voucherOrdersItemUiModel.getCode());
+            getView().onNeedUpdateViewItem(itemPosition);
+        }
+    }
+
+    @Override
+    public void clearPromoCodeFromLastValidateUseRequest(String promoCode) {
+        final List<String> codes = lastValidateUsePromoRequest.getCodes();
+        if (!codes.isEmpty()) {
+            codes.remove(promoCode);
+        }
+        lastValidateUsePromoRequest.setCodes(codes);
+    }
+
+    private void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel) {
+        final int itemPosition =
+                getShipmentCartItemPositionByUniqueId(shipmentCartItemModelList, voucherOrdersItemUiModel.getUniqueId());
+        if (itemPosition != -1) {
+            final ShipmentCartItemModel shipmentCartItemModel = shipmentCartItemModelList.get(itemPosition);
+            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
+                    !shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode().equals(voucherOrdersItemUiModel.getCode())) {
+                processBoPromoCourierRecommendation(itemPosition, voucherOrdersItemUiModel, shipmentCartItemModel);
+            }
+        }
+    }
+
+    private void processBoPromoCourierRecommendation(int itemPosition, PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel, ShipmentCartItemModel shipmentCartItemModel) {
+        ShipmentDetailData selectedShipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
+        List<Product> products = getProductForRatesRequest(shipmentCartItemModel);
+        String cartString = shipmentCartItemModel.getCartString();
+        boolean isTradeInDropOff = getView().isTradeInByDropOff();
+        ShippingParam shippingParam = getShippingParam(selectedShipmentDetailData, products, cartString, isTradeInDropOff, recipientAddressModel);
+
+        int counter = codData == null ? -1 : codData.getCounterCod();
+        boolean cornerId = false;
+        if (getRecipientAddressModel() != null) {
+            cornerId = getRecipientAddressModel().isCornerAddress();
+        }
+        String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
+        boolean isLeasing = shipmentCartItemModel.isLeasingProduct();
+
+        String mvc = generateRatesMvcParam(cartString);
+
+        List<ShopShipment> shopShipmentList = shipmentCartItemModel.getShopShipmentList();
+        RatesParam.Builder ratesParamBuilder = new RatesParam.Builder(shopShipmentList, shippingParam)
+                .isCorner(cornerId)
+                .codHistory(counter)
+                .isLeasing(isLeasing)
+                .promoCode(pslCode)
+                .cartData(cartData)
+                .mvc("");
+
+        boolean skipMvc = false;
+        if (!skipMvc) {
+            ratesParamBuilder.mvc(mvc);
+        }
+
+        RatesParam param = ratesParamBuilder.build();
+
+        Observable<ShippingRecommendationData> observable;
+        if (isTradeInDropOff) {
+            observable = ratesApiUseCase.execute(param);
+        } else {
+            observable = ratesUseCase.execute(param);
+        }
+        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+            String promoCode = voucherOrdersItemUiModel.getCode();
+            int shipperId = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId();
+            int spId = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId();
+            boolean isForceReload = itemPosition > -1;
+            observable
+                    .map(shippingRecommendationData ->
+                            stateConverter.fillState(shippingRecommendationData, shopShipmentList,
+                                    spId, 0))
+                    .subscribe(
+                            new GetBoPromoCourierRecommendationSubscriber(
+                                    getView(), this, promoCode, shipperId, spId, itemPosition,
+                                    shippingCourierConverter, shipmentCartItemModel,
+                                    false, isTradeInDropOff, isForceReload
+                            ));
+        }
+    }
+
+    private List<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel) {
+        ArrayList<Product> products = new ArrayList<>();
+        if (shipmentCartItemModel != null) {
+            shipmentCartItemModel.getCartItemModels();
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                if (!cartItemModel.isError()) {
+                    Product product = new Product();
+                    product.setProductId(cartItemModel.getProductId());
+                    product.setFreeShipping(cartItemModel.isFreeShipping());
+                    product.setFreeShippingTc(cartItemModel.isFreeShippingExtra());
+
+                    products.add(product);
+                }
+            }
+        }
+
+        return products;
     }
 }
