@@ -254,6 +254,11 @@ class ProductListPresenter @Inject constructor(
     //endregion
 
     //region Load Data / Load More / Recommendations
+    override fun clearData() {
+        postProcessingFilter.resetCount()
+        paginationImpl.clearData()
+    }
+
     override fun onViewCreated() {
         val isFirstActiveTab = view.isFirstActiveTab
 
