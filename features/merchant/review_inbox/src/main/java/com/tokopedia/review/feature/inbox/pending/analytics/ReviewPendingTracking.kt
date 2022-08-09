@@ -6,6 +6,7 @@ import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.reviewcommon.extension.appendBusinessUnit
 import com.tokopedia.reviewcommon.extension.appendCurrentSite
 import com.tokopedia.reviewcommon.extension.appendGeneralEventData
+import com.tokopedia.reviewcommon.extension.appendProductId
 import com.tokopedia.reviewcommon.extension.appendTrackerIdIfNotBlank
 import com.tokopedia.reviewcommon.extension.appendUserId
 import com.tokopedia.reviewcommon.extension.sendGeneralEvent
@@ -65,18 +66,39 @@ object ReviewPendingTracking {
             .sendEnhancedEcommerce(ReviewPendingTrackingConstants.EVENT_NAME_VALUE_VIEW_ITEM)
     }
 
-    fun trackClickCheckReviewContribution() {
+    fun trackClickCheckReviewContribution(isCompetitionWinner: Boolean, userId: String) {
         mutableMapOf<String, Any>()
             .appendGeneralEventData(
-                eventName = ReviewPendingTrackingConstants.EVENT_NAME_CLICK_INBOX_REVIEW,
+                eventName = if (isCompetitionWinner) {
+                    ReviewPendingTrackingConstants.EVENT_NAME_CLICK_PG
+                } else {
+                    ReviewPendingTrackingConstants.EVENT_NAME_CLICK_INBOX_REVIEW
+                },
                 eventCategory = ReviewPendingTrackingConstants.EVENT_CATEGORY_VALUE_REVIEW_PAGE_PENDING_REVIEW,
-                eventAction = ReviewPendingTrackingConstants.EVENT_ACTION_VALUE_CLICK_CHECK_REVIEW_CONTRIBUTION,
+                eventAction = if (isCompetitionWinner) {
+                    ReviewPendingTrackingConstants.EVENT_ACTION_VALUE_CLICK_HI_REVIEW_COMPETITION_WINNER
+                } else {
+                    ReviewPendingTrackingConstants.EVENT_ACTION_VALUE_CLICK_CHECK_REVIEW_CONTRIBUTION
+                },
                 eventLabel = ""
             )
             .appendBusinessUnit(ReviewPendingTrackingConstants.PDP_BUSINESS_UNIT)
             .appendCurrentSite(ReviewPendingTrackingConstants.CREDIBILITY_CURRENT_SITE)
-            .appendUserId("")
-            .appendTrackerIdIfNotBlank(ReviewPendingTrackingConstants.TRACKER_ID_CLICK_CHECK_REVIEW_CONTRIBUTION)
+            .appendTrackerIdIfNotBlank(
+                if (isCompetitionWinner) {
+                    ReviewPendingTrackingConstants.TRACKER_ID_CLICK_HI_REVIEW_COMPETITION_WINNER
+                } else {
+                    ReviewPendingTrackingConstants.TRACKER_ID_CLICK_CHECK_REVIEW_CONTRIBUTION
+                }
+            )
+            .apply {
+                if (isCompetitionWinner) {
+                    appendProductId("")
+                    appendUserId(userId)
+                } else {
+                    appendUserId("")
+                }
+            }
             .sendGeneralEvent()
     }
 
