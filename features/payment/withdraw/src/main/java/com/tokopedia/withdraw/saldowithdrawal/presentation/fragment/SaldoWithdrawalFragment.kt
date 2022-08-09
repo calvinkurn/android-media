@@ -197,11 +197,11 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
                 centerMode = true
                 if (data.size > 1) {
                     indicatorPosition = CarouselUnify.INDICATOR_BL
-                    slideToShow = 1.1f
+                    slideToShow = HALF_SLIDE_NO
                     addItems(R.layout.swd_widget_banner_item, data as ArrayList<Any>, ::carouselItemListener)
                 } else {
                     indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
-                    slideToShow = 1.0f
+                    slideToShow = FULL_SLIDE_NO
                     addItems(R.layout.swd_widget_banner_single_item, data as ArrayList<Any>, ::carouselItemListener)
                 }
                 onActiveIndexChangedListener = this@SaldoWithdrawalFragment
@@ -322,7 +322,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
 
     private fun initializeViewPager() {
         arguments?.let {
-            saldoWithdrawalPagerAdapter = SaldoWithdrawalPagerAdapter(context!!, childFragmentManager, it)
+            saldoWithdrawalPagerAdapter = SaldoWithdrawalPagerAdapter(requireContext(), childFragmentManager, it)
             viewPagerSaldoWithdrawal.adapter = saldoWithdrawalPagerAdapter
             tabSaldoWithdrawal.tabLayout.setupWithViewPager(viewPagerSaldoWithdrawal)
             if (buyerSaldoBalance == 0L) {
@@ -513,6 +513,8 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
         const val BANK_SETTING_REQUEST_CODE = 3001
         const val VERIFICATION_REQUEST_CODE = 3002
 
+        private const val HALF_SLIDE_NO = 1.1f
+        private const val FULL_SLIDE_NO = 1.0f
 
         const val ARG_SELLER_SALDO_BALANCE_LONG = "seller_total_balance_int"
         const val ARG_BUYER_SALDO_BALANCE_LONG = "buyer_total_balance_int"
