@@ -406,7 +406,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         toaster.showErrorInView(
                             toasterContainer,
                             event.error,
-                            bottomMargin = resources.getDimensionPixelOffset(
+                            bottomMargin = requireContext().resources.getDimensionPixelOffset(
                                 unifyR.dimen.spacing_lvl3
                             )
                         )

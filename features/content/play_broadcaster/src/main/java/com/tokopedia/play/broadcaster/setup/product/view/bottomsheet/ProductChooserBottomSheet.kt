@@ -174,7 +174,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * 0.85f).toInt()
+            height = (getScreenHeight() * SHEET_HEIGHT_PERCENT).toInt()
         }
 
         setCloseClickListener {
@@ -507,6 +507,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayBroProductChooserBottomSheet"
+        private const val SHEET_HEIGHT_PERCENT = 0.85f
 
         fun getFragment(
             fragmentManager: FragmentManager,
