@@ -437,7 +437,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         searchProductRequestParams.apply {
             putString(CategoryNavConstants.START, (start * PAGING_ROW_COUNT).toString())
             putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
-            putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
+            putString(CategoryNavConstants.USER_ID, getUserId())
             putString(CategoryNavConstants.ROWS, PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
@@ -456,7 +456,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         return ParamMapToUrl.generateUrlParamString(parameters)
     }
 
-    private fun getUniqueId(): String {
+    private fun getUserId(): String {
         return if (userSession.isLoggedIn)
             AuthHelper.getMD5Hash(userSession.userId)
         else

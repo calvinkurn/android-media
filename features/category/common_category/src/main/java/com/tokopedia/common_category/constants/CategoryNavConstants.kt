@@ -9,7 +9,7 @@ class CategoryNavConstants {
         const val CTG_ID = "ctg_id"
         const val DEVICE = "device"
         const val SOURCE = "source"
-        const val UNIQUE_ID = "unique_id"
+        const val USER_ID = "userId"
         const val ROWS = "rows"
         const val KEY_SAFE_SEARCH = "safe_search"
         const val PMIN = "pmin"
