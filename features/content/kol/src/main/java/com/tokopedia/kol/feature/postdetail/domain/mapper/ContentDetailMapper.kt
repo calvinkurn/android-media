@@ -21,4 +21,6 @@ interface ContentDetailMapper {
     fun mapReportContent(rowNumber: Int): ReportContentModel
 
     fun mapVisitChannel(rowNumber: Int): VisitContentModel
+
+    fun mapWishlistData(rowNumber: Int, productId: String): WishlistContentModel
 }

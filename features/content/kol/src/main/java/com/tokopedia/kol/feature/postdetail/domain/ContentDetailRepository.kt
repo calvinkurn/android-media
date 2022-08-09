@@ -40,8 +40,9 @@ interface ContentDetailRepository {
     ): Boolean
 
     suspend fun addToWishlist(
+        rowNumber: Int,
         productId: String
-    ): Result<AddToWishlistV2Response.Data.WishlistAddV2>
+    ): WishlistContentModel
 
     suspend fun deleteContent(
         contentId: String,

@@ -20,9 +20,7 @@ import com.tokopedia.kolcommon.domain.interactor.SubmitReportContentUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -136,12 +134,13 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addToWishlist(productId: String): Result<AddToWishlistV2Response.Data.WishlistAddV2> {
-        return withContext(dispatcher.io) {
+    override suspend fun addToWishlist(rowNumber: Int, productId: String): WishlistContentModel =
+        withContext(dispatcher.io) {
             addToWishlistUseCase.setParams(productId, userSession.userId)
             addToWishlistUseCase.executeOnBackground()
+            mapper.mapWishlistData(rowNumber, productId)
         }
-    }
+
 
     override suspend fun deleteContent(contentId: String, rowNumber: Int): DeleteContentModel = withContext(dispatcher.io) {
         submitActionContentUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(contentId))

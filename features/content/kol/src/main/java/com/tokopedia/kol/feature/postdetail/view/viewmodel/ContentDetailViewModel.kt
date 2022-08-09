@@ -57,9 +57,9 @@ class ContentDetailViewModel @Inject constructor(
     val deletePostResp: LiveData<ContentDetailResult<DeleteContentModel>>
          get() = _deletePostResp
 
-    val observableWishlist: LiveData<Result<AddToWishlistV2Response.Data.WishlistAddV2>>
+    val observableWishlist: LiveData<ContentDetailResult<WishlistContentModel>>
         get() = _observableWishlist
-    private val _observableWishlist = MutableLiveData<Result<AddToWishlistV2Response.Data.WishlistAddV2>>()
+    private val _observableWishlist = MutableLiveData<ContentDetailResult<WishlistContentModel>>()
 
     fun getContentDetail(contentId: String){
         launchCatchError( block = {
@@ -136,10 +136,12 @@ class ContentDetailViewModel @Inject constructor(
         }
     }
 
-    fun addToWishlist(productId: String) {
-        launch {
-            val response = repository.addToWishlist(productId)
-            _observableWishlist.value = response
+    fun addToWishlist(productId: String, rowNumber: Int) {
+        launchCatchError(block = {
+            val isSuccess = repository.addToWishlist(rowNumber, productId)
+            _observableWishlist.value = ContentDetailResult.Success(isSuccess)
+        }) {
+            _observableWishlist.value = ContentDetailResult.Failure(it)
         }
     }
 

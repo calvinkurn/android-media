@@ -54,8 +54,6 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgument
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.START_TIME
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.TYPE_CONTENT_PREVIEW_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.VOD_POST
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailViewModel
@@ -73,7 +71,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
@@ -85,6 +82,7 @@ import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.kol.R as kolR
 import com.tokopedia.network.R as networkR
+import com.tokopedia.wishlist_common.R as Rwishlist
 
 /**
  * Created by shruti agarwal on 15/06/22
@@ -1382,7 +1380,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 item.isFollowed,
                 item.shopId,
                 item.playChannelId,
-                item.mediaType
+                item.mediaType,
+                item.positionInFeed
             )
         }
     }
@@ -1522,7 +1521,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         isFollowed: Boolean,
         shopId: String,
         playChannelId: String,
-        mediaType: String
+        mediaType: String,
+        rowNumber: Int
     ) {
         analyticsTracker.sendClickWishlistSgcImageEvent(
             ContentDetailPageAnalyticsDataModel(
@@ -1555,7 +1555,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        viewModel.addToWishlist(productId)
+        viewModel.addToWishlist(productId, rowNumber)
     }
 
     private fun onAddToCartSuccess() {
@@ -1574,20 +1574,18 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)
             ).show()
         }
-        if (adapter.getList().isEmpty()) {
-            //TODO handle empty list view
-//            showRefresh()
-//            onRefresh()
-        }
     }
 
     //region observer
     private fun observeWishlist() {
         viewModel.observableWishlist.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(it.data, requireContext(), requireView())
-                is Fail -> {
-                    val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.throwable)
+                is ContentDetailResult.Success -> onWishListSuccess(
+                    it.data.rowNumber,
+                    it.data.productId
+                )
+                is ContentDetailResult.Failure -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(requireContext(), it.error)
                     AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, requireView())
                 }
             }
@@ -1728,6 +1726,41 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 }
             }
         })
+    }
+
+    private fun onWishListSuccess(
+       rowNumber: Int,
+       productId: String
+    ) {
+        val list = adapter.getList()
+        if (rowNumber in 0 until list.size) {
+            val feedXCard = list[rowNumber]
+            Toaster.build(
+                requireView(),
+                getString(Rwishlist.string.on_success_add_to_wishlist_msg),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(Rwishlist.string.cta_success_add_to_wishlist),
+                View.OnClickListener {
+                    analyticsTracker.sendClickLihatWishlistSgcImageEvent(
+                        ContentDetailPageAnalyticsDataModel(
+                            activityId = feedXCard.id,
+                            type = feedXCard.typename,
+                            isFollowed = feedXCard.followers.isFollowed,
+                            shopId = feedXCard.author.id,
+                            productId = productId,
+                            mediaType = if (feedXCard.lastCarouselIndex < feedXCard.media.size) feedXCard.media[feedXCard.lastCarouselIndex].type else "",
+                            source = contentDetailSource,
+                            trackerId = getTrackerID(
+                                feedXCard,
+                                trackerIdAsgc = "34105",
+                                trackerIdAsgcRecom = "34093"
+                            )
+                            )
+                    )
+                    RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+                }).show()
+        }
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
