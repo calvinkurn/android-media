@@ -4355,17 +4355,15 @@ open class DynamicProductDetailFragment :
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
         activity?.let { parentView ->
             // create instance of loadingProgressDialog when null
-            createProgressDialog(parentView, onCancelClicked)
-            // is progress dialog is showing
-            val loadingDialogIsShowing = loadingProgressDialog?.isShowing == true
+            val dialog = createProgressDialog(parentView, onCancelClicked)
             // show progress dialog if activity no finished yet and loading not showing yet
-            val showProgressDialog = !parentView.isFinishing && !loadingDialogIsShowing
+            val showProgressDialog = !parentView.isFinishing && !dialog.isShowing
             // is [showProgressDialog] is true
             if (showProgressDialog) {
                 // ignore failed if in block throw a throwable
                 runCatching {
                     // show progress dialog
-                    loadingProgressDialog?.show()
+                    dialog.show()
                 }
             }
         }
