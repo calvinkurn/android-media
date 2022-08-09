@@ -641,6 +641,7 @@ class ProductListPresenter @Inject constructor(
         relatedDataView = productDataView.relatedDataView
         bannerDelegate.setBannerData(productDataView.bannerDataView)
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
+        paginationImpl.totalData = productDataView.totalData
         categoryIdL2 = productDataView.categoryIdL2
         relatedKeyword = searchProductModel.searchProduct.data.related.relatedKeyword
         suggestionKeyword = searchProductModel.searchProduct.data.suggestion.suggestion
@@ -662,8 +663,6 @@ class ProductListPresenter @Inject constructor(
                 )
             }
         } else {
-            // total data should be set if there are result to prevent loadMore triggered while fetching other page in post processing
-            paginationImpl.totalData = productDataView.totalData
             postProcessingFilter.resetCount()
 
             runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST) {
