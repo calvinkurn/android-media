@@ -42,11 +42,11 @@ class GqlShopPageGetHomeType @Inject constructor(
             }
 
         const val QUERY = """
-            query shopPageGetHomeType(${'$'}shopID: Int!, ${'$'}extParam: String!, ${'$'}districtID: String,${'$'}cityId: String,${'$'}latitude: String,${'$'}longitude: String){
+            query shopPageGetHomeType(${'$'}shopID: Int!, ${'$'}extParam: String!, ${'$'}districtId: String,${'$'}cityId: String,${'$'}latitude: String,${'$'}longitude: String){
               shopPageGetHomeType(
                 shopID: ${'$'}shopID,
                 extParam: ${'$'}extParam,
-                districtID: ${'$'}districtID,
+                districtID: ${'$'}districtId,
                 cityId: ${'$'}cityId,
                 latitude: ${'$'}latitude,
                 longitude: ${'$'}longitude
