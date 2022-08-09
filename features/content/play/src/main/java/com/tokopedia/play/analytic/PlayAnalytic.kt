@@ -398,7 +398,7 @@ class PlayAnalytic(
                         "productView",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                     "view on featured product",
-                    "$mChannelId - ${products.first().first.id} - ${mChannelType.value}"
+                    "$mChannelId - ${products.first().first.id} - ${mChannelType.value} - featured product tagging"
                 ),
                 hashMapOf(
                         "ecommerce" to hashMapOf(
