@@ -66,9 +66,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="@dimen/layout_lvl3"
         app:fbColor="green"
-        app:elevation="@dimen/layout_lvl0"
+        app:elevation="0dp"
         app:fbType="basic"
         app:maxImageSize="24dp"
         app:srcCompat="@drawable/talk_reading_ic_plus" />
