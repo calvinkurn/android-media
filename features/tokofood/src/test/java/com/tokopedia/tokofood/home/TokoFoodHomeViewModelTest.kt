@@ -1181,4 +1181,215 @@ class TokoFoodHomeViewModelTest: TokoFoodHomeViewModelTestFixture() {
 
         Assert.assertNull(actualResponse)
     }
+
+    @Test
+    fun `when getting empty address state should run and give the success result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        val expectedResponse = createNoAddressState()
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = ""), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting not login state should run and give the success result`() {
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList(), LocalCacheModel(address_id = ""))
+
+        val expectedResponse = TokoFoodListUiModel(
+            items = listOf(
+                TokoFoodHomeChooseAddressWidgetUiModel(CHOOSE_ADDRESS_WIDGET_ID),
+                createHomeTickerDataModel(),
+                createUSPModel(state = TokoFoodLayoutState.LOADING),
+                createIconsModel(state = TokoFoodLayoutState.LOADING),
+                createSliderBannerDataModel(
+                    id = "33333",
+                    groupId = "",
+                    headerName = "Banner TokoFood"
+                ),
+                createDynamicLegoBannerDataModel(
+                    id = "44444",
+                    groupId = "",
+                    headerName = "6 Image"
+                )
+            ),
+            state = SHOW
+        )
+
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = ""), false)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting no pin poin empty lat and lang state should run and give the success result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        val expectedResponse = createNoPinPoinState()
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = "1", lat = "", long = ""), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting no pin poin 0 lat and lang state should run and give the success result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        val expectedResponse = createNoPinPoinState()
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = "1", lat = "0.0", long = "0.0"), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting no pin poin empty lat and 0 lang state should run and give the success result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        val expectedResponse = createNoPinPoinState()
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = "1", lat = "", long = "0.0"), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting no pin poin 0 lat and empty lang state should run and give the success result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        val expectedResponse = createNoPinPoinState()
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = "1", lat = "0.0", long = ""), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting no pin poin empty lat and not empty lang state should run and give the success result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        val expectedResponse = createNoPinPoinState()
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = "1", lat = "", long = "-1.9389"), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting no pin poin not empty lat and empty lang state should run and give the success result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        val expectedResponse = createNoPinPoinState()
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = "1", lat = "-1.9389", long = ""), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting no pin poin 0 lat and not empty lang state should run and give the success result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        val expectedResponse = createNoPinPoinState()
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = "1", lat = "0.0", long = "-1.9389"), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when getting no pin poin not empty lat and 0 lang state should run and give the success result`() {
+        var actualResponse: Result<TokoFoodListUiModel>? = null
+        viewModel.isAddressManuallyUpdated = true
+
+        val expectedResponse = createNoPinPoinState()
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowLayoutList.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setHomeLayout(LocalCacheModel(address_id = "1", lat = "-1.9389", long = "0.0"), true)
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
 }

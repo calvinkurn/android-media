@@ -135,12 +135,10 @@ class TokoFoodHomeViewModel @Inject constructor(
                     }
                 }
             }.catch {
-                when (inputState.uiState) {
-                    STATE_FETCH_DYNAMIC_CHANNEL_DATA -> emit(Fail(it))
-                    STATE_FETCH_LOAD_MORE -> {
-                        removeMerchantMainTitle()
-                        emit(getRemovalProgressBar())
-                    }
+                if (inputState.uiState == STATE_FETCH_DYNAMIC_CHANNEL_DATA)  emit(Fail(it))
+                else {
+                    removeMerchantMainTitle()
+                    emit(getRemovalProgressBar())
                 }
             }
         }.shareIn(
@@ -514,15 +512,18 @@ class TokoFoodHomeViewModel @Inject constructor(
         }
     }
 
-    private fun hasNoAddress(isLoggedIn: Boolean, localCacheModel: LocalCacheModel?): Boolean {
-        return isLoggedIn && (localCacheModel?.address_id.isNullOrEmpty() || localCacheModel?.address_id == "0")
+    private fun hasNoAddress(isLoggedIn: Boolean, localCacheModel: LocalCacheModel): Boolean {
+        return isLoggedIn &&
+                (localCacheModel.address_id.isEmpty() ||
+                        localCacheModel.address_id == "0")
     }
 
-    private fun hasNoPinPoin(isLoggedIn: Boolean, localCacheModel: LocalCacheModel?): Boolean {
+    private fun hasNoPinPoin(isLoggedIn: Boolean, localCacheModel: LocalCacheModel): Boolean {
         return isLoggedIn &&
-                (!localCacheModel?.address_id.isNullOrEmpty() || localCacheModel?.address_id != "0")
-                && (localCacheModel?.lat.isNullOrEmpty() || localCacheModel?.long.isNullOrEmpty() ||
-                localCacheModel?.lat.equals(EMPTY_LOCATION) || localCacheModel?.long.equals(EMPTY_LOCATION))
+                (localCacheModel.lat.isEmpty() ||
+                        localCacheModel.long.isEmpty() ||
+                localCacheModel.lat.equals(EMPTY_LOCATION) ||
+                        localCacheModel.long.equals(EMPTY_LOCATION))
     }
 
     private fun isAddressManuallyUpdate(): Boolean = isAddressManuallyUpdated
