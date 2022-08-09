@@ -10,7 +10,7 @@ import com.tokopedia.usercomponents.explicit.domain.model.QuestionDataModel
 import com.tokopedia.usercomponents.test.R
 import javax.inject.Inject
 
-class ExplicitRepositoryStub @Inject constructor() : GraphqlRepository {
+class ExplicitRepositoryStub : GraphqlRepository {
 
     private var _state: TestState = TestState.HIDE_QUESTION
 

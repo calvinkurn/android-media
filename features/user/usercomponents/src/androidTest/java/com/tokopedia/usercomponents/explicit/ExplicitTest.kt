@@ -11,7 +11,6 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
 import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.di.FakeExplicitComponent
-import com.tokopedia.usercomponents.explicit.di.FakeExplicitModule
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugActivity
 import com.tokopedia.usercomponents.explicit.stub.data.ExplicitRepositoryStub
 import com.tokopedia.usercomponents.explicit.stub.data.TestState
@@ -19,6 +18,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 @UiTest
 @RunWith(AndroidJUnit4::class)
@@ -33,7 +33,7 @@ class ExplicitTest {
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
-    private lateinit var repositoryStub: ExplicitRepositoryStub
+    @Inject lateinit var repositoryStub: ExplicitRepositoryStub
 
     @Before
     fun before() {
@@ -41,15 +41,13 @@ class ExplicitTest {
             .fakeAppModule(FakeAppModule(applicationContext))
             .build()
 
-        ApplicationProvider.getApplicationContext<BaseMainApplication>()
-            .setComponent(component)
-        repositoryStub = component?.repo() as ExplicitRepositoryStub
+        component?.inject(this)
     }
 
     @Test
     fun first_time_launch_then_show_question() {
         //GIVEN
-        repositoryStub.setState(TestState.SHOW_QUESTION)
+        repositoryStub?.setState(TestState.SHOW_QUESTION)
 
         //WHEN
         activityTestRule.launchActivity(Intent())
@@ -61,7 +59,7 @@ class ExplicitTest {
     @Test
     fun first_time_launch_then_hide_question() {
         //GIVEN
-        repositoryStub.setState(TestState.HIDE_QUESTION)
+        repositoryStub?.setState(TestState.HIDE_QUESTION)
 
         //WHEN
         activityTestRule.launchActivity(Intent())
@@ -74,7 +72,7 @@ class ExplicitTest {
     @Test
     fun first_time_launch_then_failed() {
         //GIVEN
-        repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
+        repositoryStub?.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
         //WHEN
         activityTestRule.launchActivity(Intent())
@@ -87,7 +85,7 @@ class ExplicitTest {
     @Test
     fun submit_positive_answer_then_failed() {
         //GIVEN
-        repositoryStub.setState(TestState.SHOW_QUESTION)
+        repositoryStub?.setState(TestState.SHOW_QUESTION)
 
         //WHEN
         activityTestRule.launchActivity(Intent())
@@ -101,7 +99,7 @@ class ExplicitTest {
     @Test
     fun submit_negative_answer_then_failed() {
         //GIVEN
-        repositoryStub.setState(TestState.SHOW_QUESTION)
+        repositoryStub?.setState(TestState.SHOW_QUESTION)
 
         //WHEN
         activityTestRule.launchActivity(Intent())
@@ -114,9 +112,9 @@ class ExplicitTest {
     @Test
     fun submit_positive_answer_then_success() {
         //GIVEN
-        repositoryStub.setState(TestState.SHOW_QUESTION)
+        repositoryStub?.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
-        repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
+        repositoryStub?.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
         //WHEN
         clickButtonAnswer(isPositive = true)
@@ -128,9 +126,9 @@ class ExplicitTest {
     @Test
     fun submit_negative_answer_then_success() {
         //GIVEN
-        repositoryStub.setState(TestState.SHOW_QUESTION)
+        repositoryStub?.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
-        repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
+        repositoryStub?.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
         //WHEN
         clickButtonAnswer(isPositive = false)
@@ -142,7 +140,7 @@ class ExplicitTest {
     @Test
     fun click_dismiss_when_question_show_then_widget_gone() {
         //GIVEN
-        repositoryStub.setState(TestState.SHOW_QUESTION)
+        repositoryStub?.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
 
         //WHEN
@@ -155,9 +153,9 @@ class ExplicitTest {
     @Test
     fun click_dismiss_when_success_show_then_widget_gone() {
         //GIVEN
-        repositoryStub.setState(TestState.SHOW_QUESTION)
+        repositoryStub?.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
-        repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
+        repositoryStub?.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
         //WHEN
         clickButtonAnswer(isPositive = true)

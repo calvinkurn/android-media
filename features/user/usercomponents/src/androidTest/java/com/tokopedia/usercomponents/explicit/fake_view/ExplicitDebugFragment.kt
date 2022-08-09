@@ -31,7 +31,7 @@ class ExplicitDebugFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.setupView?.setupView(
+        binding?.fakeExplicit?.setupView(
             explicitViewContract,
             ExplicitData(
                 "halal_single",

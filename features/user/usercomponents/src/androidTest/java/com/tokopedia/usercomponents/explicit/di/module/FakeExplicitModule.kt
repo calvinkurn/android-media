@@ -1,4 +1,4 @@
-package com.tokopedia.usercomponents.explicit.di
+package com.tokopedia.usercomponents.explicit.di.module
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
@@ -17,13 +17,46 @@ import dagger.Provides
 object FakeExplicitModule {
 
     @Provides
+    @ApplicationScope
     @ApplicationContext
     fun provideExplicitRepositoryStub(): GraphqlRepository {
         return ExplicitRepositoryStub()
     }
 
     @Provides
-    @ApplicationScope
+    fun provideGetQuestionUseCase(
+        @ApplicationContext repository: GraphqlRepository,
+        @ApplicationScope dispatchers: CoroutineDispatchers,
+        ): GetQuestionUseCase {
+        return GetQuestionUseCase(
+            repository,
+            dispatchers
+        )
+    }
+
+    @Provides
+    fun provideSaveAnswerUseCase(
+        @ApplicationContext repository: GraphqlRepository,
+        @ApplicationScope dispatchers: CoroutineDispatchers,
+        ): SaveAnswerUseCase {
+        return SaveAnswerUseCase(
+            repository,
+            dispatchers
+        )
+    }
+
+    @Provides
+    fun provideUpdateStateUseCase(
+        @ApplicationContext repository: GraphqlRepository,
+        @ApplicationScope dispatchers: CoroutineDispatchers,
+        ): UpdateStateUseCase {
+        return UpdateStateUseCase(
+            repository,
+            dispatchers
+        )
+    }
+
+    @Provides
     fun provideExplicitView(
         getQuestionUseCase: GetQuestionUseCase,
         saveAnswerUseCase: SaveAnswerUseCase,
