@@ -113,6 +113,14 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                         message
                                         icon
                                     }
+                                    additional_bo_datas {
+                                        code
+                                        unique_id
+                                        shipping_id
+                                        sp_id
+                                        benefit_amount
+                                        promo_id
+                                    }
                                     currency_details_str
                                     coachmark {
                                         is_shown
