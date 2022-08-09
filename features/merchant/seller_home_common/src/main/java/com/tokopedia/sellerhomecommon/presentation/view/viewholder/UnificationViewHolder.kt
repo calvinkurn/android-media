@@ -144,6 +144,8 @@ class UnificationViewHolder(
 
             setupDropDownView(element)
             setupLastUpdate(element)
+
+            listener.showUnificationWidgetCoachMark(binding.tvShcUnificationTitle)
         }
     }
 
@@ -314,5 +316,7 @@ class UnificationViewHolder(
         fun sendUnificationEmptyStateCtaClickEvent(element: UnificationWidgetUiModel) {}
 
         fun sendUnificationTableItemClickEvent(element: UnificationWidgetUiModel) {}
+
+        fun showUnificationWidgetCoachMark(anchor: View) {}
     }
 }

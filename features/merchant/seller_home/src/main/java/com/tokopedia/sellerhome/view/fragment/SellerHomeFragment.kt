@@ -196,8 +196,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var emptyState: EmptyStateUnify? = null
 
     private var rebateWidgetView: View? = null
+    private var unificationWidgetTitleView: View? = null
     private var navigationOtherMenuView: View? = null
     private var rebateCoachMark: CoachMark2? = null
+    private var unificationWidgetCoachMark: CoachMark2? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
     private var shopImageFilePath: String = ""
@@ -301,6 +303,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             recyclerView?.post {
                 resetWidgetImpressionHolder()
                 showRebateCoachMark()
+                showUnificationWidgetCoachMark()
             }
         }
     }
@@ -661,6 +664,26 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendUnificationTableItemClickEvent(element.dataKey, selectedTab)
     }
 
+    override fun showUnificationWidgetCoachMark(anchor: View) {
+        val isEligibleCoachMark = !coachMarkPrefHelper.getUnificationCoachMarkStatus()
+        if (isEligibleCoachMark) {
+            if (this.unificationWidgetTitleView == null) {
+                this.unificationWidgetTitleView = anchor
+
+                context?.let {
+                    unificationWidgetCoachMark = CoachMark2(it).apply {
+                        simpleCloseIcon?.setOnClickListener {
+                            coachMarkPrefHelper.saveUnificationMarkFlag()
+                            unificationWidgetCoachMark = null
+                            dismissCoachMark()
+                        }
+                    }
+                    showUnificationWidgetCoachMark()
+                }
+            }
+        }
+    }
+
     override fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {
         SellerHomeTracking.sendUnificationSeeMoreClickEvent(dataKey, tab)
     }
@@ -839,6 +862,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    private fun showUnificationWidgetCoachMark() {
+        unificationWidgetCoachMark?.let { coachMark ->
+            val coachMarkItems = getCoachMarkUnification()
+            if (coachMarkItems.isNotEmpty()) {
+                coachMark.isDismissed = false
+                coachMark.showCoachMark(coachMarkItems)
+            }
+        }
+    }
+
     private fun applyUnificationTabSelected(
         element: UnificationWidgetUiModel,
         tab: UnificationTabUiModel
@@ -966,6 +999,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             setOnVerticalScrollListener {
                 requestVisibleWidgetsData()
                 handleRebateCoachMark()
+                handleUnificationCoachMark()
             }
         }
         recyclerView?.run {
@@ -2193,6 +2227,23 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    private fun handleUnificationCoachMark() {
+        if (unificationWidgetTitleView == null) return
+
+        getSellerHomeLayoutManager()?.let { layoutManager ->
+            val unificationWidget = adapter.data.indexOfFirst { it is UnificationWidgetUiModel }
+            val firstVisibleIndex = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
+            if (unificationWidget != RecyclerView.NO_POSITION
+                && unificationWidget in firstVisibleIndex..lastVisibleIndex
+            ) {
+                showUnificationWidgetCoachMark()
+            } else {
+                unificationWidgetCoachMark?.dismissCoachMark()
+            }
+        }
+    }
+
     private fun getSellerHomeLayoutManager(): SellerHomeLayoutManager? {
         return recyclerView?.layoutManager as? SellerHomeLayoutManager
     }
@@ -2205,6 +2256,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     anchorView = view,
                     title = view.context.getString(R.string.sah_rebate_coach_mark_title),
                     description = view.context.getString(R.string.sah_rebate_coach_mark_description),
+                    position = CoachMark2.POSITION_BOTTOM
+                )
+            )
+        }
+        return coachMarkItems
+    }
+
+    private fun getCoachMarkUnification(): ArrayList<CoachMark2Item> {
+        val coachMarkItems = arrayListOf<CoachMark2Item>()
+        unificationWidgetTitleView?.let { view ->
+            coachMarkItems.add(
+                CoachMark2Item(
+                    anchorView = view,
+                    title = view.context.getString(R.string.sah_unification_coach_mark_title),
+                    description = view.context.getString(R.string.sah_unification_coach_mark_description),
                     position = CoachMark2.POSITION_BOTTOM
                 )
             )
