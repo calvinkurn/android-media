@@ -240,7 +240,7 @@ class UnificationViewHolder(
     private fun setupWidgetCta(element: UnificationWidgetUiModel, tab: UnificationTabUiModel) {
         with(successStateBinding) {
             val shouldShowCta = tab.config.appLink.isNotBlank()
-                    && tab.config.ctaText.isNotBlank()
+                    && tab.config.ctaText.isNotBlank() && !tab.data?.isWidgetEmpty().orTrue()
             if (shouldShowCta) {
                 val iconWidth = root.context.resources.getDimension(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
