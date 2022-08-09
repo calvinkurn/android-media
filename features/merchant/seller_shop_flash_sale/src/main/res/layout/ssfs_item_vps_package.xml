@@ -56,7 +56,6 @@
         android:layout_marginBottom="@dimen/unify_space_12"
         android:ellipsize="end"
         android:maxLines="1"
-        android:paddingBottom="@dimen/unify_space_12"
         android:textColor="@color/Unify_NN600"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
