@@ -80,6 +80,29 @@ import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.domain.subscriber.ChipSubmitChatCsatSubscriber
 import com.tokopedia.chatbot.domain.subscriber.ChipSubmitHelpfullQuestionsSubscriber
+import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
+import com.tokopedia.chatbot.domain.subscriber.LeaveQueueSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SubmitCsatRatingSubscriber
+import com.tokopedia.chatbot.domain.subscriber.TickerDataSubscriber
+import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
+import com.tokopedia.chatbot.domain.usecase.ChipSubmitHelpfulQuestionsUseCase
+import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
+import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
+import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
+import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
+import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
+import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
+import com.tokopedia.chatbot.util.convertMessageIdToLong
+import com.tokopedia.chatbot.domain.subscriber.ChipSubmitChatCsatSubscriber
+import com.tokopedia.chatbot.domain.subscriber.ChipSubmitHelpfullQuestionsSubscriber
 import com.tokopedia.chatbot.domain.subscriber.LeaveQueueSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
@@ -379,7 +402,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun sendReadEvent(messageId: String) {
-        RxWebSocket.send(SendWebsocketParam.getReadMessage(messageId),
+        RxWebSocket.send(SendChatbotWebsocketParam.getReadMessage(messageId),
                 listInterceptor)
     }
 
@@ -392,7 +415,7 @@ class ChatbotPresenter @Inject constructor(
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_READ_MESSAGE)
         val data = JsonObject()
-        data.addProperty("msg_id", Integer.valueOf(messageId))
+        data.addProperty("msg_id", messageId.convertMessageIdToLong())
         json.add("data", data)
         return json
     }
@@ -489,7 +512,7 @@ class ChatbotPresenter @Inject constructor(
 
     override fun sendMessageWithWebsocket(messageId: String, sendMessage: String,
                                           startTime: String, opponentId: String) {
-        RxWebSocket.send(ChatbotSendWebsocketParam.generateParamSendMessage(messageId, sendMessage,
+        RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendMessage(messageId, sendMessage,
                 startTime, opponentId),
                 listInterceptor)
     }
