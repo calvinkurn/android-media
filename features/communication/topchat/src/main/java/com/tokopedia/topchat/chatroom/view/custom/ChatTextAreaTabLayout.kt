@@ -184,6 +184,7 @@ class ChatTextAreaTabLayout: ConstraintLayout {
         srwLayout?.setSrwTitleVisibility(false)
         srwLayout?.setContentMargin()
         srwLayout?.isSrwBubble = false
+        srwLayout?.onBoardingAnchor = tabSRW
     }
 
     fun initReplyBox(

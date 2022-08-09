@@ -270,6 +270,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
             }
         }
 
+        // publish the state and send tracking
         if (!isSelected) {
             stateOnAddPublished(media)
             galleryAnalytics.selectGalleryItem()
