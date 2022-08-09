@@ -378,12 +378,12 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
                 reloadData()
                 sortAppliedListener?.onSortApplied(DEFAULT_SORT != selectedSort?.get("ob")?.toInt())
                 onSortAppliedEvent(selectedSortName ?: "",
-                        selectedSort?.get("ob") ?: "")
+                        selectedSort?.get("ob")?.toInt() ?: 0)
             }
         })
     }
 
-    abstract fun onSortAppliedEvent(selectedSortName: String, sortValue: String)
+    abstract fun onSortAppliedEvent(selectedSortName: String, sortValue: Int)
 
     fun clearDataFilterSort() {
         if (filters != null) {

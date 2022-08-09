@@ -477,8 +477,8 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         return REQUEST_ACTIVITY_SORT_PRODUCT
     }
 
-    override fun onSortAppliedEvent(selectedSortName: String, sortValue: String) {
-        findPageAnalytics.eventClickSort(sortValue = sortValue)
+    override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
+        findPageAnalytics.eventClickSort(sortValue = sortValue.toString())
     }
 
     override fun onItemClicked(item: ProductsItem, adapterPosition: Int) {
