@@ -467,7 +467,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun handlePageMode() {
         if (pageMode == PageMode.CREATE) {
             viewModel.storeAsDefaultSelection(defaultState)
-            viewModel.getVpsPackages(0)
+            viewModel.getVpsPackages(VPS_PACKAGE_ID_NOT_SELECTED)
         }
 
         if (pageMode == PageMode.UPDATE) {
@@ -911,6 +911,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     private fun populateCoachMarkItems(): ArrayList<CoachMark2Item> {
         val firstAnchorView = binding?.btnCreateCampaign ?: return arrayListOf()
         val secondAnchorView = binding?.btnDraft ?: return arrayListOf()
+        val thirdAnchorView = binding?.tauVpsPackageName?.icon1 ?: return arrayListOf()
 
         return arrayListOf(
             CoachMark2Item(
@@ -925,6 +926,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
                 "",
                 CoachMark2.POSITION_TOP
             ),
+            CoachMark2Item(
+                thirdAnchorView,
+                getString(R.string.sfs_coachmark_third),
+                "",
+                CoachMark2.POSITION_BOTTOM
+            )
+
         )
     }
 

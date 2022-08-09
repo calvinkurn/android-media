@@ -97,6 +97,7 @@
     <string name="sfs_hex_code">Kode Hexa</string>
     <string name="sfs_coachmark_first">Isi informasi campaign-mu dan klik lanjut untuk ke tahap berikutnya, ya.</string>
     <string name="sfs_coachmark_second">Jika ingin melengkapi informasi campaign di lain waktu, klik Simpan Draft di sini.</string>
+    <string name="sfs_coachmark_third">Jangan lupa untuk pilih sumber kuota campaign-mu di sini sebelum lanjut, ya!</string>
     <string name="sfs_error_message_min_char">Min. 5 huruf</string>
     <string name="sfs_error_message_forbidden_words">Mengandung kata terlarang. Pelajari</string>
     <string name="sfs_error_message_field_not_filled">Wajib diisi</string>
