@@ -4,10 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailViewModel
+import com.tokopedia.kol.model.ContentDetailModelBuilder
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
@@ -28,6 +28,8 @@ class ContentDetailViewModelAddToWishlistTest {
     private val testDispatcher = rule.dispatchers
 
     private val productId = "1234"
+    private val builder = ContentDetailModelBuilder()
+
 
     private val mockRepo: ContentDetailRepository = mockk(relaxed = true)
     private val viewModel = ContentDetailViewModel(
@@ -37,31 +39,33 @@ class ContentDetailViewModelAddToWishlistTest {
 
     @Test
     fun `when user add product to wishlist, given response success, then it should emit AddToWishlistV2Response`() {
-        val data = AddToWishlistV2Response.Data.WishlistAddV2()
+        val rowNumber = 0
+        val data = builder.getWishlistModel(rowNumber, productId)
         val expectedResult = Success(data)
 
-        coEvery { mockRepo.addToWishlist(productId) } returns expectedResult
+        coEvery { mockRepo.addToWishlist(rowNumber, productId) } returns expectedResult
 
-        viewModel.addToWishlist(productId)
+        viewModel.addToWishlist(productId, rowNumber)
 
         val result = viewModel.observableWishlist.value
 
         Assertions
             .assertThat(result)
-            .isEqualTo(expectedResult)
+            .isEqualTo(ContentDetailResult.Success(expectedResult))
     }
 
     @Test
     fun `when user add product to wishlist, given response error, then it should emit error`() {
-        coEvery { mockRepo.addToWishlist(productId) } returns Fail(Throwable())
+        val rowNumber = 0
+        coEvery { mockRepo.addToWishlist(rowNumber, productId) } returns Fail(Throwable())
 
-        viewModel.addToWishlist(productId)
+        viewModel.addToWishlist(productId, rowNumber)
 
         val result = viewModel.observableWishlist.value
 
         Assertions
             .assertThat(result)
-            .isInstanceOf(Fail::class.java)
+            .isInstanceOf(ContentDetailResult.Failure::class.java)
     }
 
 }
