@@ -220,18 +220,29 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     activity?.finish()
                 }
             } else {
+
+                val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
+                if (validateUsePromoRequest != null) {
+                    viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
+                }
+
                 // todo: check do we need to reset/apply BO?
                 // todo: show toaster from validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
                 val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
                 if (validateUsePromoRevampUiModel != null) {
                     viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
+                    // displaying toaster of reset
+                    val additionalInfoMessage =
+                        validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
+                    val v = view
+                    if (additionalInfoMessage.isNotBlank() && v != null) {
+                        Toaster.build(v,additionalInfoMessage).show()
+                    }
+
+                    viewModel.validateBboStacking()
+
                     viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
                     viewModel.reloadRates()
-                }
-
-                val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
-                if (validateUsePromoRequest != null) {
-                    viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
                 }
 
                 val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
