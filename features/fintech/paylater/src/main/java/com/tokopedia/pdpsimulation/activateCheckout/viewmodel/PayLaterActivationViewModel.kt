@@ -10,6 +10,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams.Companion.SOURCE_FINTECH
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
@@ -31,7 +32,7 @@ class PayLaterActivationViewModel @Inject constructor(
 ) :
     BaseViewModel(dispatcher) {
 
-    var gatewayToChipMap: MutableMap<Int, CheckoutData> = HashMap()
+    var gatewayToChipMap: MutableMap<String, CheckoutData> = HashMap()
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
@@ -131,7 +132,7 @@ class PayLaterActivationViewModel @Inject constructor(
         paylaterGetOptimizedModel.let {
             if (it.checkoutData.isNotEmpty()) {
                 it.checkoutData.map { checkoutData ->
-                    gatewayToChipMap[checkoutData.gateway_id.toInt()] = checkoutData
+                    gatewayToChipMap[checkoutData.gateway_id] = checkoutData
                 }
                 _payLaterActivationDetailLiveData.postValue(Success(it))
 
@@ -187,7 +188,7 @@ class PayLaterActivationViewModel @Inject constructor(
         else {
             occRedirectionUrl =
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
-                    gatewayToChipMap[selectedGatewayId.toInt()]?.paymentGatewayCode ?: "",
+                    gatewayToChipMap[selectedGatewayId]?.paymentGatewayCode ?: "",
                     selectedTenureSelected,
                     "fintech")
             _addToCartLiveData.value = Success(addToCartOcc)
