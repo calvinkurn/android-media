@@ -46,6 +46,7 @@ import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
 import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
 import com.tokopedia.shop.flashsale.common.extension.advanceMinuteBy
 import com.tokopedia.shop.flashsale.common.extension.advanceMonthBy
+import com.tokopedia.shop.flashsale.common.extension.daysDifference
 import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
 import com.tokopedia.shop.flashsale.common.extension.disable
 import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
@@ -669,11 +670,19 @@ class CampaignInformationFragment : BaseDaggerFragment() {
     }
 
     private fun adjustEndDate() {
-        val startDate = viewModel.getSelectedStartDate().advanceMinuteBy(THIRTY_MINUTE)
-        val endDate = viewModel.normalizeEndDate(viewModel.getSelectedEndDate(), startDate)
+        val startDate = viewModel.getSelectedStartDate()
+        val endDate = viewModel.getSelectedEndDate()
 
-        viewModel.setSelectedEndDate(endDate)
-        binding?.tauEndDate?.editText?.setText(endDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL))
+        val differenceInDays = endDate.daysDifference(startDate)
+        val modifiedEndDate = if (differenceInDays > SIX_DAYS) {
+            viewModel.getSelectedStartDate().advanceDayBy(SIX_DAYS)
+        } else {
+            viewModel.getSelectedEndDate()
+        }
+
+        viewModel.setSelectedEndDate(modifiedEndDate)
+        val formattedEndDate = modifiedEndDate.localFormatTo(DateConstant.DATE_TIME_MINUTE_LEVEL)
+        binding?.tauEndDate?.editText?.setText(formattedEndDate)
     }
 
     private fun adjustQuantityPicker(currentValue : Int, newStartDate : Date) {
