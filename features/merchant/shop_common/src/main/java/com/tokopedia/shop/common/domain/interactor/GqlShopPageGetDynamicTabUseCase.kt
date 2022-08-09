@@ -69,7 +69,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                 shopID: ${'$'}shopID,
                 extParam: ${'$'}extParam,
                 districtID: ${'$'}districtId,
-                cityId: ${'$'}cityId,
+                cityID: ${'$'}cityId,
                 latitude: ${'$'}latitude,
                 longitude: ${'$'}longitude
               ){
