@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital_checkout.R
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.layout_digital_checkout_bottom_view.view.*
@@ -20,6 +21,22 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
     init {
         LayoutInflater.from(context).inflate(R.layout.layout_digital_checkout_bottom_view, this, true)
     }
+
+    var isGoToPlusCheckout: Boolean = false
+        set(isGoToPlus){
+            field = isGoToPlus
+            with(view_consent_goto_plus){
+                shouldShowWithAction(isGoToPlusCheckout){
+                    setDescription(context.getString(
+                        R.string.digital_cart_goto_plus_consent,
+                        context.getString(R.string.digital_cart_goto_plus_tos),
+                        context.getString(R.string.digital_cart_goto_plus_privacy_policy)
+                    ))
+                    setOnTickCheckbox { isCheckoutButtonEnabled = it }
+                    setLinkMovement()
+                }
+            }
+        }
 
     var promoButtonTitle: String = ""
         set(title) {
@@ -66,8 +83,10 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
     var isCheckoutButtonEnabled: Boolean = true
         set(isEnabled) {
             field = isEnabled
-            btnCheckout.isEnabled = isEnabled
+            btnCheckout.isEnabled = view_consent_goto_plus.isChecked() || isEnabled
         }
+
+    private var onClickConsentListener: ((String) -> Unit)? = null
 
     fun setDigitalPromoButtonListener(listener: () -> Unit) {
         digitalPromoBtnView.setOnClickListener { listener.invoke() }
@@ -79,6 +98,10 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
 
     fun setCheckoutButtonListener(listener: () -> Unit) {
         btnCheckout.setOnClickListener { listener.invoke() }
+    }
+
+    fun setOnClickConsentListener(listener: (String) -> Unit){
+        onClickConsentListener = listener
     }
 
     fun disableVoucherView() {
@@ -95,5 +118,29 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
         descTextView.text = resources.getString(R.string.digital_checkout_promo_disabled_description)
 
         digitalPromoBtnView.setOnClickListener { /* do nothing */ }
+    }
+
+    private fun setLinkMovement(){
+
+        fun redirectToConsentUrl(url: String) = "tokopedia://webview?url=$url"
+
+        view_consent_goto_plus.setOnClickUrl(
+            Pair(context.getString(R.string.digital_cart_goto_plus_tos), {
+                onClickConsentListener?.invoke(redirectToConsentUrl(TNC_URL))
+            }),
+            Pair(context.getString(R.string.digital_cart_goto_plus_privacy_policy), {
+                onClickConsentListener?.invoke(redirectToConsentUrl(PRIVACY_POLICY_URL))
+            })
+        )
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        onClickConsentListener = null
+    }
+
+    private companion object{
+        const val PRIVACY_POLICY_URL = "https://www.tokopedia.com/privacy"
+        const val TNC_URL = "https://www.tokopedia.com/help/article/tnc-gotoplus"
     }
 }

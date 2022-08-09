@@ -90,7 +90,7 @@ class AddEmailFragment : BaseDaggerFragment() {
                 if (s.isNotEmpty()) {
                     setErrorText("")
                 } else if (et_email.editText.text.isEmpty()) {
-                    setErrorText(getString(R.string.error_cant_empty))
+                    setErrorText(getString(com.tokopedia.profilecompletion.R.string.error_cant_empty))
                 }
             }
 
@@ -219,9 +219,10 @@ class AddEmailFragment : BaseDaggerFragment() {
     private fun onSuccessVerifyAddEmail(data: Intent?) {
         data?.extras?.run {
             val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
+            val validateToken = getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
             if (otpCode.isNotBlank()) {
                 val email = et_email.editText.text.toString().trim()
-                viewModel.mutateAddEmail(requireContext(), email, otpCode)
+                viewModel.mutateAddEmail(requireContext(), email, otpCode, validateToken)
             } else {
                 onErrorAddEmail(
                     MessageErrorException(

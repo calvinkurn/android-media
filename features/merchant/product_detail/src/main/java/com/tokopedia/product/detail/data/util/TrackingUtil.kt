@@ -87,14 +87,6 @@ object TrackingUtil {
         return mapEvent as HashMap<String, Any>?
     }
 
-    fun getBoTypeString(boType: Int): String {
-        return when (boType) {
-            ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
-            ProductDetailCommonConstant.BEBAS_ONGKIR_NORMAL -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
-            else -> ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
-        }
-    }
-
     fun getTradeInString(isTradein: Boolean, isDiagnosed: Boolean): String {
         return if (isTradein && isDiagnosed)
             ProductTrackingConstant.Tracking.TRADEIN_TRUE_DIAGNOSTIC
