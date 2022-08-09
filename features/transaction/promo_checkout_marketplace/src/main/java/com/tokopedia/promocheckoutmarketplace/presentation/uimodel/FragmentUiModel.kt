@@ -20,7 +20,6 @@ data class FragmentUiModel(
             var hasPreAppliedPromo: Boolean = false,
             var hasAnyPromoSelected: Boolean = false,
             var hasFailedToLoad: Boolean = false,
-            var hasSelectedBo: Boolean = false,
             var hasSelectedBoClashingPromo: Boolean = false
     )
 

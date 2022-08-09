@@ -802,7 +802,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             it.buttonApplyPromo.show()
             it.buttonApplyNoPromo.gone()
 
-            if ((fragmentUiModel.uiState.hasSelectedBo || fragmentUiModel.uiState.hasSelectedBoClashingPromo) && fragmentUiModel.uiData.boClashingMessage.isNotEmpty()) {
+            if (fragmentUiModel.uiState.hasSelectedBoClashingPromo && fragmentUiModel.uiData.boClashingMessage.isNotEmpty()) {
                 it.labelBoClashing.text = fragmentUiModel.uiData.boClashingMessage
                 it.containerTickerBoClashing.show()
             } else {

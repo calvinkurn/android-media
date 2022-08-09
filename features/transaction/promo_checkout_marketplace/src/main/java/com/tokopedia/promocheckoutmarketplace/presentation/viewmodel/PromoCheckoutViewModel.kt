@@ -1120,16 +1120,18 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun updateBoClashingState() {
-        val currentFragmentModelData = fragmentUiModel.value
-        val selectedBoClashingPromo = promoListUiModel.value?.firstOrNull { it is PromoListItemUiModel && it.uiState.isSelected && it.uiData.boClashingInfos.isNotEmpty() } as PromoListItemUiModel?
+    private fun updateBoClashingState(selectedItem: PromoListItemUiModel) {
+        // if item selected & item bo clashing then hasselectedbo true
+        // if item selected & item not bo clashing then do nothing
+        // if item unselected & item bo clashing then reset hasselected bo to false
+        // if item unselected & item not bo clashing then do nothing
+        if (selectedItem.uiData.boClashingInfos.isNotEmpty()) {
+            fragmentUiModel.value?.let {
+                it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.firstOrNull()?.message ?: ""
+                it.uiState.hasSelectedBoClashingPromo = selectedItem.uiState.isSelected
 
-        currentFragmentModelData?.let {
-            it.uiData.boClashingMessage = selectedBoClashingPromo?.uiData?.boClashingInfos?.firstOrNull()?.message ?: ""
-            it.uiState.hasSelectedBo = selectedBoClashingPromo?.uiState?.isBebasOngkir ?: false
-            it.uiState.hasSelectedBoClashingPromo = selectedBoClashingPromo != null
-
-            _fragmentUiModel.value = it
+                _fragmentUiModel.value = it
+            }
         }
     }
 
@@ -1396,7 +1398,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
 
         // update BO clashing state
-        updateBoClashingState()
+        updateBoClashingState(selectedItem)
     }
 
     private fun checkAndSetClashOnUnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
