@@ -806,12 +806,17 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                                         HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
                                                             ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
                                                 )
+                                                putString(
+                                                    HomeDynamicChannelsRepository.CHANNEL_IDS,
+                                                    homeData.dynamicHomeChannel.channels.joinToString(", ") { it.id }
+                                                )
                                             }
                                     )
                                     dynamicChannel.let {
                                         val channelFromResponse = it.dynamicHomeChannel
                                         atfData.content = gson.toJson(channelFromResponse)
                                         atfData.status = AtfKey.STATUS_SUCCESS
+                                        Log.d("FrenzelDebug", "updateHomeData: ${atfData.status}")
                                     }
                                     homeData.atfData?.isProcessingAtf = false
                                 } catch (e: Exception) {
@@ -838,6 +843,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                                 putString(
                                                         HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
                                                     ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
+                                                )
+                                                putString(
+                                                    HomeDynamicChannelsRepository.CHANNEL_IDS,
+                                                    homeData.dynamicHomeChannel.channels.joinToString(", ") { it.id }
                                                 )
                                             }
                                     )
@@ -884,6 +893,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                     putString(
                                         HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
                                             ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
+                                    )
+                                    putString(
+                                        HomeDynamicChannelsRepository.CHANNEL_IDS,
+                                        homeData.dynamicHomeChannel.channels.joinToString(", ") { it.id }
                                     )
                                 }
                             )
@@ -1062,7 +1075,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
         }
     }
 
-    suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>> {
+    suspend fun onDynamicChannelExpired(groupId: String, channelId: String): List<Visitable<*>> {
         val dynamicChannelResponse = homeDynamicChannelsRepository.getRemoteData(
                 Bundle().apply {
                     putString(
@@ -1071,6 +1084,10 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     putString(
                             HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
                         ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
+                    )
+                    putString(
+                        HomeDynamicChannelsRepository.CHANNEL_IDS,
+                        channelId
                     )
                 }
         )
@@ -1096,6 +1113,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             HomeDynamicChannelsRepository.CHANNEL_IDS,
                             homeDataResponse?.dynamicHomeChannel?.channels?.joinToString(", ") { it.id }
                     )
+                    Log.d("FrenzelDebug", "processFullPageDynamicChannel: ${homeDataResponse?.dynamicHomeChannel?.channels?.joinToString(", ") { it.id }}")
                     putString(
                             HomeDynamicChannelsRepository.LOCATION, applicationContext?.let {
                         ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: ""
