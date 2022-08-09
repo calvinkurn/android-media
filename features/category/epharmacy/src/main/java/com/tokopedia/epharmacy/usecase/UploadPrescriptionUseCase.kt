@@ -3,6 +3,7 @@ package com.tokopedia.epharmacy.usecase
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
@@ -12,6 +13,7 @@ import com.tokopedia.epharmacy.network.request.UploadPrescriptionRequest
 import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
 import com.tokopedia.epharmacy.utils.EPharmacyImageQuality
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.url.TokopediaUrl
 import java.io.ByteArrayOutputStream
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -25,7 +27,7 @@ class UploadPrescriptionUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse> {
         val base64ImageString = getBase64OfPrescriptionImage(localFilePath)
-        val restRequest = RestRequest.Builder(ENDPOINT_URL, EPharmacyPrescriptionUploadResponse::class.java)
+        val restRequest = RestRequest.Builder(getEndpoint(), EPharmacyPrescriptionUploadResponse::class.java)
             .setBody(getUploadPrescriptionBody(base64ImageString))
             .setRequestType(RequestType.POST)
             .build()
@@ -70,8 +72,16 @@ class UploadPrescriptionUseCase @Inject constructor(
         return EPharmacyImageQuality
     }
 
+    private fun getEndpoint() : String {
+        return if(TokopediaUrl.getInstance().GQL.contains("staging"))
+            ENDPOINT_URL_STAGING
+        else
+            ENDPOINT_URL_LIVE
+    }
+
     companion object {
-        private const val ENDPOINT_URL = "https://epharmacy.tokopedia.com/prescription/upload"
+        private const val ENDPOINT_URL_LIVE = "https://epharmacy.tokopedia.com/prescription/upload"
+        private const val ENDPOINT_URL_STAGING = "https://epharmacy-staging.tokopedia.com/prescription/upload"
         private const val KEY_FORMAT_VALUE="FILE"
         private const val KEY_SOURCE_VALUE="buyer"
         private const val IMAGE_DATA_PREFIX = "data:image/jpeg;base64,"
