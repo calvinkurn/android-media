@@ -111,6 +111,11 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             eligible
             badge_url
           }
+          free_shipping_general {
+            bo_name
+            bo_type
+            badge_url
+          }
           preorder {
             is_preorder
             duration
@@ -225,6 +230,11 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             }
             free_shipping_extra {
               eligible
+            }
+            free_shipping_general {
+              bo_name
+              bo_type
+              badge_url
             }
             product_preorder {
               duration_day

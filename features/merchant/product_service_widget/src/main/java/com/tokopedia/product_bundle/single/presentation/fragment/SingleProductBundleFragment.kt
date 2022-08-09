@@ -26,6 +26,7 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product_bundle.activity.ProductBundleActivity
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
@@ -39,7 +40,6 @@ import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
-import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.tagFragment
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
@@ -80,12 +80,13 @@ class SingleProductBundleFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId,
-            emptyVariantProductIds)
+        initBundleData()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_single_product_bundle, container, false)
     }
 
@@ -455,10 +456,18 @@ class SingleProductBundleFragment(
         }
     }
 
+    private fun initBundleData() {
+        viewModel.setBundleInfo(requireContext(), bundleInfo, selectedBundleId, selectedProductId,
+            emptyVariantProductIds)
+    }
+
     private fun refreshPage() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.parent_view, EntrypointFragment(), tagFragment)
-            .commit()
+        val parentActivity = activity as? ProductBundleActivity
+        parentActivity?.entrypointFragment?.let {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.parent_view, it, EntrypointFragment.tagFragment)
+                .commit()
+        }
     }
 
     companion object {
