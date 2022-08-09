@@ -1,6 +1,7 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
@@ -44,7 +45,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
     lateinit var isoDep: IsoDep
 
-    fun processTapCashTagIntent(isoDep: IsoDep, balanceRawQuery: String) {
+    fun processTapCashTagIntent(isoDep: IsoDep, balanceRawQuery: String, startTimeBeforeCallGql: Long) {
         //do something with tagFromIntent
         if (isoDep != null) {
             run {
@@ -69,6 +70,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                             val secureResultString = NFCUtils.toHex(secureResult)
                             val cardData = getCardData(secureResultString, NFCUtils.toHex(terminalRandomNumber), resultString)
                             if (!cardData.isNullOrEmpty()) {
+                                val endTimeBeforeCallGql = System.currentTimeMillis()
+                                Log.d("EMONEY_TAPC_BEFORE_CALL", "${endTimeBeforeCallGql - startTimeBeforeCallGql} ms")
                                 updateBalance(cardData, terminalRandomNumber, balanceRawQuery)
                             } else {
                                 errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -89,6 +92,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                               terminalRandomNumber: ByteArray,
                               balanceRawQuery: String) {
         launchCatchError(block = {
+            val startTimeCallGql = System.currentTimeMillis()
             val mapParam = HashMap<String, Any>()
             mapParam.put(CARD_DATA, cardData)
 
@@ -102,6 +106,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
             if(errors.isNullOrEmpty()) {
                 val data = response.getSuccessData<BalanceTapcash>()
+                val endTimeCallGql = System.currentTimeMillis()
+                Log.d("EMONEY_TAPC_TIME_CALL", "${endTimeCallGql - startTimeCallGql} ms")
                 if (data.rechargeUpdateBalance.attributes.cryptogram.isNotEmpty()) {
                     writeBalance(data, terminalRandomNumber)
                 } else {

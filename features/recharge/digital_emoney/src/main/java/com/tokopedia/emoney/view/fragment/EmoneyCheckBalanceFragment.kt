@@ -118,7 +118,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             issuerActive = ISSUER_ID_TAP_CASH
             showLoading(getOperatorName(issuerActive))
             tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
-                    DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
+                    DigitalEmoneyGqlQuery.rechargeBniTapcashQuery, startTimeBeforeCallGql)
         } else if (CardUtils.isEmoneyCard(intent)){
             if (tag != null) {
                 issuerActive = ISSUER_ID_EMONEY
