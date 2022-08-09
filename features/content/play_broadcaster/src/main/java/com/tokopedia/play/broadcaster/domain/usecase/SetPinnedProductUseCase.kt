@@ -32,22 +32,22 @@ class SetPinnedProductUseCase @Inject constructor(
     }
 
     private var coolDownTimerJob: Job? = null
-    private val scope = CoroutineScope(dispatcher.default)
+    private val scope = CoroutineScope(dispatcher.default + SupervisorJob())
     private var productInfo: ProductUiModel? = null
 
     private fun addCoolDown() {
-        cancelTimerJob()
+        coolDownTimerJob?.cancel()
         coolDownTimerJob = scope.launch {
             delay(COOL_DOWN_TIMER)
         }
     }
 
-    private fun isTimerActive(): Boolean = coolDownTimerJob?.isActive ?: false
-    private fun isCurrentPinned(): Boolean = productInfo?.pinStatus?.isPinned ?: false
+    private val isTimerActive: Boolean get() = coolDownTimerJob?.isActive ?: false
+    private val isCurrentPinned: Boolean get() = productInfo?.pinStatus?.isPinned ?: false
 
 
     override suspend fun executeOnBackground(): SetPinnedProduct {
-        return if (!isTimerActive() || isCurrentPinned()) {
+        return if (!isTimerActive || isCurrentPinned) {
             handlingCoolDown(response = super.executeOnBackground())
         } else {
             throw PinnedProductException()
@@ -55,11 +55,11 @@ class SetPinnedProductUseCase @Inject constructor(
     }
 
     private fun handlingCoolDown(response: SetPinnedProduct): SetPinnedProduct =
-        if (response.data.success && !isCurrentPinned()) {
+        if (response.data.success && !isCurrentPinned) {
             addCoolDown()
             response
-        } else if(!response.data.success) {
-            val action = if (isCurrentPinned()) "lepas" else "pasang"
+        } else if (!response.data.success) {
+            val action = if (isCurrentPinned) "lepas" else "pasang"
             throw PinnedProductException("Gagal $action pin di produk. Coba lagi, ya.")
         } else {
             response
@@ -68,15 +68,16 @@ class SetPinnedProductUseCase @Inject constructor(
     fun createParam(channelId: String, product: ProductUiModel): Map<String, Any> {
         productInfo = product
 
-        val productId = if(product.pinStatus.isPinned) "0" else product.id
+        val productId = if (product.pinStatus.isPinned) "0" else product.id
         return mapOf(
             PARAM_CHANNEL_ID to channelId.toLongOrZero(),
             PARAM_PRODUCT_ID to productId.toLongOrZero(),
         )
     }
 
-    fun cancelTimerJob(){
+    fun cancelTimerJob() {
         coolDownTimerJob?.cancel()
+        scope.cancel()
     }
 
     companion object {
