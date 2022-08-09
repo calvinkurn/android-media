@@ -143,7 +143,7 @@ class UnificationViewHolder(
             }
 
             setupDropDownView(element)
-            setupLastUpdate(element)
+            setupLastUpdate(element, tab)
 
             listener.showUnificationWidgetCoachMark(binding.tvShcUnificationTitle)
         }
@@ -224,14 +224,17 @@ class UnificationViewHolder(
         }
     }
 
-    private fun setupLastUpdate(element: UnificationWidgetUiModel) {
+    private fun setupLastUpdate(element: UnificationWidgetUiModel, tab: UnificationTabUiModel) {
         with(successStateBinding.luvShcUnification) {
             element.data?.lastUpdated?.let { lastUpdated ->
-                isVisible = lastUpdated.isEnabled
-                setLastUpdated(lastUpdated.lastUpdatedInMillis)
-                setRefreshButtonVisibility(lastUpdated.needToUpdated)
-                setRefreshButtonClickListener {
-                    listener.onReloadWidget(element)
+                val isAuthorized = !tab.isUnauthorized
+                isVisible = lastUpdated.isEnabled && isAuthorized
+                if (isAuthorized) {
+                    setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                    setRefreshButtonVisibility(lastUpdated.needToUpdated)
+                    setRefreshButtonClickListener {
+                        listener.onReloadWidget(element)
+                    }
                 }
             }
         }
@@ -240,7 +243,8 @@ class UnificationViewHolder(
     private fun setupWidgetCta(element: UnificationWidgetUiModel, tab: UnificationTabUiModel) {
         with(successStateBinding) {
             val shouldShowCta = tab.config.appLink.isNotBlank()
-                    && tab.config.ctaText.isNotBlank() && !tab.data?.isWidgetEmpty().orTrue()
+                    && tab.config.ctaText.isNotBlank()
+                    && !tab.isUnauthorized
             if (shouldShowCta) {
                 val iconWidth = root.context.resources.getDimension(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
