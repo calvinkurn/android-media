@@ -482,7 +482,7 @@ class SingleProductBundleFragment(
             selectedBundleId: String = "",
             selectedProductId: Long = 0L,
             emptyVariantProductIds: List<String> = emptyList(),
-            pageSource: String = "",
+            pageSource: String = ""
         ) =
             SingleProductBundleFragment(parentProductID, bundleInfo, selectedBundleId,
                 selectedProductId, emptyVariantProductIds, pageSource)
