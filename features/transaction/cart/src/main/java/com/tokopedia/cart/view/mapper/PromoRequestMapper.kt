@@ -38,6 +38,9 @@ object PromoRequestMapper {
                             codes = getPromoCodesFromLastApplyByUniqueId(it, cartShopHolderData).toMutableList()
                         }
                     }
+                    // TODO: andriyan: dynamic shippingId & spId from PromoUiModel/LastApplyPromo with matching uniqueId
+                    // If found shippingId > 0, then directly set
+                    // Else keeps looping until end
                     shippingId = 0
                     spId = 0
                     shopId = cartShopHolderData.shopId.toLongOrZero()
@@ -107,6 +110,7 @@ object PromoRequestMapper {
                 )
                 listProductDetail.add(productDetail)
             }
+            // todo: andriyan: same here, dynamic set shippingId & spId
             val order = Order(
                     shopId = cartShopHolderData.shopId.toLongOrZero(),
                     uniqueId = cartShopHolderData.cartString,

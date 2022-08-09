@@ -1342,6 +1342,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 boolean requiredToReloadRatesForMvcCourier = data.getBooleanExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false);
                 ArrayList<String> appliedMvcCartStrings = data.getStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_APPLIED_MVC_CART_STRINGS);
                 if (requiredToReloadRatesForMvcCourier) {
+//                  todo: hansen: validate cart strings with auto apply-unapply unique ids to prevent multiple reload
                     reloadCourierForMvc(appliedMvcCartStrings);
                 }
             }
