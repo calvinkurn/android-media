@@ -581,7 +581,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         quantity: Int
     ) {
         if (isLogin) {
-            handleAtcFlow(shopProductUiModel.id.orEmpty(), quantity, shopId, shopProductUiModel)
+            handleAtcFlow(quantity, shopId, shopProductUiModel)
         } else {
             redirectToLoginPage()
         }
@@ -604,7 +604,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 val sellerViewAtcErrorMessage = getString(R.string.shop_page_seller_atc_error_message)
                 showToasterError(sellerViewAtcErrorMessage)
             } else {
-                handleAtcFlow(shopProductUiModel.id.orEmpty(), quantity, shopId, shopProductUiModel)
+                handleAtcFlow(quantity, shopId, shopProductUiModel)
             }
         } else {
             redirectToLoginPage()
@@ -1288,7 +1288,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             viewModel.setMiniCartData(it)
             val listProductTabWidget = shopProductAdapter.data
             if(listProductTabWidget.isNotEmpty())
-                viewModel.getShopProductDataWithUpdatedQuantity(it, listProductTabWidget.toMutableList())
+                viewModel.getShopProductDataWithUpdatedQuantity(listProductTabWidget.toMutableList())
         })
     }
 
@@ -1840,13 +1840,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun handleAtcFlow(
-        productId: String,
         quantity: Int,
         shopId: String,
         shopProductUiModel: ShopProductUiModel
     ) {
         viewModel.handleAtcFlow(
-            productId,
             quantity,
             shopId,
             ShopPageConstant.ShopProductCardAtc.CARD_PRODUCT,

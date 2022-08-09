@@ -16,7 +16,6 @@ class HomeReminderWidgetCallback(
             when (reminderData.source) {
                 ReminderEnum.RECHARGE -> {
                     rechargeListener.onRechargeRecommendationClickListener(it)
-                    rechargeListener.onRechargeRecommendationDeclineClickListener(it)
                 }
                 ReminderEnum.SALAM -> {
                     salamListener.onSalamWidgetClickListener(it)

@@ -10,7 +10,8 @@ data class UpdateUserProfileParam @JvmOverloads constructor(
         val gender: String = "",
         val birthdate: String = "",
         val phone: String = "",
-        val email: String = ""
+        val email: String = "",
+        val validateToken: String = ""
 ) {
 
     fun toMap(): Map<String, Any> = mapOf(
@@ -18,7 +19,8 @@ data class UpdateUserProfileParam @JvmOverloads constructor(
             PARAM_GENDER to gender,
             PARAM_BIRTHDATE to birthdate,
             PARAM_PHONE to phone,
-            PARAM_EMAIL to email
+            PARAM_EMAIL to email,
+            PARAM_VALIDATE_TOKEN to validateToken
     )
 
     companion object {
@@ -27,5 +29,6 @@ data class UpdateUserProfileParam @JvmOverloads constructor(
         private const val PARAM_BIRTHDATE = "birthdate"
         private const val PARAM_PHONE = "phone"
         private const val PARAM_EMAIL = "email"
+        private const val PARAM_VALIDATE_TOKEN = "validateToken"
     }
 }

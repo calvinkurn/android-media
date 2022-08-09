@@ -23,6 +23,7 @@ class OrderNoteBottomSheet : BottomSheetUnify() {
 
     companion object {
 
+        private const val TAG = "OrderNoteBottomSheet"
         const val MIN_LINES = 3
 
         @JvmStatic
@@ -88,6 +89,8 @@ class OrderNoteBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
-        showNow(fragmentManager, this::class.java.simpleName)
+        if (!isVisible) {
+            show(fragmentManager, TAG)
+        }
     }
 }

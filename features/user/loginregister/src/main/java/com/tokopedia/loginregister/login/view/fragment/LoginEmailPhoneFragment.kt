@@ -1717,6 +1717,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onGoToChangeName() {
         if (activity != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.ADD_NAME_PROFILE)
+            intent.putExtras(Bundle().apply {
+                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+            })
             startActivityForResult(intent, LoginConstants.Request.REQUEST_ADD_NAME)
         }
     }
