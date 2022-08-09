@@ -567,16 +567,17 @@ class CatalogDetailPageFragment : Fragment(),
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        val shareString = resources.getString(com.tokopedia.catalog.R.string.catalog_share_string,
-                                catalogName,linkerShareData?.url)
-                        SharingUtil.executeShareIntent(
-                                shareModel,
-                                linkerShareData,
-                                activity,
-                                view,
-                                shareString
-                        )
-                        universalShareBottomSheet?.dismiss()
+                        context?.resources?.getString(com.tokopedia.catalog.R.string.catalog_share_string,
+                            catalogName,linkerShareData?.url)?.let { shareString ->
+                                SharingUtil.executeShareIntent(
+                                    shareModel,
+                                    linkerShareData,
+                                    activity,
+                                    view,
+                                    shareString
+                                )
+                            universalShareBottomSheet?.dismiss()
+                        }
                     }
 
                     override fun onError(linkerError: LinkerError?) {
