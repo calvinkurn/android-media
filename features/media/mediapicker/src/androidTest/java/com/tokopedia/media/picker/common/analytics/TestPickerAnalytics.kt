@@ -1,11 +1,10 @@
-package com.tokopedia.media.picker.analytics
+package com.tokopedia.media.picker.common.analytics
 
+import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
-import javax.inject.Inject
 
-open class PickerAnalytics @Inject constructor(
+class TestPickerAnalytics constructor(
     cameraAnalytics: CameraAnalytics,
     galleryAnalytics: GalleryAnalytics
-) : CameraAnalytics by cameraAnalytics,
-    GalleryAnalytics by galleryAnalytics
+) : PickerAnalytics(cameraAnalytics, galleryAnalytics)
