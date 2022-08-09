@@ -325,6 +325,10 @@ internal class SearchProductPostProcessingFilter: ProductListPresenterTestFixtur
         verify(exactly = 3) {
             searchProductFirstPageUseCase.execute(any(), any())
         }
+
+        verify(exactly = 1) {
+            productListView.removeLoading()
+        }
     }
 
     @Test
@@ -349,6 +353,10 @@ internal class SearchProductPostProcessingFilter: ProductListPresenterTestFixtur
         verify(exactly = 3) {
             searchProductLoadMoreUseCase.execute(any(), any())
         }
+
+        verify(exactly = 2) {
+            productListView.removeLoading()
+        }
     }
 
     @Test
@@ -371,6 +379,10 @@ internal class SearchProductPostProcessingFilter: ProductListPresenterTestFixtur
 
         verify(exactly = 2) {
             searchProductLoadMoreUseCase.execute(any(), any())
+        }
+
+        verify(exactly = 2) {
+            productListView.removeLoading()
         }
     }
 }
