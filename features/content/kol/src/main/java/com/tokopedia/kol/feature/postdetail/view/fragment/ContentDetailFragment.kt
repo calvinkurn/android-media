@@ -184,7 +184,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(kolR.layout.fragment_content_detail_revamp_page, container, false)
+        return inflater.inflate(kolR.layout.fragment_content_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

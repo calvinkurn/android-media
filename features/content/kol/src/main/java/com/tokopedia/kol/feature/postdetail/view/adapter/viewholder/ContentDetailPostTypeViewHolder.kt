@@ -24,7 +24,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.util.ColorUtil
 import com.tokopedia.feedcomponent.util.NestedScrollableHost
 import com.tokopedia.feedcomponent.util.TagConverter
@@ -57,7 +56,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
 
     private val view = LayoutInflater.from(context).inflate(
-        R.layout.content_detail_revamped_viewholder_container_item,
+        R.layout.content_detail_viewholder_container_item,
         this,
         true
     )
