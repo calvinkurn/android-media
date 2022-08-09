@@ -148,7 +148,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     fun show(
         fragmentManager: FragmentManager,
         products: List<FeedXProduct>,
-        listener: ProductItemInfoBottomSheet.Listener?,
+        listener: Listener?,
         postId: Int,
         shopId: String,
         type: String,

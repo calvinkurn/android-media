@@ -562,8 +562,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         )
         analyticsTracker.sendClickShareSgcImageEvent(getContentDetailAnalyticsData(feedXCard, trackerId = trackerId))
 
-        showUniversalShareBottomSheet(getContentShareDataModel(feedXCard))
-
         activity?.let {
             val shareDataBuilder = LinkerData.Builder.getLinkerBuilder()
                 .setId(feedXCard.id)
@@ -583,12 +581,12 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 .setType(LinkerData.FEED_TYPE)
                 .setImgUri(feedXCard.media.firstOrNull()?.mediaUrl ?: "")
                 .setDeepLink(feedXCard.appLink)
+                .setUri(feedXCard.webLink)
 
-            shareDataBuilder.apply {
-                setUri(feedXCard.webLink)
-            }
 
             shareData = shareDataBuilder.build()
+            showUniversalShareBottomSheet(getContentShareDataModel(feedXCard))
+
         }
 
     }
@@ -693,7 +691,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 .setName(item.text)
                 .setDescription(item.description)
                 .setImgUri(item.imgUrl)
-                .setUri(item.applink)
+                .setUri(item.weblink)
                 .setDeepLink(item.applink)
                 .setType(LinkerData.FEED_TYPE)
                 .setDesktopUrl(item.weblink)

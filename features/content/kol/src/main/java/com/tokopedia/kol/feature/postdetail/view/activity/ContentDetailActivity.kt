@@ -12,7 +12,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.kol.R
-import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
 import com.tokopedia.kol.feature.postdetail.view.fragment.ContentDetailFragment
 
 class ContentDetailActivity : BaseSimpleActivity() {
@@ -41,6 +40,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
     private fun postId(): String {
         return intent?.data?.lastPathSegment ?: DEFAULT_POST_ID
     }
+
     fun getSource(): String {
         return intent?.extras?.getString(PARAM_SOURCE) ?: SHARE_LINK
     }
@@ -48,12 +48,15 @@ class ContentDetailActivity : BaseSimpleActivity() {
     fun setContentDetailMainPostData(card: FeedXCard?) {
         this.contentDetailFirstPostData = card
     }
+
     override fun getLayoutRes(): Int {
         return R.layout.activity_content_detail
     }
+
     override fun getParentViewResourceID(): Int {
         return R.id.fragment_container
     }
+
     fun getHeaderView(): View? {
         return findViewById(R.id.content_header)
     }
@@ -74,17 +77,6 @@ class ContentDetailActivity : BaseSimpleActivity() {
             finishAffinity()
         }
     }
-
-    private fun getContentDetailAnalyticsData(feedXCard: FeedXCard) = ContentDetailPageAnalyticsDataModel(
-        activityId = if (feedXCard.isTypeVOD) feedXCard.playChannelID else feedXCard.id,
-        shopId = feedXCard.author.id,
-        isFollowed = feedXCard.followers.isFollowed,
-        type = feedXCard.typename,
-        mediaType = if (feedXCard.lastCarouselIndex < feedXCard.media.size) feedXCard.media[feedXCard.lastCarouselIndex].type else "",
-        mediaUrl = feedXCard.media.firstOrNull()?.mediaUrl ?: "",
-        itemName = feedXCard.title,
-    )
-
 
     companion object {
         const val PARAM_POST_ID = "post_id"
