@@ -39,8 +39,8 @@ class ProductListMapper {
                                 countReview = getReviewCount(dataItem.product?.countReviewFormat
                                 ?: "0"),
                                 wishlist = (dataItem.product?.wishlist) ?: false,
-                                id = (dataItem.product?.id?.toInt()) ?: 0,
-                                categoryID = (dataItem.product?.category?.id?.toInt()) ?: 0,
+                                id = (dataItem.product?.id) ?: "",
+                                categoryID = (dataItem.product?.category?.id) ?: "",
                                 productImpTrackingUrl = dataItem.product?.image?.sUrl ?: "",
                                 productClickTrackingUrl = dataItem.productClickUrl ?: "",
                                 productWishlistTrackingUrl = dataItem.productWishlistUrl ?: "",
