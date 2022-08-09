@@ -36,7 +36,7 @@ import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify

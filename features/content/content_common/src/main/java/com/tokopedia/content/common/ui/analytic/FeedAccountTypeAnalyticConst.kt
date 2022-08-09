@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker_insta.common.ui.analytic
+package com.tokopedia.content.common.ui.analytic
 
 /**
  * Created By : Jonathan Darwin on May 23, 2022

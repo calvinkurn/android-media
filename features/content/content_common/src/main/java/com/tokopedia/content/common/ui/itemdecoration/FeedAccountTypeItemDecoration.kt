@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker_insta.common.ui.itemdecoration
+package com.tokopedia.content.common.ui.itemdecoration
 
 import android.content.Context
 import android.graphics.Rect

@@ -26,7 +26,7 @@ import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.view.util.ConnectionLiveData
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
 import com.tokopedia.feedcomponent.bottomsheets.FeedNetworkErrorBottomSheet
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading

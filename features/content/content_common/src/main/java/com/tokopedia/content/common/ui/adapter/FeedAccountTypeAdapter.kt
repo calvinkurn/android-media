@@ -1,9 +1,9 @@
-package com.tokopedia.imagepicker_insta.common.ui.adapter
+package com.tokopedia.content.common.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
-import com.tokopedia.imagepicker_insta.common.ui.viewholder.FeedAccountTypeViewHolder
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.viewholder.FeedAccountTypeViewHolder
 
 /**
  * Created By : Jonathan Darwin on April 13, 2022

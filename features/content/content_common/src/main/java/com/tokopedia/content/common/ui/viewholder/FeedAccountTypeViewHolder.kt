@@ -1,11 +1,11 @@
-package com.tokopedia.imagepicker_insta.common.ui.viewholder
+package com.tokopedia.content.common.ui.viewholder
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.imagepicker_insta.common.databinding.ItemFeedAccountTypeBinding
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.databinding.ItemFeedAccountTypeBinding
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 

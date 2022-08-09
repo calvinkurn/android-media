@@ -4,7 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.imagepicker_insta.LiveDataResult
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.usecase.CropUseCase
 import com.tokopedia.imagepicker_insta.usecase.GetContentFormUseCase

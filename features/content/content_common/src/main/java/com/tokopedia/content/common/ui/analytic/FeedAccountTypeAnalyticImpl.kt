@@ -1,6 +1,6 @@
-package com.tokopedia.imagepicker_insta.common.ui.analytic
+package com.tokopedia.content.common.ui.analytic
 
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject

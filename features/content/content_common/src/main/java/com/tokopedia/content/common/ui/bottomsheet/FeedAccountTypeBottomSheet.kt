@@ -1,17 +1,17 @@
-package com.tokopedia.imagepicker_insta.common.ui.bottomsheet
+package com.tokopedia.content.common.ui.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.imagepicker_insta.common.R
-import com.tokopedia.imagepicker_insta.common.databinding.BottomSheetFeedAccountTypeBinding
-import com.tokopedia.imagepicker_insta.common.ui.adapter.FeedAccountTypeAdapter
-import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.imagepicker_insta.common.ui.itemdecoration.FeedAccountTypeItemDecoration
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
-import com.tokopedia.imagepicker_insta.common.ui.viewholder.FeedAccountTypeViewHolder
+import com.tokopedia.content.common.databinding.BottomSheetFeedAccountTypeBinding
+import com.tokopedia.content.common.ui.adapter.FeedAccountTypeAdapter
+import com.tokopedia.content.common.ui.itemdecoration.FeedAccountTypeItemDecoration
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.viewholder.FeedAccountTypeViewHolder
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.content.common.R
 
 /**
  * Created By : Jonathan Darwin on April 13, 2022

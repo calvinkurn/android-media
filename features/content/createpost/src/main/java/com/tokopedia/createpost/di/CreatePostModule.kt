@@ -12,8 +12,8 @@ import com.tokopedia.createpost.domain.usecase.GetContentFormUseCase
 import com.tokopedia.createpost.domain.usecase.GetFeedForEditUseCase
 import com.tokopedia.createpost.view.presenter.CreatePostPresenter
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalyticImpl
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalyticImpl
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface

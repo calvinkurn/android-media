@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.BottomSheetProductTagSourceBinding
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
