@@ -11,6 +11,7 @@ import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent
 import com.tokopedia.kol.feature.comment.di.KolCommentModule
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentNewFragment
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_AUTHOR_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_ID
@@ -85,14 +86,15 @@ class KolCommentNewActivity : BaseSimpleActivity() {
         val shopId = intent.getStringExtra(ARGS_AUTHOR_TYPE) ?: ""
         val type = intent.getStringExtra(ARGS_POST_TYPE) ?: ""
         val isFollowed = intent.getBooleanExtra(ARGS_IS_POST_FOLLOWED, true)
-        val isVideo = intent.getBooleanExtra(ARGS_VIDEO, false)
+        val source = intent.getStringExtra(ContentDetailArgumentModel.CONTENT_DETAIL_PAGE_SOURCE)
         if (isFromContentDetailPage)
             analyticsTracker.sendClickBackOnCommentPage(
                 ContentDetailPageAnalyticsDataModel(
                     activityId = postId ?: "0",
                     shopId = shopId,
                     type = type,
-                    isFollowed = isFollowed
+                    isFollowed = isFollowed,
+                    source = source ?: ""
                 )
             )
         else

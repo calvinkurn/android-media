@@ -146,7 +146,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
             override fun onImageDoubleClicked(viewHolder: CarouselImageViewHolder) {
                 val card = mData
-                if (!card.isTopAds) changeCTABtnColorAsPerWidget(card)
+                if (card.isTypeProductHighlight) changeCTABtnColorAsPerWidget(card)
             }
 
             override fun onImageLongClicked(viewHolder: CarouselImageViewHolder) {
@@ -158,7 +158,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 changeCTABtnColorAsPerWidget(mData)
                 listener?.onLikeClicked(
                     mData,
-                    positionInCdp
+                    positionInCdp,
+                    true
                 )
             }
 

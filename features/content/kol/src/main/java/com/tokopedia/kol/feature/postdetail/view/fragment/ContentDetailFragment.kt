@@ -1767,7 +1767,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
          dissmisByGreyArea = false
         if (adapter.getList().size > rowNumberWhenShareClicked) {
             val card = adapter.getList()[rowNumberWhenShareClicked]
-            analyticsTracker.sendClickShareOptionInShareBottomSheet(getContentDetailAnalyticsData(card))
+            analyticsTracker.sendClickShareOptionInShareBottomSheet(getContentDetailAnalyticsData(card, shareMedia = shareModel.socialMediaName?:""))
             universalShareBottomSheet?.dismiss()
         }
 
@@ -1812,6 +1812,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         trackerId: String = "",
         hashTag: String = "",
         duration: Long = 0L,
+        shareMedia: String = "",
         product: FeedXProduct = FeedXProduct()
     ) = ContentDetailPageAnalyticsDataModel(
         activityId = if (feedXCard.isTypeVOD) feedXCard.playChannelID else feedXCard.id,
@@ -1827,6 +1828,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         itemName = feedXCard.title,
         duration = duration,
         feedXProduct = product,
+        shareMedia = shareMedia,
         source = contentDetailSource
     )
 

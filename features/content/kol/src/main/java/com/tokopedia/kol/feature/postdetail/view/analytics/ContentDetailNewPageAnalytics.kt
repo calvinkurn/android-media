@@ -6,6 +6,7 @@ import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageA
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics.EventName.CLICKPG
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics.EventName.PROMO_VIEW
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics.EventName.VIEW_PG_IRIS
+import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics.Promotions.ITEM_PRODUCT_SGC
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailPageAnalyticsDataModel
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -377,10 +378,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eCommerceData = DataLayer.mapOf(
                 Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
-                "impressions",
-                getProductItems(
-                    feedXProducts
-                )
+                "impressions", getProductItems(feedXProducts)
             ),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId
         )
@@ -546,7 +544,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     ) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = "click - $reportReason - sgc image",
+            eventAction = "click - report reason - sgc image",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_REPORT,
             eventLabel = EventLabel.getPostReportLabel(
                 contentDetailPageAnalyticsDataModel,
@@ -1037,7 +1035,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     ): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
         for (i in feedXProduct) {
-            val map = createItemMap(i, (feedXProduct.indexOf(i) + 1).toString())
+            val map = createItemMap(i, (feedXProduct.indexOf(i) + 1).toString(), ITEM_PRODUCT_SGC)
             list.add(map)
         }
         return list
@@ -1068,7 +1066,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         Product.CATEGORY, "",
     )
 
-    private fun createItemMap(feedXProduct: FeedXProduct, index: String): Map<String, Any> =
+    private fun createItemMap(feedXProduct: FeedXProduct, index: String, list: String = ""): Map<String, Any> =
         DataLayer.mapOf(
             Product.INDEX, index,
             Product.BRAND, "",
@@ -1076,6 +1074,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             Product.ID, feedXProduct.id,
             Product.NAME, feedXProduct.name,
             Product.VARIANT, "",
+            Product.LIST, list,
             Product.PRICE,
             if (feedXProduct.isDiscount) feedXProduct.priceDiscount.toString() else feedXProduct.price.toString(),
         )
@@ -1126,6 +1125,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             TRACKER_ID, trackerID,
         )
 
+        if (trackerID.isNotEmpty())
         TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
 
     }
@@ -1162,6 +1162,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             SCREEN_NAME to screenName,
             TRACKER_ID to trackerID
         )
+        if (trackerID.isNotEmpty())
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, generalData)
 
     }
@@ -1174,10 +1175,12 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         eCommerceData: Map<String, Any>,
         trackerID: String = ""
     ) {
-        trackingQueue.putEETracking(
-            getGeneralDataNew(eventName, eventCategory, eventAction, eventLabel, trackerID)
-                .plus(getEcommerceData(eCommerceData)) as HashMap<String, Any>
-        )
+        if (trackerID.isNotEmpty()) {
+            trackingQueue.putEETracking(
+                getGeneralDataNew(eventName, eventCategory, eventAction, eventLabel, trackerID)
+                    .plus(getEcommerceData(eCommerceData)) as HashMap<String, Any>
+            )
+        }
     }
 
     /**
@@ -1286,6 +1289,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         const val NAME = "name"
         const val PRICE = "price"
         const val QTY = "quantity"
+        const val LIST = "list"
         const val SHOP_ID = "shop_id"
         const val CATEGORY_ID = "category_id"
         const val SHOP_NAME = "shop_name"
