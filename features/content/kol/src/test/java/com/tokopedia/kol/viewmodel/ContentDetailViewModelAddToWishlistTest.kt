@@ -40,8 +40,7 @@ class ContentDetailViewModelAddToWishlistTest {
     @Test
     fun `when user add product to wishlist, given response success, then it should emit AddToWishlistV2Response`() {
         val rowNumber = 0
-        val data = builder.getWishlistModel(rowNumber, productId)
-        val expectedResult = Success(data)
+        val expectedResult = builder.getWishlistModel(rowNumber, productId)
 
         coEvery { mockRepo.addToWishlist(rowNumber, productId) } returns expectedResult
 
@@ -57,7 +56,7 @@ class ContentDetailViewModelAddToWishlistTest {
     @Test
     fun `when user add product to wishlist, given response error, then it should emit error`() {
         val rowNumber = 0
-        coEvery { mockRepo.addToWishlist(rowNumber, productId) } returns Fail(Throwable())
+        coEvery { mockRepo.addToWishlist(rowNumber, productId) } throws  Throwable()
 
         viewModel.addToWishlist(productId, rowNumber)
 
