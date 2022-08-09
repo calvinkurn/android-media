@@ -265,6 +265,6 @@ class BitmapCroppingAndCompression constructor(
 
     companion object {
         private const val TAG_LOG_CROP_AND_COMPRESSION_KYC = "KYC_CROP_AND_COMPRESSION"
-        const val DEFAULT_PADDING = 32
+        const val DEFAULT_PADDING = 8
     }
 }

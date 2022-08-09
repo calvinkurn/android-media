@@ -103,7 +103,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
             imageButtonShutter.setOnClickListener {
                 analytics?.eventClickShutterCameraKtp()
                 hideCameraButtonAndShowLoading()
-                cameraView.takePicture()
+                cameraView.takePictureSnapshot()
             }
 
             imageButtonFlip.setOnClickListener {
