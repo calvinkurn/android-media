@@ -367,6 +367,8 @@ public interface ShipmentContract {
 
         String generateRatesMvcParam(String cartString);
 
+        String getCartDataForRates();
+
         void setCheckoutData(CheckoutData checkoutData);
 
         void updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);

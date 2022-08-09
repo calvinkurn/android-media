@@ -139,6 +139,7 @@ class ShipmentMapper @Inject constructor() {
             popup = mapPopUp(shipmentAddressFormDataResponse.popup)
             addOnWording = mapAddOnWording(shipmentAddressFormDataResponse.addOnWording)
             upsell = mapUpsell(shipmentAddressFormDataResponse.upsell)
+            cartData = shipmentAddressFormDataResponse.cartData
         }
     }
 

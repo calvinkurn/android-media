@@ -107,6 +107,8 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
         // Auto apply Promo Stacking Logistic
         val logisticPromoChosen = shippingRecommendationData.listLogisticPromo.firstOrNull {
             ((it.shipperId == shipperId && it.shipperProductId == spId) || shipmentCartItemModel.isAutoCourierSelection)
+//             todo: bobby: match boCode
+//            (shipmentCartItemModel.boCode == it.promoCode || shipmentCartItemModel.isAutoCourierSelection)
                     && it.promoCode.isNotEmpty() && !it.disabled
         }
         logisticPromoChosen?.let {
