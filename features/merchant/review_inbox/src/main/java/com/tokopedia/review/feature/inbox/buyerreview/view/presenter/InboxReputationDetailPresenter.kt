@@ -53,12 +53,12 @@ class InboxReputationDetailPresenter @Inject internal constructor(
         )
     }
 
-    override fun sendSmiley(reputationId: String, score: String, role: Int) {
+    override fun sendSmiley(reputationId: String, score: String, role: String) {
         launchCatchError(block = {
             viewListener?.showLoadingDialog()
             val success = withContext(dispatchers.io) {
                 sendSmileyReputationUseCase.execute(
-                    SendSmileyReputationUseCase.getParam(reputationId, score, role)
+                    SendSmileyReputationUseCase.getParam(reputationId, score, role.toIntOrZero())
                 )
             }
             viewListener?.finishLoadingDialog()

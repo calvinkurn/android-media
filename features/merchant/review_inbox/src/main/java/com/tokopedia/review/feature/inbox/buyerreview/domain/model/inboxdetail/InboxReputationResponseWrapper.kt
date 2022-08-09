@@ -72,7 +72,7 @@ data class InboxReputationResponseWrapper(
                     val role: String = "",
                     @SerializedName("roleId")
                     @Expose
-                    val roleId: Int = Int.ZERO,
+                    val roleId: String = "0",
                     @SerializedName("picture")
                     @Expose
                     val picture: String = "",

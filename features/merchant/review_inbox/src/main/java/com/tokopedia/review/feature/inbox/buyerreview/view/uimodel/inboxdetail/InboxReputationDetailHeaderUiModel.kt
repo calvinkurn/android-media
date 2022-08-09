@@ -12,7 +12,7 @@ class InboxReputationDetailHeaderUiModel (
     var name: String,
     var deadline: String,
     var reputationDataUiModel: ReputationDataUiModel,
-    var role: Int,
+    var role: String,
     val revieweeBadgeCustomerUiModel: RevieweeBadgeCustomerUiModel,
     val revieweeBadgeSellerUiModel: RevieweeBadgeSellerUiModel,
     val shopId: String,
