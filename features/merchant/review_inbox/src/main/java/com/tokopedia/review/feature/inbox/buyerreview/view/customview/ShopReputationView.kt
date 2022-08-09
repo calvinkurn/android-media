@@ -4,18 +4,17 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.inbox.R
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -23,15 +22,8 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class ShopReputationView : BaseCustomView {
 
-    companion object {
-        const val MEDAL_TYPE_0: Int = 0
-        const val MEDAL_TYPE_1: Int = 1
-        const val MEDAL_TYPE_2: Int = 2
-        const val MEDAL_TYPE_3: Int = 3
-        const val MEDAL_TYPE_4: Int = 4
-    }
-
     private var reputationLayout: LinearLayout? = null
+    private var ivReputationBadge: ImageUnify? = null
     private var showTooltip: Boolean = false
     private var medalWidth: Int = 0
 
@@ -79,6 +71,7 @@ class ShopReputationView : BaseCustomView {
     private fun init() {
         val view: View = inflate(context, R.layout.widget_reputation_shop, this)
         reputationLayout = view.findViewById(R.id.layout_reputation_view)
+        ivReputationBadge = view.findViewById(R.id.iv_reputation_badge)
     }
 
     override fun onFinishInflate() {
@@ -87,40 +80,14 @@ class ShopReputationView : BaseCustomView {
         requestLayout()
     }
 
-    fun setValue(medalType: Int, level: Int, point: String) {
-        var level: Int = level
-        var point: String = point
-        reputationLayout?.removeAllViews()
-        val imageResource: Int = getIconResource(medalType)
-        if (medalType == MEDAL_TYPE_0) {
-            level = 1
-            point = "0"
-        }
-        updateMedalView(reputationLayout, imageResource, level)
+    fun setValue(badgeUrl: String, score: Int) {
+        ivReputationBadge?.loadImage(badgeUrl)
         if (showTooltip) {
-            setToolTip(point, medalType, level)
+            setToolTip(badgeUrl, score)
         }
     }
 
-    private fun updateMedalView(
-        reputationLayout: LinearLayout?,
-        @DrawableRes imageResource: Int,
-        levelMedal: Int
-    ) {
-        val medalMargin: Int = context.resources.getDimensionPixelSize(R.dimen.dp_3)
-        for (i in 0 until levelMedal) {
-            val medal: View = getGeneratedMedalImage(imageResource)
-            if (i < levelMedal) {
-                val params: LinearLayout.LayoutParams =
-                    medal.layoutParams as LinearLayout.LayoutParams
-                params.rightMargin = medalMargin
-                medal.layoutParams = params
-            }
-            reputationLayout?.addView(medal)
-        }
-    }
-
-    private fun setToolTip(pointValue: String, medalType: Int, level: Int) {
+    private fun setToolTip(badgeUrl: String, score: Int) {
         reputationLayout?.setOnClickListener {
             val dialog = BottomSheetDialog(context)
             dialog.apply {
@@ -128,43 +95,21 @@ class ShopReputationView : BaseCustomView {
                 val point: Typography? =
                     dialog.findViewById(com.tokopedia.design.R.id.reputation_point)
                 val pointText: String =
-                    if (TextUtils.isEmpty(pointValue) || (pointValue == "0")) context.getString(
+                    if (score.isZero()) context.getString(
                         com.tokopedia.design.R.string.no_reputation_yet
-                    ) else "$pointValue " + context.getString(
+                    ) else "$score " + context.getString(
                         R.string.point
                     )
                 if (point != null) {
                     point.text = pointText
                 }
-                val sellerReputation: LinearLayout? =
-                    dialog.findViewById(com.tokopedia.design.R.id.seller_reputation)
-                updateMedalView(sellerReputation, getIconResource(medalType), level)
+                val ivReputationBadge: ImageUnify? =
+                    dialog.findViewById(com.tokopedia.design.R.id.iv_reputation_badge)
+                ivReputationBadge?.loadImage(badgeUrl)
                 val closeButton: Button? = dialog.findViewById(R.id.dialog_close_button)
                 closeButton?.setOnClickListener({ dialog.dismiss() })
                 dialog.show()
             }
-        }
-    }
-
-    private fun getGeneratedMedalImage(@DrawableRes imageResource: Int): ImageView {
-        val imageView = ImageView(context)
-        imageView.apply {
-            adjustViewBounds = true
-            val param: LinearLayout.LayoutParams =
-                LinearLayout.LayoutParams(medalWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
-            layoutParams = param
-            setImageDrawable(getDrawable(context, imageResource))
-        }
-        return imageView
-    }
-
-    private fun getIconResource(type: Int): Int {
-        return when (type) {
-            MEDAL_TYPE_1 -> com.tokopedia.design.R.drawable.ic_badge_bronze
-            MEDAL_TYPE_2 -> com.tokopedia.design.R.drawable.ic_badge_silver
-            MEDAL_TYPE_3 -> com.tokopedia.design.R.drawable.ic_badge_gold
-            MEDAL_TYPE_4 -> com.tokopedia.design.R.drawable.ic_badge_diamond
-            else -> com.tokopedia.design.R.drawable.ic_badge_none
         }
     }
 }

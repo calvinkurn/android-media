@@ -18,7 +18,7 @@ class RefreshInboxReputationDetailSubscriber constructor(viewListener: InboxRepu
     override fun onNext(inboxReputationDetailDomain: InboxReputationDetailDomain) {
         viewListener.finishRefresh()
         viewListener.onSuccessRefreshGetInboxDetail(
-            convertToReputationViewModel(inboxReputationDetailDomain.inboxReputationDomain).list.getOrNull(0) ?: InboxReputationItemUiModel(),
+            convertToReputationViewModel(inboxReputationDetailDomain.inboxReputationResponse).list.getOrNull(0) ?: InboxReputationItemUiModel(),
             mappingToListItemViewModel(inboxReputationDetailDomain.reviewDomain)
         )
     }

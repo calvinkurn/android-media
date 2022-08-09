@@ -30,6 +30,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.common.util.ClipboardHandler
@@ -92,7 +93,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     private var reputationId: String = ""
     var orderId: String = ""
         private set
-    private var role = "0"
+    private var role = Int.ZERO
 
     override fun getScreenName(): String {
         return AppScreen.SCREEN_INBOX_REPUTATION_DETAIL

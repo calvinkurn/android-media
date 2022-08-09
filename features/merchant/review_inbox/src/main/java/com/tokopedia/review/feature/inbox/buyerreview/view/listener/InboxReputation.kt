@@ -24,7 +24,7 @@ interface InboxReputation {
             reputationId: String, invoice: String, createTime: String,
             revieweeName: String, revieweeImage: String,
             reputationDataUiModel: ReputationDataUiModel, textDeadline: String,
-            adapterPosition: Int, role: String
+            adapterPosition: Int, role: Int
         )
 
         fun showRefreshing()

@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.inbox.InboxReputationTypeFactory
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeCustomerUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeSellerUiModel
@@ -16,7 +17,7 @@ data class InboxReputationItemUiModel(
     val reputationDaysLeft: String = "",
     val invoice: String = "",
     val reputationDataUiModel: ReputationDataUiModel = ReputationDataUiModel(),
-    val role: String = "",
+    val role: Int = Int.ZERO,
     val revieweeBadgeCustomerUiModel: RevieweeBadgeCustomerUiModel = RevieweeBadgeCustomerUiModel(),
     val revieweeBadgeSellerUiModel: RevieweeBadgeSellerUiModel = RevieweeBadgeSellerUiModel(),
     val shopId: String = "",
@@ -24,8 +25,8 @@ data class InboxReputationItemUiModel(
 ) : Visitable<InboxReputationTypeFactory> {
 
     companion object {
-        const val ROLE_SELLER = "2"
-        const val ROLE_BUYER = "1"
+        const val ROLE_SELLER = 2
+        const val ROLE_BUYER = 1
     }
 
     override fun type(typeFactory: InboxReputationTypeFactory): Int {

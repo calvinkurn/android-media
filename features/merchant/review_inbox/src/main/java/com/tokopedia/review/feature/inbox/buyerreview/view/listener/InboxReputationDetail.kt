@@ -63,6 +63,6 @@ interface InboxReputationDetail {
 
     interface Presenter : CustomerPresenter<View?> {
         fun getInboxDetail(id: String, anInt: Int)
-        fun sendSmiley(reputationId: String, score: String, role: String)
+        fun sendSmiley(reputationId: String, score: String, role: Int)
     }
 }

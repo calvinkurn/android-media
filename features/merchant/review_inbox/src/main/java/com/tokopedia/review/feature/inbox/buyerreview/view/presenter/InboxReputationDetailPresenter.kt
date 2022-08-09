@@ -53,7 +53,7 @@ class InboxReputationDetailPresenter @Inject internal constructor(
         )
     }
 
-    override fun sendSmiley(reputationId: String, score: String, role: String) {
+    override fun sendSmiley(reputationId: String, score: String, role: Int) {
         launchCatchError(block = {
             viewListener?.showLoadingDialog()
             val success = withContext(dispatchers.io) {

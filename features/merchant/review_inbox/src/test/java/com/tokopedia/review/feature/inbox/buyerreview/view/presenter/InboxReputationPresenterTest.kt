@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.presenter
 
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationDomain
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk

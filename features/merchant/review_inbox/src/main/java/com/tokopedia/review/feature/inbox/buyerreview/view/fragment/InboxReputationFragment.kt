@@ -276,7 +276,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         reputationId: String, invoice: String, createTime: String,
         revieweeName: String, revieweeImage: String,
         reputationDataUiModel: ReputationDataUiModel, textDeadline: String,
-        adapterPosition: Int, role: String
+        adapterPosition: Int, role: Int
     ) {
         savePassModelToDB(
             getInboxReputationDetailPassModel(
@@ -317,7 +317,7 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
         revieweeName: String,
         textDeadline: String,
         reputationDataUiModel: ReputationDataUiModel,
-        role: String
+        role: Int
     ): InboxReputationDetailPassModel {
         return InboxReputationDetailPassModel(
             reputationDataUiModel, reputationId, revieweeName, revieweeImage,

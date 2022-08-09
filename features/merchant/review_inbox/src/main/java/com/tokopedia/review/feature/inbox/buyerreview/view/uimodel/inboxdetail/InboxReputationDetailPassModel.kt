@@ -13,5 +13,5 @@ data class InboxReputationDetailPassModel(
     var deadlineText: String,
     var invoice: String,
     var createTime: String,
-    var role: String
+    var role: Int
 )
