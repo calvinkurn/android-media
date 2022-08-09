@@ -120,6 +120,7 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.extensions.ifNull
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -4376,9 +4377,9 @@ open class DynamicProductDetailFragment :
     private fun createProgressDialog(
         activity: Activity,
         onCancelClicked: (() -> Unit)?
-    ) {
-        if (loadingProgressDialog == null) {
-            loadingProgressDialog = activity.createDefaultProgressDialog(
+    ): ProgressDialog {
+        val dialog = loadingProgressDialog.ifNull {
+            activity.createDefaultProgressDialog(
                 getString(com.tokopedia.abstraction.R.string.title_loading),
                 cancelable = onCancelClicked != null,
                 onCancelClicked = {
@@ -4386,6 +4387,10 @@ open class DynamicProductDetailFragment :
                 }
             )
         }
+
+        loadingProgressDialog = dialog
+
+        return dialog
     }
 
     private fun updateProductId() {
