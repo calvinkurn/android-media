@@ -3,9 +3,10 @@ package com.tokopedia.play.broadcaster.pusher.view
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ScrollView
-import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
-import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
-import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 
 
 /**
@@ -16,15 +17,12 @@ class PlayLivePusherDebugView : ScrollView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    fun logAspectRatio(aspectRatio: Double) {
+    fun setLiveInfo(liveInfo: PlayLiveLogState.Init) {
     }
 
-    fun logBroadcastInitState(state: BroadcastInitState) {
+    fun updateStats(stats: PlayLivePusherStatistic) {
     }
 
-    fun logBroadcastState(state: PlayBroadcasterState) {
-    }
-
-    fun logBroadcastStatistic(metric: BroadcasterMetric) {
+    fun updateState(state: PlayLivePusherMediatorState) {
     }
 }

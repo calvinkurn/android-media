@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.gone
@@ -14,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlin.math.ceil
 
@@ -26,6 +28,7 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
 
     private val countText: TextView
     private val btnCancel: UnifyButton
+    private val loader: LoaderUnify
 
     private lateinit var timer: CountDownTimer
 
@@ -43,6 +46,7 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
 
         countText = view.findViewById(R.id.count_text)
         btnCancel = view.findViewById(R.id.btn_play_cancel_live_stream)
+        loader = view.findViewById(R.id.play_loader_count_down)
 
         countText.alpha = 0f
 
@@ -86,6 +90,7 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
     }
 
     fun startCountDown(property: AnimationProperty, listener: Listener? = null){
+        loader.gone()
         btnCancel.visible()
 
         val textInterval = property.textCountDownInterval
@@ -106,6 +111,7 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
 
             override fun onFinish() {
                 animatorInfoOut.start()
+                loader.visible()
                 btnCancel.invisible()
                 listener?.onFinish()
             }
@@ -136,7 +142,6 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
         }
     }
 
-    @Suppress("MagicNumber")
     private fun setupTextCountAnimator(interval: Long) {
         val multiplier = interval / MILLIS_IN_SECOND
         textAnimatorIn.duration = 225 * multiplier
@@ -149,7 +154,6 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
         val totalCount: Int
     ) {
 
-        @Suppress("MagicNumber")
         class Builder {
             private var textCountDownInterval: Long = MILLIS_IN_SECOND
             private var totalCount: Int = 3
@@ -180,7 +184,7 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
 
     interface Listener {
 
-        fun onTick(millisUntilFinished: Long)
+        fun onTick(milisUntilFinished: Long)
 
         fun onFinish()
 

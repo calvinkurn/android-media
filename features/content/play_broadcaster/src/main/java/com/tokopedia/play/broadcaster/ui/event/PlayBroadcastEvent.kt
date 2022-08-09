@@ -2,13 +2,8 @@ package com.tokopedia.play.broadcaster.ui.event
 
 sealed interface PlayBroadcastEvent {
 
-    object ShowLoading : PlayBroadcastEvent
-    object ShowResumeLiveDialog : PlayBroadcastEvent
-    object ShowLiveEndedDialog : PlayBroadcastEvent
-
     data class ShowError(
-        val error: Throwable,
-        val onRetry: (() -> Unit)? = null,
+        val error: Throwable
     ) : PlayBroadcastEvent
 
     data class ShowScheduleError(
@@ -35,11 +30,4 @@ sealed interface PlayBroadcastEvent {
 
     data class ShowInteractiveGameResultWidget(val showCoachMark: Boolean): PlayBroadcastEvent
     object DismissGameResultCoachMark : PlayBroadcastEvent
-
-    object BroadcastStarted : PlayBroadcastEvent
-    data class BroadcastReady(val ingestUrl: String) : PlayBroadcastEvent
-    data class ShowBroadcastError(
-        val error: Throwable,
-    ) : PlayBroadcastEvent
-    object BroadcastRecovered : PlayBroadcastEvent
 }
