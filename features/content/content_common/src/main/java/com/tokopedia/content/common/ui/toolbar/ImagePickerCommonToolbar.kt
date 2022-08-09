@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker_insta.common.ui.toolbar
+package com.tokopedia.content.common.ui.toolbar
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
@@ -9,7 +9,7 @@ import com.tokopedia.iconunify.IconUnify
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.imagepicker_insta.common.R
+import com.tokopedia.content.common.R
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyR
