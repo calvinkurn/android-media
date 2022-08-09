@@ -130,7 +130,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val menuTitle =  activity?.getString(R.string.feed_content_text_lanjut)
+        val menuTitle =  activity?.getString(com.tokopedia.content.common.R.string.feed_content_text_lanjut)
         if(!menuTitle.isNullOrEmpty()) {
             MenuManager.addCustomMenu(activity, menuTitle, true, menu) {
                 GlobalScope.launchCatchError(Dispatchers.IO, block = {
@@ -206,7 +206,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             openProductTaggingScreen()
         } else {
             Toaster.build(requireView(),
-                getString(R.string.feed_content_more_than_5_product_tag),
+                getString(com.tokopedia.content.common.R.string.feed_content_more_than_5_product_tag),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR).show()
         }
@@ -519,7 +519,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
         if (createPostModel.completeImageList[currentImagePos].products.size == 0 && !isDeletedFromBubble)
             Toaster.build(requireView(),
-                getString(R.string.feed_content_delete_toaster_text),
+                getString(com.tokopedia.content.common.R.string.feed_content_delete_toaster_text),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL).show()
     }
@@ -527,7 +527,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private fun updateTotalProductTaggedText() {
         val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
         tvImagePosition.text = String.format(
-            requireContext().getString(R.string.feed_content_position_text),
+            requireContext().getString(com.tokopedia.content.common.R.string.feed_content_position_text),
             pos
         )
     }
