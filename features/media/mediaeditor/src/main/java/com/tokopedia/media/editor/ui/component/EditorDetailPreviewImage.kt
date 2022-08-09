@@ -239,11 +239,15 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
             )
         }
 
-        return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
-//        return if (rotateNumber != -1)
-//            Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
-//        else
-//            Bitmap.createBitmap(rotatedBitmap, offsetX, 0, imageWidth, imageHeight)
+//        return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
+        return if (rotateNumber != -1)
+            Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
+        else {
+            val normalizeX = if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
+            val normalizeY = if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
+            Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
+        }
+
     }
 
     private fun initListener(){

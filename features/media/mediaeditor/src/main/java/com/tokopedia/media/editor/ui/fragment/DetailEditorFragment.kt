@@ -550,7 +550,6 @@ class DetailEditorFragment @Inject constructor(
 
         viewBinding?.btnSave?.setOnClickListener {
             if (data.isToolRotate() || data.isToolCrop()) {
-                if(data.isToolCrop()) viewBinding?.imgUcropPreview?.cropImageView?.setImageToWrapCropBounds()
                 // if current tools editor not rotate then skip crop data set by sent empty object on data
                 viewBinding?.imgUcropPreview?.cropRotate(
                     finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
