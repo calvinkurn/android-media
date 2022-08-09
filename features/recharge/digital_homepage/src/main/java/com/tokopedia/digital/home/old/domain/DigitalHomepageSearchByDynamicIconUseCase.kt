@@ -1,25 +1,22 @@
 package com.tokopedia.digital.home.old.domain
 
 import com.tokopedia.digital.home.model.RechargeHomepageSections
-import com.tokopedia.digital.home.model.Tracking
-import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchNewModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper.mapItemsToSearchCategoryModels
-import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageQueries
+import com.tokopedia.digital.home.presentation.viewmodel.QueryRechargeHomepageSection
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.network.exception.MessageErrorException
 
 class DigitalHomepageSearchByDynamicIconUseCase(graphqlRepository: GraphqlRepository) : GraphqlUseCase<RechargeHomepageSections.Response>(graphqlRepository) {
     suspend fun searchCategoryList(mapParams: Map<String, Any>, searchQuery: String): DigitalHomePageSearchNewModel {
-        setGraphqlQuery(RechargeHomepageQueries.SECTION_QUERY)
+        setGraphqlQuery(QueryRechargeHomepageSection())
         setTypeClass(RechargeHomepageSections.Response::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXPIRED_TIME).build())
         setRequestParams(mapParams)
 
         val rawCategoryData = mapItemsToSearchCategoryModels(executeOnBackground().response)
@@ -40,5 +37,7 @@ class DigitalHomepageSearchByDynamicIconUseCase(graphqlRepository: GraphqlReposi
                     RechargeHomepageViewModel.PARAM_RECHARGE_HOMEPAGE_SECTIONS_PERSONALIZE to enablePersonalize
             )
         }
+
+        private const val EXPIRED_TIME = 5
     }
 }
