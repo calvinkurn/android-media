@@ -696,9 +696,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun showChooseAddressBottomSheet() {
-        val chooseAddressBottomSheet = ChooseAddressBottomSheet()
-        chooseAddressBottomSheet.setListener(this)
-        chooseAddressBottomSheet.show(childFragmentManager, "")
+        if (isAdded) {
+            val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+            chooseAddressBottomSheet.setListener(this)
+            chooseAddressBottomSheet.show(childFragmentManager, "")
+        }
     }
 
     private fun checkAddressDataAndServiceArea(){
@@ -893,23 +895,25 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun showUniversalShareBottomSheet(imageSaved: String) {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@TokoFoodHomeFragment)
-            setUtmCampaignData(
-                pageName = PAGE_SHARE_NAME,
-                userId = userSession.userId,
-                pageId = PAGE_TYPE_HOME,
-                feature = SHARE
-            )
-            setMetaData(
-                tnTitle = shareHomeTokoFood?.thumbNailTitle.orEmpty(),
-                tnImage = shareHomeTokoFood?.thumbNailImage.orEmpty()
-            )
-            setOgImageUrl(imgUrl = shareHomeTokoFood?.ogImageUrl.orEmpty())
-            imageSaved(imageSaved)
-        }
+        if (isAdded) {
+            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                init(this@TokoFoodHomeFragment)
+                setUtmCampaignData(
+                    pageName = PAGE_SHARE_NAME,
+                    userId = userSession.userId,
+                    pageId = PAGE_TYPE_HOME,
+                    feature = SHARE
+                )
+                setMetaData(
+                    tnTitle = shareHomeTokoFood?.thumbNailTitle.orEmpty(),
+                    tnImage = shareHomeTokoFood?.thumbNailImage.orEmpty()
+                )
+                setOgImageUrl(imgUrl = shareHomeTokoFood?.ogImageUrl.orEmpty())
+                imageSaved(imageSaved)
+            }
 
-        universalShareBottomSheet?.show(childFragmentManager, this)
+            universalShareBottomSheet?.show(childFragmentManager, this)
+        }
     }
 
     private fun logExceptionTokoFoodHome(
