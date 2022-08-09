@@ -68,11 +68,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_above="@id/container_action_bottom"
-            android:background="@drawable/bottomsheet_background_and_shadow"
+            android:background="@drawable/promo_checkout_marketplace_module_ticker_bo_clashing_background_and_shadow"
             android:padding="16dp">
 
-            <com.tokopedia.iconunify.IconUnify
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_bo_clashing"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 app:icon_name="COURIER_FAST"
