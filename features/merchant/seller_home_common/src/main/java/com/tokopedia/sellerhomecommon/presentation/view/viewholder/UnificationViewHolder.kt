@@ -123,15 +123,16 @@ class UnificationViewHolder(
             val tab = data.tabs.firstOrNull { it.isSelected }
                 ?: data.tabs.firstOrNull() ?: return@with
 
-            val isError = !tab.data?.error.isNullOrBlank()
-            if (isError) {
-                showErrorState(element)
-                return@with
-            }
-
             if (tab.isUnauthorized) {
                 showUnauthorizedState(element)
             } else {
+
+                val isError = !tab.data?.error.isNullOrBlank()
+                if (isError) {
+                    showErrorState(element)
+                    return@with
+                }
+
                 showTableWidget(element, tab)
                 val isEmpty = tab.data?.isWidgetEmpty().orTrue()
                 if (isEmpty) {

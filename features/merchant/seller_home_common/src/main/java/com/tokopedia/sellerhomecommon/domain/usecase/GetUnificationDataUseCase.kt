@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -14,6 +15,7 @@ import com.tokopedia.sellerhomecommon.domain.model.GetUnificationDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.async
@@ -129,27 +131,11 @@ class GetUnificationDataUseCase(
 
                 return@map coroutineScope {
                     async {
-                        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(
-                            listOf(dataKeyModel), dynamicParameter
-                        )
-                        getTableDataUseCase.setUseCache(isFromCache)
-                        val tableResult = try {
-                            val data = getTableDataUseCase.executeOnBackground()
-                            if (data.isNullOrEmpty()) {
-                                throw MessageErrorException(EMPTY_DATA_ERROR_MESSAGE)
-                            } else {
-                                data.first()
-                            }
-                        } catch (e: Exception) {
-                            TableDataUiModel(
-                                dataKey = tab.dataKey,
-                                error = e.localizedMessage.orEmpty()
-                            )
-                        }
+                        val tabData = fetchTableData(tab, dataKeyModel, isFromCache)
                         return@async model.copy(
                             tabs = model.tabs.map tab@{
                                 if (tab.dataKey == it.dataKey) {
-                                    it.data = tableResult
+                                    it.data = tabData
                                     it.isSelected = true
                                     it.isVisited = true
                                 } else {
@@ -161,6 +147,36 @@ class GetUnificationDataUseCase(
                     }
                 }
             }.awaitAll()
+    }
+
+    private suspend fun fetchTableData(
+        tab: UnificationTabUiModel,
+        dataKeyModel: TableAndPostDataKey,
+        isFromCache: Boolean
+    ): TableDataUiModel {
+        val metricParam = getMetricParamFromTab(tab.metricParam)
+        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(
+            listOf(dataKeyModel), dynamicParameter.copy(subPageSource = metricParam.subPageSource)
+        )
+        getTableDataUseCase.setUseCache(isFromCache)
+        val tableResult = try {
+            val data = getTableDataUseCase.executeOnBackground()
+            if (data.isEmpty()) {
+                throw MessageErrorException(EMPTY_DATA_ERROR_MESSAGE)
+            } else {
+                data.first()
+            }
+        } catch (e: Exception) {
+            TableDataUiModel(
+                dataKey = tab.dataKey,
+                error = e.localizedMessage.orEmpty()
+            )
+        }
+        return tableResult
+    }
+
+    private fun getMetricParamFromTab(metricParam: String): DynamicParameterModel {
+        return Gson().fromJson(metricParam, DynamicParameterModel::class.java)
     }
 
     companion object {

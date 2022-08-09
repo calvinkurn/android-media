@@ -874,23 +874,28 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun applyUnificationTabSelected(
         element: UnificationWidgetUiModel,
-        tab: UnificationTabUiModel
+        selectedTab: UnificationTabUiModel
     ) {
         val unificationWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+        val isTabAuthorized = !selectedTab.isUnauthorized
         val widgets = adapter.data.map { widget ->
             return@map if (widget.dataKey == element.dataKey && widget is UnificationWidgetUiModel) {
                 val unificationWidget = widget.apply unificationWidget@{
                     val widgetData = widget.data
                     data = widgetData?.copy(
                         tabs = widgetData.tabs.map tab@{
-                            it.isSelected = it.dataKey == tab.dataKey
+                            it.isSelected = it.dataKey == selectedTab.dataKey
                             return@tab it
                         }
                     )
                     impressHolder = ImpressHolder()
-                    showLoadingState = true
+                    if (isTabAuthorized) {
+                        showLoadingState = true
+                    }
                 }.copyWidget()
-                unificationWidgets.add(unificationWidget)
+                if (isTabAuthorized) {
+                    unificationWidgets.add(unificationWidget)
+                }
                 unificationWidget
             } else {
                 widget
