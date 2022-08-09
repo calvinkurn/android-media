@@ -707,6 +707,14 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             if (promoListItemUiModel.uiData.uniqueId == order?.uniqueId &&
                     !order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.add(promoListItemUiModel.uiData.promoCode)
+                // if coupon is bebas ongkir promo, then set shipping id and sp id
+                if (promoListItemUiModel.uiState.isBebasOngkir) {
+                    val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
+                    boData?.let {
+                        order.shippingId = it.shippingId
+                        order.spId = it.shipperProductId
+                    }
+                }
             } else if (promoListItemUiModel.uiData.shopId == 0 &&
                     !validateUsePromoRequest.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 validateUsePromoRequest.codes.add(promoListItemUiModel.uiData.promoCode)
@@ -717,6 +725,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             if (promoListItemUiModel.uiData.uniqueId == order?.uniqueId &&
                     order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.remove(promoListItemUiModel.uiData.promoCode)
+                // if coupon is bebas ongkir promo, then reset shipping id and sp id
+                if (promoListItemUiModel.uiState.isBebasOngkir) {
+                    order.shippingId = 0
+                    order.spId = 0
+                }
             } else if (promoListItemUiModel.uiData.shopId == 0 &&
                     validateUsePromoRequest.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 validateUsePromoRequest.codes.remove(promoListItemUiModel.uiData.promoCode)

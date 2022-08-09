@@ -148,6 +148,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     coachMark = couponItem.coachMark
                     clashingInfos = couponItem.clashingInfos
                     boClashingInfos = couponItem.boClashingInfos
+                    boAdditionalData = couponItem.additionalBoData
                     val tmpCurrentClashingPromoList = ArrayList<String>()
                     var tmpClashingIconUrl = ""
                     val tmpErrorMessage = StringBuilder()

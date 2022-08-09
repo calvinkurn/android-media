@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.promocheckoutmarketplace.data.response.AdditionalBoData
 import com.tokopedia.promocheckoutmarketplace.data.response.BenefitDetail
 import com.tokopedia.promocheckoutmarketplace.data.response.ClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoCoachmark
@@ -34,9 +35,6 @@ data class PromoListItemUiModel(
             // Store clashing info data from backend.
             // This should not be changed. Initialize once after get data response
             var clashingInfos: List<ClashingInfo> = emptyList(),
-            // Store clashing info with BO
-            // When user choose BO OR choose promo that clashes with BO, info will be shown in bottomsheet
-            var boClashingInfos: List<ClashingInfo> = emptyList(),
             // Store current applied promo causing this promo clash and can't be selected, based on data from #clashingInfo
             var currentClashingPromo: MutableList<String> = mutableListOf(),
             var promoInfos: List<PromoInfo> = emptyList(),
@@ -44,7 +42,14 @@ data class PromoListItemUiModel(
             var tabId: String = "",
             var shippingOptions: String = "",
             var paymentOptions: String = "",
-            var benefitDetail: BenefitDetail = BenefitDetail()
+            var benefitDetail: BenefitDetail = BenefitDetail(),
+
+            // fields related to bebas ongkir promo
+
+            // Store clashing info with BO
+            // When user choose BO OR choose promo that clashes with BO, info will be shown in bottomsheet
+            var boClashingInfos: List<ClashingInfo> = emptyList(),
+            var boAdditionalData: List<AdditionalBoData> = emptyList()
     )
 
     data class UiState(

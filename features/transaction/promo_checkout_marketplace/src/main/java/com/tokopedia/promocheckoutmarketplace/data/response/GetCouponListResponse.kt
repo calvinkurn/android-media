@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -196,6 +197,25 @@ data class Coupon(
         val benefitDetail: List<BenefitDetail> = emptyList(),
         @SerializedName("is_bebas_ongkir")
         val isBebasOngkir: Boolean = false,
+        @SerializedName("additional_bo_data")
+        val additionalBoData: List<AdditionalBoData> = emptyList()
+)
+
+data class AdditionalBoData(
+        @SerializedName("code")
+        val code: String = "",
+        @SerializedName("unique_id")
+        val uniqueId: String = "",
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("shipping_id")
+        val shippingId: Int = 0,
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("sp_id")
+        val shipperProductId: Int = 0,
+        @SerializedName("benefit_amount")
+        val benefitAmount: Double = 0.0,
+        @SerializedName("promo_id")
+        val promoId: Long = 0,
 )
 
 data class BenefitDetail(
