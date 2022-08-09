@@ -1,6 +1,5 @@
 package com.tokopedia.campaign.utils.extension
 
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.ApplinkConst
@@ -22,6 +21,6 @@ fun Fragment.doOnDelayFinished(delay: Long, operation: () -> Unit) {
 fun Fragment.routeToUrl(url : String) {
     if (!isAdded) return
     val encodedUrl = URLEncoder.encode(url, "UTF-8")
-    val route = kotlin.String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+    val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
     RouteManager.route(activity ?: return, route)
 }

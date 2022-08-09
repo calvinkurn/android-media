@@ -1,4 +1,4 @@
-package com.tokopedia.campaign.utils.scroll
+package com.tokopedia.utils.scroll
 
 import androidx.recyclerview.widget.RecyclerView
 

@@ -1,8 +1,8 @@
-package com.tokopedia.campaign.utils.extension
+package com.tokopedia.kotlin.extensions.view
 
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.campaign.utils.scroll.RecyclerViewScrollListener
+import com.tokopedia.utils.scroll.RecyclerViewScrollListener
 
 fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoothScroller.SNAP_TO_START) {
     val smoothScroller = object : LinearSmoothScroller(this.context) {

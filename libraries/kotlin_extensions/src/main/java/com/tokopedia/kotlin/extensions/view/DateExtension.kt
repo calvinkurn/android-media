@@ -1,6 +1,5 @@
-package com.tokopedia.campaign.utils.extension
+package com.tokopedia.kotlin.extensions.view
 
-import com.tokopedia.campaign.utils.constant.LocaleConstant
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -9,8 +8,8 @@ import java.util.TimeZone
 
 fun Date.formatTo(
     desiredOutputFormat: String,
-    locale: Locale = LocaleConstant.INDONESIA,
-    timeZone: TimeZone = TimeZone.getTimeZone("GMT")
+    locale: Locale = Locale("id", "ID"),
+    timeZone: TimeZone = TimeZone.getDefault()
 ): String {
     return try {
         val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)

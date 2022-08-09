@@ -1,6 +1,5 @@
 package com.tokopedia.campaign.utils.extension
 
-import android.graphics.Paint
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
@@ -9,20 +8,11 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
-import androidx.annotation.ColorRes
-import androidx.appcompat.widget.AppCompatTextView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 
 private const val SUBSTRING_INDEX_NOT_FOUND = -1
 
-fun AppCompatTextView.strikethrough() {
-    this.paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-}
-
-fun AppCompatTextView.setTextColorCompat(@ColorRes resourceId: Int) {
-    val color = ContextCompat.getColor(this.context, resourceId)
-    this.setTextColor(color)
-}
 
 /**
  * The function will finds the specified substring and convert it to a hyperlink
@@ -32,7 +22,7 @@ fun AppCompatTextView.setTextColorCompat(@ColorRes resourceId: Int) {
  * Otherwise, no substring will be converted to hyperlink
  * @param onHyperlinkClick: Chucks of code that will be triggered if any of the hyperlink substring is clicked
  */
-fun AppCompatTextView.setHyperlinkText(
+fun TextView.setHyperlinkText(
     fullText: String,
     hyperlinkSubstring: String,
     ignoreCase: Boolean = true,

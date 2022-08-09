@@ -6,7 +6,7 @@ import java.util.Date
 import java.util.TimeZone
 
 
-fun String.toDate(inputFormat: String, timeZone: TimeZone = TimeZone.getTimeZone("GMT")): Date {
+fun String.toDate(inputFormat: String, timeZone: TimeZone = TimeZone.getDefault()): Date {
     return try {
         val format = SimpleDateFormat(inputFormat, LocaleConstant.INDONESIA)
         format.timeZone = timeZone
@@ -14,13 +14,5 @@ fun String.toDate(inputFormat: String, timeZone: TimeZone = TimeZone.getTimeZone
     } catch (e: Exception) {
         e.printStackTrace()
         Date()
-    }
-}
-
-fun String.digitsOnly(): Long {
-    return try {
-        this.filter { it.isDigit() }.toLong()
-    } catch (e: Exception) {
-        0
     }
 }
