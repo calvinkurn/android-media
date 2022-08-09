@@ -906,10 +906,14 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(shouldPlay = false)
             is PlayViewerNewAction.ClickQuizOptionAction -> handleClickQuizOption(action.item)
             is PlayViewerNewAction.BuyProduct -> handleBuyProduct(
-                product = action.product, action = ProductAction.Buy,
+                product = action.product,
+                action = ProductAction.Buy,
+                isProductFeatured = action.isProductFeatured,
             )
             is PlayViewerNewAction.AtcProduct -> handleBuyProduct(
-                product = action.product, action = ProductAction.AddToCart,
+                product = action.product,
+                action = ProductAction.AddToCart,
+                isProductFeatured = action.isProductFeatured,
             )
 
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
@@ -935,9 +939,19 @@ class PlayViewModel @AssistedInject constructor(
             OpenUserReport -> handleUserReport()
             is SendUpcomingReminder -> handleSendReminder(action.section, false)
 
-            is BuyProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.Buy)
+            is BuyProductAction -> handleBuyProduct(
+                action.sectionInfo,
+                action.product,
+                ProductAction.Buy,
+                isProductFeatured = false
+            )
             is BuyProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.Buy)
-            is AtcProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.AddToCart)
+            is AtcProductAction -> handleBuyProduct(
+                action.sectionInfo,
+                action.product,
+                ProductAction.AddToCart,
+                isProductFeatured = false
+            )
             is AtcProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.AddToCart)
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
@@ -2289,14 +2303,18 @@ class PlayViewModel @AssistedInject constructor(
         sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty,
         product: PlayProductUiModel.Product,
         action: ProductAction,
+        isProductFeatured: Boolean,
     ) {
-        if (product.isVariantAvailable) openVariantDetail(product, action, sectionInfo)
+        if (product.isVariantAvailable) openVariantDetail(product, sectionInfo, isProductFeatured)
         else {
             needLogin {
                 addProductToCart(product) { cartId ->
                     _uiEvent.emit(
-                        if (action == ProductAction.Buy) BuySuccessEvent(product, false, cartId, sectionInfo)
-                        else AtcSuccessEvent(product, false, cartId, sectionInfo)
+                        if (action == ProductAction.Buy) {
+                            BuySuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                        } else {
+                            AtcSuccessEvent(product, false, cartId, sectionInfo, isProductFeatured)
+                        }
                     )
                 }
             }
@@ -2314,8 +2332,22 @@ class PlayViewModel @AssistedInject constructor(
 
         addProductToCart(selectedVariant.data.variantDetail) { cartId ->
             _uiEvent.emit(
-                if (action == ProductAction.Buy) BuySuccessEvent(selectedVariant.data.variantDetail, true, cartId, selectedVariant.data.sectionInfo)
-                else AtcSuccessEvent(selectedVariant.data.variantDetail, true, cartId, selectedVariant.data.sectionInfo)
+                if (action == ProductAction.Buy) {
+                    BuySuccessEvent(
+                        selectedVariant.data.variantDetail,
+                        true,
+                        cartId,
+                        selectedVariant.data.sectionInfo,
+                        selectedVariant.data.isFeatured,
+                    )
+                }
+                else AtcSuccessEvent(
+                    selectedVariant.data.variantDetail,
+                    true,
+                    cartId,
+                    selectedVariant.data.sectionInfo,
+                    selectedVariant.data.isFeatured,
+                )
             )
         }
     }
@@ -2523,12 +2555,12 @@ class PlayViewModel @AssistedInject constructor(
      */
     private fun openVariantDetail(
         product: PlayProductUiModel.Product,
-        action: ProductAction,
         sectionUiModel: ProductSectionUiModel.Section,
+        isProductFeatured: Boolean,
     ) {
         _selectedVariant.value = NetworkResult.Loading
         viewModelScope.launchCatchError(block = {
-            _selectedVariant.value = NetworkResult.Success(repo.getVariant(product))
+            _selectedVariant.value = NetworkResult.Success(repo.getVariant(product, isProductFeatured))
             _selectedVariant.update {
                 if(it is NetworkResult.Success){
                     it.copy(data = it.data.copy(sectionInfo = sectionUiModel))

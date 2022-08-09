@@ -1090,7 +1090,6 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun onScrubStarted() {
-//        productFeaturedView?.setTransparent(true)
         pinnedView?.setTransparent(true)
 
         if (!orientation.isLandscape) return
@@ -1100,7 +1099,6 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun onScrubEnded() {
-//        productFeaturedView?.setTransparent(false)
         pinnedView?.setTransparent(false)
 
         if (!orientation.isLandscape) return
@@ -1868,7 +1866,12 @@ class PlayUserInteractionFragment @Inject constructor(
                     )
                 }
 
-                playViewModel.submitAction(PlayViewerNewAction.BuyProduct(event.product))
+                playViewModel.submitAction(
+                    PlayViewerNewAction.BuyProduct(
+                        event.product,
+                        isProductFeatured = true,
+                    ),
+                )
             }
             is ProductCarouselUiComponent.Event.OnAtcClicked -> {
                 if (event.product.isVariantAvailable) {
@@ -1878,7 +1881,12 @@ class PlayUserInteractionFragment @Inject constructor(
                     )
                 }
 
-                playViewModel.submitAction(PlayViewerNewAction.AtcProduct(event.product))
+                playViewModel.submitAction(
+                    PlayViewerNewAction.AtcProduct(
+                        event.product,
+                        isProductFeatured = true,
+                    )
+                )
             }
             is ProductCarouselUiComponent.Event.OnClicked -> {
                 RouteManager.route(
