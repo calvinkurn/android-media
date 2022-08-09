@@ -227,14 +227,11 @@ class UnificationViewHolder(
     private fun setupLastUpdate(element: UnificationWidgetUiModel, tab: UnificationTabUiModel) {
         with(successStateBinding.luvShcUnification) {
             element.data?.lastUpdated?.let { lastUpdated ->
-                val isAuthorized = !tab.isUnauthorized
-                isVisible = lastUpdated.isEnabled && isAuthorized
-                if (isAuthorized) {
-                    setLastUpdated(lastUpdated.lastUpdatedInMillis)
-                    setRefreshButtonVisibility(lastUpdated.needToUpdated)
-                    setRefreshButtonClickListener {
-                        listener.onReloadWidget(element)
-                    }
+                isVisible = lastUpdated.isEnabled
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                setRefreshButtonVisibility(lastUpdated.needToUpdated)
+                setRefreshButtonClickListener {
+                    listener.onReloadWidget(element)
                 }
             }
         }
@@ -244,7 +241,7 @@ class UnificationViewHolder(
         with(successStateBinding) {
             val shouldShowCta = tab.config.appLink.isNotBlank()
                     && tab.config.ctaText.isNotBlank()
-                    && !tab.isUnauthorized
+                    && !tab.data?.isWidgetEmpty().orTrue()
             if (shouldShowCta) {
                 val iconWidth = root.context.resources.getDimension(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
