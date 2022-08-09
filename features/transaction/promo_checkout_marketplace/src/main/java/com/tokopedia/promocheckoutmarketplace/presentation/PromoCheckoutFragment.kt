@@ -803,6 +803,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
             if (fragmentUiModel.uiState.hasSelectedBoClashingPromo && fragmentUiModel.uiData.boClashingMessage.isNotEmpty()) {
                 it.labelBoClashing.text = fragmentUiModel.uiData.boClashingMessage
+                it.imgBoClashing.setImageUrl(fragmentUiModel.uiData.boClashingImage)
                 it.containerTickerBoClashing.show()
             } else {
                 it.containerTickerBoClashing.gone()

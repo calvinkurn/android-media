@@ -12,7 +12,8 @@ data class FragmentUiModel(
             var exception: Throwable? = null,
             var preAppliedPromoCode: List<String> = emptyList(),
             var defaultErrorMessage: String = "",
-            var boClashingMessage: String = ""
+            var boClashingMessage: String = "",
+            var boClashingImage: String = ""
     )
 
     data class UiState(

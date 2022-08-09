@@ -1132,6 +1132,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         if (selectedItem.uiData.boClashingInfos.isNotEmpty()) {
             fragmentUiModel.value?.let {
                 it.uiData.boClashingMessage = selectedItem.uiData.boClashingInfos.firstOrNull()?.message ?: ""
+                it.uiData.boClashingImage = selectedItem.uiData.boClashingInfos.firstOrNull()?.icon ?: ""
                 it.uiState.hasSelectedBoClashingPromo = selectedItem.uiState.isSelected
 
                 _fragmentUiModel.value = it
