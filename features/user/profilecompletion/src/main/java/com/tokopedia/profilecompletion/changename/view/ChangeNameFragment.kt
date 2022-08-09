@@ -111,21 +111,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
 		    when {
 			s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
 			    when {
-				s.isEmpty() -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_cant_empty)))
-				s.length < MINIMUM_LENGTH -> onErrorChangeName(
-				    Throwable(
-					resources.getString(
-					    R.string.error_name_min_3
-					)
-				    )
-				)
-				s.length > MAXIMUM_LENGTH -> onErrorChangeName(
-				    Throwable(
-					resources.getString(
-					    R.string.error_name_max_35
-					)
-				    )
-				)
+					s.isEmpty() -> onErrorChangeName(Throwable(activity?.resources?.getString(R.string.error_name_cant_empty)))
+					s.length < MINIMUM_LENGTH -> onErrorChangeName(Throwable(activity?.resources?.getString(R.string.error_name_min_3)))
+					s.length > MAXIMUM_LENGTH -> onErrorChangeName(Throwable(activity?.resources?.getString(R.string.error_name_max_35)))
 			    }
 			    changeNameButtonSave?.isEnabled = false
 			}
@@ -153,10 +141,10 @@ class ChangeNameFragment : BaseDaggerFragment() {
 	    infoTracker.trackOnClickBtnSimpanChangeNameClick()
 	    val fullName = changeNameTextName?.editText?.text
 	    if (fullName != null) {
-		showLoading()
-		viewModel.changePublicName(changeNameTextName?.editText?.text.toString())
+			showLoading()
+			viewModel.changePublicName(changeNameTextName?.editText?.text.toString())
 	    } else {
-		onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
+			onErrorChangeName(Throwable(activity?.resources?.getString(R.string.error_name_too_short)))
 	    }
 	}
     }

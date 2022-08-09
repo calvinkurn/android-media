@@ -7,6 +7,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.ApplinkConst
@@ -130,12 +131,12 @@ class ProfileViewHolder(
             if (context.isDarkMode()) {
                 MethodChecker.setBackground(
                     binding?.accountUserItemProfileContainer,
-                    MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop_dark)
+                    VectorDrawableCompat.create(context.resources, R.drawable.ic_account_backdrop_dark, context.theme)
                 )
             } else {
                 MethodChecker.setBackground(
                     binding?.accountUserItemProfileContainer,
-                    MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop)
+                    VectorDrawableCompat.create(context.resources, R.drawable.ic_account_backdrop, context.theme)
                 )
             }
         } catch (e: Exception) {}
