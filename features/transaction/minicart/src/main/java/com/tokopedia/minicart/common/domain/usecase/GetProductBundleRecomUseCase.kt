@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
-import com.tokopedia.minicart.common.domain.data.MiniCartProductBundleRecomData
+import com.tokopedia.minicart.common.domain.data.MiniCartProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery
 import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery.PARAM_EXCLUDE_GROUP_IDS
 import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery.PARAM_PRODUCT_IDS
@@ -13,13 +13,13 @@ import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery.PAR
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetMiniCartProductBundleRecomUseCase @Inject constructor(
+class GetProductBundleRecomUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
-): GraphqlUseCase<MiniCartProductBundleRecomData>(graphqlRepository) {
+): GraphqlUseCase<MiniCartProductBundleRecomResponse>(graphqlRepository) {
 
     init {
-        setTypeClass(MiniCartProductBundleRecomData::class.java)
+        setTypeClass(MiniCartProductBundleRecomResponse::class.java)
         setGraphqlQuery(GetProductBundleRecomQuery)
     }
 
@@ -27,7 +27,7 @@ class GetMiniCartProductBundleRecomUseCase @Inject constructor(
         productIds: List<String>,
         excludeBundleIds: List<String>,
         queryParam: String = "type=SINGLE,MULTIPLE"
-    ): MiniCartProductBundleRecomData {
+    ): MiniCartProductBundleRecomResponse {
         setRequestParams(RequestParams.create().apply {
             putString(PARAM_WAREHOUSE_ID, chosenAddressRequestHelper.getChosenAddress().tokonow.warehouseId)
             putObject(PARAM_PRODUCT_IDS, productIds)

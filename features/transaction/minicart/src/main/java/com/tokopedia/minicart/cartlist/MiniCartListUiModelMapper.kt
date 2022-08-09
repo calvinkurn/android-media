@@ -27,7 +27,7 @@ import com.tokopedia.minicart.common.data.response.minicartlist.Shop
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
-import com.tokopedia.minicart.common.domain.data.MiniCartProductBundleRecomData
+import com.tokopedia.minicart.common.domain.data.MiniCartProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
@@ -69,14 +69,14 @@ class MiniCartListUiModelMapper @Inject constructor() {
     }
 
     fun mapToProductBundleUiModel(
-        widgetResponse: MiniCartProductBundleRecomData
+        widgetResponse: MiniCartProductBundleRecomResponse
     ) = MiniCartProductBundleRecomUiModel(
         title = widgetResponse.tokonowBundleWidget.data.widgetName,
         productBundleList = mapToProductBundleListItemUiModel(widgetResponse.tokonowBundleWidget.data.widgetData)
     )
 
     private fun mapToProductBundleListItemUiModel(
-        widgetData: List<MiniCartProductBundleRecomData.TokonowBundleWidget.Data.WidgetData>
+        widgetData: List<MiniCartProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData>
     ): List<ShopHomeProductBundleItemUiModel> {
         return widgetData.map {
             ShopHomeProductBundleItemUiModel().apply {

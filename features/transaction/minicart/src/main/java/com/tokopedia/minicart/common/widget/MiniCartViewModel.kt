@@ -30,7 +30,6 @@ import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomShimmeringUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
@@ -45,13 +44,13 @@ import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.MiniCartProductBundleRecomData
+import com.tokopedia.minicart.common.domain.data.MiniCartProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemBundleGroup
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartProductBundleRecomUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetProductBundleRecomUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
@@ -67,7 +66,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                                             private val deleteCartUseCase: DeleteCartUseCase,
                                             private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                             private val updateCartUseCase: UpdateCartUseCase,
-                                            private val getMinicartProductBundleRecomUseCase: GetMiniCartProductBundleRecomUseCase,
+                                            private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase,
                                             private val addToCartBundleUseCase: AddToCartBundleUseCase,
                                             private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase,
                                             private val miniCartListUiModelMapper: MiniCartListUiModelMapper,
@@ -248,7 +247,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         launchCatchError(context = Dispatchers.IO, block = {
             showProductBundleRecomShimmering(miniCartListUiModel)
 
-            val response = getMinicartProductBundleRecomUseCase.execute(
+            val response = getProductBundleRecomUseCase.execute(
                 productIds = miniCartListUiModel.availableProductIds,
                 excludeBundleIds = miniCartListUiModel.availableBundleIds
             )
@@ -264,7 +263,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         updateVisitablesBackgroundState(miniCartListUiModel.visitables)
     }
 
-    private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, response: MiniCartProductBundleRecomData) {
+    private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, response: MiniCartProductBundleRecomResponse) {
         if (response.tokonowBundleWidget.data.widgetData.isNotEmpty()) {
             val productBundleRecom = miniCartListUiModelMapper.mapToProductBundleUiModel(response)
             miniCartListUiModel.visitables.removeFirst { it is MiniCartProductBundleRecomShimmeringUiModel }

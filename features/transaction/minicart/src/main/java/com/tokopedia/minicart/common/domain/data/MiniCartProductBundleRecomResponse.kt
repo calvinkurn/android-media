@@ -2,7 +2,7 @@ package com.tokopedia.minicart.common.domain.data
 
 import com.google.gson.annotations.SerializedName
 
-data class MiniCartProductBundleRecomData(
+data class MiniCartProductBundleRecomResponse(
     @SerializedName("TokonowBundleWidget")
     val tokonowBundleWidget: TokonowBundleWidget
 ) {

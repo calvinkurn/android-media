@@ -9,8 +9,10 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
+import com.tokopedia.minicart.common.domain.data.MiniCartProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 
@@ -169,6 +171,19 @@ object DataProvider {
     fun provideUpdateCartFailed(): UpdateCartV2Data {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/update_cart_failed"), UpdateCartGqlResponse::class.java)
         return json.updateCartData
+    }
+
+    fun provideProductBundleRecommendation(): MiniCartProductBundleRecomResponse {
+        return gson.fromJson(
+            fileUtil.getJsonFromAsset("assets/get_product_bundle_recommendation"),
+            MiniCartProductBundleRecomResponse::class.java
+        )
+    }
+
+    fun provideProductBundleRecommendationData(): MiniCartProductBundleRecomUiModel {
+        return miniCartListUiModelMapper.mapToProductBundleUiModel(
+            widgetResponse = provideProductBundleRecommendation()
+        )
     }
 
 }
