@@ -21,7 +21,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class ProductBundleActivity : BaseSimpleActivity() {
 
-    private var entrypointFragment: EntrypointFragment = EntrypointFragment()
+    private var _entrypointFragment: EntrypointFragment = EntrypointFragment()
+    val entrypointFragment get() = _entrypointFragment
 
     override fun getParentViewResourceID(): Int = R.id.parent_view
 
@@ -40,7 +41,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun getNewFragment(): Fragment = entrypointFragment
+    override fun getNewFragment(): Fragment = _entrypointFragment
 
     private fun directToBundleSelectionBottomSheet(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +61,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
         val source = ProductBundleApplinkMapper.getPageSourceFromUri(data)
         val warehouseId = ProductBundleApplinkMapper.getWarehouseIdFromUri(data)
 
-        entrypointFragment = newInstance(
+        _entrypointFragment = newInstance(
             bundleId = bundleId,
             selectedProductsId = ArrayList(selectedProductIds),
             source = source,
@@ -92,5 +93,4 @@ class ProductBundleActivity : BaseSimpleActivity() {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
-
 }
