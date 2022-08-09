@@ -124,7 +124,7 @@ class GetTopAdsHeadlineUseCase constructor(graphqlRepository: GraphqlRepository)
         headlineProductCount: String,
         item: String,
         device: String = "android",
-        seenAds: String
+        seenAds: String = "0"
     ): String {
         val map = mapOf(
             PARAM_USER_ID to userId,
