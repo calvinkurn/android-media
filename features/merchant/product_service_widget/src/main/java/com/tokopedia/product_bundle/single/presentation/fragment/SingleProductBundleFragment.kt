@@ -63,7 +63,7 @@ class SingleProductBundleFragment(
     private val selectedBundleId: String = "",
     private val selectedProductId: Long = 0L, // usually variant child productID
     private val emptyVariantProductIds: List<String> = emptyList(),
-    private val pageSource: String = "",
+    private val pageSource: String = ""
 ) : BaseDaggerFragment(), BundleItemListener {
 
     @Inject
