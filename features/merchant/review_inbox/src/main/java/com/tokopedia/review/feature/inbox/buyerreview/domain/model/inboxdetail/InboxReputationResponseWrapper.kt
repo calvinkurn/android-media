@@ -21,14 +21,8 @@ data class InboxReputationResponseWrapper(
             @SerializedName("hasNext")
             @Expose
             val hasNext: Boolean = false,
-            @SerializedName("hasPrev")
-            @Expose
-            val hasPrev: Boolean = false,
         ) {
             data class Reputation(
-                @SerializedName("inboxIdStr")
-                @Expose
-                val inboxIdStr: String = "",
                 @SerializedName("shopIdStr")
                 @Expose
                 val shopIdStr: String = "",
@@ -52,9 +46,6 @@ data class InboxReputationResponseWrapper(
                     @SerializedName("invoiceRefNum")
                     @Expose
                     val invoiceRefNum: String = "",
-                    @SerializedName("invoiceUrl")
-                    @Expose
-                    val invoiceUrl: String = "",
                     @SerializedName("createTimeFmt")
                     @Expose
                     val createTimeFmt: String = "",
@@ -64,12 +55,6 @@ data class InboxReputationResponseWrapper(
                     @SerializedName("name")
                     @Expose
                     val name: String = "",
-                    @SerializedName("uri")
-                    @Expose
-                    val uri: String = "",
-                    @SerializedName("role")
-                    @Expose
-                    val role: String = "",
                     @SerializedName("roleId")
                     @Expose
                     val roleId: String = "0",

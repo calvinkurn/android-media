@@ -61,19 +61,15 @@ open class GetInboxReputationUseCase @Inject constructor(
                 readStatus: ${'$'}readStatus
               ) {
                 reputationList {
-                  inboxIdStr
                   shopIdStr
                   userIdStr
                   reputationIdStr
                   orderData {
                     invoiceRefNum
-                    invoiceUrl
                     createTimeFmt
                   }
                   revieweeData {
                     name
-                    uri
-                    role
                     roleId
                     picture
                     buyerBadge {
@@ -109,7 +105,6 @@ open class GetInboxReputationUseCase @Inject constructor(
                   }
                 }
                 hasNext
-                hasPrev
               }
             }
         """
