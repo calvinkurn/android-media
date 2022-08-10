@@ -6,16 +6,6 @@ import javax.inject.Inject
 
 class VpsPackageViewModel @Inject constructor() : ViewModel() {
 
-    private var vpsPackage: VpsPackageUiModel? = null
-
-    fun setSelectedVpsPackage(vpsPackage: VpsPackageUiModel) {
-        this.vpsPackage = vpsPackage
-    }
-
-    fun getSelectedVpsPackage(): VpsPackageUiModel? {
-        return this.vpsPackage
-    }
-
     fun markAsSelected(
         selectedVpsPackageId: Long,
         vpsPackages: List<VpsPackageUiModel>
@@ -24,9 +14,13 @@ class VpsPackageViewModel @Inject constructor() : ViewModel() {
             if (vpsPackage.packageId == selectedVpsPackageId) {
                 vpsPackage.copy(isSelected = true)
             } else {
-                vpsPackage
+                vpsPackage.copy(isSelected = false)
             }
         }
+    }
+
+    fun findSelectedVpsPackage(vpsPackages: List<VpsPackageUiModel>): VpsPackageUiModel? {
+        return vpsPackages.find { vpsPackage -> vpsPackage.isSelected }
     }
 
 }

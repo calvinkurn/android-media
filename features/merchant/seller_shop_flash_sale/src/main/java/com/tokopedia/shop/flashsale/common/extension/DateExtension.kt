@@ -161,3 +161,12 @@ fun Date.minuteDifference(): Long {
 
     return TimeUnit.MILLISECONDS.toMinutes(differenceInMillis)
 }
+
+fun Date.daysDifference(date : Date): Long {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+
+    val differenceInMillis = calendar.timeInMillis - date.time
+
+    return TimeUnit.MILLISECONDS.toDays(differenceInMillis)
+}

@@ -7,7 +7,6 @@ import java.util.Date
 @Parcelize
 data class VpsPackageUiModel(
     val currentQuota: Int,
-    val isDisabled: Boolean ,
     val originalQuota: Int,
     val packageEndTime: Date ,
     val packageId: Long,

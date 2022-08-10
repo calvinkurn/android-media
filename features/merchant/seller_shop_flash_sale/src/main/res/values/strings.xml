@@ -97,6 +97,7 @@
     <string name="sfs_hex_code">Kode Hexa</string>
     <string name="sfs_coachmark_first">Isi informasi campaign-mu dan klik lanjut untuk ke tahap berikutnya, ya.</string>
     <string name="sfs_coachmark_second">Jika ingin melengkapi informasi campaign di lain waktu, klik Simpan Draft di sini.</string>
+    <string name="sfs_coachmark_third">Jangan lupa untuk pilih sumber kuota campaign-mu di sini sebelum lanjut, ya!</string>
     <string name="sfs_error_message_min_char">Min. 5 huruf</string>
     <string name="sfs_error_message_forbidden_words">Mengandung kata terlarang. Pelajari</string>
     <string name="sfs_error_message_field_not_filled">Wajib diisi</string>
@@ -109,7 +110,6 @@
     <string name="sfs_cancel_edit_campaign_confirmation_description">Perubahan info campaign tidak akan tersimpan dan campaign-mu akan sama seperti sebelumnya</string>
     <string name="sfs_confirm_delete">Ya, Hapus</string>
     <string name="sfs_confirm_exit">Ya, Keluar</string>
-    <string name="sfs_date_picker_description">Kamu hanya bisa menjadwal maks. 5 campaign tiap bulan dengan maks. durasi 7 hari.</string>
     <string name="sfs_select_campaign_date">Pilih tanggal campaign</string>
     <string name="sfs_select_campaign_time">Pilih jam campaign</string>
     <string name="sfs_placeholder_selected_date">Tanggal terpilih: %s</string>
@@ -117,15 +117,15 @@
     <string name="sfs_placeholder_empty_current_month_quota">Kuotamu di Bulan %s sudah habis</string>
     <string name="sfs_placeholder_campaign_count">%s Campaign</string>
     <string name="sfs_placeholder_length_counter">%s/%s</string>
+    <string name="sfs_placeholder_date_picker_description">Kamu hanya bisa menjadwalkan campaign sesuai dengan periode campaign pada sumber kuota yang kamu pilih, yaitu dari %s - %s</string>
     <string name="sfs_hashtag">#</string>
     <string name="sfs_invalid_hex_color">Kode tidak valid</string>
     <string name="sfs_create_campaign_on_another_period">Buat campaign di bulan lain, ya.</string>
     <string name="sfs_min_hex_color_length">Min. 6 karakter</string>
     <string name="sfs_green_dot">Indikator campaign aktif</string>
-    <string name="sfs_placeholder_remaining_vps_quota">Sisa kuota %d/%d Campaign</string>
+    <string name="sfs_placeholder_remaining_vps_quota">%d/%d Kuota terpakai</string>
     <string name="sfs_placeholder_vps_quota_period">berlaku untuk periode campaign dari %s - %s</string>
-    <string name="sfs_placeholder_shop_tier_vps_quota_period">Kuota %s - %s</string>
-
+    <string name="sfs_empty_quota">Kuota habis</string>
     <string name="sfs_error_message_schedule_lapsed_title">Jadwal campaign pilihanmu sudah lewat</string>
     <string name="sfs_error_message_schedule_lapsed_description">Yuk, atur ulang jadwal campaignmu dulu!</string>
 

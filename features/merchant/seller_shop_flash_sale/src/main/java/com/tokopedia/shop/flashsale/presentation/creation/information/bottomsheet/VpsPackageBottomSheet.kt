@@ -25,6 +25,7 @@ class VpsPackageBottomSheet : BottomSheetUnify() {
     companion object {
         private const val BUNDLE_KEY_SELECTED_VPS_PACKAGE = "selected_vps_package_id"
         private const val BUNDLE_KEY_VPS_PACKAGES = "vps_packages"
+        private const val ITEM_DIVIDER_INSET = 16
 
         @JvmStatic
         fun newInstance(
@@ -99,8 +100,10 @@ class VpsPackageBottomSheet : BottomSheetUnify() {
 
     private fun setupClickListeners() {
         binding?.btnSave?.setOnClickListener {
-            val selectedVpsPackage = viewModel.getSelectedVpsPackage() ?: return@setOnClickListener
+            val vpsPackages = vpsPackageAdapter.snapshot()
+            val selectedVpsPackage = viewModel.findSelectedVpsPackage(vpsPackages) ?: return@setOnClickListener
             onVpsPackageClicked(selectedVpsPackage)
+            dismiss()
         }
     }
 
@@ -108,7 +111,7 @@ class VpsPackageBottomSheet : BottomSheetUnify() {
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity ?: return)
             adapter = vpsPackageAdapter
-            attachDividerItemDecoration()
+            attachDividerItemDecoration(insetLeft = ITEM_DIVIDER_INSET, insetRight = ITEM_DIVIDER_INSET)
         }
 
         populateVpsPackages()
@@ -128,7 +131,6 @@ class VpsPackageBottomSheet : BottomSheetUnify() {
     }
 
     private fun handleVpsPackageSelection(selectedPackage: VpsPackageUiModel) {
-        viewModel.setSelectedVpsPackage(selectedPackage)
         val vpsPackages = vpsPackageAdapter.snapshot()
         val updatedVpsPackages = viewModel.markAsSelected(selectedPackage.packageId, vpsPackages)
 

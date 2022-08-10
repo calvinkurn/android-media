@@ -3,11 +3,12 @@ package com.tokopedia.shop.flashsale.common.extension
 import android.graphics.drawable.InsetDrawable
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.seller_shop_flash_sale.R
+import com.tokopedia.shop.flashsale.common.recyclerview.ItemDividerDecoration
 import com.tokopedia.unifycomponents.toPx
+
+private const val NO_INSET = 0
 
 fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoothScroller.SNAP_TO_START) {
     val smoothScroller = object : LinearSmoothScroller(this.context) {
@@ -18,19 +19,24 @@ fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoot
     layoutManager?.startSmoothScroll(smoothScroller)
 }
 
-private const val MARGIN_TOP_BOTTOM_VALUE_DIVIDER = 16
 
-fun RecyclerView.attachDividerItemDecoration() {
-    val dividerDrawable = MethodChecker.getDrawable(context ?: return, R.drawable.sfs_shape_item_divider)
+fun RecyclerView.attachDividerItemDecoration(
+    insetLeft: Int = NO_INSET,
+    insetTop: Int = NO_INSET,
+    insetRight: Int = NO_INSET,
+    insetBottom: Int = NO_INSET
+) {
+    val dividerDrawable =
+        MethodChecker.getDrawable(context ?: return, R.drawable.sfs_shape_item_divider)
 
     val drawableInset = InsetDrawable(
         dividerDrawable,
-        Int.ZERO,
-        MARGIN_TOP_BOTTOM_VALUE_DIVIDER.toPx(),
-        Int.ZERO,
-        MARGIN_TOP_BOTTOM_VALUE_DIVIDER.toPx()
+        insetLeft.toPx(),
+        insetTop.toPx(),
+        insetRight.toPx(),
+        insetBottom.toPx()
     )
 
-    val dividerItemDecoration = DividerItemDecoration(drawableInset)
+    val dividerItemDecoration = ItemDividerDecoration(drawableInset)
     addItemDecoration(dividerItemDecoration)
 }

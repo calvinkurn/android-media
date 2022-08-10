@@ -126,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginStart="@dimen/unify_space_16"
-                app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_chevron_down"
+                app:unify_text_field_append_drawable_icon_1="@drawable/ic_sfs_chevron_down"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

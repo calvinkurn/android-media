@@ -55,7 +55,11 @@ class GetSellerCampaignPackageListUseCase @Inject constructor(
     }
 
     suspend fun execute(): List<VpsPackage> {
-        val payload = GetSellerCampaignPackageListRequest(RequestHeader(), thematicId = "0",thematicSubId = "0")
+        val payload = GetSellerCampaignPackageListRequest(
+            RequestHeader(),
+            thematicId = "0",
+            thematicSubId = "0"
+        )
         val request = buildRequest(payload)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetSellerCampaignPackageListResponse>()
