@@ -1,16 +1,16 @@
-package com.tokopedia.createpost.viewmodel.producttag
+package com.tokopedia.content.common.viewmodel.producttag
 
-import com.tokopedia.createpost.model.CommonModelBuilder
-import com.tokopedia.createpost.model.GlobalSearchModelBuilder
+import com.tokopedia.content.common.model.CommonModelBuilder
+import com.tokopedia.content.common.model.GlobalSearchModelBuilder
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAction
-import com.tokopedia.createpost.robot.ProductTagViewModelRobot
-import com.tokopedia.createpost.util.andThen
-import com.tokopedia.createpost.util.assertEqualTo
-import com.tokopedia.createpost.util.assertError
-import com.tokopedia.createpost.util.isSuccess
+import com.tokopedia.content.common.robot.ProductTagViewModelRobot
+import com.tokopedia.content.common.util.andThen
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
+import com.tokopedia.content.common.util.isSuccess
+import com.tokopedia.content.common.util.assertError
+import com.tokopedia.content.common.util.assertEqualTo
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test

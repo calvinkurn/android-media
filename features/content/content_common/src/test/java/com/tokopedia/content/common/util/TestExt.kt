@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.util
+package com.tokopedia.content.common.util
 
 import com.tokopedia.content.common.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.content.common.producttag.view.uimodel.state.ProductTagUiState

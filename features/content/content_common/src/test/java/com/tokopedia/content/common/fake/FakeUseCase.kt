@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.fake
+package com.tokopedia.content.common.fake
 
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

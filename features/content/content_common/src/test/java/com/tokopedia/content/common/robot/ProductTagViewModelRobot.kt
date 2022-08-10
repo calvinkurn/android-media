@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.robot
+package com.tokopedia.content.common.robot
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository

@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.model
+package com.tokopedia.content.common.model
 
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.model.PagedGlobalSearchProductResponse

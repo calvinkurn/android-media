@@ -45,6 +45,7 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
 
     implementation projectOrAar(rootProject.ext.features.autocompleteComponent)
+    implementation projectOrAar(rootProject.ext.features.createpostCommon)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.filter)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
@@ -87,6 +88,14 @@ dependencies {
         transitive = true
     }
 
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 }
 
 project.ext {

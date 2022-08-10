@@ -1,10 +1,10 @@
-package com.tokopedia.createpost.viewmodel.producttag
+package com.tokopedia.content.common.viewmodel.producttag
 
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.createpost.robot.ProductTagViewModelRobot
-import com.tokopedia.createpost.util.andThen
-import com.tokopedia.createpost.util.assertEqualTo
+import com.tokopedia.content.common.robot.ProductTagViewModelRobot
+import com.tokopedia.content.common.util.andThen
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.content.common.util.assertEqualTo
 import org.junit.Rule
 import org.junit.Test
 
