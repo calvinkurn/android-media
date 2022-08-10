@@ -51,13 +51,11 @@
         app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
         app:layout_goneMarginEnd="@dimen/spacing_lvl5" />
 
-    <com.tokopedia.iconunify.IconUnify
+    <include
         android:id="@+id/view_upcoming_share_experience"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="SHARE_MOBILE"
+        layout="@layout/view_share_experience"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="@id/view_partner_info"
         app:layout_constraintEnd_toEndOf="parent"
