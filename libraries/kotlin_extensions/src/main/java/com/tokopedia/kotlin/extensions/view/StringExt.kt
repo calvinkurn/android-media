@@ -3,7 +3,7 @@ package com.tokopedia.kotlin.extensions.view
 import android.text.Html
 import java.net.URLDecoder
 import java.net.URLEncoder
-import java.util.*
+import java.util.Locale
 
 /**
  * @author by nisie on 12/02/19.
@@ -54,16 +54,6 @@ fun String?.toIntSafely(): Int {
         toIntOrZero()
     } catch (e: Exception) {
         0
-    }
-}
-
-fun String.toIntRangeCheck(block:(number:String)->Unit):Int {
-    val longValue: Long = this.toLong()
-    return if (longValue > Int.MAX_VALUE) {
-        block(this)
-         0
-    } else {
-         longValue.toInt()
     }
 }
 
