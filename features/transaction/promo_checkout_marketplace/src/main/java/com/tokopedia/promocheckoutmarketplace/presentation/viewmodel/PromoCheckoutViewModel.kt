@@ -1223,6 +1223,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         calculateClash(it)
                         expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
                         analytics.eventClickPilihOnRecommendation(getPageSource(), it.uiData.promoCode, it.uiState.isCausingOtherPromoClash)
+                    } else if (it.uiState.isBebasOngkir) {
+                        val recommendedBoPromo = promoRecommendation.uiData.promoCodes.intersect(it.uiData.boAdditionalData.map { boData -> boData.code })
+                        if (recommendedBoPromo.isNotEmpty()) {
+                            uncheckSibling(it)
+                            it.uiState.isSelected = true
+                            it.uiState.isRecommended = true
+                            _tmpUiModel.value = Update(it)
+                            calculateClash(it)
+                            expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
+                            analytics.eventClickPilihOnRecommendation(getPageSource(), recommendedBoPromo.first().toString(), it.uiState.isCausingOtherPromoClash)
+                        }
                     }
                 }
             }
