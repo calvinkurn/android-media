@@ -11,7 +11,7 @@ import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemShopTierBenefitB
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemVpsBenefitQuotaEmptyBinding
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsItemVpsPackageBinding
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
-import com.tokopedia.shop.flashsale.common.extension.formatTo
+import com.tokopedia.shop.flashsale.common.extension.localFormatTo
 import com.tokopedia.shop.flashsale.presentation.creation.information.uimodel.VpsPackageUiModel
 import com.tokopedia.unifycomponents.Label
 
@@ -146,8 +146,8 @@ class VpsPackageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private fun TextView.setPeriod(vpsPackage: VpsPackageUiModel) {
             val period = String.format(
                 binding.tpgPeriod.context.getString(R.string.sfs_placeholder_vps_quota_period),
-                vpsPackage.packageStartTime.formatTo(DateConstant.DATE),
-                vpsPackage.packageEndTime.formatTo(DateConstant.DATE)
+                vpsPackage.packageStartTime.localFormatTo(DateConstant.DATE),
+                vpsPackage.packageEndTime.localFormatTo(DateConstant.DATE)
             )
             this.text = period
         }

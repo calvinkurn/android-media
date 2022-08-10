@@ -629,7 +629,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val maximumEndDate = dateManager.getCurrentDate().advanceMonthBy(THREE_MONTH)
 
         val selectedVpsPackage = viewModel.getSelectedVpsPackage() ?: return
-        val maximumCampaignEndDate = viewModel.findCampaignMaxEndDate(selectedVpsPackage, maximumEndDate)
+        val maximumCampaignEndDate = viewModel.findCampaignMaxEndDateByVpsRule(selectedVpsPackage, maximumEndDate)
 
         val bottomSheet = CampaignDatePickerBottomSheet.newInstance(
             TimePickerSelectionMode.START_TIME,

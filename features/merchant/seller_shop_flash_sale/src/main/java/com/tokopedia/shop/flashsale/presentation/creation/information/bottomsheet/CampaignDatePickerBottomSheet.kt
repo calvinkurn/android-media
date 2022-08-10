@@ -9,12 +9,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_shop_flash_sale.R
 import com.tokopedia.seller_shop_flash_sale.databinding.SsfsBottomsheetCampaignDatePickerBinding
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.constant.DateConstant
+import com.tokopedia.shop.flashsale.common.extension.doOnDelayFinished
 import com.tokopedia.shop.flashsale.common.extension.formatTo
 import com.tokopedia.shop.flashsale.common.extension.localFormatTo
 import com.tokopedia.shop.flashsale.common.extension.showError
@@ -26,10 +28,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
@@ -195,7 +193,12 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
                     selectedDate,
                     minimumDate,
                     maximumDate,
-                    onTimePicked = { dateTime -> doOnDelayFinished { onDateTimePicked(dateTime) } }
+                    onTimePicked = { dateTime ->
+                        doOnDelayFinished(DISMISS_BOTTOM_SHEET_DELAY_IN_MILLIS) {
+                            onDateTimePicked(dateTime)
+                            dismiss()
+                        }
+                    }
                 )
             }
 
@@ -208,8 +211,20 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
     }
 
     private fun displaySelectedVpsPackagePeriod(vpsPackage: VpsPackageUiModel?) {
-        val startDate  = vpsPackage?.packageStartTime?.formatTo(DateConstant.DATE)
-        val endDate = vpsPackage?.packageEndTime?.formatTo(DateConstant.DATE)
+        val isShopTierBenefit = vpsPackage?.isShopTierBenefit.orFalse()
+
+        val startDate = if (isShopTierBenefit) {
+            minimumDate.formatTo(DateConstant.DATE)
+        } else {
+            vpsPackage?.packageStartTime?.localFormatTo(DateConstant.DATE)
+        }
+
+        val endDate = if (isShopTierBenefit) {
+           maximumDate.formatTo(DateConstant.DATE)
+        } else {
+            vpsPackage?.packageEndTime?.localFormatTo(DateConstant.DATE)
+        }
+
         val template = getString(R.string.sfs_placeholder_date_picker_description)
         val period = String.format(template, startDate, endDate)
         binding?.tpgDateDescription?.text = period
@@ -245,14 +260,6 @@ class CampaignDatePickerBottomSheet : BottomSheetUnify() {
 
         val timePickerHandler = TimePickerHandler(param)
         timePickerHandler.show(activity ?: return, childFragmentManager, onTimePicked)
-    }
-
-    private fun doOnDelayFinished(block: () -> Unit) {
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(DISMISS_BOTTOM_SHEET_DELAY_IN_MILLIS)
-            block()
-            dismiss()
-        }
     }
 
     private fun handleRemainingQuota(remainingQuota: Int) {

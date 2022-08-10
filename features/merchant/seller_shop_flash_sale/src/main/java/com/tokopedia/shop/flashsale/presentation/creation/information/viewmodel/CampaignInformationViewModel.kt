@@ -550,7 +550,7 @@ class CampaignInformationViewModel @Inject constructor(
         return false
     }
 
-    fun findCampaignMaxEndDate(selectedVpsPackage : VpsPackageUiModel, endDate: Date): Date {
+    fun findCampaignMaxEndDateByVpsRule(selectedVpsPackage : VpsPackageUiModel, endDate: Date): Date {
         val isUsingVpsPackage = selectedVpsPackage.packageId != SHOP_TIER_BENEFIT_PACKAGE_ID
 
         return if (isUsingVpsPackage) {
