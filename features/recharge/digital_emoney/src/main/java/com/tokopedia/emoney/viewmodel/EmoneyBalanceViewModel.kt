@@ -105,7 +105,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 it.issuer_id = ISSUER_ID_EMONEY
 
                 val endTimeCallGql = System.currentTimeMillis()
-                mapLoggerDebugData.put("$EMONEY_TIME_CALL_TAG $loopTime", getTimeDifferences(startTimeCallGql, endTimeCallGql))
+                mapLoggerDebugData.put("$EMONEY_TIME_CALL_TAG$loopTime", getTimeDifferences(startTimeCallGql, endTimeCallGql))
                 if (it.status == 0) {
                     writeBalanceToCard(it.payload, balanceRawQuery, data.emoneyInquiry.id.toInt(), mapAttributesParam)
                 } else {
@@ -136,7 +136,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                     }
                 }
                 val endWriteCard = System.currentTimeMillis()
-                mapLoggerDebugData.put("$EMONEY_WRITE_CARD_TAG $loopTime", getTimeDifferences(startWriteCard, endWriteCard))
+                mapLoggerDebugData.put("$EMONEY_WRITE_CARD_TAG$loopTime", getTimeDifferences(startWriteCard, endWriteCard))
             } catch (e: IOException) {
                 isoDep.close()
                 errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -147,6 +147,9 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     private fun logDebugEmoney() {
+        mapLoggerDebugData.forEach {
+            Log.d(EMONEY_DEBUG_TAG, "${it.key} ${it.value}")
+        }
         ServerLogger.log(Priority.P2, EMONEY_DEBUG_TAG, mapLoggerDebugData)
     }
 
@@ -168,10 +171,10 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
         const val PARAM_SEND_COMMAND = "SMARTCARD_COMMAND"
 
         private const val EMONEY_DEBUG_TAG = "EMONEY_DEBUG"
-        private const val EMONEY_WRITE_CARD_TAG = "EMONEY_WRITE_CARD"
-        private const val EMONEY_TIME_CALL_TAG = "EMONEY_TIME_CALL"
-        private const val EMONEY_TIME_BEFORE_CALL_TAG = "EMONEY_TIME_BEFORE_CALL"
         private const val EMONEY_TIME_CHECK_LOGIC_TAG = "EMONEY_TIME_CHECK_LOGIC"
+        private const val EMONEY_WRITE_CARD_TAG = "EMONEY_MNDR_TIME_WRITE"
+        private const val EMONEY_TIME_CALL_TAG = "EMONEY_MNDR_TIME_CALL"
+        private const val EMONEY_TIME_BEFORE_CALL_TAG = "EMONEY_MNDR_TIME_BEFORE_CALL"
 
         const val PARAM_CARD_UUID = "card_uuid"
         const val PARAM_ISSUER_ID = "card_issuer_id"

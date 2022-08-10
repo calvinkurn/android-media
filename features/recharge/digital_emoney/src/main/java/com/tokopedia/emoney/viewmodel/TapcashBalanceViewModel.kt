@@ -286,6 +286,9 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     }
 
     private fun logDebugEmoney() {
+        mapLoggerDebugData.forEach {
+            Log.d(EMONEY_DEBUG_TAG, "${it.key} ${it.value}")
+        }
         ServerLogger.log(Priority.P2, EMONEY_DEBUG_TAG, mapLoggerDebugData)
     }
 
@@ -336,10 +339,10 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         private const val ERROR_GRPC = "GRPC timeout"
 
         private const val EMONEY_DEBUG_TAG = "EMONEY_DEBUG"
+        private const val EMONEY_TIME_CHECK_LOGIC_TAG = "EMONEY_TIME_CHECK_LOGIC"
         private const val EMONEY_TAPC_TIME_WRITE_TAG = "EMONEY_TAPC_TIME_WRITE"
         private const val EMONEY_TAPC_TIME_CALL_TAG = "EMONEY_TAPC_TIME_CALL"
-        private const val EMONEY_TIME_CHECK_LOGIC_TAG = "EMONEY_TIME_CHECK_LOGIC"
-        private const val EMONEY_TAPC_BEFORE_CALL_TAG = "EMONEY_TAPC_BEFORE_CALL"
+        private const val EMONEY_TAPC_BEFORE_CALL_TAG = "EMONEY_TAPC_TIME_BEFORE_CALL"
     }
 
 }
