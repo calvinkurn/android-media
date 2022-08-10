@@ -439,6 +439,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     }
             }
         }
+        displayingAdjustmentPromoToaster()
     }
 
     private fun unApplyBbo(code: String) {
@@ -457,6 +458,16 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
+    private fun displayingAdjustmentPromoToaster() {
+        validateUsePromoRevampUiModel?.promoUiModel?.additionalInfoUiModel?.errorDetailUiModel?.message?.let {
+            if (it.isNotBlank())
+                globalEvent.value = OccGlobalEvent.ToasterInfo(it)
+        }
+    }
+
+    fun autoUnApplyBBO() {
+        orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
+    }
 
     fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
         val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, orderShipment.value)
