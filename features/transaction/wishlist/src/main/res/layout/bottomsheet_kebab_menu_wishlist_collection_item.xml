@@ -26,7 +26,8 @@
             android:layout_height="wrap_content"
             android:text="@string/collection_item_kebab_menu_1"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="15dp"/>
+            android:layout_marginStart="15dp"
+            app:typographyType="heading_5"/>
 
     </LinearLayout>
 
@@ -50,7 +51,8 @@
             android:layout_height="wrap_content"
             android:text="@string/collection_item_kebab_menu_2"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="15dp"/>
+            android:layout_marginStart="15dp"
+            app:typographyType="heading_5"/>
 
     </LinearLayout>
 
