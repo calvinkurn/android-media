@@ -9,6 +9,7 @@ import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
 import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
+import static com.tokopedia.webview.ConstantKt.LOGIN;
 import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
@@ -80,6 +81,7 @@ import com.tokopedia.webview.ext.UrlEncoderExtKt;
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import kotlin.Unit;
@@ -190,11 +192,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
         Uri uri = Uri.parse(url);
         String host = uri.getHost();
-        if(uri.getUserInfo()!=null) {
+        if (uri.getUserInfo() != null) {
             ErrorHandler.Builder builder = new ErrorHandler.Builder();
             builder.sendToScalyr(true);
             builder.setErrorCode(true);
-            Toast.makeText(getActivity(), ErrorHandler.getErrorMessage(getActivity(), new NullPointerException("Unable to open link"), builder ), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), ErrorHandler.getErrorMessage(getActivity(), new NullPointerException("Unable to open link"), builder), Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
 
@@ -357,7 +359,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
-            if (imagePath != null && base64!= null) {
+            if (imagePath != null && base64 != null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
                 jsCallbackBuilder.append("javascript:")
                         .append(mJsHciCallbackFuncName)
@@ -425,7 +427,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    public static @Nullable String encodeToBase64(String imagePath, int quality) {
+    public static @Nullable
+    String encodeToBase64(String imagePath, int quality) {
         Bitmap bm = BitmapFactory.decodeFile(imagePath);
         if (bm == null) {
             return null;
@@ -883,6 +886,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } else {
                 logApplinkErrorOpen(url);
             }
+        } else { // network url
+            if (handleUrlLogin(url, uri)) {
+                return true;
+            }
         }
         if (!allowOverride) {
             return false;
@@ -890,6 +897,20 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean handleUrlLogin(String url, Uri uri) {
+        if (url.startsWith(TokopediaUrl.getInstance().getWEB())) {
+            List<String> pathSegments = uri.getPathSegments();
+            // https://www.tokopedia.com/login/?...
+            if (pathSegments.size() == 1 &&
+                    LOGIN.equals(pathSegments.get(0)) &&
+                    !userSession.isLoggedIn()) {
+                startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+            }
+            return true;
+        }
+        return false;
     }
 
     private boolean isBriIntent(Uri uri) {
