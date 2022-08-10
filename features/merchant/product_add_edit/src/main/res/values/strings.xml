@@ -114,6 +114,7 @@
     <string name="action_add_new_wholesale_price">Tambah grosir</string>
     <string name="error_empty_wholesale_quantity">Jumlah minimal tidak boleh kosong</string>
     <string name="error_zero_wholesale_quantity">Minimum pemesanan tidak boleh 0</string>
+    <string name="error_zero_wholesale_max_quantity">Maks. %d</string>
     <string name="error_wholesale_quantity_less_min_order">Jumlah harus lebih > dari min. pemesanan</string>
     <string name="error_wholesale_quantity_must_bigger_than_previous_input">Jumlah harus lebih > dari sebelumnya</string>
     <string name="error_empty_wholesale_price">Harga grosir tidak boleh kosong</string>

@@ -13,12 +13,13 @@ class PostProcessingFilter {
     }
 
     fun checkPostProcessingFilter(
+        isPostProcessing: Boolean,
         searchParameter: Map<String, Any>,
         totalData: Int,
         callbackLoadData: (Map<String, Any>) -> Unit,
         handleEmptyState: () -> Unit,
     ) {
-        if (isPostProcessingFilter(searchParameter))
+        if (isPostProcessing || isPostProcessingFilter(searchParameter))
             handlePostProcessingFilter(
                 searchParameter,
                 totalData,
@@ -67,6 +68,6 @@ class PostProcessingFilter {
     }
 
     companion object {
-        const val LOAD_EMPTY_PRODUCT_THRESHOLD = 2
+        const val LOAD_EMPTY_PRODUCT_THRESHOLD = 3
     }
 }

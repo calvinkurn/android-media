@@ -73,6 +73,8 @@ class ProductDataResponse(
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
         val freeShippingExtra: FreeShipping = FreeShipping(),
+        @SerializedName("free_shipping_general")
+        val freeShippingGeneral: FreeShippingGeneral = FreeShippingGeneral(),
         @SerializedName("product_preorder")
         val productPreorder: ProductPreorderResponse = ProductPreorderResponse(),
         @SerializedName("product_tracker_data")

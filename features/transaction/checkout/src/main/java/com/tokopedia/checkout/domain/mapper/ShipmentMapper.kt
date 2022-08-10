@@ -7,10 +7,12 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellB
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
@@ -19,12 +21,14 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
+import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingGeneralData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
 import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
+import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
 import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -134,6 +138,7 @@ class ShipmentMapper @Inject constructor() {
             }
             popup = mapPopUp(shipmentAddressFormDataResponse.popup)
             addOnWording = mapAddOnWording(shipmentAddressFormDataResponse.addOnWording)
+            upsell = mapUpsell(shipmentAddressFormDataResponse.upsell)
         }
     }
 
@@ -283,6 +288,7 @@ class ShipmentMapper @Inject constructor() {
                     if (product.freeShipping.eligible) {
                         isFreeShipping = true
                     }
+                    freeShippingName = product.freeShippingGeneral.boName
                     if (product.tradeInInfo.isValidTradeIn) {
                         tradeInInfoData = mapTradeInInfoData(product.tradeInInfo)
                     }
@@ -527,6 +533,7 @@ class ShipmentMapper @Inject constructor() {
             shopLocation = shipmentInformation.shopLocation
             freeShipping = mapFreeShippingData(shipmentInformation.freeShipping)
             freeShippingExtra = mapFreeShippingData(shipmentInformation.freeShippingExtra)
+            freeShippingGeneral = mapFreeShippingGeneral(shipmentInformation.freeShippingGeneral)
         }
     }
 
@@ -535,6 +542,14 @@ class ShipmentMapper @Inject constructor() {
             badgeUrl = freeShipping.badgeUrl
             eligible = freeShipping.eligible
         }
+    }
+
+    private fun mapFreeShippingGeneral(freeShippingGeneral: FreeShippingGeneral): FreeShippingGeneralData {
+        return FreeShippingGeneralData(
+                badgeUrl = freeShippingGeneral.badgeUrl,
+                boType = freeShippingGeneral.boType,
+                boName = freeShippingGeneral.boName
+        )
     }
 
     private fun mapPreorderData(shipmentInformation: ShipmentInformation): PreorderData {
@@ -976,6 +991,16 @@ class ShipmentMapper @Inject constructor() {
             }
         }
         return hasError
+    }
+
+    private fun mapUpsell(upsell: Upsell): UpsellData {
+        return UpsellData(
+                upsell.isShow,
+                upsell.title,
+                upsell.description,
+                upsell.appLink,
+                upsell.image
+        )
     }
 
     companion object {
