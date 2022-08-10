@@ -1,5 +1,6 @@
 package com.tokopedia.searchbar.navigation_component.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -16,7 +17,6 @@ import javax.inject.Inject
 
 class NavigationViewModel @Inject constructor(
         dispatcher: CoroutineDispatchers,
-        val userSession: UserSessionInterface,
         val getNotificationUseCase: GetNotificationUseCase
 ) : BaseViewModel(dispatcher.io) {
     private var getNotificationJob: Job? = null
@@ -57,7 +57,8 @@ class NavigationViewModel @Inject constructor(
                 topNavNotificationModel = getNotificationUseCase.executeOnBackground()
                 _navNotificationModel.postValue(topNavNotificationModel)
             }) {
-
+                println("dhabalog ${it.localizedMessage}")
+                val x = 1
             }
         }
     }
