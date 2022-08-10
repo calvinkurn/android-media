@@ -30,7 +30,6 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val KEY_SHOP_ID = "shopId"
         const val KEY_PROMO_CODE = "promoCode"
         const val KEY_PAGE_SOURCE = "pageSource"
-        const val KEY_CATEGORY_ID = "category_id"
 
         // EXTRA KEY'S VALUE
         const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
