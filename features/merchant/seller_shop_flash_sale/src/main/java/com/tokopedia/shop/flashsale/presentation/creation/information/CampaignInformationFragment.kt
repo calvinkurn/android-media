@@ -115,6 +115,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         private const val ONE = 1
         private const val VPS_PACKAGE_ID_NOT_SELECTED : Long = 0
         private const val EMPTY_QUOTA = 0
+        private const val ALPHA_DISABLED = 0.3f
 
         @JvmStatic
         fun newInstance(pageMode: PageMode, campaignId: Long): CampaignInformationFragment {
@@ -476,6 +477,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             binding?.groupContent?.gone()
             viewModel.getCampaignDetail(campaignId)
             binding?.btnDraft?.gone()
+            binding?.tauVpsPackageName?.disable()
+            binding?.tauVpsPackageName?.icon1?.alpha = ALPHA_DISABLED
         }
     }
 
