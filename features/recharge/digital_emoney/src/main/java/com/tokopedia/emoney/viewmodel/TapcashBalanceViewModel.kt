@@ -128,6 +128,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     }
 
     fun writeBalance(tapcash: BalanceTapcash, terminalRandomNumber: ByteArray) {
+        val startTimeWrite = System.currentTimeMillis()
         val attributesTapcash = tapcash.rechargeUpdateBalance.attributes
         if (::isoDep.isInitialized && isoDep.isConnected) {
             try {
@@ -138,7 +139,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 if (isCommandFailed(writeResult)) {
                     errorWriteMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_WRITE_CARD_TAPCASH))
                 } else {
-                    recheckBalanceSecurePurse(tapcash, terminalRandomNumber)
+                    recheckBalanceSecurePurse(tapcash, terminalRandomNumber, startTimeWrite)
                 }
             } catch (e: IOException) {
                 isoDep.close()
@@ -149,7 +150,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         }
     }
 
-    fun recheckBalanceSecurePurse(tapcash: BalanceTapcash, terminalRandomNumber: ByteArray) {
+    fun recheckBalanceSecurePurse(tapcash: BalanceTapcash, terminalRandomNumber: ByteArray, startTimeWrite: Long) {
         if (::isoDep.isInitialized && isoDep.isConnected) {
             try {
                 val result = isoDep.transceive(COMMAND_GET_CHALLENGE)
@@ -158,6 +159,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 } else {
                     val secureResultString = NFCUtils.toHex(secureResult)
+                    val endTimeWrite = System.currentTimeMillis()
+                    Log.d("EMONEY_TAPC_TIME_WRITE", "${endTimeWrite - startTimeWrite} ms")
                     tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(secureResultString, 4, 10)))
                 }
             } catch (e: IOException) {
