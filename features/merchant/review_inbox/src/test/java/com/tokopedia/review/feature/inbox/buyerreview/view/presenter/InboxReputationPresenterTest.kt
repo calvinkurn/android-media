@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.presenter
 
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationResponseWrapper
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockk
@@ -13,8 +14,8 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
 
     @Test
     fun `when getFirstTimeInboxReputation success should execute expected usecase and perform expected view actions`() {
-        val expectedResponse = mockk<InboxReputationDomain>(relaxed = true)
-        val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+        val expectedResponse = mockk<InboxReputationResponseWrapper>(relaxed = true)
+        val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
         every {
             getFirstTimeInboxReputationUseCase.execute(any(), any())
@@ -34,8 +35,8 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
 
     @Test
     fun `when getFirstTimeInboxReputation but view is not attached success should execute expected usecase`() {
-        val expectedResponse = mockk<InboxReputationDomain>(relaxed = true)
-        val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+        val expectedResponse = mockk<InboxReputationResponseWrapper>(relaxed = true)
+        val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
         every {
             getFirstTimeInboxReputationUseCase.execute(any(), any())
@@ -57,7 +58,7 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
     @Test
     fun `when getFirstTimeInboxReputation fail should execute expected usecase and perform expected view actions`() {
         val expectedResponse = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+        val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
         every {
             getFirstTimeInboxReputationUseCase.execute(any(), any())
@@ -76,8 +77,8 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
 
     @Test
     fun `when getNextPage success should execute expected usecase and perform expected view actions`() {
-        val expectedResponse = mockk<InboxReputationDomain>(relaxed = true)
-        val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+        val expectedResponse = mockk<InboxReputationResponseWrapper>(relaxed = true)
+        val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
         every {
             getInboxReputationUseCase.execute(any(), any())
@@ -98,8 +99,8 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
 
     @Test
     fun `when getNextPage but view is not attached success should execute expected usecase`() {
-        val expectedResponse = mockk<InboxReputationDomain>(relaxed = true)
-        val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+        val expectedResponse = mockk<InboxReputationResponseWrapper>(relaxed = true)
+        val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
         every {
             getInboxReputationUseCase.execute(any(), any())
@@ -122,7 +123,7 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
     @Test
     fun `when getNextPage fail should execute expected usecase and perform expected view actions`() {
         val expectedResponse = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+        val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
         every {
             getInboxReputationUseCase.execute(any(), any())
@@ -162,8 +163,8 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
 
     @Test
     fun `when getFilteredInboxReputation success should execute expected usecase and perform expected view actions`() {
-        val expectedResponse = mockk<InboxReputationDomain>(relaxed = true)
-        val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+        val expectedResponse = mockk<InboxReputationResponseWrapper>(relaxed = true)
+        val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
         every {
             getInboxReputationUseCase.execute(any(), any())
@@ -183,8 +184,8 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
 
     @Test
     fun `when getFilteredInboxReputation but view is not attached success should execute expected usecase`() {
-        val expectedResponse = mockk<InboxReputationDomain>(relaxed = true)
-        val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+        val expectedResponse = mockk<InboxReputationResponseWrapper>(relaxed = true)
+        val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
         every {
             getInboxReputationUseCase.execute(any(), any())
@@ -206,7 +207,7 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
     @Test
     fun `when getFilteredInboxReputation fail should execute expected usecase and perform expected view actions`() {
         val expectedResponse = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+        val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
         every {
             getInboxReputationUseCase.execute(any(), any())
@@ -236,8 +237,8 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
         )
 
         params.forEach {
-            val expectedResponse = mockk<InboxReputationDomain>(relaxed = true)
-            val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+            val expectedResponse = mockk<InboxReputationResponseWrapper>(relaxed = true)
+            val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
             every {
                 getInboxReputationUseCase.execute(any(), any())
@@ -271,8 +272,8 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
         inboxReputationPresenter.attachView(null)
 
         params.forEach {
-            val expectedResponse = mockk<InboxReputationDomain>(relaxed = true)
-            val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+            val expectedResponse = mockk<InboxReputationResponseWrapper>(relaxed = true)
+            val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
             every {
                 getInboxReputationUseCase.execute(any(), any())
@@ -294,7 +295,7 @@ class InboxReputationPresenterTest : InboxReputationPresenterTestFixture() {
     @Test
     fun `when refreshPage fail should execute expected usecase and perform expected view actions`() {
         val expectedResponse = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<InboxReputationDomain> = TestSubscriber()
+        val testSubscriber: TestSubscriber<InboxReputationResponseWrapper> = TestSubscriber()
 
         every {
             getInboxReputationUseCase.execute(any(), any())
