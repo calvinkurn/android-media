@@ -26,6 +26,7 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
     private PermissionCheckerHelper permissionCheckerHelper;
 
     public static void onNewIntent(Context context, Intent intent) {
+        long startTime = System.nanoTime();
         if (intent != null &&
                 (intent.getAction() == NfcAdapter.ACTION_TAG_DISCOVERED ||
                         intent.getAction() == NfcAdapter.ACTION_TECH_DISCOVERED)) {
@@ -39,6 +40,11 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
             }
             newIntent.replaceExtras(intent);
             newIntent.setAction(intent.getAction());
+
+            long endTime = System.nanoTime();
+            long duration = (endTime - startTime)/1000000;
+            newIntent.putExtra("EMONEY_TIME_CHECK_LOGIC", ""+duration+" ms");
+
             context.startActivity(newIntent);
         }
     }

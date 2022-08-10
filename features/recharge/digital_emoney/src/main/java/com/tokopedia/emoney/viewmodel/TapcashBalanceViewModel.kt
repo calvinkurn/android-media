@@ -43,13 +43,16 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     val tapcashInquiry: LiveData<EmoneyInquiry>
         get() = tapcashInquiryMutable
 
+    val mapLoggerDebugData = HashMap<String, String>()
+
     lateinit var isoDep: IsoDep
 
-    fun processTapCashTagIntent(isoDep: IsoDep, balanceRawQuery: String, startTimeBeforeCallGql: Long) {
+    fun processTapCashTagIntent(isoDep: IsoDep, balanceRawQuery: String, startTimeBeforeCallGql: Long, timeCheckDuration: String) {
         //do something with tagFromIntent
         if (isoDep != null) {
             run {
                 try {
+                    mapLoggerDebugData.put(EMONEY_TIME_CHECK_LOGIC_TAG, timeCheckDuration)
                     val terminalRandomNumber = stringToByteArrayRadix(getRandomString())
                     this.isoDep = isoDep
                     isoDep.connect()
@@ -71,7 +74,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                             val cardData = getCardData(secureResultString, NFCUtils.toHex(terminalRandomNumber), resultString)
                             if (!cardData.isNullOrEmpty()) {
                                 val endTimeBeforeCallGql = System.currentTimeMillis()
-                                Log.d("EMONEY_TAPC_BEFORE_CALL", "${endTimeBeforeCallGql - startTimeBeforeCallGql} ms")
+                                mapLoggerDebugData.put(EMONEY_TAPC_BEFORE_CALL_TAG, getTimeDifferences(startTimeBeforeCallGql, endTimeBeforeCallGql))
                                 updateBalance(cardData, terminalRandomNumber, balanceRawQuery)
                             } else {
                                 errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -107,10 +110,11 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
             if(errors.isNullOrEmpty()) {
                 val data = response.getSuccessData<BalanceTapcash>()
                 val endTimeCallGql = System.currentTimeMillis()
-                Log.d("EMONEY_TAPC_TIME_CALL", "${endTimeCallGql - startTimeCallGql} ms")
+                mapLoggerDebugData.put(EMONEY_TAPC_TIME_CALL_TAG, getTimeDifferences(startTimeCallGql, endTimeCallGql))
                 if (data.rechargeUpdateBalance.attributes.cryptogram.isNotEmpty()) {
                     writeBalance(data, terminalRandomNumber)
                 } else {
+                    logDebugEmoney()
                     tapcashInquiryMutable.postValue(mapTapcashtoEmoney(data, isCheckBalanceTapcash = true))
                 }
             } else {
@@ -160,7 +164,9 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 } else {
                     val secureResultString = NFCUtils.toHex(secureResult)
                     val endTimeWrite = System.currentTimeMillis()
-                    Log.d("EMONEY_TAPC_TIME_WRITE", "${endTimeWrite - startTimeWrite} ms")
+
+                    mapLoggerDebugData.put(EMONEY_TAPC_TIME_WRITE_TAG, getTimeDifferences(startTimeWrite, endTimeWrite))
+                    logDebugEmoney()
                     tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(secureResultString, 4, 10)))
                 }
             } catch (e: IOException) {
@@ -279,6 +285,14 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         return string.substring(indexBegin, indexEnd)
     }
 
+    private fun logDebugEmoney() {
+        ServerLogger.log(Priority.P2, EMONEY_DEBUG_TAG, mapLoggerDebugData)
+    }
+
+    private fun getTimeDifferences(startTime: Long, endTime: Long): String {
+        return "${endTime - startTime} ms"
+    }
+
 
     companion object {
 
@@ -320,6 +334,12 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         const val URL_PATH = "graphql/recharge/rechargeUpdateBalanceEmoneyBniTapcash"
         private const val TAPCASH_TAG = "RECHARGE_TAPCASH"
         private const val ERROR_GRPC = "GRPC timeout"
+
+        private const val EMONEY_DEBUG_TAG = "EMONEY_DEBUG"
+        private const val EMONEY_TAPC_TIME_WRITE_TAG = "EMONEY_TAPC_TIME_WRITE"
+        private const val EMONEY_TAPC_TIME_CALL_TAG = "EMONEY_TAPC_TIME_CALL"
+        private const val EMONEY_TIME_CHECK_LOGIC_TAG = "EMONEY_TIME_CHECK_LOGIC"
+        private const val EMONEY_TAPC_BEFORE_CALL_TAG = "EMONEY_TAPC_BEFORE_CALL"
     }
 
 }
