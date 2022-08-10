@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignTimelineBinding
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
+import com.tokopedia.tkpd.flashsale.common.adapter.VerticalSpaceItemDecoration
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.presentation.list.adapter.campaigndetail.TimelineProcessAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CampaignTimelineFragment: BaseDaggerFragment() {
@@ -34,5 +37,18 @@ class CampaignTimelineFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupTimelineView()
+    }
+
+    private fun setupTimelineView() {
+        binding?.rvTimelineProcess?.apply {
+            val spacingAmount = resources.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            addItemDecoration(VerticalSpaceItemDecoration(spacingAmount))
+            adapter = TimelineProcessAdapter().apply {
+                data = listOf("Satu", "Dua", "Tiga")
+            }
+        }
     }
 }
