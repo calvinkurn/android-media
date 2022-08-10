@@ -66,8 +66,11 @@ class RegisterInitialRouterHelper @Inject constructor() {
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHOOSE_ACCOUNT)
     }
 
-    fun goToChangeName(fragment: Fragment) {
+    fun goToChangeName(fragment: Fragment, validateToken: String) {
         val intent = (fragment.context?.applicationContext as ApplinkRouter).getApplinkIntent(fragment.context, ApplinkConst.ADD_NAME_PROFILE)
+        intent.putExtras(Bundle().apply {
+            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+        })
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHANGE_NAME)
     }
 

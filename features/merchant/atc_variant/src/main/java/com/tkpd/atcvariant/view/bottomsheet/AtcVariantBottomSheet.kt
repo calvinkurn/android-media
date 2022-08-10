@@ -606,6 +606,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 successMessage
 
             showToasterSuccess(message, ctaText = getString(R.string.atc_variant_see)) {
+                val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+                val productId = adapter.getHeaderDataModel()?.productId ?: ""
+                ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(
+                    message,
+                    productId,
+                    pageSource
+                )
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), "")
             }
             viewModel.updateActivityResult(

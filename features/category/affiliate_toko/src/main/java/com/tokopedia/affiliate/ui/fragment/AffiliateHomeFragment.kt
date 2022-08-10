@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.ui.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import com.tokopedia.affiliate.CLICK_TYPE
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.COMMISSION_TYPE
 import com.tokopedia.affiliate.LINK_HISTORY_BUTTON_CLICKED
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TIME_EIGHTEEN
 import com.tokopedia.affiliate.TIME_ELEVEN
@@ -45,6 +47,7 @@ import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker.Companion.IDENTIFIER_HOME
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
@@ -62,6 +65,7 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -96,6 +100,10 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(), P
     private var isUserBlackListed = false
 
     companion object {
+        private const val TICKER_BOTTOM_SHEET = "bottomSheet"
+        private const val TICKER_SHARED_PREF = "tickerSharedPref"
+        private const val USER_ID = "userId"
+        private const val TICKER_ID = "tickerId"
         fun getFragmentInstance(affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface,affiliateActitvity:AffiliateActivityInterface): Fragment {
             return AffiliateHomeFragment().apply {
                 bottomNavBarClickListener = affiliateBottomNavBarClickListener
@@ -269,10 +277,55 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(), P
             totalDataItemsCount = itemCount
         })
 
-        affiliateHomeViewModel.getAffiliateAnnouncement().observe(this,{ announcementData ->
-            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(announcementData,activity)
-        })
+        affiliateHomeViewModel.getAffiliateAnnouncement().observe(this) { announcementData ->
+            if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET) {
+                context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
+                    if (it.getString(USER_ID, null) != userSessionInterface.userId || it.getLong(
+                            TICKER_ID,
+                            -1
+                        ) != announcementData.getAffiliateAnnouncementV2?.data?.id
+                    ) {
+                        it.edit().apply {
+                            putLong(
+                                TICKER_ID,
+                                announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0
+                            )
+                            putString(USER_ID, userSessionInterface.userId)
+                            apply()
+                        }
 
+                        AffiliateBottomSheetInfo.newInstance(
+                            announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0,
+                            announcementData.getAffiliateAnnouncementV2?.data?.tickerData?.first()
+                        ).show(childFragmentManager, "")
+                    }
+                }
+
+            } else {
+                sendTickerImpression(
+                    announcementData.getAffiliateAnnouncementV2?.data?.type,
+                    announcementData.getAffiliateAnnouncementV2?.data?.id
+                )
+                view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)
+                    ?.setAnnouncementData(announcementData, activity, source = PAGE_ANNOUNCEMENT_HOME)
+            }
+        }
+
+    }
+
+    private fun sendTickerImpression(tickerType: String?, tickerId: Long?) {
+        if (tickerId.isMoreThanZero()) {
+            AffiliateAnalytics.sendTickerEvent(
+                AffiliateAnalytics.EventKeys.VIEW_ITEM,
+                AffiliateAnalytics.ActionKeys.IMPRESSION_TICKER_COMMUNICATION,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+                "$tickerType - $tickerId",
+                PAGE_ANNOUNCEMENT_HOME,
+                tickerId!!,
+                AffiliateAnalytics.ItemKeys.AFFILIATE_HOME_TICKER_COMMUNICATION,
+                userSessionInterface.userId
+            )
+        }
     }
 
     private fun onGetAffiliateDataItems(dataList: ArrayList<Visitable<AffiliateAdapterTypeFactory>>) {
