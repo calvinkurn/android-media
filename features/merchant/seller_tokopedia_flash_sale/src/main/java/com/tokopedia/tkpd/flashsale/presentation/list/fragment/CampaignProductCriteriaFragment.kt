@@ -6,14 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignTimelineBinding
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignProductCriteriaBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class CampaignTimelineFragment: BaseDaggerFragment() {
+class CampaignProductCriteriaFragment: BaseDaggerFragment() {
 
-    private var binding by autoClearedNullable<StfsFragmentCampaignTimelineBinding>()
+    private var binding by autoClearedNullable<StfsFragmentCampaignProductCriteriaBinding>()
 
     override fun getScreenName() = ""
 
@@ -28,7 +27,7 @@ class CampaignTimelineFragment: BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = StfsFragmentCampaignTimelineBinding.inflate(inflater, container, false)
+        binding = StfsFragmentCampaignProductCriteriaBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
