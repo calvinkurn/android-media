@@ -68,10 +68,6 @@ class ShopPageCampaignFragment :
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val CONFETTI_URL = "https://assets.tokopedia.net/asts/android/shop_page/shop_campaign_tab_confetti.json"
         private const val KEY_ENABLE_SHOP_DIRECT_PURCHASE = "ENABLE_SHOP_DIRECT_PURCHASE"
-        @SuppressLint("UnsupportedDarkModeColor")
-        private const val DEFAULT_FIRST_BG_COLOR = "#60BB55"
-        @SuppressLint("UnsupportedDarkModeColor")
-        private const val DEFAULT_SECOND_BG_COLOR = "#26A116"
 
         fun createInstance(
             shopId: String,
@@ -100,10 +96,6 @@ class ShopPageCampaignFragment :
     private var isClickToScrollToTop = false
     private var latestCompletelyVisibleItemIndex = -1
     private var listBackgroundColor: List<String> = listOf()
-    private val listDefaultBackgroundColor: List<String> = listOf(
-        DEFAULT_FIRST_BG_COLOR,
-        DEFAULT_SECOND_BG_COLOR
-    )
     private var textColor: String = ""
     private var topView: View? = null
     private var centerView: View? = null
@@ -758,10 +750,19 @@ class ShopPageCampaignFragment :
         checkIfListBackgroundColorValueIsEmpty()
     }
 
+    @SuppressLint("ResourceType")
     private fun checkIfListBackgroundColorValueIsEmpty() {
         if (listBackgroundColor.all { it.isEmpty() }) {
-            this.listBackgroundColor = listDefaultBackgroundColor
+            this.listBackgroundColor = getDefaultListBackgroundColor()
         }
+    }
+
+    @SuppressLint("ResourceType")
+    private fun getDefaultListBackgroundColor(): List<String> {
+        return listOf(
+            getString(R.color.clr_dms_shop_campaign_tab_first_color),
+            getString(R.color.clr_dms_shop_campaign_tab_second_color)
+        )
     }
 
     fun setPageTextColor(textColor: String) {
