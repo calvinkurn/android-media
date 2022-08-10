@@ -683,6 +683,7 @@ class ShopHomeViewModelTest {
         viewModel.clearCache()
         coVerify {
             getShopProductUseCase.clearCache()
+            gqlShopPageGetHomeType.clearCache()
         }
     }
 

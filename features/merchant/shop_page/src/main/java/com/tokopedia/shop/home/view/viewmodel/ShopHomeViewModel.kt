@@ -359,6 +359,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun clearGetShopProductUseCase() {
         getShopProductUseCase.clearCache()
+        gqlShopPageGetHomeType.clearCache()
     }
 
     fun getWishlistStatus(shopHomeCarousellProductUiModel: List<ShopHomeCarousellProductUiModel>) {
