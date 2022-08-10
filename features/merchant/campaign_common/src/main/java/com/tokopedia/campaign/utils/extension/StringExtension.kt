@@ -12,7 +12,6 @@ fun String.toDate(inputFormat: String, timeZone: TimeZone = TimeZone.getDefault(
         format.timeZone = timeZone
         format.parse(this) ?: Date()
     } catch (e: Exception) {
-        e.printStackTrace()
         Date()
     }
 }
