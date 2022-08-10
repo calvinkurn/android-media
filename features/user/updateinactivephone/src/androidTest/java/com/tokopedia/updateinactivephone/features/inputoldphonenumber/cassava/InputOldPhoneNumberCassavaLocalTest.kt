@@ -19,9 +19,9 @@ class InputOldPhoneNumberCassavaLocalTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun init_view_is_show() {
-        //WHEN first time launch
+        // When first time launch
 
-        //THEN
+        // Then
         runTest {
             InputOldPhoneNumberAction.checkInitViewIsShowing()
         }
@@ -29,15 +29,15 @@ class InputOldPhoneNumberCassavaLocalTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun input_empty_phone_number_then_show_message_error() {
-        //GIVEN
+        // Given
         val phone = ""
 
         runTest {
-            //WHEN
+            // When
             InputOldPhoneNumberAction.setPhoneNumberText(phone)
             InputOldPhoneNumberAction.clickOnButtonSubmit()
 
-            //THEN
+            // Then
             cassavaRule.validateTrackerOnSubmitPhone(
                 state = InputOldPhoneNumberCassavaState.EMPTY_PHONE
             )
@@ -46,15 +46,15 @@ class InputOldPhoneNumberCassavaLocalTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun input_too_long_phone_number_then_show_message_error() {
-        //GIVEN
+        // Given
         val phone = "0821375674837463231"
 
         runTest {
-            //WHEN
+            // When
             InputOldPhoneNumberAction.setPhoneNumberText(phone)
             InputOldPhoneNumberAction.clickOnButtonSubmit()
 
-            //THEN
+            // Then
             cassavaRule.validateTrackerOnSubmitPhone(
                 state = InputOldPhoneNumberCassavaState.TOO_LONG_PHONE
             )
@@ -63,15 +63,15 @@ class InputOldPhoneNumberCassavaLocalTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun input_too_short_number_then_show_message_error() {
-        //GIVEN
+        // Given
         val phone = "0821375"
 
         runTest {
-            //WHEN
+            // When
             InputOldPhoneNumberAction.setPhoneNumberText(phone)
             InputOldPhoneNumberAction.clickOnButtonSubmit()
 
-            //THEN
+            // Then
             cassavaRule.validateTrackerOnSubmitPhone(
                 state = InputOldPhoneNumberCassavaState.TOO_SHORT_PHONE
             )
@@ -80,18 +80,18 @@ class InputOldPhoneNumberCassavaLocalTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun input_registered_number_then_success() {
-        //GIVEN
+        // Given
         inactivePhoneDependency.apply {
             inputOldPhoneNumberUseCaseStub.response = registerCheckRegisteredModel
         }
         val phone = "082137567654"
 
         runTest {
-            //WHEN
+            // When
             InputOldPhoneNumberAction.setPhoneNumberText(phone)
             InputOldPhoneNumberAction.clickOnButtonSubmit()
 
-            //THEN
+            // Then
             cassavaRule.validateTrackerOnSubmitPhone(
                 state = InputOldPhoneNumberCassavaState.REGISTERED_PHONE
             )
@@ -100,18 +100,18 @@ class InputOldPhoneNumberCassavaLocalTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun input_not_registered_number_then_success() {
-        //GIVEN
+        // Given
         inactivePhoneDependency.apply {
             inputOldPhoneNumberUseCaseStub.response = registerCheckNotRegisteredModel
         }
         val phone = "012345678910"
 
         runTest {
-            //WHEN
+            // When
             InputOldPhoneNumberAction.setPhoneNumberText(phone)
             InputOldPhoneNumberAction.clickOnButtonSubmit()
 
-            //THEN
+            // Then
             cassavaRule.validateTrackerOnSubmitPhone(
                 state = InputOldPhoneNumberCassavaState.UNREGISTERED_PHONE
             )

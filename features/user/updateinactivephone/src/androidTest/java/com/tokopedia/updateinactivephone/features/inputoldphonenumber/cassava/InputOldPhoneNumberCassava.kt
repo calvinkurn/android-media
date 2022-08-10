@@ -3,7 +3,7 @@ package com.tokopedia.updateinactivephone.features.inputoldphonenumber.cassava
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberGeneralTest
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.InputOldPhoneNumberTest
 
 object InputOldPhoneNumberCassava {
 
@@ -46,11 +46,11 @@ object InputOldPhoneNumberCassava {
     ) {
         val query = when (state) {
             InputOldPhoneNumberCassavaState.CLICK -> generateTrackerQuery(CLICK)
-            InputOldPhoneNumberCassavaState.EMPTY_PHONE -> generateTrackerQuery("$FAILED - ${InputOldPhoneNumberGeneralTest.ERROR_PHONE_EMPTY}")
-            InputOldPhoneNumberCassavaState.TOO_SHORT_PHONE -> generateTrackerQuery("$FAILED - ${InputOldPhoneNumberGeneralTest.ERROR_PHONE_TOO_SHORT}")
-            InputOldPhoneNumberCassavaState.TOO_LONG_PHONE -> generateTrackerQuery("$FAILED - ${InputOldPhoneNumberGeneralTest.ERROR_PHONE_TOO_LONG}")
+            InputOldPhoneNumberCassavaState.EMPTY_PHONE -> generateTrackerQuery("$FAILED - ${InputOldPhoneNumberTest.ERROR_PHONE_EMPTY}")
+            InputOldPhoneNumberCassavaState.TOO_SHORT_PHONE -> generateTrackerQuery("$FAILED - ${InputOldPhoneNumberTest.ERROR_PHONE_TOO_SHORT}")
+            InputOldPhoneNumberCassavaState.TOO_LONG_PHONE -> generateTrackerQuery("$FAILED - ${InputOldPhoneNumberTest.ERROR_PHONE_TOO_LONG}")
             InputOldPhoneNumberCassavaState.REGISTERED_PHONE -> generateTrackerQuery(SUCCESS)
-            InputOldPhoneNumberCassavaState.UNREGISTERED_PHONE -> generateTrackerQuery("$FAILED - ${InputOldPhoneNumberGeneralTest.ERROR_PHONE_NOT_REGISTERED}")
+            InputOldPhoneNumberCassavaState.UNREGISTERED_PHONE -> generateTrackerQuery("$FAILED - ${InputOldPhoneNumberTest.ERROR_PHONE_NOT_REGISTERED}")
         }
 
         val queryMatcher = this.validate(

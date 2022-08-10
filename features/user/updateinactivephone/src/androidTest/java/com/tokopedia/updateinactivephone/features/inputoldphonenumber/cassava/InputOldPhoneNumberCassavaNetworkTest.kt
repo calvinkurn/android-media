@@ -20,85 +20,85 @@ class InputOldPhoneNumberCassavaNetworkTest : BaseInputOldPhoneNumberTest() {
 
     @Test
     fun input_empty_phone_number_then_show_message_error() {
-        //GIVEN
+        // Given
 
         runTest {
-            //WHEN
+            // When
             InputOldPhoneNumberAction.clickOnButtonSubmit()
         }
         activityInputOldPhoneNumberRule.finishActivity()
 
-        //THEN
+        // Then
         checkCassavaTest()
     }
 
     @Test
     fun input_too_long_phone_number_then_show_message_error() {
-        //GIVEN
+        // Given
         val phone = "0821375674837463231"
 
         runTest {
-            //WHEN
+            // When
             InputOldPhoneNumberAction.setPhoneNumberText(phone)
             InputOldPhoneNumberAction.clickOnButtonSubmit()
         }
         activityInputOldPhoneNumberRule.finishActivity()
 
-        //THEN
+        // Then
         checkCassavaTest()
     }
 
     @Test
     fun input_too_long_short_number_then_show_message_error() {
-        //GIVEN
+        // Given
         val phone = "0821375"
 
         runTest {
-            //WHEN
+            // When
             InputOldPhoneNumberAction.setPhoneNumberText(phone)
             InputOldPhoneNumberAction.clickOnButtonSubmit()
         }
         activityInputOldPhoneNumberRule.finishActivity()
 
-        //THEN
+        // Then
         checkCassavaTest()
     }
 
     @Test
     fun input_registered_number_then_success() {
-        //GIVEN
+        // Given
         inactivePhoneDependency.apply {
             inputOldPhoneNumberUseCaseStub.response = registerCheckRegisteredModel
         }
         val phone = "082137567654"
 
         runTest {
-            //WHEN
+            // When
             InputOldPhoneNumberAction.setPhoneNumberText(phone)
             InputOldPhoneNumberAction.clickOnButtonSubmit()
         }
         activityInputOldPhoneNumberRule.finishActivity()
 
-        //THEN
+        // Then
         checkCassavaTest()
     }
 
     @Test
     fun input_not_registered_number_then_success() {
-        //GIVEN
+        // Given
         inactivePhoneDependency.apply {
             inputOldPhoneNumberUseCaseStub.response = registerCheckNotRegisteredModel
         }
         val phone = "012345678910"
 
         runTest {
-            //WHEN
+            // When
             InputOldPhoneNumberAction.setPhoneNumberText(phone)
             InputOldPhoneNumberAction.clickOnButtonSubmit()
         }
         activityInputOldPhoneNumberRule.finishActivity()
 
-        //THEN
+        // Then
         checkCassavaTest()
     }
 
