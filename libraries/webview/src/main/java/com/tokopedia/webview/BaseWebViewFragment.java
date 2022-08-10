@@ -295,6 +295,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     protected void loadWeb() {
         String url = getUrl();
         if (isTokopediaUrl) {
+            webView.requestFocus();
             webView.loadAuthUrl(url, new UserSession(getContext()));
         } else {
             redirectToNativeBrowser();
