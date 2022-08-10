@@ -5,20 +5,29 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
+import com.tokopedia.wishlist.util.WishlistV2Consts
+import com.tokopedia.wishlist.util.WishlistV2Utils
+import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
 import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
+import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
 import javax.inject.Inject
 
 class WishlistCollectionViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers,
     private val getWishlistCollectionUseCase: GetWishlistCollectionUseCase,
-    private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase
+    private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase,
+    private val singleRecommendationUseCase: GetSingleRecommendationUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _collections =
@@ -26,21 +35,41 @@ class WishlistCollectionViewModel @Inject constructor(
     val collections: LiveData<Result<WishlistCollectionResponse.GetWishlistCollections>>
         get() = _collections
 
+    private val _collectionData = MutableLiveData<Result<List<WishlistCollectionTypeLayoutData>>>()
+    val collectionData: LiveData<Result<List<WishlistCollectionTypeLayoutData>>>
+        get() = _collectionData
+
     private val _deleteCollectionResult =
         MutableLiveData<Result<DeleteWishlistCollectionResponse.DeleteWishlistCollection>>()
     val deleteCollectionResult: LiveData<Result<DeleteWishlistCollectionResponse.DeleteWishlistCollection>>
         get() = _deleteCollectionResult
+
+    private val _recommendationListResult = MutableLiveData<Result<List<RecommendationWidget>>>()
+    val recommendationListResult: LiveData<Result<List<RecommendationWidget>>>
+        get() = _recommendationListResult
 
     fun getWishlistCollections() {
         launchCatchError(block = {
             val result = getWishlistCollectionUseCase(Unit)
             if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
                 _collections.postValue(Success(result.getWishlistCollections))
+                _collectionData.postValue(
+                    Success(
+                        WishlistCollectionUtils.mapCollection(
+                            result.getWishlistCollections.data, getRecommendationWishlistV2(
+                                1, listOf(),
+                                WishlistV2Consts.EMPTY_WISHLIST_PAGE_NAME
+                            )
+                        )
+                    )
+                )
             } else {
                 _collections.postValue(Fail(Throwable()))
+                _collectionData.postValue(Fail(Throwable()))
             }
         }, onError = {
             _collections.postValue(Fail(it))
+            _collectionData.postValue(Fail(Throwable()))
         })
     }
 
@@ -55,5 +84,23 @@ class WishlistCollectionViewModel @Inject constructor(
         }, onError = {
             _deleteCollectionResult.postValue(Fail(it))
         })
+    }
+
+    suspend fun getRecommendationWishlistV2(
+        page: Int,
+        productIds: List<String>,
+        pageName: String
+    ): WishlistV2RecommendationDataModel {
+        val recommendation = singleRecommendationUseCase.getData(
+            GetRecommendationRequestParam(
+                pageNumber = page,
+                productIds = productIds,
+                pageName = pageName
+            )
+        )
+        return WishlistV2RecommendationDataModel(
+            WishlistV2Utils.convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
+            recommendation.recommendationItemList, recommendation.title
+        )
     }
 }

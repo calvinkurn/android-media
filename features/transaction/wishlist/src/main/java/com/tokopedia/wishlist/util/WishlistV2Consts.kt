@@ -35,10 +35,6 @@ object WishlistV2Consts {
     const val TICKER_CTA_OPEN_DELETE_BOTTOMSHEET = "OPEN_DELETE_BOTTOMSHEET"
     const val TICKER_CTA_SORT_FROM_OLDEST = "SORT_FROM_OLDEST"
 
-    const val TYPE_COLLECTION_TICKER = "collection_ticker"
-    const val TYPE_COLLECTION_ITEM = "collection_item"
-    const val TYPE_COLLECTION_CREATE = "collection_create"
-
     const val SPEC_0 = 0
     const val SPEC_2 = 2
     const val CREATE_NEW_COLLECTION_BG_IMAGE = "https://images.tokopedia.net/img/android/wishlist_collection/bg_create_new.png"
@@ -58,5 +54,6 @@ object WishlistV2Consts {
     const val MENU_LABEL_BARU = "BARU"
 
     const val ACTION_ADD_ITEM_TO_COLLECTION = "ADD_ITEM_TO_COLLECTION"
+    const val ACTION_SHOW_SEARCH_BAR = "SHOW_SEARCH_BAR"
     const val ACTION_UPDATE_COLLECTION_NAME = "UPDATE_COLLECTION_NAME"
 }

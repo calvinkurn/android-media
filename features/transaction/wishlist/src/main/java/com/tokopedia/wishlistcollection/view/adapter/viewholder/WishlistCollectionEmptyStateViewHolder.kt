@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.view.adapter.viewholder
+package com.tokopedia.wishlistcollection.view.adapter.viewholder
 
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +26,8 @@ class WishlistCollectionEmptyStateViewHolder(private val binding: WishlistV2Empt
 
                     if (item.dataObject.listButton[0].action == ACTION_ADD_ITEM_TO_COLLECTION) {
                         setPrimaryCTAClickListener { actionListener?.goToWishlistAll() }
+                    } else if (item.dataObject.listButton[0].action == ACTION_ADD_ITEM_TO_COLLECTION) {
+                        setPrimaryCTAClickListener { actionListener?.onCariBarangClicked() }
                     }
 
                     if (item.dataObject.listButton.size > 1) {

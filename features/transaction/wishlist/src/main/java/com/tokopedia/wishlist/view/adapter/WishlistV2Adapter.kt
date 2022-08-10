@@ -29,6 +29,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TICKER
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.view.adapter.viewholder.*
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
+import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionEmptyStateViewHolder
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 
 class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

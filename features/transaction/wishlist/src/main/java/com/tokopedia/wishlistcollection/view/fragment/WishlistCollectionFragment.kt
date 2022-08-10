@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -22,10 +23,13 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -33,18 +37,15 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
+import com.tokopedia.wishlist.util.WishlistV2Analytics
 import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
+import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter.Companion.LAYOUT_RECOMMENDATION_TITLE
 import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
-import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_CREATE
-import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_ITEM
-import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COLLECTION_TICKER
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
+import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmptyStateData
 import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
-import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
-import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_NEED_REFRESH
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
@@ -70,6 +71,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private var bottomSheetOnboarding = BottomSheetOnboardingWishlistCollection()
     private var _allCollectionView: View? = null
     private var _createCollectionView: View? = null
+    private lateinit var trackingQueue: TrackingQueue
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -116,6 +118,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkLogin()
+        initTrackingQueue()
+    }
+
+    private fun initTrackingQueue() {
+        activity?.let {
+            trackingQueue = TrackingQueue(it)
+        }
     }
 
     private fun checkLogin() {
@@ -153,6 +162,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     private fun observingData() {
         observingWishlistCollections()
+        observingWishlistData()
         observingDeleteWishlistCollection()
     }
 
@@ -195,17 +205,21 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             }
             wishlistCollectionNavtoolbar.setIcon(icons)
 
-            rvWishlistCollection.apply {
-                layoutManager = GridLayoutManager(context, 2).apply {
-                    spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                        override fun getSpanSize(position: Int): Int {
-                            return when (collectionAdapter.getItemViewType(position)) {
-                                WishlistCollectionAdapter.LAYOUT_COLLECTION_TICKER -> 2
-                                else -> 1
-                            }
+            val glm = GridLayoutManager(context, 2).apply {
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return when (collectionAdapter.getItemViewType(position)) {
+                            WishlistCollectionAdapter.LAYOUT_COLLECTION_TICKER -> 2
+                            LAYOUT_RECOMMENDATION_TITLE -> 2
+                            WishlistCollectionAdapter.LAYOUT_EMPTY_COLLECTION -> 2
+                            else -> 1
                         }
                     }
                 }
+            }
+
+            rvWishlistCollection.apply {
+                layoutManager = glm
                 adapter = collectionAdapter
             }
         }
@@ -242,6 +256,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 is Success -> {
                     finishRefresh()
                     if (result.data.status == OK) {
+                        if (result.data.data.isEmptyState) {
+                            val items = arrayListOf<Any>()
+                            result.data.data.emptyState.messages.forEach { item ->
+                                items.add(WishlistCollectionCarouselEmptyStateData(img = item.imageUrl, desc = item.description))
+                            }
+                            collectionAdapter.setCarouselEmptyData(items)
+                        }
                         if (result.data.data.totalCollection >= result.data.data.maxLimitCollection) {
                             isEligibleAddNewCollection = false
                             wordingMaxLimitCollection = result.data.data.wordingMaxLimitCollection
@@ -252,7 +273,6 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                             onlyAllCollection = true
                             checkOnboarding()
                         }
-                        collectionAdapter.addList(mapCollection(result.data.data))
                     } else {
                         // TODO: show global error page?
                         val errorMessage = result.data.errorMessage.first().ifEmpty {
@@ -268,6 +288,16 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                     finishRefresh()
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
+    private fun observingWishlistData() {
+        collectionViewModel.collectionData.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    collectionAdapter.addList(result.data)
                 }
             }
         }
@@ -296,23 +326,6 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 }
             }
         }
-    }
-
-    private fun mapCollection(data: WishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData): List<WishlistCollectionTypeLayoutData> {
-        val listCollection = arrayListOf<WishlistCollectionTypeLayoutData>()
-        val tickerObject = WishlistCollectionTypeLayoutData(data.ticker, TYPE_COLLECTION_TICKER)
-        listCollection.add(tickerObject)
-
-        data.collections.forEach { item ->
-            val collectionItemObject = WishlistCollectionTypeLayoutData(item, TYPE_COLLECTION_ITEM)
-            listCollection.add(collectionItemObject)
-        }
-
-        val createNewItem =
-            WishlistCollectionTypeLayoutData(data.placeholder, TYPE_COLLECTION_CREATE)
-        listCollection.add(createNewItem)
-
-        return listCollection
     }
 
     private fun showToaster(message: String, actionText: String, type: Int) {
@@ -396,6 +409,10 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             _allCollectionView = allCollectionView
             _createCollectionView = createCollectionView
         }
+    }
+
+    override fun onCariBarangClicked() {
+        RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
     }
 
     private fun showBottomSheetOnboarding() {
@@ -504,5 +521,40 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onClickSkipOnboardingButton() {
         bottomSheetOnboarding.dismiss()
+    }
+
+    override fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int) {
+        if(recommendationItem.isTopAds) {
+            TopAdsUrlHitter(context).hitImpressionUrl(
+                this::class.java.simpleName,
+                recommendationItem.trackerImageUrl,
+                recommendationItem.productId.toString(),
+                recommendationItem.name,
+                recommendationItem.imageUrl
+            )
+        }
+        WishlistV2Analytics.impressionEmptyWishlistRecommendation(trackingQueue, recommendationItem, position)
+    }
+
+    override fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int) {
+        WishlistV2Analytics.clickRecommendationItem(recommendationItem, position, userSession.userId)
+        if(recommendationItem.isTopAds) {
+            TopAdsUrlHitter(context).hitClickUrl(
+                this::class.java.simpleName,
+                recommendationItem.clickUrl,
+                recommendationItem.productId.toString(),
+                recommendationItem.name,
+                recommendationItem.imageUrl
+            )
+        }
+        activity?.let {
+            if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.route(it, recommendationItem.appUrl)
+            } else {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    recommendationItem.productId.toString())
+                startActivity(intent)
+            }
+        }
     }
 }
