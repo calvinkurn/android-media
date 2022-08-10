@@ -61,12 +61,21 @@ import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBo
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
-import com.tokopedia.digital_product_detail.presentation.utils.*
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
+import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
+import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.recharge_component.listener.*
+import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
+import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
+import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
+import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
+import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
+import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
@@ -618,13 +627,13 @@ class DigitalPDPDataPlanFragment :
                     var selectedChipsCounter = initialSelectedCounter
 
                     filterItems.forEachIndexed { index, sortFilterItem ->
-                        if (chipItems.get(index).isSelected) {
+                        if (chipItems[index].isSelected) {
                             sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                         }
 
                         sortFilterItem.listener = {
                             sortFilterItem.toggle()
-                            if (!chipItems.get(index).isSelected) {
+                            if (!chipItems[index].isSelected) {
                                 digitalPDPAnalytics.clickFilterChip(
                                     DigitalPDPCategoryUtil.getCategoryName(categoryId),
                                     operator.attributes.name,
@@ -633,10 +642,10 @@ class DigitalPDPDataPlanFragment :
                                 )
                             }
                             if (filterItems[index].type == ChipsUnify.TYPE_SELECTED) {
-                                chipItems.get(index).isSelected = true
+                                chipItems[index].isSelected = true
                                 selectedChipsCounter++
                             } else {
-                                chipItems.get(index).isSelected = false
+                                chipItems[index].isSelected = false
                                 selectedChipsCounter--
                             }
 
