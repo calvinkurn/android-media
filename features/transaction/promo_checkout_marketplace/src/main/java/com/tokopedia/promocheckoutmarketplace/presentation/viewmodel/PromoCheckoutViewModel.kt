@@ -695,6 +695,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun setApplyPromoRequestDataFromSelectedPromo(promoListItemUiModel: PromoListItemUiModel,
                                                           order: OrdersItem?,
                                                           validateUsePromoRequest: ValidateUsePromoRequest) {
+        // for each order, refresh every promo list ui model
         if (promoListItemUiModel.uiState.isSelected && !promoListItemUiModel.uiState.isDisabled &&
                 promoListItemUiModel.uiData.currentClashingPromo.isNullOrEmpty()) {
             // If coupon is selected, not disabled, and not clashing, add to request param
@@ -702,12 +703,22 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             if (promoListItemUiModel.uiData.uniqueId == order?.uniqueId &&
                     !order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.add(promoListItemUiModel.uiData.promoCode)
+            } else if (promoListItemUiModel.uiState.isBebasOngkir) {
                 // if coupon is bebas ongkir promo, then set shipping id and sp id
-                if (promoListItemUiModel.uiState.isBebasOngkir) {
-                    val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
-                    boData?.let {
-                        order.shippingId = it.shippingId
-                        order.spId = it.shipperProductId
+                val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
+                if (boData != null) {
+                    order?.let {
+                        if (!it.codes.contains(boData.code)) {
+                            // if code is not already in request param, then add bo additional data
+                            it.shippingId = boData.shippingId
+                            it.spId = boData.shipperProductId
+                            it.codes.add(boData.code)
+                        } else {
+                            // if code already in request param, set shipping id and sp id again
+                            // in case user changes address from other page and the courier info changes
+                            it.shippingId = boData.shippingId
+                            it.spId = boData.shipperProductId
+                        }
                     }
                 }
             } else if (promoListItemUiModel.uiData.shopId == 0 &&
@@ -720,10 +731,19 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             if (promoListItemUiModel.uiData.uniqueId == order?.uniqueId &&
                     order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.remove(promoListItemUiModel.uiData.promoCode)
-                // if coupon is bebas ongkir promo, then reset shipping id and sp id
-                if (promoListItemUiModel.uiState.isBebasOngkir) {
-                    order.shippingId = 0
-                    order.spId = 0
+            } else if (promoListItemUiModel.uiState.isBebasOngkir) {
+                // if coupon is bebas ongkir promo, then reset shipping id, sp id, and code
+                val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
+                if (boData != null) {
+                    // todo what happen if user check bo reg, and uncheck bo plus for the same order
+                    order?.let {
+                        // todo this logic does not support address change from other page
+                        if (it.codes.contains(boData.code) && it.shippingId == boData.shippingId && it.spId == boData.shipperProductId) {
+                            it.shippingId = 0
+                            it.spId = 0
+                            it.codes.remove(boData.code)
+                        }
+                    }
                 }
             } else if (promoListItemUiModel.uiData.shopId == 0 &&
                     validateUsePromoRequest.codes.contains(promoListItemUiModel.uiData.promoCode)) {
