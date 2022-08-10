@@ -16,7 +16,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.custom.interactive.follow.InteractiveFollowView
@@ -55,7 +54,11 @@ class InteractiveDialogFragment @Inject constructor(
 
     private val followViewListener = object : InteractiveFollowView.Listener {
         override fun onFollowImpressed(view: InteractiveFollowView) {
-            analytic.impressFollowShopInteractive(shopId = viewModel.partnerId.toString(), interactiveType = viewModel.interactiveData, channelId = viewModel.channelId)
+            analytic.impressFollowShopInteractive(
+                shopId = viewModel.partnerId.toString(),
+                interactiveType = viewModel.interactiveData,
+                channelId = viewModel.channelId
+            )
         }
 
         override fun onFollowClicked(view: InteractiveFollowView) {
@@ -151,7 +154,10 @@ class InteractiveDialogFragment @Inject constructor(
                         state.interactive.interactive,
                         state.partner
                     )
-                    is InteractiveUiModel.Quiz -> renderQuizDialog(state.interactive.interactive, state.partner)
+                    is InteractiveUiModel.Quiz -> renderQuizDialog(
+                        state.interactive.interactive,
+                        state.partner
+                    )
                 }
 
             }
@@ -161,20 +167,24 @@ class InteractiveDialogFragment @Inject constructor(
     private fun observeUiEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
-                when(event){
+                when (event) {
                     is ShowErrorEvent -> {
-                        val errMsg = ErrorHandler.getErrorMessage(context, event.error, ErrorHandler.Builder()
-                                .className(PlayViewModel::class.java.simpleName).build())
+                        val errMsg = ErrorHandler.getErrorMessage(
+                            context, event.error, ErrorHandler.Builder()
+                                .className(PlayViewModel::class.java.simpleName).build()
+                        )
                         doShowToaster(toasterType = Toaster.TYPE_ERROR, message = errMsg)
                     }
                     is QuizAnsweredEvent -> {
-                        if(getWidget() is QuizWidgetView) {
-                            (getWidget() as QuizWidgetView).animateAnswer(event.isTrue)
+                        val widget = currentWidget
+                        if (widget is QuizWidgetView) {
+                            widget.animateAnswer(event.isTrue)
                         }
                         delay(FADE_TRANSITION_DELAY)
                         dismiss()
                     }
-                    else -> {}
+                    else -> {
+                    }
                 }
             }
         }
@@ -187,7 +197,8 @@ class InteractiveDialogFragment @Inject constructor(
     ) {
         val giveawayStatus = giveaway.status
         if (partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed) ||
-                !userSession.isLoggedIn) {
+            !userSession.isLoggedIn
+        ) {
             setChildView { ctx ->
                 InteractiveFollowView(ctx).apply {
                     setListener(followViewListener)
@@ -221,7 +232,7 @@ class InteractiveDialogFragment @Inject constructor(
         val status = quiz.status
         when {
             partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed) ||
-            !userSession.isLoggedIn -> {
+                    !userSession.isLoggedIn -> {
                 setChildView { ctx ->
                     val view = InteractiveFollowView(ctx)
                     view.setListener(followViewListener)
@@ -244,17 +255,23 @@ class InteractiveDialogFragment @Inject constructor(
                     }
                     setupQuizForm(quiz.listOfChoices)
                     setReward(quiz.reward)
-                    setListener(object : QuizWidgetView.Listener{
+                    setListener(object : QuizWidgetView.Listener {
                         override fun onQuizOptionClicked(item: QuizChoicesUiModel) {
                             viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item))
-                            analytic.clickQuizOption(interactiveId = viewModel.interactiveData.id, shopId = viewModel.partnerId.toString(),
-                            choiceAlphabet = if(item.type is PlayQuizOptionState.Default) (item.type as PlayQuizOptionState.Default).alphabet.toString() else "",
-                                channelId = viewModel.channelId)
+                            analytic.clickQuizOption(
+                                interactiveId = viewModel.interactiveData.id,
+                                shopId = viewModel.partnerId.toString(),
+                                choiceAlphabet = if (item.type is PlayQuizOptionState.Default) (item.type as PlayQuizOptionState.Default).alphabet.toString() else "",
+                                channelId = viewModel.channelId
+                            )
                         }
 
                         override fun onQuizImpressed() {
-                            analytic.impressQuizOptions(shopId = viewModel.partnerId.toString(), interactiveId = viewModel.interactiveData.id,
-                                channelId = viewModel.channelId)
+                            analytic.impressQuizOptions(
+                                shopId = viewModel.partnerId.toString(),
+                                interactiveId = viewModel.interactiveData.id,
+                                channelId = viewModel.channelId
+                            )
                         }
                     })
                     getHeader().isEditable = false
@@ -277,7 +294,7 @@ class InteractiveDialogFragment @Inject constructor(
         ).show()
     }
 
-    private inline fun <reified V: View> setChildView(
+    private inline fun <reified V : View> setChildView(
         viewCreator: (Context) -> V
     ): V {
         val parent = view as ViewGroup
@@ -296,11 +313,12 @@ class InteractiveDialogFragment @Inject constructor(
         } else firstChild
     }
 
-    private fun getWidget() : View {
-        val parent = view as ViewGroup
-        return if(parent.childCount < 0) View(context)
-        else parent.getChildAt(0)
-    }
+    private val currentWidget: View?
+        get() {
+            val parent = view as ViewGroup
+            return if (parent.childCount < 0) null
+            else parent.getChildAt(0)
+        }
 
     companion object {
         private const val TAG = "InteractiveDialogFragment"
