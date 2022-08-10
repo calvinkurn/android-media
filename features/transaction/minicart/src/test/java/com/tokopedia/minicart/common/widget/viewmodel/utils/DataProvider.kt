@@ -14,7 +14,7 @@ import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
-import com.tokopedia.minicart.common.domain.data.MiniCartProductBundleRecomResponse
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
@@ -176,10 +176,10 @@ object DataProvider {
         return json.updateCartData
     }
 
-    fun provideProductBundleRecomResponse(isEmptyList: Boolean): MiniCartProductBundleRecomResponse {
+    fun provideProductBundleRecomResponse(isEmptyList: Boolean): ProductBundleRecomResponse {
         return gson.fromJson(
             fileUtil.getJsonFromAsset(if (isEmptyList) "assets/get_product_bundle_recommendation_empty_list" else "assets/get_product_bundle_recommendation"),
-            MiniCartProductBundleRecomResponse::class.java
+            ProductBundleRecomResponse::class.java
         )
     }
 
@@ -190,7 +190,7 @@ object DataProvider {
         )
     }
 
-    fun provideProductBundleRecomData(response: MiniCartProductBundleRecomResponse): MiniCartProductBundleRecomUiModel {
+    fun provideProductBundleRecomData(response: ProductBundleRecomResponse): MiniCartProductBundleRecomUiModel {
         return miniCartListUiModelMapper.mapToProductBundleUiModel(
             widgetResponse = response
         )

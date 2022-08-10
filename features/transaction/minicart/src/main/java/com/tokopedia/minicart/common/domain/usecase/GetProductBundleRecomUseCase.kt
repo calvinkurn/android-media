@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
-import com.tokopedia.minicart.common.domain.data.MiniCartProductBundleRecomResponse
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery
 import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery.PARAM_EXCLUDE_GROUP_IDS
 import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery.PARAM_PRODUCT_IDS
@@ -13,13 +13,18 @@ import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery.PAR
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+/**
+ * Product Bundle Recom Now Docs:
+ * https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/1989613339/WIP+Product+Bundling+NOW#GQL
+ */
+
 class GetProductBundleRecomUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     private val chosenAddressRequestHelper: ChosenAddressRequestHelper
-): GraphqlUseCase<MiniCartProductBundleRecomResponse>(graphqlRepository) {
+): GraphqlUseCase<ProductBundleRecomResponse>(graphqlRepository) {
 
     init {
-        setTypeClass(MiniCartProductBundleRecomResponse::class.java)
+        setTypeClass(ProductBundleRecomResponse::class.java)
         setGraphqlQuery(GetProductBundleRecomQuery)
     }
 
@@ -27,7 +32,7 @@ class GetProductBundleRecomUseCase @Inject constructor(
         productIds: List<String>,
         excludeBundleIds: List<String>,
         queryParam: String = "type=SINGLE,MULTIPLE"
-    ): MiniCartProductBundleRecomResponse {
+    ): ProductBundleRecomResponse {
         setRequestParams(RequestParams.create().apply {
             putString(PARAM_WAREHOUSE_ID, chosenAddressRequestHelper.getChosenAddress().tokonow.warehouseId)
             putObject(PARAM_PRODUCT_IDS, productIds)

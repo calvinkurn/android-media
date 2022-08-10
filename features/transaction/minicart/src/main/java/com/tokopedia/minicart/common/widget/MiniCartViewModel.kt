@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
-import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
@@ -44,7 +43,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.MiniCartProductBundleRecomResponse
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemBundleGroup
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
@@ -263,7 +262,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         updateVisitablesBackgroundState(miniCartListUiModel.visitables)
     }
 
-    private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, widgetData: List<MiniCartProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData>, response: MiniCartProductBundleRecomResponse) {
+    private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, widgetData: List<ProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData>, response: ProductBundleRecomResponse) {
         if (widgetData.isNotEmpty()) {
             val productBundleRecom = miniCartListUiModelMapper.mapToProductBundleUiModel(response)
             miniCartListUiModel.visitables.removeFirst { it is MiniCartProductBundleRecomShimmeringUiModel }

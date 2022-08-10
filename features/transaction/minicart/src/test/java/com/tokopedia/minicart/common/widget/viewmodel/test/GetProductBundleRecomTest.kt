@@ -34,7 +34,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class GetProductBundleRecommendationTest {
+class GetProductBundleRecomTest {
 
     private lateinit var viewModel: MiniCartViewModel
 
