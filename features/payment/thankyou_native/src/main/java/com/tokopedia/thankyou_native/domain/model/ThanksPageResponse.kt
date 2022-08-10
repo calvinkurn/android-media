@@ -136,7 +136,9 @@ data class CustomDataOther(
     @SerializedName("tracking_data")
     val trackingData: String?,
     @SerializedName("is_enjoy_plus_benefit")
-    val isEnjoyPLus:String?
+    val isEnjoyPLus:String?,
+    @SerializedName("custom_illustration")
+    val customIllustration:String?
 ): Parcelable
 
 @Parcelize
