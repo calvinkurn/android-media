@@ -31,7 +31,7 @@ class PostImageAdapter(var clickListener: ImageClickListener?) : PagerAdapter() 
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = LayoutInflater.from(container.context).inflate(
-                R.layout.item_post_image,
+                R.layout.item_af_post_image,
                 container,
                 false
         )
