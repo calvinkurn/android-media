@@ -1,4 +1,4 @@
-package com.tokopedia.usercomponents.explicit
+package com.tokopedia.usercomponents.explicit.cassava
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
-import com.tokopedia.usercomponents.explicit.ExplicitCassava.validateTracker
+import com.tokopedia.usercomponents.explicit.cassava.ExplicitCassava.validateTracker
+import com.tokopedia.usercomponents.explicit.clickButtonAnswer
+import com.tokopedia.usercomponents.explicit.clickOnDismiss
 import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugActivity
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugFragment.Companion.component
@@ -58,9 +60,9 @@ class ExplicitCassavaLocalTest {
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31560)
     }
 
-    //error in this case caused response not match with submit answer model
+    //failed in this case caused response not match with submit answer model
     @Test
-    fun submit_positive_answer_then_failed() {
+    fun submit_positive_answer_then_shown_failed_view() {
         //GIVEN
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
@@ -72,9 +74,9 @@ class ExplicitCassavaLocalTest {
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31561)
     }
 
-    //error in this case caused response not match with submit answer model
+    //failed in this case caused response not match with submit answer model
     @Test
-    fun submit_negative_answer_then_failed() {
+    fun submit_negative_answer_then_shown_failed_view() {
         //GIVEN
         repositoryStub.setState(TestState.SHOW_QUESTION)
 

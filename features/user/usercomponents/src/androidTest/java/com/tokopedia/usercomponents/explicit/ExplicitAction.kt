@@ -58,10 +58,22 @@ fun isHideQuestion() {
 }
 
 fun clickButtonAnswer(isPositive: Boolean) {
-    clickOnButton(if (isPositive) R.id.btn_positive_action else R.id.btn_negative_action)
+    clickOnButton(
+        if (isPositive) {
+            R.id.btn_positive_action
+        } else {
+            R.id.btn_negative_action
+        }
+    )
 }
 
 //if onQuestionPage = false then click dismiss on success page
 fun clickOnDismiss(onQuestionPage: Boolean) {
-    clickOnButton(if (onQuestionPage) R.id.img_dismiss else R.id.img_success_dismiss)
+    clickOnButton(
+        if (onQuestionPage) {
+            R.id.img_dismiss
+        } else {
+            R.id.img_success_dismiss
+        }
+    )
 }

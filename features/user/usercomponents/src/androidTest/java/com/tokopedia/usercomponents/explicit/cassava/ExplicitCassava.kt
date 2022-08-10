@@ -1,4 +1,4 @@
-package com.tokopedia.usercomponents.explicit
+package com.tokopedia.usercomponents.explicit.cassava
 
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.cassavatest.CassavaTestRule

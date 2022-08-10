@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.usercomponents.explicit.ExplicitCassava
+import com.tokopedia.usercomponents.explicit.cassava.ExplicitCassava
 import com.tokopedia.usercomponents.explicit.di.FakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.view.ExplicitData
 import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewContract

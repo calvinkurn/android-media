@@ -1,4 +1,4 @@
-package com.tokopedia.usercomponents.explicit
+package com.tokopedia.usercomponents.explicit.cassava
 
 enum class ExplicitCassavaState {
     TRACKER_ID_31560,
