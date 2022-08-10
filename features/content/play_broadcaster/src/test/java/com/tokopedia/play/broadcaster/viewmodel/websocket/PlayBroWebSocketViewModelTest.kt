@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.viewmodel.websocket
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.play.broadcaster.domain.model.GetSocketCredentialResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
@@ -10,31 +9,16 @@ import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.interactive.InteractiveUiModelBuilder
 import com.tokopedia.play.broadcaster.model.websocket.WebSocketUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
-import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
-import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertTrue
-import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
-import com.tokopedia.play.broadcaster.util.millisFromNow
-import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
-import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifySequence
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.yield
-import okhttp3.internal.wait
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -185,11 +169,9 @@ class PlayBroWebSocketViewModelTest {
         )
 
         robot.use {
-            val observableTimerState = it.getViewModelPrivateField<MutableLiveData<PlayLiveTimerState>>("_observableLiveTimerState")
-            observableTimerState.value = PlayLiveTimerState.Active(remainingInMs = 1000)
-
             robot.executeViewModelPrivateFunction("startWebSocket")
             fakePlayWebSocket.fakeEmitMessage(mockFreezeString)
+            it.stopLive()
 
             val eventResult = robot.getViewModel().observableEvent.getOrAwaitValue()
 
@@ -212,11 +194,9 @@ class PlayBroWebSocketViewModelTest {
         )
 
         robot.use {
-            val observableTimerState = it.getViewModelPrivateField<MutableLiveData<PlayLiveTimerState>>("_observableLiveTimerState")
-            observableTimerState.value = PlayLiveTimerState.Active(remainingInMs = 1000)
-
             robot.executeViewModelPrivateFunction("startWebSocket")
             fakePlayWebSocket.fakeEmitMessage(mockBannedString)
+            it.stopLive()
 
             val eventResult = robot.getViewModel().observableEvent.getOrAwaitValue()
 
@@ -308,7 +288,7 @@ class PlayBroWebSocketViewModelTest {
         )
 
         robot.use {
-            it.getViewModel().stopLiveStream(false)
+            it.stopLive()
             fakePlayWebSocket.isOpen().assertFalse()
         }
     }
