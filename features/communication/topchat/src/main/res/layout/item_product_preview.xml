@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_container"
     android:layout_width="@dimen/dp_topchat_230"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_marginStart="@dimen/dp_topchat_1"
     android:layout_marginTop="@dimen/dp_topchat_6"
     android:layout_marginBottom="@dimen/unify_space_2"
-    android:minHeight="@dimen/unify_space_64">
+    android:minHeight="@dimen/unify_space_64"
+    tools:layout_height="80dp">
 
     <ImageView
         android:id="@+id/iv_product"
@@ -16,13 +17,13 @@
         android:layout_height="@dimen/unify_space_48"
         android:layout_marginStart="@dimen/unify_space_8"
         android:layout_marginTop="@dimen/unify_space_8"
-        android:layout_marginBottom="@dimen/unify_space_8"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintRight_toLeftOf="@id/tv_product_name"
+        app:layout_constraintVertical_bias="0"
         tools:src="@color/Unify_G200" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -34,9 +35,8 @@
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@+id/iv_close"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_product"
-        app:layout_constraintTop_toTopOf="@+id/iv_product"
+        app:layout_constraintBottom_toTopOf="@id/ll_variant"
         app:typographyType="body_3"
         tools:text="This is really long product name that appear on the screen" />
 
@@ -50,10 +50,11 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="@id/iv_product"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_product"
-        app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
-        tools:visibility="visible">
+        app:layout_constraintStart_toEndOf="@id/iv_product"
+        app:layout_constraintBottom_toBottomOf="@id/iv_product"
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/ll_variant_color"
@@ -107,17 +108,19 @@
         android:layout_width="@dimen/dp_topchat_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:paddingBottom="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:paddingBottom="@dimen/unify_space_8"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@+id/iv_close"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_product"
-        app:layout_constraintTop_toBottomOf="@+id/ll_variant"
+        app:layout_constraintTop_toBottomOf="@id/ll_variant"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold"
+        app:layout_constraintVertical_bias="0"
         tools:text="Rp500.000" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -129,20 +132,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="rect"
-        tools:visibility="gone" />
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/iv_close"
         android:layout_width="@dimen/unify_space_24"
         android:layout_height="@dimen/unify_space_24"
-        android:layout_marginTop="@dimen/unify_space_8"
         android:layout_marginEnd="@dimen/dp_topchat_10"
         android:contentDescription="@null"
         android:paddingStart="@dimen/dp_topchat_6"
         android:paddingEnd="@dimen/dp_topchat_6"
         android:paddingBottom="@dimen/dp_topchat_6"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_product_name"
+        app:layout_constraintLeft_toRightOf="@id/tv_product_name"
         app:srcCompat="@drawable/topchat_ic_close" />
 
     <LinearLayout
@@ -155,7 +158,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/iv_close"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="0dp"

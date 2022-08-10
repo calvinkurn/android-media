@@ -6,6 +6,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_PLUS
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_PLUS_DT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW_15
 import com.tokopedia.product.detail.data.util.getSuccessData
@@ -35,11 +37,11 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
         private const val PARAM_SHOP_TIER = "shop_tier"
         private const val PARAM_UNIQUE_ID = "unique_id"
         private const val PARAM_ORDER_VALUE = "order_value"
-        private const val FIELD_BO_METADATA = "{\"bo_metadata\":{\"bo_type\":${'$'}boType,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"true\"}]}}\""
+        private const val FIELD_BO_METADATA = "{\"bo_metadata\":{\"bo_type\":${'$'}boType,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"${'$'}isTokoNow\"},{\"key\":\"campaign_ids\",\"value\":\"${'$'}boCampaignIDs\"}]}}"
 
         fun createParams(productWeight: Float, shopDomain: String, origin: String?, productId: String,
                          shopId: String, isFulfillment: Boolean, destination: String, freeShippingFlag: Int,
-                         poTime: Long, shopTier: Int, uniqueId: String, orderValue: Int): Map<String, Any?> = mapOf(
+                         poTime: Long, shopTier: Int, uniqueId: String, orderValue: Int, boCampaignIDs: String): Map<String, Any?> = mapOf(
                 PARAM_PRODUCT_WEIGHT to productWeight,
                 PARAM_SHOP_DOMAIN to shopDomain,
                 PARAM_ORIGIN to origin,
@@ -52,13 +54,23 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                 PARAM_SHOP_TIER to shopTier,
                 PARAM_UNIQUE_ID to uniqueId,
                 PARAM_ORDER_VALUE to orderValue,
-                PARAM_BO_META_DATA to buildBoMetaData(freeShippingFlag)
+                PARAM_BO_META_DATA to buildBoMetaData(freeShippingFlag, boCampaignIDs)
         )
 
-        private fun buildBoMetaData(freeShippingFlag: Int): String {
-            return if (freeShippingFlag == BO_TOKONOW || freeShippingFlag == BO_TOKONOW_15)
-                FIELD_BO_METADATA.replace("${'$'}boType", freeShippingFlag.toString())
-            else ""
+        private fun buildBoMetaData(freeShippingFlag: Int, boCampaignIDs: String): String {
+            return when (freeShippingFlag) {
+                BO_TOKONOW,
+                BO_TOKONOW_15,
+                BO_PLUS,
+                BO_PLUS_DT -> {
+                    val isTokoNow = freeShippingFlag == BO_TOKONOW
+                            || freeShippingFlag == BO_TOKONOW_15
+                    FIELD_BO_METADATA.replace("${'$'}boType", freeShippingFlag.toString())
+                        .replace("${'$'}isTokoNow", isTokoNow.toString())
+                        .replace("${'$'}boCampaignIDs", boCampaignIDs)
+                }
+                else -> ""
+            }
         }
 
         val QUERY = """
@@ -78,6 +90,11 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                               title
                               desc
                               raw_shipping_rate
+                              free_shipping_bottomsheet{
+                                shipping_price
+                                eta_text
+                                raw_shipping_rate
+                              }
                               is_quota_empty
                           }
                           address {
@@ -139,6 +156,7 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                                       recommend
                                       checksum
                                       ut
+                                      ui_rates_hidden
                                       price {
                                           price
                                           formatted_price

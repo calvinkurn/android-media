@@ -94,6 +94,8 @@
 /features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
 /features/merchant/campaign_list/                       @tokopedia/android-minionken-dev
 /features/merchant/shop_discount/                       @tokopedia/android-minionken-dev
+/features/merchant/campaign_common/                     @tokopedia/android-minionken-dev
+/features/merchant/seller_shop_flash_sale               @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionsolo-dev
@@ -195,7 +197,7 @@
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
 /features/media/media-common/			                @tokopedia/android-minionkevin-dev
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
-/features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev
+/features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev @tokopedia/android-minionlance-dev
 /features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
 /features/media/mediapicker-common/                     @tokopedia/android-minionkevin-dev
 

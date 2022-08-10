@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.R
@@ -119,8 +120,10 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                         }
                     }
                     LoginConstants.Request.REQUEST_REGISTER_PHONE -> {
-                        if (phone.isNotEmpty())
-                            goToRegisterAddNamePage(phone.replace("-", ""))
+                        if (phone.isNotEmpty()) {
+                            val validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+                            goToRegisterAddNamePage(phone.replace("-", ""), validateToken)
+                        }
                     }
                     REQUEST_NAME_SHOP_CREARION -> {
                         activity?.let {
@@ -130,7 +133,8 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                     }
                     REQUEST_COTP_PHONE_VERIFICATION -> {
                         if (phone.isNotEmpty()) {
-                            shopCreationViewModel.addPhone(phone.replace("-", ""))
+                            val validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+                            shopCreationViewModel.addPhone(phone.replace("-", ""), validateToken)
                         } else {
                             toastError(getString(R.string.please_fill_phone_number))
                         }
@@ -360,7 +364,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun goToLoginPhoneVerifyPage(phone: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, LoginConstants.OtpType.OTP_LOGIN_PHONE_NUMBER)
@@ -373,7 +377,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun goToRegisterPhoneVerifyPage(phone: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER)
@@ -384,7 +388,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToAddPhoneVerifyPage(phoneNumber: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
@@ -402,15 +406,16 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         }
     }
 
-    private fun goToRegisterAddNamePage(phone: String) {
+    private fun goToRegisterAddNamePage(phone: String, validateToken: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.NAME_SHOP_CREATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
 
         startActivityForResult(intent, REQUEST_NAME_SHOP_CREARION)
     }
 
     private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
@@ -440,12 +445,14 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
         private const val OTP_TYPE_PHONE_VERIFICATION = 11
 
+        private const val MIN_PHONE_LENGTH = 6
+
         fun createInstance(bundle: Bundle): PhoneShopCreationFragment {
             val fragment = PhoneShopCreationFragment()
             fragment.arguments = bundle
             return fragment
         }
 
-        fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() && phone.length >= 6
+        fun isValidPhone(phone: String): Boolean = Patterns.PHONE.matcher(phone).matches() && phone.length >= MIN_PHONE_LENGTH
     }
 }
