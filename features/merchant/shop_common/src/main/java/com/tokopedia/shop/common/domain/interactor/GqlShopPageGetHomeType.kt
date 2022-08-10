@@ -27,10 +27,10 @@ class GqlShopPageGetHomeType @Inject constructor(
         fun createParams(
             shopId: String,
             extParam: String,
-            districtId: String,
-            cityId: String,
-            latitude: String,
-            longitude: String
+            districtId: String = "",
+            cityId: String = "",
+            latitude: String = "",
+            longitude: String = ""
         ): RequestParams =
             RequestParams.create().apply {
                 putObject(PARAM_SHOP_ID, shopId.toIntOrZero())

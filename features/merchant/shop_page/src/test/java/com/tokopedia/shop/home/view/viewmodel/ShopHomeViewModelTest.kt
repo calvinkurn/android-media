@@ -66,6 +66,7 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -154,6 +155,9 @@ class ShopHomeViewModelTest {
 
     @RelaxedMockK
     lateinit var getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>
+
+    @RelaxedMockK
+    lateinit var gqlShopPageGetHomeType: GqlShopPageGetHomeType
 
     @RelaxedMockK
     lateinit var shopProductSortMapper: ShopProductSortMapper
@@ -253,8 +257,29 @@ class ShopHomeViewModelTest {
             shopProductSortMapper,
             mvcSummaryUseCase,
             playWidgetTools,
+            gqlShopPageGetHomeType,
             getShopPageHomeLayoutV2UseCase
         )
+    }
+
+    @Test
+    fun `when getShopPageHomeWidgetLayoutData success should return expected results`() {
+        coEvery { gqlShopPageGetHomeType.executeOnBackground() } returns ShopPageGetHomeType()
+        viewModel.getShopPageHomeWidgetLayoutData(mockShopId, mockExtParam)
+        coVerify {
+            gqlShopPageGetHomeType.executeOnBackground()
+        }
+        assertTrue(viewModel.shopHomeWidgetLayoutData.value is Success)
+    }
+
+    @Test
+    fun `when getShopPageHomeWidgetLayoutData error should return expected results`() {
+        coEvery { gqlShopPageGetHomeType.executeOnBackground() } throws Exception()
+        viewModel.getShopPageHomeWidgetLayoutData(mockShopId, mockExtParam)
+        coVerify {
+            gqlShopPageGetHomeType.executeOnBackground()
+        }
+        assertTrue(viewModel.shopHomeWidgetLayoutData.value is Fail)
     }
 
     @Test

@@ -67,6 +67,7 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetType
@@ -110,6 +111,7 @@ class ShopHomeViewModel @Inject constructor(
     private val shopProductSortMapper: ShopProductSortMapper,
     private val mvcSummaryUseCase: MVCSummaryUseCase,
     private val playWidgetTools: PlayWidgetTools,
+    private val gqlShopPageGetHomeType: GqlShopPageGetHomeType,
     private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>
     ) : BaseViewModel(dispatcherProvider.main) {
 
@@ -207,6 +209,28 @@ class ShopHomeViewModel @Inject constructor(
         get() = userSession.userId
 
     private var miniCartData : MiniCartSimplifiedData? = null
+
+    fun getShopPageHomeWidgetLayoutData(
+        shopId: String,
+        extParam: String,
+    ) {
+        launchCatchError(block = {
+            val shopHomeLayoutResponse = withContext(dispatcherProvider.io) {
+                gqlShopPageGetHomeType.isFromCacheFirst = false
+                gqlShopPageGetHomeType.params = GqlShopPageGetHomeType.createParams(
+                    shopId,
+                    extParam
+                )
+                gqlShopPageGetHomeType.executeOnBackground()
+            }
+            val shopHomeLayoutUiModelPlaceHolder = ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(
+                shopHomeLayoutResponse.homeLayoutData
+            )
+            _shopHomeWidgetLayoutData.postValue(Success(shopHomeLayoutUiModelPlaceHolder))
+        }) {
+            _shopHomeWidgetLayoutData.postValue(Fail(it))
+        }
+    }
 
     fun getNewProductList(
             shopId: String,
