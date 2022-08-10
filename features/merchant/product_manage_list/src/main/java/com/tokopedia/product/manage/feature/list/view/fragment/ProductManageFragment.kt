@@ -202,6 +202,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.HAS_STOCK_ALERT_STATUS
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.STOCK_ALERT_ACTIVE
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.*
 import com.tokopedia.unifycomponents.*
 import kotlin.math.abs
@@ -2902,8 +2903,8 @@ open class ProductManageFragment :
                     val data = it.data
 
                     if (data is ShowFilterTab) {
-                        filterTab?.show(data)
-                        showViolationProductFilter(data.tabs)
+                        val mappedData = getTabData(data)
+                        filterTab?.show(mappedData)
                     } else {
                         filterTab?.update(data, this)
                     }
@@ -2913,16 +2914,20 @@ open class ProductManageFragment :
         }
     }
 
-    private fun showViolationProductFilter(tabs: List<FilterTabUiModel>) {
-        val tab = arguments?.getString(
+    private fun getTabData(data: GetFilterTabResult): GetFilterTabResult {
+        val tabName = arguments?.getString(
             ProductManageSellerFragment.PRODUCT_MANAGE_TAB, String.EMPTY
         )
-
-        if (tab.isNullOrBlank()) return
-        if (tab.equals(FilterTabUiModel.FilterId.VIOLATION.name, true)) {
-            val violationTab = tabs.firstOrNull { it is FilterTabUiModel.Violation } ?: return
-            filterTab?.setActiveTab(violationTab)
+        val tabs = data.tabs.map { tab ->
+            return@map if (tabName.equals(tab.status?.name, true)
+                && tab is FilterTabUiModel.Violation
+            ) {
+                tab.copy(isSelected = true)
+            } else {
+                tab
+            }
         }
+        return ShowFilterTab(tabs)
     }
 
     private fun observeProductListFeaturedOnly() {

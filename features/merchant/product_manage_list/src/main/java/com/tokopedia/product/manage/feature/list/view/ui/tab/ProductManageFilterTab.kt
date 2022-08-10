@@ -107,16 +107,16 @@ class ProductManageFilterTab(
         setActiveFilterCount(0)
     }
 
-    fun setActiveTab(model: FilterTabUiModel) {
-
-    }
-
     private fun updateTabs(tabs: List<FilterTabUiModel>) {
         sortFilterTab.apply {
             val filterTabs = tabs.map { tab ->
                 val title = context.getString(tab.titleId, tab.count)
 
                 val filter = SortFilterItem(title)
+                if (tab.isSelected)  {
+                    toggleFilterTab(filter, tab)
+                    tab.isSelected = false
+                }
                 filter.listener = { toggleFilterTab(filter, tab) }
 
                 filter

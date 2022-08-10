@@ -31,7 +31,7 @@ open class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductMan
         val tab = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_TAB).orEmpty()
 
         return@lazy when {
-            filterId.isNotBlank() || searchKeyword.isNotBlank() -> {
+            filterId.isNotBlank() || searchKeyword.isNotBlank() || tab.isNotBlank() -> {
                 ProductManageSellerFragment.newInstance(arrayListOf(filterId), tab, searchKeyword)
             }
             else -> {

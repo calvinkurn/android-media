@@ -225,14 +225,16 @@ class SellerHomeNavigator(
     }
 
     private fun setupProductManagePage(page: PageFragment): Fragment? {
-        val searchKeyword = page.keywordSearch
-        val tab = page.productManageTab
-        val filterOptions = arrayListOf(page.tabPage)
+        val filterOptions: ArrayList<String> = if (page.tabPage.isNotBlank()) {
+            arrayListOf(page.tabPage)
+        } else {
+            arrayListOf()
+        }
 
         productManageFragment = sellerHomeRouter?.getProductManageFragment(
             filterOptions,
-            searchKeyword,
-            tab,
+            page.keywordSearch,
+            page.productManageTab,
             navigationHomeMenu
         )
 
