@@ -577,8 +577,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     //------------------------------------//
 
     fun applyPromo(validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
-        // remove previous bbo promo
-        removeBebasOngkirPromoFromLastRequestData(validateUsePromoRequest)
         // Set request data
         setApplyPromoRequestData(validateUsePromoRequest)
 
@@ -694,23 +692,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun removeBebasOngkirPromoFromLastRequestData(validateUsePromoRequest: ValidateUsePromoRequest) {
-        validateUsePromoRequest.orders.forEach { order ->
-            promoListUiModel.value?.forEach { visitable ->
-                if (visitable is PromoListItemUiModel && visitable.uiState.isBebasOngkir && !visitable.uiState.isSelected) {
-                    val boData = visitable.uiData.boAdditionalData.firstOrNull { order.uniqueId == it.uniqueId }
-                    boData?.let {
-                        if (order.codes.contains(it.code)) {
-                            order.shippingId = 0
-                            order.spId = 0
-                            order.codes.remove(it.code)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun setApplyPromoRequestDataFromSelectedPromo(promoListItemUiModel: PromoListItemUiModel,
                                                           order: OrdersItem?,
                                                           validateUsePromoRequest: ValidateUsePromoRequest) {
@@ -750,21 +731,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     order.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 order.codes.remove(promoListItemUiModel.uiData.promoCode)
             }
-//            else if (promoListItemUiModel.uiState.isBebasOngkir) {
-//                // if coupon is bebas ongkir promo, then reset shipping id, sp id, and code
-//                val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
-//                if (boData != null) {
-//                    // todo what happen if user check bo reg, and uncheck bo plus for the same order
-//                    order?.let {
-//                        // todo this logic does not support address change from other page
-//                        if (it.codes.contains(boData.code) && it.shippingId == boData.shippingId && it.spId == boData.shipperProductId) {
-//                            it.shippingId = 0
-//                            it.spId = 0
-//                            it.codes.remove(boData.code)
-//                        }
-//                    }
-//                }
-//            }
+            else if (promoListItemUiModel.uiState.isBebasOngkir) {
+                // if coupon is bebas ongkir promo, then remove code only
+                val boData = promoListItemUiModel.uiData.boAdditionalData.firstOrNull { order?.uniqueId == it.uniqueId }
+                if (boData != null) {
+                    order?.let {
+                        if (it.codes.contains(boData.code)) {
+                            it.codes.remove(boData.code)
+                        }
+                    }
+                }
+            }
             else if (promoListItemUiModel.uiData.shopId == 0 &&
                     validateUsePromoRequest.codes.contains(promoListItemUiModel.uiData.promoCode)) {
                 validateUsePromoRequest.codes.remove(promoListItemUiModel.uiData.promoCode)
@@ -775,7 +752,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun getSelectedPromoList(): ArrayList<String> {
         val selectedPromoList = ArrayList<String>()
         promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isSelected && !visitable.uiState.isBebasOngkir) {
+            if (visitable is PromoListItemUiModel && visitable.uiState.isSelected) {
                 selectedPromoList.add(visitable.uiData.promoCode)
             }
         }
