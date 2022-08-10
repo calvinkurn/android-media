@@ -9,6 +9,7 @@ import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductM
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.DynamicCarouselOption
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.shouldBe
@@ -19,12 +20,7 @@ import io.mockk.slot
 import org.junit.Test
 import rx.Subscriber
 
-private const val searchProductWithTopAdsResponseJSON = "searchproduct/with-topads.json"
-private const val broadMatchResponseCode0Page1Position1 =
-    "searchproduct/broadmatch/response-code-0-page-1-position-1.json"
-private const val dynamicProductCarousel = "searchproduct/inspirationcarousel/dynamic-product.json"
-private const val inFirstPage = "searchproduct/inspirationcarousel/in-first-page.json"
-private const val chips = "searchproduct/inspirationcarousel/chips.json"
+private const val externalReferenceResponseJSON = "searchproduct/externalreference/externalreference.json"
 private const val chipProducts1 =
     "searchproduct/inspirationcarousel/chipproducts/chip-products-1.json"
 
@@ -69,8 +65,7 @@ internal class SearchProductHandleExternalReferenceTest : ProductListPresenterTe
     fun `Product with external Reference`() {
         val expectedExternalReference = "1234567"
 
-        val searchProductModel =
-            searchProductWithTopAdsResponseJSON.jsonToObject<SearchProductModel>()
+        val searchProductModel = externalReferenceResponseJSON.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When view load data`(expectedExternalReference)
@@ -78,12 +73,19 @@ internal class SearchProductHandleExternalReferenceTest : ProductListPresenterTe
         `Then verify organic product external reference`(expectedExternalReference)
         `Then verify organic ads external reference`(expectedExternalReference)
         `Then verify top ads external reference`(expectedExternalReference)
+
+        `Then verify broad match ads external reference`(expectedExternalReference)
+        `Then verify broad match non ads external reference`(expectedExternalReference)
+        `Then verify dynamic product carousel external reference`(expectedExternalReference)
+
+        `Then verify inspiration carousel product external reference`(expectedExternalReference)
+        `Then verify top ads carousel chips product external reference`(expectedExternalReference)
+        `Then verify carousel chips product external reference`(expectedExternalReference)
     }
 
     @Test
     fun `Product without external Reference`() {
-        val searchProductModel =
-            searchProductWithTopAdsResponseJSON.jsonToObject<SearchProductModel>()
+        val searchProductModel = externalReferenceResponseJSON.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
         `When view load data`("")
@@ -91,6 +93,14 @@ internal class SearchProductHandleExternalReferenceTest : ProductListPresenterTe
         `Then verify organic product external reference`()
         `Then verify organic ads external reference`()
         `Then verify top ads external reference`()
+
+        `Then verify broad match ads external reference`()
+        `Then verify broad match non ads external reference`()
+        `Then verify dynamic product carousel external reference`()
+
+        `Then verify inspiration carousel product external reference`()
+        `Then verify top ads carousel chips product external reference`()
+        `Then verify carousel chips product external reference`()
 
     }
 
@@ -118,78 +128,20 @@ internal class SearchProductHandleExternalReferenceTest : ProductListPresenterTe
         `Then verify externalReference`(topAdsViewModel.dimension131, expectedExternalReference)
     }
 
-    @Test
-    fun `Top ads broad match item with externalReference`() {
-        val expectedExternalReference = "1234567"
-        val searchProductModel =
-            broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When view load data`(expectedExternalReference)
-
-        `Then verify broad match ads external reference`(expectedExternalReference)
-    }
-
-    @Test
-    fun `Top ads broad match item without externalReference`() {
-        val searchProductModel =
-            broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When view load data`("")
-
-        `Then verify broad match ads external reference`()
-    }
-
-    @Test
-    fun `Broad match item with externalReference`() {
-        val expectedExternalReference = "1234567"
-        val searchProductModel =
-            broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When view load data`(expectedExternalReference)
-
-        `Then verify broad match non ads external reference`(expectedExternalReference)
-    }
-
-    @Test
-    fun `Broad match item without externalReference`() {
-        val searchProductModel =
-            broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When view load data`("")
-
-        `Then verify broad match non ads external reference`()
-    }
-
-    @Test
-    fun `Dynamic carousel as broad match with externalReference`() {
-        val expectedExternalReference = "1234567"
-        val searchProductModel = dynamicProductCarousel.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When view load data`(expectedExternalReference)
-
-        `Then verify broad match non ads external reference`(expectedExternalReference)
-    }
-
-    @Test
-    fun `Dynamic carousel as broad match without externalReference`() {
-        val searchProductModel = dynamicProductCarousel.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When view load data`("")
-
-        `Then verify broad match non ads external reference`()
-    }
-
     private fun findBroadMatchItemFromVisitableList(isTopAds: Boolean): BroadMatchItemDataView {
         val visitableList = visitableListSlot.captured
 
         val broadMatchViewModel =
             visitableList.find { it is BroadMatchDataView } as BroadMatchDataView
+
+        return broadMatchViewModel.broadMatchItemDataViewList.find { it.isOrganicAds == isTopAds }!!
+    }
+
+    private fun findDynamicProductItemFromVisitableList(isTopAds: Boolean): BroadMatchItemDataView {
+        val visitableList = visitableListSlot.captured
+
+        val broadMatchViewModel =
+            visitableList.find { it is BroadMatchDataView && it.carouselOptionType is DynamicCarouselOption } as BroadMatchDataView
 
         return broadMatchViewModel.broadMatchItemDataViewList.find { it.isOrganicAds == isTopAds }!!
     }
@@ -210,14 +162,15 @@ internal class SearchProductHandleExternalReferenceTest : ProductListPresenterTe
         `Then verify externalReference`(broadMatch.externalReference, expectedExternalReference)
     }
 
-    @Test
-    fun `Inspiration carousel product with externalReference`() {
-        val expectedExternalReference = "1234567"
-        val searchProductModel = inFirstPage.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
+    private fun `Then verify dynamic product carousel external reference`(
+        expectedExternalReference: String = "",
+    ) {
+        val broadMatch = findDynamicProductItemFromVisitableList(false)
 
-        `When view load data`(expectedExternalReference)
+        `Then verify externalReference`(broadMatch.externalReference, expectedExternalReference)
+    }
 
+    private fun `Then verify inspiration carousel product external reference`(expectedExternalReference: String = "") {
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
             SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
             false
@@ -229,29 +182,9 @@ internal class SearchProductHandleExternalReferenceTest : ProductListPresenterTe
         )
     }
 
-    @Test
-    fun `Inspiration carousel product without externalReference`() {
-        val searchProductModel = inFirstPage.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When view load data`("")
-
-        val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
-            false
-        )
-
-        `Then verify externalReference`(inspirationCarouselProduct.externalReference)
-    }
-
-    @Test
-    fun `Top ads inspiration carousel chips product with externalReference`() {
-        val expectedExternalReference = "1234567"
-        val searchProductModel = chips.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When view load data`(expectedExternalReference)
-
+    private fun `Then verify top ads carousel chips product external reference`(
+        expectedExternalReference: String =""
+    ) {
         val selectedOption = `Given carousel chips clicked will return selected chip option`()
         val inspirationCarouselProduct = findProductFromInspirationCarouselDataViewOption(
             selectedOption,
@@ -264,33 +197,10 @@ internal class SearchProductHandleExternalReferenceTest : ProductListPresenterTe
         )
     }
 
-    @Test
-    fun `Top ads inspiration carousel chips product without externalReference`() {
-        val searchProductModel = chips.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When view load data`("")
-
+    private fun `Then verify carousel chips product external reference`(
+        expectedExternalReference: String =""
+    ) {
         val selectedOption = `Given carousel chips clicked will return selected chip option`()
-
-        val inspirationCarouselProduct = findProductFromInspirationCarouselDataViewOption(
-            selectedOption,
-            true
-        )
-
-        `Then verify externalReference`(inspirationCarouselProduct.externalReference)
-    }
-
-    @Test
-    fun `Inspiration carousel chips product with externalReference`() {
-        val expectedExternalReference = "1234567"
-        val searchProductModel = chips.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When view load data`(expectedExternalReference)
-
-        val selectedOption = `Given carousel chips clicked will return selected chip option`()
-
         val inspirationCarouselProduct = findProductFromInspirationCarouselDataViewOption(
             selectedOption,
             false
@@ -300,23 +210,6 @@ internal class SearchProductHandleExternalReferenceTest : ProductListPresenterTe
             inspirationCarouselProduct.externalReference,
             expectedExternalReference
         )
-    }
-
-    @Test
-    fun `Inspiration carousel chips product without externalReference`() {
-        val searchProductModel = chips.jsonToObject<SearchProductModel>()
-        `Given Search Product API will return SearchProductModel`(searchProductModel)
-
-        `When view load data`("")
-
-        val selectedOption = `Given carousel chips clicked will return selected chip option`()
-
-        val inspirationCarouselProduct = findProductFromInspirationCarouselDataViewOption(
-            selectedOption,
-            false
-        )
-
-        `Then verify externalReference`(inspirationCarouselProduct.externalReference)
     }
 
     private fun findInspirationCarouselProductFromVisitableList(
