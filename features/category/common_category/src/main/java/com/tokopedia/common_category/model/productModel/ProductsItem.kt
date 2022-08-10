@@ -59,7 +59,7 @@ data class ProductsItem(
         val stock: Int? = null,
 
         @field:SerializedName("categoryID")
-        var categoryID: String? = null,
+        var categoryID: Int? = null,
 
         @field:SerializedName("GAKey")
         val gAKey: String? = null,
