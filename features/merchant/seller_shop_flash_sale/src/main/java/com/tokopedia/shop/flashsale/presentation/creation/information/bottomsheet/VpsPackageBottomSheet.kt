@@ -25,6 +25,7 @@ class VpsPackageBottomSheet : BottomSheetUnify() {
     companion object {
         private const val BUNDLE_KEY_SELECTED_VPS_PACKAGE = "selected_vps_package_id"
         private const val BUNDLE_KEY_VPS_PACKAGES = "vps_packages"
+        private const val ITEM_DIVIDER_INSET = 16
 
         @JvmStatic
         fun newInstance(
@@ -110,7 +111,7 @@ class VpsPackageBottomSheet : BottomSheetUnify() {
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity ?: return)
             adapter = vpsPackageAdapter
-            attachDividerItemDecoration(insetLeft = 16, insetRight = 16)
+            attachDividerItemDecoration(insetLeft = ITEM_DIVIDER_INSET, insetRight = ITEM_DIVIDER_INSET)
         }
 
         populateVpsPackages()
