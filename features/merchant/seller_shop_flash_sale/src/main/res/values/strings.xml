@@ -110,7 +110,6 @@
     <string name="sfs_cancel_edit_campaign_confirmation_description">Perubahan info campaign tidak akan tersimpan dan campaign-mu akan sama seperti sebelumnya</string>
     <string name="sfs_confirm_delete">Ya, Hapus</string>
     <string name="sfs_confirm_exit">Ya, Keluar</string>
-    <string name="sfs_date_picker_description">Kamu hanya bisa menjadwal maks. 5 campaign tiap bulan dengan maks. durasi 7 hari.</string>
     <string name="sfs_select_campaign_date">Pilih tanggal campaign</string>
     <string name="sfs_select_campaign_time">Pilih jam campaign</string>
     <string name="sfs_placeholder_selected_date">Tanggal terpilih: %s</string>
@@ -118,6 +117,7 @@
     <string name="sfs_placeholder_empty_current_month_quota">Kuotamu di Bulan %s sudah habis</string>
     <string name="sfs_placeholder_campaign_count">%s Campaign</string>
     <string name="sfs_placeholder_length_counter">%s/%s</string>
+    <string name="sfs_placeholder_date_picker_description">Kamu hanya bisa menjadwalkan campaign sesuai dengan periode campaign pada sumber kuota yang kamu pilih, yaitu dari %s - %s</string>
     <string name="sfs_hashtag">#</string>
     <string name="sfs_invalid_hex_color">Kode tidak valid</string>
     <string name="sfs_create_campaign_on_another_period">Buat campaign di bulan lain, ya.</string>

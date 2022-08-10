@@ -635,7 +635,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             TimePickerSelectionMode.START_TIME,
             selectedDate,
             minimumDate,
-            maximumCampaignEndDate
+            maximumCampaignEndDate,
+            viewModel.getSelectedVpsPackage() ?: return
         )
 
         bottomSheet.setOnDateTimePicked { newStartDate ->
@@ -659,7 +660,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             TimePickerSelectionMode.END_TIME,
             endDate,
             minimumDate,
-            maximumEndDate
+            maximumEndDate,
+            viewModel.getSelectedVpsPackage() ?: return
         )
         bottomSheet.setOnDateTimePicked { newEndDate ->
             viewModel.setSelectedEndDate(newEndDate)

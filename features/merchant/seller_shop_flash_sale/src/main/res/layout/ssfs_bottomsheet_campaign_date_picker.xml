@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -16,7 +16,7 @@
         android:visibility="gone"
         tools:visibility="visible"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:text="@string/sfs_date_picker_description"
+        android:text="@string/sfs_placeholder_date_picker_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,14 +41,15 @@
     <com.tokopedia.calendar.UnifyCalendar
         android:id="@+id/unifyCalendar"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/unify_space_8"
         android:layout_height="@dimen/sfs_calendar_height"
-        tools:visibility="visible"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tpgErrorMessage" />
+        app:layout_constraintTop_toBottomOf="@id/tpgErrorMessage"
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
