@@ -239,13 +239,4 @@ class ManageAddressViewModelTest {
             secondArg<(Throwable)-> Unit>().invoke(Throwable())
         }
     }
-
-    @Test
-    fun `verify when set page source is correctly`() {
-        val source = "source"
-
-        manageAddressViewModel.source = source
-
-        assertEquals(manageAddressViewModel.source, source)
-    }
 }

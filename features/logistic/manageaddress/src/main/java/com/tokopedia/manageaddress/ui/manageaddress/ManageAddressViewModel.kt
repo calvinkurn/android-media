@@ -40,8 +40,6 @@ class ManageAddressViewModel @Inject constructor(
     var canLoadMore: Boolean = true
     var isClearData: Boolean = true
 
-    var source: String = ""
-
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>
         get() = _addressList
