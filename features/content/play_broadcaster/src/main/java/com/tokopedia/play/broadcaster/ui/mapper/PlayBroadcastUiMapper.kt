@@ -1,11 +1,10 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import android.graphics.Typeface
-import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import com.tokopedia.broadcaster.mediator.LivePusherConfig
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
@@ -17,6 +16,7 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteracti
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
+import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.game.GameParticipantUiModel
@@ -29,16 +29,15 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiM
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
+import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
-import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
@@ -49,7 +48,8 @@ import javax.inject.Inject
  * Created by jegul on 02/06/20
  */
 class PlayBroadcastUiMapper @Inject constructor(
-    private val textTransformer: HtmlTextTransformer
+    private val textTransformer: HtmlTextTransformer,
+    private val uriParser: UriParser,
 ) : PlayBroadcastMapper {
 
     override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> =
@@ -119,10 +119,9 @@ class PlayBroadcastUiMapper @Inject constructor(
     }
 
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
-        LiveStreamInfoUiModel(
-            channelId = channelId,
-            ingestUrl = media.ingestUrl,
-            streamUrl = media.streamUrl
+            LiveStreamInfoUiModel(
+                    ingestUrl = media.ingestUrl,
+
         )
 
     override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> =
@@ -179,30 +178,28 @@ class PlayBroadcastUiMapper @Inject constructor(
         }
 
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
-        val channelStatus = ChannelType.getChannelType(
+        val channelStatus = ChannelStatus.getChannelType(
             config.activeLiveChannel,
             config.pausedChannel,
             config.draftChannel,
             config.completeDraft
         )
 
-        val maxDuration = TimeUnit.SECONDS.toMillis(config.maxDuration)
-        val remainingTime = when (channelStatus.second) {
-            ChannelType.Active -> TimeUnit.SECONDS.toMillis(config.activeChannelRemainingDuration)
-            ChannelType.Pause -> TimeUnit.SECONDS.toMillis(config.pausedChannelRemainingDuration)
-            else -> maxDuration
+        val remainingDuration = when (channelStatus.second) {
+            ChannelStatus.Live -> config.maxDuration - config.activeChannelRemainingDuration
+            ChannelStatus.Pause -> config.maxDuration - config.pausedChannelRemainingDuration
+            else -> 0
         }
 
         return ConfigurationUiModel(
             streamAllowed = config.streamAllowed,
             channelId = channelStatus.first,
-            channelType = channelStatus.second,
-            remainingTime = remainingTime,
+            channelStatus = channelStatus.second,
             durationConfig = DurationConfigUiModel(
-                duration = maxDuration,
+                remainingDuration = TimeUnit.SECONDS.toMillis(remainingDuration),
+                maxDuration = TimeUnit.SECONDS.toMillis(config.maxDuration),
                 maxDurationDesc = config.maxDurationDesc,
                 pauseDuration = TimeUnit.SECONDS.toMillis(config.maxPauseDuration),
-                errorMessage = config.maxDurationDesc
             ),
             productTagConfig = ProductTagConfigUiModel(
                 maxProduct = config.maxTaggedProduct,
@@ -231,7 +228,7 @@ class PlayBroadcastUiMapper @Inject constructor(
         description = channel.basic.description,
         ingestUrl = channel.medias.firstOrNull { it.id == channel.basic.activeMediaID }?.ingestUrl.orEmpty(),
         coverUrl = channel.basic.coverUrl,
-        status = PlayChannelStatusType.getByValue(channel.basic.status.id)
+        status = ChannelStatus.getByValue(channel.basic.status.id)
     )
 
     override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) =
@@ -282,7 +279,7 @@ class PlayBroadcastUiMapper @Inject constructor(
         return PlayCoverUiModel(
             croppedCover = CoverSetupState.Cropped.Uploaded(
                 localImage = null,
-                coverImage = Uri.parse(coverUrl),
+                coverImage = uriParser.parse(coverUrl),
                 coverSource = prevSource ?: CoverSource.None
             ),
             state = SetupDataState.Uploaded,
@@ -382,19 +379,6 @@ class PlayBroadcastUiMapper @Inject constructor(
             response.interactiveSellerCreateSession.data.interactiveId,
             title,
             durationInMs
-        )
-    }
-
-    override fun mapLiveInfo(
-        activeIngestUrl: String,
-        config: LivePusherConfig
-    ): PlayLiveLogState {
-        return PlayLiveLogState.Init(
-            activeIngestUrl,
-            config.videoWidth,
-            config.videoHeight,
-            config.fps,
-            config.videoBitrate
         )
     }
 
@@ -587,6 +571,24 @@ class PlayBroadcastUiMapper @Inject constructor(
             else -> LeadeboardType.Unknown
         }
     }
+
+    override fun mapBroadcasterMetric(
+        metric: BroadcasterMetric,
+        authorId: String,
+        channelId: String
+    ) = PlayBroadcasterMetric(
+        authorId = authorId,
+        channelId = channelId,
+        videoBitrate = metric.videoBitrate,
+        audioBitrate = metric.audioBitrate,
+        resolution = "${metric.resolutionWidth}x${metric.resolutionHeight}",
+        traffic = metric.traffic,
+        bandwidth = metric.bandwidth,
+        fps = metric.fps,
+        packetLossIncreased = metric.packetLossIncreased,
+        videoBufferTimestamp = metric.videoBufferTimestamp,
+        audioBufferTimestamp = metric.audioBufferTimestamp,
+    )
 
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"

@@ -352,11 +352,15 @@ class ProductListPresenter @Inject constructor(
         additionalParams = productDataView.additionalParams
 
         if (productDataView.productList.isEmpty()) {
-            postProcessingFilter.checkPostProcessingFilter(searchParameter, totalData, ::loadMoreData) {
+            postProcessingFilter.checkPostProcessingFilter(
+                searchProductModel.isPostProcessing,
+                searchParameter,
+                totalData,
+                ::loadMoreData
+            ) {
                 getViewToProcessEmptyResultDuringLoadMore()
             }
-        }
-        else {
+        } else {
             postProcessingFilter.resetCount()
             getViewToShowMoreData(searchParameter, searchProductModel, productDataView)
         }
@@ -647,7 +651,12 @@ class ProductListPresenter @Inject constructor(
         view.setDefaultLayoutType(productDataView.defaultView)
 
         if (productDataView.productList.isEmpty()) {
-            postProcessingFilter.checkPostProcessingFilter(searchParameter, totalData, ::loadData) {
+            postProcessingFilter.checkPostProcessingFilter(
+                searchProductModel.isPostProcessing,
+                searchParameter,
+                totalData,
+                ::loadData
+            ) {
                 getViewToHandleEmptyProductList(
                     searchProductModel.searchProduct,
                     productDataView,
@@ -1549,12 +1558,24 @@ class ProductListPresenter @Inject constructor(
 
     private fun createSortFilterItem(filter: Filter, options: List<Option>): SortFilterItem {
         val isChipSelected = options.any { view.isFilterSelected(it) }
-        val item = SortFilterItem(filter.chipName)
+        val selectedOptionsOnCurrentFilter = options.filter { view.isFilterSelected(it) }
+        val item = SortFilterItem(createSortFilterTitle(filter, selectedOptionsOnCurrentFilter))
 
         setSortFilterItemListener(item, filter, options)
         setSortFilterItemState(item, isChipSelected)
 
         return item
+    }
+
+    @Suppress("MagicNumber")
+    private fun createSortFilterTitle(filter: Filter, activeOptions: List<Option>): String {
+        val optionSize = activeOptions.size
+
+        return when {
+            optionSize == 1 -> activeOptions.first().name
+            optionSize > 1 -> "$optionSize ${filter.title}"
+            else -> filter.chipName
+        }
     }
 
     private fun setSortFilterItemState(item: SortFilterItem, isChipSelected: Boolean) {
