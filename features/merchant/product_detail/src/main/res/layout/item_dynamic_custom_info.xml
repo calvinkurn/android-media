@@ -9,7 +9,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/top_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         android:visibility="gone"
         tools:visibility="visible" />
 
@@ -43,7 +43,7 @@
             app:layout_constraintStart_toEndOf="@+id/custom_image"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginStart="0dp"
-            app:typographyType="paragraph_1"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="Bangga Buatan Indonesia"
             tools:visibility="visible" />
@@ -96,7 +96,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/bottom_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         android:visibility="gone"
         tools:visibility="visible" />
 </LinearLayout>

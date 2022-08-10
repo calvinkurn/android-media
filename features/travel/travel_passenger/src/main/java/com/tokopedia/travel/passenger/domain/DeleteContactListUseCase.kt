@@ -1,5 +1,6 @@
 package com.tokopedia.travel.passenger.domain
 
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 class DeleteContactListUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun execute(query: String, deleteContactModel: TravelDeleteContactModel): Result<TravelDeleteContactModel.Response> {
+    suspend fun execute(query: GqlQueryInterface, deleteContactModel: TravelDeleteContactModel): Result<TravelDeleteContactModel.Response> {
         useCase.clearRequest()
         return try {
             val params = mapOf(PARAM_DELETE_CONTACT to deleteContactModel)

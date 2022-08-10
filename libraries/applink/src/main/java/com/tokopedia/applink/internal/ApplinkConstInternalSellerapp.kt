@@ -70,6 +70,9 @@ object ApplinkConstInternalSellerapp {
     const val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
     const val VOUCHER_PRODUCT_DETAIL = "$INTERNAL_SELLERAPP/voucher-product-detail/{voucher_id}/"
 
+    // Seller Shop Flash Sale - CampaignListActivity
+    const val SELLER_SHOP_FLASH_SALE = "$INTERNAL_SELLERAPP/shop-flash-sale/{filter_mode}/"
+
     // CampaignListActivity
     const val CAMPAIGN_LIST = "$INTERNAL_SELLERAPP/campaign-list"
 
@@ -86,7 +89,6 @@ object ApplinkConstInternalSellerapp {
     const val SELLER_FEEDBACK = "$INTERNAL_SELLERAPP/seller-feedback"
 
     const val REVIEW_REMINDER = "$INTERNAL_SELLERAPP/review-reminder"
-
     //AdminRestrictionActivity
     const val ADMIN_RESTRICTION = "$INTERNAL_SELLERAPP/admin-restriction"
     const val PARAM_ARTICLE_URL = "article_url"
@@ -97,4 +99,6 @@ object ApplinkConstInternalSellerapp {
     const val SHOP_DISCOUNT_MANAGE_PRODUCT_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product"
     const val SHOP_DISCOUNT_MANAGE_PRODUCT_VARIANT_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/variant"
     const val SHOP_DISCOUNT_MANAGE_PRODUCT_MULTI_LOC_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product/multi-loc"
+
+    const val TOKOMEMBER = "$INTERNAL_SELLERAPP/tokomember"
 }

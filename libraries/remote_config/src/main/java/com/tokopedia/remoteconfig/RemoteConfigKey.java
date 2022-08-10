@@ -224,6 +224,7 @@ public class RemoteConfigKey {
     public static final String FREE_SHIPPING_TRANSITION_PERIOD = "android_free_shipping_transition_period";
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
+    public static final String ENABLE_FLASH_SALE_ENTRY_SELLER = "android_sellerapp_enable_flash_sale_entry";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear_v2";
     public static final String CM_CAMPAIGN_ID_EXCLUDE_LIST = "android_cm_push_exclude_list_removal";
@@ -300,4 +301,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_SHOP_DISCOUNT = "android_enable_shop_discount";
 
     public static final String ENABLE_SHOP_DYNAMIC_TAB = "android_enable_shop_dynamic_tab";
+
+    public static final String ENABLE_OLD_IKLAN_PROMOSI_PAGE = "android_enable_old_iklan_promosi_page";
 }

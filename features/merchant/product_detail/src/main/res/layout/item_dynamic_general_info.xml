@@ -12,7 +12,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/info_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_pdp_general_info_desc" />
 
@@ -55,12 +55,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
             android:visibility="invisible"
             app:layout_constraintEnd_toStartOf="@+id/pdp_arrow_right"
             app:layout_constraintStart_toEndOf="@+id/pdp_icon"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="paragraph_1"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="Varian Produk"
             tools:visibility="visible" />

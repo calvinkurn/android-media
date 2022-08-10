@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
@@ -65,7 +66,8 @@ import javax.inject.Inject
 class PlayFragment @Inject constructor(
     viewModelFactory: PlayViewModel.Factory,
     private val pageMonitoring: PlayPltPerformanceCallback,
-    private val analytic: PlayAnalytic
+    private val analytic: PlayAnalytic,
+    private val newAnalytic: PlayNewAnalytic,
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -312,6 +314,7 @@ class PlayFragment @Inject constructor(
             val channelData = playParentViewModel.getLatestChannelStorageData(channelId)
             playViewModel.focusPage(channelData)
             analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType, channelName = channelData.channelDetail.channelInfo.title)
+            newAnalytic.sendDataNow(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }

@@ -43,8 +43,8 @@ class ProductDetailInfoAdapter(private val listener: DynamicProductDetailListene
 
     inner class ItemProductDetailInfoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private val detailTitle: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.info_detail_title)
-        private val detailDesc: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.info_detail_value)
+        private val detailTitle: Typography? = itemView.findViewById(R.id.info_detail_title)
+        private val detailDesc: Typography? = itemView.findViewById(R.id.info_detail_value)
         private val detailIcon: IconUnify? = itemView.findViewById(R.id.info_detail_icon)
         private val detailClickArea: View? = itemView.findViewById(R.id.info_detail_click_area)
 
@@ -64,10 +64,10 @@ class ProductDetailInfoAdapter(private val listener: DynamicProductDetailListene
             }
 
             if (data.applink.isNotEmpty()) {
-                detailDesc?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                detailDesc?.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 detailDesc?.setWeight(Typography.BOLD)
                 detailDesc?.setOnClickListener {
-                    when (data.title.toLowerCase(Locale.getDefault())) {
+                    when (data.title.lowercase(Locale.getDefault())) {
                         ProductDetailCommonConstant.KEY_CATEGORY -> {
                             listener.onCategoryClicked(data.applink, componentTrackDataModel
                                     ?: ComponentTrackDataModel())

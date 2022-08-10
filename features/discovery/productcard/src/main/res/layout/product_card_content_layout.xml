@@ -432,19 +432,21 @@
         tools:text="Terjual 122"
         tools:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/imageSalesRatingFloat"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/productCardImageSalesRatingFloat"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginTop="@dimen/dp_3"
+        android:layout_marginTop="@dimen/product_card_sales_rating_margin_top"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop"
         android:visibility="gone"
-        android:contentDescription="@string/content_desc_imageRating"
+        android:contentDescription="@string/product_card_content_desc_imageRating"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewIntegrity"
-        app:srcCompat="@drawable/ic_rating_apps_active"
+        app:icon_color_light_enable="@color/Unify_YN300"
+        app:icon_color_night_enable="@color/Unify_YN600"
+        app:icon_name="STAR_FILLED"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -455,7 +457,7 @@
         android:layout_marginStart="2dp"
         android:gravity="center_vertical"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintStart_toEndOf="@id/imageSalesRatingFloat"
+        app:layout_constraintStart_toEndOf="@id/productCardImageSalesRatingFloat"
         app:layout_constraintTop_toBottomOf="@id/textViewIntegrity"
         app:typographyType="body_3"
         tools:text="4.8"

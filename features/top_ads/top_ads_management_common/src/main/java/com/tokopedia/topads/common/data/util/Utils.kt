@@ -2,11 +2,14 @@ package com.tokopedia.topads.common.data.util
 
 import android.content.Context
 import android.content.res.Resources
+import android.text.Html
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.annotation.StringRes
+import androidx.core.text.HtmlCompat
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.constant.Constants
@@ -15,6 +18,7 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BUDGET_MULTIPLE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_0
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import org.json.JSONArray
 import org.json.JSONException
@@ -30,6 +34,10 @@ object Utils {
 
     var locale = Locale("in", "ID")
     private const val KALI = " kali"
+
+    fun Typography.attributedText(@StringRes id: Int) {
+        text = Html.fromHtml(this.context.resources.getString(id))
+    }
 
     fun <T> fastLazy(initializer: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, initializer)
 

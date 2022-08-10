@@ -1,5 +1,6 @@
 package com.tokopedia.play.analytic
 
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -9,7 +10,8 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
  * Created by mzennis on 20/04/21.
  */
 class ProductAnalyticHelper(
-        private val analytic: PlayAnalytic
+        private val analytic: PlayAnalytic,
+        private val newAnalytic: PlayNewAnalytic,
 ) {
 
     @TrackingField
@@ -32,17 +34,15 @@ class ProductAnalyticHelper(
     }
 
     fun sendImpressedProductSheets() {
-        sendImpressedBottomSheetProducts()
         sendImpressedPrivateVoucher()
     }
 
-    fun sendImpressedFeaturedProducts() {
+    /**
+     * Send double tracker due to DA request
+     */
+    fun sendImpressedFeaturedProducts(partner: PartnerType) {
         analytic.impressFeaturedProducts(getFinalProducts())
-        clearProducts()
-    }
-
-    private fun sendImpressedBottomSheetProducts() {
-        analytic.impressBottomSheetProducts(getFinalProducts(), sectionInfo)
+        if(partner == PartnerType.TokoNow) newAnalytic.impressFeaturedProductNow(getFinalProducts())
         clearProducts()
     }
 

@@ -371,6 +371,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void onPushNotifClicked() {
-        RouteManager.route(getContext(), ApplinkConstInternalGlobal.OTP_PUSH_NOTIF_SETTING);
+        RouteManager.route(getContext(), ApplinkConstInternalUserPlatform.OTP_PUSH_NOTIF_SETTING);
     }
 }

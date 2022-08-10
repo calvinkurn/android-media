@@ -15,7 +15,7 @@ class PlayBroadcastWebSocket @Inject constructor(
 ) : PlayWebSocket by playWebSocket {
 
     fun connectSocket(channelId: String, gcToken: String) {
-        playWebSocket.connect(channelId, gcToken, SOURCE_PLAY_BROADCASTER)
+        playWebSocket.connect(channelId,"0", gcToken, SOURCE_PLAY_BROADCASTER)
     }
 
     companion object {

@@ -177,6 +177,38 @@ class NewShopPageViewModelTest {
     }
 
     @Test
+    fun `check whether shopPageP1Data value is Success when shopId same as user session shopId`() {
+        coEvery { userSessionInterface.shopId } returns SAMPLE_SHOP_ID
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
+            shopInfoHomeTypeData = ShopPageGetHomeType(
+                homeLayoutData = HomeLayoutData(
+                    widgetIdList = listOf(WidgetIdList())
+                )
+            )
+        )
+        coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct(),ShopProduct())
+        )
+        shopPageViewModel.getShopPageTabData(
+            SAMPLE_SHOP_ID,
+            "shop domain",
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            false,
+            addressWidgetData,
+            mockExtParam
+        )
+        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
+        assert(shopPageViewModel.productListData.data.size == 2)
+        assert(shopPageViewModel.homeWidgetLayoutData.widgetIdList.isNotEmpty())
+    }
+
+    @Test
     fun `check whether shopPageP1Data value is Fail is mapper throw exception`() {
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
                 shopInfoHomeTypeData = ShopPageGetHomeType(
