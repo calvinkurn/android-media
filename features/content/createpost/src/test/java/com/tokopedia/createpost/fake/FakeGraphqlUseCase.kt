@@ -1,4 +1,4 @@
-package com.tokopedia.content.common.fake
+package com.tokopedia.createpost.fake
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
