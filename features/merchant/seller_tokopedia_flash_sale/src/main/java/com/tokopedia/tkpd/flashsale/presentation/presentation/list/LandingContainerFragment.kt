@@ -1,19 +1,19 @@
-package com.tokopedia.tkpd.flashsale.presentation.landing
+package com.tokopedia.tkpd.flashsale.presentation.presentation.list
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.seller_tokopedia_flash_sale.R
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsActivityLandingBinding
+import com.tokopedia.campaign.entity.Result
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class LandingContainerFragment : BaseDaggerFragment() {
@@ -50,6 +50,28 @@ class LandingContainerFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+             viewModel.tabsMetadata.collectLatest { result ->
+                when(result) {
+                    Result.Loading -> {
+                        println()
+                    }
+                    is Result.Success -> {
+                        val data = result.data
+                        println(data)
+                    }
+                    is Result.Failure -> {
+                        println()
+                    }
+                }
+            }
+
+        }
+
+        viewModel.getTabsMetaData()
+
+
     }
 
     private fun setupView() {

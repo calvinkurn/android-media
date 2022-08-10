@@ -5,8 +5,8 @@ import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleViewModelModule
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
-import com.tokopedia.tkpd.flashsale.presentation.landing.LandingActivity
-import com.tokopedia.tkpd.flashsale.presentation.landing.LandingContainerFragment
+import com.tokopedia.tkpd.flashsale.presentation.presentation.list.LandingActivity
+import com.tokopedia.tkpd.flashsale.presentation.presentation.list.LandingContainerFragment
 import dagger.Component
 
 @TokopediaFlashSaleScope
