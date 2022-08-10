@@ -33,7 +33,6 @@ class CreditHistoryViewHolder(val view: View) : AbstractViewHolder<CreditHistory
             }
 
             txtStatus?.apply {
-                text = element.status
                 setTextColor(ContextCompat.getColor(
                     context,
                     when (element.status) {
@@ -44,6 +43,13 @@ class CreditHistoryViewHolder(val view: View) : AbstractViewHolder<CreditHistory
                         else -> com.tokopedia.unifyprinciples.R.color.Unify_NN500
                     }
                 ))
+                text = if (element.isReduction) {
+                    setTextColor(ContextCompat.getColor(context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+                    getString(R.string.topads_credit_status_digunakan)
+                } else {
+                    element.status
+                }
             }
         }
     }
