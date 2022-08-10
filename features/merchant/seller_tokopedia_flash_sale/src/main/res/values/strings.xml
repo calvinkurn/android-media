@@ -1,3 +1,4 @@
 <resources>
     <string name="fs_tkpd_title">Flash Sale Tokopedia</string>
+    <string name="fs_canceled_lable">Batalkan</string>
 </resources>
