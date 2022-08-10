@@ -51,7 +51,7 @@ class ExplicitCassavaNetworkTest {
 
     @Test
     fun test() {
-        //WHEN
+        // When
         first_time_launch_then_show_question()
         submit_positive_answer_then_shown_failed_view()
         submit_negative_answer_then_shown_failed_view()
@@ -60,7 +60,7 @@ class ExplicitCassavaNetworkTest {
         click_dismiss_when_question_show_then_widget_gone()
         click_dismiss_when_success_show_then_widget_gone()
 
-        //THEN
+        // Then
         assertThat(
             cassavaRule.validate(TRACKER_JOURNEY_ID),
             hasAllSuccess()
@@ -68,91 +68,91 @@ class ExplicitCassavaNetworkTest {
     }
 
     private fun first_time_launch_then_show_question() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
-        //WHEN
+        // When
         activityTestRule.launchActivity(Intent())
 
-        //THEN
+        // Then
         activityTestRule.finishActivity()
     }
 
     //failed in this case caused response not match with submit answer model
     private fun submit_positive_answer_then_shown_failed_view() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
-        //WHEN
+        // When
         activityTestRule.launchActivity(Intent())
         clickButtonAnswer(isPositive = true)
 
-        //THEN
+        // Then
         activityTestRule.finishActivity()
     }
 
     //failed in this case caused response not match with submit answer model
     private fun submit_negative_answer_then_shown_failed_view() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
-        //WHEN
+        // When
         activityTestRule.launchActivity(Intent())
         clickButtonAnswer(isPositive = false)
 
-        //THEN
+        // Then
         activityTestRule.finishActivity()
     }
 
     private fun submit_positive_answer_then_success() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
         repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
-        //WHEN
+        // When
         clickButtonAnswer(isPositive = true)
 
-        //THEN
+        // Then
         activityTestRule.finishActivity()
     }
 
     private fun submit_negative_answer_then_success() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
         repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
-        //WHEN
+        // When
         clickButtonAnswer(isPositive = false)
 
-        //THEN
+        // Then
         activityTestRule.finishActivity()
     }
 
     private fun click_dismiss_when_question_show_then_widget_gone() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
 
-        //WHEN
+        // When
         clickOnDismiss(onQuestionPage = true)
 
-        //THEN
+        // Then
         activityTestRule.finishActivity()
     }
 
     private fun click_dismiss_when_success_show_then_widget_gone() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
         repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
-        //WHEN
+        // When
         clickButtonAnswer(isPositive = true)
         clickOnDismiss(onQuestionPage = false)
 
-        //THEN
+        // Then
         activityTestRule.finishActivity()
     }
 

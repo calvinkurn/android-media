@@ -50,82 +50,82 @@ class ExplicitCassavaLocalTest {
 
     @Test
     fun first_time_launch_then_show_question() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
-        //WHEN
+        // When
         activityTestRule.launchActivity(Intent())
 
-        //THEN
+        // Then
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31560)
     }
 
     //failed in this case caused response not match with submit answer model
     @Test
     fun submit_positive_answer_then_shown_failed_view() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
-        //WHEN
+        // When
         activityTestRule.launchActivity(Intent())
         clickButtonAnswer(isPositive = true)
 
-        //THEN
+        // Then
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31561)
     }
 
     //failed in this case caused response not match with submit answer model
     @Test
     fun submit_negative_answer_then_shown_failed_view() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
-        //WHEN
+        // When
         activityTestRule.launchActivity(Intent())
         clickButtonAnswer(isPositive = false)
 
-        //THEN
+        // Then
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31562)
     }
 
     @Test
     fun submit_positive_answer_then_success() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
         repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
-        //WHEN
+        // When
         clickButtonAnswer(isPositive = true)
 
-        //THEN
+        // Then
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31561)
     }
 
     @Test
     fun submit_negative_answer_then_success() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
         repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
-        //WHEN
+        // When
         clickButtonAnswer(isPositive = false)
 
-        //THEN
+        // Then
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31562)
     }
 
     @Test
     fun click_dismiss_when_question_show_then_widget_gone() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
 
-        //WHEN
+        // When
         clickOnDismiss(onQuestionPage = true)
 
-        //THEN
+        // Then
         cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31563)
     }
 

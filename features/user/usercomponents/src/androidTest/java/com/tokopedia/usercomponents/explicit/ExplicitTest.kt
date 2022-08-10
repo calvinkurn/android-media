@@ -43,122 +43,122 @@ class ExplicitTest {
 
     @Test
     fun first_time_launch_then_show_question() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
-        //WHEN
+        // When
         activityTestRule.launchActivity(Intent())
 
-        //THEN
+        // Then
         initQuestionDisplayed()
     }
 
     @Test
     fun first_time_launch_then_hide_question() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.HIDE_QUESTION)
 
-        //WHEN
+        // When
         activityTestRule.launchActivity(Intent())
 
-        //THEN
+        // Then
         isHideQuestion()
     }
 
     //failed in this case caused response not match with question model
     @Test
     fun first_time_launch_then_shown_failed_view() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
-        //WHEN
+        // When
         activityTestRule.launchActivity(Intent())
 
-        //THEN
+        // Then
         isFailedDisplayed()
     }
 
     //failed in this case caused response not match with submit answer model
     @Test
     fun submit_positive_answer_then_shown_failed_view() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
-        //WHEN
+        // When
         activityTestRule.launchActivity(Intent())
         clickButtonAnswer(isPositive = true)
 
-        //THEN
+        // Then
         isFailedDisplayed()
     }
 
     //failed in this case caused response not match with submit answer model
     @Test
     fun submit_negative_answer_then_shown_failed_view() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
 
-        //WHEN
+        // When
         activityTestRule.launchActivity(Intent())
         clickButtonAnswer(isPositive = false)
 
-        //THEN
+        // Then
         isFailedDisplayed()
     }
 
     @Test
     fun submit_positive_answer_then_success() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
         repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
-        //WHEN
+        // When
         clickButtonAnswer(isPositive = true)
 
-        //THEN
+        // Then
         isSuccessDisplayed()
     }
 
     @Test
     fun submit_negative_answer_then_success() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
         repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
-        //WHEN
+        // When
         clickButtonAnswer(isPositive = false)
 
-        //THEN
+        // Then
         isSuccessDisplayed()
     }
 
     @Test
     fun click_dismiss_when_question_show_then_widget_gone() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
 
-        //WHEN
+        // When
         clickOnDismiss(onQuestionPage = true)
 
-        //THEN
+        // Then
         isHideQuestion()
     }
 
     @Test
     fun click_dismiss_when_success_show_then_widget_gone() {
-        //GIVEN
+        // Given
         repositoryStub.setState(TestState.SHOW_QUESTION)
         activityTestRule.launchActivity(Intent())
         repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
 
-        //WHEN
+        // When
         clickButtonAnswer(isPositive = true)
         clickOnDismiss(onQuestionPage = false)
 
-        //THEN
+        // Then
         isHideQuestion()
     }
 
