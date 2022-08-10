@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery
+import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery.PARAM_EXCLUDE_BUNDLE_IDS
 import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery.PARAM_EXCLUDE_GROUP_IDS
 import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery.PARAM_PRODUCT_IDS
 import com.tokopedia.minicart.common.domain.query.GetProductBundleRecomQuery.PARAM_QUERY_PARAM
@@ -31,12 +32,14 @@ class GetProductBundleRecomUseCase @Inject constructor(
     suspend fun execute(
         productIds: List<String>,
         excludeBundleIds: List<String>,
+        excludeGroupIds: List<String> = emptyList(),
         queryParam: String = "type=SINGLE,MULTIPLE"
     ): ProductBundleRecomResponse {
         setRequestParams(RequestParams.create().apply {
             putString(PARAM_WAREHOUSE_ID, chosenAddressRequestHelper.getChosenAddress().tokonow.warehouseId)
             putObject(PARAM_PRODUCT_IDS, productIds)
-            putObject(PARAM_EXCLUDE_GROUP_IDS, excludeBundleIds)
+            putObject(PARAM_EXCLUDE_GROUP_IDS, excludeGroupIds)
+            putObject(PARAM_EXCLUDE_BUNDLE_IDS, excludeBundleIds)
             putString(PARAM_QUERY_PARAM, queryParam)
         }.parameters)
         return executeOnBackground()

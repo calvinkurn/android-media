@@ -7,6 +7,7 @@ internal object GetProductBundleRecomQuery: GqlQueryInterface {
     const val PARAM_WAREHOUSE_ID = "warehouseID"
     const val PARAM_PRODUCT_IDS = "productIDs"
     const val PARAM_EXCLUDE_GROUP_IDS = "excludeGroupIDs"
+    const val PARAM_EXCLUDE_BUNDLE_IDS = "excludeBundleIDs"
     const val PARAM_QUERY_PARAM = "queryParam"
 
     private const val OPERATION_NAME = "TokonowBundleWidget"
@@ -17,8 +18,19 @@ internal object GetProductBundleRecomQuery: GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-            query TokonowBundleWidget(            ${'$'}$PARAM_WAREHOUSE_ID            : String!,             ${'$'}$PARAM_PRODUCT_IDS            : [String!]!,             ${'$'}$PARAM_EXCLUDE_GROUP_IDS            : [String!]!,             ${'$'}$PARAM_QUERY_PARAM            : String!){
-              TokonowBundleWidget(warehouseID:            ${'$'}$PARAM_WAREHOUSE_ID            , productIDs:            ${'$'}$PARAM_PRODUCT_IDS            , excludeGroupIDs:             ${'$'}$PARAM_EXCLUDE_GROUP_IDS            , queryParam:             ${'$'}$PARAM_QUERY_PARAM            ) {
+            query TokonowBundleWidget(
+            ${'$'}$PARAM_WAREHOUSE_ID: String!,
+            ${'$'}$PARAM_PRODUCT_IDS: [String!]!,             
+            ${'$'}$PARAM_EXCLUDE_GROUP_IDS: [String!]!,  
+            ${'$'}$PARAM_EXCLUDE_BUNDLE_IDS: [String!]!,
+            ${'$'}$PARAM_QUERY_PARAM: String!){
+              TokonowBundleWidget(
+                warehouseID:${'$'}$PARAM_WAREHOUSE_ID, 
+                productIDs:${'$'}$PARAM_PRODUCT_IDS, 
+                excludeGroupIDs:${'$'}$PARAM_EXCLUDE_GROUP_IDS, 
+                excludeBundleIDs: ${'$'}$PARAM_EXCLUDE_BUNDLE_IDS, 
+                queryParam: ${'$'}$PARAM_QUERY_PARAM
+              ) {
                 header {
                   process_time
                   reason
