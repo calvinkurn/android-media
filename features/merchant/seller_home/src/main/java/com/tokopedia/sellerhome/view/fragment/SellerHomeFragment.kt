@@ -880,7 +880,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val isTabAuthorized = !selectedTab.isUnauthorized
         val widgets = adapter.data.map { widget ->
             return@map if (widget.dataKey == element.dataKey && widget is UnificationWidgetUiModel) {
-                val unificationWidget = widget.apply unificationWidget@{
+                val unificationWidget = widget.copyWidget().apply unificationWidget@{
                     val widgetData = widget.data
                     data = widgetData?.copy(
                         tabs = widgetData.tabs.map tab@{
@@ -892,7 +892,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     if (isTabAuthorized) {
                         showLoadingState = true
                     }
-                }.copyWidget()
+                }
                 if (isTabAuthorized) {
                     unificationWidgets.add(unificationWidget)
                 }

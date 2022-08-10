@@ -156,7 +156,9 @@ class GetUnificationDataUseCase(
     ): TableDataUiModel {
         val metricParam = getMetricParamFromTab(tab.metricParam)
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(
-            listOf(dataKeyModel), dynamicParameter.copy(subPageSource = metricParam.subPageSource)
+            listOf(dataKeyModel), dynamicParameter.copy(
+                subPageSource = metricParam.subPageSource
+            )
         )
         getTableDataUseCase.setUseCache(isFromCache)
         val tableResult = try {

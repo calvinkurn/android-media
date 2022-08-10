@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
@@ -172,9 +173,11 @@ class UnificationViewHolder(
             shcViewEmptyStateCommon.visible()
             imgShcEmptyCommon.loadImage(emptyState.imageUrl)
             tvShcEmptyTitleCommon.text = emptyState.title
-            tvShcEmptyDescriptionCommon.isVisible = emptyState.description.isNotBlank()
             if (emptyState.description.isNotBlank()) {
+                tvShcEmptyDescriptionCommon.visible()
                 tvShcEmptyDescriptionCommon.text = emptyState.description
+            } else {
+                tvShcEmptyDescriptionCommon.invisible()
             }
 
             val shouldShowCta = emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
@@ -281,9 +284,11 @@ class UnificationViewHolder(
             viewShcUnificationTabBg.visible()
             icShcUnificationTab.visible()
 
-            tvShcUnificationTab.text = String.format(
-                DROP_DOWN_FORMAT, tab.title, tab.itemCount.toString()
-            )
+            tvShcUnificationTab.text = if (tab.isUnauthorized) {
+                tab.title
+            } else {
+                String.format(DROP_DOWN_FORMAT, tab.title, tab.itemCount.toString())
+            }
             viewShcUnificationTabBg.setOnClickListener {
                 listener.showUnificationTabBottomSheets(element)
             }

@@ -59,9 +59,11 @@ class UnificationTabAdapter(
             onItemClicked: (UnificationTabUiModel) -> Unit
         ) {
             with(binding) {
-                tvShcUnificationTabTitle.text = String.format(
-                    TITLE_FORMAT, item.title, item.itemCount.toString()
-                )
+                tvShcUnificationTabTitle.text = if (item.isUnauthorized) {
+                    item.title
+                } else {
+                    String.format(TITLE_FORMAT, item.title, item.itemCount.toString())
+                }
                 tvShcUnificationTabDescription.text = item.tooltip
                 icShcUnificationTabStatus.isVisible = item.isSelected
 
