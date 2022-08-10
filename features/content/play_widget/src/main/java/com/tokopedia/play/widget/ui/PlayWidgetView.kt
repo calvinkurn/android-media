@@ -72,6 +72,22 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         mWidgetInternalListener?.onWidgetDetached(this)
     }
 
+    fun setCustomHeader(header: View) {
+        when (val child = getFirstChild()) {
+            is PlayWidgetSmallView -> child.setCustomHeader(header)
+            is PlayWidgetMediumView -> child.setCustomHeader(header)
+            else -> {}
+        }
+    }
+
+    fun getHeader(): View? {
+        return when (val child = getFirstChild()) {
+            is PlayWidgetSmallView -> child.getHeader()
+            is PlayWidgetMediumView -> child.getHeader()
+            else -> null
+        }
+    }
+
     fun setState(state: PlayWidgetState) {
         if (state.isLoading) {
             addPlaceholderView()
@@ -92,6 +108,8 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setAnalyticListener(listener)
             is PlayWidgetMediumView -> child.setAnalyticListener(listener)
+            is PlayWidgetLargeView -> child.setAnalyticListener(listener)
+            is PlayWidgetJumboView -> child.setAnalyticListener(listener)
         }
     }
 
@@ -113,9 +131,9 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         } else {
             widgetView.show()
             widgetView.setData(model)
-            widgetView.setAnalyticListener(mAnalyticListener)
             widgetView.setWidgetListener(mWidgetListener)
             widgetView.setWidgetInternalListener(mWidgetInternalListener)
+            widgetView.setAnalyticListener(mAnalyticListener)
         }
     }
 
