@@ -1,196 +1,132 @@
 package com.tokopedia.tokomember_seller_dashboard.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class TmGetProgramListResponse(
 
-    @Expose
-    @SerializedName("data")
-    val data: ProgramList? = null
+	@SerializedName("data")
+	val data: ProgramList? = null
 )
 
 data class Actions(
 
+	@SerializedName("buttons")
+	val buttons: List<ButtonsItem?>? = null,
 
-    @Expose
-    @SerializedName("buttons")
-    val buttons: List<ButtonsItem?>? = null,
-
-
-    @Expose
-    @SerializedName("tripleDots")
-    var tripleDots: ArrayList<TripleDotsItem?>? = null
+	@SerializedName("tripleDots")
+	var tripleDots: ArrayList<TripleDotsItem?>? = null
 )
 
 data class Analytics(
 
+	@SerializedName("totalIncome")
+	val totalIncome: String? = null,
 
-    @Expose
-    @SerializedName("totalIncome")
-    val totalIncome: String = "",
+	@SerializedName("totalNewMember")
+	val totalNewMember: String? = null,
 
-
-    @Expose
-    @SerializedName("totalNewMember")
-    val totalNewMember: String = "",
-
-
-    @Expose
-    @SerializedName("trxCount")
-    val trxCount: String = ""
+	@SerializedName("trxCount")
+	val trxCount: String? = null
 )
 
 data class ButtonsItem(
 
+	@SerializedName("text")
+	val text: String? = null,
 
-    @Expose
-    @SerializedName("text")
-    val text: String = "",
-
-
-    @Expose
-    @SerializedName("type")
-    val type: String = ""
+	@SerializedName("type")
+	val type: String? = null
 )
 
 data class ProgramList(
 
-
-    @Expose
-    @SerializedName("membershipGetProgramList")
-    val membershipGetProgramList: MembershipGetProgramList? = null
+	@SerializedName("membershipGetProgramList")
+	val membershipGetProgramList: MembershipGetProgramList? = null
 )
 
 data class MembershipGetProgramList(
 
+	@SerializedName("resultStatus")
+	val resultStatus: ResultStatus? = null,
 
-    @Expose
-    @SerializedName("resultStatus")
-    val resultStatus: ResultStatus? = null,
+	@SerializedName("programSellerList")
+	val programSellerList: List<ProgramSellerListItem?>? = null,
 
+	@SerializedName("isDisabledCreateProgram")
+	val isDisabledCreateProgram: Boolean? = null,
 
-    @Expose
-    @SerializedName("programSellerList")
-    val programSellerList: List<ProgramSellerListItem?>? = null,
+	@SerializedName("dropdownProgramStatus")
+	val dropdownProgramStatus: List<DropdownProgramStatusItem?>? = null,
 
-
-    @Expose
-    @SerializedName("isDisabledCreateProgram")
-    val isDisabledCreateProgram: Boolean = false,
-
-
-    @Expose
-    @SerializedName("dropdownProgramStatus")
-    val dropdownProgramStatus: List<DropdownProgramStatusItem?>? = null,
-
-
-    @Expose
-    @SerializedName("dropdownCardStatus")
-    val dropdownCardStatus: List<DropdownCardStatusItem?>? = null
+	@SerializedName("dropdownCardStatus")
+	val dropdownCardStatus: List<DropdownCardStatusItem?>? = null
 )
 
 data class TimeWindow(
 
+	@SerializedName("startTime")
+    var startTime: String? = null,
 
-    @Expose
-    @SerializedName("startTime")
-    var startTime: String = "",
+	@SerializedName("id")
+	var id: String? = null,
 
+	@SerializedName("endTime")
+	val endTime: String? = null,
 
-    @Expose
-    @SerializedName("id")
-    var id: String = "",
-
-
-    @Expose
-    @SerializedName("endTime")
-    val endTime: String = "",
-
-
-    @Expose
-    @SerializedName("status")
-    val status: Int = 0
+	@SerializedName("status")
+	val status: Int? = null
 )
 
 data class DropdownCardStatusItem(
 
+	@SerializedName("text")
+	val text: String? = null,
 
-    @Expose
-    @SerializedName("text")
-    val text: String = "",
-
-
-    @Expose
-    @SerializedName("value")
-    val value: String = ""
+	@SerializedName("value")
+	val value: String? = null
 )
 
 data class DropdownProgramStatusItem(
 
+	@SerializedName("text")
+	val text: String? = null,
 
-    @Expose
-    @SerializedName("text")
-    val text: String = "",
-
-
-    @Expose
-    @SerializedName("value")
-    val value: String = ""
+	@SerializedName("value")
+	val value: String? = null
 )
 
 data class ProgramSellerListItem(
 
+	@SerializedName("analytics")
+	val analytics: Analytics? = null,
 
-    @Expose
-    @SerializedName("analytics")
-    val analytics: Analytics? = null,
+	@SerializedName("timeWindow")
+	val timeWindow: TimeWindow? = null,
 
+	@SerializedName("statusStr")
+	val statusStr: String? = null,
 
-    @Expose
-    @SerializedName("timeWindow")
-    val timeWindow: TimeWindow? = null,
+	@SerializedName("cardID")
+	val cardID: Int? = null,
 
+	@SerializedName("name")
+	val name: String? = null,
 
-    @Expose
-    @SerializedName("statusStr")
-    val statusStr: String = "",
+	@SerializedName("id")
+	val id: String? = null,
 
+	@SerializedName("actions")
+	val actions: Actions? = null,
 
-    @Expose
-    @SerializedName("cardID")
-    val cardID: Int = 0,
-
-
-    @Expose
-    @SerializedName("name")
-    val name: String = "",
-
-
-    @Expose
-    @SerializedName("id")
-    val id: String = "",
-
-
-    @Expose
-    @SerializedName("actions")
-    val actions: Actions? = null,
-
-
-    @Expose
-    @SerializedName("status")
-    val status: Int = 0
+	@SerializedName("status")
+	val status: Int? = null
 )
 
 data class TripleDotsItem(
 
+	@SerializedName("text")
+	val text: String? = null,
 
-    @Expose
-    @SerializedName("text")
-    val text: String = "",
-
-
-    @Expose
-    @SerializedName("type")
-    val type: String = ""
+	@SerializedName("type")
+	val type: String? = null
 )

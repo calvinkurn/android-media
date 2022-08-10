@@ -540,10 +540,9 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 vip.replace(".","").toIntSafely()
         }
         if(selectedCalendar != null) {
+            membershipGetProgramForm?.programForm?.timeWindow?.startTime =
                 selectedCalendar?.time?.let {
                     TmDateUtil.convertDateTimeRemoveTimeDiff(it)
-                }?.let {
-                    membershipGetProgramForm?.programForm?.timeWindow?.startTime = it
                 }
         }
         membershipGetProgramForm?.timePeriodList?.getOrNull(selectedChipPosition)?.months?.let {
