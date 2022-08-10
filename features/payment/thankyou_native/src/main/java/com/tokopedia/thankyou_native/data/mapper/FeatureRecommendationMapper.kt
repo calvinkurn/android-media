@@ -63,7 +63,7 @@ object FeatureRecommendationMapper {
                 amount += orderItem.totalPrice
             }
             shopId = it.storeId.toIntOrZero()
-            shopParams.add(MembershipOrderData(shopId, amount))
+            shopParams.add(MembershipOrderData(shopId, amount.toFloat()))
         }
         if (!engineData.featureEngineItem.isNullOrEmpty()) {
             engineData.featureEngineItem.forEachIndexed { i, featureEngineItem ->
