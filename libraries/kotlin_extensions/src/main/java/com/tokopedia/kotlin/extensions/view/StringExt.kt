@@ -57,16 +57,6 @@ fun String?.toIntSafely(): Int {
     }
 }
 
-fun String.toIntRangeCheck(block:(number:String)->Unit):Int {
-    val longValue: Long = this.toLong()
-    return if (longValue > Int.MAX_VALUE) {
-        block(this)
-         0
-    } else {
-         longValue.toInt()
-    }
-}
-
 fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
 }
