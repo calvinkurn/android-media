@@ -54,12 +54,11 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
 
-class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispatchers,
+class MiniCartViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
                                             private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
                                             private val getMiniCartListUseCase: GetMiniCartListUseCase,
                                             private val deleteCartUseCase: DeleteCartUseCase,
@@ -243,7 +242,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     private fun getProductBundleRecommendation(
         miniCartListUiModel: MiniCartListUiModel
     ) {
-        launchCatchError(context = Dispatchers.IO, block = {
+        launchCatchError(context = executorDispatchers.io, block = {
             showProductBundleRecomShimmering(miniCartListUiModel)
 
             val response = getProductBundleRecomUseCase.execute(
@@ -311,7 +310,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         productDetails: List<ShopHomeBundleProductUiModel>,
         productQuantity: Int
     ) {
-        launchCatchError(context = Dispatchers.IO, block = {
+        launchCatchError(context = executorDispatchers.io, block = {
             val productDetailsParam = miniCartListUiModelMapper.mapToAddToCartBundleProductDetailParam(
                 productDetails = productDetails,
                 quantity = productQuantity,
