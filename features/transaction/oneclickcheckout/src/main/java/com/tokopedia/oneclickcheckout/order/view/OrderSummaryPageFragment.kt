@@ -228,7 +228,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)?.let {
                     viewModel.validateUsePromoRevampUiModel = it
                     viewModel.validateBboStacking()
-                    viewModel.updatePromoState(it.promoUiModel)
+                    viewModel.updatePromoStateWithoutCalculate(it.promoUiModel)
                     viewModel.reloadRates()
                 }
 

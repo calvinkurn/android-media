@@ -431,7 +431,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun validateBboStacking() {
         validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.let {
             for (voucherOrderUiModel in it) {
-                if (voucherOrderUiModel.shippingId > 0)
+                if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0)
                     if (voucherOrderUiModel.messageUiModel.state == "red") {
                         unApplyBbo(voucherOrderUiModel.code)
                     } else if (voucherOrderUiModel.messageUiModel.state == "green") {
@@ -466,7 +466,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun autoUnApplyBBO() {
-        orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
+        lastValidateUsePromoRequest?.orders?.firstOrNull {
+            it.uniqueId == orderCart.cartString
+        }?.let {
+            if (it.codes.isEmpty()) {
+                orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
+            }
+        }
     }
 
     fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
@@ -759,8 +765,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun updatePromoState(promoUiModel: PromoUiModel) {
-        orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), isDisabled = false, state = OccButtonState.NORMAL)
+        orderPromo.value = orderPromo.value.copy(
+            lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel),
+            isDisabled = false,
+            state = OccButtonState.NORMAL
+        )
         calculateTotal()
+    }
+
+    fun updatePromoStateWithoutCalculate(promoUiModel: PromoUiModel) {
+        orderPromo.value = orderPromo.value.copy(
+            lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel),
+            isDisabled = false,
+            state = OccButtonState.NORMAL
+        )
     }
 
     fun calculateTotal(skipDynamicFee: Boolean = false) {
