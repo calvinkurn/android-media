@@ -22,7 +22,8 @@ class RechargeAddToCartRepositoryImpl @Inject constructor(
         digitalCheckoutPassData: DigitalCheckoutPassData,
         digitalIdentifierParam: RequestBodyIdentifier,
         digitalSubscriptionParams: DigitalSubscriptionParams,
-        userId: String
+        userId: String,
+        isUseGql: Boolean
     ): DigitalAtcResult = withContext(dispatchers.io) {
         val addToCart = getDigitalAddToCartUseCase.execute(
             digitalCheckoutPassData = digitalCheckoutPassData,
@@ -30,7 +31,7 @@ class RechargeAddToCartRepositoryImpl @Inject constructor(
             digitalIdentifierParam = digitalIdentifierParam,
             digitalSubscriptionParams = digitalSubscriptionParams,
             idemPotencyKeyHeader = digitalCheckoutPassData.idemPotencyKey,
-            isUseGql = true
+            isUseGql = isUseGql
         )
 
         addToCart?.let {
