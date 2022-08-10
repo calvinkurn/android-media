@@ -452,7 +452,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             if (collectionDetail.sortFilters.isEmpty() && collectionDetail.items.isEmpty()) {
                                 onFailedGetWishlistV2(ResponseErrorException())
                             } else {
-                                if (collectionDetail.query.isEmpty()) hideSearchBar()
                                 hideLoader(collectionDetail.showDeleteProgress)
                                 showRvWishlist()
                                 isFetchRecommendation = true

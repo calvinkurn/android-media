@@ -7,6 +7,7 @@ import com.tokopedia.wishlist.data.model.WishlistCollectionEmptyStateData
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2EmptyStateItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_ADD_ITEM_TO_COLLECTION
+import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_RESET_FILTER
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_SEARCH_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_UPDATE_COLLECTION_NAME
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
@@ -29,6 +30,8 @@ class WishlistCollectionEmptyStateViewHolder(private val binding: WishlistV2Empt
                         setPrimaryCTAClickListener { actionListener?.goToWishlistAll() }
                     } else if (item.dataObject.listButton[0].action == ACTION_SEARCH_ITEM) {
                         setPrimaryCTAClickListener { actionListener?.onCariBarangClicked() }
+                    } else if (item.dataObject.listButton[0].action == ACTION_RESET_FILTER) {
+                        setPrimaryCTAClickListener { actionListener?.onResetFilter() }
                     }
 
                     if (item.dataObject.listButton.size > 1) {
