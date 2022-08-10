@@ -2,19 +2,16 @@ package com.tokopedia.updateinactivephone.features.inputoldphonenumber
 
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.updateinactivephone.features.BaseInactivePhoneTest
 import com.tokopedia.updateinactivephone.stub.features.inputoldphonenumber.InputOldPhoneNumberActivityStub
 import org.junit.Rule
 
 abstract class BaseInputOldPhoneNumberTest : BaseInactivePhoneTest() {
+
     @get:Rule
     var activityInputOldPhoneNumberRule = IntentsTestRule(
         InputOldPhoneNumberActivityStub::class.java, false, false
     )
-
-    @get:Rule
-    var cassavaRule = CassavaTestRule()
 
     private var activity: InputOldPhoneNumberActivityStub? = null
 

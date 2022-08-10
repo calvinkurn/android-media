@@ -1,4 +1,4 @@
-package com.tokopedia.updateinactivephone.features.inputoldphonenumber
+package com.tokopedia.updateinactivephone.features.inputoldphonenumber.cassava
 
 enum class InputOldPhoneNumberCassavaState {
     CLICK,
