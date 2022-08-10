@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.usercomponents.explicit.ExplicitTest
+import com.tokopedia.usercomponents.explicit.di.FakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.view.ExplicitData
 import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewContract
 import com.tokopedia.usercomponents.test.R
@@ -44,7 +44,7 @@ class ExplicitDebugFragment : BaseDaggerFragment() {
         ExplicitDebugActivity::class.java.simpleName
 
     override fun initInjector() {
-        ExplicitTest.component?.inject(this)
+        component?.inject(this)
     }
 
     companion object {
@@ -52,5 +52,7 @@ class ExplicitDebugFragment : BaseDaggerFragment() {
         private const val PAGE_NAME = "halal_single_name"
         private const val PAGE_PATH = "halal_single_path"
         private const val PAGE_TYPE = "halal_single_type"
+
+        var component: FakeExplicitComponent? = null
     }
 }

@@ -8,8 +8,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
 import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
-import com.tokopedia.usercomponents.explicit.di.FakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugActivity
+import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugFragment.Companion.component
 import com.tokopedia.usercomponents.explicit.stub.data.ExplicitRepositoryStub
 import com.tokopedia.usercomponents.explicit.stub.data.TestState
 import org.junit.Before
@@ -160,10 +160,6 @@ class ExplicitInstrumentationTest {
 
         //THEN
         isHideQuestion()
-    }
-
-    companion object {
-        var component: FakeExplicitComponent? = null
     }
 
 }
