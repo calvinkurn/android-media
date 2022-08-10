@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.usercomponents.explicit.ExplicitCassava
 import com.tokopedia.usercomponents.explicit.di.FakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.view.ExplicitData
 import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewContract
@@ -32,10 +33,10 @@ class ExplicitDebugFragment : BaseDaggerFragment() {
         binding?.fakeExplicit?.setupView(
             explicitViewContract,
             ExplicitData(
-                TEMPLATE_NAME,
-                PAGE_NAME,
-                PAGE_PATH,
-                PAGE_TYPE
+                ExplicitCassava.VALUE_TEMPLATE_NAME,
+                ExplicitCassava.VALUE_PAGE_NAME,
+                ExplicitCassava.VALUE_PAGE_PATH,
+                ExplicitCassava.VALUE_PAGE_TYPE
             )
         )
     }
@@ -48,11 +49,6 @@ class ExplicitDebugFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        private const val TEMPLATE_NAME = "halal_single"
-        private const val PAGE_NAME = "halal_single_name"
-        private const val PAGE_PATH = "halal_single_path"
-        private const val PAGE_TYPE = "halal_single_type"
-
         var component: FakeExplicitComponent? = null
     }
 }
