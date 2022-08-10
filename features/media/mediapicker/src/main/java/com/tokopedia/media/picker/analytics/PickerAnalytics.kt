@@ -4,7 +4,7 @@ import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
 import javax.inject.Inject
 
-class PickerAnalytics @Inject constructor(
+open class PickerAnalytics @Inject constructor(
     cameraAnalytics: CameraAnalytics,
     galleryAnalytics: GalleryAnalytics
 ) : CameraAnalytics by cameraAnalytics,
