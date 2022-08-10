@@ -14,9 +14,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_electronic_money.util.CardUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class NFCHandlerActivity extends AppCompatActivity {
 
     @Override
