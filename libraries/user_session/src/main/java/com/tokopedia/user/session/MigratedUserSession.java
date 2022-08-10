@@ -222,7 +222,6 @@ public class MigratedUserSession {
                 logUserSessionEvent("decrypt_string_exception_with_backup", e);
                 return backupValue;
             } else {
-                logUserSessionEvent("decrypt_string_exception_without_backup", e);
                 return "";
             }
         }

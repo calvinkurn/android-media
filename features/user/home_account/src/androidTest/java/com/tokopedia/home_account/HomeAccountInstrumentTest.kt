@@ -67,6 +67,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun click_bank_account() {
         runTest {
+            onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
             ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT)
         }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT))
     }

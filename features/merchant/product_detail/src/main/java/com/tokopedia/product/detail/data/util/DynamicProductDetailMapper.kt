@@ -459,10 +459,12 @@ object DynamicProductDetailMapper {
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return UserLocationRequest(
-                localData.district_id.checkIfNumber("district_id"),
-                localData.address_id.checkIfNumber("address_id"),
-                localData.postal_code.checkIfNumber("postal_code"),
-                latlong)
+            districtID = localData.district_id.checkIfNumber("district_id"),
+            addressID = localData.address_id.checkIfNumber("address_id"),
+            postalCode = localData.postal_code.checkIfNumber("postal_code"),
+            latlon = latlong,
+            cityId = localData.city_id.checkIfNumber("city_id")
+        )
     }
 
     fun generateTokoNowRequest(localData: LocalCacheModel): TokoNowParam {
