@@ -1,6 +1,6 @@
 package com.tokopedia.usercomponents.explicit.view
 
-import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewContract
+import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewContract
 
 interface ExplicitAction {
     /**

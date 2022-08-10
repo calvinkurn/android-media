@@ -8,7 +8,6 @@ import com.tokopedia.usercomponents.explicit.domain.GetQuestionUseCase
 import com.tokopedia.usercomponents.explicit.domain.SaveAnswerUseCase
 import com.tokopedia.usercomponents.explicit.domain.UpdateStateUseCase
 import com.tokopedia.usercomponents.explicit.domain.model.*
-import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

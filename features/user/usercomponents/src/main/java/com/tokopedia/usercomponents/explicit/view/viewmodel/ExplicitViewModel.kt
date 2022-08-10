@@ -1,4 +1,4 @@
-package com.tokopedia.usercomponents.explicit.view.interactor
+package com.tokopedia.usercomponents.explicit.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -12,9 +12,7 @@ import com.tokopedia.usercomponents.explicit.domain.UpdateStateUseCase
 import com.tokopedia.usercomponents.explicit.domain.model.*
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -102,10 +100,6 @@ class ExplicitViewModel @Inject constructor(
         }, {
             _statusUpdateState.value = false
         })
-    }
-
-    override fun clear() {
-        coroutineContext[Job]?.cancelChildren()
     }
 
 }

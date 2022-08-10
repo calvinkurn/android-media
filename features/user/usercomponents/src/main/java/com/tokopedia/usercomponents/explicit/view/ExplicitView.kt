@@ -24,7 +24,7 @@ import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitQuestionBind
 import com.tokopedia.usercomponents.databinding.LayoutWidgetExplicitSuccessBinding
 import com.tokopedia.usercomponents.explicit.analytics.ExplicitAnalytics
 import com.tokopedia.usercomponents.explicit.domain.model.Property
-import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewContract
+import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewContract
 
 class ExplicitView constructor(
     context: Context,

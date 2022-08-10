@@ -8,8 +8,8 @@ import com.tokopedia.usercomponents.explicit.domain.GetQuestionUseCase
 import com.tokopedia.usercomponents.explicit.domain.SaveAnswerUseCase
 import com.tokopedia.usercomponents.explicit.domain.UpdateStateUseCase
 import com.tokopedia.usercomponents.explicit.stub.data.ExplicitRepositoryStub
-import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewContract
-import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewModel
+import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewContract
+import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewModel
 import dagger.Module
 import dagger.Provides
 

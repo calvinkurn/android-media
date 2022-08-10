@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.usercomponents.explicit.ExplicitCassava
 import com.tokopedia.usercomponents.explicit.di.FakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.view.ExplicitData
-import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewContract
+import com.tokopedia.usercomponents.explicit.view.viewmodel.ExplicitViewContract
 import com.tokopedia.usercomponents.test.R
 import com.tokopedia.usercomponents.test.databinding.FragmentExplicitDebugBinding
 import com.tokopedia.utils.view.binding.viewBinding
