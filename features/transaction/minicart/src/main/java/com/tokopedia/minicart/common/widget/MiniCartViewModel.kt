@@ -252,7 +252,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 excludeBundleIds = miniCartListUiModel.availableBundleIds
             )
 
-            showProductBundleRecom(miniCartListUiModel, response.tokonowBundleWidget.data.widgetData.isNotEmpty(), response)
+            showProductBundleRecom(miniCartListUiModel, response.tokonowBundleWidget.data.widgetData, response)
         }, onError = {
             hideProductBundleRecomShimmering(miniCartListUiModel)
         })
@@ -263,8 +263,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         updateVisitablesBackgroundState(miniCartListUiModel.visitables)
     }
 
-    private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, isWidgetDataNotEmpty: Boolean, response: MiniCartProductBundleRecomResponse) {
-        if (isWidgetDataNotEmpty) {
+    private fun showProductBundleRecom(miniCartListUiModel: MiniCartListUiModel, widgetData: List<MiniCartProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData>, response: MiniCartProductBundleRecomResponse) {
+        if (widgetData.isNotEmpty()) {
             val productBundleRecom = miniCartListUiModelMapper.mapToProductBundleUiModel(response)
             miniCartListUiModel.visitables.removeFirst { it is MiniCartProductBundleRecomShimmeringUiModel }
             miniCartListUiModel.visitables.add(productBundleRecom)
@@ -304,7 +304,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     fun addBundleToCart(
         shopId: String,
         warehouseId: String,
-        bundleGroupId: String,
         bundleId: String,
         bundleName: String,
         bundleType: String,
@@ -314,31 +313,28 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         productQuantity: Int
     ) {
         launchCatchError(context = Dispatchers.IO, block = {
-            val bundleProductDetails = productDetails.map {
-                ProductDetail(
-                    productId = it.productId,
-                    quantity = productQuantity,
-                    shopId = shopId,
-                    customerId = userSession.userId
-                )
-            }
+            val productDetailsParam = miniCartListUiModelMapper.mapToAddToCartBundleProductDetailParam(
+                productDetails = productDetails,
+                quantity = productQuantity,
+                shopId = shopId,
+                userId = userSession.userId
+            )
 
             val atcBundleParams = AddToCartBundleRequestParams(
                 shopId = shopId,
                 bundleId = bundleId,
                 bundleQty = ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_QUANTITY,
                 selectedProductPdp = ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_PRODUCT_PARENT_ID,
-                productDetails = bundleProductDetails
+                productDetails = productDetailsParam
             )
 
             addToCartBundleUseCase.setParams(atcBundleParams)
             val response = addToCartBundleUseCase.executeOnBackground()
 
-            validateResponse(
+            validateBundleResponse(
                 shopId = shopId,
                 warehouseId = warehouseId,
                 response = response,
-                bundleGroupId = bundleGroupId,
                 bundleId = bundleId,
                 bundleName = bundleName,
                 bundleType = bundleType,
@@ -355,11 +351,10 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
     }
 
-    private fun validateResponse(
+    private fun validateBundleResponse(
         shopId: String,
         warehouseId: String,
         response: AddToCartBundleModel,
-        bundleGroupId: String,
         bundleId: String,
         bundleName: String,
         bundleType: String,
@@ -388,8 +383,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                         state = STATE_PRODUCT_BUNDLE_RECOM_ATC
                     )
                 )
-
-                getCartList()
             },
             onFailedWithMessages = { errorMessages ->
                 _globalEvent.postValue(

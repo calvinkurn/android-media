@@ -278,7 +278,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             viewModel?.addBundleToCart(
                 shopId = shopId,
                 warehouseId = warehouseId,
-                bundleGroupId = bundleGroupId,
                 bundleId = selectedMultipleBundle.bundleId,
                 bundleName = bundleName,
                 bundleType = bundleType,
@@ -366,7 +365,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             viewModel?.addBundleToCart(
                 shopId = shopId,
                 warehouseId = warehouseId,
-                bundleGroupId = bundleGroupId,
                 bundleId = selectedBundle.bundleId,
                 bundleName = bundleName,
                 bundleType = bundleType,
@@ -504,6 +502,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     private fun onSuccessAddToCartProductBundleRecom(viewBinding: LayoutBottomsheetMiniCartListBinding) {
+        viewModel?.getCartList()
+
         hideProgressLoading()
 
         viewBinding.bottomsheetContainer.let { container ->
