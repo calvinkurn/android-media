@@ -543,11 +543,7 @@ class CampaignInformationViewModel @Inject constructor(
     }
 
     private fun shouldUseShopTierBenefit(vpsPackage : VpsPackageUiModel?): Boolean {
-        if (vpsPackage == null) {
-            return true
-        }
-
-        return false
+        return vpsPackage == null
     }
 
     fun findCampaignMaxEndDateByVpsRule(selectedVpsPackage : VpsPackageUiModel, endDate: Date): Date {
