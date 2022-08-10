@@ -7,17 +7,17 @@ import javax.inject.Inject
 class DoFlashSaleProductSubmissionMapper @Inject constructor() {
 
     fun map(response: DoFlashSaleProductSubmissionResponse): ProductSubmissionResult {
-        val errorMessage =
-            if (response.doFlashSaleProductSubmission.responseHeader.errorMessage.isEmpty()) {
-                ""
-            } else {
-                response.doFlashSaleProductSubmission.responseHeader.errorMessage.first()
-            }
-
         return ProductSubmissionResult(
             response.doFlashSaleProductSubmission.responseHeader.success,
-            errorMessage
+            response.doFlashSaleProductSubmission.responseHeader.toErrorMessage()
         )
     }
 
+    private fun DoFlashSaleProductSubmissionResponse.DoFlashSaleProductSubmission.ResponseHeader.toErrorMessage(): String {
+        return if (errorMessage.isEmpty()) {
+            ""
+        } else {
+            errorMessage.first()
+        }
+    }
 }

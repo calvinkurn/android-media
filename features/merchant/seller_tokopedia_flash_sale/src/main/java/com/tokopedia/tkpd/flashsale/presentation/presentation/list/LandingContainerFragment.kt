@@ -71,6 +71,7 @@ class LandingContainerFragment : BaseDaggerFragment() {
 
         viewModel.getTabsMetaData()
         viewModel.submitProduct()
+        viewModel.deleteProduct()
 
 
     }
