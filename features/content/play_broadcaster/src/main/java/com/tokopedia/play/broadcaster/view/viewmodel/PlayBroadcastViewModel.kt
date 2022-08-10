@@ -36,7 +36,6 @@ import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
-import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
@@ -392,7 +391,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet -> handleRefreshQuizDetail()
             PlayBroadcastAction.ClickRefreshQuizOption -> handleRefreshQuizOptionDetail()
             is PlayBroadcastAction.ClickPinProduct -> handleClickPin(event.product)
-            is BroadcastStateChanged -> handleBroadcastStateChanged(event.state)
+            is PlayBroadcastAction.BroadcastStateChanged -> handleBroadcastStateChanged(event.state)
         }
     }
 
