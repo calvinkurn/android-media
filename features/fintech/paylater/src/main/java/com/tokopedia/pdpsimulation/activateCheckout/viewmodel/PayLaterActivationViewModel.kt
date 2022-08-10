@@ -10,7 +10,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams.Companion.SOURCE_FINTECH
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.usecase.PaylaterActivationUseCase
