@@ -775,7 +775,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private fun getSelectedPromoList(): ArrayList<String> {
         val selectedPromoList = ArrayList<String>()
         promoListUiModel.value?.forEach { visitable ->
-            if (visitable is PromoListItemUiModel && visitable.uiState.isSelected) {
+            if (visitable is PromoListItemUiModel && visitable.uiState.isSelected && !visitable.uiState.isBebasOngkir) {
                 selectedPromoList.add(visitable.uiData.promoCode)
             }
         }
