@@ -6,10 +6,10 @@ import com.tokopedia.cassavatest.hasAllSuccess
 
 object ExplicitCassava {
 
-    private const val VALUE_PAGE_NAME = "discovery page"
-    private const val VALUE_PAGE_PATH = "discovery path"
-    private const val VALUE_PAGE_TYPE = "discovery type"
-    private const val VALUE_TEMPLATE_NAME = "halal_single"
+    const val VALUE_PAGE_NAME = "discovery page"
+    const val VALUE_PAGE_PATH = "discovery path"
+    const val VALUE_PAGE_TYPE = "discovery type"
+    const val VALUE_TEMPLATE_NAME = "halal_single"
     private const val VALUE_EXPLICIT_WIDGET = "explicit widget"
     private const val VALUE_USER_PLATFORM = "user platform"
     private const val VALUE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"

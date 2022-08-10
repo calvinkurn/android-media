@@ -2,19 +2,17 @@ package com.tokopedia.usercomponents.explicit
 
 import android.content.Context
 import android.content.Intent
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
 import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
-import com.tokopedia.usercomponents.explicit.di.FakeExplicitModule
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugActivity
+import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugFragment.Companion.component
 import com.tokopedia.usercomponents.explicit.stub.data.ExplicitRepositoryStub
 import com.tokopedia.usercomponents.explicit.stub.data.TestState
 import org.junit.Before
@@ -42,14 +40,11 @@ class ExplicitCassavaNetworkTest {
 
     @Before
     fun before() {
-        val fakeBaseComponent = DaggerFakeExplicitComponent.builder()
+        component = DaggerFakeExplicitComponent.builder()
             .fakeAppModule(FakeAppModule(applicationContext))
-            .fakeExplicitModule(FakeExplicitModule())
             .build()
 
-        ApplicationProvider.getApplicationContext<BaseMainApplication>()
-            .setComponent(fakeBaseComponent)
-        repositoryStub = fakeBaseComponent.repo() as ExplicitRepositoryStub
+        repositoryStub = component?.repository() as ExplicitRepositoryStub
     }
 
     @Test
