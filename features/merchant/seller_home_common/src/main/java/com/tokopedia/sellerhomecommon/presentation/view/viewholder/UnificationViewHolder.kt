@@ -300,13 +300,16 @@ class UnificationViewHolder(
     private fun showNewTag(tab: UnificationTabUiModel) {
         with(binding) {
             shcNotifTagTab.isVisible = tab.isNew
-            if (tab.isNew) {
+            if (tab.isNew && !tab.isUnauthorized) {
                 val newTag = root.context.getString(R.string.shc_new)
+                shcNotifTagTab.visible()
                 shcNotifTagTab.setNotification(
                     newTag,
                     NotificationUnify.TEXT_TYPE,
                     NotificationUnify.COLOR_TEXT_TYPE
                 )
+            } else {
+                shcNotifTagTab.gone()
             }
         }
     }

@@ -85,7 +85,7 @@ class UnificationTabAdapter(
         private fun showTag(isNew: Boolean, isUnauthorized: Boolean) {
             with(binding) {
                 when {
-                    isNew -> {
+                    isNew && !isUnauthorized -> {
                         shcUnificationTabTag.visible()
                         val newTag = root.context.getString(R.string.shc_new)
                         shcUnificationTabTag.setNotification(
