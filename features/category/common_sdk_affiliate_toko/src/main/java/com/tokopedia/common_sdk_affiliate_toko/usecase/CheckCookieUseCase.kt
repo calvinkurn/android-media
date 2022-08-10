@@ -1,8 +1,8 @@
 package com.tokopedia.common_sdk_affiliate_toko.usecase
 
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateCookieParams
-import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateCookieResponse
 import com.tokopedia.common_sdk_affiliate_toko.model.CheckAffiliateCookieRequest
+import com.tokopedia.common_sdk_affiliate_toko.model.CheckAffiliateCookieResponse
 import com.tokopedia.common_sdk_affiliate_toko.model.toCheckCookieAdditionParam
 import com.tokopedia.common_sdk_affiliate_toko.raw.GQL_Check_Cookie
 import com.tokopedia.common_sdk_affiliate_toko.repository.CommonAffiliateRepository
@@ -37,10 +37,10 @@ class CheckCookieUseCase @Inject constructor(
    internal suspend fun checkAffiliateCookie(
        param: AffiliateCookieParams,
        deviceId: String
-   ): AffiliateCookieResponse {
+   ): CheckAffiliateCookieResponse {
         return commonAffiliateRepository.getGQLData(
             GQL_Check_Cookie,
-            AffiliateCookieResponse::class.java,
+            CheckAffiliateCookieResponse::class.java,
             createRequestParam(param,deviceId)
         )
     }

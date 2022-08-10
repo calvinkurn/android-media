@@ -17,6 +17,20 @@ data class CreateAffiliateCookieResponse(
     }
 }
 
+data class CheckAffiliateCookieResponse(
+    @SerializedName("checkAffiliateCookie")
+    @Expose
+    val response: AffiliateCookieResponse = AffiliateCookieResponse()
+) {
+    companion object {
+        private const val SUCCESS_STATUS = 1
+    }
+
+    fun isSuccess(): Boolean {
+        return response.data.status == SUCCESS_STATUS
+    }
+}
+
 data class AffiliateCookieResponse(
     @SerializedName("Data")
     @Expose
