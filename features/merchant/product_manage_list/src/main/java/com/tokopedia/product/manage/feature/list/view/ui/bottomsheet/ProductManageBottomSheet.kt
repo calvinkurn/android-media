@@ -243,10 +243,6 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                     add(SellerFeatureUiModel.TopAdsFeatureWithDataUiModel(product))
                 }
 
-                if (setCashBack) {
-                    add(SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(product))
-                }
-
                 if (setFeatured) {
                     add(SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel(product))
                 }
