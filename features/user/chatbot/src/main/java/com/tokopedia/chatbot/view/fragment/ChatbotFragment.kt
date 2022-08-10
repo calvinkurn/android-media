@@ -630,7 +630,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     pageSource(PageSource.ChatBot)
                     modeType(ModeType.VIDEO_ONLY)
                     multipleSelectionMode()
-                    maxMediaItem(MAX_MEDIA_COUNT)
+                    maxVideoItem(MAX_MEDIA_COUNT)
                     maxVideoDuration(MAX_DURATION_FOR_VIDEO)
                 }
             }
@@ -645,7 +645,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     pageSource(PageSource.ChatBot)
                     modeType(ModeType.IMAGE_ONLY)
                     multipleSelectionMode()
-                    maxMediaItem(MAX_MEDIA_COUNT)
                 }
             }
             startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
