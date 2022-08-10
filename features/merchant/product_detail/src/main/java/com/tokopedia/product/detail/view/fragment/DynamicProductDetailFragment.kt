@@ -120,6 +120,7 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.extensions.ifNull
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -3105,13 +3106,17 @@ open class DynamicProductDetailFragment :
                 isCod
             )
             val boData = viewModel.getBebasOngkirDataByProductId()
+
+            val productId = it.basic.productID
+            val boCampaignIDs = viewModel.p2Data.value?.getBebasOngkirCampaignIDsByProductId(productId)
+
             sharedViewModel?.setRequestData(
                 RatesEstimateRequest(
                     productWeight = it.basic.weight.toFloat(),
                     shopDomain = viewModel.getShopInfo().shopCore.domain,
                     origin = viewModel.getMultiOriginByProductId().getOrigin(),
                     shopId = it.basic.shopID,
-                    productId = it.basic.productID,
+                    productId = productId,
                     productWeightUnit = it.basic.weightUnit,
                     isFulfillment = viewModel.getMultiOriginByProductId().isFulfillment,
                     destination = generateUserLocationRequestRates(viewModel.getUserLocationCache()),
@@ -3125,7 +3130,8 @@ open class DynamicProductDetailFragment :
                     isTokoNow = it.basic.isTokoNow,
                     addressId = viewModel.getUserLocationCache().address_id,
                     warehouseId = viewModel.getMultiOriginByProductId().id,
-                    orderValue = it.data.price.value.roundToIntOrZero()
+                    orderValue = it.data.price.value.roundToIntOrZero(),
+                    boCampaignIDs = boCampaignIDs ?: ""
                 )
             )
             shouldRefreshShippingBottomSheet = false
@@ -4347,19 +4353,35 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
-        if (loadingProgressDialog == null) {
-            loadingProgressDialog = activity?.createDefaultProgressDialog(
+        activity?.let { parentView ->
+            val dialog = createProgressDialog(parentView, onCancelClicked)
+            val showProgressDialog = !parentView.isFinishing && !dialog.isShowing
+
+            if (showProgressDialog) {
+                runCatching {
+                    dialog.show()
+                }
+            }
+        }
+    }
+
+    private fun createProgressDialog(
+        activity: Activity,
+        onCancelClicked: (() -> Unit)?
+    ): ProgressDialog {
+        val dialog = loadingProgressDialog.ifNull {
+            activity.createDefaultProgressDialog(
                 getString(com.tokopedia.abstraction.R.string.title_loading),
                 cancelable = onCancelClicked != null,
                 onCancelClicked = {
                     onCancelClicked?.invoke()
-                })
+                }
+            )
         }
-        loadingProgressDialog?.run {
-            if (!isShowing) {
-                show()
-            }
-        }
+
+        loadingProgressDialog = dialog
+
+        return dialog
     }
 
     private fun updateProductId() {
