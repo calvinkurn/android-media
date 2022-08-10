@@ -656,6 +656,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 else{
                     showCharacterAnimation()
                 }
+            }?: run{
+                showCharacterAnimation()
             }
         }
     }
