@@ -45,7 +45,8 @@
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                android:visibility="visible"/>
+                android:visibility="visible"
+                android:contentDescription="@string/thank_you_page_success_illustration"/>
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottieAnimationView"
