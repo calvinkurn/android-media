@@ -21,6 +21,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
 
+    private static final String TAG_EMONEY_TIME_CHECK_LOGIC = "EMONEY_TIME_CHECK_LOGIC";
+    private static final int DIVIVER = 1000000;
+
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
     private PermissionCheckerHelper permissionCheckerHelper;
@@ -42,8 +45,8 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
             newIntent.setAction(intent.getAction());
 
             long endTime = System.nanoTime();
-            long duration = (endTime - startTime)/1000000;
-            newIntent.putExtra("EMONEY_TIME_CHECK_LOGIC", ""+duration+" ms");
+            long duration = (endTime - startTime)/DIVIVER;
+            newIntent.putExtra(TAG_EMONEY_TIME_CHECK_LOGIC, ""+duration+" ms");
 
             context.startActivity(newIntent);
         }
