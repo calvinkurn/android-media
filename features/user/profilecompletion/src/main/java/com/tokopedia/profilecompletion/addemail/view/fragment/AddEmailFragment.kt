@@ -30,14 +30,16 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_email_setting_profile.*
 import javax.inject.Inject
-
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 
 class AddEmailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var tracker: ProfileInfoTracker
 
@@ -112,7 +114,7 @@ class AddEmailFragment : BaseDaggerFragment() {
     }
 
     private fun goToVerificationActivity(email: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
@@ -161,6 +163,7 @@ class AddEmailFragment : BaseDaggerFragment() {
                 }
             }
         )
+
     }
 
     private fun onErrorAddEmail(throwable: Throwable) {
