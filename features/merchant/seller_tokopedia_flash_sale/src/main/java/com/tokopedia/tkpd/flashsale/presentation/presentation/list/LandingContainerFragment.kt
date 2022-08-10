@@ -70,6 +70,7 @@ class LandingContainerFragment : BaseDaggerFragment() {
         }
 
         viewModel.getTabsMetaData()
+        viewModel.submitProduct()
 
 
     }

@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tkpd.flashsale.presentation.data.mapper.GetFlashSaleListForSellerMetaMapper
+import com.tokopedia.tkpd.flashsale.presentation.data.request.CampaignParticipationRequestHeader
 import com.tokopedia.tkpd.flashsale.presentation.data.request.GetFlashSaleListForSellerMetaRequest
 import com.tokopedia.tkpd.flashsale.presentation.data.response.GetFlashSaleListForSellerMetaResponse
 import com.tokopedia.tkpd.flashsale.presentation.domain.entity.TabMetadata
@@ -36,8 +37,7 @@ class GetFlashSaleListForSellerMetaUseCase @Inject constructor(
     }
 
     private fun buildRequest(): GraphqlRequest {
-        val requestHeader =
-            GetFlashSaleListForSellerMetaRequest.CampaignParticipationRequestHeader(usecase = "campaign_list")
+        val requestHeader = CampaignParticipationRequestHeader(usecase = "campaign_list")
         val payload = GetFlashSaleListForSellerMetaRequest(requestHeader)
         val params = mapOf(REQUEST_PARAM_KEY to payload)
 
