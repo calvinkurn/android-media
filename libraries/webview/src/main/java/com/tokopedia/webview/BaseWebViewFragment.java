@@ -887,7 +887,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 logApplinkErrorOpen(url);
             }
         } else { // network url
-            if (handleUrlLogin(url, uri)) {
+            if (handleUrlLogin(uri)) {
                 return true;
             }
         }
@@ -899,16 +899,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return hasMoveToNativePage;
     }
 
-    private boolean handleUrlLogin(String url, Uri uri) {
-        if (url.startsWith(TokopediaUrl.getInstance().getWEB())) {
+    private boolean handleUrlLogin(Uri uri) {
+        if (TokopediaUrl.getInstance().getWEB().equals(
+                uri.getScheme() + "//" + uri.getHost())) {
             List<String> pathSegments = uri.getPathSegments();
             // https://www.tokopedia.com/login/?...
             if (pathSegments.size() == 1 &&
                     LOGIN.equals(pathSegments.get(0)) &&
                     !userSession.isLoggedIn()) {
                 startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+                return true;
             }
-            return true;
         }
         return false;
     }
