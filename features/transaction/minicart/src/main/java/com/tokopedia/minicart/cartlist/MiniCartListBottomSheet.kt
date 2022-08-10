@@ -73,7 +73,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         private const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
     }
 
-    private var context: Context? = null
     private var viewBinding: LayoutBottomsheetMiniCartListBinding? = null
     private var viewModel: MiniCartViewModel? = null
     private var bottomSheet: BottomSheetUnify? = null
@@ -108,7 +107,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 this.bottomSheetListener = bottomSheetListener
                 val viewBinding = LayoutBottomsheetMiniCartListBinding.inflate(LayoutInflater.from(context))
                 this.viewBinding = viewBinding
-                this.context = context
                 initializeView(it, viewBinding, fragmentManager)
                 initializeViewModel(viewBinding, fragmentManager, viewModel, lifecycleOwner)
                 initializeCartData(viewBinding, viewModel)
@@ -223,13 +221,13 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     private fun goToPDP(productId: String) {
-        context?.let {
+        bottomSheet?.context?.let { context ->
             val intent = RouteManager.getIntent(
                 context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                 productId
             )
-            it.startActivity(intent)
+            context.startActivity(intent)
         }
     }
 

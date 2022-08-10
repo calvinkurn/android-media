@@ -42,7 +42,7 @@ data class ProductBundleRecomResponse(
                     @SerializedName("displayPrice")
                     val displayPrice: String,
                     @SerializedName("displayPriceRaw")
-                    val displayPriceRaw: Int,
+                    val displayPriceRaw: Long,
                     @SerializedName("isPO")
                     val isPO: Boolean,
                     @SerializedName("isProductsHaveVariant")
