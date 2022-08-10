@@ -2,7 +2,6 @@ package com.tokopedia.oldminicart.cartlist.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
 import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartSeparatorUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartShopUiModel
@@ -48,7 +47,6 @@ class MiniCartListDiffUtilCallback(private val oldList: List<Any>,
             oldItem is MiniCartTickerWarningUiModel && newItem is MiniCartTickerWarningUiModel -> oldItem == newItem
             oldItem is MiniCartUnavailableHeaderUiModel && newItem is MiniCartUnavailableHeaderUiModel -> oldItem == newItem
             oldItem is MiniCartUnavailableReasonUiModel && newItem is MiniCartUnavailableReasonUiModel -> oldItem == newItem
-            oldItem is MiniCartProductBundleRecomUiModel && newItem is MiniCartProductBundleRecomUiModel -> oldItem == newItem
             else -> false
         }
     }
