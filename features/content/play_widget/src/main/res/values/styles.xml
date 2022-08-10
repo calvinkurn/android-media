@@ -4,7 +4,7 @@
         <item name="android:ellipsize">end</item>
         <item name="android:lines">1</item>
         <item name="android:textColor">@color/Unify_N700_96</item>
-        <item name="typographyType">heading_4</item>
+        <item name="typographyType">display_1</item>
         <item name="typographyWeight">bold</item>
     </style>
 
