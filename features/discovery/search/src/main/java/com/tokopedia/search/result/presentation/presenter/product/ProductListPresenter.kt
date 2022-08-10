@@ -659,7 +659,7 @@ class ProductListPresenter @Inject constructor(
             postProcessingFilter.checkPostProcessingFilter(
                 searchProductModel.isPostProcessing,
                 searchParameter,
-                totalData,
+                productDataView.totalData,
                 ::loadData
             ) {
                 getViewToHandleEmptyProductList(
@@ -678,8 +678,6 @@ class ProductListPresenter @Inject constructor(
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER) {
             processFilters(searchProductModel)
         }
-
-        view.updateScrollListener()
 
         getViewToSendTrackingSearchAttempt(productDataView)
     }
@@ -725,6 +723,8 @@ class ProductListPresenter @Inject constructor(
 
             getViewToShowRecommendationItem()
         }
+
+        view.updateScrollListener()
     }
 
     private fun isShowBroadMatch() =
@@ -1044,6 +1044,8 @@ class ProductListPresenter @Inject constructor(
         view.backToTop()
         if (hasNextPage())
             view.addLoading()
+
+        view.updateScrollListener()
     }
 
     private fun addLastFilterDataView(
