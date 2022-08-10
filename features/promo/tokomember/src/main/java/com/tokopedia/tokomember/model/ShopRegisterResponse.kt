@@ -126,6 +126,6 @@ data class MembershipOrderData(
 	@SerializedName("shopID")
 	var shopID: Int = 0,
 	@SerializedName("amount")
-	var amount: Float = 0F
+	var amount: Double = 0.0
 )
 

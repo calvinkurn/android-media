@@ -358,7 +358,7 @@ data class PurchaseItem(
         @SerializedName("weight_unit")
         val weightUnit: String,
         @SerializedName("total_price")
-        val totalPrice: Float,
+        val totalPrice: Double,
         @SerializedName("total_price_str")
         val totalPriceStr: String,
         @SerializedName("promo_code")
@@ -401,7 +401,7 @@ data class BundleGroupItem(
     @SerializedName("title")
     val bundleTitle: String,
     @SerializedName("total_price")
-    val totalPrice: Float,
+    val totalPrice: Double,
     @SerializedName("total_price_str")
     val totalPriceStr: String
 ): Parcelable {
@@ -409,7 +409,7 @@ data class BundleGroupItem(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readFloat(),
+        parcel.readDouble(),
         parcel.readString() ?: ""
     )
 
@@ -417,7 +417,7 @@ data class BundleGroupItem(
         parcel.writeString(groupId)
         parcel.writeString(bundleIcon)
         parcel.writeString(bundleTitle)
-        parcel.writeFloat(totalPrice)
+        parcel.writeDouble(totalPrice)
         parcel.writeString(totalPriceStr)
     }
 

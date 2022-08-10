@@ -51,14 +51,14 @@ object FeatureRecommendationMapper {
 
     fun getTokomemberRequestParams(thanksPageData: ThanksPageData, engineData: FeatureEngineData): TokoMemberRequestParam {
         val shopParams = ArrayList<MembershipOrderData>()
-        var amount: Float
+        var amount: Double
         var shopId = 0
         var isFirstElement = false
         var sectionSubTitle = ""
         var sectionTitle = ""
 
         thanksPageData.shopOrder.forEach {
-            amount = 0F
+            amount = 0.0
             it.purchaseItemList.forEach { orderItem ->
                 amount += orderItem.totalPrice
             }
