@@ -27,6 +27,7 @@ object WishlistV2Consts {
     const val PRODUCT_ID = "productID"
     const val USER_ID = "userID"
     const val MODE = "mode"
+    const val SOURCE = "source"
     const val ADDITIONAL_PARAMS = "additionalParameters"
     const val RECOMMENDED_FOR_YOU = "Rekomendasi untukmu"
     const val TICKER_TYPE_ANNOUNCEMENT = "announcement"

@@ -110,7 +110,7 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
 
     fun bulkDeleteWishlistV2(listProductId: List<String>, userId: String, mode: Int, additionalParams: WishlistV2BulkRemoveAdditionalParams) {
         launch {
-            _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(listProductId, userId, mode, additionalParams)
+            _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(listProductId, userId, mode, additionalParams, "")
         }
     }
 

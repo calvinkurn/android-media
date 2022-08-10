@@ -98,7 +98,7 @@
         app:layout_constraintTop_toBottomOf="@id/top_layout_shadow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/container_delete_collection_detail"
+        app:layout_constraintBottom_toTopOf="@id/bottom_button_layout"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <FrameLayout
@@ -138,58 +138,92 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <LinearLayout
-        android:id="@+id/container_delete_collection_detail"
+    <FrameLayout
+        android:id="@+id/bottom_button_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:background="@drawable/bg_delete_wishlist_v2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout"
-        android:orientation="horizontal"
-        android:weightSum="2">
+        app:layout_constraintTop_toBottomOf="@id/swipe_refresh_layout">
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/delete_button_collection"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/container_delete_collection_detail"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/wishlist_v2_delete_text"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:enabled="true"
-            app:unifyButtonVariant="filled"
-            app:unifyButtonType="main"
-            app:unifyButtonSize="medium"
-            android:layout_weight="1"/>
+            android:visibility="gone"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@drawable/bg_delete_wishlist_v2"
+            android:orientation="vertical">
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/add_button_collection"
-            android:layout_width="0dp"
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/delete_button_collection_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/wishlist_v2_delete_text"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:enabled="true"
+                app:unifyButtonVariant="ghost"
+                app:unifyButtonType="main"
+                app:unifyButtonSize="medium"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_delete_semua_wishlist"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/wishlist_v2_delete_text"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:enabled="true"
-            app:unifyButtonVariant="filled"
-            app:unifyButtonType="main"
-            app:unifyButtonSize="medium"
-            android:layout_weight="1"/>
-    </LinearLayout>
+            android:visibility="gone"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@drawable/bg_delete_wishlist_v2"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/delete_button_collection"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/wishlist_v2_delete_text"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:enabled="true"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonType="main"
+                app:unifyButtonSize="medium"
+                android:layout_weight="1"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/add_button_collection"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/wishlist_v2_delete_text"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:enabled="true"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonType="main"
+                app:unifyButtonSize="medium"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+    </FrameLayout>
 
     <View
         android:id="@+id/bottom_layout_shadow_wishlist_collection"
         android:layout_width="match_parent"
         android:layout_height="4dp"
-        app:layout_constraintBottom_toTopOf="@id/container_delete_collection_detail"
+        app:layout_constraintBottom_toTopOf="@id/bottom_button_layout"
         app:layout_constraintStart_toStartOf="parent"
         android:background="@drawable/shadow_top" />
 
@@ -198,7 +232,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/container_delete_collection_detail"
+        app:layout_constraintBottom_toTopOf="@id/bottom_button_layout"
         app:fbType="back_to_top"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"/>
