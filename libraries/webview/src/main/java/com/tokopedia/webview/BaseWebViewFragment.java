@@ -13,6 +13,7 @@ import static com.tokopedia.webview.ConstantKt.LOGIN;
 import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
+import static com.tokopedia.webview.ConstantKt.WWW_TOKOPEDIA_COM;
 import static com.tokopedia.webview.ConstantKt.ZOOM_US_STRING;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.decode;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
@@ -887,7 +888,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 logApplinkErrorOpen(url);
             }
         } else { // network url
-            if (handleUrlLogin(uri)) {
+            if (handleWebUrlLogin(uri)) {
                 return true;
             }
         }
@@ -899,9 +900,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return hasMoveToNativePage;
     }
 
-    private boolean handleUrlLogin(Uri uri) {
-        if (TokopediaUrl.getInstance().getWEB().equals(
-                uri.getScheme() + "//" + uri.getHost())) {
+    private boolean handleWebUrlLogin(Uri uri) {
+        if (WWW_TOKOPEDIA_COM.equals(uri.getHost())) {
             List<String> pathSegments = uri.getPathSegments();
             // https://www.tokopedia.com/login/?...
             if (pathSegments.size() == 1 &&
