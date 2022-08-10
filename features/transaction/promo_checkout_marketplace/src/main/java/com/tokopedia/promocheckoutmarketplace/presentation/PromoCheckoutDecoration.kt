@@ -30,7 +30,7 @@ class PromoCheckoutDecoration @Inject constructor() : RecyclerView.ItemDecoratio
             }
             is PromoRecommendationViewHolder -> {
                 outRect.top = 0
-                outRect.bottom = space12
+                outRect.bottom = space16
             }
             is PromoTabViewHolder -> {
                 outRect.top = 0
@@ -42,7 +42,7 @@ class PromoCheckoutDecoration @Inject constructor() : RecyclerView.ItemDecoratio
             }
             is PromoListItemViewHolder -> {
                 outRect.top = 0
-                outRect.bottom = space12
+                outRect.bottom = space16
             }
             is PromoEmptyStateViewHolder -> {
                 outRect.top = space8
