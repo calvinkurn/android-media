@@ -57,6 +57,16 @@ fun String?.toIntSafely(): Int {
     }
 }
 
+fun String.toIntRangeCheck(block:(number:String)->Unit):Int {
+    val longValue: Long = this.toLong()
+    return if (longValue > Int.MAX_VALUE) {
+        block(this)
+         0
+    } else {
+         longValue.toInt()
+    }
+}
+
 fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
 }
@@ -125,3 +135,11 @@ fun String?.toEmpty(): String = ""
 
 val String.Companion.EMPTY get() = ""
 val String.Companion.SPACE get() = " "
+
+fun String.digitsOnly(): Long {
+    return try {
+        this.filter { it.isDigit() }.toLong()
+    } catch (e: Exception) {
+        0
+    }
+}
