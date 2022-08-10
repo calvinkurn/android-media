@@ -7,7 +7,6 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.buildSpannedString
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -20,6 +19,7 @@ import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
 

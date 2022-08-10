@@ -12,6 +12,7 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.text.SpannableStringBuilder
+import android.text.SpannedString
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -374,3 +375,9 @@ fun <T: Any> MutableStateFlow<T?>.setValueIfNotNull(fn: T.() -> T) {
 }
 
 fun Boolean.switch() : Boolean = !this
+
+inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit): SpannedString {
+    val builder = SpannableStringBuilder()
+    builder.builderAction()
+    return SpannedString(builder)
+}
