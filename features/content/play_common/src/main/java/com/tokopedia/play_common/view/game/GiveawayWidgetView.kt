@@ -20,6 +20,7 @@ import java.util.*
 /**
  * Created by kenny.hadisaputra on 12/04/22
  */
+@Suppress("MagicNumber")
 class GiveawayWidgetView : ConstraintLayout {
 
     constructor(context: Context?) : super(context)

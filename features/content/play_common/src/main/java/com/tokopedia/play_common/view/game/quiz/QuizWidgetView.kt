@@ -26,6 +26,7 @@ import java.util.*
 /**
  * @author by astidhiyaa on 18/04/22
  */
+@Suppress("MagicNumber")
 class QuizWidgetView : ConstraintLayout {
 
     constructor(context: Context?) : super(context)
