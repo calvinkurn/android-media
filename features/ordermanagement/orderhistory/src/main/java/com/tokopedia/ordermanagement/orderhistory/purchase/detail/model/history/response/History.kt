@@ -4,15 +4,15 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class History(
-        @SerializedName("order_status_code")
+        @SerializedName("orderStatus")
         @Expose
         var orderStatusCode: Int = 0,
 
-        @SerializedName("order_status_color")
+        @SerializedName("orderStatusColor")
         @Expose
         var orderStatusColor: String = "",
 
-        @SerializedName("action_by")
+        @SerializedName("actionBy")
         @Expose
         var actionBy: String = "",
 

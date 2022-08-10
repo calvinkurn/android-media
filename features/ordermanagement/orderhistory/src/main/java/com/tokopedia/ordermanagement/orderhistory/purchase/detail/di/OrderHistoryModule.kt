@@ -3,6 +3,8 @@ package com.tokopedia.ordermanagement.orderhistory.purchase.detail.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.domain.OrderHistoryRepository
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.domain.mapper.OrderDetailMapper
 import com.tokopedia.user.session.UserSession
@@ -30,10 +32,8 @@ class OrderHistoryModule {
 
     @Provides
     @OrderHistoryScope
-    fun provideOrderHistoryRepository(): OrderHistoryRepository {
-        return OrderHistoryRepository(
-                provideOrderDetailService(),
-                provideOrderDetailMapper())
+    fun provideGraphqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
     }
 
     @Provides

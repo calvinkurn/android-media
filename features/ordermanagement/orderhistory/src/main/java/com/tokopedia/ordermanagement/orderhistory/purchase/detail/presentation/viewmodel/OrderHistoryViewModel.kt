@@ -20,15 +20,15 @@ class OrderHistoryViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
-        private const val PARAM_ORDER_ID = "order_id"
+        private const val PARAM_ORDER_ID = "orderID"
         private const val PARAM_LANGUAGE = "lang"
         private const val LANGUAGE_ID = "id"
-        private const val PARAM_USER_ID = "user_id"
+        private const val PARAM_USER_ID = "userID"
         private const val PARAM_DEVICE_ID = "device_id"
         private const val PARAM_HASH = "hash"
         private const val PARAM_OS_TYPE = "os_type"
         private const val PARAM_TIMESTAMP = "device_time"
-        private const val PARAM_REQUEST_BY = "request_by"
+        private const val PARAM_REQUEST_BY = "requestBy"
     }
 
     private val _orderHistory = MutableLiveData<OrderHistoryResult>()
@@ -38,14 +38,13 @@ class OrderHistoryViewModel @Inject constructor(
     fun getOrderHistory(orderId: String, userMode: Int) {
         launchCatchError(block = {
             _orderHistory.postValue(OrderHistoryResult.OrderHistoryLoading)
-            val temporaryParams = HashMap<String?, String?>()
-            temporaryParams[PARAM_ORDER_ID] = orderId
-            temporaryParams[PARAM_USER_ID] = userSession.userId
-            temporaryParams[PARAM_LANGUAGE] = LANGUAGE_ID
-            val params = HashMap<String?, Any?>(temporaryParams)
+            val params = HashMap<String, Any?>()
             params[PARAM_REQUEST_BY] = userMode
-            orderHistoryUseCase.setRequestParams(generateParamsNetwork2(params))
-            _orderHistory.postValue(OrderHistoryResult.OrderHistorySuccess(orderHistoryUseCase.executeOnBackground()))
+            params[PARAM_ORDER_ID] = orderId
+            params[PARAM_USER_ID] = userSession.userId.toLong()
+            params[PARAM_LANGUAGE] = LANGUAGE_ID
+            orderHistoryUseCase.setRequestParams(params.toMap())
+            _orderHistory.postValue(OrderHistoryResult.OrderHistorySuccess(orderHistoryUseCase.execute()))
         }) {
             _orderHistory.postValue(OrderHistoryResult.OrderHistoryFail(it))
         }
