@@ -24,7 +24,16 @@ class LastFilterModel(
         @SerializedName(CATEGORY_ID_L2)
         val categoryIdL2: String = "",
 
+        @SerializedName("applink")
+        val applink: String = "",
+
         @SerializedName("filters")
         val filters: List<SavedOption> = listOf(),
+
+        @SerializedName("tracking_option")
+        val trackingOption: Int = 0,
+
+        @SerializedName("component_id")
+        val componentId: String ="",
     )
 }

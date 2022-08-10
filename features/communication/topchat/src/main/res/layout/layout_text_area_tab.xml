@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_tab"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_max="240dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/reply_box_tab"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginEnd="51dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp">
+
+        <View
+            android:id="@+id/textarea_tab_bg"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_max="120dp"
+            android:layout_height="63dp"
+            app:layout_constraintLeft_toRightOf="@id/srw_tab_bg"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            tools:background="@color/Unify_NN100"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_textarea_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/textarea_tab_bg"
+            app:layout_constraintLeft_toLeftOf="@id/textarea_tab_bg"
+            app:layout_constraintRight_toRightOf="@id/textarea_tab_bg"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            app:typographyWeight="bold"
+            android:text="@string/text_area_tab_reply_box_title"/>
+
+        <View
+            android:id="@+id/srw_tab_bg"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_max="120dp"
+            android:layout_height="63dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/textarea_tab_bg"
+            app:layout_constraintHorizontal_bias="0" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_srw_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/srw_tab_bg"
+            app:layout_constraintLeft_toLeftOf="@id/srw_tab_bg"
+            app:layout_constraintRight_toRightOf="@id/srw_tab_bg"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            app:typographyWeight="bold"
+            android:text="@string/text_area_tab_smart_reply_title"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider_tab"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="42dp"
+        android:background="@color/Unify_Background"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
+        android:id="@+id/rv_srw_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_tab"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"/>
+
+    <com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
+        android:id="@+id/reply_box_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/divider_tab"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:paddingBottom="16dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:height="50dp"/>
+
+    <com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+        android:id="@+id/chat_menu_view_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/reply_box_tab"
+        app:layout_constraintLeft_toLeftOf="@id/reply_box_tab"
+        app:layout_constraintRight_toRightOf="@id/reply_box_tab"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</merge>

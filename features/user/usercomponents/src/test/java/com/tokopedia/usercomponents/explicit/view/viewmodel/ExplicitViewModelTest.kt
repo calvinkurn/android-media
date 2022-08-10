@@ -8,6 +8,7 @@ import com.tokopedia.usercomponents.explicit.domain.GetQuestionUseCase
 import com.tokopedia.usercomponents.explicit.domain.SaveAnswerUseCase
 import com.tokopedia.usercomponents.explicit.domain.UpdateStateUseCase
 import com.tokopedia.usercomponents.explicit.domain.model.*
+import com.tokopedia.usercomponents.explicit.view.interactor.ExplicitViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -226,22 +227,6 @@ class ExplicitViewModelTest {
 
         val result = viewModel.statusSaveAnswer.value
         assertTrue(result is Fail)
-    }
-
-    @Test
-    fun `get question then success and loading variable is false`() {
-        val templateName = "food_preference"
-        val data = QuestionDataModel(
-            ExplicitprofileGetQuestion(ActiveConfig(value = true))
-        )
-
-        coEvery {
-            getQuestionUseCase(templateName)
-        } returns data
-        viewModel.getExplicitContent(templateName)
-
-        val result = viewModel.isQuestionLoading.value
-        assertEquals(false, result)
     }
 
     @Test

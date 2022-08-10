@@ -2,15 +2,13 @@ package com.tokopedia.usercomponents.explicit
 
 import android.content.Context
 import android.content.Intent
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
 import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
-import com.tokopedia.usercomponents.explicit.di.FakeExplicitModule
+import com.tokopedia.usercomponents.explicit.di.FakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugActivity
 import com.tokopedia.usercomponents.explicit.stub.data.ExplicitRepositoryStub
 import com.tokopedia.usercomponents.explicit.stub.data.TestState
@@ -32,18 +30,15 @@ class ExplicitInstrumentationTest {
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
-    private lateinit var repositoryStub: ExplicitRepositoryStub
+    lateinit var repositoryStub: ExplicitRepositoryStub
 
     @Before
     fun before() {
-        val fakeBaseComponent = DaggerFakeExplicitComponent.builder()
+        component = DaggerFakeExplicitComponent.builder()
             .fakeAppModule(FakeAppModule(applicationContext))
-            .fakeExplicitModule(FakeExplicitModule())
             .build()
 
-        ApplicationProvider.getApplicationContext<BaseMainApplication>()
-            .setComponent(fakeBaseComponent)
-        repositoryStub = fakeBaseComponent.repo() as ExplicitRepositoryStub
+        repositoryStub = component?.repository() as ExplicitRepositoryStub
     }
 
     @Test
@@ -165,6 +160,10 @@ class ExplicitInstrumentationTest {
 
         //THEN
         isHideQuestion()
+    }
+
+    companion object {
+        var component: FakeExplicitComponent? = null
     }
 
 }
