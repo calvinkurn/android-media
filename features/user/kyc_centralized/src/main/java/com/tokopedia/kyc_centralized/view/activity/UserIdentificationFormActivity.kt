@@ -130,9 +130,10 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
             }
 
             fragmentList[actualPosition] = fragment
-            fragment.arguments = Bundle().apply {
+            val stepperBundle = Bundle().apply {
                 putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
             }
+            fragment.arguments?.putAll(stepperBundle)
 
             if (savedinstancestate == null) {
                 supportFragmentManager.beginTransaction()
