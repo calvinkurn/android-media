@@ -9,6 +9,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
 import javax.inject.Inject
@@ -57,7 +58,7 @@ class RegisterInitialRouterHelper @Inject constructor() {
 
     fun goToChooseAccountPage(fragment: Fragment, accessToken: String, phoneNumber: String){
         val intent = RouteManager.getIntent(fragment.context,
-                ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+                ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
@@ -65,8 +66,11 @@ class RegisterInitialRouterHelper @Inject constructor() {
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHOOSE_ACCOUNT)
     }
 
-    fun goToChangeName(fragment: Fragment) {
+    fun goToChangeName(fragment: Fragment, validateToken: String) {
         val intent = (fragment.context?.applicationContext as ApplinkRouter).getApplinkIntent(fragment.context, ApplinkConst.ADD_NAME_PROFILE)
+        intent.putExtras(Bundle().apply {
+            putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+        })
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHANGE_NAME)
     }
 

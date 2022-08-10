@@ -534,7 +534,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             viewModel?.setMiniCartData(it)
             val listWidgetData = shopHomeAdapter.data.toMutableList()
             if(listWidgetData.isNotEmpty())
-                viewModel?.getShopWidgetDataWithUpdatedQuantity(it, listWidgetData)
+                viewModel?.getShopWidgetDataWithUpdatedQuantity(listWidgetData)
         })
     }
 
@@ -1718,38 +1718,42 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             // disable owner add their own bundle to cart
             showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
         } else {
-            if (selectedMultipleBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
-                    widgetId = widgetLayout.widgetId,
-                    widgetMasterId = widgetLayout.widgetMasterId,
-                    widgetType = widgetLayout.widgetType,
-                    widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
+            if (isLogin) {
+                if (selectedMultipleBundle.isProductsHaveVariant) {
+                    // go to bundling selection page
+                    goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
+                } else {
+                    // atc bundle directly from shop page home
+                    val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+                        widgetId = widgetLayout.widgetId,
+                        widgetMasterId = widgetLayout.widgetMasterId,
+                        widgetType = widgetLayout.widgetType,
+                        widgetName = widgetLayout.widgetName
+                    )
+                    viewModel?.addBundleToCart(
+                        shopId = shopId,
+                        userId = userId,
+                        bundleId = selectedMultipleBundle.bundleId,
+                        productDetails = productDetails,
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams, bundleName, ShopPageConstant.BundleType.MULTIPLE_BUNDLE, selectedMultipleBundle) },
+                        onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                        productQuantity = selectedMultipleBundle.minOrder
+                    )
+                }
+                shopPageHomeTracking.clickAtcProductBundleMultiple(
                     shopId = shopId,
                     userId = userId,
                     bundleId = selectedMultipleBundle.bundleId,
-                    productDetails = productDetails,
-                    onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
-                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                    productQuantity = selectedMultipleBundle.minOrder
+                    bundleName = bundleName,
+                    bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                    bundlePrice = selectedMultipleBundle.displayPriceRaw,
+                    quantity = selectedMultipleBundle.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty()
                 )
+            } else {
+                redirectToLoginPage()
             }
-            shopPageHomeTracking.clickAtcProductBundleMultiple(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedMultipleBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
-                bundlePrice = selectedMultipleBundle.displayPriceRaw,
-                quantity = selectedMultipleBundle.minOrder.toString(),
-                shopName = shopName,
-                shopType = customDimensionShopPage.shopType.orEmpty()
-            )
         }
     }
 
@@ -1769,50 +1773,60 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             // disable owner add their own bundle to cart
             showErrorToast(getString(R.string.shop_page_product_bundle_failed_atc_text_for_shop_owner))
         } else {
-            if (selectedBundle.isProductsHaveVariant) {
-                // go to bundling selection page
-                goToBundlingSelectionPage(selectedBundle.bundleId)
-            } else {
-                // atc bundle directly from shop page home
-                val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
-                    widgetId = widgetLayout.widgetId,
-                    widgetMasterId = widgetLayout.widgetMasterId,
-                    widgetType = widgetLayout.widgetType,
-                    widgetName = widgetLayout.widgetName
-                )
-                viewModel?.addBundleToCart(
+            if (isLogin) {
+                if (selectedBundle.isProductsHaveVariant) {
+                    // go to bundling selection page
+                    goToBundlingSelectionPage(selectedBundle.bundleId)
+                } else {
+                    // atc bundle directly from shop page home
+                    val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+                        widgetId = widgetLayout.widgetId,
+                        widgetMasterId = widgetLayout.widgetMasterId,
+                        widgetType = widgetLayout.widgetType,
+                        widgetName = widgetLayout.widgetName
+                    )
+                    viewModel?.addBundleToCart(
+                        shopId = shopId,
+                        userId = userId,
+                        bundleId = selectedBundle.bundleId,
+                        productDetails = listOf(bundleProducts),
+                        onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams, bundleName, ShopPageConstant.BundleType.SINGLE_BUNDLE, selectedBundle) },
+                        onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
+                        productQuantity = selectedBundle.minOrder
+                    )
+                }
+                shopPageHomeTracking.clickAtcProductBundleSingle(
                     shopId = shopId,
                     userId = userId,
                     bundleId = selectedBundle.bundleId,
-                    productDetails = listOf(bundleProducts),
-                    onFinishAddToCart = { handleOnFinishAtcBundle(it, bundleListSize, widgetLayoutParams) },
-                    onErrorAddBundleToCart = { handleOnErrorAtcBundle(it) },
-                    productQuantity = selectedBundle.minOrder
+                    bundleName = bundleName,
+                    bundlePriceCut = selectedBundle.discountPercentage.toString(),
+                    bundlePrice = selectedBundle.displayPriceRaw,
+                    selectedPackage = selectedBundle.minOrderWording,
+                    productId = bundleProducts.productId,
+                    quantity = selectedBundle.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty()
                 )
+            } else {
+                redirectToLoginPage()
             }
-            shopPageHomeTracking.clickAtcProductBundleSingle(
-                shopId = shopId,
-                userId = userId,
-                bundleId = selectedBundle.bundleId,
-                bundleName = bundleName,
-                bundlePriceCut = selectedBundle.discountPercentage.toString(),
-                bundlePrice = selectedBundle.displayPriceRaw,
-                selectedPackage = selectedBundle.minOrderWording,
-                productId = bundleProducts.productId,
-                quantity = selectedBundle.minOrder.toString(),
-                shopName = shopName,
-                shopType = customDimensionShopPage.shopType.orEmpty()
-            )
         }
     }
 
     private fun handleOnFinishAtcBundle(
             atcBundleModel: AddToCartBundleModel,
             bundleListSize: Int,
-            widgetLayout: ShopPageWidgetLayoutUiModel
+            widgetLayout: ShopPageWidgetLayoutUiModel,
+            bundleName: String,
+            bundleType: String,
+            shopHomeProductBundleDetailUiModel: ShopHomeProductBundleDetailUiModel
     ) {
         atcBundleModel.validateResponse(
                 onSuccess = {
+                    // Send the tracker here because the tracker needs cartId. CartId will we get once we success ATC
+                    sendTrackerAtcBundle(atcBundleModel, bundleName, bundleType, shopHomeProductBundleDetailUiModel)
+
                     showToastSuccess(
                             getString(R.string.shop_page_product_bundle_success_atc_text),
                             getString(R.string.see_label)
@@ -1844,6 +1858,37 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
 
     private fun handleOnErrorAtcBundle(throwable: Throwable) {
         showErrorToast(throwable.message.orEmpty())
+    }
+
+    private fun sendTrackerAtcBundle(atcBundleModel: AddToCartBundleModel, bundleName: String, bundleType: String, shopHomeProductBundleDetailUiModel: ShopHomeProductBundleDetailUiModel) {
+        if (bundleType == ShopPageConstant.BundleType.MULTIPLE_BUNDLE) {
+            shopPageHomeTracking.clickAtcProductBundleMultiple(
+                    atcBundleModel = atcBundleModel,
+                    bundleName = bundleName,
+                    bundleId = shopHomeProductBundleDetailUiModel.bundleId,
+                    bundlePrice = shopHomeProductBundleDetailUiModel.displayPriceRaw,
+                    quantity = shopHomeProductBundleDetailUiModel.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty(),
+                    bundlePriceCut = shopHomeProductBundleDetailUiModel.discountPercentage.toString(),
+                    shopId = shopId,
+                    userId = userId
+            )
+        } else if (bundleType == ShopPageConstant.BundleType.SINGLE_BUNDLE) {
+            shopPageHomeTracking.clickAtcProductBundleSingle(
+                    atcBundleModel = atcBundleModel,
+                    bundleName = bundleName,
+                    bundleId = shopHomeProductBundleDetailUiModel.bundleId,
+                    bundlePrice = shopHomeProductBundleDetailUiModel.displayPriceRaw,
+                    quantity = shopHomeProductBundleDetailUiModel.minOrder.toString(),
+                    shopName = shopName,
+                    shopType = customDimensionShopPage.shopType.orEmpty(),
+                    bundlePriceCut = shopHomeProductBundleDetailUiModel.discountPercentage.toString(),
+                    shopId = shopId,
+                    userId = userId,
+                    selectedPackage = shopHomeProductBundleDetailUiModel.minOrderWording,
+            )
+        }
     }
 
     private fun goToBundlingSelectionPage(bundleId: String) {

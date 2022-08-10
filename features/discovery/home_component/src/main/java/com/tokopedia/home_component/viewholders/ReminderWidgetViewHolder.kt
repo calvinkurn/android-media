@@ -93,7 +93,6 @@ class ReminderWidgetViewHolder(
 
                 this?.btnReminderRecommendation?.setOnClickListener {
                     reminderWidgetListener?.onReminderWidgetClickListener(element)
-                    reminderWidgetListener?.onReminderWidgetDeclineClickListener(element, false)
                 }
 
                 this?.reminderRecommendationWidgetContainer?.addOnImpressionListener(element, object : ViewHintListener {

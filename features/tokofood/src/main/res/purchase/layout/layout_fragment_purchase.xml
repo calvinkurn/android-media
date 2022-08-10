@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbar
             android:id="@+id/toolbar_purchase"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
