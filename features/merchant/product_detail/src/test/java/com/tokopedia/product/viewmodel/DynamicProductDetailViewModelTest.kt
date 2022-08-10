@@ -1565,26 +1565,18 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val affiliateChannel = "affiliate channel"
         val uuid = "1111"
 
-        val affiliatePageDetail = AffiliatePageDetail(
-            pageId = productId,
-            source = AffiliateSdkPageSource.PDP(
-                shopId = shopId,
-                productInfo = AffiliateSdkProductInfo(
-                    categoryID = categoryId,
-                    isVariant = isVariant,
-                    stockQty = stock
-                )
-            )
-        )
-
         coEvery{
             affiliateCookieHelper.initCookie(
                 affiliateUUID,
                 affiliateChannel,
-                affiliatePageDetail,
+                any(),
                 uuid
             )
         } throws Throwable("gagal bro")
+
+        coEvery {
+            TrackApp.getInstance().gtm.irisSessionId
+        } returns  "iris"
 
         viewModel.hitAffiliateCookie(
             productInfo = mockProductInfoP1,
@@ -1593,22 +1585,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             affiliateChannel = affiliateChannel
         )
 
-        coEvery {
-            TrackApp.getInstance().gtm.irisSessionId
-        } returns  "iris"
-
-        viewModel.hitAffiliateCookie(
-                productInfo = DynamicProductInfoP1(),
-                affiliateUuid = "123",
-                uuid = "1111",
-                affiliateChannel = "affiliate channel"
-        )
-
         coVerify {
             affiliateCookieHelper.initCookie(
                 affiliateUUID,
                 affiliateChannel,
-                affiliatePageDetail,
+                any(),
                 uuid
             )
         }
