@@ -222,7 +222,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         spannable.setSpan(object : ClickableSpan() {
             override fun onClick(view: View) {}
             override fun updateDrawState(ds: TextPaint) {
-                ds.color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                context?.resources?.let { ds.color = it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400) }
             }
         }, sourceString.indexOf(hyperlinkString), sourceString.length, 0)
         return spannable
@@ -412,7 +412,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     fun showPasswordHint() {
         wrapperPassword?.setError(false)
-        wrapperPassword?.setMessage(resources.getString(R.string.minimal_8_character))
+        context?.resources?.let { wrapperPassword?.setMessage(it.getString(R.string.minimal_8_character)) }
     }
 
     fun showNameHint() {
