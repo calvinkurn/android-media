@@ -953,7 +953,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         chooseAddressWidget?.updateWidget()
     }
 
-    private fun checkAddressUpdate(isReload: Boolean = false) {
+    private fun checkAddressUpdate(isReload: Boolean = true) {
         context?.let {
             if (userAddressData != null) {
                 if (ChooseAddressUtils.isLocalizingAddressHasUpdated(it, userAddressData!!)) {
