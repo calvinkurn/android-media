@@ -6,23 +6,15 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
 import android.net.Uri
-import android.os.Handler
 import android.util.AttributeSet
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRectModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorRotateModel
 import com.tokopedia.media.editor.utils.getDestinationUri
-import com.tokopedia.media.loader.loadImageWithEmptyTarget
-import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.yalantis.ucrop.callback.BitmapCropCallback
-import com.yalantis.ucrop.view.CropImageView
 import com.yalantis.ucrop.view.TransformImageView
 import com.yalantis.ucrop.view.UCropView
 import kotlin.math.abs
@@ -123,6 +115,12 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         val cropViewScaleX = cropViewScale.first
         val cropViewScaleY = cropViewScale.second
 
+        val matrixImage = cropImageView.imageMatrix?.values()
+        val translateX = matrixImage?.get(2) ?: 0f
+        val translateY = matrixImage?.get(5) ?: 0f
+
+        val imageScale = cropImageView.currentScale
+
         // if rotated image is same with original ratio without overflow, ucrop will skip it
         // need to manually crop & save
         if (cropImageView.currentAngle % 90f == 0f && rotateNumber != 0 && isRotate) {
@@ -135,14 +133,17 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
             matrix.postRotate(abs(finalRotationDegree))
 
             // set crop area on data that will be pass to landing pass for state
-            data?.rotateData = EditorRotateModel(
-                sliderValue,
-                cropViewScaleX,
-                cropViewScaleY,
+            data?.cropRotateValue = EditorCropRotateModel(
                 0,
                 0,
                 bitmap.width,
                 bitmap.height,
+                imageScale,
+                translateX,
+                translateY,
+                cropViewScaleX,
+                cropViewScaleY,
+                sliderValue,
                 rotateNumber
             )
 
@@ -151,10 +152,6 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         }
 
         // if rotated image is overflow from the original ratio then we can use ucrop crop feature
-        val matrixImage = cropImageView.imageMatrix?.values()
-        val translateX = matrixImage?.get(2) ?: 0f
-        val transientY = matrixImage?.get(5) ?: 0f
-
         cropImageView.cropAndSaveImage(
             Bitmap.CompressFormat.PNG,
             100,
@@ -172,10 +169,11 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
                             offsetX, offsetY, imageWidth, imageHeight,
                             finalRotationDegree = finalRotationDegree,
                             sliderValue = sliderValue,
-                            rotateNumber = if(isRotate) rotateNumber else  -1,
+                            rotateNumber = rotateNumber,
                             data = data,
                             translateX,
-                            transientY
+                            translateY,
+                            imageScale
                         )
                     )
                 }
@@ -198,8 +196,9 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         sliderValue: Float,
         rotateNumber: Int,
         data: EditorDetailUiModel?,
-        translateX: Float? = null,
-        translateY: Float? = null
+        translateX: Float,
+        translateY: Float,
+        imageScale: Float
     ): Bitmap {
         val originalWidth = originalBitmap.width
         val originalHeight = originalBitmap.height
@@ -228,47 +227,23 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         )
 
         // set crop area on data that will be pass to landing pass for state
-        if (rotateNumber >= 0){
-            data?.rotateData = EditorRotateModel(
-                sliderValue,
-                scaleX,
-                scaleY,
-                offsetX,
-                offsetY,
-                imageWidth,
-                imageHeight,
-                rotateNumber
-            )
-
-            data?.cropBound?.apply {
-                this.translateX = translateX ?: 0f
-                this.translateY = translateY ?: 0f
-            }
-        } else {
-            data?.cropBound = EditorCropRectModel(
-                offsetX,
-                offsetY,
-                imageWidth,
-                imageHeight,
-                cropImageView.currentScale,
-                "",
-                translateX ?: 0f,
-                translateY ?: 0f
-            )
-        }
+        data?.cropRotateValue = EditorCropRotateModel(
+            offsetX,
+            offsetY,
+            imageWidth,
+            imageHeight,
+            imageScale,
+            translateX,
+            translateY,
+            scaleX,
+            scaleY,
+            sliderValue,
+            rotateNumber
+        )
 
         val normalizeX = if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
         val normalizeY = if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
         return Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
-//        return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
-//        return if (rotateNumber != -1)
-//            Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
-//        else {
-//            val normalizeX = if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
-//            val normalizeY = if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
-//            Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
-//        }
-
     }
 
     private fun initListener(){

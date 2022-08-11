@@ -26,9 +26,7 @@ data class EditorDetailUiModel(
     var isContrastExecuteFirst: Int? = null,
 ) : Parcelable {
     @IgnoredOnParcel
-    var cropBound: EditorCropRectModel? = null
-    @IgnoredOnParcel
-    var rotateData: EditorRotateModel? = null
+    var cropRotateValue: EditorCropRotateModel = getEmptyEditorCropRotateModel()
 
     constructor(parcel: Parcel) : this(
         originalUrl = parcel.readString() ?: "",
@@ -40,57 +38,17 @@ data class EditorDetailUiModel(
         removeBackgroundUrl = parcel.readString(),
         isContrastExecuteFirst = parcel.readInt()
     ) {
-
-        // crop bound
-        val rectHeight = parcel.readInt()
-        val rectWidth = parcel.readInt()
-        val rectOffsetX = parcel.readInt()
-        val rectOffsetY = parcel.readInt()
-        val scale = parcel.readFloat()
-        val croppedUrl = parcel.readString()
-        val translateX = parcel.readFloat()
-        val translateY = parcel.readFloat()
-
-        if (rectHeight != -1 && rectWidth != -1 && rectOffsetX != -1 && rectOffsetY != -1) {
-            val cropRect = EditorCropRectModel(
-                rectOffsetX,
-                rectOffsetY,
-                rectWidth,
-                rectHeight,
-                scale,
-                croppedUrl ?: "",
-                translateX,
-                translateY
-            )
-
-            cropBound = cropRect
-        }
-
-        // rotate data
-        val rotateDegree = parcel.readFloat()
-        val scaleX = parcel.readFloat()
-        val scaleY = parcel.readFloat()
-        val leftRectPos = parcel.readInt()
-        val topRectPos = parcel.readInt()
-        val rightRectPos = parcel.readInt()
-        val bottomRectPos = parcel.readInt()
-        val orientationChangeNumber = parcel.readInt()
-
-        if (rotateDegree != 0f ||
-            orientationChangeNumber != 0 ||
-            scaleX != DEFAULT_NULL_VALUE_ROTATE_SCALE
-        ) {
-            rotateData = EditorRotateModel(
-                rotateDegree,
-                scaleX,
-                scaleY,
-                leftRectPos,
-                topRectPos,
-                rightRectPos,
-                bottomRectPos,
-                orientationChangeNumber
-            )
-        }
+        cropRotateValue.offsetX = parcel.readInt()
+        cropRotateValue.offsetY = parcel.readInt()
+        cropRotateValue.imageWidth = parcel.readInt()
+        cropRotateValue.imageHeight = parcel.readInt()
+        cropRotateValue.scale = parcel.readFloat()
+        cropRotateValue.translateX = parcel.readFloat()
+        cropRotateValue.translateY = parcel.readFloat()
+        cropRotateValue.scaleX = parcel.readFloat()
+        cropRotateValue.scaleY = parcel.readFloat()
+        cropRotateValue.rotateDegree = parcel.readFloat()
+        cropRotateValue.orientationChangeNumber = parcel.readInt()
     }
 
     // used only for remove background
@@ -98,11 +56,23 @@ data class EditorDetailUiModel(
         brightnessValue = null
         contrastValue = null
         watermarkMode = null
-        rotateData?.apply {
-            rotateDegree = 0f
-            orientationChangeNumber = 0
-            scaleX = 1f
-        }
+        cropRotateValue = getEmptyEditorCropRotateModel()
+    }
+
+    private fun getEmptyEditorCropRotateModel(): EditorCropRotateModel{
+        return EditorCropRotateModel(
+            0,
+            0,
+            0,
+            0,
+            0f,
+            0f,
+            0f,
+            0f,
+            0f,
+            0f,
+            0
+        )
     }
 
     fun isToolBrightness(): Boolean{
@@ -144,25 +114,17 @@ data class EditorDetailUiModel(
             parcel.writeString(removeBackgroundUrl)
             parcel.writeInt(isContrastExecuteFirst ?: 0)
 
-            // crop bound
-            parcel.writeInt(cropBound?.imageHeight ?: -1)
-            parcel.writeInt(cropBound?.imageWidth ?: -1)
-            parcel.writeInt(cropBound?.offsetX ?: -1)
-            parcel.writeInt(cropBound?.offsetY ?: -1)
-            parcel.writeFloat(cropBound?.scale ?: -1f)
-            parcel.writeString(cropBound?.croppedUrl ?: "")
-            parcel.writeFloat(cropBound?.translateX ?: 0f)
-            parcel.writeFloat(cropBound?.translateY ?: 0f)
-
-            // rotate
-            parcel.writeFloat(rotateData?.rotateDegree ?: 0f)
-            parcel.writeFloat(rotateData?.scaleX ?: DEFAULT_NULL_VALUE_ROTATE_SCALE)
-            parcel.writeFloat(rotateData?.scaleY ?: DEFAULT_NULL_VALUE_ROTATE_SCALE)
-            parcel.writeInt(rotateData?.leftRectPos ?: 0)
-            parcel.writeInt(rotateData?.topRectPos ?: 0)
-            parcel.writeInt(rotateData?.rightRectPos ?: 0)
-            parcel.writeInt(rotateData?.bottomRectPos ?: 0)
-            parcel.writeInt(rotateData?.orientationChangeNumber ?: 0)
+            parcel.writeInt(cropRotateValue.offsetX)
+            parcel.writeInt(cropRotateValue.offsetY)
+            parcel.writeInt(cropRotateValue.imageWidth)
+            parcel.writeInt(cropRotateValue.imageHeight)
+            parcel.writeFloat(cropRotateValue.scale)
+            parcel.writeFloat(cropRotateValue.translateX)
+            parcel.writeFloat(cropRotateValue.translateY)
+            parcel.writeFloat(cropRotateValue.scaleX)
+            parcel.writeFloat(cropRotateValue.scaleY)
+            parcel.writeFloat(cropRotateValue.rotateDegree)
+            parcel.writeInt(cropRotateValue.orientationChangeNumber)
         }
 
         private const val DEFAULT_NULL_VALUE_ROTATE_SCALE = -2f

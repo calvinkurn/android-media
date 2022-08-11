@@ -1,34 +1,15 @@
 package com.tokopedia.media.editor.ui.component
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.Matrix
-import android.graphics.RectF
-import android.net.Uri
-import android.os.Handler
-import android.util.Log
 import android.view.ViewGroup
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.data.repository.RotateFilterRepositoryImpl
 import com.tokopedia.media.editor.ui.component.slider.MediaEditorSlider
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorRotateModel
-import com.tokopedia.media.editor.utils.generateFileName
-import com.tokopedia.media.editor.utils.getDestinationUri
-import com.tokopedia.media.editor.utils.getEditorSaveFolderDir
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.basecomponent.UiComponent
-import com.yalantis.ucrop.view.TransformImageView
-import com.yalantis.ucrop.view.UCropView
-import java.io.File
-import java.lang.Exception
 import javax.inject.Inject
-import kotlin.math.abs
-import kotlin.math.min
 
 class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
     UiComponent(viewGroup, R.id.uc_tool_rotate),
@@ -64,7 +45,7 @@ class RotateToolUiComponent(viewGroup: ViewGroup, val listener: Listener) :
             0,
             180,
             1,
-            paramData.rotateData?.rotateDegree?.toInt() ?: 0
+            paramData.cropRotateValue.rotateDegree.toInt()
         )
 
         rotateSlider.listener = this

@@ -181,8 +181,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                     paramData.contrastValue = item.contrastValue
                     paramData.watermarkMode = item.watermarkMode
                     paramData.removeBackgroundUrl = item.removeBackgroundUrl
-                    paramData.cropBound = item.cropBound
-                    paramData.rotateData = item.rotateData
+                    paramData.cropRotateValue = item.cropRotateValue
 
                     // need to store brightness / contrast implement sequence (result will be diff)
                     // if contrast is latest filter then isContrastExecuteFirst = false
