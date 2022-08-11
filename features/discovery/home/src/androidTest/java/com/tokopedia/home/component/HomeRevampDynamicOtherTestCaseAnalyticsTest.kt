@@ -22,7 +22,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
-import com.tokopedia.home.util.BalanceWidgetRecyclerViewIdlingResource
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
@@ -69,8 +68,6 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
                 recyclerView = recyclerView
         )
-        val recyclerViewBalanceWidget: RecyclerView? =
-            activityRuleOtherTestCase.activity.findViewById(R.id.rv_balance_widget_data)
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
 
