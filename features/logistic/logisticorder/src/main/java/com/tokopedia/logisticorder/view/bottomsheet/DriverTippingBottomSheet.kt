@@ -156,6 +156,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 binding.etNominalTip.run {
                     setMessage(getString(R.string.nominal_tip_message, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)))
                     editText.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textInputLayout, logisticDriverModel.prepayment.minAmount, logisticDriverModel.prepayment.maxAmount))
+                    counterView?.visibility = View.GONE
                 }
 
                 binding.btnTipping.setOnClickListener {
