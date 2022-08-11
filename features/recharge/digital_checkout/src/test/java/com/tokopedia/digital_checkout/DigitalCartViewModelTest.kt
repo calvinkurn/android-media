@@ -38,7 +38,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertNotNull
@@ -849,6 +848,22 @@ class DigitalCartViewModelTest {
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
+        digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
+            isNeedOtp = false,
+            fintechProducts = hashMapOf(
+                "First" to FintechProduct(
+                    info = FintechProduct.FintechProductInfo(
+                        iconUrl = "dummy icon url"
+                    )
+                ),
+                "Second" to FintechProduct(
+                    info = FintechProduct.FintechProductInfo(
+                        iconUrl = ""
+                    )
+                )
+            )
+        )
+
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
         digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), true)
@@ -861,6 +876,9 @@ class DigitalCartViewModelTest {
         assert(paymentPassDataValue.redirectUrl == dummyResponse.redirectUrl)
         assert(paymentPassDataValue.queryString == dummyResponse.queryString)
         assert(paymentPassDataValue.transactionId == dummyResponse.transactionId)
+
+        coEvery { digitalAnalytics.eventProceedCheckoutTebusMurah(any(), any(), any()) }
+        coEvery { digitalAnalytics.eventProceedCheckoutCrossell(any(), any(), any()) }
     }
 
     @Test
@@ -987,6 +1005,7 @@ class DigitalCartViewModelTest {
         // given
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
+        digitalCartViewModel.setPromoData(PromoData())
 
         // when
         getCart_onSuccess_NoNeedOtpAndIsSubscribed()
