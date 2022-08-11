@@ -439,9 +439,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
         }
         startToTransitionOffset = 1f.toDpInt()
-        if (this::viewModel.isInitialized) {
-            getHomeViewModel().getSearchHint(isFirstInstall())
-        }
         getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
 
@@ -561,6 +558,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         //show nav toolbar
         navToolbar?.visibility = View.VISIBLE
+        getSearchHint()
         activity?.let { navToolbar?.setupToolbarWithStatusBar(it) }
         navToolbar?.let {
             viewLifecycleOwner.lifecycle.addObserver(it)
@@ -610,6 +608,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setupHomeRecyclerView()
         initEggDragListener()
         return view
+    }
+
+    private fun getSearchHint() {
+        if (this::viewModel.isInitialized) {
+            getHomeViewModel().getSearchHint(isFirstInstall())
+        }
     }
 
     private fun getInboxIcon(): Int {
