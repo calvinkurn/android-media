@@ -1,7 +1,7 @@
 package com.tokopedia.content.common.ui.toolbar
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +13,8 @@ import com.tokopedia.content.common.ui.toolbar.ContentColor.LIGHT
 import com.tokopedia.content.common.ui.toolbar.ContentColor.DARK
 import com.tokopedia.content.common.ui.toolbar.ContentColor.TRANSPARENT
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.unifyprinciples.R as unifyR
+import com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+import com.tokopedia.unifyprinciples.R.color.Unify_Static_White
 
 class ImagePickerCommonToolbar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -22,6 +22,7 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
 
     private var mOnClickListener: AccountClickListener? = null
     private var mOnBackListener: BackClickListener? = null
+    private var mBinding = ImagepickerInstaComToolbarBinding.inflate(LayoutInflater.from(context), this)
 
     init {
         initViews()
@@ -63,6 +64,33 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
             mBinding.textComToolbarSubtitle.text = value
         }
 
+    var navIcon: Int = 0
+        set(value) {
+            field = value
+            mBinding.imgComToolbarNavIcon.setImage(newIconId = navIcon)
+        }
+
+    fun setContentColor(contentColor: ContentColor) = with(mBinding) {
+        val content: Int
+        val background: Int
+        when(contentColor) {
+            LIGHT, TRANSPARENT -> {
+                content = getColor(context, Unify_Static_White)
+                background = if (contentColor == LIGHT) getColor(context, Unify_Static_Black)
+                else Color.TRANSPARENT
+            }
+            DARK -> {
+                content = getColor(context, Unify_Static_Black)
+                background = getColor(context, Unify_Static_White)
+            }
+        }
+        textComToolbarTitle.setTextColor(content)
+        textComToolbarSubtitle.setTextColor(content)
+        imgComToolbarNavIcon.setImage(newLightEnable = content, newDarkEnable = content)
+        imgContentCreatorExpand.setImage(newLightEnable = content, newDarkEnable = content)
+        toolbarParent.setBackgroundColor(background)
+    }
+
     fun getToolbarParentView(): ConstraintLayout {
         return mBinding.toolbarParent
     }
@@ -84,3 +112,7 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
 
 typealias AccountClickListener = () -> Unit
 typealias BackClickListener = () -> Unit
+
+enum class ContentColor {
+    LIGHT, DARK, TRANSPARENT
+}
