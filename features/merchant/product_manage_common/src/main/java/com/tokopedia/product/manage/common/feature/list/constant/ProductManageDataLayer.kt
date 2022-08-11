@@ -32,7 +32,6 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_SETTINGS_DELETE = "$CLICK_SETTINGS_OPTION - delete product"
     const val EVENT_ACTION_CLICK_SETTINGS_TOPADS = "click advertise the product"
     const val EVENT_ACTION_CLICK_SETTINGS_TOPADS_DETAIL = "click ads detail"
-    const val EVENT_ACTION_CLICK_SETTINGS_CASHBACK = "$CLICK_SETTINGS_OPTION - cashback settings"
     const val EVENT_ACTION_CLICK_SETTINGS_FEATURED = "$CLICK_SETTINGS_OPTION - featured product"
 
     const val EVENT_ACTION_CLICK_TOGGLE_REMINDER = CLICK_ON_TOGGLE_STOCK_REMINDER
@@ -42,8 +41,6 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_FEATURED_PRODUCT_POP_UP_MORE = "$CLICK_ON_FEATURED_PRODUCT_POP_UP - learn more"
 
     const val EVENT_ACTION_CLICK_ON_PRODUCT = "click on product"
-    const val EVENT_ACTION_CLICK_ON_CASHBACK_SETTINGS = "click on cashback settings - save"
-    const val EVENT_ACTION_CLICK_ON_CASHBACK_SETTINGS_POP_UP = "click on cashback settings pop up - save"
     const val EVENT_ACTION_CLICK_ON_DELETE_PRODUCT = "click on delete product - yes"
     const val EVENT_ACTION_CLICK_ON_ETALASE_FILTER = "click on etalase filter"
     const val EVENT_ACTION_CLICK_ON_CATEGORY_FILTER = "click on category filter - see all"
@@ -67,11 +64,6 @@ object ProductManageDataLayer {
 
     const val EVENT_ACTION_CLICK_ON_MORE_OTHERS_FILTER = CLICK_ON_MORE_OTHERS_FILTER
     const val EVENT_ACTION_CLICK_ON_MORE_OTHERS_FILTER_SAVE = "$CLICK_ON_MORE_OTHERS_FILTER - save"
-
-    const val EVENT_ACTION_CLICK_ON_PROMOTION_PAGE = "click back on promotion page"
-    const val EVENT_ACTION_CLICK_CASHBACK_VALUE = "click cashback "
-    const val EVENT_ACTION_CLICK_NO_CASHBACK_VALUE = "click no cashback"
-    const val EVENT_ACTION_CLICK_SAVE_PROMOTION = "click save promotion"
 
     const val EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT = "$EVENT_ACTION_CLICK_EDIT_PRICE - $VARIANTS"
     const val EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT_SAVE = "$EVENT_ACTION_CLICK_ON_EDIT_PRICE_VARIANT - save"

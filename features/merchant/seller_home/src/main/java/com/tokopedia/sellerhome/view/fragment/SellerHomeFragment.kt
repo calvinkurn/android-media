@@ -103,6 +103,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -1744,7 +1745,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setViewBackground() {
-        binding?.viewBgShopStatus?.setBackgroundResource(R.drawable.bg_sah_anniv)
+        try {
+            binding?.viewBgShopStatus?.setImageResource(R.drawable.bg_sah_anniv)
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
     }
 
     private fun loadAnniversaryIllustrations() {

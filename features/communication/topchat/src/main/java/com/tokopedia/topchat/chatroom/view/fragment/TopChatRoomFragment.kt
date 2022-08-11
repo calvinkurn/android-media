@@ -791,6 +791,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             val productIdCommaSeparated2 = viewModel.getProductIdPreview()
                 .joinToString(separator = ",")
             viewModel.getSmartReplyWidget(messageId, productIdCommaSeparated2)
+        } else if (topchatViewState?.getChatAreaShimmer()?.isVisible == true) {
+            topchatViewState?.shouldShowSrw = false
         }
     }
 
@@ -1558,7 +1560,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         resultProducts?.let { products ->
             removeSrwBubble()
             removeSrwPreview()
-            topchatViewState?.showChatAreaShimmer()
+            if (isSrwNewDesign()) {
+                topchatViewState?.showChatAreaShimmer()
+            }
             val productIds = products.map { it.productId }
             viewModel.loadProductPreview(productIds)
         }
