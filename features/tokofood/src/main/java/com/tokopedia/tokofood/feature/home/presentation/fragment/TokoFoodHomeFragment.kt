@@ -220,9 +220,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         return null
     }
 
-    override fun getFragmentToolbar(): Toolbar? {
-        return null
-    }
+    override fun getFragmentToolbar(): Toolbar? = null
 
     override fun navigateToNewFragment(fragment: Fragment) {
         (activity as? BaseTokofoodActivity)?.navigateToNewFragment(fragment)
@@ -448,6 +446,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 toolbar.showShadow(true)
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(getString(R.string.tokofood_title))
+                toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
             }
         }
     }
@@ -783,7 +782,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
                 shopId = chooseAddressData.tokonow.shopId.toString(),
                 warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
-                serviceType = chooseAddressData.tokonow.serviceType
+                serviceType = chooseAddressData.tokonow.serviceType,
+                lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
             )
         }
         checkIfChooseAddressWidgetDataUpdated()

@@ -98,7 +98,7 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
         val parentProductView = activity?.getPdpFragment()?.view
         val result = parentViewPrinter.printAsCSV(parentProductView!!)
         FileWriter().writeGeneratedViewIds(
-                "product_detail_fragment_resid",
+                "product_detail_fragment_resid.csv",
                 result
         )
     }
@@ -127,8 +127,7 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
                                 viewHierarchyPrinter: ViewHierarchyPrinter) {
         view?.let {
             val result = viewHierarchyPrinter.printAsCSV(view)
-            FileWriter().write(
-                    "test",
+            FileWriter().writeGeneratedViewIds(
                     "$fileName.csv",
                     result
             )

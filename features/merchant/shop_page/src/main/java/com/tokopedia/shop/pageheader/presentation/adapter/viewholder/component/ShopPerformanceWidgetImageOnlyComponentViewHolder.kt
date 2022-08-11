@@ -4,12 +4,13 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.LayoutShopPerformanceWidgetImageOnlyComponentBinding
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageOnlyComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPerformanceWidgetImageOnlyComponentViewHolder(
@@ -20,6 +21,7 @@ class ShopPerformanceWidgetImageOnlyComponentViewHolder(
 
     companion object {
         val LAYOUT = R.layout.layout_shop_performance_widget_image_only_component
+        private const val MAX_IMAGE_WIDTH = 100
     }
 
     interface Listener{
@@ -33,7 +35,9 @@ class ShopPerformanceWidgetImageOnlyComponentViewHolder(
 
     override fun bind(model: ShopHeaderImageOnlyComponentUiModel) {
         val imageUrl = model.image
-        imageView?.loadImage(imageUrl)
+        imageView?.loadImage(imageUrl){
+            overrideSize(Resize(MAX_IMAGE_WIDTH.toPx(), imageView.layoutParams.height))
+        }
         itemView.addOnImpressionListener(model){
             listener.onImpressionShopPerformanceWidgetImageOnlyItem(
                     model,
