@@ -73,8 +73,11 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                             val secureResultString = NFCUtils.toHex(secureResult)
                             val cardData = getCardData(secureResultString, NFCUtils.toHex(terminalRandomNumber), resultString)
                             if (!cardData.isNullOrEmpty()) {
+
                                 val endTimeBeforeCallGql = System.currentTimeMillis()
                                 mapLoggerDebugData.put(EMONEY_TAPC_BEFORE_CALL_TAG, getTimeDifferences(startTimeBeforeCallGql, endTimeBeforeCallGql))
+                                logDebugEmoney(hashMapOf(EMONEY_TAPC_BEFORE_CALL_TAG to getTimeDifferences(startTimeBeforeCallGql, endTimeBeforeCallGql)))
+
                                 updateBalance(cardData, terminalRandomNumber, balanceRawQuery)
                             } else {
                                 errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -111,10 +114,12 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 val data = response.getSuccessData<BalanceTapcash>()
                 val endTimeCallGql = System.currentTimeMillis()
                 mapLoggerDebugData.put(EMONEY_TAPC_TIME_CALL_TAG, getTimeDifferences(startTimeCallGql, endTimeCallGql))
+                logDebugEmoney(hashMapOf(EMONEY_TAPC_TIME_CALL_TAG to getTimeDifferences(startTimeCallGql, endTimeCallGql)))
+
                 if (data.rechargeUpdateBalance.attributes.cryptogram.isNotEmpty()) {
                     writeBalance(data, terminalRandomNumber)
                 } else {
-                    logDebugEmoney()
+                    logDebugAllEmoney()
                     tapcashInquiryMutable.postValue(mapTapcashtoEmoney(data, isCheckBalanceTapcash = true))
                 }
             } else {
@@ -166,7 +171,9 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                     val endTimeWrite = System.currentTimeMillis()
 
                     mapLoggerDebugData.put(EMONEY_TAPC_TIME_WRITE_TAG, getTimeDifferences(startTimeWrite, endTimeWrite))
-                    logDebugEmoney()
+                    logDebugEmoney(hashMapOf(EMONEY_TAPC_TIME_WRITE_TAG to getTimeDifferences(startTimeWrite, endTimeWrite)))
+                    logDebugAllEmoney()
+
                     tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(secureResultString, 4, 10)))
                 }
             } catch (e: IOException) {
@@ -285,17 +292,27 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         return string.substring(indexBegin, indexEnd)
     }
 
-    private fun logDebugEmoney() {
+    private fun logDebugEmoney(map: HashMap<String, String>) {
+        map.forEach {
+            Log.d(EMONEY_DEBUG_TAG, "${it.key} ${it.value}")
+        }
+        sendLogDebugEmoney(map)
+    }
+
+    private fun logDebugAllEmoney() {
         mapLoggerDebugData.forEach {
             Log.d(EMONEY_DEBUG_TAG, "${it.key} ${it.value}")
         }
-        ServerLogger.log(Priority.P2, EMONEY_DEBUG_TAG, mapLoggerDebugData)
+        sendLogDebugEmoney(mapLoggerDebugData)
+    }
+
+    private fun sendLogDebugEmoney(map: HashMap<String, String>) {
+        ServerLogger.log(Priority.P2, EMONEY_DEBUG_TAG, map)
     }
 
     private fun getTimeDifferences(startTime: Long, endTime: Long): String {
         return "${endTime - startTime} ms"
     }
-
 
     companion object {
 
