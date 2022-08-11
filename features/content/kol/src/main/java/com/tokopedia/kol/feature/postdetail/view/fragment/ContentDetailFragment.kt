@@ -659,27 +659,38 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         item: ProductPostTagViewModelNew
     ) {
         rowNumberWhenShareClicked = item.positionInFeed
-        analyticsTracker.sendClickShareSgcImageBottomSheet(
-            ContentDetailPageAnalyticsDataModel(
-                activityId = item.postId.toString(),
-                shopId = item.shopId,
-                isFollowed = item.isFollowed,
-                type = item.postType,
-                productId = item.id,
-                trackerId = getTrackerID(
-                    item,
-                    trackerIdSgc = "33272",
-                    trackerIdAsgcRecom = "34094",
-                    trackerIdVod = "34166",
-                    trackerIdVodRecomm = "34185",
-                    trackerIdSgcRecom = "34281",
-                    trackerIdAsgc = "34106",
-                    trackerIdLongVideo = "34517",
-                    trackerIdLongVideoRecomm = "34536"
+        if (item.isFollowed && item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_IMAGE)
+            analyticsTracker.sendClickShareProductSgcRecommEvent(
+                ContentDetailPageAnalyticsDataModel(
+                    activityId = item.postId.toString(),
+                    shopId = item.shopId,
+                    isFollowed = item.isFollowed,
+                    type = item.postType,
+                    productId = item.id,
+                    source = contentDetailSource
+                )
+            )
+        else
+            analyticsTracker.sendClickShareSgcImageBottomSheet(
+                ContentDetailPageAnalyticsDataModel(
+                    activityId = item.postId.toString(),
+                    shopId = item.shopId,
+                    isFollowed = item.isFollowed,
+                    type = item.postType,
+                    productId = item.id,
+                    trackerId = getTrackerID(
+                        item,
+                        trackerIdSgc = "33272",
+                        trackerIdAsgcRecom = "34094",
+                        trackerIdVod = "34166",
+                        trackerIdVodRecomm = "34185",
+                        trackerIdAsgc = "34106",
+                        trackerIdLongVideo = "34517",
+                        trackerIdLongVideoRecomm = "34536"
+                    ),
+                    source = contentDetailSource
                 ),
-                source = contentDetailSource
-            ),
-        )
+            )
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
@@ -1530,7 +1541,20 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         mediaType: String,
         rowNumber: Int
     ) {
-        analyticsTracker.sendClickWishlistSgcImageEvent(
+        if (type == TYPE_FEED_X_CARD_POST && !isFollowed && mediaType == TYPE_IMAGE)
+            analyticsTracker.sendClickWishlistProductSgcRecommEvent(
+                ContentDetailPageAnalyticsDataModel(
+                    activityId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId,
+                    type = type,
+                    isFollowed = isFollowed,
+                    mediaType = mediaType,
+                    productId = productId,
+                    shopId = shopId,
+                    source = contentDetailSource
+                )
+            )
+        else
+        analyticsTracker.sendClickWishlistProductEvent(
             ContentDetailPageAnalyticsDataModel(
                 activityId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId,
                 type = type,
@@ -1547,7 +1571,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     trackerIdSgc = "33270",
                     trackerIdVod = "34164",
                     trackerIdVodRecomm = "34183",
-                    trackerIdSgcRecom = "34280",
                     trackerIdSgcVideo = "34611",
                     trackerIdAsgc = "34104",
                     trackerIdAsgcRecom = "34092",

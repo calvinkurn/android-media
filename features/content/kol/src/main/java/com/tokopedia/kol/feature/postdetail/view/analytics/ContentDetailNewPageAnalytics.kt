@@ -427,7 +427,7 @@ class ContentDetailNewPageAnalytics @Inject constructor(
         )
     }
 
-    fun sendClickWishlistSgcImageEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+    fun sendClickWishlistProductEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
             eventAction = "click - wishlist - ${
@@ -440,6 +440,17 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eventLabel = EventLabel.getProductLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId //33270
+        )
+
+    }
+
+    fun sendClickWishlistProductSgcRecommEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - wishlist product - sgc image recom",
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
+            eventLabel = EventLabel.getProductLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "34280"
         )
 
     }
@@ -854,6 +865,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
 
         )
     }
+    fun sendClickShareProductSgcRecommEvent(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
+        createAnalyticsData(
+            eventName = CLICKPG,
+            eventAction = "click - share product - sgc image recom",
+            eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
+            eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
+            trackerID = "34281"
+        )
+
+    }
 
     fun sendClickGreyAreaShareBottomSheet (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
@@ -928,10 +949,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     fun sendClickHashtagEventCommentPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = EventAction.CLICK_HASHTAG_SGC_IMAGE,
+            eventAction = "click - hashtag - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostHashtagLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = "33276"
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33276" else "34287"
         )
     }
 
@@ -939,10 +966,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     fun sendClickBackOnCommentPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = "click - back - sgc image",
+            eventAction = "click - back - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = "33277"
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33277" else "34288"
         )
     }
 
@@ -950,10 +983,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     fun sendClickShopOnConmmentPage (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = "click - shop - sgc image",
+            eventAction = "click - shop name - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = "33278"
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33278" else "34289"
         )
     }
 
@@ -961,10 +1000,16 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     fun sendClickCommentCreator (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = "click - comment creator - sgc image",
+            eventAction = "click - comment creator - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = "33279"
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33279" else "34290"
         )
     }
 
@@ -972,55 +1017,87 @@ class ContentDetailNewPageAnalytics @Inject constructor(
     fun sendClickReportOnComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = "click - report - sgc image",
+            eventAction = "click - report - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = "33280"
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33280" else "34291"
         )
     }
 
     fun sendClickDeleteComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = "click - delete - sgc image",
+            eventAction = "click - delete - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = "33281"
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33281" else "34292"
         )
     }
 
+    /**
+    can be used when like button developed on comment
+     ***/
     fun sendClickLikeComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = "click - like - sgc image",
+            eventAction = "click - like - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = "33282"
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33282" else "34293"
         )
     }
 
     fun sendClickSendComment (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = "click - send - sgc image",
+            eventAction = "click - send - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = "33283"
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33283" else "34294"
         )
     }
 
     fun sendClickKembalikanToUndoDeleteSgcImageEvent (contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel) {
         createAnalyticsData(
             eventName = CLICKPG,
-            eventAction = "click - kembalikan to undo delete - sgc image",
+            eventAction = "click - kembalikan to undo delete - ${
+                getPostType(
+                    contentDetailPageAnalyticsDataModel.type,
+                    contentDetailPageAnalyticsDataModel.isFollowed,
+                    contentDetailPageAnalyticsDataModel.mediaType
+                )
+            }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_COMMENT,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = "33284"
+            trackerID = if (contentDetailPageAnalyticsDataModel.isFollowed) "33284" else "34295"
         )
     }
 
-    //end comment trackers here
-
+    //end of comment trackers here
 
     private fun getSingleProductList(contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
