@@ -80,4 +80,9 @@ object RollenceKey {
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
     const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
     const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
+
+    object PdpToolbar {
+        const val key = "pdp_dyn_container"
+        const val transparent = "transparent"
+    }
 }

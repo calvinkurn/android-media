@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
@@ -139,7 +138,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -267,7 +265,8 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -483,10 +482,10 @@ open class DynamicProductDetailFragment :
 
     // start transition for toolbar transparent
     // start when user scrolls to 1/3 of screen height
-    private val toolbarStartTransitionPixel get() = DeviceScreenInfo.getScreenWidth(requireContext()) / 3
+    private val toolbarStartTransitionPixel get() = DeviceScreenInfo.getScreenWidth(requireContext()) / 4
 
     // transition range from 1/2 from toolbarStartTransitionPixel
-    private val toolbarTransitionRangePixel get() = toolbarStartTransitionPixel / 2
+    private val toolbarTransitionRangePixel get() = toolbarStartTransitionPixel
 
     private val scrollListener by lazy {
         navToolbar?.let {
@@ -522,7 +521,6 @@ open class DynamicProductDetailFragment :
 
         navToolbar = view.findViewById(R.id.pdp_navtoolbar)
         navAbTestCondition({ initToolbarMainApp() }, { initToolbarSellerApp() })
-        setupToolbarState(shouldTransparent = false)
 
         if (!viewModel.isUserSessionActive) initStickyLogin(view)
         screenshotDetector = context?.let {
@@ -551,6 +549,7 @@ open class DynamicProductDetailFragment :
     }
 
     override fun observeData() {
+        observeToolbarState()
         observeP1()
         observeP2Data()
         observeP2Login()
@@ -2428,6 +2427,12 @@ open class DynamicProductDetailFragment :
         }
     }
 
+    private fun observeToolbarState() {
+        viewLifecycleOwner.observe(viewModel.toolbarTransparentState) { shouldTransparent ->
+            setupToolbarState(shouldTransparent = shouldTransparent)
+        }
+    }
+
     private fun observeP1() {
         viewLifecycleOwner.observe(viewModel.productLayout) { data ->
             (activity as? ProductDetailActivity)?.startMonitoringPltRenderPage()
@@ -2484,10 +2489,6 @@ open class DynamicProductDetailFragment :
             openBottomSheetTopAds()
             (activity as? ProductDetailActivity)?.stopMonitoringP2Login()
         }
-    }
-
-    override fun onSetupToolbarState(containerType: MediaContainerType) {
-        setupToolbarState(shouldTransparent = containerType == MediaContainerType.Portrait)
     }
 
     private fun observeP2Data() {
@@ -3751,7 +3752,7 @@ open class DynamicProductDetailFragment :
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
 
-            setIconCustomColor(darkColor = getLightIconColor(), lightColor = getDarkIconColor())
+            setIconCustomColor(darkColor = getLightToolbarIconColor(), lightColor = getDarkToolbarIconColor())
 
             setIcon(
                 IconBuilder()
@@ -3769,7 +3770,7 @@ open class DynamicProductDetailFragment :
         navToolbar?.apply {
             viewLifecycleOwner.lifecycle.addObserver(this)
 
-            setIconCustomColor(darkColor = getLightIconColor(), lightColor = getDarkIconColor())
+            setIconCustomColor(darkColor = getLightToolbarIconColor(), lightColor = getDarkToolbarIconColor())
 
             setIcon(
                 IconBuilder()
@@ -3786,11 +3787,11 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun getDarkIconColor(): Int = ContextCompat.getColor(
+    private fun getDarkToolbarIconColor(): Int = ContextCompat.getColor(
         requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White
     )
 
-    private fun getLightIconColor(): Int {
+    private fun getLightToolbarIconColor(): Int {
         val unifyColor = if (requireContext().isDarkMode()) {
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         } else {
@@ -3808,9 +3809,6 @@ open class DynamicProductDetailFragment :
         findViewById<IconUnify>(R.id.search_magnify_icon).alpha = alpha / ALPHA_MAX
     }
 
-    /**
-     * Setup Toolbar transparent or not
-     */
     private fun setupToolbarState(shouldTransparent: Boolean) {
         if (shouldTransparent) {
             setContentConstraintToParentTop()
@@ -3859,9 +3857,6 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    /**
-     * set status bar to dark mode for status bar icons
-     */
     private fun setupToolbarWithStatusBarLight() {
         disableFitsSystemWindows()
 
@@ -3871,11 +3866,6 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    /**
-     * set status bar to dark mode
-     * above equal Marshmallow OS is dark color for status bar icons
-     * right-now, below Marshmallow is white color for status bar icons
-     */
     private fun setupToolbarWithStatusBarDark() {
         disableFitsSystemWindows()
 
@@ -3885,9 +3875,6 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    /**
-     * Disable fits system windows
-     */
     private fun disableFitsSystemWindows() {
         binding?.apply {
             containerDynamicProductDetail.fitsSystemWindows = false
@@ -3897,7 +3884,7 @@ open class DynamicProductDetailFragment :
 
     /**
      * add [NavRecyclerViewScrollListener] to set toolbar transparent transition
-     * active when [MediaContainerType.Portrait] from backend
+     * active when [RollenceKey.PdpToolbar.transparent]
      */
     private fun addRecyclerViewScrollListener() {
         scrollListener?.let {
@@ -3907,7 +3894,7 @@ open class DynamicProductDetailFragment :
 
     /**
      * remove [NavRecyclerViewScrollListener] when dimen ratio is square
-     * non-active when [MediaContainerType.Square] from backend
+     * non-active when not [RollenceKey.PdpToolbar.transparent]
      */
     private fun removeRecyclerViewScrollListener() {
         scrollListener?.let {

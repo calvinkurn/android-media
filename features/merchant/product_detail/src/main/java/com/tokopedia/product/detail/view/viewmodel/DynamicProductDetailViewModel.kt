@@ -64,7 +64,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_ERROR_TYPE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.WISHLIST_STATUS_KEY
-import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_ERROR
@@ -91,6 +90,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companion.TIMEOUT_REMOTE_CONFIG_KEY
@@ -275,6 +276,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _affiliateCookie = MutableLiveData<Result<Boolean>>()
     val affiliateCookie: LiveData<Result<Boolean>> = _affiliateCookie
 
+    private val _toolbarTransparentState = MutableLiveData<Boolean>()
+    val toolbarTransparentState: LiveData<Boolean> get() = _toolbarTransparentState
+
     var videoTrackerData: Pair<Long, Long>? = null
 
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
@@ -307,6 +311,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
 
     init {
+        setToolbarStateFromRollence()
         iniQuantityFlow()
     }
 
@@ -1191,4 +1196,16 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         })
     }
 
+    private fun setToolbarStateFromRollence() {
+        try {
+            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+            val abTestToolbarState = abTestPlatform.getString(
+                key = RollenceKey.PdpToolbar.key,
+                defaultValue = RollenceKey.PdpToolbar.transparent
+            )
+            _toolbarTransparentState.value = abTestToolbarState == RollenceKey.PdpToolbar.transparent
+        } catch (throwable: Throwable) {
+            _toolbarTransparentState.value = false
+        }
+    }
 }

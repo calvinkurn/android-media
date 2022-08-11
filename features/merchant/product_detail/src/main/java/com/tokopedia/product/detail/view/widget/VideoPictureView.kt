@@ -195,9 +195,6 @@ class VideoPictureView @JvmOverloads constructor(
                 dimensionRatio = containerType.ratio
             }
         }
-
-        // setup toolbar state when viewpager dimen ratio already with new ratio
-        listener?.onSetupToolbarState(containerType = containerType)
     }
 
     private fun renderVideoOnceAtPosition(position: Int) {

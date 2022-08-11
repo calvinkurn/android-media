@@ -51,9 +51,6 @@ interface DynamicProductDetailListener {
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int, productId: String)
     fun showThumbnailImage(): Boolean
-    // setup toolbar state solid or transparent after data assign to VideoPictureView
-    // reduce blink when status bar to render
-    fun onSetupToolbarState(containerType: MediaContainerType)
 
     /**
      * ProductSnapshotViewHolder
