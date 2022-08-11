@@ -1010,21 +1010,6 @@ class DigitalCartViewModelTest {
 
         // then
         assert(digitalCartViewModel.isNeedOtp.value == null)
-
-        coVerify {
-            digitalAnalytics.eventProceedCheckoutTebusMurah(
-                any(),
-                any(),
-                "123"
-            )
-        }
-        coVerify {
-            digitalAnalytics.eventProceedCheckoutCrossell(
-                any(),
-                any(),
-                "123"
-            )
-        }
     }
 
     @Test
