@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.campaign.entity.Result
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -38,7 +37,6 @@ class LandingContainerFragment : BaseDaggerFragment() {
             .build()
             .inject(this)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,30 +49,37 @@ class LandingContainerFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-             viewModel.tabsMetadata.collect { result ->
-                when(result) {
-                    Result.Loading -> {
-                        println()
-                    }
-                    is Result.Success -> {
-                        val data = result.data
-                        println(data)
-                    }
-                    is Result.Failure -> {
-                        println()
-                    }
-                }
-            }
-
-        }
+        observeUiEvent()
+        observeUiState()
 
         viewModel.getTabsMetaData()
         viewModel.submitProduct()
         viewModel.deleteProduct()
         viewModel.getReservedProduct()
+    }
 
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiState.collect { state -> handleUiState(state) }
+        }
+    }
 
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event -> handleEvent(event) }
+        }
+    }
+
+    private fun handleEvent(event: LandingContainerViewModel.UiEvent) {
+        when (event) {
+            is LandingContainerViewModel.UiEvent.FetchTabMetaError -> {
+
+            }
+        }
+    }
+
+    private fun handleUiState(uiState: LandingContainerViewModel.UiState) {
+        val tabsMeta = uiState.tabsMetadata
     }
 
     private fun setupView() {
