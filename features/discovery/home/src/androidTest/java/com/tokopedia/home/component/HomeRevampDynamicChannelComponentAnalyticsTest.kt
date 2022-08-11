@@ -91,6 +91,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             balanceWidgetRecyclerViewIdlingResource = BalanceWidgetRecyclerViewIdlingResource(
                 recyclerView = it
             )
+            IdlingRegistry.getInstance().register(balanceWidgetRecyclerViewIdlingResource)
         }
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
