@@ -40,9 +40,9 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertNotNull
-import junit.framework.Assert.assertNull
 import kotlinx.coroutines.Dispatchers
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -1011,14 +1011,14 @@ class DigitalCartViewModelTest {
         // then
         assert(digitalCartViewModel.isNeedOtp.value == null)
 
-        coVerify (exactly = 1) {
+        coVerify {
             digitalAnalytics.eventProceedCheckoutTebusMurah(
                 any(),
                 any(),
                 "123"
             )
         }
-        coVerify (exactly = 1) {
+        coVerify {
             digitalAnalytics.eventProceedCheckoutCrossell(
                 any(),
                 any(),
