@@ -1506,13 +1506,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             calendarMax.time = defaultCalendar.time
             minCalendar.time = defaultCalendar.time
+            calendarMax.time = defaultCalendar.time
             if(tmCouponStartDateUnix != null && type == 0){
                 defaultCalendar.time = tmCouponStartDateUnix?.time
-                calendarMax.time = defaultCalendar.time
             }
             if(tmCouponEndDateUnix != null && type == 1){
                 defaultCalendar.time = tmCouponEndDateUnix?.time
-                calendarMax.time = defaultCalendar.time
             }
             calendarMax.add(Calendar.YEAR, 1)
 

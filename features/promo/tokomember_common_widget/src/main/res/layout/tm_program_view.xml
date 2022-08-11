@@ -50,6 +50,18 @@
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/programStatus" />
 
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/periodProgram"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:textColor="@color/Unify_NN600"
+            android:text="Periode Program"
+            app:layout_constraintStart_toStartOf="@id/containerStartDate"
+            app:layout_constraintBottom_toTopOf="@id/containerStartDate"
+            app:typographyType="small"/>
+
         <LinearLayout
             android:id="@+id/containerStartDate"
             android:layout_width="wrap_content"
@@ -59,17 +71,6 @@
             app:layout_constraintBottom_toBottomOf="@id/ivTime"
             app:layout_constraintStart_toEndOf="@id/ivTime"
             app:layout_constraintTop_toTopOf="@id/ivTime">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/periodProgram"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_12"
-                android:textColor="@color/Unify_NN600"
-                android:text="Periode Program"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/ivTime"
-                app:typographyType="small"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programStartDate"
@@ -123,7 +124,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:layout_marginTop="@dimen/unify_space_4"
-                android:text="09 Feb 2023"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -134,7 +134,6 @@
                 android:id="@+id/programEndTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="23:59:59"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
