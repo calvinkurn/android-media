@@ -126,6 +126,7 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.extensions.ifNull
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -263,10 +264,10 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
-import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import java.util.Locale
 import java.util.UUID
+import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -2275,10 +2276,6 @@ open class DynamicProductDetailFragment :
             viewModel.p2Data.value?.upcomingCampaigns,
             boeData.imageURL
         )
-        pdpUiUpdater?.updateFulfillmentData(
-            context,
-            viewModel.getMultiOriginByProductId().isFulfillment
-        )
         val selectedTicker = viewModel.p2Data.value?.getTickerByProductId(productId ?: "")
         pdpUiUpdater?.updateTicker(selectedTicker)
 
@@ -2882,10 +2879,6 @@ open class DynamicProductDetailFragment :
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
         }
 
-        pdpUiUpdater?.updateFulfillmentData(
-            context,
-            viewModel.getMultiOriginByProductId().isFulfillment
-        )
         pdpUiUpdater?.updateDataP2(
             context = context,
             p2Data = it,
@@ -4555,19 +4548,35 @@ open class DynamicProductDetailFragment :
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
-        if (loadingProgressDialog == null) {
-            loadingProgressDialog = activity?.createDefaultProgressDialog(
+        activity?.let { parentView ->
+            val dialog = createProgressDialog(parentView, onCancelClicked)
+            val showProgressDialog = !parentView.isFinishing && !dialog.isShowing
+
+            if (showProgressDialog) {
+                runCatching {
+                    dialog.show()
+                }
+            }
+        }
+    }
+
+    private fun createProgressDialog(
+        activity: Activity,
+        onCancelClicked: (() -> Unit)?
+    ): ProgressDialog {
+        val dialog = loadingProgressDialog.ifNull {
+            activity.createDefaultProgressDialog(
                 getString(com.tokopedia.abstraction.R.string.title_loading),
                 cancelable = onCancelClicked != null,
                 onCancelClicked = {
                     onCancelClicked?.invoke()
-                })
+                }
+            )
         }
-        loadingProgressDialog?.run {
-            if (!isShowing) {
-                show()
-            }
-        }
+
+        loadingProgressDialog = dialog
+
+        return dialog
     }
 
     private fun updateProductId() {

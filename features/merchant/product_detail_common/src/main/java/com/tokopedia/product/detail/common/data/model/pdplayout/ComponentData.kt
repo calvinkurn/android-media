@@ -34,6 +34,10 @@ data class ComponentData(
         //region custom info palugada ... on pdpDataCustomInfo
         @SerializedName("label")
         val labels: List<CustomInfoLabelData> = listOf(),
+        @SerializedName("lightIcon")
+        val lightIcon: String = "",
+        @SerializedName("darkIcon")
+        val darkIcon: String = "",
         //endregion
 
         //region Content data

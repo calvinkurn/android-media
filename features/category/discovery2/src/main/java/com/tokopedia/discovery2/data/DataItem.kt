@@ -503,6 +503,8 @@ data class DataItem(
 
         var hasATCWishlist: Boolean = false,
 
+        var hasSimilarProductWishlist: Boolean? = null,
+
         var isWishList: Boolean = false,
 
         var maxHeight : Int = 0,

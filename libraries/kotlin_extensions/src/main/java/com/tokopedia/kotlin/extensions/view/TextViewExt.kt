@@ -1,12 +1,24 @@
 package com.tokopedia.kotlin.extensions.view
 
-import android.text.*
+import android.graphics.Paint
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.text.style.URLSpan
-import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
+
+fun TextView.strikethrough() {
+    this.paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+}
+
+fun TextView.setTextColorCompat(@ColorRes resourceId: Int) {
+    val color = ContextCompat.getColor(this.context, resourceId)
+    this.setTextColor(color)
+}
 
 
 fun TextView.displayTextOrHide(text: String) {

@@ -16,12 +16,4 @@
     <declare-styleable name="UserConsentWidget">
         <attr name="actionText" format="string" />
     </declare-styleable>
-
-    <!--EXPLICIT PROFILE-->
-    <declare-styleable name="ExplicitView">
-        <attr name="template_name" format="string"/>
-        <attr name="page_name" format="string"/>
-        <attr name="page_path" format="string"/>
-        <attr name="page_type" format="string"/>
-    </declare-styleable>
 </resources>

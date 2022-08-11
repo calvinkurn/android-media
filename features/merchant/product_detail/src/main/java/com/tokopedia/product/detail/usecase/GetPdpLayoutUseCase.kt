@@ -216,6 +216,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       title
                       isApplink
                       applink
+                      lightIcon
+                      darkIcon
                       content {
                         icon
                         text
@@ -240,6 +242,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        applink
                        separator
                        description
+                       lightIcon
+                       darkIcon
                        label {
                         value
                         color

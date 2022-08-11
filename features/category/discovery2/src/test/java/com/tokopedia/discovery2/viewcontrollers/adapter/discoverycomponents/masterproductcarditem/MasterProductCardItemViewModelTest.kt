@@ -523,4 +523,51 @@ class MasterProductCardItemViewModelTest {
 
         TestCase.assertEquals(viewModel.getParentPositionForCarousel(), -1)
     }
+
+    /**************************** test for scrollToTargetSimilarProducts() *******************************************/
+
+
+    @Test
+    fun `test for scrollToTargetSimilarProducts when data is null`(){
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+        val viewModel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
+        every { componentsItem.data } returns null
+        viewModel.scrollToTargetSimilarProducts()
+        assert(viewModel.getScrollSimilarProductComponentID().value == null)
+    }
+
+    @Test
+    fun `test for scrollToTargetSimilarProducts when data is present but targetId is not`(){
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+        val viewModel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
+        val dataItem : DataItem = spyk()
+        every { componentsItem.data } returns listOf(dataItem)
+        every { dataItem.targetComponentId } returns null
+        viewModel.scrollToTargetSimilarProducts()
+        assert(viewModel.getScrollSimilarProductComponentID().value == null)
+    }
+
+    @Test
+    fun `test for scrollToTargetSimilarProducts when data is present but targetId is empty`(){
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+        val viewModel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
+        val dataItem : DataItem = spyk()
+        every { componentsItem.data } returns listOf(dataItem)
+        every { dataItem.targetComponentId } returns ""
+        viewModel.scrollToTargetSimilarProducts()
+        assert(viewModel.getScrollSimilarProductComponentID().value == null)
+    }
+
+    @Test
+    fun `test for scrollToTargetSimilarProducts when data is present but targetId is present`(){
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+        val viewModel = spyk(MasterProductCardItemViewModel(application, componentsItem, 99))
+        val dataItem : DataItem = spyk()
+        every { componentsItem.data } returns listOf(dataItem)
+        every { dataItem.targetComponentId } returns "3"
+        viewModel.scrollToTargetSimilarProducts()
+        assert(viewModel.getScrollSimilarProductComponentID().value == "3")
+    }
+
+
 }
