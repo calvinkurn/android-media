@@ -24,22 +24,21 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
     override fun onCompleted() {}
     override fun onError(e: Throwable) {
         Timber.d(e)
+        presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode)
+        presenter.clearPromoCodeFromLastValidateUseRequest(promoCode)
+        view.resetCourier(shipmentCartItemModel)
+        view.onNeedUpdateViewItem(itemPosition)
         if (isInitialLoad) {
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
         } else {
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
-
-        presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode)
-        view.resetCourier(itemPosition)
-        presenter.clearPromoCodeFromLastValidateUseRequest(promoCode)
-        view.onNeedUpdateViewItem(itemPosition)
-
         view.logOnErrorLoadCourier(e, itemPosition)
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
         if (isInitialLoad || isForceReloadRates) {
+            shipmentCartItemModel.voucherLogisticItemUiModel = shipmentCartItemModel.voucherLogisticItemUiModel?.copy(code = promoCode)
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
                 for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                     if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
@@ -50,6 +49,10 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
                             if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == spId &&
                                     shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden)) {
                                 if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                    presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode)
+                                    presenter.clearPromoCodeFromLastValidateUseRequest(promoCode)
+                                    view.resetCourier(shipmentCartItemModel)
+                                    view.onNeedUpdateViewItem(itemPosition)
                                     view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
                                     view.logOnErrorLoadCourier(MessageErrorException(shippingCourierUiModel.productData.error?.errorMessage), itemPosition)
                                     return
@@ -80,9 +83,11 @@ class GetBoPromoCourierRecommendationSubscriber(private val view: ShipmentContra
                         }
                     }
                 }
-
-                shipmentCartItemModel.voucherLogisticItemUiModel?.copy(code )
             }
+            presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode)
+            presenter.clearPromoCodeFromLastValidateUseRequest(promoCode)
+            view.resetCourier(shipmentCartItemModel)
+            view.onNeedUpdateViewItem(itemPosition)
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
             view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
         } else {
