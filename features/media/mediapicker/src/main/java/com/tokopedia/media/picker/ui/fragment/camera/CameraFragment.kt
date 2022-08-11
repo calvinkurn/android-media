@@ -39,7 +39,7 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiMode
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 open class CameraFragment @Inject constructor(
@@ -50,7 +50,14 @@ open class CameraFragment @Inject constructor(
     , CameraControllerComponent.Listener
     , CameraViewComponent.Listener {
 
-    private val viewModel: PickerViewModel by activityViewModels { viewModelFactory }
+    private val pickerViewModel: PickerViewModel by activityViewModels { viewModelFactory }
+
+    private val cameraViewModel: CameraViewModel by lazy {
+        ViewModelProvider(
+            this,
+            viewModelFactory
+        )[CameraViewModel::class.java]
+    }
 
     private val binding: FragmentCameraBinding? by viewBinding()
     private var contract: PickerActivityContract? = null
@@ -194,7 +201,7 @@ open class CameraFragment @Inject constructor(
                 cameraView.enableFlashTorch()
                 controller.onVideoDurationChanged()
                 cameraAnalytics.clickRecord()
-                viewModel.onVideoTaken()
+                cameraViewModel.onVideoTaken()
             }
         }
     }
@@ -238,11 +245,11 @@ open class CameraFragment @Inject constructor(
     }
 
     override fun onPictureTaken(result: PictureResult) {
-        viewModel.onPictureTaken(cameraView.pictureSize(), result.data)
+        cameraViewModel.onPictureTaken(cameraView.pictureSize(), result.data)
     }
 
     private fun initObservable() {
-        viewModel.isLoading.observe(viewLifecycleOwner) {
+        cameraViewModel.isLoading.observe(viewLifecycleOwner) {
             if (it) {
                 loaderDialog = LoaderDialogWidget(requireContext())
                 loaderDialog?.show()
@@ -252,8 +259,8 @@ open class CameraFragment @Inject constructor(
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.pictureTaken.collect {
-                if (it == null) return@collect
+            cameraViewModel.pictureTaken.collectLatest {
+                if (it == null) return@collectLatest
 
                 val file = it
                     .asPickerFile()
@@ -264,13 +271,13 @@ open class CameraFragment @Inject constructor(
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.videoTaken.collect {
+            cameraViewModel.videoTaken.collectLatest {
                 cameraView.onStartTakeVideo(it)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.uiEvent.observe(
+            pickerViewModel.uiEvent.observe(
                 onChanged = {
                     medias.clear()
                     medias.addAll(it)

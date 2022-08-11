@@ -14,7 +14,7 @@ interface CreateMediaRepository {
     fun video(): File
 }
 
-internal class CreateMediaRepositoryImpl : CreateMediaRepository {
+class CreateMediaRepositoryImpl : CreateMediaRepository {
 
     override fun image(captureSize: Size?, byteArray: ByteArray?): Flow<File?> {
         return flow {
