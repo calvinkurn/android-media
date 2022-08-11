@@ -231,7 +231,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var rvLayoutManager : LinearLayoutManager? = null
     private var messageCreateTime : String = ""
     private lateinit var chatbotAdapter: ChatbotAdapter
-    private val onClickOffSetValueForReplyBubble = 5000
+    private val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
 
     @Inject
     lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
@@ -1432,7 +1432,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             smoothScrollToPosition(bubblePosition)
         } else {
             resetData()
-            setupBeforeReplyTime(((parentReply.replyTimeMillisOffset).toLongOrZero() + onClickOffSetValueForReplyBubble).toString())
+            setupBeforeReplyTime(((parentReply.replyTimeMillisOffset).toLongOrZero() + ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE).toString())
             loadDataOnClick(parentReply.replyTime)
         }
     }
