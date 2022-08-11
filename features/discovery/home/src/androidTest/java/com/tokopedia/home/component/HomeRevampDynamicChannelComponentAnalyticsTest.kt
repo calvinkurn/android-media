@@ -28,7 +28,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
-import com.tokopedia.home.util.BalanceWidgetRecyclerViewIdlingResource
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.home_component.model.ReminderEnum
@@ -69,7 +68,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var visibilityIdlingResource: ViewVisibilityIdlingResource? = null
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
-    private var balanceWidgetRecyclerViewIdlingResource: BalanceWidgetRecyclerViewIdlingResource? = null
 
     @Before
     fun resetAll() {
@@ -87,12 +85,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         )
         val recyclerViewBalanceWidget: RecyclerView? =
             activityRule.activity.findViewById(R.id.rv_balance_widget_data)
-        recyclerViewBalanceWidget?.let {
-            balanceWidgetRecyclerViewIdlingResource = BalanceWidgetRecyclerViewIdlingResource(
-                recyclerView = it
-            )
-            IdlingRegistry.getInstance().register(balanceWidgetRecyclerViewIdlingResource)
-        }
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
 
@@ -100,9 +92,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun tearDown() {
         visibilityIdlingResource?.let {
             IdlingRegistry.getInstance().unregister(visibilityIdlingResource)
-        }
-        balanceWidgetRecyclerViewIdlingResource?.let {
-            IdlingRegistry.getInstance().unregister(balanceWidgetRecyclerViewIdlingResource)
         }
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
