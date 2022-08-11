@@ -49,6 +49,8 @@ class UpcomingDescriptionViewComponent(
             }
 
     fun setupText(description: String) {
+        if(description.isBlank()) return
+
         originalText = description
         txt.text = originalText
 
@@ -68,6 +70,8 @@ class UpcomingDescriptionViewComponent(
         }
 
     fun resetText() {
+        if(originalText.isBlank()) return
+
         isExpand = !isExpand
         animateText()
     }
