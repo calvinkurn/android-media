@@ -45,7 +45,8 @@ class ExplicitViewModel @Inject constructor(
             val activeConfig = response.explicitprofileGetQuestion.activeConfig.value
             val sections = response.explicitprofileGetQuestion.template.sections
 
-            if (activeConfig && sections.isNotEmpty() && sections.first().questions.isNotEmpty() && sections.first().questions.first().property.options.size == 2) {
+            val isDataValid = sections.isNotEmpty() && sections.first().questions.isNotEmpty() && sections.first().questions.first().property.options.size == 2
+            if (activeConfig && isDataValid) {
                 val property = sections.first().questions.first().property
 
                 _explicitContent.value = Success(Pair(true, property))

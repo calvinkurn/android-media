@@ -14,7 +14,10 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.observeOnce
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -164,7 +167,7 @@ class ExplicitView constructor(
     override fun onQuestionShow() {
         showShadow(true)
         bindingQuestion?.apply {
-            imgShimmer.gone()
+            imgShimmer.hide()
             imgBackground.visible()
             imgIcon.visible()
             imgDismiss.visible()
