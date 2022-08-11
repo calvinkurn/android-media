@@ -278,10 +278,14 @@ class PlayUpcomingFragment @Inject constructor(
     private fun renderUpcomingInfo(prevState: PlayUpcomingInfoUiState?, currState: PlayUpcomingInfoUiState) {
         if(prevState?.info != currState.info) {
             currState.info.let {
-                if(it.coverUrl.isNotEmpty()) ivUpcomingCover.setImageUrl(it.coverUrl)
+                if(it.coverUrl.isNotEmpty()) {
+                    ivUpcomingCover.setImageUrl(it.coverUrl)
+                    ivUpcomingCover.setOnClickListener {
+                       if (description.isExpand) description.resetText()
+                    }
+                }
 
                 description.setupText(it.description)
-
                 upcomingTimer.setupTimer(it.startTime)
             }
         }

@@ -5,7 +5,6 @@ import android.content.Context
 import android.text.Spanned
 import android.text.SpannedString
 import android.text.TextPaint
-import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -13,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.core.text.buildSpannedString
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -33,8 +34,19 @@ class UpcomingDescriptionViewComponent(
     private val txt = (rootView as Typography)
     private var originalText: String = ""
     private val ctx: Context
-                get() = rootView.context
-    private var isExpand: Boolean = false
+        get() = rootView.context
+    var isExpand: Boolean = false
+
+    init {
+        txt.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+    }
+
+    private val animExpand: ObjectAnimator
+        get() = ObjectAnimator.ofInt(txt, PARAM_MAX_LINES, if (!isExpand) MIN_LINES else MAX_LINES)
+            .apply {
+                duration = UnifyMotion.T2
+                setupExpandable()
+            }
 
     fun setupText(description: String) {
         originalText = description
@@ -49,14 +61,19 @@ class UpcomingDescriptionViewComponent(
                 tp.color = MethodChecker.getColor(ctx, unifyR.color.Unify_GN500)
                 tp.isUnderlineText = false
             }
+
             override fun onClick(widget: View) {
-                isExpand = !isExpand
                 resetText()
             }
         }
 
     fun resetText() {
+        isExpand = !isExpand
         animateText()
+    }
+
+    private fun animateText() {
+        animExpand.start()
     }
 
     private fun getText(text: String): SpannedString = buildSpannedString {
@@ -70,7 +87,7 @@ class UpcomingDescriptionViewComponent(
             ),
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        append("... ")
+        append(END_CHARS)
         append(
             getString(playR.string.play_upcoming_description_read_more),
             clickableSpan,
@@ -78,38 +95,39 @@ class UpcomingDescriptionViewComponent(
         )
     }
 
-    private fun animateText() {
-        ObjectAnimator.ofInt(txt, "maxLines", if(isExpand) 14 else 2).apply {
-            duration = UnifyMotion.T2
-            setupExpandable()
-        }.start()
-    }
-
     private fun setupExpandable() {
-        txt.maxLines = 2
-        txt.ellipsize = TextUtils.TruncateAt.END
-
         txt.doOnLayout {
             val newText = txt.layout.text
             when {
-                originalText == newText -> return@doOnLayout
-                isExpand -> {
-                    txt.text = originalText
-                    txt.ellipsize = null
-                }
-                else -> {
-                    txt.maxLines = 2
-                    txt.ellipsize = TextUtils.TruncateAt.END
+                !isExpand -> {
                     val length = newText.filter { it.isLetterOrDigit() }.length
-                    val truncatedTxt = newText.take(length).toString()
+                    val truncatedTxt = newText.take(length - TRIMMED_CHARS).toString()
                     txt.text = getText(truncatedTxt)
                     txt.movementMethod = LinkMovementMethod.getInstance()
+                }
+                else -> {
+                    txt.text = originalText
+                    txt.ellipsize = null
+                    txt.maxLines = MAX_LINES
                 }
             }
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy(){
+        animExpand.cancel()
+    }
+
     interface Listener {
         fun onTextClicked(isExpand: Boolean, view: UpcomingDescriptionViewComponent)
+    }
+
+    companion object {
+        private const val PARAM_MAX_LINES = "maxLines"
+        private const val MIN_LINES = 2
+        private const val MAX_LINES = 14
+        private const val TRIMMED_CHARS = 10
+        private const val END_CHARS = "... "
     }
 }

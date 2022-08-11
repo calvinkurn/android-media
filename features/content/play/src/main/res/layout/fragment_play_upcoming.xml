@@ -64,13 +64,18 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_upcoming_description"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/play_upcoming_description_top"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:ellipsize="end"
+        android:maxLines="2"
+        android:gravity="bottom"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@+id/view_upcoming_timer"
         app:layout_constraintEnd_toEndOf="@id/btn_action"
         app:layout_constraintStart_toStartOf="@+id/view_upcoming_timer"
+        app:layout_constraintTop_toBottomOf="@+id/view_partner_info"
+        app:layout_constraintVertical_bias="1.0"
         app:typographyType="body_2"
         tools:text="Dapatkan Promo menarik selama Live Streaming berlangsung" />
 
