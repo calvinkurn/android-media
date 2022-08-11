@@ -235,6 +235,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val OK = "OK"
         const val DEFAULT_TITLE = "Wishlist Collection Detail"
         private const val SRC_WISHLIST = "wishlist"
+        private const val DELAY_REFETCH_PROGRESS_DELETION = 5000L
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -300,6 +301,41 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         observingBulkDeleteWishlistV2()
         observingDeleteCollectionItems()
         observingDeleteWishlistCollection()
+        observingDeleteProgress()
+    }
+
+    private fun observingDeleteProgress() {
+        if (collectionItemsAdapter.getCountData() > 0) {
+            wishlistCollectionDetailViewModel.deleteWishlistProgressResult.observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Success -> {
+                        if (result.data.status == OK) {
+                            val data = result.data.data
+                            if (data.success) {
+                                if (data.successfullyRemovedItems >= data.totalItems) {
+                                    finishDeletionWidget(data)
+                                } else {
+                                    updateDeletionWidget(data)
+                                    handler.postDelayed(progressDeletionRunnable,
+                                        DELAY_REFETCH_PROGRESS_DELETION
+                                    )
+                                }
+                            } else {
+                                stopDeletionAndShowToasterError(data.toasterMessage)
+                            }
+                        } else {
+                            if (result.data.errorMessage.isNotEmpty()) {
+                                stopDeletionAndShowToasterError(result.data.errorMessage[0])
+                            }
+                        }
+                    }
+                    is Fail -> {
+                        val errorMessage = getString(Rv2.string.wishlist_v2_common_error_msg)
+                        stopDeletionAndShowToasterError(errorMessage)
+                    }
+                }
+            }
+        }
     }
 
     private fun observingDeleteWishlistCollection() {
@@ -392,14 +428,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             } else {
                                 // bulkDeleteMode == 1 (manual choose via cleaner bottomsheet)
                                 // bulkDeleteMode == 2 (choose automatic deletion)
-                                if (bulkDeleteMode == 1) {
-                                    showToaster(bulkDeleteWishlistV2.message, btnText, Toaster.TYPE_NORMAL)
-                                    setRefreshing()
-                                    (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
-                                } else if (bulkDeleteMode == 2) {
-                                    hideTotalLabel()
-                                }
+                                // bulkDeleteMode == 1 (manual choose via cleaner bottomsheet)
+                                // bulkDeleteMode == 2 (choose automatic deletion)
                                 turnOffBulkDeleteCleanMode()
+                                hideTotalLabel()
                                 binding?.run { rvWishlistCollectionDetail.scrollToPosition(0) }
                             }
                             setSwipeRefreshLayout()
@@ -980,7 +1012,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun finishDeletionWidget(data: DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress) {
         isOnProgressDeleteWishlist = false
         stopProgressDeletionHandler()
-        // wishlistCollectionDetailViewModel.countDeletionWishlistV2.removeObservers(this)
+        wishlistCollectionDetailViewModel.deleteWishlistProgressResult.removeObservers(this)
         if (data.totalItems > 0 && data.toasterMessage.isNotEmpty()) {
             val finishData =
                 DeleteWishlistProgressResponse.DeleteWishlistProgress.DataDeleteWishlistProgress(

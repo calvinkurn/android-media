@@ -33,7 +33,7 @@ object AddRemoveWishlistV2Handler {
             actionText = ctaText
         ) { if (result.button.action == OPEN_WISHLIST) {
             if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED && isUsingWishlistCollection(context)) {
-                goToWishlistCollectionPage(context)
+                goToWishlistCollectionDetailAll(context)
             } else {
                 goToWishlistPage(context)
             }
@@ -57,11 +57,11 @@ object AddRemoveWishlistV2Handler {
         Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
             actionText = ctaText
         ) { if (result.ctaActionV2 == OPEN_WISHLIST) {
-            if (result.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED && isUsingWishlistCollection(context)) {
-                goToWishlistCollectionPage(context)
-            } else {
-                goToWishlistPage(context)
-            }
+                if (result.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED && isUsingWishlistCollection(context)) {
+                    goToWishlistCollectionDetailAll(context)
+                } else {
+                    goToWishlistPage(context)
+                }
         } }.show()
     }
 
@@ -83,7 +83,7 @@ object AddRemoveWishlistV2Handler {
             actionText = ctaText
         ) { if (result.button.action == OPEN_WISHLIST) {
             if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED && isUsingWishlistCollection(context)) {
-                goToWishlistCollectionPage(context)
+                goToWishlistCollectionDetailAll(context)
             } else {
                 goToWishlistPage(context)
             }
@@ -106,13 +106,15 @@ object AddRemoveWishlistV2Handler {
 
         Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
             actionText = ctaText
-        ) { if (result.ctaActionV2 == OPEN_WISHLIST) {
-            if (isUsingWishlistCollection(context)) {
-                goToWishlistCollectionPage(context)
-            } else {
-                goToWishlistPage(context)
+        ) {
+            if (result.ctaActionV2 == OPEN_WISHLIST) {
+                if (result.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED && isUsingWishlistCollection(context)) {
+                    goToWishlistCollectionDetailAll(context)
+                } else {
+                    goToWishlistPage(context)
+                }
             }
-        } }.show()
+        }.show()
     }
 
     fun showWishlistV2ErrorToaster(errorMsg: String, view: View) {
@@ -123,7 +125,7 @@ object AddRemoveWishlistV2Handler {
         Toaster.build(view, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText){
             if (ctaAction == OPEN_WISHLIST) {
                 if (isUsingWishlistCollection(context)) {
-                    goToWishlistCollectionPage(context)
+                    goToWishlistCollectionDetailAll(context)
                 } else {
                     goToWishlistPage(context)
                 }
@@ -140,5 +142,11 @@ object AddRemoveWishlistV2Handler {
 
     private fun goToWishlistCollectionPage(context: Context) {
         RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION)
+    }
+
+    private fun goToWishlistCollectionDetailAll(context: Context) {
+        val detailCollection =
+            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=0"
+        RouteManager.route(context, detailCollection)
     }
 }
