@@ -685,11 +685,16 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
+        val desc = context?.getString(feedComponentR.string.feed_share_default_text_cdp)?.let {
+            String.format(
+                it, item.product.name,"%s", item.shopName, item.priceFmt)
+        }
+
         activity?.let {
             val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
                 .setId(item.id)
                 .setName(item.text)
-                .setDescription(item.description)
+                .setDescription(desc)
                 .setImgUri(item.imgUrl)
                 .setUri(item.weblink)
                 .setDeepLink(item.applink)
@@ -1775,7 +1780,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     context?.let {
 
-                        var shareString =  shareData.description +"\n" + linkerShareData?.shareUri
+                        var shareString =
+                            String.format(shareData.description, linkerShareData?.shareUri)
                         SharingUtil.executeShareIntent(
                             shareModel,
                             linkerShareData,
