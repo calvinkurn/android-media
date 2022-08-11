@@ -10,6 +10,7 @@ import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.atc.utils.DigitalAtcMapper
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
@@ -37,8 +38,8 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
     val addToCartResult: LiveData<Result<String>>
         get() = _addToCartResult
 
-    private val _errorAtc = MutableLiveData<Pair<String, ErrorAtc>>()
-    val errorAtc: LiveData<Pair<String, ErrorAtc>>
+    private val _errorAtc = MutableLiveData<ErrorAtc>()
+    val errorAtc: LiveData<ErrorAtc>
         get() = _errorAtc
 
 
@@ -65,16 +66,14 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
                 if (restResponse.id != null) {
                     rechargeAnalytics.eventAddToCart(DigitalAtcMapper.mapToDigitalAtcTrackingModel(restResponse,
                             digitalCheckoutPassData, userSession.userId))
-                    if (restResponse.errors.isEmpty()){
-                        _addToCartResult.postValue(Success(restResponse.relationships?.category?.data?.id ?: ""))
-                    }else{
-                        _errorAtc.postValue(Pair(restResponse.id ?: "", restResponse.errors.first()))
-                    }
+                    _addToCartResult.postValue(Success(restResponse.relationships?.category?.data?.id ?: ""))
                 } else _addToCartResult.postValue(Fail(Throwable(DigitalFailGetCartId())))
 
             }) {
                 if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                     _addToCartResult.postValue(Fail(MessageErrorException(it.message)))
+                } else if (it is DigitalAtcErrorException){
+                    _errorAtc.postValue(it.getError())
                 } else {
                     _addToCartResult.postValue(Fail(it))
                 }

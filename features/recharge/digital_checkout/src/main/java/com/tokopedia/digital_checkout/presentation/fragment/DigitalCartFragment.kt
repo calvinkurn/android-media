@@ -50,6 +50,7 @@ import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrForm
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -205,8 +206,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             }
         })
 
-        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){ pair ->
-            showErrorPage(pair.second)
+        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
+            showErrorPage(it)
         }
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
@@ -416,6 +417,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun showErrorPage(error: ErrorAtc){
         viewEmptyState?.let {
+            loaderCheckout.gone()
             hideContent()
 
             it.setButtonFull(true)

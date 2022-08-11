@@ -100,6 +100,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -389,10 +390,11 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
         viewModel.errorAtc.observe(viewLifecycleOwner) {
             hideLoadingDialog()
-            if (it.second.atcErrorPage.isShowErrorPage){
-                redirectToCart(it.first)
-            }else{
-                showErrorUnverifiedNumber(it.second)
+            Timber.d(it.toString())
+            if (it.atcErrorPage.isShowErrorPage){
+                redirectToCart(viewModel.digitalCheckoutPassData.categoryId ?: "")
+            } else{
+                showErrorUnverifiedNumber(it)
             }
         }
 
@@ -923,7 +925,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 Toaster.TYPE_ERROR,
                 getString(com.tokopedia.common_digital.R.string.digital_common_toaster_button_label)
             ) {
-                RouteManager.getIntent(context, error.appLinkUrl).apply {
+                RouteManager.getIntent(context, error.atcErrorPage.buttons.first().appLinkUrl).apply {
                     startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
                 }
             }.show()
