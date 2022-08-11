@@ -440,6 +440,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         startToTransitionOffset = 1f.toDpInt()
         getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
+
     }
 
     protected open fun initHomePageFlows(): Boolean {
