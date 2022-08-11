@@ -245,7 +245,7 @@
                 android:text="@string/campaign_detail_event_name_label"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/barrier_package_info_label"
+                app:layout_constraintTop_toBottomOf="@+id/tg_package_info_label"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -256,7 +256,7 @@
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/barrier_package_info"
+                app:layout_constraintTop_toBottomOf="@+id/tg_package_info"
                 app:typographyType="body_3"
                 tools:text="[Nama Event Maks 27 charac]" />
 
@@ -430,21 +430,6 @@
                 android:layout_height="wrap_content"
                 app:constraint_referenced_ids="tg_campaign_product_list_title, rv_product_list"
                 tools:visibility="visible" />
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrier_package_info_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="tg_package_info_label, tg_campaign_detail_id"/>
-
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrier_package_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="tg_package_info, btn_see_tnc"/>
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
