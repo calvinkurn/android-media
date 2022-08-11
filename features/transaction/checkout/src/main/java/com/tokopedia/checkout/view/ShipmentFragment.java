@@ -3222,7 +3222,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         }
                     }else if(shipmentDataList.get(i) instanceof UploadPrescriptionUiModel){
                         UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
-                        if(uploadPrescriptionUiModel.getUploadedImageCount() != null && uploadPrescriptionUiModel.getUploadedImageCount() == 0){
+                        if(firstFoundPosition > 0 && uploadPrescriptionUiModel.getUploadedImageCount() != null && uploadPrescriptionUiModel.getUploadedImageCount() == 0){
                             uploadPrescriptionUiModel.setError(true);
                             onNeedUpdateViewItem(i);
                         }
@@ -3457,6 +3457,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 data.getExtras().containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) && getActivity() != null){
             UploadPrescriptionUiModel uploadModel = shipmentPresenter.getUploadPrescriptionUiModel();
             ArrayList<String> prescriptions = data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA);
+            uploadModel.setError(false);
             if(!isApi || (prescriptions != null && !prescriptions.isEmpty())){
                 uploadModel.setUploadImageText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_title_text));
                 uploadModel.setLeftIconUrl(UploadPrescriptionViewHolder.EPharmacyCountImageUrl);
