@@ -54,7 +54,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private val collectionAdapter = BottomSheetCollectionWishlistAdapter()
     private var actionListener: ActionListener? = null
-    private var isProductActive: Boolean = false
+    private var isProductActive: Boolean = true
     private var toasterErrorMessage: String = ""
 
     @Inject

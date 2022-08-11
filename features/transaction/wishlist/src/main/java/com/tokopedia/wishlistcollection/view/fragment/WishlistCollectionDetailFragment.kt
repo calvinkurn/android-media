@@ -1577,6 +1577,15 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
+    private fun showToasterActionLihat(message: String, type: Int, collectionId: String) {
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.build(v, message, Toaster.LENGTH_LONG, type, getString(Rv2.string.collection_CTA_lihat)) {
+                goToWishlistCollection(collectionId)
+            }.show()
+        }
+    }
+
     private fun showToasterAtc(message: String, type: Int) {
         val toasterSuccess = Toaster
         view?.let { v ->
@@ -1585,6 +1594,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 WishlistV2Analytics.clickLihatButtonOnAtcSuccessToaster()
             }.show()
         }
+    }
+
+    private fun goToWishlistCollection(collectionId: String) {
+        val detailCollection =
+            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$collectionId"
+        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
+        startActivity(intentCollectionDetail)
     }
 
     override fun onCariBarangClicked() {
@@ -2187,9 +2203,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             )
             val messageToaster =
                 data.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER)
+            val collectionId = data.getStringExtra(ApplinkConstInternalPurchasePlatform.STRING_EXTRA_COLLECTION_ID)
             if (messageToaster != null) {
                 if (isSuccess) {
-                    showToaster(messageToaster, "", Toaster.TYPE_NORMAL)
+                    if (collectionId != null) {
+                        showToasterActionLihat(messageToaster, Toaster.TYPE_NORMAL, collectionId)
+                    } else {
+                        showToaster(messageToaster, "", Toaster.TYPE_NORMAL)
+                    }
                 } else {
                     showToaster(messageToaster, "", Toaster.TYPE_ERROR)
                 }
