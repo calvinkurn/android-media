@@ -16,7 +16,7 @@ data class OriginalPrice(
 
 data class DiscountedPrice(
         val originalPrice: String,
-        val discountPercent: Int,
+        val discountPercent: Long,
         val discountedPrice: String,
 
         @TrackingField

@@ -58,7 +58,7 @@ class UpdateChannelUseCase(private val graphqlRepository: GraphqlRepository) : U
             val params = mapOf(
                     PARAMS_CHANNEL_ID to channelId,
                     FieldsToUpdate.AuthorID.fieldName to authorId,
-                    FieldsToUpdate.Status.fieldName to status.value.toInt()
+                    FieldsToUpdate.Status.fieldName to status.value.toLong()
             )
             return QueryParamBuilder()
                     .setParams(params)

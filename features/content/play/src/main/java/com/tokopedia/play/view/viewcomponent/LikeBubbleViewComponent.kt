@@ -86,7 +86,7 @@ class LikeBubbleViewComponent(
     }
 
     fun shot(
-        amount: Int,
+        amount: Long,
         reduceOpacity: Boolean,
         config: PlayLikeBubbleConfig,
     ) {
@@ -101,7 +101,7 @@ class LikeBubbleViewComponent(
     }
 
     fun shotBurst(
-        amount: Int,
+        amount: Long,
         reduceOpacity: Boolean,
         config: PlayLikeBubbleConfig,
     ) {
@@ -174,7 +174,7 @@ class LikeBubbleViewComponent(
         const val MAX_BUBBLES_AVERAGE = 20
         const val MAX_BUBBLES_HIGH = 25
 
-        const val SHOT_PER_BATCH = 3
+        const val SHOT_PER_BATCH = 3L
         const val SPAMMING_LIKE_DELAY = 200L
     }
 }
