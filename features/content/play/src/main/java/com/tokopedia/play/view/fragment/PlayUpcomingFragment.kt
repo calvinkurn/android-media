@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.databinding.FragmentPlayUpcomingBinding
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.uimodel.action.ClickFollowUpcomingAction
@@ -84,8 +85,6 @@ class PlayUpcomingFragment @Inject constructor(
         creator = { PlayToaster(it.requireView(), it.viewLifecycleOwner) },
     )
 
-    private lateinit var ivUpcomingCover: ImageUnify
-
     private lateinit var playUpcomingViewModel: PlayUpcomingViewModel
     private lateinit var playParentViewModel: PlayParentViewModel
 
@@ -95,6 +94,9 @@ class PlayUpcomingFragment @Inject constructor(
 
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+
+    private var _binding: FragmentPlayUpcomingBinding? = null
+    private val binding: FragmentPlayUpcomingBinding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,14 +117,14 @@ class PlayUpcomingFragment @Inject constructor(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_play_upcoming, container, false)
+    ): View {
+        _binding = FragmentPlayUpcomingBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sendImpression()
-        initView(view)
         setupInsets()
         setupObserver()
     }
@@ -142,6 +144,11 @@ class PlayUpcomingFragment @Inject constructor(
         catch (e: Exception) {}
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -153,10 +160,6 @@ class PlayUpcomingFragment @Inject constructor(
 
     private fun sendImpression() {
         playUpcomingViewModel.submitAction(ImpressUpcomingChannel)
-    }
-
-    private fun initView(view: View) {
-        ivUpcomingCover = view.findViewById(R.id.iv_upcoming_cover)
     }
 
     private fun setupObserver() {
@@ -279,8 +282,8 @@ class PlayUpcomingFragment @Inject constructor(
         if(prevState?.info != currState.info) {
             currState.info.let {
                 if(it.coverUrl.isNotEmpty()) {
-                    ivUpcomingCover.setImageUrl(it.coverUrl)
-                    ivUpcomingCover.setOnClickListener {
+                    binding.ivUpcomingCover.setImageUrl(it.coverUrl)
+                    binding.ivUpcomingCover.setOnClickListener {
                        if (description.isExpand) description.resetText()
                     }
                 }
