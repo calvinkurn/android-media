@@ -1,12 +1,16 @@
-package com.tokopedia.usercomponents.explicit
+package com.tokopedia.usercomponents.explicit.cassava
 
 import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.usercomponents.common.stub.di.FakeAppModule
+import com.tokopedia.usercomponents.explicit.cassava.ExplicitCassava.validateTracker
+import com.tokopedia.usercomponents.explicit.clickButtonAnswer
+import com.tokopedia.usercomponents.explicit.clickOnDismiss
 import com.tokopedia.usercomponents.explicit.di.DaggerFakeExplicitComponent
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugActivity
 import com.tokopedia.usercomponents.explicit.fake_view.ExplicitDebugFragment.Companion.component
@@ -17,20 +21,23 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@UiTest
+@CassavaTest
 @RunWith(AndroidJUnit4::class)
-class ExplicitTest {
+class ExplicitCassavaLocalTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
         ExplicitDebugActivity::class.java, false, false
     )
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     private val applicationContext: Context
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
-    lateinit var repositoryStub: ExplicitRepositoryStub
+    private lateinit var repositoryStub: ExplicitRepositoryStub
 
     @Before
     fun before() {
@@ -50,32 +57,7 @@ class ExplicitTest {
         activityTestRule.launchActivity(Intent())
 
         // Then
-        initQuestionDisplayed()
-    }
-
-    @Test
-    fun first_time_launch_then_hide_question() {
-        // Given
-        repositoryStub.setState(TestState.HIDE_QUESTION)
-
-        // When
-        activityTestRule.launchActivity(Intent())
-
-        // Then
-        isHideQuestion()
-    }
-
-    //failed in this case caused response not match with question model
-    @Test
-    fun first_time_launch_then_shown_failed_view() {
-        // Given
-        repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
-
-        // When
-        activityTestRule.launchActivity(Intent())
-
-        // Then
-        isFailedDisplayed()
+        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31560)
     }
 
     //failed in this case caused response not match with submit answer model
@@ -89,7 +71,7 @@ class ExplicitTest {
         clickButtonAnswer(isPositive = true)
 
         // Then
-        isFailedDisplayed()
+        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31561)
     }
 
     //failed in this case caused response not match with submit answer model
@@ -103,7 +85,7 @@ class ExplicitTest {
         clickButtonAnswer(isPositive = false)
 
         // Then
-        isFailedDisplayed()
+        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31562)
     }
 
     @Test
@@ -117,7 +99,7 @@ class ExplicitTest {
         clickButtonAnswer(isPositive = true)
 
         // Then
-        isSuccessDisplayed()
+        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31561)
     }
 
     @Test
@@ -131,7 +113,7 @@ class ExplicitTest {
         clickButtonAnswer(isPositive = false)
 
         // Then
-        isSuccessDisplayed()
+        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31562)
     }
 
     @Test
@@ -144,22 +126,7 @@ class ExplicitTest {
         clickOnDismiss(onQuestionPage = true)
 
         // Then
-        isHideQuestion()
-    }
-
-    @Test
-    fun click_dismiss_when_success_show_then_widget_gone() {
-        // Given
-        repositoryStub.setState(TestState.SHOW_QUESTION)
-        activityTestRule.launchActivity(Intent())
-        repositoryStub.setState(TestState.SUBMIT_QUESTION_SUCCESS)
-
-        // When
-        clickButtonAnswer(isPositive = true)
-        clickOnDismiss(onQuestionPage = false)
-
-        // Then
-        isHideQuestion()
+        cassavaRule.validateTracker(ExplicitCassavaState.TRACKER_ID_31563)
     }
 
 }
