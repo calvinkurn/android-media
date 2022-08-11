@@ -14,6 +14,9 @@ import com.tokopedia.digital_product_detail.presentation.util.JsonToString
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
+import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
 class DataPlanDataFactory {
@@ -111,12 +114,50 @@ class DataPlanDataFactory {
         )
     }
 
-    fun getAddToCartDataWithErrors(): ResponseCartData{
-        return gson.fromJson(
-            gson.JsonToString(PulsaDataFactory.GET_ADD_TO_CART_WITH_ERRORS),
-            ResponseCartData::class.java
+    fun getErrorAtc(): ErrorAtc {
+        return ErrorAtc(
+            status = 400,
+            title = "this is an error",
+            atcErrorPage = AtcErrorPage(
+                isShowErrorPage = true,
+                title = "Waduh Ada Error",
+                subTitle = "Hayolo Ada Error",
+                imageUrl = "https://images.tokopedia.net/img/verify_account.png",
+                buttons = listOf(
+                    AtcErrorButton(
+                        label = "Tambah Nomor HP",
+                        url = "https://tokopedia.com",
+                        appLinkUrl = "tokopedia://home",
+                        type = "primary"
+                    )
+                )
+            )
         )
     }
+
+    fun getErrors() = """
+        {
+            "errors": [
+                {
+                    "id": "1104"
+                    "status": 400,
+                    "title": "this is an error",
+                    "error_page": {
+                      "show_error_page": true,
+                      "title": "Waduh Ada Error",
+                      "subtitle": "Hayolo Ada Error",
+                      "image_url": "https://images.tokopedia.net/img/verify_account.png",
+                      "buttons": [
+                        "label": "Tambah Nomor HP",
+                        "url": "https://tokopedia.com",
+                        "applink_url": "tokopedia://home",
+                        "type": "primary"
+                      ] 
+                    }
+                }
+            ]
+        }
+    """.trimIndent()
 
     fun getCheckoutPassData(denomData: DenomData = getDenomData()): DigitalCheckoutPassData {
         return DigitalCheckoutPassData().apply {

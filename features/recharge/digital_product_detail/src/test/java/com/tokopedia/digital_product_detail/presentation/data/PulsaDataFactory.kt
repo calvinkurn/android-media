@@ -13,6 +13,9 @@ import com.tokopedia.digital_product_detail.presentation.util.JsonToString
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
+import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
 class PulsaDataFactory {
@@ -151,12 +154,50 @@ class PulsaDataFactory {
         )
     }
 
-    fun getAddToCartDataWithErrors(): ResponseCartData{
-        return gson.fromJson(
-            gson.JsonToString(GET_ADD_TO_CART_WITH_ERRORS),
-            ResponseCartData::class.java
+    fun getErrorAtc(): ErrorAtc{
+        return ErrorAtc(
+            status = 400,
+            title = "this is an error",
+            atcErrorPage = AtcErrorPage(
+                isShowErrorPage = true,
+                title = "Waduh Ada Error",
+                subTitle = "Hayolo Ada Error",
+                imageUrl = "https://images.tokopedia.net/img/verify_account.png",
+                buttons = listOf(
+                    AtcErrorButton(
+                        label = "Tambah Nomor HP",
+                        url = "https://tokopedia.com",
+                        appLinkUrl = "tokopedia://home",
+                        type = "primary"
+                    )
+                )
+            )
         )
     }
+
+    fun getErrors() = """
+        {
+            "errors": [
+                {
+                    "id": "1104"
+                    "status": 400,
+                    "title": "this is an error",
+                    "error_page": {
+                      "show_error_page": true,
+                      "title": "Waduh Ada Error",
+                      "subtitle": "Hayolo Ada Error",
+                      "image_url": "https://images.tokopedia.net/img/verify_account.png",
+                      "buttons": [
+                        "label": "Tambah Nomor HP",
+                        "url": "https://tokopedia.com",
+                        "applink_url": "tokopedia://home",
+                        "type": "primary"
+                      ] 
+                    }
+                }
+            ]
+        }
+    """.trimIndent()
 
     companion object {
         const val GET_FAVORITE_NUMBER = "common_telco/get_favorite_number_mock.json"
@@ -164,7 +205,6 @@ class PulsaDataFactory {
         const val GET_PREFIX_OPERATOR = "common_telco/get_prefix_operator_mock.json"
         const val GET_CATALOG_INPUT_MULTITAB = "pulsa/get_catalog_input_multitab_mock.json"
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"
-        const val GET_ADD_TO_CART_WITH_ERRORS = "common_telco/get_add_to_cart_not_empty_error_mock.json"
         const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "common_telco/get_prefix_operator_empty_validation_mock.json"
         const val GET_MENU_DETAIL = "pulsa/get_menu_detail_mock.json"
 

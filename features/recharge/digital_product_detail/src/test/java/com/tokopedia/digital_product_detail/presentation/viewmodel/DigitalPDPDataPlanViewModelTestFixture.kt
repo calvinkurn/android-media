@@ -252,9 +252,9 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
-    protected fun verifyAddToCartErrorNotEmpty(expectedResponse: List<ErrorAtc>){
+    protected fun verifyAddToCartErrorNotEmpty(expectedResponse: ErrorAtc){
         val actualResponse = viewModel.errorAtc.value
-        Assert.assertEquals(expectedResponse.first(), actualResponse?.second!!)
+        Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyAddToCartError(expectedResponse: Throwable) {

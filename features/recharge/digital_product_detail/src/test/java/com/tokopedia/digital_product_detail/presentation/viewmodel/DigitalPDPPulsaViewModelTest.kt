@@ -7,6 +7,7 @@ import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -492,13 +493,13 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
     }
 
     @Test
-    fun `when getting addToCart should run and return failed with not empty errorAtc`(){
-        val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartDataWithErrors())
-        onGetAddToCart_thenReturn(response)
+    fun `when getting addToCart should run and return failed when get error atc`(){
+        val error = DigitalAtcErrorException(dataFactory.getErrors())
+        onGetAddToCart_thenReturn(error)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
         verifyAddToCartRepoGetCalled()
-        verifyAddToCartErrorNotEmpty(response.errorAtc)
+        verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
     }
 
     @Test

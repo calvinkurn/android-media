@@ -220,7 +220,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                 _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))
-            } else if (it is DigitalAtcErrorException){
+            } else if (it is DigitalAtcErrorException ){
                _errorAtc.value = it.getError()
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
