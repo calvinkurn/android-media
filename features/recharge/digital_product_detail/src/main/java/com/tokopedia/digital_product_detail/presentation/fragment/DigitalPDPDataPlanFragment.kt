@@ -452,10 +452,10 @@ class DigitalPDPDataPlanFragment :
 
         viewModel.errorAtc.observe(viewLifecycleOwner){
             hideLoadingDialog()
-            if (it.second.atcErrorPage.isShowErrorPage){
-                redirectToCart(it.first)
-            }else{
-                showErrorUnverifiedPhoneNumber(it.second)
+            if (it.atcErrorPage.isShowErrorPage){
+                redirectToCart(viewModel.digitalCheckoutPassData.categoryId ?: "")
+            } else{
+                showErrorUnverifiedPhoneNumber(it)
             }
         }
 

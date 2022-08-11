@@ -33,6 +33,7 @@ import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -98,8 +99,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
 
-    private val _errorAtc = MutableLiveData<Pair<String, ErrorAtc>>()
-    val errorAtc: LiveData<Pair<String, ErrorAtc>>
+    private val _errorAtc = MutableLiveData<ErrorAtc>()
+    val errorAtc: LiveData<ErrorAtc>
         get() = _errorAtc
 
     private val _clientNumberValidatorMsg = MutableLiveData<String>()
@@ -219,6 +220,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                 _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))
+            } else if (it is DigitalAtcErrorException){
+               _errorAtc.value = it.getError()
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
