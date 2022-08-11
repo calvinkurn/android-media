@@ -335,7 +335,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 RouteManager.route(context, String.format(
                         WEBVIEW_APPLINK_FORMAT,
                         ApplinkConst.WEBVIEW,
-                        getString(R.string.shop_operational_hour_seller_edu_revamp)
+                        getString(R.string.shop_operational_hour_desc_ticker_holiday_url)
                 ))
             }
             isShowShadow = false
