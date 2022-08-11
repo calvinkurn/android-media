@@ -31,7 +31,8 @@ class CriteriaAdapter: RecyclerView.Adapter<CriteriaAdapter.CriteriaViewHolder>(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(title: String) {
-            binding.tfNumber.text = "${adapterPosition.inc()}."
+            val numberText = "${adapterPosition.inc()}."
+            binding.tfNumber.text = numberText
             binding.tfText.text = title
         }
     }
