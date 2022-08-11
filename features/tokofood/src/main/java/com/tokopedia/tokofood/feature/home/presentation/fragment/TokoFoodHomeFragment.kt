@@ -29,7 +29,6 @@ import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -104,18 +103,17 @@ import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class TokoFoodHomeFragment : BaseDaggerFragment(),
-        IBaseMultiFragment,
-        TokoFoodView,
-        TokoFoodHomeUSPViewHolder.TokoFoodUSPListener,
-        TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener,
-        TokoFoodHomeEmptyStateLocationViewHolder.TokoFoodHomeEmptyStateLocationListener,
-        TokoFoodHomeIconsViewHolder.TokoFoodHomeIconsListener,
-        TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
-        TokoFoodHomeTickerViewHolder.TokoFoodHomeTickerListener,
-        TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
-        ChooseAddressBottomSheet.ChooseAddressBottomSheetListener,
-        ShareBottomsheetListener
-{
+    IBaseMultiFragment,
+    TokoFoodView,
+    TokoFoodHomeUSPViewHolder.TokoFoodUSPListener,
+    TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener,
+    TokoFoodHomeEmptyStateLocationViewHolder.TokoFoodHomeEmptyStateLocationListener,
+    TokoFoodHomeIconsViewHolder.TokoFoodHomeIconsListener,
+    TokoFoodMerchantListViewHolder.TokoFoodMerchantListListener,
+    TokoFoodHomeTickerViewHolder.TokoFoodHomeTickerListener,
+    TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
+    ChooseAddressBottomSheet.ChooseAddressBottomSheetListener,
+    ShareBottomsheetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -172,8 +170,10 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         private const val PAGE_TYPE_HOME = "home"
         private const val SHARE_URL = "https://www.tokopedia.com/gofood"
         private const val SHARE_DEEPLINK = "tokopedia://food/home"
-        private const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/tokofood/gofood.png"
-        private const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/gofood_home_og_image.jpg"
+        private const val THUMBNAIL_IMAGE_SHARE_URL =
+            "https://images.tokopedia.net/img/tokofood/gofood.png"
+        private const val OG_IMAGE_SHARE_URL =
+            "https://images.tokopedia.net/img/gofood_home_og_image.jpg"
         const val SOURCE = "tokofood"
 
         fun createInstance(): TokoFoodHomeFragment {
@@ -195,7 +195,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var isBackFromOtherPage = false
     private var totalScrolled = 0
     private val spaceZero: Int
-       get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)?.toInt() ?: 0
+        get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
+            ?.toInt() ?: 0
 
     override fun getScreenName(): String {
         return ""
@@ -323,17 +324,38 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onLocalizingAddressServerDown() {}
 
-    override fun onClickHomeIcon(applink: String, data: List<DynamicIcon>, horizontalPosition: Int, verticalPosition: Int) {
-        analytics.clickIconWidget(userSession.userId, localCacheModel?.district_id, data, horizontalPosition, verticalPosition)
+    override fun onClickHomeIcon(
+        applink: String,
+        data: List<DynamicIcon>,
+        horizontalPosition: Int,
+        verticalPosition: Int
+    ) {
+        analytics.clickIconWidget(
+            userSession.userId,
+            localCacheModel?.district_id,
+            data,
+            horizontalPosition,
+            verticalPosition
+        )
         TokofoodRouteManager.routePrioritizeInternal(context, applink)
     }
 
     override fun onImpressHomeIcon(data: List<DynamicIcon>, verticalPosition: Int) {
-        analytics.impressionIconWidget(userSession.userId, localCacheModel?.district_id, data, verticalPosition)
+        analytics.impressionIconWidget(
+            userSession.userId,
+            localCacheModel?.district_id,
+            data,
+            verticalPosition
+        )
     }
 
     override fun onClickMerchant(merchant: Merchant, horizontalPosition: Int) {
-        analytics.clickMerchant(userSession.userId, localCacheModel?.district_id, merchant, horizontalPosition)
+        analytics.clickMerchant(
+            userSession.userId,
+            localCacheModel?.district_id,
+            merchant,
+            horizontalPosition
+        )
         val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchant.id)
@@ -342,8 +364,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onImpressMerchant(merchant: Merchant, horizontalPosition: Int) {
-        trackingQueue.putEETracking(TokoFoodHomeCategoryCommonAnalytics.impressMerchant(userSession.userId,
-            localCacheModel?.district_id, merchant, horizontalPosition, isHome = true) as HashMap<String, Any>)
+        trackingQueue.putEETracking(
+            TokoFoodHomeCategoryCommonAnalytics.impressMerchant(
+                userSession.userId,
+                localCacheModel?.district_id, merchant, horizontalPosition, isHome = true
+            ) as HashMap<String, Any>
+        )
     }
 
     override fun onTickerDismissed(id: String) {
@@ -494,8 +520,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.flowUpdatePinPointState.collect{
-                when(it) {
+            viewModel.flowUpdatePinPointState.collect {
+                when (it) {
                     is Success -> {
                         getChooseAddress()
                     }
@@ -509,7 +535,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowChooseAddress.collect {
-                when(it) {
+                when (it) {
                     is Success -> {
                         setupChooseAddress(it.data)
                     }
@@ -522,18 +548,30 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.flowEligibleForAnaRevamp.collect{
-                when(it) {
+            viewModel.flowEligibleForAnaRevamp.collect {
+                when (it) {
                     is Success -> {
                         if (it.data.eligible) {
-                            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                            val intent = RouteManager.getIntent(
+                                context,
+                                ApplinkConstInternalLogistic.ADD_ADDRESS_V3
+                            )
+                            intent.putExtra(
+                                ChooseAddressBottomSheet.EXTRA_REF,
+                                SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
+                            )
                             intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
                             intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
                             startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
                         } else {
-                            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                            val intent = RouteManager.getIntent(
+                                context,
+                                ApplinkConstInternalLogistic.ADD_ADDRESS_V2
+                            )
+                            intent.putExtra(
+                                ChooseAddressBottomSheet.EXTRA_REF,
+                                SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
+                            )
                             intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
                             intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
                             startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
@@ -557,18 +595,18 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         // TODO: Upgrade androidx.lifecycle:lifecycle-runtime-ktx to 2.4.0
         collectJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
-                when(uiEvent.state) {
+                when (uiEvent.state) {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
                         (uiEvent.data as? CheckoutTokoFoodData)?.let {
                             analytics.clickAtc(userSession.userId, localCacheModel?.district_id, it)
-                            if (uiEvent.source == MINI_CART_SOURCE){
+                            if (uiEvent.source == MINI_CART_SOURCE) {
                                 goToPurchasePage()
                             }
                         }
 
                     }
                     UiEvent.EVENT_SUCCESS_LOAD_CART -> {
-                        if(!isBackFromOtherPage) {
+                        if (!isBackFromOtherPage) {
                             if (viewModel.isShownEmptyState()) {
                                 hideMiniCartHome()
                                 isShowMiniCart = false
@@ -698,7 +736,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         chooseAddressBottomSheet.show(childFragmentManager, "")
     }
 
-    private fun checkAddressDataAndServiceArea(){
+    private fun checkAddressDataAndServiceArea() {
         checkIfChooseAddressWidgetDataUpdated()
     }
 
@@ -743,10 +781,15 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun onResultFromSetPinpoint(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             data?.let {
-                val locationPass = it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
+                val locationPass =
+                    it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
                 locationPass?.let { locationPass ->
                     localCacheModel?.address_id?.let { addressId ->
-                        viewModel.setUpdatePinPoint(addressId, locationPass.latitude, locationPass.longitude)
+                        viewModel.setUpdatePinPoint(
+                            addressId,
+                            locationPass.latitude,
+                            locationPass.longitude
+                        )
                     }
                 }
             }
@@ -792,11 +835,20 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun setupChooseAddress(addressDataModel: SaveAddressDataModel) {
         context?.let {
-            ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
-                addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
-                addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}",
-                addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString(),
-                TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressDataModel.warehouses), addressDataModel.serviceType)
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                it,
+                addressDataModel.id.toString(),
+                addressDataModel.cityId.toString(),
+                addressDataModel.districtId.toString(),
+                addressDataModel.latitude,
+                addressDataModel.longitude,
+                "${addressDataModel.addressName} ${addressDataModel.receiverName}",
+                addressDataModel.postalCode,
+                addressDataModel.shopId.toString(),
+                addressDataModel.warehouseId.toString(),
+                TokonowWarehouseMapper.mapWarehousesAddAddressModelToLocal(addressDataModel.warehouses),
+                addressDataModel.serviceType
+            )
         }
         checkIfChooseAddressWidgetDataUpdated()
         loadLayout()
@@ -883,7 +935,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         throwable: Throwable,
         errorType: String,
         description: String,
-    ){
+    ) {
         TokofoodErrorLogger.logExceptionToServerLogger(
             TokofoodErrorLogger.PAGE.HOME,
             throwable,
@@ -893,7 +945,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun onOpenHomepage(){
+    private fun onOpenHomepage() {
         if (!viewModel.isShownEmptyState()) {
             localCacheModel?.let {
                 analytics.openScreenHomePage(
@@ -904,7 +956,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onRenderHomepage(){
+    private fun onRenderHomepage() {
         if (!viewModel.isShownEmptyState() && isShowMiniCart) {
             showMiniCartHome()
         } else {
@@ -913,22 +965,32 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onShowOutOfCoverage(){
+    private fun onShowOutOfCoverage() {
         localCacheModel?.let {
-            analytics.openScreenOutOfCoverage(userSession.userId, localCacheModel?.district_id,
-                userSession.isLoggedIn)
+            analytics.openScreenOutOfCoverage(
+                userSession.userId, localCacheModel?.district_id,
+                userSession.isLoggedIn
+            )
         }
     }
 
-    private fun onShowNoPinPoin(){
+    private fun onShowNoPinPoin() {
         localCacheModel?.let {
-            analytics.openScreenNoPinPoin(userSession.userId, localCacheModel?.district_id,
-                userSession.isLoggedIn)
+            analytics.openScreenNoPinPoin(
+                userSession.userId, localCacheModel?.district_id,
+                userSession.isLoggedIn
+            )
         }
     }
 
-    private fun onShowEmptyState(errorState: String, title: String, desc: String){
-        analytics.clickEmptyState(userSession.userId, localCacheModel?.district_id, errorState, title, desc)
+    private fun onShowEmptyState(errorState: String, title: String, desc: String) {
+        analytics.clickEmptyState(
+            userSession.userId,
+            localCacheModel?.district_id,
+            errorState,
+            title,
+            desc
+        )
     }
 
     private fun initPerformanceMonitoring() {
@@ -976,11 +1038,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun setRvPadding(isShowMiniCart: Boolean) {
         rvHome?.let {
-            if (isShowMiniCart){
-                it.setPadding(0,0, 0, context?.resources?.
-                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7)?: 0)
+            if (isShowMiniCart) {
+                it.setPadding(Int.ZERO, Int.ZERO, Int.ZERO,
+                    context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7) ?: Int.ZERO)
             } else {
-                it.setPadding(0,0, 0,0)
+                it.setPadding(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
             }
         }
     }

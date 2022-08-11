@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
@@ -90,8 +91,8 @@ class TokoFoodCategoryViewModel @Inject constructor(
     }
 
     fun setCategoryLayout(
-        localCacheModel: LocalCacheModel, option: Int = 0,
-        sortBy: Int = 0, cuisine: String = "", brandUId: String = ""
+        localCacheModel: LocalCacheModel, option: Int = Int.ZERO,
+        sortBy: Int = Int.ZERO, cuisine: String = "", brandUId: String = ""
     ){
         _inputState.tryEmit(TokoFoodUiState(uiState = STATE_FETCH_MERCHANT_LIST_DATA,
             localCacheModel = localCacheModel,
@@ -101,8 +102,8 @@ class TokoFoodCategoryViewModel @Inject constructor(
         ))
     }
 
-    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = 0,
-                            sortBy: Int = 0, cuisine: String = "", brandUId: String = "") {
+    fun onScrollProductList(containsLastItemIndex: Int, itemCount: Int, localCacheModel: LocalCacheModel, option: Int = Int.ZERO,
+                            sortBy: Int = Int.ZERO, cuisine: String = "", brandUId: String = "") {
         if(shouldLoadMore(containsLastItemIndex, itemCount)) {
             setLoadMoreMerchant(localCacheModel = localCacheModel,
                 option = option,

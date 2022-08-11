@@ -281,22 +281,7 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                 removeScrollListeners()
                 when (it.first) {
                     is Success -> onSuccessGetCategoryLayout((it.first as Success).data)
-                    is Fail -> {
-                        if (it.second) {
-                            logExceptionTokoFoodCategory(
-                                (it.first as Fail).throwable,
-                                TokofoodErrorLogger.ErrorType.ERROR_PAGE,
-                                TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
-                            )
-                            onErrorGetCategoryLayout((it.first as Fail).throwable)
-                        } else {
-                            logExceptionTokoFoodCategory(
-                                (it.first as Fail).throwable,
-                                TokofoodErrorLogger.ErrorType.ERROR_LOAD_MORE_CATEGORY,
-                                TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_MORE_CATEGORY
-                            )
-                        }
-                    }
+                    is Fail ->  errorHandling((it.first as Fail).throwable, it.second)
                 }
 
                 addScrollListeners()
@@ -304,6 +289,23 @@ class TokoFoodCategoryFragment: BaseDaggerFragment(),
                     resetSwipeLayout()
                 }
             }
+        }
+    }
+
+    private fun errorHandling(throwable: Throwable, isFirstTimeCall: Boolean) {
+        if (isFirstTimeCall) {
+            logExceptionTokoFoodCategory(
+                throwable,
+                TokofoodErrorLogger.ErrorType.ERROR_PAGE,
+                TokofoodErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+            )
+            onErrorGetCategoryLayout(throwable)
+        } else {
+            logExceptionTokoFoodCategory(
+                throwable,
+                TokofoodErrorLogger.ErrorType.ERROR_LOAD_MORE_CATEGORY,
+                TokofoodErrorLogger.ErrorDescription.ERROR_LOAD_MORE_CATEGORY
+            )
         }
     }
 
