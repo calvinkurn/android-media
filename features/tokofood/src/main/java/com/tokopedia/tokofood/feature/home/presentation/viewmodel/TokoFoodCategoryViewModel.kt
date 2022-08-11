@@ -30,6 +30,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -53,19 +54,7 @@ class TokoFoodCategoryViewModel @Inject constructor(
 
     val flowLayoutList: SharedFlow<Pair<Result<TokoFoodListUiModel>, Boolean>> =
         _inputState.flatMapConcat { inputState ->
-            flow {
-                when (inputState.uiState) {
-                   STATE_ERROR -> emit(getErrorState(inputState.throwable))
-                   STATE_FETCH_MERCHANT_LIST_DATA -> {
-                       emit(getLoadingState())
-                       emit(getCategoryLayout(inputState.localCacheModel, inputState.merchantListParamsModel))
-                   }
-                   STATE_FETCH_LOAD_MORE -> {
-                       emit(getProgressBar())
-                       emit(getLoadMoreMerchant(inputState.localCacheModel, inputState.merchantListParamsModel))
-                   }
-                }
-            }.catch {
+            getFlowCategory(inputState).catch {
                 if (inputState.uiState == STATE_FETCH_MERCHANT_LIST_DATA) emit(Pair(Fail(it), true))
                 else {
                     emit(getRemovalProgressBar())
@@ -84,6 +73,22 @@ class TokoFoodCategoryViewModel @Inject constructor(
     companion object {
         private const val INITIAL_PAGE_KEY_MERCHANT = "0"
         private const val SHARED_FLOW_STOP_TIMEOUT_MILLIS = 5000L
+    }
+
+    private fun getFlowCategory(inputState: TokoFoodUiState): Flow<Pair<Result<TokoFoodListUiModel>, Boolean>> {
+        return flow {
+                when (inputState.uiState) {
+                    STATE_ERROR -> emit(getErrorState(inputState.throwable))
+                    STATE_FETCH_MERCHANT_LIST_DATA -> {
+                        emit(getLoadingState())
+                        emit(getCategoryLayout(inputState.localCacheModel, inputState.merchantListParamsModel))
+                    }
+                    STATE_FETCH_LOAD_MORE -> {
+                        emit(getProgressBar())
+                        emit(getLoadMoreMerchant(inputState.localCacheModel, inputState.merchantListParamsModel))
+                    }
+                }
+            }
     }
 
     fun setErrorState(throwable: Throwable) {

@@ -60,6 +60,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -95,46 +96,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     val flowLayoutList: SharedFlow<Result<TokoFoodListUiModel>> =
         _inputState.flatMapConcat { inputState ->
-            flow {
-                when (inputState.uiState) {
-                    STATE_FETCH_DYNAMIC_CHANNEL_DATA -> {
-                        emit(getLoadingState())
-                        when {
-                            hasNoAddress(inputState.isLoggedIn, inputState.localCacheModel) -> {
-                                if (isAddressManuallyUpdate()){
-                                    emit(getNoAddressState())
-                                } else {
-                                    getChooseAddress(SOURCE)
-                                }
-                            }
-                            hasNoPinPoin(inputState.isLoggedIn, inputState.localCacheModel) -> {
-                                if (isAddressManuallyUpdate()){
-                                    emit(getNoPinPointState())
-                                } else {
-                                    getChooseAddress(SOURCE)
-                                }
-                            }
-                            else -> emit(getHomeLayout(inputState.localCacheModel))
-                        }
-                    }
-                    STATE_FETCH_COMPONENT_DATA -> {
-                        homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }
-                            .forEach {
-                                emit(getLayoutComponentData(it, inputState.localCacheModel))
-                            }
-                    }
-                    STATE_FETCH_LOAD_MORE -> {
-                        emit(getProgressBar())
-                        emit(getMerchantList(inputState.localCacheModel))
-                    }
-                    STATE_ERROR -> {
-                        emit(getErrorState(inputState.throwable))
-                    }
-                    STATE_REMOVE_TICKER -> {
-                        emit(getRemovalTickerWidget(inputState.visitableId))
-                    }
-                }
-            }.catch {
+            getFlowHome(inputState).catch {
                 if (inputState.uiState == STATE_FETCH_DYNAMIC_CHANNEL_DATA)  emit(Fail(it))
                 else {
                     removeMerchantMainTitle()
@@ -173,6 +135,49 @@ class TokoFoodHomeViewModel @Inject constructor(
         private const val EMPTY_LOCATION = "0.0"
         private const val SHARED_FLOW_STOP_TIMEOUT_MILLIS = 5000L
         private const val SOURCE = "tokofood"
+    }
+
+    private fun getFlowHome(inputState: TokoFoodUiState): Flow<Result<TokoFoodListUiModel>> {
+        return flow {
+            when (inputState.uiState) {
+                STATE_FETCH_DYNAMIC_CHANNEL_DATA -> {
+                    emit(getLoadingState())
+                    when {
+                        hasNoAddress(inputState.isLoggedIn, inputState.localCacheModel) -> {
+                            if (isAddressManuallyUpdate()){
+                                emit(getNoAddressState())
+                            } else {
+                                getChooseAddress(SOURCE)
+                            }
+                        }
+                        hasNoPinPoin(inputState.isLoggedIn, inputState.localCacheModel) -> {
+                            if (isAddressManuallyUpdate()){
+                                emit(getNoPinPointState())
+                            } else {
+                                getChooseAddress(SOURCE)
+                            }
+                        }
+                        else -> emit(getHomeLayout(inputState.localCacheModel))
+                    }
+                }
+                STATE_FETCH_COMPONENT_DATA -> {
+                    homeLayoutItemList.filter { it.state == TokoFoodLayoutItemState.NOT_LOADED }
+                        .forEach {
+                            emit(getLayoutComponentData(it, inputState.localCacheModel))
+                        }
+                }
+                STATE_FETCH_LOAD_MORE -> {
+                    emit(getProgressBar())
+                    emit(getMerchantList(inputState.localCacheModel))
+                }
+                STATE_ERROR -> {
+                    emit(getErrorState(inputState.throwable))
+                }
+                STATE_REMOVE_TICKER -> {
+                    emit(getRemovalTickerWidget(inputState.visitableId))
+                }
+            }
+        }
     }
 
     fun setUpdatePinPoint(addressId: String, latitude: String, longitude: String) {
