@@ -6,7 +6,7 @@ import com.tokopedia.ordermanagement.orderhistory.purchase.detail.model.OrderDet
 
 data class OrderHistoryResponse(
     @SerializedName("get_buyer_history")
-    val getBuyerHistory: GetBuyerHistory
+    val getBuyerHistory: GetBuyerHistory = GetBuyerHistory()
 )
 
 data class GetBuyerHistory(
