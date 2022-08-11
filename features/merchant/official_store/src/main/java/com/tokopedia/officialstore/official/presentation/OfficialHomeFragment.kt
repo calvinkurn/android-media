@@ -867,7 +867,7 @@ class OfficialHomeFragment :
 
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
             if (!isLoadedOnce || isRefresh) {
-                viewModel.loadFirstDataRevamp(category, getLocation(),
+                viewModel.loadFirstData(category, getLocation(),
                         onBannerCacheStartLoad = {
                             officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
                         },
@@ -894,7 +894,7 @@ class OfficialHomeFragment :
     private fun reloadDataForDifferentAddressSaved() {
         localChooseAddress?.setLocalCacheModel(ChooseAddressUtils.getLocalizingAddressData(requireContext())?.copy())
         viewModel.resetState()
-        viewModel.loadFirstDataRevamp(category, getLocation())
+        viewModel.loadFirstData(category, getLocation())
     }
 
     private fun showErrorNetwork(t: Throwable) {

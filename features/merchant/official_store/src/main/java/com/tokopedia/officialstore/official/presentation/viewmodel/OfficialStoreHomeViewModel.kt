@@ -100,7 +100,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private val _recomUpdated = MutableLiveData<Event<Boolean>>()
     val recomUpdated : LiveData<Event<Boolean>> get() = _recomUpdated
 
-    fun loadFirstDataRevamp(category: Category?, location: String = "",
+    fun loadFirstData(category: Category?, location: String = "",
                       onBannerCacheStartLoad: () -> Unit = {},
                       onBannerCacheStopLoad: () -> Unit = {},
                       onBannerCloudStartLoad: () -> Unit = {},
@@ -132,16 +132,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
                         getRecommendationUseCase
                             .getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
                     ).toBlocking()
-                    if (isFeaturedShopAllowed && pageNumber == 1 && !recomData.first().isNullOrEmpty()){
-                        val topAdsHeadlineData = getTopAdsHeadlineData(pageNumber + 1)
-                        val recomDataWithTopAdsHeadlineData = ProductRecommendationWithTopAdsHeadline(recomData.first().first(), topAdsHeadlineData)
-                        addRecomTitle(recomDataWithTopAdsHeadlineData.recommendationWidget.title)
-                        addRecomProducts(recomDataWithTopAdsHeadlineData)
+                    val topAdsHeadlineData = if (isFeaturedShopAllowed && pageNumber == 1 && !recomData.first().isNullOrEmpty()){
+                        getTopAdsHeadlineData(pageNumber + 1)
                     } else{
-                        val recomDataWithoutTopAdsHeadlineData = ProductRecommendationWithTopAdsHeadline(recomData.first().first(), null)
-                        addRecomTitle(recomDataWithoutTopAdsHeadlineData.recommendationWidget.title)
-                        addRecomProducts(recomDataWithoutTopAdsHeadlineData)
+                        null
                     }
+                    val recomDataWithTopAdsHeadlineData = ProductRecommendationWithTopAdsHeadline(recomData.first().first(), topAdsHeadlineData)
+                    addRecomTitle(recomDataWithTopAdsHeadlineData.recommendationWidget.title)
+                    addRecomProducts(recomDataWithTopAdsHeadlineData)
 
                 }
             } catch (e: Throwable) {
@@ -331,7 +329,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             if (!officialStoreConfig.isEligibleForDisableRemoveShopWidget()) {
                 _officialStoreListVisitable.run {
                     removeAll {
-                        it is FeaturedShopDataModel || (it is FeaturedShopDataModel && it.channelModel.id == featuredShopDataModel.channelModel.id)
+                        it is FeaturedShopDataModel && it.channelModel.id == featuredShopDataModel.channelModel.id
                     }
                     _officialStoreLiveData.postValue(this)
                 }
