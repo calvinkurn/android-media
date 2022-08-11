@@ -66,6 +66,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -161,13 +162,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var userAddressData: LocalCacheModel? = null
     private var isOnProgressDeleteWishlist = false
     private val progressDeletionRunnable = Runnable {
-        getCountDeletionProgress()
+        getDeleteWishlistProgress()
     }
     private var collectionId = ""
     private var collectionName = ""
     private var countDelete = 1
     private var toolbarTitle = ""
     private var bottomSheetCollection = BottomSheetAddCollectionWishlist()
+    private var _isDeleteOnly = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -367,6 +369,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 is Success -> {
                     result.data.let { bulkDeleteWishlistV2 ->
                         if (bulkDeleteWishlistV2.success) {
+                            var btnText = getString(Rv2.string.wishlist_oke_label)
+                            if (bulkDeleteWishlistV2.button.text.isNotEmpty()) {
+                                btnText = bulkDeleteWishlistV2.button.text
+                            }
                             if (bulkDeleteMode == 0) {
                                 // normal bulk delete
                                 val listId =
@@ -380,19 +386,20 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                     msg = bulkDeleteWishlistV2.message
                                 }
 
-                                var btnText = getString(Rv2.string.wishlist_oke_label)
-                                if (bulkDeleteWishlistV2.button.text.isNotEmpty()) {
-                                    btnText = bulkDeleteWishlistV2.button.text
-                                }
-
                                 showToaster(msg, btnText, Toaster.TYPE_NORMAL)
                                 setRefreshing()
                                 (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
                             } else {
                                 // bulkDeleteMode == 1 (manual choose via cleaner bottomsheet)
                                 // bulkDeleteMode == 2 (choose automatic deletion)
+                                if (bulkDeleteMode == 1) {
+                                    showToaster(bulkDeleteWishlistV2.message, btnText, Toaster.TYPE_NORMAL)
+                                    setRefreshing()
+                                    (activity as WishlistCollectionDetailActivity).isNeedRefresh(true)
+                                } else if (bulkDeleteMode == 2) {
+                                    hideTotalLabel()
+                                }
                                 turnOffBulkDeleteCleanMode()
-                                hideTotalLabel()
                                 binding?.run { rvWishlistCollectionDetail.scrollToPosition(0) }
                             }
                             setSwipeRefreshLayout()
@@ -434,11 +441,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 is Success -> {
                     finishRefresh()
                     result.data.getWishlistCollectionItems.let { collectionDetail ->
-                        if (paramGetCollectionItems.sortFilters.isEmpty() && paramGetCollectionItems.query.isEmpty()) {
-                            hideSearchAndFilter()
-                        } else {
-                            showSearchAndFilter()
-                        }
                         toolbarTitle = collectionDetail.headerTitle
                         updateToolbarTitle(toolbarTitle)
                         rvScrollListener.setHasNextPage(collectionDetail.hasNextPage)
@@ -447,7 +449,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             if (!hitCountDeletion) {
                                 hitCountDeletion = true
                                 isOnProgressDeleteWishlist = true
-                                getCountDeletionProgress()
+                                getDeleteWishlistProgress()
                             }
                             hideTotalLabel()
                             // showStickyDeletionProgress()
@@ -456,6 +458,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         }
 
                         if (collectionDetail.totalData <= 0) {
+                            if (paramGetCollectionItems.query.isNotEmpty()) {
+                                hideFilter()
+                            }
                             if (collectionDetail.sortFilters.isEmpty() && collectionDetail.items.isEmpty()) {
                                 onFailedGetWishlistV2(ResponseErrorException())
                             } else {
@@ -808,7 +813,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         doRefresh()
 
         binding?.run {
-            containerDeleteCollectionDetail.gone()
+            bottomButtonLayout.gone()
             clWishlistCollectionDetailHeader.visible()
             if (collectionId == "0") {
                 wishlistCollectionDetailStickyCountManageLabel.apply {
@@ -942,8 +947,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         rvScrollListener.resetState()
     }
 
-    private fun getCountDeletionProgress() {
-        // wishlistCollectionDetailViewModel.getCountDeletionWishlistV2()
+    private fun getDeleteWishlistProgress() {
+        wishlistCollectionDetailViewModel.getDeleteWishlistProgress()
     }
 
     override fun onPause() {
@@ -958,7 +963,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun checkProgressDeletion() {
         if (isOnProgressDeleteWishlist) {
-            getCountDeletionProgress()
+            getDeleteWishlistProgress()
         }
     }
 
@@ -1029,23 +1034,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
-    private fun hideSearchAndFilter() {
+    private fun hideFilter() {
         binding?.run {
-            wishlistCollectionDetailSearchbar.gone()
             clWishlistCollectionDetailHeader.gone()
-        }
-    }
-
-    private fun showSearchAndFilter() {
-        binding?.run {
-            wishlistCollectionDetailSearchbar.visible()
-            clWishlistCollectionDetailHeader.visible()
-        }
-    }
-
-    private fun hideSearchBar() {
-        binding?.run {
-            wishlistCollectionDetailSearchbar.gone()
         }
     }
 
@@ -1486,7 +1477,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     paramGetCollectionItems.source = SOURCE_AUTOMATIC_DELETION
                 }
                 onTickerCTASortFromLatest()
-                turnOnBulkDeleteMode()
+                turnOnBulkDeleteMode(true)
                 view?.let {
                     Toaster.build(
                         it, getString(Rv2.string.wishlist_v2_terlama_disimpan),
@@ -1844,56 +1835,69 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun setLabelDeleteButton() {
-        // semua wishlist - 2 buttons : delete & add
-        if (collectionId == "0") {
-            binding?.run {
-                containerDeleteCollectionDetail.gone()
-                containerDeleteSemuaWishlist.visible()
-                deleteButtonCollection.apply {
-                    isEnabled = true
-                    if (listSelectedProductIds.isNotEmpty()) {
-                        text =
-                            getString(
-                                Rv2.string.wishlist_v2_delete_text_counter,
-                                listSelectedProductIds.size
-                            )
-                        setOnClickListener {
-                            showPopupBulkDeleteConfirmation(listSelectedProductIds.size)
+        if (!_isDeleteOnly) {
+            // semua wishlist - 2 buttons : delete & add
+            if (collectionId == "0") {
+                binding?.run {
+                    containerDeleteCollectionDetail.gone()
+                    containerDeleteSemuaWishlist.visible()
+                    deleteButtonCollection.apply {
+                        isEnabled = true
+                        if (listSelectedProductIds.isNotEmpty()) {
+                            text =
+                                getString(
+                                    Rv2.string.wishlist_v2_delete_text_counter,
+                                    listSelectedProductIds.size
+                                )
+                            setOnClickListener {
+                                showPopupBulkDeleteConfirmation(listSelectedProductIds.size)
+                            }
+                        }
+                    }
+                    addButtonCollection.apply {
+                        isEnabled = true
+                        if (listSelectedProductIds.isNotEmpty()) {
+                            text =
+                                getString(
+                                    Rv2.string.add_collection_text_counter,
+                                    listSelectedProductIds.size
+                                )
+                            setOnClickListener {
+                                showBottomSheetCollection(
+                                    childFragmentManager,
+                                    listSelectedProductIds.joinToString(),
+                                    SRC_WISHLIST_COLLECTION
+                                )
+                            }
                         }
                     }
                 }
-                addButtonCollection.apply {
-                    isEnabled = true
-                    if (listSelectedProductIds.isNotEmpty()) {
-                        text =
-                            getString(
-                                Rv2.string.add_collection_text_counter,
-                                listSelectedProductIds.size
-                            )
-                        setOnClickListener {
-                            showBottomSheetCollection(
-                                childFragmentManager,
-                                listSelectedProductIds.joinToString(),
-                                SRC_WISHLIST_COLLECTION
-                            )
-                        }
-                    }
-                }
+            } else {
+                setLabelDeleteOnlyButton()
             }
         } else {
-            // collection - 1 button : delete
-            binding?.run {
-                containerDeleteSemuaWishlist.gone()
-                containerDeleteCollectionDetail.visible()
-                deleteButtonCollectionDetail.apply {
-                    isEnabled = true
-                    if (listSelectedProductIds.isNotEmpty()) {
-                        text =
-                            getString(
-                                Rv2.string.wishlist_v2_delete_text_counter,
-                                listSelectedProductIds.size
-                            )
-                        setOnClickListener {
+            setLabelDeleteOnlyButton()
+        }
+    }
+
+    private fun setLabelDeleteOnlyButton() {
+        // collection - 1 button : delete
+        binding?.run {
+            containerDeleteSemuaWishlist.gone()
+            containerDeleteCollectionDetail.visible()
+            deleteButtonCollectionDetail.apply {
+                isEnabled = true
+                if (collectionId == "0") buttonVariant = UnifyButton.Variant.FILLED
+                if (listSelectedProductIds.isNotEmpty()) {
+                    text =
+                        getString(
+                            Rv2.string.wishlist_v2_delete_text_counter,
+                            listSelectedProductIds.size
+                        )
+                    setOnClickListener {
+                        if (collectionId == "0") {
+                            showPopupBulkDeleteConfirmation(listSelectedProductIds.size)
+                        } else {
                             showDeleteCollectionItemConfirmationDialog(
                                 listSelectedProductIds.size,
                                 listSelectedProductIds
@@ -1907,11 +1911,30 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun setDefaultLabelDeleteButton() {
         binding?.run {
+            if (!_isDeleteOnly) {
+                if (collectionId == "0") {
+                    containerDeleteCollectionDetail.gone()
+                    containerDeleteSemuaWishlist.visible()
+                    deleteButtonCollection.isEnabled = false
+                    deleteButtonCollection.text = getString(Rv2.string.wishlist_v2_delete_text)
+                    addButtonCollection.isEnabled = false
+                    addButtonCollection.text = getString(Rv2.string.add_collection_text)
+                } else {
+                    defaultLabelDeleteOnlyButton()
+                }
+            } else {
+                defaultLabelDeleteOnlyButton()
+            }
+        }
+    }
+
+    private fun defaultLabelDeleteOnlyButton() {
+        binding?.run {
+            containerDeleteSemuaWishlist.gone()
             containerDeleteCollectionDetail.visible()
-            deleteButtonCollection.isEnabled = false
-            deleteButtonCollection.text = getString(Rv2.string.wishlist_v2_delete_text)
-            addButtonCollection.isEnabled = false
-            addButtonCollection.text = getString(Rv2.string.add_collection_text)
+            deleteButtonCollectionDetail.isEnabled = false
+            deleteButtonCollectionDetail.text = getString(Rv2.string.wishlist_v2_delete_text)
+            if (collectionId == "0") deleteButtonCollectionDetail.buttonVariant = UnifyButton.Variant.FILLED
         }
     }
 
@@ -1999,7 +2022,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun onStickyManageClicked() {
         isAutoDeletion = false
         if (!isBulkDeleteShow) {
-            turnOnBulkDeleteMode()
+            turnOnBulkDeleteMode(false)
             binding?.run {
                 wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailManageLabel.text =
                     getString(Rv2.string.wishlist_cancel_manage_label)
@@ -2018,7 +2041,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         bottomSheetCollectionSettings.show(childFragmentManager)
     }
 
-    private fun turnOnBulkDeleteMode() {
+    private fun turnOnBulkDeleteMode(isDeleteOnly: Boolean) {
+        _isDeleteOnly = isDeleteOnly
         updateToolbarTitle(getString(Rv2.string.wishlist_manage_label) + " " + toolbarTitle)
         binding?.run {
             wishlistCollectionDetailStickyCountManageLabel.apply {
@@ -2030,13 +2054,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
         }
         isBulkDeleteShow = true
-        onManageClicked(showCheckbox = true)
+        onManageClicked(showCheckbox = true, isDeleteOnly)
     }
 
     private fun turnOffBulkDeleteMode() {
         updateToolbarTitle(toolbarTitle)
         isBulkDeleteShow = false
-        onManageClicked(showCheckbox = false)
+        onManageClicked(showCheckbox = false, isDeleteOnly = false)
         binding?.run {
             if (collectionId == "0") {
                 wishlistCollectionDetailStickyCountManageLabel.apply {
@@ -2061,7 +2085,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
-    override fun onManageClicked(showCheckbox: Boolean) {
+    override fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean) {
         if (showCheckbox) {
             disableSwipeRefreshLayout()
             listSelectedProductIds.clear()
@@ -2070,60 +2094,48 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             binding?.run {
                 wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.gone()
                 wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.gone()
-                if (collectionId == "0") {
-                    containerDeleteCollectionDetail.gone()
-                    containerDeleteSemuaWishlist.visible()
-                    deleteButtonCollection.apply {
-                        isEnabled = isAutoDeletion
-                        text = if (isAutoDeletion) getString(
-                            Rv2.string.wishlist_v2_delete_text_counter,
-                            countRemovableAutomaticDelete
-                        ) else getString(Rv2.string.wishlist_v2_delete_text)
-                        if (isAutoDeletion) {
-                            setOnClickListener {
-                                bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams(
-                                    listExcludedBulkDelete,
-                                    countRemovableAutomaticDelete.toLong()
-                                )
-                                showPopupBulkDeleteConfirmation(countRemovableAutomaticDelete)
+                bottomButtonLayout.visible()
+                if (!isDeleteOnly) {
+                    if (collectionId == "0") {
+                        containerDeleteCollectionDetail.gone()
+                        containerDeleteSemuaWishlist.visible()
+                        deleteButtonCollection.apply {
+                            isEnabled = isAutoDeletion
+                            text = if (isAutoDeletion) getString(
+                                Rv2.string.wishlist_v2_delete_text_counter,
+                                countRemovableAutomaticDelete
+                            ) else getString(Rv2.string.wishlist_v2_delete_text)
+                            if (isAutoDeletion) {
+                                setOnClickListener {
+                                    bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams(
+                                        listExcludedBulkDelete,
+                                        countRemovableAutomaticDelete.toLong()
+                                    )
+                                    showPopupBulkDeleteConfirmation(countRemovableAutomaticDelete)
+                                }
                             }
                         }
-                    }
-                    addButtonCollection.apply {
-                        isEnabled = isAutoDeletion
-                        text = if (isAutoDeletion) getString(
-                            Rv2.string.add_collection_text_counter,
-                            countRemovableAutomaticDelete
-                        ) else getString(Rv2.string.add_collection_text)
-                        if (isAutoDeletion) {
-                            setOnClickListener {
-                                showBottomSheetCollection(
-                                    childFragmentManager,
-                                    listSelectedProductIds.toString(),
-                                    SRC_WISHLIST_COLLECTION
-                                )
+                        addButtonCollection.apply {
+                            isEnabled = isAutoDeletion
+                            text = if (isAutoDeletion) getString(
+                                Rv2.string.add_collection_text_counter,
+                                countRemovableAutomaticDelete
+                            ) else getString(Rv2.string.add_collection_text)
+                            if (isAutoDeletion) {
+                                setOnClickListener {
+                                    showBottomSheetCollection(
+                                        childFragmentManager,
+                                        listSelectedProductIds.toString(),
+                                        SRC_WISHLIST_COLLECTION
+                                    )
+                                }
                             }
                         }
+                    } else {
+                        showButtonDeleteOnly()
                     }
                 } else {
-                    containerDeleteSemuaWishlist.gone()
-                    containerDeleteCollectionDetail.visible()
-                    deleteButtonCollectionDetail.apply {
-                        isEnabled = isAutoDeletion
-                        text = if (isAutoDeletion) getString(
-                            Rv2.string.wishlist_v2_delete_text_counter,
-                            countRemovableAutomaticDelete
-                        ) else getString(Rv2.string.wishlist_v2_delete_text)
-                        if (isAutoDeletion) {
-                            setOnClickListener {
-                                bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams(
-                                    listExcludedBulkDelete,
-                                    countRemovableAutomaticDelete.toLong()
-                                )
-                                showPopupBulkDeleteConfirmation(countRemovableAutomaticDelete)
-                            }
-                        }
-                    }
+                    showButtonDeleteOnly()
                 }
             }
         } else {
@@ -2138,6 +2150,30 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     clWishlistCollectionDetailHeader.visible()
                     wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.visible()
                     wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.visible()
+                }
+            }
+        }
+    }
+
+    private fun showButtonDeleteOnly() {
+        binding?.run {
+            containerDeleteSemuaWishlist.gone()
+            containerDeleteCollectionDetail.visible()
+            deleteButtonCollectionDetail.apply {
+                isEnabled = isAutoDeletion
+                if (collectionId == "0") buttonVariant = UnifyButton.Variant.FILLED
+                text = if (isAutoDeletion) getString(
+                    Rv2.string.wishlist_v2_delete_text_counter,
+                    countRemovableAutomaticDelete
+                ) else getString(Rv2.string.wishlist_v2_delete_text)
+                if (isAutoDeletion) {
+                    setOnClickListener {
+                        bulkDeleteAdditionalParams = WishlistV2BulkRemoveAdditionalParams(
+                            listExcludedBulkDelete,
+                            countRemovableAutomaticDelete.toLong()
+                        )
+                        showPopupBulkDeleteConfirmation(countRemovableAutomaticDelete)
+                    }
                 }
             }
         }
@@ -2245,7 +2281,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun showSortFilter() {
         collectionItemsAdapter.isRefreshing = true
         binding?.run {
-            containerDeleteCollectionDetail.gone()
+            bottomButtonLayout.gone()
         }
     }
 
@@ -2282,7 +2318,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onManageCollectionItems() {
-        turnOnBulkDeleteMode()
+        turnOnBulkDeleteMode(false)
     }
 
     override fun onDeleteCollectionItem(collectionId: String, collectionName: String) {

@@ -16,7 +16,9 @@ import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
+import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
+import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Consts.EMPTY_WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_ADS_COUNT
@@ -45,7 +47,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val deleteWishlistV2UseCase: com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase,
     private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
     private val deleteCollectionItemsUseCase: DeleteWishlistCollectionItemsUseCase,
-    private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase
+    private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase,
+    private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase,
 ) : BaseViewModel(dispatcher.main) {
 
     private val _collectionItems =
@@ -76,6 +79,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         MutableLiveData<Result<DeleteWishlistCollectionResponse.DeleteWishlistCollection>>()
     val deleteCollectionResult: LiveData<Result<DeleteWishlistCollectionResponse.DeleteWishlistCollection>>
         get() = _deleteCollectionResult
+
+    private val _deleteWishlistProgressResult = MutableLiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>()
+    val deleteWishlistProgressResult: LiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>
+        get() = _deleteWishlistProgressResult
 
     fun getWishlistCollectionItems(
         params: GetWishlistCollectionItemsParams,
@@ -202,6 +209,19 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             }
         }, onError = {
             _deleteCollectionResult.postValue(Fail(it))
+        })
+    }
+
+    fun getDeleteWishlistProgress() {
+        launchCatchError(block = {
+            val result = deleteWishlistProgressUseCase(Unit)
+            if (result.deleteWishlistProgress.status == WishlistV2CommonConsts.OK && result.deleteWishlistProgress.errorMessage.isEmpty()) {
+                _deleteWishlistProgressResult.postValue(Success(result.deleteWishlistProgress))
+            } else {
+                _deleteWishlistProgressResult.postValue(Fail(Throwable()))
+            }
+        }, onError = {
+            _deleteWishlistProgressResult.postValue(Fail(it))
         })
     }
 }

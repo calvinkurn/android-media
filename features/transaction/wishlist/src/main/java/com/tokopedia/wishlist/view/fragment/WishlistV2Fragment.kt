@@ -1491,18 +1491,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun turnOnBulkDeleteMode() {
         isBulkDeleteShow = true
-        onManageClicked(showCheckbox = true)
+        onManageClicked(showCheckbox = true, false)
     }
 
     private fun turnOffBulkDeleteMode() {
         isBulkDeleteShow = false
-        onManageClicked(showCheckbox = false)
+        onManageClicked(showCheckbox = false, false)
         binding?.run {
             wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(Rv2.string.wishlist_manage_label)
         }
     }
 
-    override fun onManageClicked(showCheckbox: Boolean) {
+    override fun onManageClicked(showCheckbox: Boolean, isDeleteOnly: Boolean) {
         if (showCheckbox) {
             disableSwipeRefreshLayout()
             listBulkDelete.clear()

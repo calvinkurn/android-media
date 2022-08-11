@@ -21,7 +21,7 @@ data class GetWishlistCollectionItemsParams(
         var sortFilters: ArrayList<WishlistSortFilterParam> = arrayListOf(),
 
         @SerializedName("source")
-        var source: String = "wishlist",
+        var source: String = "",
 
         @SerializedName("chosen_address")
         var wishlistChosenAddress: WishlistChosenAddress = WishlistChosenAddress(),

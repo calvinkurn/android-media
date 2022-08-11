@@ -107,7 +107,7 @@ object AddRemoveWishlistV2Handler {
         Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
             actionText = ctaText
         ) { if (result.ctaActionV2 == OPEN_WISHLIST) {
-            if (result.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED && isUsingWishlistCollection(context)) {
+            if (isUsingWishlistCollection(context)) {
                 goToWishlistCollectionPage(context)
             } else {
                 goToWishlistPage(context)
