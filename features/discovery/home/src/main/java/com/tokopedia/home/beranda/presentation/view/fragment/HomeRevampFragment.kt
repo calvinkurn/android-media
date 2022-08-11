@@ -439,6 +439,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
         }
         startToTransitionOffset = 1f.toDpInt()
+        if (this::viewModel.isInitialized) {
+            getHomeViewModel().getSearchHint(isFirstInstall())
+        }
         getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
 
