@@ -9,10 +9,9 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.*
 /**
  * @author okasurya on 5/14/18.
  */
-@Database(entities = [GtmLogDB::class, FpmLogDB::class, ApplinkLogDB::class, TopAdsLogDB::class, IrisSaveLogDB::class, IrisSendLogDB::class], version = 8)
+@Database(entities = [FpmLogDB::class, ApplinkLogDB::class, TopAdsLogDB::class, IrisSaveLogDB::class, IrisSendLogDB::class], version = 9)
 abstract class TkpdAnalyticsDatabase : RoomDatabase() {
 
-    abstract fun gtmLogDao(): GtmLogDao
     abstract fun fpmLogDao(): FpmLogDao
     abstract fun applinkLogDao(): ApplinkLogDao
     abstract fun topAdsLogDao(): TopAdsLogDao

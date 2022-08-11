@@ -7,6 +7,7 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaApi
+import com.tokopedia.analyticsdebugger.database.CassavaDatabase
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao
 import com.tokopedia.config.GlobalConfig
@@ -45,7 +46,7 @@ class CassavaModule() {
 
     @Provides
     fun provideGtmDao(context: Context): GtmLogDao {
-        return TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
+        return CassavaDatabase.getInstance(context).cassavaDao()
     }
 
 }

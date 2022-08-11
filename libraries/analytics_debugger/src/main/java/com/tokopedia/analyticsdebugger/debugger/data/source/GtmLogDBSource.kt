@@ -2,6 +2,7 @@ package com.tokopedia.analyticsdebugger.debugger.data.source
 
 import android.content.Context
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource
+import com.tokopedia.analyticsdebugger.database.CassavaDatabase
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,7 @@ import javax.inject.Inject
 class GtmLogDBSource @Inject
 constructor(context: Context) {
 
-    private val gtmLogDao: GtmLogDao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
+    private val gtmLogDao: GtmLogDao = CassavaDatabase.getInstance(context).cassavaDao()
 
     fun deleteAll(): Observable<Boolean> {
         return Observable.unsafeCreate { subscriber ->
