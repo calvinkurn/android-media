@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import com.tokopedia.centralizedpromo.domain.model.MerchantPromotionGetPromoList
+import com.tokopedia.centralizedpromo.domain.model.MerchantPromotionGetPromoListData
+import com.tokopedia.centralizedpromo.domain.model.MerchantPromotionGetPromoListPage
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -81,6 +83,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             verifyGetBalanceCalled()
             verifyGetTopAdsKreditCalled()
             verifyGetFreeShippingCalled()
+            verifyGetNewIklanPromotionCalled()
         }
     }
 
@@ -145,6 +148,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 isFreeShippingEnabled = false,
                 isInTransitionPeriod = false
             )
+            onGetNewIklanAndPromotion_thenThrow()
             mViewModel.getAllOtherMenuData()
 
             mViewModel.reloadErrorData()
@@ -157,6 +161,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             verifyGetBalanceCalled(atLeast = 2)
             verifyGetTopAdsKreditCalled(atLeast = 2)
             verifyGetFreeShippingCalled(atLeast = 2)
+            verifyGetNewIklanPromotionCalled(atLeast = 2)
         }
 
     @Test
@@ -173,6 +178,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 isFreeShippingEnabled = false,
                 isInTransitionPeriod = false
             )
+            onGetNewIklanAndPromotion_thenThrow()
             mViewModel.getAllOtherMenuData()
 
             mViewModel.reloadErrorData()
@@ -184,6 +190,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             verifyGetBalanceCalled(atLeast = 2)
             verifyGetFreeShippingCalled(atLeast = 2)
             verifyGetTopAdsKreditCalled()
+            verifyGetNewIklanPromotionCalled(atLeast = 2)
         }
 
     @Test
@@ -200,6 +207,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 isFreeShippingEnabled = false,
                 isInTransitionPeriod = false
             )
+            onGetNewIklanAndPromotion_thenThrow()
 
             mViewModel.reloadErrorData()
 
@@ -210,6 +218,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             verifyGetBalanceNotCalled()
             verifyGetFreeShippingNotCalled()
             verifyGetTopAdsKreditNotCalled()
+            verifyGetNewIklanPromotionNotCalled()
         }
 
     @Test
@@ -739,26 +748,42 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     @Test
     fun `when getNewIklanAndPromotion is show tag centralize promo value success should set live data sucess`() =
-        runBlocking {
+        coroutineTestRule.runBlockingTest {
             val merchantPromotionGetPromoList = MerchantPromotionGetPromoList()
             onGetNewIklanPromotion_thenReturn(userSession.userId, merchantPromotionGetPromoList)
 
-            mViewModel.getAllOtherMenuData()
+            mViewModel.getIsShowTagCentralizePromo()
 
             verifyGetNewIklanPromotionCalled()
-            assert(mViewModel.isShowTagCentralizePromo.value != null)
+            val expectedResult = SettingResponseState.SettingSuccess(false)
+            mViewModel.isShowTagCentralizePromo.verifyStateSuccessEquals(expectedResult)
         }
 
     @Test
-    fun `when getNewIklanAndPromotion is show tag centralize promo value errpr should set live data false`() =
-        runBlocking {
-            val error = IllegalStateException()
-            onGetNewIklanPromotion_thenError(error)
+    fun `when getNewIklanAndPromotion is show tag centralize promo value success with list new should set live data sucess`() =
+        coroutineTestRule.runBlockingTest {
+            val merchantPromotionGetPromoList = MerchantPromotionGetPromoList(data = MerchantPromotionGetPromoListData(pages = listOf(
+                MerchantPromotionGetPromoListPage(pageName = "Top Ads", pageNameSuffix = "Baru")
+            )))
+            onGetNewIklanPromotion_thenReturn(userSession.userId, merchantPromotionGetPromoList)
 
-            mViewModel.getAllOtherMenuData()
+            mViewModel.getIsShowTagCentralizePromo()
 
             verifyGetNewIklanPromotionCalled()
-            assert(mViewModel.isShowTagCentralizePromo.value != null)
+            val expectedResult = SettingResponseState.SettingSuccess(true)
+            mViewModel.isShowTagCentralizePromo.verifyStateSuccessEquals(expectedResult)
+        }
+    @Test
+    fun `when getNewIklanAndPromotion is show tag centralize promo value error should set live data false`() =
+        coroutineTestRule.runBlockingTest {
+            val error = IllegalStateException()
+            onGetNewIklanAndPromotion_thenThrow(error)
+
+            mViewModel.getIsShowTagCentralizePromo()
+
+            verifyGetNewIklanPromotionCalled()
+            val expectedResult = SettingResponseState.SettingError(error)
+            mViewModel.isShowTagCentralizePromo.verifyStateErrorEquals(expectedResult)
         }
 
     @Test
@@ -771,6 +796,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             onGetTopAdsKredit_thenThrow()
             onGetFreeShipping_thenThrow()
             onGetShopBadge_thenThrow()
+            onGetNewIklanAndPromotion_thenThrow()
             mViewModel.getAllOtherMenuData()
             val currentValue = mViewModel.shouldShowMultipleErrorToaster.value
 
@@ -884,6 +910,10 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     private suspend fun verifyGetTopAdsKreditNotCalled() {
         coVerify(exactly = 0) { topAdsDashboardDepositUseCase.executeOnBackground() }
+    }
+
+    private suspend fun verifyGetNewIklanPromotionNotCalled() {
+        coVerify(exactly = 0) { getNewPromotionUseCase.execute("0") }
     }
 
     private suspend fun onGetFreeShipping_thenReturn(freeShippingInfo: TokoPlusBadgeUiModel) {
