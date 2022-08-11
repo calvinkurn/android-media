@@ -9,15 +9,7 @@ class DoFlashSaleProductSubmissionMapper @Inject constructor() {
     fun map(response: DoFlashSaleProductSubmissionResponse): ProductSubmissionResult {
         return ProductSubmissionResult(
             response.doFlashSaleProductSubmission.responseHeader.success,
-            response.doFlashSaleProductSubmission.responseHeader.toErrorMessage()
+            response.doFlashSaleProductSubmission.responseHeader.errorMessage.firstOrNull().orEmpty()
         )
-    }
-
-    private fun DoFlashSaleProductSubmissionResponse.DoFlashSaleProductSubmission.ResponseHeader.toErrorMessage(): String {
-        return if (errorMessage.isEmpty()) {
-            ""
-        } else {
-            errorMessage.first()
-        }
     }
 }

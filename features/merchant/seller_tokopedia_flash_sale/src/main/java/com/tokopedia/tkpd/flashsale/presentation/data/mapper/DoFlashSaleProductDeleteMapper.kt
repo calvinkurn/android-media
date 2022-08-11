@@ -7,18 +7,9 @@ import javax.inject.Inject
 class DoFlashSaleProductDeleteMapper @Inject constructor() {
 
     fun map(response: DoFlashSaleProductDeleteResponse): ProductDeleteResult {
-
         return ProductDeleteResult(
             response.doFlashSaleProductDelete.responseHeader.success,
-            response.doFlashSaleProductDelete.responseHeader.toErrorMessage()
+            response.doFlashSaleProductDelete.responseHeader.errorMessage.firstOrNull().orEmpty()
         )
-    }
-
-    private fun DoFlashSaleProductDeleteResponse.DoFlashSaleProductDelete.ResponseHeader.toErrorMessage(): String {
-        return if (errorMessage.isEmpty()) {
-            ""
-        } else {
-            errorMessage.first()
-        }
     }
 }
