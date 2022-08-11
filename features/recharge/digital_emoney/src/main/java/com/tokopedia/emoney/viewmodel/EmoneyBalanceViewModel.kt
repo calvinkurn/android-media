@@ -68,6 +68,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                         val endTimeBeforeCallGql = System.currentTimeMillis()
                         mapLoggerDebugData.put(EMONEY_TIME_BEFORE_CALL_TAG, getTimeDifferences(startTimeBeforeCallGql, endTimeBeforeCallGql))
+                        logDebugEmoney(hashMapOf(EMONEY_TIME_BEFORE_CALL_TAG to getTimeDifferences(startTimeBeforeCallGql, endTimeBeforeCallGql)))
 
                         getEmoneyInquiryBalance(PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
                     } else {
@@ -106,10 +107,12 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                 val endTimeCallGql = System.currentTimeMillis()
                 mapLoggerDebugData.put("$EMONEY_TIME_CALL_TAG$loopTime", getTimeDifferences(startTimeCallGql, endTimeCallGql))
+                logDebugEmoney(hashMapOf("$EMONEY_TIME_CALL_TAG$loopTime" to getTimeDifferences(startTimeCallGql, endTimeCallGql)))
+
                 if (it.status == 0) {
                     writeBalanceToCard(it.payload, balanceRawQuery, data.emoneyInquiry.id.toInt(), mapAttributesParam)
                 } else {
-                    logDebugEmoney()
+                    logDebugAllEmoney()
                     emoneyInquiry.postValue(data.emoneyInquiry)
                 }
             }
@@ -137,6 +140,8 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 }
                 val endWriteCard = System.currentTimeMillis()
                 mapLoggerDebugData.put("$EMONEY_WRITE_CARD_TAG$loopTime", getTimeDifferences(startWriteCard, endWriteCard))
+                logDebugEmoney(hashMapOf("$EMONEY_WRITE_CARD_TAG$loopTime" to getTimeDifferences(startWriteCard, endWriteCard)))
+
             } catch (e: IOException) {
                 isoDep.close()
                 errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -146,11 +151,22 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
-    private fun logDebugEmoney() {
+    private fun logDebugEmoney(map: HashMap<String, String>) {
+        map.forEach {
+            Log.d(EMONEY_DEBUG_TAG, "${it.key} ${it.value}")
+        }
+        sendLogDebugEmoney(map)
+    }
+
+    private fun logDebugAllEmoney() {
         mapLoggerDebugData.forEach {
             Log.d(EMONEY_DEBUG_TAG, "${it.key} ${it.value}")
         }
-        ServerLogger.log(Priority.P2, EMONEY_DEBUG_TAG, mapLoggerDebugData)
+        sendLogDebugEmoney(mapLoggerDebugData)
+    }
+
+    private fun sendLogDebugEmoney(map: HashMap<String, String>) {
+        ServerLogger.log(Priority.P2, EMONEY_DEBUG_TAG, map)
     }
 
     private fun addingLoopTime() {
