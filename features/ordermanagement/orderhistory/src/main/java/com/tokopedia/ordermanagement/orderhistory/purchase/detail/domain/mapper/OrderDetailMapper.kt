@@ -11,7 +11,7 @@ class OrderDetailMapper {
 
     fun getOrderHistoryData(response: OrderHistoryResponse): OrderHistoryData {
         val viewData = OrderHistoryData()
-        val historyData = response.getBuyerHistory.data
+        val historyData = response.getBuyerHistory.buyerHistoryData
         viewData.stepperStatusTitle = historyData.historyTitle
         viewData.historyImage = historyData.historyImg
         viewData.orderListData = historyData.histories.map { OrderHistoryListData(it.status, it.hour, it.date, it.comment, it.actionBy, it.orderStatusColor) }

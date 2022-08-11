@@ -6,11 +6,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.ordermanagement.orderhistory.purchase.detail.di.OrderHistoryScope
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.domain.mapper.OrderDetailMapper
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.model.history.response.OrderHistoryResponse
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.model.history.viewmodel.OrderHistoryData
 import javax.inject.Inject
 
+@OrderHistoryScope
 @GqlQuery("GetOrderHistoryQuery", OrderHistoryUseCase.QUERY)
 class OrderHistoryUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
@@ -27,11 +29,13 @@ class OrderHistoryUseCase @Inject constructor(
 
     suspend fun execute(): OrderHistoryData {
         val response = executeOnBackground()
-        val errors = response.getBuyerHistory.errorList
+        val error = response.getBuyerHistory.errorList.firstOrNull()
         return when {
-            response.getBuyerHistory.data.isNotEmpty() -> mapper.getOrderHistoryData(response)
-            errors.isNotEmpty() -> throw MessageErrorException(errors.first().detail)
-            else -> throw MessageErrorException(ERROR_MESSAGE)
+            response.getBuyerHistory.buyerHistoryData.isNotEmpty() -> mapper.getOrderHistoryData(response)
+            else -> {
+                error?.let { throw MessageErrorException(it.detail) }
+                throw MessageErrorException(ERROR_MESSAGE)
+            }
         }
     }
 

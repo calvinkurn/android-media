@@ -11,9 +11,7 @@ data class OrderHistoryResponse(
 
 data class GetBuyerHistory(
     @SerializedName("data")
-    val `data`: Data,
-
+    val buyerHistoryData: BuyerHistoryData = BuyerHistoryData(),
     @SerializedName("errors")
-    @Expose
     val errorList: List<OrderDetailResponseError> = emptyList()
 )
