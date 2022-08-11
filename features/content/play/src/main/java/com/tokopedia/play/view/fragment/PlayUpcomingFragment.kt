@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.FragmentPlayUpcomingBinding
@@ -365,7 +366,7 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onTextClicked(isExpand: Boolean, view: UpcomingDescriptionViewComponent) {
-        //TODO("Not yet implemented")
+        binding.vOverlay.showWithCondition(isExpand)
     }
 
     private fun copyToClipboard(content: String) {

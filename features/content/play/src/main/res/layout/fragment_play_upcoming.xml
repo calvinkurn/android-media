@@ -5,15 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_upcoming_cover"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:scaleType="center"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_upcoming_cover"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+            android:id="@+id/v_overlay"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            android:background="@color/Unify_NN900"
+            android:alpha="0.7"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/view_gradient_background"
@@ -68,8 +90,8 @@
         android:layout_marginTop="@dimen/play_upcoming_description_top"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:ellipsize="end"
-        android:maxLines="2"
         android:gravity="bottom"
+        android:maxLines="2"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@+id/view_upcoming_timer"
         app:layout_constraintEnd_toEndOf="@id/btn_action"
@@ -98,11 +120,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl4"
-        app:unifyButtonSize="medium"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/view_upcoming_timer"
+        app:unifyButtonSize="medium"
         tools:text="@string/play_remind_me"
         tools:visibility="visible" />
 

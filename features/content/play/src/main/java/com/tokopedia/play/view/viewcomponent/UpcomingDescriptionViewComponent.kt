@@ -73,6 +73,7 @@ class UpcomingDescriptionViewComponent(
         if(originalText.isBlank()) return
 
         isExpand = !isExpand
+        listener.onTextClicked(isExpand, this)
         animateText()
     }
 
