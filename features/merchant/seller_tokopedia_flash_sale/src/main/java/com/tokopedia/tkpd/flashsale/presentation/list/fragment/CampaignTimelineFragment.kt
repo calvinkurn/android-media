@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignTimelineBinding
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
 import com.tokopedia.tkpd.flashsale.common.adapter.VerticalSpaceItemDecoration
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.presentation.list.adapter.campaigndetail.TimelineProcessAdapter
@@ -37,10 +36,10 @@ class CampaignTimelineFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupTimelineView()
+        setupTimelineList()
     }
 
-    private fun setupTimelineView() {
+    private fun setupTimelineList() {
         binding?.rvTimelineProcess?.apply {
             val spacingAmount = resources.getDimensionPixelSize(
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7)

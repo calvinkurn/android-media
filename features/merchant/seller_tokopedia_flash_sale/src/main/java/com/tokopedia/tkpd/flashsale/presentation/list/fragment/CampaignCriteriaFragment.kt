@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignCriteriaBinding
+import com.tokopedia.tkpd.flashsale.common.adapter.VerticalSpaceItemDecoration
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.presentation.list.adapter.campaigndetail.CriteriaAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CampaignCriteriaFragment: BaseDaggerFragment() {
@@ -33,5 +37,19 @@ class CampaignCriteriaFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupCriteriaList()
+    }
+
+    private fun setupCriteriaList() {
+        binding?.rvCriteria?.apply {
+            val criteriaItems = resources.getStringArray(R.array.criteria_items)
+            val spacingAmount = resources.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            addItemDecoration(VerticalSpaceItemDecoration(spacingAmount))
+            adapter = CriteriaAdapter().apply {
+                data = criteriaItems.toList()
+            }
+        }
     }
 }
