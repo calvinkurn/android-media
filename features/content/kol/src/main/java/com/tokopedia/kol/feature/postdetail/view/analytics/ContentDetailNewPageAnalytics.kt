@@ -456,14 +456,13 @@ class ContentDetailNewPageAnalytics @Inject constructor(
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
             eventLabel = EventLabel.getPostLabel(contentDetailPageAnalyticsDataModel),
-            trackerID = contentDetailPageAnalyticsDataModel.trackerId //33271
+            trackerID = contentDetailPageAnalyticsDataModel.trackerId
         )
     }
 
 
     fun sendClickShareSgcImageBottomSheet(
-        contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel,
-        shareMedia: String = ""
+        contentDetailPageAnalyticsDataModel: ContentDetailPageAnalyticsDataModel
     ) {
         createAnalyticsData(
             eventName = CLICKPG,
@@ -475,7 +474,10 @@ class ContentDetailNewPageAnalytics @Inject constructor(
                 )
             }",
             eventCategory = EventCategory.CONTENT_DETAIL_PAGE_BOTTOM_SHEET,
-            eventLabel = EventLabel.getProductShareLabel(contentDetailPageAnalyticsDataModel),
+            eventLabel = if (contentDetailPageAnalyticsDataModel.isTypeASGC || contentDetailPageAnalyticsDataModel.isTypeVOD)
+                EventLabel.getPostLabel(
+                    contentDetailPageAnalyticsDataModel
+                ) else EventLabel.getProductShareLabel(contentDetailPageAnalyticsDataModel),
             trackerID = contentDetailPageAnalyticsDataModel.trackerId //33272
         )
     }

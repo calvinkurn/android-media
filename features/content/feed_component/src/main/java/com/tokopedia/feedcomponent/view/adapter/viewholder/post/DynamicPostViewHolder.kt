@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
-import android.content.Context
 import android.os.Handler
 import android.text.SpannableString
 import android.text.TextUtils
@@ -42,7 +41,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -695,6 +693,12 @@ open class DynamicPostViewHolder(v: View,
                 rowNumber: Int,
                 time:Long,
                 hitTrackerApi:Boolean
+        )
+        fun sendWatchVODTracker(
+            feedXCard: FeedXCard,
+            playChannelId: String,
+            rowNumber: Int,
+            time:Long
         )
         fun onPostTagBubbleClick(
                 positionInFeed: Int,

@@ -1382,6 +1382,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     )
                 }
 
+                override fun onVODStopTrack(
+                    viewHolder: FeedVODViewHolder,
+                    lastPosition: Long
+                ) {
+                    it.sendWatchVODTracker(
+                        feedXCard,
+                        feedXCard.playChannelID,
+                        positionInFeed,
+                        TIME_FIVE_SEC)
+                }
+
 
             })
         }

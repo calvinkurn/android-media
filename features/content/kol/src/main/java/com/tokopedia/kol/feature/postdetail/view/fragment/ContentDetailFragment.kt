@@ -679,7 +679,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 ),
                 source = contentDetailSource
             ),
-            ""
         )
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
@@ -750,8 +749,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         )
         if (context != null) {
             val sheet = MenuOptionsBottomSheet.newInstance(
-                feedXCard.reportable, feedXCard.followers.isFollowed,
-                feedXCard.deletable
+                isReportable = feedXCard.reportable, canUnfollow = feedXCard.followers.isFollowed,
+                isDeletable = feedXCard.deletable
             )
             if (!sheet.isAdded)
             sheet.show(childFragmentManager, "")
@@ -1010,18 +1009,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         time: Long,
         hitTrackerApi: Boolean
     ) {
-        analyticsTracker.eventWatchVideo(
-            getContentDetailAnalyticsData(
-                feedXCard,
-                trackerId = getTrackerID(
-                    feedXCard,
-                    trackerIdVod = "34187",
-                    trackerIdVodRecomm = "34189",
-                    trackerIdLongVideo = "34538",
-                    trackerIdLongVideoRecomm = "34540"
-                )
-            )
-        )
         if (hitTrackerApi) {
             if (feedXCard.isTypeLongVideo)
                 viewModel.trackLongVideoView(feedXCard.id, rowNumber)
@@ -1053,6 +1040,22 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
 
     override fun onSgcVideoTapped(feedXCard: FeedXCard) {
         analyticsTracker.sendClickVideoSgcVideoEvent(getContentDetailAnalyticsData(feedXCard))
+    }
+
+    override fun sendWatchVODTracker(feedXCard: FeedXCard, duration: Long) {
+        analyticsTracker.eventWatchVideo(
+            getContentDetailAnalyticsData(
+                feedXCard,
+                duration = duration,
+                trackerId = getTrackerID(
+                    feedXCard,
+                    trackerIdVod = "34187",
+                    trackerIdVodRecomm = "34189",
+                    trackerIdLongVideo = "34538",
+                    trackerIdLongVideoRecomm = "34540"
+                )
+            )
+        )
     }
 
     override fun onLihatProdukClicked(
@@ -1756,10 +1759,11 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                             source = contentDetailSource,
                             trackerId = getTrackerID(
                                 feedXCard,
+                                trackerIdSgc = "33271",
                                 trackerIdAsgc = "34105",
                                 trackerIdAsgcRecom = "34093"
                             )
-                            )
+                        )
                     )
                     RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
                 }).show()
@@ -1852,7 +1856,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         feedXCard.isTypeVOD -> trackerIdVod
         feedXCard.isTypeLongVideo -> trackerIdLongVideo
         feedXCard.isTypeLongVideo && !feedXCard.followers.isFollowed -> trackerIdLongVideoRecomm
-        feedXCard.isTypeVOD && feedXCard.followers.isFollowed -> trackerIdVodRecomm
+        feedXCard.isTypeVOD && !feedXCard.followers.isFollowed -> trackerIdVodRecomm
         feedXCard.isTypeProductHighlight && feedXCard.followers.isFollowed -> trackerIdAsgc
         feedXCard.isTypeProductHighlight && !feedXCard.followers.isFollowed -> trackerIdAsgcRecom
         feedXCard.isTypeSGC && feedXCard.followers.isFollowed -> trackerIdSgc

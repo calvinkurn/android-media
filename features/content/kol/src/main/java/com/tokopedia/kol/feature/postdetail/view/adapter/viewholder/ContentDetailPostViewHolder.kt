@@ -117,6 +117,7 @@ class ContentDetailPostViewHolder(
         fun onVolumeClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String)
         fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long)
         fun onSgcVideoTapped(feedXCard: FeedXCard)
+        fun sendWatchVODTracker(feedXCard: FeedXCard, duration: Long)
     }
 
 }
