@@ -215,11 +215,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
                 digitalSubscriptionParams,
                 userId
             )
-            if (categoryIdAtc.errorAtc.isEmpty()){
-                _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
-            }else{
-                _errorAtc.value = Pair(categoryIdAtc.categoryId, categoryIdAtc.errorAtc.first())
-            }
+            _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                 _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))

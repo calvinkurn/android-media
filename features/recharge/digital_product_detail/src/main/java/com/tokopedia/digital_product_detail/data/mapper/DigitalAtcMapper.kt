@@ -13,8 +13,7 @@ class DigitalAtcMapper @Inject constructor() {
             cartId = atc.id ?: "",
             categoryId = atc.relationships?.category?.data?.id ?: "",
             priceProduct = atc.attributes?.price ?: "",
-            channelId = atc.attributes?.channelId ?: "",
-            errorAtc = atc.errors
+            channelId = atc.attributes?.channelId ?: ""
         )
     }
 }

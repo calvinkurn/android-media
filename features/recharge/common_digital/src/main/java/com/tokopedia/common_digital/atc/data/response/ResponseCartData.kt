@@ -18,9 +18,5 @@ data class ResponseCartData(
 
         @SerializedName("relationships")
         @Expose
-        var relationships: RelationshipsCart? = null,
-
-        @SerializedName("errors")
-        @Expose
-        val errors: List<ErrorAtc> = emptyList()
+        var relationships: RelationshipsCart? = null
 )
