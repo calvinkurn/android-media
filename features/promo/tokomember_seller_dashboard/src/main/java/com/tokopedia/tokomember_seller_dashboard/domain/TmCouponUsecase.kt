@@ -26,7 +26,13 @@ class TmCouponUsecase@Inject constructor(
 
     private fun getRequestParams(voucherStatus: String, voucherType: Int?): Map<String, Any> {
         val req = TmMVFilter(voucherType, voucherStatus, "1", "3")
-        return mapOf(FILTER_INPUT to req)
+        val map = mapOf<String, Any?>(
+            "voucher_type" to voucherType,
+            "voucher_status" to voucherStatus,
+            "is_public" to "1",
+            "target_buyer" to "3",
+        )
+        return mapOf(FILTER_INPUT to map)
     }
 }
 
