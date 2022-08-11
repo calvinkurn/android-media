@@ -170,7 +170,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                 PARAM_CHANNEL_ID to channelId,
                 PARAM_SOURCE_TYPE to playSource.type
         ).apply {
-            if (playSource.id.isNotEmpty()) put(PARAM_SOURCE_ID, playSource.id)
+            if (playSource.id.isNotBlank()) put(PARAM_SOURCE_ID, playSource.id)
         }
 
         private fun createParamsWithCursor(cursor: String): Map<String, Any> = mapOf(
