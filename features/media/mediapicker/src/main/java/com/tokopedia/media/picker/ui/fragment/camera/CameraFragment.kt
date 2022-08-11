@@ -37,9 +37,9 @@ import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
-import com.tokopedia.picker.common.utils.FileCamera
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 open class CameraFragment @Inject constructor(
@@ -192,9 +192,9 @@ open class CameraFragment @Inject constructor(
                 cameraAnalytics.clickShutter()
             } else {
                 cameraView.enableFlashTorch()
-                cameraView.onStartTakeVideo()
                 controller.onVideoDurationChanged()
                 cameraAnalytics.clickRecord()
+                viewModel.onVideoTaken()
             }
         }
     }
@@ -219,13 +219,13 @@ open class CameraFragment @Inject constructor(
     }
 
     override fun onVideoTaken(result: VideoResult) {
-        val fileToModel = result.file
+        val videoFile = result.file
             .asPickerFile()
             .cameraToUiModel()
 
-        if (contract?.isMinVideoDuration(fileToModel) == true) {
+        if (contract?.isMinVideoDuration(videoFile) == true) {
             contract?.onShowVideoMinDurationToast()
-            fileToModel.file?.safeDelete()
+            videoFile.file?.safeDelete()
             return
         }
 
@@ -234,23 +234,41 @@ open class CameraFragment @Inject constructor(
             return
         }
 
-        onShowLoaderDialog()
-        onShowMediaThumbnail(fileToModel)
+        onShowMediaThumbnail(videoFile)
     }
 
     override fun onPictureTaken(result: PictureResult) {
-        onShowLoaderDialog()
-        FileCamera.createPhoto(cameraView.pictureSize(), result.data) {
-            if (it == null) return@createPhoto
-            val fileToModel = it
-                .asPickerFile()
-                .cameraToUiModel()
-
-            onShowMediaThumbnail(fileToModel)
-        }
+        viewModel.onPictureTaken(cameraView.pictureSize(), result.data)
     }
 
     private fun initObservable() {
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            if (it) {
+                loaderDialog = LoaderDialogWidget(requireContext())
+                loaderDialog?.show()
+            } else {
+                loaderDialog?.dismiss()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.pictureTaken.collect {
+                if (it == null) return@collect
+
+                val file = it
+                    .asPickerFile()
+                    .cameraToUiModel()
+
+                onShowMediaThumbnail(file)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.videoTaken.collect {
+                cameraView.onStartTakeVideo(it)
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiEvent.observe(
                 onChanged = {
@@ -295,12 +313,6 @@ open class CameraFragment @Inject constructor(
     private fun onShowMediaThumbnail(element: MediaUiModel?) {
         if (element == null) return
         stateOnCameraCapturePublished(element)
-        loaderDialog?.dismiss()
-    }
-
-    private fun onShowLoaderDialog() {
-        loaderDialog = LoaderDialogWidget(requireContext())
-        loaderDialog?.show()
     }
 
     private fun setCameraFlashState() {
