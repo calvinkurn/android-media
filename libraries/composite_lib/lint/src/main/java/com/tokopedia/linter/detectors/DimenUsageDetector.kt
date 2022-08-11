@@ -21,7 +21,7 @@ class DimenUsageDetector : Detector(), XmlScanner {
                     "Must be replaced with actual value for more readable and better performance.",
             explanation = "The dimen resource is located in different module. " +
                     "To be more readable and better performance, please use actual value instead. Example : " +
-                    "\n❌ : android:padding=\"@dimen/layout_lvl1\" " +
+                    "\n❌ : android:padding=\"@dimen/layout_lvl0\" " +
                     "\n✅ : android:padding=\"0dp\"",
             category = Category.CORRECTNESS,
             priority = 5,
