@@ -7,15 +7,19 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter.MyViewHolder
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
+import com.tokopedia.pdp.fintech.helper.Utils.returnRouteObject
+import com.tokopedia.pdp.fintech.helper.Utils.safeLet
+import com.tokopedia.pdp.fintech.helper.Utils.setListOfData
 import com.tokopedia.pdp.fintech.listner.WidgetClickListner
 import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
+import java.util.*
+import kotlin.collections.ArrayList
 
 class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetClickListner) :
     RecyclerView.Adapter<MyViewHolder>() {
@@ -31,34 +35,27 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
-        chipsData[position].gatewayId?.let {
-            setSeeMoreLogic(it,holder)
+        if (chipsData[position].gatewayId != GATEWAY_ID_SEE_MORE) {
+            chipsData[position].gatewayId?.let {
+                holder.dummyView.visibility = View.VISIBLE
+            }
+            chipsData[position].header?.let {
+                setHeaderData(it, holder)
+            } ?: run {
+                removeViewVisibility(holder.headerPartner)
+            }
+            chipsData[position].subheaderColor?.let {
+                setSubHeaderColor(it, holder)
+            }
+            chipsData[position].subheader?.let {
+                setSubHeaderData(it, holder)
+            } ?: run {
+                removeViewVisibility(holder.subheaderPartner)
+            }
+            setIcon(position, holder.partnerIcon)
         }
-        chipsData[position].header?.let {
-            setHeaderData(it,holder)
-        } ?: run {
-            removeViewVisibility(holder.headerPartner)
-        }
-        chipsData[position].subheaderColor?.let {
-            setSubHeaderColor(it, holder)
-        }
-        chipsData[position].subheader?.let {
-            setSubHeaderData(it,holder)
-        } ?: run {
-            removeViewVisibility(holder.subheaderPartner)
-        }
-        setIcon(position, holder.partnerIcon)
-    }
-
-    private fun setSeeMoreLogic(it: Int, holder: FintechWidgetAdapter.MyViewHolder) {
-        if (it == 0) {
-            holder.dummyView.visibility = View.GONE
-            holder.seeMoreIcon.visibility = View.VISIBLE
-            holder.seeMoreIcon.loadImage(R.drawable.fintechwidget_procced_icon)
-        } else {
-            holder.dummyView.visibility = View.VISIBLE
-            holder.seeMoreIcon.visibility = View.GONE
-        }
+        else
+            holder.cardContainer.visibility = View.GONE
     }
 
     private fun setHeaderData(it: String,
@@ -90,10 +87,10 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                 holder.subheaderPartner.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
-                holder.subheaderPartner.fontType = Typography.BOLD
+                holder.subheaderPartner.weightType = Typography.BOLD
             }
             else -> {
                 holder.subheaderPartner.setTextColor(
@@ -102,7 +99,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                         com.tokopedia.unifyprinciples.R.color.Unify_N700_68
                     )
                 )
-                holder.subheaderPartner.fontType = Typography.REGULAR
+                holder.subheaderPartner.weightType = Typography.REGULAR
             }
         }
     }
@@ -140,7 +137,8 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     }
 
     override fun getItemCount(): Int {
-        return chipsData.size
+        // since the last element of the list is Lihat semu which no needed to inflate
+        return chipsData.size-1
     }
 
     fun setData(chips: ArrayList<ChipsData>) {
@@ -153,8 +151,8 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         val partnerIcon = itemView.findViewById<ImageUnify>(R.id.partnerIcon)
         val headerPartner = itemView.findViewById<Typography>(R.id.chipHeader)
         val subheaderPartner = itemView.findViewById<Typography>(R.id.chipSubHeader)
-        val seeMoreIcon = itemView.findViewById<ImageUnify>(R.id.seeMore_Icon)
         val dummyView = itemView.findViewById<View>(R.id.dummyViewForMargin)
+        val cardContainer = itemView.findViewById<View>(R.id.pdp_fintech_card_container)
 
         init {
 
@@ -166,30 +164,11 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
 
         private fun clickedWidgetData() {
-            safeLet(
-                chipsData[adapterPosition].cta?.androidUrl,
-                chipsData[adapterPosition].cta?.type,
-                chipsData[adapterPosition].tenure,
-                chipsData[adapterPosition].productCode,
-                chipsData[adapterPosition].cta?.bottomsheet,
-                chipsData[adapterPosition].gatewayId,
-                chipsData[adapterPosition].name,
-                chipsData[adapterPosition].userStatus,
-                chipsData[adapterPosition].linkingStatus
-            ) { url, ctaType, tenure, gatewayCode, bottomSheetWidgetDetail, gatewayId, userStatus, partnerName, linkingStatus ->
-
+          val listOfAllChecker   = setListOfData(chipsData[adapterPosition])
+           if(safeLet(listOfAllChecker) == true)
+             {
                 widgetClickListner.clickedWidget(
-                    FintechRedirectionWidgetDataClass(
-                        cta = ctaType,
-                        redirectionUrl = url,
-                        tenure = tenure,
-                        gatewayId = gatewayId,
-                        gatewayCode = gatewayCode,
-                        widgetBottomSheet = bottomSheetWidgetDetail,
-                        userStatus = userStatus,
-                        linkingStatus = linkingStatus,
-                        gatewayPartnerName = partnerName
-                    )
+                    returnRouteObject(chipsData[adapterPosition])
                 )
             }
         }
@@ -197,31 +176,11 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
     }
 
 
-    // Null Checker
-    inline fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, T6 : Any, T7 : Any, T8 : Any, T9 : Any, R : Any> safeLet(
-        p1: T1?,
-        p2: T2?,
-        p3: T3?,
-        p4: T4?,
-        p5: T5?,
-        p6: T6?,
-        p7: T7?,
-        p8: T8?,
-        p9: T9?,
-        block: (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R?
-    ): R? {
-        return if (p1 != null && p2 != null && p3 != null && p4 != null && p5 != null && p6 != null && p7 != null && p8 != null && p9 != null) block(
-            p1,
-            p2,
-            p3,
-            p4,
-            p5,
-            p6,
-            p7,
-            p8,
-            p9
-        ) else null
+    companion object {
+        // Do not inflate if gatway id is 0
+        const val GATEWAY_ID_SEE_MORE = "0"
     }
+
 }
 
 

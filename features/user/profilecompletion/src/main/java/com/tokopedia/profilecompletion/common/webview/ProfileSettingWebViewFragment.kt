@@ -1,9 +1,13 @@
 package com.tokopedia.profilecompletion.common.webview
 
 import android.app.Activity
+import android.net.Uri
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.profilecompletion.di.ActivityComponentFactory
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.webview.BaseWebViewFragment
@@ -16,8 +20,17 @@ class ProfileSettingWebViewFragment : BaseWebViewFragment() {
     lateinit var tracker: ProfileInfoTracker
 
     override fun onFragmentBackPressed(): Boolean {
-	tracker.trackClickOnBtnBackChangeEmail()
+	if (Uri.parse(url).path?.contains(SUFFIX_CHANGE_EMAIL) == true) {
+	    tracker.trackClickOnBtnBackChangeEmail()
+	}
 	return super.onFragmentBackPressed()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+	super.onCreate(savedInstanceState)
+	this.activity?.let {
+	    getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+	}
     }
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
@@ -41,6 +54,7 @@ class ProfileSettingWebViewFragment : BaseWebViewFragment() {
 
     companion object {
 	private const val APPLINK = "tokopedia-android-internal://success-change-email"
+	private const val SUFFIX_CHANGE_EMAIL = "/user/profile/email"
 
 	fun instance(bundle: Bundle): Fragment {
 	    val fragment = ProfileSettingWebViewFragment()

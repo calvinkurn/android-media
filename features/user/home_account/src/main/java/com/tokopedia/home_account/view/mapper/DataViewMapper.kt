@@ -16,19 +16,14 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 class DataViewMapper @Inject constructor(
-        private val userSession: UserSessionInterface
-) {
+        private val userSession: UserSessionInterface) {
 
-    fun mapToProfileDataView(accountDataModel: UserAccountDataModel, isEnableLinkAccount: Boolean = false): ProfileDataView {
+    fun mapToProfileDataView(accountDataModel: UserAccountDataModel): ProfileDataView {
         var linkStatus = false
-        var isShowLinkAccount = false
+        val isShowLinkAccount = true
 
         if (accountDataModel.linkStatus.linkStatus.isNotEmpty()) {
             linkStatus = accountDataModel.linkStatus.linkStatus[0].status == "linked"
-        }
-
-        if(isEnableLinkAccount || linkStatus) {
-            isShowLinkAccount = true
         }
 
         return ProfileDataView(

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.CPLProductModel
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 import com.tokopedia.product.addedit.R
@@ -57,6 +58,15 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
         notifyDataSetChanged()
     }
 
+    fun setProductActiveState(shipperServices: ArrayList<Long>) {
+        shipmentCPLitem.forEach { courier ->
+            courier.shipperProduct.forEach { data ->
+                data.isActive = shipperServices.contains(data.shipperProductId)
+            }
+        }
+        notifyDataSetChanged()
+    }
+
     fun checkActivatedSpIds(): List<Long> {
         val activatedListIds = mutableListOf<Long>()
         shipmentCPLitem.forEach { courier ->
@@ -88,6 +98,7 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
         private val shipmentItemCategory = itemView.findViewById<Typography>(R.id.shipment_category)
 
         fun bindData(data: ShipperCPLModel) {
+            data.isActive = false
             data.shipperProduct.forEach {
                 if (it.isActive) {
                     data.isActive = true
@@ -95,6 +106,10 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
             }
 
             if (data.isActive) {
+                shipmentItemImage.visible()
+                shipmentItemName.visible()
+                shipmentItemCategory.visible()
+
                 val shipperProduct = data.shipperProduct
                 val stringBuilder = StringBuilder()
 
@@ -111,7 +126,6 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
                     shipmentItemName.text = data.shipperName
                     shipmentItemCategory.text = stringBuilder.substring(0, stringBuilder.length - 2)
                 }
-
             } else {
                 shipmentItemImage.gone()
                 shipmentItemName.gone()

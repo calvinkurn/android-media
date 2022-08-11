@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_catalog_specs_and_detail_fragment
 
 class CatalogSpecsAndDetailFragment : Fragment() {
     private var type: Int = -1
+    private var jumpToFullSpecIndex : Int = 0
 
     companion object {
         const val SPECIFICATION_TYPE = 0
@@ -25,13 +26,16 @@ class CatalogSpecsAndDetailFragment : Fragment() {
         const val SPECIFICATION = "SPECIFICATION"
         private const val CATALOG_SPECS_TEXT_SIZE = 14.0f
         private const val CATALOG_BOTTOM_LINEAR_WEIGHT = 0.5f
-
-        fun newInstance(type: Int, description: String?, specifications: ArrayList<FullSpecificationsComponentData>?): CatalogSpecsAndDetailFragment {
+        private const val JUMP_TO_FULL_SPEC_INDEX = "JUMP_TO_FULL_SPEC_INDEX"
+        private const val SETTLING_MILLIS = 100L
+        fun newInstance(type: Int, description: String?, specifications: ArrayList<FullSpecificationsComponentData>?,
+        jumpTo :Int = 0): CatalogSpecsAndDetailFragment {
             return CatalogSpecsAndDetailFragment().apply {
                 arguments = Bundle().apply {
                     putInt(TYPE, type)
                     putString(DESCRIPTION, description)
                     putParcelableArrayList(SPECIFICATION, specifications)
+                    putInt(JUMP_TO_FULL_SPEC_INDEX, jumpTo)
                 }
             }
         }
@@ -51,6 +55,7 @@ class CatalogSpecsAndDetailFragment : Fragment() {
             type = requireArguments().getInt(TYPE, 0)
             description = arguments?.getString(DESCRIPTION)
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)
+            jumpToFullSpecIndex = arguments?.getInt(JUMP_TO_FULL_SPEC_INDEX) ?: 0
         }
 
         if (type == SPECIFICATION_TYPE) {
@@ -63,7 +68,8 @@ class CatalogSpecsAndDetailFragment : Fragment() {
 
     private fun setSpecificationView(specifications: ArrayList<FullSpecificationsComponentData>) {
         linear_layout.removeAllViews()
-        for(specs in specifications){
+        var jumpToView : View? = null
+        specifications.forEachIndexed { specsIndex, specs ->
             if(specs.specificationsRow == null){
                 return
             }
@@ -105,7 +111,15 @@ class CatalogSpecsAndDetailFragment : Fragment() {
                     lineView.layoutParams = params
                     linear_layout.addView(lineView)
                 }
+                if(specsIndex == jumpToFullSpecIndex){
+                    jumpToView = headerView
+                }
             }
+        }
+        if(jumpToView != null  && jumpToFullSpecIndex != 0){
+            specs_scroll_view.postDelayed({
+                specs_scroll_view.scrollTo(0, jumpToView?.top ?: 0)
+            },SETTLING_MILLIS)
         }
     }
 

@@ -50,7 +50,17 @@ class BaseSuggestionDataView(
         val title: String = "",
         val searchTerm: String = "",
         val dimension90: String = "",
-        val position: Int = 0
+        val position: Int = 0,
+        val componentId: String = "",
+        val trackingOption: Int = 0,
+    ) : SearchComponentTracking by searchComponentTracking(
+        trackingOption = trackingOption,
+        keyword = searchTerm,
+        valueId = "0",
+        valueName = title,
+        componentId = componentId,
+        applink = applink,
+        dimension90 = dimension90,
     )
 
     fun hasSlashedPrice(): Boolean {
@@ -68,4 +78,12 @@ class BaseSuggestionDataView(
         "list", PRODUCT_LINE_SUGGESTION_ACTION_FIELD,
         "dimension90", dimension90
     )
+
+    fun isBoldAllText(): Boolean {
+        return type == TYPE_CURATED || type == TYPE_BOLD_SQUARE
+    }
+
+    fun isCircleImage(): Boolean {
+        return type == TYPE_SHOP || type == TYPE_PROFILE
+    }
 }

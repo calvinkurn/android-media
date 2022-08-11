@@ -1,4 +1,4 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardViewProductCard"
@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageProduct"
+            android:id="@+id/productCardImage"
             android:contentDescription="@string/content_desc_imageProduct"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -47,7 +47,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
-        <com.tokopedia.productcard.ProductCardVideoView
+        <com.tokopedia.video_widget.VideoPlayerView
             android:id="@+id/videoProduct"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -62,6 +62,7 @@
 
         <ImageView
             android:id="@+id/imageVideoIdentifier"
+            android:contentDescription="@string/content_desc_videoPlay"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginEnd="8dp"
@@ -71,6 +72,38 @@
             app:layout_constraintEnd_toEndOf="@+id/mediaAnchorProduct"
             android:src="@drawable/product_card_ic_video_identifier"
             tools:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/labelRepositionBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@null"
+            android:background="@drawable/product_card_rounded_label"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/labelReposition"
+            app:layout_constraintTop_toTopOf="@id/labelReposition"
+            app:layout_constraintEnd_toEndOf="@id/labelReposition"
+            app:layout_constraintBottom_toBottomOf="@id/labelReposition"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/labelReposition"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_label_campaign_height"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_Static_White"
+            android:visibility="gone"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/mediaAnchorProduct"
+            tools:visibility="visible"
+            tools:text="Semarak Ramadan" />
 
         <ImageView
             android:id="@+id/labelCampaignBackground"
@@ -105,11 +138,11 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/product_card_label_best_seller_height"
             android:background="@drawable/product_card_best_seller_background"
-            android:paddingTop="@dimen/product_card_label_best_seller_paddingtop"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:layout_marginTop="@dimen/product_card_label_best_seller_margintop"
             android:textColor="@color/Unify_N0"
+            android:gravity="center_vertical"
             tools:text="# 1"
             tools:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
@@ -243,15 +276,15 @@
             app:srcCompat="@drawable/ic_pdp_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/productCardFooterLayout"
+            app:layout_constraintBottom_toTopOf="@id/productCardFooterLayoutContainer"
             app:layout_constraintVertical_bias="1.0"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="989jt orang"
             tools:visibility="visible"/>
 
-        <include
-            android:id="@+id/productCardFooterLayout"
+        <FrameLayout
+            android:id="@+id/productCardFooterLayoutContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -261,7 +294,6 @@
             app:layout_constraintEnd_toEndOf="@id/mediaAnchorProduct"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            app:layout_goneMarginTop="8dp"
-            layout="@layout/product_card_footer_layout" />
+            app:layout_goneMarginTop="8dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify2>

@@ -258,7 +258,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             val branchStart = System.currentTimeMillis()
 
             onClickChannelWidgetClicked(UniversalShareBottomSheet.getShareBottomSheetType(), shareModel.channel
-                    ?: "", productData.userId, productData.productId)
+                    ?: "", productData.userId, productData.productId, productData.campaignId, productData.bundleId)
 
             val linkerShareData = productDataToLinkerDataMapper(productData)
             linkerShareData.linkerData?.apply {
@@ -329,7 +329,8 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     private fun onCloseShareClicked() {
-        onCloseShareWidgetClicked(UniversalShareBottomSheet.getShareBottomSheetType(), productData.userId, productData.productId)
+        onCloseShareWidgetClicked(UniversalShareBottomSheet.getShareBottomSheetType(), productData.userId, productData.productId,
+            productData.campaignId, productData.bundleId)
         universalShareBottomSheet?.dismiss()
     }
 
@@ -370,7 +371,8 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     productData.productImageUrl ?: "",
                     "", productImgList)
         }
-        onImpressShareWidget(UniversalShareBottomSheet.getShareBottomSheetType(), productData.userId, productData.productId)
+        onImpressShareWidget(UniversalShareBottomSheet.getShareBottomSheetType(), productData.userId, productData.productId,
+            productData.campaignId, productData.bundleId)
 //        call this method here if the complete data needed for Affiliate request has not been received yet
 //        universalShareBottomSheet?.affiliateRequestDataAwaited()
         universalShareBottomSheet?.show(fragmentManager, fragment, screenshotDetector)

@@ -1,7 +1,7 @@
 package com.tokopedia.flight.cancellation.domain
 
-import com.tokopedia.flight.cancellation.data.FlightCancellationGQLQuery
 import com.tokopedia.flight.cancellation.data.FlightCancellationRequestEntity
+import com.tokopedia.flight.cancellation.data.QueryCancelRequest
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -20,7 +20,7 @@ class FlightCancellationRequestCancelUseCase @Inject constructor(
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         useCase.clearRequest()
 
-        val graphqlRequest = GraphqlRequest(FlightCancellationGQLQuery.CANCEL_REQUEST,
+        val graphqlRequest = GraphqlRequest(QueryCancelRequest(),
                 FlightCancellationRequestEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)
 

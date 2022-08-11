@@ -2,20 +2,25 @@ package com.tokopedia.vouchercreation.shop.create.view.customview
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.annotation.LayoutRes
+import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.view.VoucherCustomView
-import kotlinx.android.synthetic.main.mvc_create_widget_title.view.*
+import com.tokopedia.vouchercreation.databinding.MvcCreateWidgetTitleBinding
 
 class VoucherCreateTitleView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
         defStyleRes: Int = 0,
-        @LayoutRes layoutResource: Int = R.layout.mvc_create_widget_title,
         styleableResource: IntArray = R.styleable.VoucherCreateWidgetTitle
-) : VoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
+) : VoucherCustomView(context, attrs, defStyleAttr, defStyleRes, styleableResource) {
+
+    private var binding: MvcCreateWidgetTitleBinding = MvcCreateWidgetTitleBinding.inflate(LayoutInflater.from(context), this, true)
+
+    init {
+        setupLayout(binding)
+    }
 
     private var title: String = ""
 
@@ -26,8 +31,6 @@ class VoucherCreateTitleView @JvmOverloads constructor(
     }
 
     override fun setupView() {
-        view?.run {
-            widgetTitle?.text = title
-        }
+        binding.widgetTitle.text = title
     }
 }

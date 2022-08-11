@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.thankyou_native.R
@@ -61,10 +60,10 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         tvInterestRate.text = getString(R.string.thank_interest_rate, thanksPageData.additionalInfo.interest)
         tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
-        if (thanksPageData.thanksCustomization == null || thanksPageData.thanksCustomization?.customWtvText.isNullOrBlank()) {
+        if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage?.wtvText.isNullOrBlank()) {
             tvCheckPaymentStatusTitle.text = getString(R.string.thank_processing_payment_check_order)
         } else {
-            tvCheckPaymentStatusTitle.text = thanksPageData.thanksCustomization?.customWtvText
+            tvCheckPaymentStatusTitle.text = thanksPageData.customDataMessage?.wtvText
         }
     }
 

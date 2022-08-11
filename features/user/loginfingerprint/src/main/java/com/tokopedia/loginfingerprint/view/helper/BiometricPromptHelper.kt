@@ -1,5 +1,6 @@
 package com.tokopedia.loginfingerprint.view.helper
 
+import android.app.Activity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
@@ -11,6 +12,10 @@ import com.tokopedia.loginfingerprint.R
 object BiometricPromptHelper {
 
     fun isBiometricAvailable(context: FragmentActivity?): Boolean {
+        return isBiometricAvailableActivity(context)
+    }
+
+    fun isBiometricAvailableActivity(context: Activity?): Boolean {
         context?.let {
             return BiometricManager.from(context).canAuthenticate(BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
         }

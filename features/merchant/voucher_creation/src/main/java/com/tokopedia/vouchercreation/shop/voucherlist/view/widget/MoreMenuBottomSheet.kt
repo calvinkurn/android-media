@@ -10,14 +10,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcMoreMenuBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.MoreMenuUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.adapter.MoreMenuAdapter
-import kotlinx.android.synthetic.main.bottomsheet_mvc_more_menu.*
 
 /**
  * Created By @ilhamsuaib on 18/04/20
@@ -39,6 +40,8 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         private const val IS_ACTIVE = "is_active"
     }
 
+    private var binding by autoClearedNullable<BottomsheetMvcMoreMenuBinding>()
+
     private val isActiveVoucher by lazy {
         arguments?.getBoolean(IS_ACTIVE) ?: false
     }
@@ -56,9 +59,9 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
-        val childView = View.inflate(context, R.layout.bottomsheet_mvc_more_menu, null)
+        binding = BottomsheetMvcMoreMenuBinding.inflate(LayoutInflater.from(context))
         setTitle(String.format(context?.getString(R.string.mvc_voucher_name).orEmpty(), voucher?.name))
-        setChild(childView)
+        setChild(binding?.root)
     }
 
     private fun setupView() {
@@ -137,7 +140,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
             menuAdapter?.addElement(getMenuItem)
         }
 
-        rvMvcBottomSheetMenu?.run {
+        binding?.rvMvcBottomSheetMenu?.run {
             layoutManager = LinearLayoutManager(context)
             adapter = menuAdapter
             addItemDecoration(getItemDecoration())

@@ -15,4 +15,15 @@ sealed class FintechWidgetAnalyticsEvent {
         val partner: String,
         val ctaWording: String
     ) : FintechWidgetAnalyticsEvent()
+
+    data class PdpWidgetClick(
+        val productId: String?,
+        val linkingStatus: String?,
+        val userStatus: String?,
+        val chipType: String?,
+        val installmentAmount:String?,
+        val tenure: String?,
+        val partner: String?,
+        val redirectionUrl:String?
+    ): FintechWidgetAnalyticsEvent()
 }

@@ -20,7 +20,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
  */
 class PlayWidgetSampleCommonFragment : TkpdBaseV4Fragment() {
 
-    private val rvWidgetSample by lazy { view?.findViewById<RecyclerView>(R.id.rv_widget_sample) }
+    private val rvWidgetSample by lazy { view?.findViewById<RecyclerView>(R.id.rv_play_widget_sample) }
 
     private lateinit var adapter: PlayWidgetSampleCommonAdapter
 
@@ -44,7 +44,7 @@ class PlayWidgetSampleCommonFragment : TkpdBaseV4Fragment() {
     private fun setupView(view: View) {
         val sampleData = getSampleData()
         val coordinatorMap = List(sampleData.size) {
-            PlayWidgetCoordinator(this).apply {
+            PlayWidgetCoordinator(this, autoHandleLifecycleMethod = false).apply {
                 setAnalyticListener(PlayWidgetSampleAnalytic(requireContext()))
             }
         }.associateWith { null }

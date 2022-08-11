@@ -14,44 +14,28 @@ data class BalanceDrawerItemModel(
         var balanceSubTitleTextAttribute: BalanceTextAttribute? = null,
         var balanceTitleTagAttribute: BalanceTagAttribute? = null,
         var balanceSubTitleTagAttribute: BalanceTagAttribute? = null,
-        val drawerItemType: Int = TYPE_TOKOPOINT,
+        val drawerItemType: Int = TYPE_REWARDS,
         val mainPageTitle: String = "",
         var state: Int = STATE_LOADING,
         val trackingAttribute: String = "",
         var alternateBalanceDrawerItem: List<BalanceDrawerItemModel>? = null,
         var balanceCoachmark: BalanceCoachmark? = null,
-        val reserveBalance: String = ""
+        val reserveBalance: String = "",
+        val headerTitle: String = "",
+        val isSubscriberGoToPlus: Boolean = false,
 ) {
     companion object {
-        const val TYPE_UNKNOWN = 0
-
-        const val TYPE_TOKOPOINT = 1
-
-        const val TYPE_FREE_ONGKIR = 2
-
-        const val TYPE_COUPON = 3
-
         const val TYPE_REWARDS = 4
 
-        const val TYPE_WALLET_OVO = 5
-
-        const val TYPE_WALLET_WITH_TOPUP = 6
-
-        const val TYPE_WALLET_OTHER = 7
-
         //is not linked for any type of wallet
-        const val TYPE_WALLET_PENDING_CASHBACK = 8
-
         const val TYPE_WALLET_APP_LINKED = 9
-
         const val TYPE_WALLET_APP_NOT_LINKED = 11
+
+        //goto plus
+        const val TYPE_SUBSCRIPTION = 12
 
         const val STATE_SUCCESS = 0
         const val STATE_LOADING = 1
         const val STATE_ERROR = 2
-    }
-
-    fun buildDefaultData(titleTagAttributes: BalanceTagAttribute) {
-        balanceTitleTagAttribute = titleTagAttributes
     }
 }

@@ -5,7 +5,7 @@ package com.tokopedia.play.view.uimodel
  */
 data class PlayUserWinnerStatusUiModel(
     val channelId: Long,
-    val interactiveId: Long,
+    val interactiveId: String,
     val userId: Long,
     val name: String,
     val imageUrl: String,

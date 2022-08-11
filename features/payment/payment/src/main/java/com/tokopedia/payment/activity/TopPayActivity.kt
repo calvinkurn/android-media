@@ -34,9 +34,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.network.authentication.*
-import com.tokopedia.network.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.common.payment.PaymentConstant
+import com.tokopedia.common.payment.PaymentLoggingClient
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
@@ -45,6 +44,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fingerprint.util.FingerprintConstant
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.authentication.*
+import com.tokopedia.network.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.R
@@ -55,7 +56,10 @@ import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment
 import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister
 import com.tokopedia.payment.presenter.TopPayContract
 import com.tokopedia.payment.presenter.TopPayPresenter
-import com.tokopedia.payment.utils.*
+import com.tokopedia.payment.utils.Constant
+import com.tokopedia.payment.utils.HEADER_TKPD_SESSION_ID
+import com.tokopedia.payment.utils.HEADER_TKPD_USER_AGENT
+import com.tokopedia.payment.utils.PaymentPageTimeOutLogging
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -186,7 +190,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     private fun initVar() {
-        webChromeWebviewClient = CommonWebViewClient(this, progressBar)
+        webChromeWebviewClient = if (isPaymentJSLoggingEnabled())
+                PaymentLoggingClient(this, progressBar)
+        else CommonWebViewClient(this, progressBar)
+    }
+
+    private fun isPaymentJSLoggingEnabled(): Boolean {
+        return remoteConfig.getBoolean(PaymentConstant.KEY_ENABLE_JS_LOGGIN, false).or(false)
     }
 
     @SuppressLint("SetJavaScriptEnabled")

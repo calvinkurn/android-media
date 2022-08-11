@@ -44,10 +44,6 @@ import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.logisticCommon.data.constant.CourierConstant;
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -57,6 +53,10 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.CardUnify;
@@ -213,7 +213,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private boolean isPriorityChecked = false;
 
     // Shipping Experience
-    private LinearLayout llShippingExperienceStateLoading;
+    private ConstraintLayout llShippingExperienceStateLoading;
     private FrameLayout containerShippingExperience;
     private ConstraintLayout layoutStateNoSelectedShipping;
     private ConstraintLayout layoutStateFailedShipping;
@@ -600,6 +600,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             imgFreeShipping.setVisibility(View.VISIBLE);
             separatorFreeShipping.setVisibility(View.VISIBLE);
+            if (!shipmentCartItemModel.getHasSeenFreeShippingBadge() && shipmentCartItemModel.isFreeShippingPlus()) {
+                shipmentCartItemModel.setHasSeenFreeShippingBadge(true);
+                mActionListener.onViewFreeShippingPlusBadge();
+            }
         } else {
             imgFreeShipping.setVisibility(View.GONE);
             separatorFreeShipping.setVisibility(View.GONE);
@@ -1430,7 +1434,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null &&
                 voucherLogisticItemUiModel != null) {
             if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate() == 0) {
-                TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, tvShippingFeePrice.getContext().getString(com.tokopedia.purchase_platform.common.R.string.label_free_shipping), R.string.content_desc_tv_shipping_fee_price_subtotal);
+                TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(0.0, false)), R.string.content_desc_tv_shipping_fee_price_subtotal);
             } else {
                 TextViewExtKt.setTextAndContentDescription(tvShippingFeePrice, getPriceFormat(tvShippingFee, tvShippingFeePrice, shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getDiscountedRate()), R.string.content_desc_tv_shipping_fee_price_subtotal);
             }

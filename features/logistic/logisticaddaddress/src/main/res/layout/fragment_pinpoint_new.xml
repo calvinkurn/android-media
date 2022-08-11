@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_Background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,7 +14,7 @@
             android:id="@+id/rl_map_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/dp_80">
+            android:layout_marginBottom="80dp">
 
             <com.google.android.gms.maps.MapView
                 android:id="@+id/map_views"
@@ -52,49 +54,51 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ic_location"
-                android:layout_width="@dimen/unify_space_32"
-                android:layout_height="@dimen/unify_space_40"
+                android:layout_width="32dp"
+                android:layout_height="40dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 app:icon_name="LOCATION_FILLED"/>
 
         </RelativeLayout>
 
-
-
-        <LinearLayout
-            android:id="@+id/btn_horizonal_layout"
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/unify_space_12"
-            android:orientation="horizontal"
-            android:layout_above="@id/layout_botoomsheet_loc"
-            android:visibility="visible">
-
-            <com.tokopedia.unifycomponents.ChipsUnify
-                android:id="@+id/chips_current_loc"
+            android:layout_above="@id/layout_botoomsheet_loc" >
+            <LinearLayout
+                android:id="@+id/btn_horizonal_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/unify_space_12"
-                app:centerText="true"
-                app:chipSize="medium"
-                app:chipText="Gunakan Lokasi Saat Ini"
-                app:chipType="normal" />
+                android:layout_marginBottom="12dp"
+                android:orientation="horizontal"
+                android:visibility="visible">
 
-            <com.tokopedia.unifycomponents.ChipsUnify
-                android:id="@+id/chips_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/unify_space_12"
-                app:centerText="true"
-                app:chipSize="medium"
-                app:chipText="Cari Ulang"
-                app:chipType="normal" />
+                <com.tokopedia.unifycomponents.ChipsUnify
+                    android:id="@+id/chips_current_loc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    app:centerText="true"
+                    app:chipSize="medium"
+                    app:chipText="Gunakan Lokasi Saat Ini"
+                    app:chipType="normal" />
 
-        </LinearLayout>
+                <com.tokopedia.unifycomponents.ChipsUnify
+                    android:id="@+id/chips_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="12dp"
+                    app:centerText="true"
+                    app:chipSize="medium"
+                    app:chipText="Cari Ulang"
+                    app:chipType="normal" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/layout_botoomsheet_loc"

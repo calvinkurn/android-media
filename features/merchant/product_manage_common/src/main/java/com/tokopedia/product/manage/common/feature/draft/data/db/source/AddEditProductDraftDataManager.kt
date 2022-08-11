@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.common.feature.draft.data.db.source
 import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant
 import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDao
 import com.tokopedia.product.manage.common.feature.draft.data.db.entity.AddEditProductDraftEntity
-import rx.Observable
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AddEditProductDraftDataManager @Inject constructor(private val draftDao: AddEditProductDraftDao) {
@@ -13,7 +13,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         draft.data = json
         draft.isUploading = isUploading
         draft.shopId = shopId
-        draft.version = AddEditProductDraftConstant.DB_VERSION_9
+        draft.version = AddEditProductDraftConstant.DB_VERSION_10
         return draftDao.insertDraft(draft)
     }
 
@@ -21,12 +21,16 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         return draftDao.getDraft(productId)
     }
 
+    fun getAllDraftsFlow(shopId: String): Flow<List<AddEditProductDraftEntity>> {
+        return draftDao.getAllDraftsFlow(shopId)
+    }
+
     fun getAllDrafts(shopId: String): List<AddEditProductDraftEntity> {
         return draftDao.getAllDrafts(shopId)
     }
 
-    fun getAllDraftsCount(shopId: String): Observable<Long> {
-        return Observable.fromCallable { draftDao.getAllDraftsCount(shopId) }
+    fun getAllDraftsCountFlow(shopId: String): Flow<Long> {
+        return draftDao.getAllDraftsCountFlow(shopId)
     }
 
     fun deleteAllDrafts(shopId: String): Boolean {
@@ -45,7 +49,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         val draft = getDraft(productId) ?: AddEditProductDraftEntity()
         draft.apply {
             this.data = data
-            this.version =AddEditProductDraftConstant.DB_VERSION_9
+            this.version =AddEditProductDraftConstant.DB_VERSION_10
         }
         draftDao.updateDraft(draft)
         return productId
@@ -56,7 +60,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         draft.apply {
             this.data = data
             this.isUploading = isUploading
-            this.version = AddEditProductDraftConstant.DB_VERSION_9
+            this.version = AddEditProductDraftConstant.DB_VERSION_10
         }
         draftDao.updateDraft(draft)
         return productId

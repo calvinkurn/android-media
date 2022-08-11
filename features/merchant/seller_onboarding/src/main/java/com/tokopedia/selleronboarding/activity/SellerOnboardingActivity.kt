@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SobAdapter
 import com.tokopedia.selleronboarding.analytic.SellerOnboardingV2Analytic
@@ -50,16 +51,20 @@ class SellerOnboardingActivity : BaseActivity() {
 
         private const val PARAM_COACH_MARK = "coachmark"
         private const val DISABLED = "disabled"
+
+        private const val ANNIVERSARY_CONFETTI_IMAGE = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_confetti.png"
+        private const val ANNIVERSARY_PATTERN_IMAGE = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_lines_large.png"
+        private const val ANNIVERSARY_LOGO_IMAGE = "https://images.tokopedia.net/img/android/sellerhome/ic_anniv_13th_logo.png"
     }
 
     private val sobAdapter by lazy { SobAdapter() }
     private val slideItems: List<BaseSliderUiModel> by lazy {
         listOf(
-            SobSliderHomeUiModel(Int.ZERO),
-            SobSliderMessageUiModel(Int.ZERO),
-            SobSliderManageUiModel(Int.ZERO),
-            SobSliderPromoUiModel(Int.ZERO),
-            SobSliderStatisticsUiModel(Int.ZERO)
+            SobSliderHomeUiModel(null),
+            SobSliderMessageUiModel(null),
+            SobSliderManageUiModel(null),
+            SobSliderPromoUiModel(null),
+            SobSliderStatisticsUiModel(null)
         )
     }
     private var binding: ActivitySobOnboardingBinding? = null
@@ -71,6 +76,7 @@ class SellerOnboardingActivity : BaseActivity() {
 
         handleAppLink()
         setPageBackground()
+        setAnniversaryComponents()
         setWhiteStatusBar()
         setupViewsTopMargin()
         setupSlider()
@@ -93,12 +99,28 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setPageBackground() {
         try {
-            binding?.backgroundSob?.setBackgroundResource(R.drawable.bg_sob_full)
-            binding?.bgSobRamadhan?.setImageResource(R.drawable.bg_sob_ramadhan)
-            binding?.bgSobRamadhanPattern?.setImageResource(R.drawable.bg_sob_ramadhan_pattern)
+            binding?.backgroundSob?.setBackgroundResource(R.drawable.bg_sob_full_anniv)
         } catch (e: Resources.NotFoundException) {
             Timber.e(e)
         }
+    }
+
+    private fun setAnniversaryComponents() {
+        setConfettiAnniv()
+        setBackgroundPattern()
+        setAnnivLogo()
+    }
+
+    private fun setConfettiAnniv() {
+        binding?.confettiSob?.loadImageWithoutPlaceholder(ANNIVERSARY_CONFETTI_IMAGE)
+    }
+
+    private fun setBackgroundPattern() {
+        binding?.patternSob?.loadImageWithoutPlaceholder(ANNIVERSARY_PATTERN_IMAGE)
+    }
+
+    private fun setAnnivLogo() {
+        binding?.logoSob?.loadImageWithoutPlaceholder(ANNIVERSARY_LOGO_IMAGE)
     }
 
     @SuppressLint("WrongConstant")
@@ -231,30 +253,29 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setupViewsTopMargin() {
         val statusBarHeight = OnboardingUtils.getStatusBarHeight(this)
+
+        val ivAnnivLogo = binding?.logoSob?.layoutParams as? ViewGroup.MarginLayoutParams
+        ivAnnivLogo?.setTopMargin(statusBarHeight)
+
         val btnSkipLp = binding?.tvSobSkip?.layoutParams as? ViewGroup.MarginLayoutParams
-        btnSkipLp?.let { lp ->
-            val btnSkipTopMargin = lp.topMargin.plus(statusBarHeight)
-            lp.setMargins(
-                lp.leftMargin,
-                btnSkipTopMargin,
-                lp.rightMargin,
-                lp.bottomMargin
-            )
-        }
+        btnSkipLp?.setTopMargin(statusBarHeight)
 
         val viewPagerLp = binding?.sobViewPager?.layoutParams as? ViewGroup.MarginLayoutParams
-        viewPagerLp?.let { lp ->
-            val viewPagerTopMargin = lp.topMargin.plus(statusBarHeight)
-            lp.setMargins(
-                lp.leftMargin,
-                viewPagerTopMargin,
-                lp.rightMargin,
-                lp.bottomMargin
-            )
-        }
+        viewPagerLp?.setTopMargin(statusBarHeight)
     }
 
     private fun getPositionViewPager(): Int {
         return binding?.sobViewPager?.currentItem.orZero() + ADDITIONAL_INDEX
     }
+
+    private fun ViewGroup.MarginLayoutParams.setTopMargin(statusBarHeight: Int) {
+        val topMargin = topMargin.plus(statusBarHeight)
+        setMargins(
+            leftMargin,
+            topMargin,
+            rightMargin,
+            bottomMargin
+        )
+    }
+
 }

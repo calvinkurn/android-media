@@ -14,10 +14,12 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.unifycomponents.NotificationUnify
+import java.util.*
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -129,9 +131,20 @@ class CardViewHolder(
                 tvCardValue.visible()
                 tvCardValue.text = (element.data?.value ?: ZERO_STR).parseAsHtml()
             }
-            tvCardSubValue.text = element.data?.description?.parseAsHtml()
+            if (element.data?.description.isNullOrBlank()) {
+                tvCardSubValue.invisible()
+            } else {
+                tvCardSubValue.visible()
+                tvCardSubValue.show(
+                    primary = element.data?.description.orEmpty(),
+                    secondary = element.data?.secondaryDescription.orEmpty()
+                )
+            }
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendCardImpressionEvent(element)
+                if (!element.data?.description.isNullOrBlank()) {
+                    tvCardSubValue.showTextWithAnimation()
+                }
             }
 
             root.setOnClickListener {
@@ -143,6 +156,16 @@ class CardViewHolder(
             }
 
             showCardState(element.data)
+            showBadge(element.data?.badgeImageUrl.orEmpty())
+        }
+    }
+
+    private fun showBadge(badgeUrl: String) {
+        if (badgeUrl.isNotBlank()) {
+            binding.imgSahCardBadge.visible()
+            binding.imgSahCardBadge.loadImage(badgeUrl)
+        } else {
+            binding.imgSahCardBadge.gone()
         }
     }
 
@@ -150,7 +173,8 @@ class CardViewHolder(
         with(binding) {
             containerCard.viewTreeObserver.addOnPreDrawListener {
                 element.data?.lastUpdated?.let {
-                    val shouldShowRefreshButton = it.needToUpdated.orFalse() && !element.showLoadingState
+                    val shouldShowRefreshButton =
+                        it.needToUpdated.orFalse() && !element.showLoadingState
                     icShcRefreshCard.isVisible = shouldShowRefreshButton && it.isEnabled
                     icShcRefreshCard.setOnClickListener {
                         refreshWidget(element)
@@ -166,13 +190,28 @@ class CardViewHolder(
     }
 
     private fun showCardState(data: CardDataUiModel?) {
-        with(binding.imgShcCardState) {
+        with(binding) {
             when (data?.state) {
                 CardDataUiModel.State.WARNING, CardDataUiModel.State.DANGER -> {
-                    visible()
-                    loadImage(R.drawable.bg_shc_card_stata_warning)
+                    imgShcCardState.visible()
+                    imgShcCardStatePlus.gone()
+                    imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
                 }
-                CardDataUiModel.State.NORMAL -> gone()
+                CardDataUiModel.State.WARNING_PLUS, CardDataUiModel.State.DANGER_PLUS -> {
+                    imgShcCardState.visible()
+                    imgShcCardState.loadImage(R.drawable.bg_shc_card_stata_warning)
+                    imgShcCardStatePlus.visible()
+                    imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_YELLOW)
+                }
+                CardDataUiModel.State.GOOD_PLUS -> {
+                    imgShcCardState.gone()
+                    imgShcCardStatePlus.visible()
+                    imgShcCardStatePlus.loadImage(SellerHomeUrl.IMG_CARD_ORNAMENT_GREEN)
+                }
+                else -> {
+                    imgShcCardState.gone()
+                    imgShcCardStatePlus.gone()
+                }
             }
         }
     }
@@ -183,7 +222,7 @@ class CardViewHolder(
             tvCardTitle.visible()
             tvCardValue.visible()
             tvCardValue.text = root.context.getString(R.string.shc_load_failed)
-            tvCardSubValue.text = ""
+            tvCardSubValue.invisible()
         }
     }
 

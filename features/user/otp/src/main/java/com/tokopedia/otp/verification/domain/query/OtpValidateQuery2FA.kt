@@ -1,5 +1,9 @@
 package com.tokopedia.otp.verification.domain.query
 
+import com.tokopedia.otp.verification.domain.query.OtpValidateQuery.PIN
+import com.tokopedia.otp.verification.domain.query.OtpValidateQuery.pinHash
+import com.tokopedia.otp.verification.domain.query.OtpValidateQuery.usePinHash
+
 /**
  * Created by Yoris Prayogo on 07/09/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
@@ -21,7 +25,10 @@ object OtpValidateQuery2FA {
             $userIdEnc: String,
             $mode: String,
             $code: String,
-            $msisdn: String
+            $msisdn: String,
+            $PIN: String,
+            $usePinHash: Boolean,
+            $pinHash: String
         ){
             OTPValidate(
                 otpType: $otpType,
@@ -29,7 +36,10 @@ object OtpValidateQuery2FA {
                 UserIDEnc: $userIdEnc,
                 mode: $mode,
                 code: $code,
-                msisdn: $msisdn
+                msisdn: $msisdn,
+                PIN: $PIN, 
+                UsePINHash: $usePinHash, 
+                PINHash: $pinHash
             ) {
                 success
                 message

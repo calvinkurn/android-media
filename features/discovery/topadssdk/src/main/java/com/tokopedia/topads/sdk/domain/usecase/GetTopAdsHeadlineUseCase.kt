@@ -30,6 +30,7 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
         button_text
         layout
         position
+        widget_image_url 
         description,
         widget_title
         image {

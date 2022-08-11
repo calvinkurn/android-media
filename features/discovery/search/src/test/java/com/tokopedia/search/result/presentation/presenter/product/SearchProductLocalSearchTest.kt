@@ -12,11 +12,10 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
-import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateFilterDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
@@ -29,7 +28,6 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Test
 import rx.Subscriber
@@ -104,7 +102,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify visitable list contains title`() {
-        val searchProductTitle = visitableList[1]
+        val searchProductTitle = visitableList[0]
         searchProductTitle.shouldBeInstanceOf<SearchProductTitleDataView>()
 
         val searchProductTitleViewModel = searchProductTitle as SearchProductTitleDataView
@@ -139,7 +137,12 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
             .forEachIndexed { index, productItemDataView ->
             val productItem = searchProductModel.searchProduct.data.productList[index]
 
-            productItemDataView.assertOrganicProduct(productItem, index + 1)
+            productItemDataView.assertOrganicProduct(
+                productItem,
+                index + 1,
+                "",
+                searchProductModel.getProductListType()
+            )
         }
     }
 

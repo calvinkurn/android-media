@@ -1,9 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ToolbarExpandedTitleBrandDetail">
-        <item name="android:textSize">@dimen/spacing_lvl5</item>
-        <item name="android:shadowColor">@color/Unify_N0</item>
-        <item name="android:textColor">@color/Unify_N700_96</item>
-        <item name="android:singleLine">true</item>
-    </style>
 </resources>

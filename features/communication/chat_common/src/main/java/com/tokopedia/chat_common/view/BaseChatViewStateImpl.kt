@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.EventsWatcher
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.BaseChatAdapter
+import com.tokopedia.chat_common.view.adapter.BaseChatAdapter
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -46,7 +46,7 @@ abstract class BaseChatViewStateImpl(
     protected lateinit var recyclerView: RecyclerView
     protected lateinit var replyEditText: EditText
     protected lateinit var replyBox: ViewGroup
-    protected lateinit var actionBox: LinearLayout
+    protected lateinit var actionBox: View
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
@@ -234,7 +234,7 @@ abstract class BaseChatViewStateImpl(
     open fun scrollToBottom() {
         val onNext = Action1<Long> { recyclerView.scrollToPosition(0) }
         val onError = Action1<Throwable> { it.printStackTrace() }
-        Observable.timer(250, TimeUnit.MILLISECONDS)
+        Observable.timer(SCROLL_DELAY, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onNext, onError)
     }
@@ -259,7 +259,7 @@ abstract class BaseChatViewStateImpl(
         return (recyclerView.adapter as BaseChatAdapter).getList()
     }
 
-    fun clearEditText() {
+    open fun clearEditText() {
         replyEditText.setText("")
     }
 
@@ -355,5 +355,6 @@ abstract class BaseChatViewStateImpl(
 
     companion object {
         const val KEYBOARD_OFFSET = 100
+        private const val SCROLL_DELAY: Long = 250
     }
 }

@@ -4,7 +4,7 @@ import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 
 interface SuggestionChipListener {
 
-    fun onChipImpressed(item: BaseSuggestionDataView)
+    fun onChipImpressed(item: BaseSuggestionDataView.ChildItem)
 
     fun onChipClicked(
         baseSuggestionDataView: BaseSuggestionDataView,

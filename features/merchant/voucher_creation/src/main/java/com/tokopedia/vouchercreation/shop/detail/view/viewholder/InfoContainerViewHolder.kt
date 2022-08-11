@@ -8,10 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.ItemMvcInfoContainerBinding
 import com.tokopedia.vouchercreation.shop.detail.model.InfoContainerUiModel
 import com.tokopedia.vouchercreation.shop.detail.view.adapter.SubInfoAdapter
-import kotlinx.android.synthetic.main.item_mvc_info_container.view.*
 
 /**
  * Created By @ilhamsuaib on 05/05/20
@@ -28,18 +29,20 @@ class InfoContainerViewHolder(
         val RES_LAYOUT = R.layout.item_mvc_info_container
     }
 
+    private var binding: ItemMvcInfoContainerBinding? by viewBinding()
+
     private val subInfoAdapter by lazy { SubInfoAdapter() }
 
     override fun bind(element: InfoContainerUiModel) {
-        with(itemView) {
-            tvMvcInfoTitle.text = context?.getString(element.titleRes).toBlankOrString()
-            rvMvcSubInfo.layoutManager = getLinearLayoutManager(context)
+        binding?.apply {
+            tvMvcInfoTitle.text = root.context?.getString(element.titleRes).toBlankOrString()
+            rvMvcSubInfo.layoutManager = getLinearLayoutManager(rvMvcSubInfo.context)
             rvMvcSubInfo.adapter = subInfoAdapter
             tvMvcInfoCta.isVisible = element.hasCta
             tvMvcInfoCta.setOnClickListener {
                 onCtaClick(element.dataKey)
             }
-            addOnImpressionListener(element.impressHolder) {
+            root.addOnImpressionListener(element.impressHolder) {
                 onImpression(element.dataKey)
             }
         }

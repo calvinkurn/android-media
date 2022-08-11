@@ -2,37 +2,38 @@ package com.tokopedia.home_recom.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.AsyncDifferConfig
 import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.RecomPageChooseAddressWidgetCallback
 import com.tokopedia.home_recom.analytics.InfiniteRecomTracker
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.listener.RecomPageListener
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorListener
-import com.tokopedia.home_recom.util.*
 import com.tokopedia.home_recom.util.ReccomendationViewModelUtil.doSuccessOrFail
 import com.tokopedia.home_recom.util.RecomPageConstant.PAGE_TITLE_RECOM_DEFAULT
 import com.tokopedia.home_recom.util.RecomPageConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_PRODUCT_ID
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_QUERY_PARAM
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_REF
+import com.tokopedia.home_recom.util.RecomPageUiUpdater
+import com.tokopedia.home_recom.util.RecomServerLogger
+import com.tokopedia.home_recom.util.showToastErrorWithPrompt
+import com.tokopedia.home_recom.util.showToastSuccess
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home_recom.view.adapter.RecomPageAdapter
 import com.tokopedia.home_recom.view.diffutil.RecomPageDiffUtil
 import com.tokopedia.home_recom.viewmodel.InfiniteRecomViewModel
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -42,7 +43,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import java.util.HashMap
 import javax.inject.Inject
 
 /**
@@ -176,6 +176,10 @@ class InfiniteTokonowRecomFragment :
         return MiniCartAnalytics.Page.RECOMMENDATION_INFINITE
     }
 
+    override fun setMiniCartSource(): MiniCartSource {
+        return MiniCartSource.TokonowRecommendationPage
+    }
+
     override fun onResume() {
         super.onResume()
         showMiniCartWidget()
@@ -234,6 +238,10 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
+    }
+
+    override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
+
     }
 
     override fun onChooseAddressUpdated() {

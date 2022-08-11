@@ -1,7 +1,7 @@
 package com.tokopedia.chat_common.view.viewmodel
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ChatRoomHeaderUiModel constructor(
@@ -14,7 +14,7 @@ data class ChatRoomHeaderUiModel constructor(
         var image: String = "",
         var lastTimeOnline: String = "",
         var isOnline: Boolean = false,
-        var shopId: Long = 0,
+        var shopId: String = "0",
         val isOfficial: Boolean = false,
         val isGold: Boolean = false,
         var shopType: Int = 0,

@@ -56,6 +56,8 @@ android {
 }
 
 dependencies {
+	implementation projectOrAar(rootProject.ext.features.shopDiscount)
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.sellerapp)
 
@@ -70,6 +72,7 @@ dependencies {
 
     //Content
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
+    implementation projectOrAar(rootProject.ext.features.people)
 
     //Discovery
     implementation projectOrAar(rootProject.ext.features.productCardOptions)
@@ -81,6 +84,7 @@ dependencies {
 //    implementation projectOrAar(rootProject.ext.features.report)
 //    implementation projectOrAar(rootProject.ext.features.shopOpen)
     implementation projectOrAar(rootProject.ext.features.productDetail)
+    implementation projectOrAar(rootProject.ext.features.productDetailAdditionalInfo)
     implementation projectOrAar(rootProject.ext.features.review)
 
     //User
@@ -104,6 +108,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.sellerOnboarding)
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.voucherCreation)
+    implementation projectOrAar(rootProject.ext.features.sellerShopFlashSale)
     implementation projectOrAar(rootProject.ext.features.sellerSearch)
     implementation projectOrAar(rootProject.ext.features.activation)
     implementation projectOrAar(rootProject.ext.features.manageaddress)
@@ -114,13 +119,17 @@ dependencies {
 //    Merchant
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.shopPageWidget)
+    implementation projectOrAar(rootProject.ext.features.feedShop)
     implementation projectOrAar(rootProject.ext.features.statistic)
     implementation projectOrAar(rootProject.ext.features.sellerMenu)
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
+    implementation projectOrAar(rootProject.ext.features.shopAdmin)
 
     // Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
 
+    //Media
+    implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 }

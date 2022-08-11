@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:minHeight="@dimen/play_widget_card_jumbo_height"
-            android:scaleType="centerCrop"
+            android:scaleType="matrix"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -119,6 +119,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -143,7 +144,7 @@
                 android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/Unify_Static_White"
                 android:textIsSelectable="false"
                 app:typographyType="body_1"
                 tools:text="Ide Makanan Serba Pedas Bersama Si Pecinta Pedas" />

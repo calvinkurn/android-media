@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.test
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.FreeOngkir
@@ -44,8 +45,8 @@ import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
 
 private const val PLUS_VARIAN_LAIN_TEXT = "+ Keranjang"
 
-internal val productCardModelMatcherData: List<ProductCardModelMatcher> = 
-    listOf(
+internal fun getProductCardModelMatcherData(useViewStub: Boolean): List<ProductCardModelMatcher> {
+    return listOf(
         testOneLineProductName(),
         testLabelDiscountAndSlashPrice(),
         testSlashPriceWithoutLabelDiscount(),
@@ -113,10 +114,11 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> =
         testAddToCartVariantWithNoQuantity(),
         testAddToCartVariantWithQuantity(),
         testAddToCartVariantWithQuantityAbove99(),
-        testAddToCartButtonWishlist(),
-        testSeeSimilarProductButtonWishlist(),
+        testAddToCartButtonWishlist(useViewStub),
+        testSeeSimilarProductButtonWishlist(useViewStub),
         testOutOfStock(),
     )
+}
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
@@ -134,7 +136,7 @@ private fun testOneLineProductName(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
@@ -161,7 +163,7 @@ private fun testProductCardWithNameAndPdpView(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPdpView to isDisplayedWithText(productCardModel.pdpViewCount),
         R.id.imageViewPdpView to isDisplayed(),
@@ -179,7 +181,7 @@ private fun testProductCardWithNameAndStockBar(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
         R.id.progressBarStock to isDisplayed(),
@@ -197,7 +199,7 @@ private fun testProductCardWithNameAndStockBarTwoLine(): ProductCardModelMatcher
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
         R.id.progressBarStock to isDisplayed(),
@@ -215,7 +217,7 @@ private fun testProductCardWithNameAndStockBarTwoLineEmptyStock(): ProductCardMo
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
         R.id.progressBarStock to isDisplayed(),
@@ -234,7 +236,7 @@ private fun testProductCardWithNameAndStockBarPdpView(): ProductCardModelMatcher
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
         R.id.progressBarStock to isDisplayed(),
@@ -256,7 +258,7 @@ private fun testProductCardWithNameAndStockBarPdpViewBebasOngkir(): ProductCardM
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
         R.id.progressBarStock to isDisplayed(),
@@ -276,7 +278,7 @@ private fun testProductCardWithSpoilerPrice(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
     )
@@ -293,7 +295,7 @@ private fun testProductCardWithSpoilerPriceAndViewCount(): ProductCardModelMatch
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.imageViewPdpView to isDisplayed(),
         R.id.textViewPdpView to isDisplayedWithText(productCardModel.pdpViewCount),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
@@ -313,7 +315,7 @@ private fun testProductCardWithSpoilerPriceAndStockBar(): ProductCardModelMatche
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
@@ -336,7 +338,7 @@ private fun testProductCardWithNameAndStockBarAndStockBarLabelColor(): ProductCa
 
     val productCardMatcher = mapOf(
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.imageViewPdpView to isDisplayed(),
         R.id.textViewPdpView to isDisplayedWithText(productCardModel.pdpViewCount),
         R.id.imageFreeOngkirPromo to isDisplayed(),
@@ -369,7 +371,7 @@ private fun testLongerProductCardWithStockBar(): ProductCardModelMatcher {
 
     val productCardMatcher = mapOf(
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.imageViewPdpView to isDisplayed(),
         R.id.textViewPdpView to isDisplayedWithText(productCardModel.pdpViewCount),
         R.id.textViewPrice to isDisplayed(),
@@ -378,7 +380,7 @@ private fun testLongerProductCardWithStockBar(): ProductCardModelMatcher {
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.textViewStockLabel to isDisplayedWithText(productCardModel.stockBarLabel),
         R.id.progressBarStock to isDisplayed(),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayed(),
         R.id.salesRatingFloatLine to isDisplayed(),
         R.id.textViewSales to isDisplayedWithText(labelIntegrity.title),
@@ -405,7 +407,7 @@ private fun testLabelDiscountAndSlashPrice(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
@@ -443,7 +445,7 @@ private fun testSlashPriceWithoutLabelDiscount(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
@@ -480,7 +482,7 @@ private fun testLabelDiscountWithoutSlashPrice(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
@@ -521,7 +523,7 @@ private fun testLabelPriceAndSlashPrice(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
@@ -551,7 +553,7 @@ private fun testTwoLinesProductName(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
@@ -596,7 +598,7 @@ private fun testMaximumInfoAndLabel(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -641,7 +643,7 @@ private fun testLabelGimmickNumberOfStock(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelPrice to isDisplayedWithText(labelPrice.title),
@@ -684,7 +686,7 @@ private fun testLabelSoldOut(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelPrice to isDisplayedWithText(labelPrice.title),
@@ -726,7 +728,7 @@ private fun testLabelNewProduct(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelPrice to isDisplayedWithText(labelPrice.title),
@@ -761,7 +763,7 @@ private fun testLabelIntegrity(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelPrice to isDisplayedWithText(labelPrice.title),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
@@ -798,7 +800,7 @@ private fun testLabelFulfillment(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelPrice to isDisplayedWithText(labelPrice.title),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
@@ -840,7 +842,7 @@ private fun testLabelFulfillmentWithNoShopBadge(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelPrice to isDisplayedWithText(labelPrice.title),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
@@ -882,7 +884,7 @@ private fun testLabelShippingInfo(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelPrice to isDisplayedWithText(labelPrice.title),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
@@ -914,7 +916,7 @@ private fun testNoShopBadge(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
@@ -936,7 +938,7 @@ private fun testNoRatingButHasReviewCount(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
@@ -960,7 +962,7 @@ private fun testHasRatingButNoReviewCount(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
@@ -980,7 +982,7 @@ private fun testProductRatingStar1(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
@@ -1005,7 +1007,7 @@ private fun testProductRatingStar2(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
@@ -1030,7 +1032,7 @@ private fun testProductRatingStar3(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
@@ -1055,7 +1057,7 @@ private fun testProductRatingStar4(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
@@ -1080,7 +1082,7 @@ private fun testProductRatingStar5(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.textViewReviewCount to isDisplayedWithText("(${productCardModel.reviewCount})"),
@@ -1104,7 +1106,7 @@ private fun testPriceRange(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.priceRange),
     )
@@ -1138,7 +1140,7 @@ private fun testAddToCartButton(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -1170,7 +1172,7 @@ private fun testAddToCartButtonAndShortContent(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.buttonAddToCart to isDisplayed(),
@@ -1205,7 +1207,7 @@ private fun testHasBadgeNoLocation(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -1254,7 +1256,7 @@ private fun testHasRatingReviewAndLabelIntegrity(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -1298,13 +1300,13 @@ private fun testHasRatingSales(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.salesRatingFloatLine to isDisplayed(),
         R.id.textViewSales to isDisplayedWithText(labelIntegrity.title),
@@ -1331,13 +1333,13 @@ private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.imageThreeDots to isDisplayed(),
@@ -1364,12 +1366,12 @@ private fun testPriorityRatingAverage(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.salesRatingFloatLine to isDisplayed(),
         R.id.textViewSales to isDisplayedWithText(labelIntegrity.title),
@@ -1408,7 +1410,7 @@ private fun testHasFreeOngkirAndLabelShipping(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -1462,7 +1464,7 @@ private fun testShopRatingBlue(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -1516,7 +1518,7 @@ private fun testShopRatingBlue2(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -1564,7 +1566,7 @@ private fun testShopRatingBlue3(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -1612,7 +1614,7 @@ private fun testShopRatingBlue4(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -1660,7 +1662,7 @@ private fun testShopRatingBlue5(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -1711,7 +1713,7 @@ private fun testShopRatingYellow(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -1759,7 +1761,7 @@ private fun testLabelCampaign(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.labelCampaignBackground to isDisplayed(),
@@ -1808,7 +1810,7 @@ private fun testLabelVariantColor(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelVariantContainer to isDisplayedWithChildCount(6),
@@ -1853,7 +1855,7 @@ private fun testLabelVariantSize(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelVariantContainer to isDisplayedWithChildCount(4),
@@ -1900,7 +1902,7 @@ private fun testNotifyMeButton(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -1946,7 +1948,7 @@ private fun testLabelBestSeller(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.labelBestSeller to isDisplayedWithText(labelBestSeller.title),
@@ -1955,7 +1957,7 @@ private fun testLabelBestSeller(): ProductCardModelMatcher {
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.imageThreeDots to isDisplayed(),
@@ -1984,14 +1986,14 @@ private fun testLabelBestSellerAndCategorySide(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textTopAds to isDisplayed(),
         R.id.labelBestSeller to isDisplayedWithText(labelBestSeller.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.imageThreeDots to isDisplayed(),
@@ -2021,14 +2023,14 @@ private fun testLabelBestSellerAndCategoryBottom(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textTopAds to isDisplayed(),
         R.id.labelBestSeller to isDisplayedWithText(labelBestSeller.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.imageThreeDots to isDisplayed(),
@@ -2058,13 +2060,13 @@ private fun testLabelCategorySideAndBottomWithoutBestSeller(): ProductCardModelM
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.imageThreeDots to isDisplayed(),
@@ -2092,13 +2094,13 @@ private fun testLabelETA(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.labelPrice to isDisplayedWithText(labelPrice.title),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.imageThreeDots to isDisplayed(),
@@ -2126,13 +2128,13 @@ private fun testLabelCategory(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewCategory to isDisplayedWithText(labelCategory.title),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.imageThreeDots to isDisplayed(),
@@ -2159,13 +2161,13 @@ private fun testLabelCostPerUnit(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewCostPerUnit to isDisplayedWithText(labelCostPerUnit.title),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.imageThreeDots to isDisplayed(),
@@ -2193,7 +2195,7 @@ private fun testLabelCategoryAndCostPerUnit(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewCategory to isDisplayedWithText(labelCategory.title),
         R.id.dividerCategory to isDisplayed(),
@@ -2201,7 +2203,7 @@ private fun testLabelCategoryAndCostPerUnit(): ProductCardModelMatcher {
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.imageThreeDots to isDisplayed(),
@@ -2235,7 +2237,7 @@ private fun testLabelVariantWithCategoryAndCostPerUnit(): ProductCardModelMatche
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelVariantContainer to isDisplayedWithChildCount(4),
         R.id.textViewCategory to isDisplayedWithText(labelCategory.title),
@@ -2244,7 +2246,7 @@ private fun testLabelVariantWithCategoryAndCostPerUnit(): ProductCardModelMatche
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.imageThreeDots to isDisplayed(),
@@ -2283,7 +2285,7 @@ private fun testAddToCartButtonNonVariant(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -2292,7 +2294,7 @@ private fun testAddToCartButtonNonVariant(): ProductCardModelMatcher {
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.buttonAddToCart to isDisplayed(),
@@ -2331,7 +2333,7 @@ private fun testAddToCartButtonNonVariantWithQuantity(): ProductCardModelMatcher
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -2340,7 +2342,7 @@ private fun testAddToCartButtonNonVariantWithQuantity(): ProductCardModelMatcher
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.quantityEditorNonVariant to isQuantityEditorDisplayedWithValue(nonVariant.quantity),
@@ -2380,7 +2382,7 @@ private fun testAddToCartButtonNonVariantIgnoreHasAddToCartFlag(): ProductCardMo
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -2389,7 +2391,7 @@ private fun testAddToCartButtonNonVariantIgnoreHasAddToCartFlag(): ProductCardMo
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.quantityEditorNonVariant to isQuantityEditorDisplayedWithValue(nonVariant.quantity),
@@ -2439,7 +2441,7 @@ private fun testAddToCartVariantWithNoQuantity(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -2449,7 +2451,7 @@ private fun testAddToCartVariantWithNoQuantity(): ProductCardModelMatcher {
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.buttonAddVariant to isDisplayedWithText(PLUS_VARIAN_LAIN_TEXT),
@@ -2486,7 +2488,7 @@ private fun testAddToCartVariantWithQuantity(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -2495,7 +2497,7 @@ private fun testAddToCartVariantWithQuantity(): ProductCardModelMatcher {
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.buttonAddVariant to isDisplayedWithText(PLUS_VARIAN_LAIN_TEXT),
@@ -2533,7 +2535,7 @@ private fun testAddToCartVariantWithQuantityAbove99(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textTopAds to isDisplayed(),
         R.id.textViewGimmick to isDisplayedWithText(labelGimmick.title),
@@ -2542,7 +2544,7 @@ private fun testAddToCartVariantWithQuantityAbove99(): ProductCardModelMatcher {
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
         R.id.buttonAddVariant to isDisplayedWithText(PLUS_VARIAN_LAIN_TEXT),
@@ -2552,7 +2554,7 @@ private fun testAddToCartVariantWithQuantityAbove99(): ProductCardModelMatcher {
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testAddToCartButtonWishlist(): ProductCardModelMatcher {
+private fun testAddToCartButtonWishlist(useViewStub: Boolean): ProductCardModelMatcher {
     val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
 
@@ -2576,28 +2578,29 @@ private fun testAddToCartButtonWishlist(): ProductCardModelMatcher {
         hasButtonThreeDotsWishlist = true
     )
 
-    val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+    val productCardMatcher = mutableMapOf(
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelPrice to isDisplayedWithText(labelPrice.title),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
-        R.id.buttonAddToCart to isNotDisplayed(),
         R.id.rlPrimaryButtonWishlist to isDisplayed(),
         R.id.buttonAddToCartWishlist to isDisplayed(),
         R.id.buttonThreeDotsWishlist to isDisplayed(),
         R.id.imageButtonThreeDotsWishlist to isDisplayed(),
     )
 
+    if (!useViewStub) productCardMatcher[R.id.buttonAddToCart] = isNotDisplayed()
+
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testSeeSimilarProductButtonWishlist(): ProductCardModelMatcher {
+private fun testSeeSimilarProductButtonWishlist(useViewStub: Boolean): ProductCardModelMatcher {
     val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
 
@@ -2621,24 +2624,27 @@ private fun testSeeSimilarProductButtonWishlist(): ProductCardModelMatcher {
         hasButtonThreeDotsWishlist = true
     )
 
-    val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+    val productCardMatcher = mutableMapOf(
+        R.id.productCardImage to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.labelPrice to isDisplayedWithText(labelPrice.title),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
-        R.id.imageSalesRatingFloat to isDisplayed(),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
         R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
         R.id.imageFreeOngkirPromo to isDisplayed(),
-        R.id.buttonAddToCart to isNotDisplayed(),
         R.id.rlPrimaryButtonWishlist to isDisplayed(),
-        R.id.buttonAddToCartWishlist to isNotDisplayed(),
         R.id.buttonSeeSimilarProductWishlist to isDisplayed(),
         R.id.buttonThreeDotsWishlist to isDisplayed(),
         R.id.imageButtonThreeDotsWishlist to isDisplayed(),
     )
+
+    if (!useViewStub) {
+        productCardMatcher[R.id.buttonAddToCart] = isNotDisplayed()
+        productCardMatcher[R.id.buttonAddToCartWishlist] = isNotDisplayed()
+    }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2656,7 +2662,7 @@ private fun testOutOfStock(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mapOf(
-        R.id.imageProduct to isDisplayed(),
+        R.id.productCardImage to isDisplayed(),
         R.id.outOfStockOverlay to isDisplayed(),
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),

@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.annotation.Size
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
@@ -26,8 +25,8 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlin.math.min
 import kotlin.math.roundToInt
+import com.tokopedia.unifyprinciples.R as unifyR
 
 private const val RAD_20f = 20f
 private const val RAD_30f = 30f
@@ -77,7 +76,7 @@ class ProductPostTagViewHolder(val mainView: View,
                 if (text.isEmpty()) text = getString(R.string.empty_product)
                 setTextColor(ContextCompat.getColor(
                         context,
-                        if (isCTADisabled) R.color.Unify_N200 else com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        if (isCTADisabled) unifyR.color.Unify_N200 else unifyR.color.Unify_N0
                 ))
             }
         } else btnBuy.gone()
@@ -96,7 +95,7 @@ class ProductPostTagViewHolder(val mainView: View,
         }
         if (item.feedType != DynamicPostViewHolder.SOURCE_DETAIL && item.needToResize) {
             container = itemView.findViewById(R.id.container)
-            container.layoutParams.width = screenWidth * 3 / 4
+            container.layoutParams.width = (screenWidth * THREE_QUARTERS).roundToInt()
         }
 
         if (item.tags.isNotEmpty()) {
@@ -131,7 +130,7 @@ class ProductPostTagViewHolder(val mainView: View,
 
     private fun calculateBackgroundAlpha(opacityString: String): Int {
         val floatValue = opacityString.toFloat()
-        return (floatValue * 255).toInt()
+        return (floatValue * MAXIMUM_LIGHT).toInt()
     }
 
     private fun getDefaultBackgroundColor(): ColorPojo {
@@ -176,5 +175,8 @@ class ProductPostTagViewHolder(val mainView: View,
 
         private const val OPACITY_70 = "0.7"
         private const val OPACITY_100 = "1"
+
+        private const val THREE_QUARTERS = 0.75F
+        private const val MAXIMUM_LIGHT = 255
     }
 }

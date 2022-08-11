@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="dms_old_recharge_info_text_color">#F531353B</color>
+    <color name="dms_indicator_inactive_color">#E5E7E9</color>
 </resources>

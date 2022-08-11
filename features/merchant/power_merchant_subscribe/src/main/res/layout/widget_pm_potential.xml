@@ -2,31 +2,74 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerPmPotentialBenefit"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/unify_space_12"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingBottom="@dimen/layout_lvl1">
+    android:layout_marginTop="16dp">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPmPotentialDescription"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
+    <View
+        android:id="@+id/viewPmPotentialBg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rvPmPotential"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
+        tools:background="@drawable/bg_pm_registration_potential_benefit" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="0dp"
+        android:layout_height="0.8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewPmPotentialBg" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmPotentialDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
         tools:text="@string/pm_registration_potential_description" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPmPotential"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPmPotentialDescription"
-        tools:itemCount="4"
+        tools:itemCount="3"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_pm_potential" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmPotentialCtaCategory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvPmPotential"
+        app:typographyType="body_3"
+        tools:text="@string/pm_service_fee_by_category" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

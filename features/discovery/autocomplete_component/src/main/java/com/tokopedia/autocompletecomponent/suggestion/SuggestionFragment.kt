@@ -150,7 +150,7 @@ class SuggestionFragment :
         presenter?.onSuggestionItemClicked(item)
     }
 
-    override fun onChipImpressed(item: BaseSuggestionDataView) {
+    override fun onChipImpressed(item: BaseSuggestionDataView.ChildItem) {
         suggestionTracking?.eventImpressionSuggestion(item)
     }
 
@@ -306,13 +306,9 @@ class SuggestionFragment :
     override fun trackClickChip(
         eventLabel: String,
         dimension90: String,
-        baseSuggestionDataView: BaseSuggestionDataView,
+        childItem: BaseSuggestionDataView.ChildItem,
     ) {
-        suggestionTracking?.eventClickChipSuggestion(
-            eventLabel,
-            dimension90,
-            baseSuggestionDataView,
-        )
+        suggestionTracking?.eventClickChipSuggestion(childItem)
     }
 
     override fun trackEventImpressCurated(

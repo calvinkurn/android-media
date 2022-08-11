@@ -13,10 +13,10 @@ class ProductWishlistModule {
     @ProductDetailScope
     @Provides
     fun provideRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase =
-            RemoveWishListUseCase(context)
+        RemoveWishListUseCase(context)
 
     @ProductDetailScope
     @Provides
     fun provideAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase =
-            AddWishListUseCase(context)
+        AddWishListUseCase(context)
 }

@@ -10,6 +10,7 @@ import com.tokopedia.linter.detectors.DimenResourceValueDetector
 import com.tokopedia.linter.detectors.DeprecatedResourceDetector
 import com.tokopedia.linter.detectors.SerializedNameAnnotationDetector
 import com.tokopedia.linter.detectors.AndroidExportedDetector
+import com.tokopedia.linter.detectors.ResourceFragmentDetector
 import com.tokopedia.linter.detectors.UnifyBackgroundDetector
 import com.tokopedia.linter.detectors.DeprecatedMethodDetector
 import com.tokopedia.linter.detectors.GradientVectorDetector
@@ -46,8 +47,9 @@ class IssueRegistry : IssueRegistry() {
                 UnifyBackgroundDetector.ISSUE,
                 DeprecatedMethodDetector.ISSUE,
                 GradientVectorDetector.ISSUE,
-                HANSEL_REQUIRED,
-                DimenUsageDetector.XML_ISSUE
+                ResourceFragmentDetector.ISSUE,
+                DimenUsageDetector.XML_ISSUE,
+                HANSEL_REQUIRED
         )
 
     override val minApi: Int

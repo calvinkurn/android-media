@@ -14,14 +14,13 @@
     <string name="product_card_text_notify_me">Ingatkan Saya</string>
     <string name="product_card_text_variant_quantity_grid">99+ pcs</string>
 
-    <string name="product_transition_video">video_play</string>
-
     <string name="content_desc_textViewProductName">text nama produk</string>
     <string name="content_desc_labelDiscount">text diskon</string>
     <string name="content_desc_textViewSlashedPrice">text harga diskon</string>
     <string name="content_desc_textViewPrice">text harga</string>
     <string name="content_desc_textViewShopLocation">text toko dari</string>
     <string name="content_desc_imageProduct">image produk</string>
+    <string name="content_desc_imageVideoIdentifier">video identifier</string>
     <string name="content_desc_textTopAds">text topads</string>
     <string name="content_desc_imageThreeDots">button threedots</string>
     <string name="content_desc_fulfillment">image fulfillment</string>
@@ -38,4 +37,6 @@
     <string name="content_desc_imageShopRating">image rating</string>
     <string name="content_desc_imageShop">image toko</string>
     <string name="content_desc_imageTopAds">image topads</string>
+    <string name="content_desc_videoPlay">button play</string>
+    <string name="product_card_content_desc_imageRating">image rating</string>
 </resources>

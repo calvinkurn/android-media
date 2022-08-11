@@ -67,7 +67,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             productView
             wishlistCount
             shopCommitment {
-              result {
+              result {  
                 isNowActive
                 staticMessages {
                   pdpMessage
@@ -84,6 +84,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               scoreMap
             }
             shopInfo {
+              shopMultilocation {
+                warehouseCount
+                eduLink {
+                    appLink
+                }
+              }
               closedInfo {
                 closedNote
                 reason
@@ -129,6 +135,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 name
                 tagLine
                 url
+                ownerID
               }
               shopLastActive
               location
@@ -260,11 +267,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             }
             validateTradeIn {
               isEligible
-              isDiagnosed
-              useKyc
               usedPrice
-              remainingPrice
-              message
               widgetString
             }
             cartRedirection {
@@ -338,6 +341,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   products{
                     productID
                     boType
+                    boCampaignIDs
                   }
                   images{
                     boType
@@ -390,6 +394,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             reviewImage{
               list{
                 imageID
+                videoID
                 reviewID
                 imageSibling
               }
@@ -420,8 +425,14 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                    uriLarge
                    reviewID
                  }
-                 imageCountFmt
-                 imageCount
+                 videos {
+                   attachmentID
+                   url
+                   feedbackID
+                 }
+                 mediaCountFmt
+                 mediaCount
+                 mediaCountTitle
                }
               hasNext
               hasPrev
@@ -502,6 +513,16 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
               }
             }
+            navBar {
+              name
+              items {
+                title
+                componentName
+              }
+            }
+            shopFinishRate {
+              finishRate
+            }
           }
     }""".trimIndent()
     }
@@ -569,11 +590,13 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
             p2UiData.merchantVoucherSummary = merchantVoucherSummary
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
-            p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
+            p2UiData.imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
             p2UiData.bundleInfoMap = bundleInfoList.associateBy { it.productId }
             p2UiData.rating = rating
             p2UiData.ticker = ticker
+            p2UiData.navBar = navBar
+            p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
         }
         return p2UiData
     }

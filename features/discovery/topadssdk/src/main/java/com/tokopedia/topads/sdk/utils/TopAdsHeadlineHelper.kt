@@ -52,6 +52,21 @@ class TopAdsHeadlineHelper  @Inject constructor() {
         }
     }
 
+    companion object{
+        fun getCpmDataOfSameLayout(cpmModel: CpmModel, layoutId:Int): CpmModel {
+            val cpmModelNew = CpmModel()
+            val list = mutableListOf<CpmData>()
+            cpmModel.data.forEach {
+                if(it.cpm.layout == layoutId){
+                    list.add(it)
+                }
+            }
+            cpmModelNew.data = list
+            return cpmModelNew
+        }
+    }
+
+
     private fun shouldShowCpmShop(cpmData: CpmData?): Boolean {
         cpmData ?: return false
         val cpm = cpmData.cpm ?: return false

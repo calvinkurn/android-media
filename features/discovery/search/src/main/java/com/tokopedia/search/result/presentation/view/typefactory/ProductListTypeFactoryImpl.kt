@@ -8,16 +8,12 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
-import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.CpmDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
-import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
@@ -26,34 +22,33 @@ import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsEmptySearchViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsTickerViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannerViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BroadMatchViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ChooseAddressViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.CpmViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.LastFilterViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationTitleViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductCountViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTitleViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTopAdsImageViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SeparatorViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder
-import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
-import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
-import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
+import com.tokopedia.search.result.product.banner.BannerDataView
+import com.tokopedia.search.result.product.banner.BannerListener
+import com.tokopedia.search.result.product.banner.BannerViewHolder
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
+import com.tokopedia.search.result.product.cpm.BannerAdsListener
+import com.tokopedia.search.result.product.cpm.CpmDataView
+import com.tokopedia.search.result.product.cpm.CpmViewHolder
 import com.tokopedia.search.result.product.emptystate.EmptyStateFilterDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateFilterViewHolder
 import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
@@ -69,13 +64,21 @@ import com.tokopedia.search.result.product.inspirationwidget.card.SmallGridInspi
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeListener
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeViewHolder
+import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
+import com.tokopedia.search.result.product.lastfilter.LastFilterListener
+import com.tokopedia.search.result.product.lastfilter.LastFilterViewHolder
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
+import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.result.product.violation.ViolationListener
 import com.tokopedia.search.result.product.violation.ViolationViewHolder
 import com.tokopedia.search.utils.FragmentProvider
+import com.tokopedia.video_widget.carousel.InspirationCarouselVideoViewHolder
+import com.tokopedia.video_widget.carousel.InspirationVideoCarouselListener
+import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
+import com.tokopedia.video_widget.util.networkmonitor.NetworkMonitor
 
 @Suppress("LongParameterList")
 class ProductListTypeFactoryImpl(
@@ -98,6 +101,10 @@ class ProductListTypeFactoryImpl(
     private val lastFilterListener: LastFilterListener,
     private val inspirationSizeListener: InspirationSizeListener,
     private val violationListener: ViolationListener,
+    private val videoCarouselListener: InspirationVideoCarouselListener,
+    private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
+    private val networkMonitor: NetworkMonitor,
+    private val isUsingViewStub: Boolean = false,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override var recyclerViewItem = 0
@@ -117,12 +124,13 @@ class ProductListTypeFactoryImpl(
     override fun type(productItem: ProductItemDataView): Int {
         return when (recyclerViewItem) {
             SearchConstant.RecyclerView.VIEW_LIST ->
-                ListProductItemViewHolder.LAYOUT
+                ListProductItemViewHolder.layout(isUsingViewStub)
             SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->
                 BigGridProductItemViewHolder.LAYOUT
             SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID ->
-                SmallGridProductItemViewHolder.LAYOUT
-            else -> SmallGridProductItemViewHolder.LAYOUT
+                SmallGridProductItemViewHolder.layout(isUsingViewStub)
+            else ->
+                SmallGridProductItemViewHolder.layout(isUsingViewStub)
         }
     }
 
@@ -140,6 +148,10 @@ class ProductListTypeFactoryImpl(
 
     override fun type(inspirationCarouselDataView: InspirationCarouselDataView): Int {
         return InspirationCarouselViewHolder.LAYOUT
+    }
+
+    override fun type(inspirationCarouselDataView: InspirationCarouselVideoDataView): Int {
+        return InspirationCarouselVideoViewHolder.LAYOUT
     }
 
     override fun type(loadingMoreModel: LoadingMoreModel): Int {
@@ -189,10 +201,6 @@ class ProductListTypeFactoryImpl(
         return SearchInTokopediaViewHolder.LAYOUT
     }
 
-    override fun type(searchProductCountDataView: SearchProductCountDataView): Int {
-        return SearchProductCountViewHolder.LAYOUT
-    }
-
     override fun type(searchProductTopAdsImageDataView: SearchProductTopAdsImageDataView): Int {
         return SearchProductTopAdsImageViewHolder.LAYOUT
     }
@@ -218,9 +226,9 @@ class ProductListTypeFactoryImpl(
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ListProductItemViewHolder.LAYOUT ->
+            ListProductItemViewHolder.LAYOUT, ListProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
                 ListProductItemViewHolder(view, productListener)
-            SmallGridProductItemViewHolder.LAYOUT ->
+            SmallGridProductItemViewHolder.LAYOUT, SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
                 SmallGridProductItemViewHolder(view, productListener)
             BigGridProductItemViewHolder.LAYOUT ->
                 BigGridProductItemViewHolder(view, productListener)
@@ -232,6 +240,12 @@ class ProductListTypeFactoryImpl(
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
             InspirationCarouselViewHolder.LAYOUT ->
                 InspirationCarouselViewHolder(view, inspirationCarouselListener)
+            InspirationCarouselVideoViewHolder.LAYOUT -> InspirationCarouselVideoViewHolder(
+                    view,
+                    videoCarouselListener,
+                    videoCarouselWidgetCoordinator,
+                    networkMonitor
+                )
             SearchLoadingMoreViewHolder.LAYOUT -> SearchLoadingMoreViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
             RecommendationItemViewHolder.LAYOUT ->
@@ -247,8 +261,6 @@ class ProductListTypeFactoryImpl(
             SearchProductTitleViewHolder.LAYOUT -> SearchProductTitleViewHolder(view)
             SearchInTokopediaViewHolder.LAYOUT ->
                 SearchInTokopediaViewHolder(view, searchInTokopediaListener)
-            SearchProductCountViewHolder.LAYOUT ->
-                SearchProductCountViewHolder(view, searchNavigationListener)
             SearchProductTopAdsImageViewHolder.LAYOUT ->
                 SearchProductTopAdsImageViewHolder(view, topAdsImageViewListener)
             ChooseAddressViewHolder.LAYOUT ->

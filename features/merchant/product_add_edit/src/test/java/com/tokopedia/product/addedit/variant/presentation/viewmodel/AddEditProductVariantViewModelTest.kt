@@ -286,11 +286,6 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         // validate removing unidentified layout pos
         viewModel.removeSelectedVariantUnitValue(1000, variantDetailTest1.units[0].unitValues[2])
         assert(viewModel.isVariantUnitValuesEmpty(0))
-
-        // validate removing all variant
-        viewModel.clearProductVariant()
-        val selection = viewModel.productInputModel.value?.variantInputModel?.selections
-        assert(selection?.isEmpty() == true)
     }
 
     @Test
@@ -680,15 +675,6 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     }
 
     @Test
-    fun `clear product variant should the product list inside variant input model`() {
-        viewModel.productInputModel.value?.variantInputModel?.products = listOf(ProductVariantInputModel())
-        viewModel.clearProductVariant()
-        viewModel.productInputModel.value?.variantInputModel?.products?.run {
-            assert(this.isEmpty())
-        }
-    }
-
-    @Test
     fun `view model should return expected variant unit from the map`() {
         val expectedVariantUnit = Unit(variantUnitID = 32, unitName = "expectedVariantUnit")
         viewModel.updateSelectedVariantUnitMap(VARIANT_VALUE_LEVEL_TWO_POSITION, expectedVariantUnit)
@@ -763,6 +749,21 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
                 it.variantId == CUSTOM_VARIANT_TYPE_ID.toString()
             }.orFalse()
         )
+    }
+
+    @Test
+    fun `removing product variant should remove custom variant stype`() {
+        viewModel.productInputModel.value = ProductInputModel(productId = 0)
+        viewModel.isEditMode.getOrAwaitValue()
+        viewModel.removeVariant()
+
+        viewModel.productInputModel.value = ProductInputModel(productId = 1333)
+        viewModel.isEditMode.getOrAwaitValue()
+        viewModel.removeVariant()
+
+        viewModel.productInputModel.value = ProductInputModel(productId = 0)
+        viewModel.isEditMode.getOrAwaitValue()
+        viewModel.removeSelectedVariantDetails(VariantDetail())
     }
 
     @Test

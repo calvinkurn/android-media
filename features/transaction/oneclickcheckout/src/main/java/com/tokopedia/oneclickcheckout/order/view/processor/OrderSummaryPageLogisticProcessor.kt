@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
@@ -24,6 +23,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -262,7 +262,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             it.isSelected = it.productData.shipperProductId == shipping.shipperProductId
         }
         val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected }
-                ?: shippingCourierViewModelList.first()
+                ?: shippingCourierViewModelList.firstOrNull { it.productData.isRecommend } ?: shippingCourierViewModelList.first()
         var flagNeedToSetPinpoint = false
         var errorMessage: String? = null
         var shippingErrorId: String? = null

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -17,6 +18,8 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonActions.displayChildViewWithId
+import com.tokopedia.test.application.espresso_component.CommonActions.displayChildViewWithIdAndText
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 
 class ProductManageRobot {
@@ -49,15 +52,22 @@ class ProductManageRobot {
             .perform(ViewActions.click())
     }
 
-    private fun getFirstNoVariantIndex(activity: Activity): Int {
-        val recyclerView = activity.findViewById<RecyclerView>(R.id.recycler_view)
-        return (recyclerView.adapter as? BaseListAdapter<*, *>)?.data?.indexOfFirst { it is ProductUiModel && !it.isVariant() }
-            ?: RecyclerView.NO_POSITION
+    fun isDisplayProductOnView(@LayoutRes id: Int,
+                                       index: Int = 0){
+        onView(withId(R.id.recycler_view)).check(matches(ViewMatchers.isDisplayed()))
+            .check(matches(displayChildViewWithId(index,id)))
+
+    }
+    fun isDisplayProductOnViewWithText(@LayoutRes id: Int,
+                               index: Int = 0, text:String){
+        onView(withId(R.id.recycler_view)).check(matches(ViewMatchers.isDisplayed()))
+            .check(matches(displayChildViewWithIdAndText(index,id,text)))
+
     }
 
-    private fun clickProductCardOnView(@LayoutRes id: Int,
-                                       index: Int = 0) {
-        onView(withId(R.id.recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    fun clickProductCardOnView(@LayoutRes id: Int,
+                               index: Int = 0) {
+        onView(withId(R.id.recycler_view)).check(matches(ViewMatchers.isDisplayed()))
             .perform(
                 RecyclerViewActions.actionOnItemAtPosition<ProductViewHolder>(
                     index,
@@ -65,6 +75,15 @@ class ProductManageRobot {
                 )
             )
     }
+    private fun getFirstNoVariantIndex(activity: Activity): Int {
+        val recyclerView = activity.findViewById<RecyclerView>(R.id.recycler_view)
+        return (recyclerView.adapter as? BaseListAdapter<*, *>)?.data?.indexOfFirst { it is ProductUiModel && !it.isVariant() }
+            ?: RecyclerView.NO_POSITION
+    }
+
+
+
+
 
 }
 

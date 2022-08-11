@@ -35,7 +35,7 @@ import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter
-import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.ProductFeedDetailViewModelNew
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedDetailAnalytics.Companion.feedDetailAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
@@ -60,6 +60,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -412,9 +415,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
     override fun onBottomSheetMenuClicked(
-            item: ProductFeedDetailViewModelNew,
-            context: Context,
-            shopId: String
+        item: FeedDetailProductModel,
+        context: Context,
+        shopId: String
     ) {
         val finalID = if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
         feedAnalytics.eventClickBottomSheetMenu(
@@ -546,16 +549,33 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 ""
         )
 
-        feedViewModel.addWishlist(
-                postId,
-                productId,
-                shopId,
-                0,
-                type,
-                isFollowed,
-                ::onWishListFail,
-                ::onWishListSuccess
-        )
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
+                feedViewModel.addWishlistV2(
+                    postId,
+                    productId,
+                    shopId,
+                    0,
+                    type,
+                    isFollowed,
+                    ::onWishListFail,
+                    ::onWishListSuccessV2,
+                    it
+                )
+            } else {
+                feedViewModel.addWishlist(
+                    postId,
+                    productId,
+                    shopId,
+                    0,
+                    type,
+                    isFollowed,
+                    ::onWishListFail,
+                    ::onWishListSuccess,
+                    it
+                )
+            }
+        }
     }
 
     private fun onWishListFail(s: String) {
@@ -563,22 +583,38 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
     private fun onWishListSuccess(
+        activityId: String,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean
+    ) {
+        Toaster.build(
+            requireView(),
+            getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+            View.OnClickListener {
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            }).show()
+    }
+
+    private fun onWishListSuccessV2(
             activityId: String,
             shopId: String,
             type: String,
-            isFollowed: Boolean
+            isFollowed: Boolean,
+            result: AddToWishlistV2Response.Data.WishlistAddV2
     ) {
-        Toaster.build(
-                requireView(),
-                getString(R.string.feed_added_to_wishlist),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.feed_go_to_wishlist),
-                View.OnClickListener {
-                    feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
-                    RouteManager.route(context, ApplinkConst.WISHLIST)
-                }).show()
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+            }
+        }
+        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
     }
+
      private fun onGoToLogin() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
@@ -662,23 +698,25 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         adapter.dismissLoadingMore()
     }
 
-    override fun onGoToProductDetail(feedDetailViewModel: ProductFeedDetailViewModelNew, adapterPosition: Int) {
+    override fun onGoToProductDetail(feedDetailProductModel: FeedDetailProductModel, adapterPosition: Int) {
         if (activity != null && activity?.applicationContext != null && arguments != null) {
 
             analytics.eventDetailProductClick(
-                    ProductEcommerce(feedDetailViewModel.id,
-                            feedDetailViewModel.text,
-                            feedDetailViewModel.price,
-                            adapterPosition),
-                    userSession.userId?.toIntOrNull() ?: 0,
-                    feedDetailViewModel.shopId,
-                    feedDetailViewModel.postId.toString(),
-                    feedDetailViewModel.postType,
-                    feedDetailViewModel.isFollowed
+                ProductEcommerce(
+                    feedDetailProductModel.id,
+                    feedDetailProductModel.text,
+                    if (feedDetailProductModel.isDiscount) feedDetailProductModel.priceDiscount else feedDetailProductModel.price,
+                    adapterPosition
+                ),
+                userSession.userId?.toIntOrNull() ?: 0,
+                feedDetailProductModel.shopId,
+                feedDetailProductModel.postId.toString(),
+                feedDetailProductModel.postType,
+                feedDetailProductModel.isFollowed
             )
             activity?.startActivityForResult(
-                    getProductIntent(feedDetailViewModel.id),
-                    REQUEST_OPEN_PDP
+                getProductIntent(feedDetailProductModel.id),
+                REQUEST_OPEN_PDP
             )
         }
     }
@@ -767,37 +805,37 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             feedDetailAnalytics.eventShareCategory(shareParam[0], shareParam[1].toString() + "-" + KEY_OTHER)
         }
     }
-    private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<ProductFeedDetailViewModelNew> {
+    private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<FeedDetailProductModel> {
         var postDescription = ""
         var adClickUrl = ""
         val desc = context?.getString(com.tokopedia.feedcomponent.R.string.feed_share_default_text)
-        val itemList: MutableList<ProductFeedDetailViewModelNew> = ArrayList()
+        val itemList: MutableList<FeedDetailProductModel> = ArrayList()
         for (postTagItem in postTagItemList) {
             if (postTagItem.isTopads){
                 postDescription = desc?.replace("%s", postTagItem.authorName).toString()
                 adClickUrl = postTagItem.adClickUrl
             }
-            val item = ProductFeedDetailViewModelNew(
-                    postTagItem.id,
-                    postTagItem.name,
-                    postTagItem.coverURL,
-                    postTagItem.price.toString(),
-                    postTagItem.priceFmt,
-                    postTagItem.isDiscount,
-                    postTagItem.discountFmt,
-                    "product",
-                    postTagItem.appLink,
-                    postTagItem.webLink,
-                    postTagItem,
-                    postTagItem.isBebasOngkir,
-                    postTagItem.bebasOngkirStatus,
-                    postTagItem.bebasOngkirURL,
-                    postTagItem.priceOriginal,
-                    postTagItem.priceOriginalFmt,
-                    postTagItem.priceDiscountFmt,
-                    postTagItem.totalSold,
-                    postTagItem.star,
-                    postTagItem.mods,
+            val item = FeedDetailProductModel(
+                    id = postTagItem.id,
+                    text = postTagItem.name,
+                    imgUrl = postTagItem.coverURL,
+                    price = postTagItem.price.toString(),
+                    priceDiscount = postTagItem.priceDiscount.toString(),
+                    priceFmt = postTagItem.priceFmt,
+                    isDiscount = postTagItem.isDiscount,
+                    discountFmt = postTagItem.discountFmt,
+                    type = "product",
+                    applink = postTagItem.appLink,
+                    weblink = postTagItem.webLink,
+                    product = postTagItem,
+                    isFreeShipping = postTagItem.isBebasOngkir,
+                    freeShipping = postTagItem.bebasOngkirStatus,
+                    freeShippingURL = postTagItem.bebasOngkirURL,
+                    originalPriceFmt = postTagItem.priceOriginalFmt,
+                    priceDiscountFmt = postTagItem.priceDiscountFmt,
+                    totalSold = postTagItem.totalSold,
+                    rating = postTagItem.star,
+                    mods = postTagItem.mods,
                     shopName = shopName,
                     shopId = shopId,
                     postType = postType,
@@ -813,5 +851,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         return itemList
     }
 
-
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
 }

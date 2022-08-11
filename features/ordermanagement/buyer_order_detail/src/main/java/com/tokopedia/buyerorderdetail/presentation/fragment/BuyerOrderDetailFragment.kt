@@ -21,7 +21,12 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.analytic.tracker.RecommendationWidgetTracker
-import com.tokopedia.buyerorderdetail.common.constants.*
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailImageUrl
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentParamKey
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
@@ -33,7 +38,6 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRec
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
@@ -70,7 +74,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.StringUtils
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
 open class BuyerOrderDetailFragment : BaseDaggerFragment(),
@@ -338,12 +341,12 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             }
         }
         emptyStateBuyerOrderDetail?.apply {
-            setImageDrawable(
-                resources.getDrawable(
-                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
-                    null
-                )
-            )
+            try {
+                emptyStateImageID.setImageResource(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
+            } catch (e: Exception) {
+                setImageUrl(BuyerOrderDetailImageUrl.GLOBAL_ERROR_500)
+            }
+
             setPrimaryCTAText(
                 context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
             )

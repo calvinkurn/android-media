@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -14,7 +14,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
@@ -40,15 +45,13 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.postpaid.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.postpaid.widget.DigitalPostpaidClientNumberWidget
-import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
+import com.tokopedia.topupbills.telco.common.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.*
-import kotlinx.coroutines.Job
+import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.telco_buy_widget
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -62,7 +65,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var telcoTabViewModel: TelcoTabViewModel
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private lateinit var loadingShimmering: LinearLayout
+    private lateinit var loadingShimmering: ConstraintLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabsUnify
     private lateinit var separator: View
@@ -211,21 +214,23 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         val oldItems = telcoTabViewModel.createIdSnapshot()
         performChange()
         val newItems = telcoTabViewModel.createIdSnapshot()
-        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                oldItems[oldItemPosition] == newItems[newItemPosition]
+        viewPager.adapter?.let {
+            DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                    oldItems[oldItemPosition] == newItems[newItemPosition]
 
-            override fun getOldListSize(): Int {
-                return oldItems.size
-            }
+                override fun getOldListSize(): Int {
+                    return oldItems.size
+                }
 
-            override fun getNewListSize(): Int {
-                return newItems.size
-            }
+                override fun getNewListSize(): Int {
+                    return newItems.size
+                }
 
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                areItemsTheSame(oldItemPosition, newItemPosition)
-        }, true).dispatchUpdatesTo(viewPager.adapter!!)
+                override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                    areItemsTheSame(oldItemPosition, newItemPosition)
+            }, true).dispatchUpdatesTo(it)
+        }
     }
 
     override fun setupCheckoutData() {
@@ -442,7 +447,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     .clientNumber(postpaidClientNumberWidget.getInputNumber())
                     .isPromo("0")
                     .operatorId(operator.id)
-                    .productId(operator.attributes.defaultProductId.toString())
+                    .productId(operator.attributes.defaultProductId)
                     .utmCampaign(categoryId.toString())
                     .build()
             }
@@ -462,7 +467,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     val isInputvalid = validatePhoneNumber(operatorData, postpaidClientNumberWidget)
 
                     if (isInputvalid) {
-                        hitTrackingForInputNumber(this)
+                        hitTrackingForInputNumber()
                         postpaidClientNumberWidget.clearErrorState()
                     }
                     postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
@@ -482,7 +487,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    private fun hitTrackingForInputNumber(selectedOperator: RechargePrefix) {
+    private fun hitTrackingForInputNumber() {
         actionTypeTrackingJob?.cancel()
         actionTypeTrackingJob = lifecycleScope.launch {
             delay(INPUT_ACTION_TYPE_TRACKING_DELAY)
@@ -635,6 +640,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_POSTPAID_TRACE = "dg_telco_postpaid_pdp"
         private const val TITLE_PAGE = "telco post paid"
+
+        private const val MINIMUM_OPERATOR_PREFIX = 4
 
         private const val VALID_MIN_INPUT_NUMBER = 10
         private const val VALID_MAX_INPUT_NUMBER = 14

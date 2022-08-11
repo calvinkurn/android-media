@@ -1,6 +1,5 @@
 package com.tokopedia.kyc_centralized.view.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -9,6 +8,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_0_5F
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_16
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_ZERO
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
@@ -34,9 +36,13 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
     override fun getScreenName(): String = ""
 
     override fun setContentView() {
-        val paddingDp = 16
         val scale = resources.displayMetrics.density
-        onboardingImage?.setPadding(0, (paddingDp * scale + 0.5f).toInt(), 0, 0)
+        onboardingImage?.setPadding(
+            PADDING_ZERO,
+            (PADDING_16 * scale + PADDING_0_5F).toInt(),
+            PADDING_ZERO,
+            PADDING_ZERO
+        )
         setTextView()
         setButtonView()
         onboardingImage?.loadImage(KycUrl.SCAN_KTP)
@@ -76,13 +82,15 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
         button?.setOnClickListener { v: View? ->
             checkPermission {
                 analytics?.eventClickNextKtpPage()
-                val intent = createIntent(
-                        context,
+                val intent = context?.let {
+                    createIntent(
+                        it,
                         UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP,
+                        projectId,
                         useCropping = true,
                         useCompression = true
-                )
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+                    )
+                }
                 startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_KTP)
             }
         }

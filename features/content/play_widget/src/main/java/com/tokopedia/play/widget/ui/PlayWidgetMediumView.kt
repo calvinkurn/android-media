@@ -92,8 +92,15 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onImpressChannelCard(
                 view = this@PlayWidgetMediumView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
+            )
+
+            mAnalyticListener?.onImpressReminderIcon(
+                view = this@PlayWidgetMediumView,
+                item = item,
+                channelPositionInList = position,
+                isReminded = item.reminderType == PlayWidgetReminderType.Reminded,
             )
         }
 
@@ -101,8 +108,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onClickChannelCard(
                 view = this@PlayWidgetMediumView,
                 item = item,
+                config = mModel.config,
                 channelPositionInList = position,
-                isAutoPlay = mIsAutoPlay
             )
 
             if (mWidgetListener != null
@@ -125,17 +132,13 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             mAnalyticListener?.onClickMenuActionChannel(this@PlayWidgetMediumView, item, position)
             mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item, position)
         }
-
-        override fun onLabelPromoChannelClicked(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoClicked(this@PlayWidgetMediumView, item, position, mIsAutoPlay)
-        }
-
-        override fun onLabelPromoChannelImpressed(item: PlayWidgetChannelUiModel, position: Int) {
-            mAnalyticListener?.onLabelPromoImpressed(this@PlayWidgetMediumView, item, position, mIsAutoPlay)
-        }
     }
 
     private val cardBannerListener = object : PlayWidgetMediumViewHolder.Banner.Listener {
+
+        override fun onBannerImpressed(view: View, item: PlayWidgetBannerUiModel, position: Int) {
+            mAnalyticListener?.onImpressBannerCard(this@PlayWidgetMediumView, item, position)
+        }
 
         override fun onBannerClicked(view: View, item: PlayWidgetBannerUiModel, position: Int) {
             mAnalyticListener?.onClickBannerCard(this@PlayWidgetMediumView, item, position)
@@ -158,10 +161,11 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         cardTranscodeListener = cardTranscodeListener,
     )
 
-    private var mIsAutoPlay: Boolean = false
     private var mLastOverlayImageUrl: String? = null
 
     private val spacing16 by lazy { resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt() }
+    private val spacing12 by lazy { resources.getDimensionPixelOffset(R.dimen.play_widget_dp_12) }
+    private val spacing10 by lazy { resources.getDimensionPixelOffset(R.dimen.play_widget_medium_margin_without_background) }
 
     private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
 
@@ -196,6 +200,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     /**
      * Setup view
      */
+    @Suppress("MagicNumber")
     private fun setupView(view: View) {
         recyclerViewItem.addItemDecoration(PlayWidgetCardMediumItemDecoration(context))
         recyclerViewItem.layoutManager = layoutManager
@@ -237,11 +242,17 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         val prevModel = mModel
         mModel = data
 
-        topContainer.shouldShowWithAction(data.title.isNotEmpty() || (data.isActionVisible && data.actionAppLink.isNotEmpty())) {
+        if (prevModel.hasAction != mModel.hasAction && mModel.hasAction) {
+            actionTitle.addOneTimeGlobalLayoutListener {
+                mAnalyticListener?.onImpressViewAll(this)
+            }
+        }
+
+        topContainer.shouldShowWithAction(data.title.isNotEmpty() || data.hasAction) {
             title.text = data.title
         }
 
-        actionTitle.shouldShowWithAction(data.isActionVisible && data.actionAppLink.isNotEmpty()){
+        actionTitle.shouldShowWithAction(data.hasAction){
             actionTitle.text = data.actionTitle
             actionTitle.setOnClickListener {
                 mAnalyticListener?.onClickViewAll(this)
@@ -257,8 +268,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
         val modifiedItems = getModifiedItems(prevModel, data)
         adapter.setItemsAndAnimateChanges(modifiedItems)
-
-        mIsAutoPlay = data.config.autoPlay
     }
 
     /**
@@ -274,18 +283,25 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         }
         recyclerViewItem.setMargin(
                 left = 0,
-                top = if (shouldAddSpacing(data)) spacing16 else 0,
+                top = if (isBackgroundAvailable(data)) spacing16 else 0,
                 right = 0,
                 bottom = spacing16,
         )
         mLastOverlayImageUrl = data.overlayImageUrl
+
+        itemContainer.setMargin(
+            left = 0,
+            top = if(isBackgroundAvailable(data)) spacing12 else spacing10,
+            right = 0,
+            bottom = 0,
+        )
     }
 
     private fun shouldLoadOverlayImage(imageUrl: String) = imageUrl.isNotBlank()
 
     private fun shouldScrollToLeftBanner() = mLastOverlayImageUrl?.isBlank() ?: false
 
-    private fun shouldAddSpacing(data: PlayWidgetBackgroundUiModel): Boolean {
+    private fun isBackgroundAvailable(data: PlayWidgetBackgroundUiModel): Boolean {
         return data.overlayImageUrl.isNotBlank()
                 && (data.gradientColors.isNotEmpty() || data.backgroundUrl.isNotBlank())
     }

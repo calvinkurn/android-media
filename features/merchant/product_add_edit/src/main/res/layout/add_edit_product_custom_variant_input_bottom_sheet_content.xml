@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutParent"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -36,10 +36,12 @@
         android:paddingStart="16dp"
         android:paddingEnd="8dp" />
 
+    <!--ignored because we need no padding and 0px radius card-->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewVariantMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:ignore="UnifyComponentUsage"
         app:cardElevation="@dimen/layout_lvl1">
 
         <com.tokopedia.unifycomponents.UnifyButton

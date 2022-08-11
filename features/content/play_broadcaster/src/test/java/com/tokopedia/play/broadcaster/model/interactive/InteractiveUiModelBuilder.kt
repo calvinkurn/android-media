@@ -1,13 +1,17 @@
 package com.tokopedia.play.broadcaster.model.interactive
 
+import com.tokopedia.play.broadcaster.ui.model.interactive.GiveawayConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.ui.PlayLeaderboardConfigUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 
 /**
  * Created By : Jonathan Darwin on February 21, 2022
@@ -33,6 +37,7 @@ class InteractiveUiModelBuilder {
             winners = buildWinnerList(winnerSize),
             otherParticipantText = "",
             otherParticipant = 0,
+            id = "1"
         )
     }
 
@@ -73,6 +78,14 @@ class InteractiveUiModelBuilder {
     )
 
     fun buildInteractiveConfigModel(
+        giveawayConfig: GiveawayConfigUiModel = buildGiveawayConfig(),
+        quizConfig: QuizConfigUiModel = buildQuizConfig(),
+    ) = InteractiveConfigUiModel(
+        giveawayConfig = giveawayConfig,
+        quizConfig = quizConfig,
+    )
+
+    fun buildGiveawayConfig(
         isActive: Boolean = true,
         nameGuidelineHeader: String = "",
         nameGuidelineDetail: String = "",
@@ -80,7 +93,7 @@ class InteractiveUiModelBuilder {
         timeGuidelineDetail: String = "",
         durationInMs: Long = 1000,
         availableStartTimeInMs: List<Long> = List(5) { it.toLong() },
-    ) = InteractiveConfigUiModel(
+    ) = GiveawayConfigUiModel(
         isActive = isActive,
         nameGuidelineHeader = nameGuidelineHeader,
         nameGuidelineDetail = nameGuidelineDetail,
@@ -90,8 +103,58 @@ class InteractiveUiModelBuilder {
         availableStartTimeInMs = availableStartTimeInMs,
     )
 
+    fun buildQuizConfig(
+        isActive: Boolean = true,
+        maxTitleLength: Int = 50,
+        maxChoicesCount: Int = 3,
+        minChoicesCount: Int = 1,
+        maxRewardLength: Int = 5,
+        maxChoiceLength: Int = 5,
+        availableStartTimeInMs: List<Long> = List(5) { it.toLong() },
+        eligibleStartTimeInMs: List<Long> = List(5) { it.toLong() },
+        showPrizeCoachMark: Boolean = true,
+    ) = QuizConfigUiModel(
+        isActive = isActive,
+        maxTitleLength = maxTitleLength,
+        maxChoicesCount = maxChoicesCount,
+        minChoicesCount = minChoicesCount,
+        maxRewardLength = maxRewardLength,
+        maxChoiceLength = maxChoiceLength,
+        availableStartTimeInMs = availableStartTimeInMs,
+        eligibleStartTimeInMs = eligibleStartTimeInMs,
+        showPrizeCoachMark = showPrizeCoachMark,
+    )
+
+    fun buildGiveaway(
+        id: String = "",
+        title: String = "",
+        waitingDuration: Long = 200L,
+        status: InteractiveUiModel.Giveaway.Status = InteractiveUiModel.Giveaway.Status.Unknown,
+    ) = InteractiveUiModel.Giveaway(
+        id = id,
+        title = title,
+        waitingDuration = waitingDuration,
+        status = status,
+    )
+
+    fun buildQuiz(
+        id: String = "",
+        title: String = "",
+        waitingDuration: Long = 200L,
+        status: InteractiveUiModel.Quiz.Status = InteractiveUiModel.Quiz.Status.Unknown,
+        listOfChoices: List<QuizChoicesUiModel> = emptyList(),
+        reward: String = "",
+    ) = InteractiveUiModel.Quiz(
+        id = id,
+        title = title,
+        waitingDuration = waitingDuration,
+        status = status,
+        listOfChoices = listOfChoices,
+        reward = reward,
+    )
+
     fun buildCurrentInteractiveModel(
-        id: Long = 0L,
+        id: String = "",
         type: InteractiveType = InteractiveType.Unknown,
         title: String = "",
         timeStatus: PlayInteractiveTimeStatus = PlayInteractiveTimeStatus.Unknown,

@@ -3,7 +3,10 @@ package com.tokopedia.product.detail.data.util
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
-import com.tokopedia.gallery.viewmodel.ImageReviewItem
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -57,13 +60,19 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataMo
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
-import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
-import com.tokopedia.product.detail.data.model.review.ImageReview
+import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.share.ProductData
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
@@ -325,7 +334,17 @@ object DynamicProductDetailMapper {
 
     private fun mapToProductDetailInfoContent(data: ComponentData?): List<ProductDetailInfoContent> {
         if (data == null) return listOf()
-        return data.content.map { ProductDetailInfoContent(icon = it.icon, title = it.title, subtitle = it.subtitle, applink = it.applink, showAtFront = it.showAtFront, isAnnotation = it.isAnnotation) }
+        return data.content.map {
+            ProductDetailInfoContent(
+                icon = it.icon,
+                title = it.title,
+                subtitle = it.subtitle,
+                applink = it.applink,
+                showAtFront = it.showAtFront,
+                isAnnotation = it.isAnnotation,
+                infoLink = it.infoLink
+            )
+        }
     }
 
     private fun mapToCustomInfoUiModel(componentData: ComponentData?,
@@ -357,37 +376,95 @@ object DynamicProductDetailMapper {
         return fallbackUrl
     }
 
-    fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ImageReview {
-        val result = mutableListOf<ImageReviewItem>()
-
-        data.detail?.images?.forEach {
-            val review = data.detail?.reviews?.firstOrNull { review ->
-                review.reviewId == it.reviewID
-            } ?: return@forEach
-            result.add(ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
-                    review.reviewer?.fullName, it.uriThumbnail,
-                    it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt, data.detail?.imageCount))
-        }
-
-        return ImageReview(result, data.detail?.imageCount ?: "")
+    fun generateImageReview(reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewImage {
+        return ReviewImage(
+            buyerMediaCount = reviewImage.detail?.mediaCount.toIntOrZero(),
+            reviewMediaThumbnails = generateReviewMediaThumbnails(reviewImage),
+            staticSocialProofText = reviewImage.detail?.mediaTitle ?: ""
+        )
     }
 
-    fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?, variantGuideLine: String, productInfoContent: List<ProductDetailInfoContent>, forceRefresh: Boolean): ProductInfoParcelData {
-        val data = productInfoP1?.data
-        val basic = productInfoP1?.basic
-        return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
-                ?: "", data?.name ?: "", data?.getProductImageUrl()
-                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
-                ?: listOf(), productInfoContent, forceRefresh, productInfoP1?.basic?.isTokoNow == true)
+    private fun generateReviewMediaThumbnails(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewMediaThumbnailUiModel {
+        val totalVideoToShow = data.detail?.videos?.size.orZero()
+        val totalImageToShow = data.detail?.images?.size.orZero()
+        val totalMediaToShow = totalVideoToShow + totalImageToShow
+        val totalNotShowedMedia = data.detail?.mediaCount.toIntOrZero().minus(totalMediaToShow).coerceAtLeast(Int.ZERO)
+        val mappedVideoThumbnails = data.detail?.videos?.mapIndexed { index, video ->
+            val hasNext = data.isHasNext
+            val lastItem = index == totalMediaToShow - 1
+            if (lastItem && hasNext && totalNotShowedMedia.isMoreThanZero()) {
+                ReviewMediaVideoThumbnailUiModel(
+                    uiState = ReviewMediaVideoThumbnailUiState.ShowingSeeMore(
+                        attachmentID = video.attachmentID,
+                        reviewID = video.feedbackID.orEmpty(),
+                        url = video.url.orEmpty(),
+                        totalMediaCount = data.detail?.mediaCount.toIntOrZero(),
+                        totalMediaCountFmt = data.detail?.mediaCountFmt.orEmpty()
+                    )
+                )
+            } else {
+                ReviewMediaVideoThumbnailUiModel(
+                    uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                        attachmentID = video.attachmentID,
+                        reviewID = video.feedbackID.orEmpty(),
+                        url = video.url.orEmpty()
+                    )
+                )
+            }
+        }.orEmpty()
+        val mappedImageThumbnails = data.detail?.images?.mapIndexed { index, image ->
+            val hasNext = data.isHasNext
+            val lastItem = index.plus(mappedVideoThumbnails.size) == totalMediaToShow - 1
+            if (lastItem && hasNext && totalNotShowedMedia.isMoreThanZero()) {
+                ReviewMediaImageThumbnailUiModel(
+                    uiState = ReviewMediaImageThumbnailUiState.ShowingSeeMore(
+                        attachmentID = image.imageAttachmentID,
+                        reviewID = image.reviewID,
+                        thumbnailUrl = image.uriThumbnail.orEmpty(),
+                        fullSizeUrl = image.uriLarge.orEmpty(),
+                        totalMediaCount = data.detail?.mediaCount.toIntOrZero(),
+                        totalMediaCountFmt = data.detail?.mediaCountFmt.orEmpty()
+                    )
+                )
+            } else {
+                ReviewMediaImageThumbnailUiModel(
+                    uiState = ReviewMediaImageThumbnailUiState.Showing(
+                        attachmentID = image.imageAttachmentID,
+                        reviewID = image.reviewID,
+                        thumbnailUrl = image.uriThumbnail.orEmpty(),
+                        fullSizeUrl = image.uriLarge.orEmpty()
+                    )
+                )
+            }
+        }.orEmpty()
+        val mappedMediaThumbnails = mappedVideoThumbnails.plus(mappedImageThumbnails)
+        return ReviewMediaThumbnailUiModel(mappedMediaThumbnails)
+    }
+
+    fun generateDetailedMediaResult(
+        mediaThumbnails: ReviewMediaThumbnailUiModel?
+    ): ProductrevGetReviewMedia {
+        return ProductrevGetReviewMedia(
+            reviewMedia = mediaThumbnails?.generateReviewMedia().orEmpty(),
+            detail = Detail(
+                reviewDetail = emptyList(),
+                reviewGalleryImages = mediaThumbnails?.generateReviewGalleryImage().orEmpty(),
+                reviewGalleryVideos = mediaThumbnails?.generateReviewGalleryVideo().orEmpty(),
+                mediaCount = mediaThumbnails?.generateMediaCount().orZero()
+            ),
+            hasNext = mediaThumbnails?.isShowingSeeMore().orFalse()
+        )
     }
 
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return UserLocationRequest(
-                localData.district_id.checkIfNumber("district_id"),
-                localData.address_id.checkIfNumber("address_id"),
-                localData.postal_code.checkIfNumber("postal_code"),
-                latlong)
+            districtID = localData.district_id.checkIfNumber("district_id"),
+            addressID = localData.address_id.checkIfNumber("address_id"),
+            postalCode = localData.postal_code.checkIfNumber("postal_code"),
+            latlon = latlong,
+            cityId = localData.city_id.checkIfNumber("city_id")
+        )
     }
 
     fun generateTokoNowRequest(localData: LocalCacheModel): TokoNowParam {
@@ -411,7 +488,15 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun generateProductShareData(productInfo: DynamicProductInfoP1, userId: String, shopUrl: String): ProductData {
+    fun zeroIfEmpty(data: String?): String {
+        return if (data == null || data.isEmpty()) {
+            "0"
+        } else {
+            data
+        }
+    }
+
+    fun generateProductShareData(productInfo: DynamicProductInfoP1, userId: String, shopUrl: String, bundleId: String): ProductData {
         return ProductData(
                 userId,
                 productInfo.finalPrice.getCurrencyFormatted(),
@@ -422,7 +507,9 @@ object DynamicProductDetailMapper {
                 shopUrl,
                 productInfo.basic.shopName,
                 productInfo.basic.productID,
-                productInfo.data.getProductImageUrl() ?: ""
+                productInfo.data.getProductImageUrl() ?: "",
+                campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
+                bundleId = zeroIfEmpty(bundleId)
         )
     }
 

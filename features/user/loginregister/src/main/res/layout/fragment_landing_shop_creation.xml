@@ -82,7 +82,7 @@
                 android:gravity="center"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/deleted_shop_info"
-                android:textColor="@color/Neutral_N400"
+                android:textColor="@color/Unify_N400"
                 app:typographyType="body_3"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>

@@ -21,7 +21,7 @@ class TradeInInfoViewModel @Inject constructor(
         }, onError = {
             it.printStackTrace()
             progBarVisibility.value = false
-            errorMessage.value = it.localizedMessage
+            errorMessage.value = it
         })
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.product.create.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.vouchercreation.product.create.data.response.Voucher
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import javax.inject.Inject
@@ -18,7 +20,7 @@ class CouponDetailMapper @Inject constructor() {
         }
 
         return CouponUiModel(
-            id = voucher.voucherId,
+            id = voucher.voucherId.toIntOrZero(),
             name = voucher.voucherName,
             type = voucher.voucherType,
             typeFormatted = voucher.voucherTypeFormatted,
@@ -43,7 +45,7 @@ class CouponDetailMapper @Inject constructor() {
             tnc = voucher.tnc,
             productIds = products,
             products = voucher.productIds,
-            galadrielVoucherId = voucher.galadrielVoucherId
+            galadrielVoucherId = voucher.galadrielVoucherId.toLongOrZero()
         )
 
     }

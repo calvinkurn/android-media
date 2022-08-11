@@ -5,21 +5,19 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BANNERS
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
+import com.tokopedia.officialstore.official.di.query.OSBannerQuery
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetOfficialStoreBannerUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(QUERY_OFFICIAL_STORE_BANNERS) val query: String
+        private val graphqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<OfficialStoreBanners>() {
 
     var params: Map<String, Any> = mapOf()
 
     override suspend fun executeOnBackground(): OfficialStoreBanners {
-        val gqlRequest  = GraphqlRequest(query, OfficialStoreBanners.Response::class.java, params, false)
+        val gqlRequest  = GraphqlRequest(OSBannerQuery(), OfficialStoreBanners.Response::class.java, params, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()

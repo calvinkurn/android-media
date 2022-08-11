@@ -12,7 +12,7 @@ class RechargeGeneralLoginMockResponseConfig(
 
     companion object {
         const val KEY_QUERY_MENU_DETAIL = "catalogMenuDetail"
-        const val KEY_QUERY_FAV_NUMBER = "favouriteNumber"
+        const val KEY_QUERY_FAV_NUMBER = "digiPersoGetPersonalizedItems"
         const val KEY_QUERY_OPERATOR_SELECT_GROUP = "rechargeCatalogOperatorSelectGroup"
         const val KEY_QUERY_CATALOG_DYNAMIC_INPUT = "rechargeCatalogDynamicInput"
         const val KEY_QUERY_CATALOG_PLUGIN = "rechargeCatalogPlugin"
@@ -158,4 +158,5 @@ class RechargeGeneralLoginMockResponseConfig(
                 FIND_BY_CONTAINS)
         return this
     }
+
 }

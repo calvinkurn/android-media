@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -18,10 +17,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS
@@ -29,6 +25,8 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil.getFirstTimeWeightPerVariant
+import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil.setFirstTimeWeightPerVariant
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -37,12 +35,15 @@ import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailFieldsAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailInputTypeFactoryImpl
+import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
+import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailHeaderUiModel
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailFieldsViewHolder
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailHeaderViewHolder
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_TRACKER_OFF
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_TRACKER_ON
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditListener
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
@@ -56,20 +57,21 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.math.BigInteger
+import java.util.*
 import javax.inject.Inject
 
 class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
-        VariantDetailFieldsViewHolder.OnStatusSwitchCheckedChangeListener,
-        VariantDetailFieldsViewHolder.OnPriceInputTextChangedListener,
-        VariantDetailFieldsViewHolder.OnStockInputTextChangedListener,
-        MultipleVariantEditSelectBottomSheet.MultipleVariantEditListener,
         SelectVariantMainBottomSheet.SelectVariantMainListener,
-        VariantDetailFieldsViewHolder.OnSkuInputTextChangedListener,
-        AddEditProductPerformanceMonitoringListener
+        VariantDetailFieldsViewHolder.VariantDetailFieldsViewHolderListener,
+        AddEditProductPerformanceMonitoringListener,
+        MultipleVariantEditListener
 {
 
     companion object {
+        const val SCROLLING_DELAY = 500L
+        const val TRACKER_DELIMITER = " - "
+        const val TRACKER_THROTTLE_TIME = 100
         fun createInstance(cacheManagerId: String): Fragment {
             return AddEditProductVariantDetailFragment().apply {
                 arguments = Bundle().apply {
@@ -86,6 +88,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     private var variantDetailFieldsAdapter: VariantDetailFieldsAdapter? = null
+    private val firstTimeWeightPerVariant: Boolean by lazy {
+        getFirstTimeWeightPerVariant(activity)
+    }
 
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -98,6 +103,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private var imageViewMultipleEdit: ImageView? = null
     private var variantListButton: Typography? = null
     private var buttonSave: UnifyButton? = null
+    private var lastSendTrackerDate: Date = Date()
+    private var isSendingTrackerMultipleVariant = false
 
     override fun getScreenName(): String {
         return ""
@@ -140,6 +147,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         setupViews(view)
         viewModel.setupMultiLocationValue()
+
+        // max stock as threshold when seller inserts stock
+        viewModel.getMaxStockThreshold(userSession.shopId)
+
         multiLocationTicker?.showWithCondition(viewModel.isMultiLocationShop)
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
@@ -147,11 +158,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
         variantDetailFieldsAdapter = VariantDetailFieldsAdapter(VariantDetailInputTypeFactoryImpl(
-                this,
-                this,
-                this,
-                this,
-                this))
+                this, this))
         recyclerViewVariantDetailFields?.adapter = variantDetailFieldsAdapter
         recyclerViewVariantDetailFields?.layoutManager = LinearLayoutManager(context)
         recyclerViewVariantDetailFields?.itemAnimator = null
@@ -176,8 +183,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         }
 
         observeSelectedVariantSize()
-        observeInputStatus()
         observeHasWholesale()
+        observeMaxStockThreshold()
+
 
         enableSku()
         setupToolbarActions()
@@ -192,23 +200,21 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val isCollapsed = viewModel.isVariantDetailHeaderCollapsed(headerPosition)
         if (!isCollapsed) {
             variantDetailFieldsAdapter?.collapseUnitValueHeader(currentHeaderPosition, viewModel.getInputFieldSize())
-            viewModel.increaseCollapsedFields(viewModel.getInputFieldSize())
             viewModel.updateVariantDetailHeaderMap(headerPosition, true)
             viewModel.collapseHeader(headerPosition, currentHeaderPosition)
         } else {
             variantDetailFieldsAdapter?.expandDetailFields(currentHeaderPosition, viewModel.getVariantDetailHeaderData(headerPosition))
             val layoutManager: LinearLayoutManager = recyclerViewVariantDetailFields?.layoutManager as LinearLayoutManager
             layoutManager.scrollToPositionWithOffset(currentHeaderPosition, 0)
-            viewModel.decreaseCollapsedFields(viewModel.getInputFieldSize())
             viewModel.updateVariantDetailHeaderMap(headerPosition, false)
             viewModel.expandHeader(headerPosition, currentHeaderPosition)
         }
         return viewModel.isVariantDetailHeaderCollapsed(headerPosition)
     }
 
-    override fun onCheckedChanged(isChecked: Boolean, adapterPosition: Int) {
+    override fun onStatusSwitchChanged(isChecked: Boolean, adapterPosition: Int) {
         val updatedInputModel = viewModel.updateSwitchStatus(isChecked, adapterPosition)
-        viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
+        viewModel.updateVariantDetailInputMap(adapterPosition, updatedInputModel)
 
         // tracking
         sendClickVariantStatusToggleData(isChecked)
@@ -216,23 +222,64 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun onPriceInputTextChanged(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
         val validatedInputModel = viewModel.validateVariantPriceInput(priceInput, adapterPosition)
-        viewModel.editVariantDetailInputMap(adapterPosition, validatedInputModel)
+        viewModel.updateVariantDetailInputMap(adapterPosition, validatedInputModel)
         return validatedInputModel
     }
 
     override fun onStockInputTextChanged(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
-        val validatedInputModel = viewModel.validateProductVariantStockInput(stockInput, adapterPosition)
-        viewModel.editVariantDetailInputMap(adapterPosition, validatedInputModel)
+        val validatedInputModel = viewModel.validateProductVariantStockInput(stockInput.toIntOrNull(), adapterPosition)
+        viewModel.updateVariantDetailInputMap(adapterPosition, validatedInputModel)
         return validatedInputModel
     }
 
     override fun onSkuInputTextChanged(skuInput: String, adapterPosition: Int) {
         val updatedInputModel = viewModel.updateVariantSkuInput(skuInput, adapterPosition)
-        viewModel.editVariantDetailInputMap(adapterPosition, updatedInputModel)
+        viewModel.updateVariantDetailInputMap(adapterPosition, updatedInputModel)
     }
 
-    override fun onMultipleEditFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
-        viewModel.updateProductInputModel(multipleVariantEditInputModel)
+    override fun onWeightInputTextChanged(weightInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
+        val validatedInputModel = viewModel.validateProductVariantWeightInput(weightInput.toIntOrNull(), adapterPosition)
+        viewModel.updateVariantDetailInputMap(adapterPosition, validatedInputModel)
+        sendTrackerWpvFillWeight(validatedInputModel)
+        return validatedInputModel
+    }
+
+    override fun onCoachmarkDismissed() {
+        setFirstTimeWeightPerVariant(activity, false)
+    }
+
+    override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
+        val headerList = variantDetailFieldsAdapter?.list?.filterIsInstance<VariantDetailHeaderUiModel>()
+        headerList?.forEach {
+            if (it.isCollapsed) onHeaderClicked(it.position)
+        }
+
+        variantDetailFieldsAdapter?.list?.forEachIndexed { index, visitable ->
+            (visitable as? VariantDetailFieldsUiModel)?.variantDetailInputLayoutModel?.let {
+                if (!multipleVariantEditInputModel.selection.contains(it.combination)) return@let
+
+                // assign new value if input price is not empty
+                if (multipleVariantEditInputModel.price.isNotEmpty()) {
+                    onPriceInputTextChanged(multipleVariantEditInputModel.price, index)
+                }
+                // assign new value if input stock is not empty
+                if (multipleVariantEditInputModel.stock.isNotEmpty()) {
+                    onStockInputTextChanged(multipleVariantEditInputModel.stock, index)
+                }
+                // assign new value if input sku is not empty
+                if (multipleVariantEditInputModel.sku.isNotEmpty()) {
+                    onSkuInputTextChanged(multipleVariantEditInputModel.sku, index)
+                }
+                // assign new value if input weight is not empty
+                if (multipleVariantEditInputModel.weight.isNotEmpty()) {
+                    sendTrackerWpvFillMultipleWeight(multipleVariantEditInputModel.weight, it)
+                    onWeightInputTextChanged(multipleVariantEditInputModel.weight, index)
+                }
+
+                onStatusSwitchChanged(true, index)
+            }
+            variantDetailFieldsAdapter?.notifyItemChanged(index)
+        }
     }
 
     override fun onMultipleEditInputValidatePrice(price: BigInteger): String {
@@ -241,6 +288,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     override fun onMultipleEditInputValidateStock(stock: BigInteger): String {
         return viewModel.validateProductVariantStockInput(stock)
+    }
+
+    override fun onMultipleEditInputValidateWeight(weight: BigInteger): String {
+        return viewModel.validateProductVariantWeightInput(weight.toInt())
     }
 
     override fun onSelectVariantMainFinished(combination: List<Int>) {
@@ -298,11 +349,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeSelectedVariantSize() {
-        viewModel.selectedVariantSize.observe(viewLifecycleOwner, Observer { size ->
+        viewModel.selectedVariantSize.observe(viewLifecycleOwner, { size ->
             // clear old elements before rendering new elements
             variantDetailFieldsAdapter?.clearAllElements()
-            // reset the collapsed fields counter
-            viewModel.resetCollapsedFields()
             // have 2 selected variant detail
             val hasVariantCombination = viewModel.hasVariantCombination(size)
             // with collapsible header
@@ -318,16 +367,16 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeHasWholesale() {
-        viewModel.hasWholesale.observe(viewLifecycleOwner, Observer {
-            variantDetailFieldsAdapter?.updatePriceEditingStatus(viewModel.getAvailableFields(), !it)
-            tickerVariantWholesale?.visibility = if (it) View.VISIBLE else View.GONE
+        viewModel.hasWholesale.observe(viewLifecycleOwner, {
+            variantDetailFieldsAdapter?.updatePriceEditingStatus(!it)
+            tickerVariantWholesale?.isVisible = it
         })
     }
 
-    private fun observeInputStatus() {
-        viewModel.errorCounter.observe(viewLifecycleOwner, Observer {
-            buttonSave?.isEnabled = it.orZero() <= 0
-        })
+    private fun observeMaxStockThreshold() {
+        viewModel.maxStockThreshold.observe(viewLifecycleOwner) {
+            variantDetailFieldsAdapter?.updateMaxStockThreshold(it)
+        }
     }
 
     private fun enableSku() {
@@ -349,15 +398,16 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         selectedUnitValues.forEachIndexed { productVariantIndex, unitValue ->
             val isSkuVisible = switchUnifySku?.isChecked.orFalse() // get last visibility
             val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
-                    productVariantIndex, 0, unitValue.value, isSkuVisible)
-            val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
-            fieldVisitablePosition?.let { viewModel.updateVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
+                productVariantIndex, Int.ZERO, unitValue.value, isSkuVisible)
+            val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(
+                variantDetailInputModel, firstTimeWeightPerVariant)
+            fieldVisitablePosition?.let { viewModel.addToVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
         }
     }
 
     private fun setupVariantDetailCombinationFields(selectedVariants: List<SelectionInputModel>) {
         //increment for indexing product variant
-        var productVariantIndex = 0
+        var productVariantIndex = Int.ZERO
         // variant level 1 properties
         val selectedVariantLevel1 = selectedVariants[VARIANT_VALUE_LEVEL_ONE_POSITION]
         val unitValueLevel1 = selectedVariantLevel1.options
@@ -367,8 +417,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         // start rendering
         unitValueLevel1.forEach { level1Value ->
             // render collapsible header
-            val headerVisitablePosition = variantDetailFieldsAdapter?.addUnitValueHeader(level1Value.value)
-                    ?: 0
+            val headerVisitablePosition = variantDetailFieldsAdapter?.addUnitValueHeader(level1Value.value).orZero()
             viewModel.updateVariantDetailHeaderMap(headerVisitablePosition, false)
             // init header position - current header visitable position map values
             viewModel.updateCurrentHeaderPositionMap(headerVisitablePosition, headerVisitablePosition)
@@ -376,9 +425,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             unitValueLevel2.forEach { level2Value ->
                 val isSkuVisible = switchUnifySku?.isChecked.orFalse() // get last visibility
                 val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
-                        productVariantIndex, headerVisitablePosition, level2Value.value, isSkuVisible)
-                val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
-                fieldVisitablePosition?.let { viewModel.updateVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
+                    productVariantIndex, headerVisitablePosition, level2Value.value, isSkuVisible)
+                val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(
+                    variantDetailInputModel, firstTimeWeightPerVariant)
+                fieldVisitablePosition?.let { viewModel.addToVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
                 productVariantIndex++
             }
         }
@@ -395,33 +445,70 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         bottomSheet.setEnableEditPrice(!hasWholesale)
         bottomSheet.setTrackerShopId(userSession.shopId)
         bottomSheet.setTrackerIsEditMode(viewModel.isEditMode)
-        bottomSheet.show(fragmentManager)
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun showSelectPrimaryBottomSheet() {
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         val bottomSheet = SelectVariantMainBottomSheet(this)
         bottomSheet.setData(variantInputModel)
-        bottomSheet.show(fragmentManager)
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun submitVariantInput() {
-        val detailList = variantDetailFieldsAdapter?.getDetailInputLayoutList().orEmpty()
-        val isError = viewModel.validateSubmitDetailField(detailList)
-
-        if (isError) {
-            variantDetailFieldsAdapter?.notifyDataSetChanged()
-        } else {
+        invokeFieldsValidation()
+        if (viewModel.getInputDataValidStatus()) {
             viewModel.updateProductInputModel()
             viewModel.productInputModel.value?.apply {
-                val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
-                        ?: ""
-                SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
+                val cacheManagerId = arguments?.getString(
+                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()
+                SaveInstanceCacheManager(requireContext(), cacheManagerId)
+                    .put(EXTRA_PRODUCT_INPUT_MODEL, this)
 
-                val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                val intent = Intent().putExtra(
+                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID,
+                    cacheManagerId
+                )
                 activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
             }
+        }
+    }
+
+    private fun invokeFieldsValidation() {
+        val headerList = variantDetailFieldsAdapter?.list?.filterIsInstance<VariantDetailHeaderUiModel>()
+        headerList?.forEach {
+            if (it.isCollapsed) onHeaderClicked(it.position)
+        }
+
+        variantDetailFieldsAdapter?.list?.forEachIndexed { index, visitable ->
+            (visitable as? VariantDetailFieldsUiModel)?.variantDetailInputLayoutModel?.let {
+                onPriceInputTextChanged(it.price.replace(".", ""), index)
+                onStockInputTextChanged(it.stock?.toString().orEmpty(), index)
+                onWeightInputTextChanged(it.weight?.toString().orEmpty(), index)
+                onSkuInputTextChanged(it.sku, index)
+            }
+            variantDetailFieldsAdapter?.notifyItemChanged(index)
+        }
+
+        recyclerViewVariantDetailFields?.postDelayed({
+            scrollToFirstError()
+        }, SCROLLING_DELAY)
+    }
+
+    private fun scrollToFirstError() {
+        try {
+            val errorFieldIndex = variantDetailFieldsAdapter?.list?.indexOfFirst {
+                (it as? VariantDetailFieldsUiModel)?.variantDetailInputLayoutModel?.let { inputModel ->
+                    inputModel.isWeightError || inputModel.isPriceError || inputModel.isStockError
+                } ?: false
+            }
+
+            errorFieldIndex?.let {
+                recyclerViewVariantDetailFields?.smoothScrollToPosition(it)
+            }
+        } catch (scrollingException: Exception) {
+            // no-op
         }
     }
 
@@ -481,6 +568,54 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                     userSession.userId
             )
         }
+    }
+
+    private fun sendTrackerWpvFillWeight(validatedInputModel: VariantDetailInputLayoutModel) {
+        // throttle call to avoid doubled call
+        val dateNow = Date()
+        if (dateNow.time < lastSendTrackerDate.time + TRACKER_THROTTLE_TIME) return
+        lastSendTrackerDate = dateNow
+
+        // avoid sending tracker when sending other tracker
+        if (isSendingTrackerMultipleVariant) return
+
+        val header = variantDetailFieldsAdapter?.getHeaderAtPosition(
+            validatedInputModel.headerPosition
+        )
+        val variantName = if (header == null) {
+            validatedInputModel.unitValueLabel
+        } else {
+            header.headerTitle + TRACKER_DELIMITER + validatedInputModel.unitValueLabel
+        }
+
+        ProductAddVariantDetailTracking.clickFillBoxVariantWeight(
+            variantName,
+            validatedInputModel.weight.orZero(),
+            userSession.shopId
+        )
+    }
+
+    private fun sendTrackerWpvFillMultipleWeight(
+        weight: String,
+        validatedInputModel: VariantDetailInputLayoutModel
+    ) {
+        val header = variantDetailFieldsAdapter?.getHeaderAtPosition(
+            validatedInputModel.headerPosition
+        )
+        val variantName = if (header == null) {
+            validatedInputModel.unitValueLabel
+        } else {
+            header.headerTitle + TRACKER_DELIMITER + validatedInputModel.unitValueLabel
+        }
+
+        isSendingTrackerMultipleVariant = true
+        ProductAddVariantDetailTracking.clickAddWeightMultipleVariant(
+            variantName,
+            weight.toIntOrZero(),
+            userSession.shopId
+        )
+
+        view?.post { isSendingTrackerMultipleVariant = false }
     }
 
     private fun setupToolbarActions() {

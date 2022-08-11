@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_Background"
     android:gravity="center"
     android:orientation="vertical"
@@ -13,8 +12,7 @@
         android:id="@+id/rg_gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:srcCompat="@drawable/profilecompletion_akun_terverifikasi"/>
+        android:orientation="horizontal" />
 
     <androidx.legacy.widget.Space
         android:layout_width="0dp"

@@ -17,5 +17,7 @@ public interface DealFragmentCallbacks {
 
     DealsDetailsResponse getDealDetails();
 
+    void hideMainToolbar();
+
 
 }

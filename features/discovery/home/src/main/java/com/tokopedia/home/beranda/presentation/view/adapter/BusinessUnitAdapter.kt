@@ -11,7 +11,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 
 @Suppress("unused")
 @SuppressLint("SyntheticAccessor")
-class BusinessUnitAdapter(private val listener: NewBusinessUnitViewHolder.BusinessUnitListener) : RecyclerView.Adapter<NewBusinessUnitViewHolder>() {
+class BusinessUnitAdapter(private val listener: NewBusinessUnitViewHolder.BusinessUnitListener,
+                          private val cardInteraction: Boolean = false
+) : RecyclerView.Adapter<NewBusinessUnitViewHolder>() {
     private var itemList: List<BusinessUnitDataModel> = listOf()
     private var positionWidgetOnHome = -1
 
@@ -29,7 +31,7 @@ class BusinessUnitAdapter(private val listener: NewBusinessUnitViewHolder.Busine
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewBusinessUnitViewHolder {
-        return NewBusinessUnitViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_business_unit, parent, false), listener)
+        return NewBusinessUnitViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_business_unit, parent, false), listener, cardInteraction)
     }
 
     override fun onBindViewHolder(holder: NewBusinessUnitViewHolder, position: Int) {

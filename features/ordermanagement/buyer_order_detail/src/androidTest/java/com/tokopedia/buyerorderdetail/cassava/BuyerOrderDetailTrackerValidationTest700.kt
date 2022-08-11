@@ -25,6 +25,7 @@ class BuyerOrderDetailTrackerValidationTest700 : BuyerOrderDetailTrackerValidati
             testClickProductActionButton(activityRule.activity)
             testClickCopyAWB(activityRule.activity)
             testClickPrimaryActionButton()
+            testClickSecondaryActionButtonSeePoD(activityRule.activity)
             testClickSecondaryActionButtonHelp(activityRule.activity)
         } validate {
             clearQueries()
@@ -39,6 +40,7 @@ class BuyerOrderDetailTrackerValidationTest700 : BuyerOrderDetailTrackerValidati
                 BuyerOrderDetailTrackerValidationConstant.successBuyAgainProductQueryPath,
                 BuyerOrderDetailTrackerValidationConstant.clickCopyAWBQueryPath,
                 BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonGiveReviewQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonSeePoDQueryPath,
                 BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonHelpQueryPath
             )
             hasPassedAnalytics(cassavaTestRule)

@@ -81,11 +81,11 @@ data class ProductVariantAggregatorUiData(
         return variantData.variants.firstOrNull()?.options ?: emptyList()
     }
 
-    fun getFirstLevelVariantImage(variantOptionId: String): String?{
-        if(variantOptionId.isEmpty()) return null
-        return getFirstLevelVariantOptions().firstOrNull {
-            it.id == variantOptionId
-        }?.picture?.original?.takeIf { it.isNotEmpty() }
+    fun getFirstLevelVariantImage(variantOptionId: String): String? {
+        if (variantOptionId.isEmpty()) return null
+        val variantOption = getFirstLevelVariantOptions().firstOrNull { it.id == variantOptionId }
+        val variantImage = variantOption?.picture?.original?.takeIf { it.isNotEmpty() }
+        return variantImage ?: simpleBasicInfo.defaultMediaURL.takeIf { it.isNotEmpty() }
     }
 
     fun getVariantGalleryItems(): List<ProductDetailGallery.Item> {

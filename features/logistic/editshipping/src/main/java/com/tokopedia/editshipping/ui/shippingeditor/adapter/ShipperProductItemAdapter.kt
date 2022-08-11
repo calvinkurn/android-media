@@ -5,11 +5,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductModel
+import com.tokopedia.editshipping.util.EditShippingConstant.GOCAR_SHIPPER_PRODUCT_ID
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ShipperProductItemAdapter : RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
+class ShipperProductItemAdapter(private var listener: ShipperProductItemListener) : RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
+
+    interface ShipperProductItemListener {
+        fun onClickInfoIcon()
+        fun showCoachMarkOnInfoIcon(icon: IconUnify)
+    }
 
     private var shipperProduct = mutableListOf<ShipperProductModel>()
 
@@ -47,6 +54,7 @@ class ShipperProductItemAdapter : RecyclerView.Adapter<ShipperProductItemAdapter
         private val shipperProductName = itemView.findViewById<Typography>(R.id.shipper_product_name)
         val shipperProductCb = itemView.findViewById<CheckboxUnify>(R.id.shipper_product_cb)
         private val divider = itemView.findViewById<View>(R.id.divider_shipment)
+        private val infoIcon = itemView.findViewById<IconUnify>(R.id.shipper_product_info_icon)
 
         fun bindData(data: ShipperProductModel) {
             setItemData(data)
@@ -56,7 +64,13 @@ class ShipperProductItemAdapter : RecyclerView.Adapter<ShipperProductItemAdapter
             val lastItem = shipperProduct.last()
             shipperProductName.text = data.shipperProductName
             shipperProductCb.isChecked = data.isActive
-
+            if (shouldShowInfoIcon(data)) {
+                infoIcon.visibility = View.VISIBLE
+                listener.showCoachMarkOnInfoIcon(infoIcon)
+                infoIcon.setOnClickListener {
+                    listener.onClickInfoIcon()
+                }
+            }
             if (data == lastItem) {
                 divider.visibility = View.GONE
             }
@@ -64,6 +78,13 @@ class ShipperProductItemAdapter : RecyclerView.Adapter<ShipperProductItemAdapter
             shipperProductCb?.setOnCheckedChangeListener { _, isChecked ->
                 data.isActive = isChecked
             }
+        }
+
+        private fun shouldShowInfoIcon(data: ShipperProductModel) : Boolean {
+            return data.shipperProductId.equals(
+                    GOCAR_SHIPPER_PRODUCT_ID,
+                    ignoreCase = true
+                )
         }
     }
 }

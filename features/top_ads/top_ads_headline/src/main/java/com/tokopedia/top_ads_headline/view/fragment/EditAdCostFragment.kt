@@ -17,6 +17,7 @@ import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.OnMinBidChangeListener
 import com.tokopedia.top_ads_headline.view.activity.SaveButtonState
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
+import com.tokopedia.topads.common.CustomViewPager
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
@@ -26,16 +27,23 @@ import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapte
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.NumberTextWatcher
-import kotlinx.android.synthetic.main.fragment_edit_ad_cost.*
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 private const val POSITION_KEYWORD = 0
 private const val POSITION_NEGATIVE_KEYWORD = 1
 
 class EditAdCostFragment : BaseDaggerFragment() {
+
+    private var advertisingCost: TextFieldUnify? = null
+    private var keyword: ChipsUnify? = null
+    private var negKeyword: ChipsUnify? = null
+    private var viewPager: CustomViewPager? = null
+    private var tooltipBtn: FloatingButtonUnify? = null
 
     private var sharedEditHeadlineViewModel: SharedEditHeadlineViewModel? = null
 
@@ -60,8 +68,9 @@ class EditAdCostFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        DaggerHeadlineAdsComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+        DaggerHeadlineAdsComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     companion object {
@@ -78,12 +87,21 @@ class EditAdCostFragment : BaseDaggerFragment() {
             groupId = getString(GROUP_ID).toIntOrZero()
         }
         activity?.let {
-            sharedEditHeadlineViewModel = ViewModelProvider(it, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
+            sharedEditHeadlineViewModel =
+                ViewModelProvider(it, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_edit_ad_cost, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_edit_ad_cost, container, false)
+        advertisingCost = view.findViewById(R.id.advertisingCost)
+        keyword = view.findViewById(R.id.keyword)
+        negKeyword = view.findViewById(R.id.neg_keyword)
+        viewPager = view.findViewById(R.id.view_pager)
+        tooltipBtn = view.findViewById(R.id.tooltipBtn)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,44 +112,49 @@ class EditAdCostFragment : BaseDaggerFragment() {
     }
 
     private fun setUpObservers() {
-        sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
-            stepperModel = it
-            setAdvertisingCost(it.adBidPrice)
-        })
+        sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()
+            ?.observe(viewLifecycleOwner, Observer {
+                stepperModel = it
+                setAdvertisingCost(it.adBidPrice)
+            })
     }
 
     private fun setAdvertisingCost(adBidPrice: Double) {
         val cost = Utils.convertToCurrency(adBidPrice.toLong())
         stepperModel?.currentBid = adBidPrice
-        advertisingCost.textFieldInput.setText(cost)
-        advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
+        advertisingCost?.textFieldInput?.setText(cost)
+        advertisingCost?.textFieldInput?.addTextChangedListener(advertisingCostTextWatcher())
     }
 
     private fun advertisingCostTextWatcher(): NumberTextWatcher? {
-        return object : NumberTextWatcher(advertisingCost.textFieldInput, "0") {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                when {
-                    number < stepperModel?.minBid?.toDouble() ?: 0.0 -> {
-                        advertisingCost.setError(true)
-                        advertisingCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), Utils.convertToCurrency(stepperModel?.minBid?.toLong()
-                                ?: 0)))
-                        saveButtonState?.setButtonState(false)
-                    }
-                    number > stepperModel?.maxBid?.toDouble() ?: 0.0 -> {
-                        advertisingCost.setError(true)
-                        advertisingCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), Utils.convertToCurrency(stepperModel?.maxBid?.toLong()
-                                ?: 0)))
-                        saveButtonState?.setButtonState(false)
-                    }
-                    else -> {
-                        stepperModel?.adBidPrice = number
-                        stepperModel?.dailyBudget = (number * MULTIPLIER).toFloat()
-                        stepperModel?.currentBid = number
-                        onMinBidChange?.onMinBidChange(number)
-                        advertisingCost.setMessage("")
-                        advertisingCost.setError(false)
-                        saveButtonState?.setButtonState(true)
+        return advertisingCost?.textFieldInput?.let {
+            object : NumberTextWatcher(it, "0") {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    when {
+                        number < stepperModel?.minBid?.toDouble() ?: 0.0 -> {
+                            advertisingCost?.setError(true)
+                            advertisingCost?.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error),
+                                Utils.convertToCurrency(stepperModel?.minBid?.toLong()
+                                    ?: 0)))
+                            saveButtonState?.setButtonState(false)
+                        }
+                        number > stepperModel?.maxBid?.toDouble() ?: 0.0 -> {
+                            advertisingCost?.setError(true)
+                            advertisingCost?.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error),
+                                Utils.convertToCurrency(stepperModel?.maxBid?.toLong()
+                                    ?: 0)))
+                            saveButtonState?.setButtonState(false)
+                        }
+                        else -> {
+                            stepperModel?.adBidPrice = number
+                            stepperModel?.dailyBudget = (number * MULTIPLIER).toFloat()
+                            stepperModel?.currentBid = number
+                            onMinBidChange?.onMinBidChange(number)
+                            advertisingCost?.setMessage("")
+                            advertisingCost?.setError(false)
+                            saveButtonState?.setButtonState(true)
+                        }
                     }
                 }
             }
@@ -139,19 +162,19 @@ class EditAdCostFragment : BaseDaggerFragment() {
     }
 
     private fun renderViewPager() {
-        keyword.chipType = ChipsUnify.TYPE_SELECTED
-        keyword.setOnClickListener {
-            keyword.chipType = ChipsUnify.TYPE_SELECTED
-            neg_keyword.chipType = ChipsUnify.TYPE_NORMAL
-            view_pager.currentItem = POSITION_KEYWORD
+        keyword?.chipType = ChipsUnify.TYPE_SELECTED
+        keyword?.setOnClickListener {
+            keyword?.chipType = ChipsUnify.TYPE_SELECTED
+            negKeyword?.chipType = ChipsUnify.TYPE_NORMAL
+            viewPager?.currentItem = POSITION_KEYWORD
         }
-        neg_keyword.setOnClickListener {
-            neg_keyword.chipType = ChipsUnify.TYPE_SELECTED
-            keyword.chipType = ChipsUnify.TYPE_NORMAL
-            view_pager.currentItem = POSITION_NEGATIVE_KEYWORD
+        negKeyword?.setOnClickListener {
+            negKeyword?.chipType = ChipsUnify.TYPE_SELECTED
+            keyword?.chipType = ChipsUnify.TYPE_NORMAL
+            viewPager?.currentItem = POSITION_NEGATIVE_KEYWORD
         }
-        view_pager.adapter = getViewPagerAdapter()
-        view_pager.disableScroll(true)
+        viewPager?.adapter = getViewPagerAdapter()
+        viewPager?.disableScroll(true)
     }
 
     private fun getViewPagerAdapter(): KeywordEditPagerAdapter? {
@@ -165,21 +188,27 @@ class EditAdCostFragment : BaseDaggerFragment() {
     }
 
     private fun setUpToolTipButton() {
-        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
-            val tvToolTipText = findViewById<Typography>(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.topads_headline_ad_cost_tip)
-            val imgTooltipIcon = findViewById<ImageUnify>(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
-        }
-        tooltipBtn.addItem(tooltipView)
-        tooltipBtn.setOnClickListener {
+        val tooltipView =
+            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+                .apply {
+                    val tvToolTipText = findViewById<Typography>(R.id.tooltip_text)
+                    tvToolTipText?.text = getString(R.string.topads_headline_ad_cost_tip)
+                    val imgTooltipIcon = findViewById<ImageUnify>(R.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
+                }
+        tooltipBtn?.addItem(tooltipView)
+        tooltipBtn?.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
-                add(TipsUiRowModel(R.string.topads_headline_ad_cost_row1, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_ad_cost_row2, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_ad_cost_row3, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_ad_cost_row1,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_ad_cost_row2,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_ad_cost_row3,
+                    R.drawable.topads_create_ic_checklist))
             }
-            val tipsSortListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            val tipsSortListSheet =
+                context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsSortListSheet?.showHeader = true
             tipsSortListSheet?.showKnob = false
             tipsSortListSheet?.setTitle(getString(R.string.topads_headline_ad_cost_title))
@@ -188,13 +217,15 @@ class EditAdCostFragment : BaseDaggerFragment() {
     }
 
     fun onClickSubmit() {
-        val fragments = (view_pager.adapter as KeywordEditPagerAdapter).list
+        val fragments = (viewPager?.adapter as? KeywordEditPagerAdapter)?.list
         stepperModel?.keywordOperations?.clear()
-        stepperModel?.minBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString()
-        for (fragment in fragments) {
-            when (fragment) {
-                is HeadlineEditKeywordFragment -> {
-                    stepperModel?.keywordOperations?.addAll(fragment.getKeywordOperations())
+        stepperModel?.minBid = advertisingCost?.textFieldInput?.text.toString().removeCommaRawString()
+        if (fragments != null) {
+            for (fragment in fragments) {
+                when (fragment) {
+                    is HeadlineEditKeywordFragment -> {
+                        stepperModel?.keywordOperations?.addAll(fragment.getKeywordOperations())
+                    }
                 }
             }
         }
@@ -202,6 +233,6 @@ class EditAdCostFragment : BaseDaggerFragment() {
     }
 
     fun hideToolTip(visibility: Int) {
-        tooltipBtn.visibility = visibility
+        tooltipBtn?.visibility = visibility
     }
 }

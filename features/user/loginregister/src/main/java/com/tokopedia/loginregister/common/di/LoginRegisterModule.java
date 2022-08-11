@@ -18,8 +18,11 @@ import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference;
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 
@@ -40,24 +43,16 @@ import static com.tokopedia.sessioncommon.di.SessionModule.getUserAgent;
 @Module
 public class LoginRegisterModule {
 
-    @LoginRegisterScope
     @Provides
-    LoginRegisterAnalytics provideLoginRegisterAnalytics(
-            @Named(SessionModule.SESSION_MODULE) UserSessionInterface userSessionInterface,
-            IrisSession irisSession) {
-        return new LoginRegisterAnalytics(userSessionInterface, irisSession);
+    @LoginRegisterScope
+    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
-    @LoginRegisterScope
     @Provides
-    RegisterAnalytics provideRegisterAnalytics() {
-        return new RegisterAnalytics();
-    }
-
     @LoginRegisterScope
-    @Provides
-    SeamlessLoginAnalytics provideSeamlessAnalytics() {
-        return new SeamlessLoginAnalytics();
+    FingerprintPreference provideFingerprint(@ApplicationContext Context context) {
+        return new FingerprintPreferenceManager(context);
     }
 
     @LoginRegisterScope

@@ -22,7 +22,7 @@ import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselChipsAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapterTypeFactory
@@ -252,20 +252,22 @@ class InspirationCarouselViewHolder(
 
     private fun InspirationCarouselDataView.Option.Product.toProductCardModel(): ProductCardModel {
         return ProductCardModel(
-                productImageUrl = imgUrl,
-                productName = name,
-                formattedPrice = priceStr,
-                countSoldRating = ratingAverage,
-                slashedPrice = if (discountPercentage > 0) originalPrice else "",
-                discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
-                labelGroupList = labelGroupDataList.map { ProductCardModel.LabelGroup(
-                        title = it.title,
-                        position = it.position,
-                        type = it.type,
-                        imageUrl = it.imageUrl,
-                ) },
-                shopLocation = shopLocation,
-                shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges()
+            productImageUrl = imgUrl,
+            productName = name,
+            formattedPrice = priceStr,
+            countSoldRating = ratingAverage,
+            slashedPrice = if (discountPercentage > 0) originalPrice else "",
+            discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
+            labelGroupList = labelGroupDataList.map { ProductCardModel.LabelGroup(
+                    title = it.title,
+                    position = it.position,
+                    type = it.type,
+                    imageUrl = it.imageUrl,
+            ) },
+            shopLocation = shopLocation,
+            shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
+            isTopAds = isOrganicAds,
+            cardInteraction = true,
         )
     }
 

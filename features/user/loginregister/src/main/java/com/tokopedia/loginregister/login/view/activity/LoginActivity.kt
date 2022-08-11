@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.login.view.activity
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -13,18 +12,21 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
-import com.tokopedia.loginregister.login.di.DaggerLoginComponent
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
+import com.tokopedia.telemetry.ITelemetryActivity
 
 /**
  * @author by nisie on 10/1/18.
  */
-open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent> {
+open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
+    ITelemetryActivity {
 
-    private var loginComponent: LoginComponent? = null
+    private val loginComponent: LoginComponent by lazy {
+        ActivityComponentFactory.instance.createLoginComponent(application)
+    }
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
@@ -32,24 +34,11 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent> {
         intent?.extras?.let {
             bundle.putAll(it)
         }
-
         return LoginEmailPhoneFragment.createInstance(bundle)
     }
 
     override fun getComponent(): LoginComponent {
-        return loginComponent ?: initializeLoginComponent()
-    }
-
-    protected open fun initializeLoginComponent(): LoginComponent {
-        val loginRegisterComponent =  DaggerLoginRegisterComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-        return DaggerLoginComponent
-                .builder()
-                .loginRegisterComponent(loginRegisterComponent)
-                .build().also {
-                    loginComponent = it
-                }
+        return loginComponent
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +49,12 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent> {
 
     private fun setWhiteStatusBarIfSellerApp() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
-            setStatusBarColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            setStatusBarColor(
+                MethodChecker.getColor(
+                    this,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
             setLightStatusBar(true)
         }
     }
@@ -119,4 +113,6 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent> {
         const val PARAM_EMAIL = "e"
         const val PARAM_SOURCE = "source"
     }
+
+    override fun getTelemetrySectionName() = "login"
 }

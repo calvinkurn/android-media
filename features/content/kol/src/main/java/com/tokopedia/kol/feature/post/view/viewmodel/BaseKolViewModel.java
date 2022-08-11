@@ -7,7 +7,7 @@ import android.text.style.ClickableSpan;
  */
 
 public class BaseKolViewModel {
-    private int userId;
+    private String userId;
     private String activityType;
     private String cardType;
     private String title;
@@ -23,7 +23,7 @@ public class BaseKolViewModel {
     private int totalComment;
     private int page;
     private boolean temporarilyFollowed;
-    private int contentId;
+    private String contentId;
     private String time;
     private boolean reviewExpanded;
     private boolean isShowComment;
@@ -34,10 +34,10 @@ public class BaseKolViewModel {
     private boolean multipleContent;
     private boolean isKol = true;
 
-    public BaseKolViewModel(int userId, String activityType, String cardType, String title,
+    public BaseKolViewModel(String userId, String activityType, String cardType, String title,
                             String name, String avatar, String label, String kolProfileUrl,
                             boolean followed, String review, boolean liked, int totalLike,
-                            int totalComment, int page, int contentId, String time,
+                            int totalComment, int page, String contentId, String time,
                             boolean isShowComment, boolean isShowLike, boolean editable,
                             boolean deletable, boolean multipleContent) {
         this.userId = userId;
@@ -63,11 +63,11 @@ public class BaseKolViewModel {
         this.multipleContent = multipleContent;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -191,11 +191,11 @@ public class BaseKolViewModel {
         this.temporarilyFollowed = temporarilyFollowed;
     }
 
-    public int getContentId() {
+    public String getContentId() {
         return contentId;
     }
 
-    public void setContentId(int contentId) {
+    public void setContentId(String contentId) {
         this.contentId = contentId;
     }
 

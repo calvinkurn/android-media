@@ -12,17 +12,18 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import timber.log.Timber
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, ReviewPerformanceMonitoringListener {
 
     companion object {
+        private const val REMOTE_CONFIG_KEY_REVIEW_FORM_NEW_ENABLE = "android_review_form_new_enable"
         const val PARAM_RATING = "rating"
         const val DEFAULT_PRODUCT_RATING = 5
         const val CREATE_REVIEW_BOTTOM_SHEET_TAG = "CreateReviewBottomSheetTag"
@@ -34,7 +35,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     private var reputationId: String = ""
     private var utmSource: String = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-    private var createReviewBottomSheet: BottomSheetUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +42,12 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         adjustOrientation()
         handleDimming()
         hideToolbar()
-        showWriteFormBottomSheet()
+        if (shouldUseNewCreateReviewBottomSheet()) {
+            showNewWriteFormBottomSheet()
+        } else {
+            showOldWriteFormBottomSheet()
+        }
     }
-
 
     override fun getComponent(): BaseAppComponent {
         return (application as BaseMainApplication).baseAppComponent
@@ -57,14 +60,14 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                ReviewConstants.CREATE_REVIEW_PLT_PREPARE_METRICS,
-                ReviewConstants.CREATE_REVIEW_PLT_NETWORK_METRICS,
-                ReviewConstants.CREATE_REVIEW_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            ReviewConstants.CREATE_REVIEW_PLT_PREPARE_METRICS,
+            ReviewConstants.CREATE_REVIEW_PLT_NETWORK_METRICS,
+            ReviewConstants.CREATE_REVIEW_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
         pageLoadTimePerformanceMonitoring?.startMonitoring(ReviewConstants.CREATE_REVIEW_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
@@ -113,7 +116,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             productId = bundle?.getString(ReviewConstants.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(ReviewConstants.ARGS_REPUTATION_ID) ?: ""
             rating = bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating)
-                    ?: DEFAULT_PRODUCT_RATING
+                ?: DEFAULT_PRODUCT_RATING
         }
     }
 
@@ -129,11 +132,33 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         findViewById<Toolbar>(com.tokopedia.abstraction.R.id.toolbar)?.hide()
     }
 
-    private fun showWriteFormBottomSheet() {
-        createReviewBottomSheet = CreateReviewBottomSheet.createInstance(rating, productId, reputationId, utmSource)
-        createReviewBottomSheet?.apply {
-            clearContentPadding = true
-            show(supportFragmentManager, CREATE_REVIEW_BOTTOM_SHEET_TAG)
+    private fun showNewWriteFormBottomSheet() {
+        supportFragmentManager.findFragmentByTag(CREATE_REVIEW_BOTTOM_SHEET_TAG).let {
+            if (it == null) {
+                CreateReviewBottomSheet.createInstance(
+                    rating,
+                    productId,
+                    reputationId,
+                    utmSource
+                ).run {
+                    show(supportFragmentManager, CREATE_REVIEW_BOTTOM_SHEET_TAG)
+                }
+            }
+        }
+    }
+
+    private fun showOldWriteFormBottomSheet() {
+        supportFragmentManager.findFragmentByTag(CREATE_REVIEW_BOTTOM_SHEET_TAG).let {
+            if (it == null) {
+                com.tokopedia.review.feature.createreputation.presentation.bottomsheet.old.CreateReviewBottomSheet.createInstance(
+                    rating,
+                    productId,
+                    reputationId,
+                    utmSource
+                ).run {
+                    show(supportFragmentManager, CREATE_REVIEW_BOTTOM_SHEET_TAG)
+                }
+            }
         }
     }
 
@@ -141,5 +166,10 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
+    }
+
+    private fun shouldUseNewCreateReviewBottomSheet(): Boolean {
+        return FirebaseRemoteConfigImpl(applicationContext)
+            .getBoolean(REMOTE_CONFIG_KEY_REVIEW_FORM_NEW_ENABLE, true)
     }
 }

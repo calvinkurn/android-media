@@ -30,6 +30,7 @@ class AffiliateAdapterFactory(
             AffiliateProductShimmerCardItemVH.LAYOUT -> AffiliateProductShimmerCardItemVH(parent)
             AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface,addSocialInterface)
             AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent,promotionClickInterface)
+            AffiliatePromotionShopItemVH.LAYOUT -> AffiliatePromotionShopItemVH(parent,promotionClickInterface)
             AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent,promotionClickInterface)
             AffiliatePortfolioItemVH.LAYOUT -> AffiliatePortfolioItemVH(parent,onFocusChangeInterface)
             AffiliateHeaderItemVH.LAYOUT -> AffiliateHeaderItemVH(parent)
@@ -44,6 +45,10 @@ class AffiliateAdapterFactory(
             AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent, onPerformaGridClick)
             AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent,onDateRangeClickInterface)
             AffiliateNoPromoItemFoundVH.LAYOUT -> AffiliateNoPromoItemFoundVH(parent,bottomNavBarClickListener)
+            AffiliateCommisionThickDivderItemVH.LAYOUT -> AffiliateCommisionThickDivderItemVH(parent)
+            AffiliateWithdrawalTitleItemVH.LAYOUT -> AffiliateWithdrawalTitleItemVH(parent)
+            AffiliateTrafficProductItemVH.LAYOUT -> AffiliateTrafficProductItemVH(parent)
+            AffiliateProductMetricVH.LAYOUT -> AffiliateProductMetricVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -120,11 +125,29 @@ class AffiliateAdapterFactory(
         return AffiliateCommisionDivderItemVH.LAYOUT
     }
 
+    override fun type(viewModel: AffiliateCommisionThickDividerItemModel): Int {
+        return AffiliateCommisionThickDivderItemVH.LAYOUT
+    }
+
     override fun type(viewModel: AffiliateNoPromoItemFoundModel): Int {
       return AffiliateNoPromoItemFoundVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateDataPlatformShimmerModel): Int {
         return AffiliateDataCardShimmerItemVH.LAYOUT
+    }
+    override fun type(viewModel: AffiliateWithdrawalTitleItemModel): Int {
+        return AffiliateWithdrawalTitleItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateTrafficCardModel): Int {
+       return AffiliateTrafficProductItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateProductCardMetricsModel): Int {
+       return AffiliateProductMetricVH.LAYOUT
+    }
+    override fun type(viewModel: AffiliatePromotionShopModel): Int {
+        return  AffiliatePromotionShopItemVH.LAYOUT
     }
 }

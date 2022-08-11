@@ -44,16 +44,4 @@ open class AddEditProductDraftActivity : TabletAdaptiveActivity(), HasComponent<
                 .addEditProductDraftModule(AddEditProductDraftModule())
                 .build()
     }
-
-    override fun onBackPressed() {
-        var activityResult: Int = Activity.RESULT_CANCELED
-        if (fragment is AddEditProductDraftFragment) {
-            val f = fragment as AddEditProductDraftFragment
-            if (f.getDraftListChanged()) {
-                activityResult = Activity.RESULT_OK
-            }
-        }
-        setResult(activityResult, Intent())
-        finish()
-    }
 }

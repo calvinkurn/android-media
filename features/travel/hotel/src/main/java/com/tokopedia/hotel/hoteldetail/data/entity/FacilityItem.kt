@@ -11,7 +11,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class FacilityItem(@SerializedName("id")
                    @Expose
-                   val id: Int = 0,
+                   val id: String = "0",
                    @SerializedName("name")
                    @Expose
                    val name: String = "",

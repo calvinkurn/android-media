@@ -20,16 +20,33 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/autocomplete_ic_time" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/adText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:visibility="gone"
+        android:text="@string/suggestion_ad_text"
+        android:textColor="@color/Unify_NN600"
+        app:typographyWeight="bold"
+        app:typographyType="small"
+        app:layout_constraintBottom_toTopOf="@id/doubleLineTitle"
+        app:layout_constraintLeft_toRightOf="@id/iconImage"
+        app:layout_constraintTop_toBottomOf="@id/doubleLineTitle" />
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iconTitle"
         android:contentDescription="@string/content_desc_dl_iconTitle"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
         android:visibility="gone"
+        app:layout_goneMarginLeft="8dp"
+        app:layout_goneMarginStart="8dp"
         app:layout_constraintBottom_toTopOf="@id/doubleLineTitle"
-        app:layout_constraintLeft_toRightOf="@id/iconImage"
+        app:layout_constraintLeft_toRightOf="@id/adText"
         app:layout_constraintTop_toBottomOf="@id/doubleLineTitle" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -66,7 +83,7 @@
         app:layout_goneMarginLeft="8dp"
         app:layout_goneMarginRight="8dp"
         app:layout_goneMarginStart="8dp"
-        app:typographyType="body_2"/>
+        app:typographyType="display_2"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/doubleLineSubtitle"
@@ -89,7 +106,7 @@
         app:layout_goneMarginLeft="8dp"
         app:layout_goneMarginRight="8dp"
         app:layout_goneMarginStart="8dp"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/doubleLineLabel"

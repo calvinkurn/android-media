@@ -17,6 +17,7 @@ object TrackingConstant {
     const val USER_ID = "userId"
     const val SHOP_ID = "shopId"
     const val BUSINESS_UNIT = "businessUnit"
+    const val TRACKER_ID = "trackerId"
 
     //event
     const val VIEW_HOMEPAGE_IRIS = "viewHomepageIris"
@@ -46,6 +47,7 @@ object TrackingConstant {
     const val CLICK_WIDGET_BANNER = "click widget banner"
     const val IMPRESSION_WIDGET_BANNER = "impression widget banner"
     const val SEE_MORE = "see more"
+    const val HYPERLINK = "hyperlink"
     const val CLICK_NOTIFICATION = "click notification"
     const val CLICK_HOME = "click home"
     const val CLICK_PRODUCT = "click product"
@@ -96,7 +98,8 @@ object TrackingConstant {
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val PHYSICAL_GOODS = "physical goods"
     const val PHYSICAL_GOODS_CAPITALIZED = "Physical Goods"
-    const val NONE = "none"
+    const val SINGLE = "single"
+    const val MULTIPLE = "multiple"
     const val EMPTY = "empty"
     const val NOT_EMPTY = "not empty"
     const val EMPTY_STATE = "emptystate"

@@ -3,18 +3,23 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.PROJECT_ID
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateBalance
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateTransactionHistoryData
+import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
+import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateBalanceDataUseCase
 import com.tokopedia.affiliate.usecase.AffiliateKycUseCase
 import com.tokopedia.affiliate.usecase.AffiliateTransactionHistoryUseCase
+import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 
@@ -28,13 +33,17 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     private var errorMessage = MutableLiveData<Throwable>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var rangeChanged = MutableLiveData<Boolean>()
+    private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
+    private var progressBar = MutableLiveData<Boolean>()
+    private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
     private var isUserBlackListed : Boolean = false
     var hasNext = true
 
      val affiliateBalanceDataUseCase = AffiliateBalanceDataUseCase(AffiliateRepository())
      val affiliateTransactionHistoryUseCase = AffiliateTransactionHistoryUseCase(AffiliateRepository())
      val affiliatKycHistoryUseCase = AffiliateKycUseCase(AffiliateRepository())
-
+     val affiliateValidateUseCaseUseCase = AffiliateValidateUserStatusUseCase(AffiliateRepository())
+     val affiliateAffiliateAnnouncementUseCase = AffiliateAnnouncementUseCase(AffiliateRepository())
 
     fun getAffiliateBalance() {
         launchCatchError(block = {
@@ -46,6 +55,26 @@ class AffiliateIncomeViewModel : BaseViewModel(){
         })
     }
 
+    fun getAffiliateValidateUser(email: String) {
+        launchCatchError(block = {
+            validateUserdata.value =
+                affiliateValidateUseCaseUseCase.validateUserStatus(email)
+            progressBar.value = false
+        }, onError = {
+            progressBar.value = false
+            it.printStackTrace()
+            errorMessage.value = it
+        })
+    }
+
+    fun getAnnouncementInformation() {
+        launchCatchError(block = {
+            affiliateAnnouncement.value =
+                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY)
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
     fun getKycDetails() {
         launchCatchError(block = {
             affiliateKycLoader.value = true
@@ -63,7 +92,7 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     fun getAffiliateTransactionHistory(page: Int) {
         shimmerVisibility.value = true
         launchCatchError(block = {
-            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(selectedDateValue.toInt() ?: 0, page).getAffiliateTransactionHistory?.data?.let {
+            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(selectedDateValue.toInt(), page).getAffiliateTransactionHistory?.data?.let {
                 hasNext = it.hasNext
                 convertDataToVisitables(it)?.let { visitables ->
                     affiliateDataList.value = visitables
@@ -115,4 +144,6 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getKycErrorMessage(): LiveData<String> = affiliateKycError
     fun getRangeChange() :LiveData<Boolean> = rangeChanged
+    fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
+    fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
 }

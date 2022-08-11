@@ -3,8 +3,7 @@ package com.tokopedia.kotlin.extensions.view
 import android.text.Html
 import java.net.URLDecoder
 import java.net.URLEncoder
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.Locale
 
 /**
  * @author by nisie on 12/02/19.
@@ -125,3 +124,12 @@ fun String.asCamelCase(): String {
 fun String?.toEmpty(): String = ""
 
 val String.Companion.EMPTY get() = ""
+val String.Companion.SPACE get() = " "
+
+fun String.digitsOnly(): Long {
+    return try {
+        this.filter { it.isDigit() }.toLong()
+    } catch (e: Exception) {
+        0
+    }
+}

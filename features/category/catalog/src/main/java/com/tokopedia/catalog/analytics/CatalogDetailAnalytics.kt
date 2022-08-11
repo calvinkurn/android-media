@@ -177,7 +177,9 @@ object CatalogDetailAnalytics {
         position: Int,
         userId: String,
         impressedCatalogId : String,
-        impressedCatalogName : String
+        impressedCatalogName : String,
+        impressedItemName : String,
+        impressionUniqueKey : String,
     ){
 
         val list = ArrayList<Map<String, Any>>()
@@ -186,13 +188,13 @@ object CatalogDetailAnalytics {
         promotionMap[EventKeys.KEY_ITEM_ID] = impressedCatalogId
         promotionMap[EventKeys.KEY_CREATIVE_NAME] = impressedCatalogName
         promotionMap[EventKeys.KEY_CREATIVE_SLOT] =  (position + 1).toString()
-        promotionMap[EventKeys.KEY_ITEM_NAME] = KATALOG_PiILIHAN_UNTUKMU
+        promotionMap[EventKeys.KEY_ITEM_NAME] = impressedItemName
         list.add(promotionMap)
         val eventModel = EventModel(event,category,action,eventLabel)
-        eventModel.key = CatalogConstant.KEY_UNIQUE_CATALOG_FOR_YOU_TRACKING
+        eventModel.key = impressionUniqueKey
         val customDimensionMap = HashMap<String, Any>()
         customDimensionMap[EventKeys.KEY_CATALOG_ID] = catalogId
-        customDimensionMap[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE_CATALOG
+        customDimensionMap[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         customDimensionMap[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
         customDimensionMap[EventKeys.KEY_USER_ID] = userId
 
@@ -233,6 +235,7 @@ object CatalogDetailAnalytics {
             const val EVENT_NAME_PRODUCT_VIEW = "productView"
             const val EVENT_NAME_CLICK_PG = "clickPG"
             const val EVENT_PROMO_VIEW = "promoView"
+            const val EVENT_VIEW_PG_IRIS = "viewPGIris"
 
             const val KEY_CREATIVE_NAME = "creative_name"
             const val KEY_CREATIVE_SLOT = "creative_slot"
@@ -240,7 +243,6 @@ object CatalogDetailAnalytics {
             const val KEY_ITEM_NAME = "item_name"
 
             const val EVENT_SELECT_CONTENT = "select_content"
-            const val EVENT_VIEW_ITEM = "promoView"
 
         }
     }
@@ -292,6 +294,23 @@ object CatalogDetailAnalytics {
             const val KATALOG_PiILIHAN_UNTUKMU = "katalog pilihan untukmu"
             const val CLICK_KATALOG_PILIHAN_UNTUKMU = "click katalog pilihan untukmu"
             const val IMPRESSION_KATALOG_PILIHAN_UNTUKMU = "impression katalog pilihan untukmu"
+
+            const val IMAGE_WIDGET_IMPRESSION = "impression image"
+            const val IMAGE_WIDGET_IMPRESSION_ITEM_NAME = "image banner impression"
+
+            const val SPECIFICATION_WIDGET_IMPRESSION = "impression specification"
+            const val SPECIFICATION_WIDGET_IMPRESSION_ITEM_NAME = "specification banner impression"
+
+            const val VIDEO_WIDGET_IMPRESSION = "impression video widget"
+            const val VIDEO_WIDGET_IMPRESSION_ITEM_NAME = "video banner impression"
+
+            const val DESCRIPTION_WIDGET_IMPRESSION = "impression description"
+            const val COMPARISON_WIDGET_IMPRESSION = "impression comparison widget"
+            const val REVIEW_WIDGET_IMPRESSION = "impression review widget"
+
+            const val CLICK_FLOATING_BUTTON_PRODUCT = "click floating action button to product list"
+            const val CLICK_FLOATING_BUTTON_LAST_SCROLL = "click floating action button to last scroll position"
+
         }
     }
 

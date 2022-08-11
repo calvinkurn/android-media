@@ -32,6 +32,7 @@ fun InitialStateData.convertToInitialStateChipWidgetDataView(
             dimension90 = dimension90,
             position = position,
             keyword = keyword,
+            trackingOption = this.trackingOption,
         )
         childList.add(model)
         position++

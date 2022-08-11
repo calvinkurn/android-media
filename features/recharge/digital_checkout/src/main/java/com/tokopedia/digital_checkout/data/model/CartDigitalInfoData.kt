@@ -21,9 +21,9 @@ data class CartDigitalInfoData(
 
         var smsState: String = "",
 
-        var mainInfo: List<CartItemDigital> = listOf(),
+        var mainInfo: List<CartItemDigital> = emptyList(),
 
-        var additionalInfos: List<CartItemDigitalWithTitle> = listOf(),
+        var additionalInfos: List<CartItemDigitalWithTitle> = emptyList(),
 
         var relationProduct: RelationshipData = RelationshipData(),
 
@@ -35,7 +35,11 @@ data class CartDigitalInfoData(
 
         var isSubscribed: Boolean = false,
 
-        var isSpecialProduct: Boolean = false
+        var isSpecialProduct: Boolean = false,
+
+        var channelId: String = "",
+
+        var collectionPointId: String = ""
 ) : Parcelable {
 
     @Parcelize

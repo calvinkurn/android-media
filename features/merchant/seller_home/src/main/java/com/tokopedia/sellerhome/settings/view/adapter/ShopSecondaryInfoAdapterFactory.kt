@@ -9,4 +9,5 @@ interface ShopSecondaryInfoAdapterFactory {
     fun type(uiModel: ReputationBadgeWidgetUiModel): Int
     fun type(uiModel: ShopFollowersWidgetUiModel): Int
     fun type(uiModel: FreeShippingWidgetUiModel): Int
+    fun type(uiModel: TokoPlusWidgetUiModel): Int
 }

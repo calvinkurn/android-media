@@ -12,12 +12,12 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
@@ -25,6 +25,7 @@ import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressChec
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
@@ -400,9 +401,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun getFavoriteNumbers(categoryId: Int) {
-        topupBillsViewModel.getFavoriteNumbers(
-                CommonTopupBillsGqlMutation.favoriteNumber,
-                topupBillsViewModel.createFavoriteNumbersParams(categoryId))
+        topupBillsViewModel.getFavoriteNumbers(listOf(categoryId))
     }
 
     fun getSeamlessFavoriteNumbers(
@@ -459,7 +458,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     abstract fun onLoadingAtc(showLoading: Boolean)
 
-    abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
+    abstract fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataModel>)
 
     abstract fun processSeamlessFavoriteNumbers(
         data: TopupBillsSeamlessFavNumber,
@@ -522,7 +521,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     private fun requestOtp() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.COTP)
 
         val bundle = Bundle()
         bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)

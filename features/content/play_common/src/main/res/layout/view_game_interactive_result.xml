@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl3"
+        android:background="@drawable/bg_game_result"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/play_dp_6">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_game_result"
+            android:layout_width="@dimen/play_dp_14"
+            android:layout_height="@dimen/play_dp_14"
+            android:layout_marginStart="@dimen/spacing_lvl1"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="GAME"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_game_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl1"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:text="@string/play_interactive_game_result"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="small"
+            app:typographyWeight="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/v_anchor_bottom"
+        android:layout_width="@dimen/play_common_anchor_size"
+        android:layout_height="@dimen/play_common_anchor_size"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</LinearLayout>

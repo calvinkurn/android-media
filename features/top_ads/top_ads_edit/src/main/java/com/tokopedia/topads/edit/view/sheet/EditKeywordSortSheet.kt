@@ -1,6 +1,5 @@
 package com.tokopedia.topads.edit.view.sheet
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,20 +11,27 @@ import com.tokopedia.topads.edit.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
-import kotlinx.android.synthetic.main.topads_edit_keyword_edit_sort_sheet.view.*
+import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 class EditKeywordSortSheet : BottomSheetUnify() {
+
+    private var sortList: ListUnify? = null
+    private var goToStaticSheet: Typography? = null
 
     var onItemClick: ((sortId: String) -> Unit)? = null
     var selectedSortText = 0
     var positionSort = 0
     var selected: Int = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var contentView = View.inflate(context, R.layout.topads_edit_keyword_edit_sort_sheet, null)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val contentView = View.inflate(context, R.layout.topads_edit_keyword_edit_sort_sheet, null)
         setChild(contentView)
         setTitle(getString(R.string.topads_edit_info_sheet_title))
+        sortList = contentView.findViewById(R.id.sortList)
+        goToStaticSheet = contentView.findViewById(R.id.goToStaticSheet)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -33,20 +39,20 @@ class EditKeywordSortSheet : BottomSheetUnify() {
 
         val sortListItemUnify = mapToItemUnifyList()
 
-        view.sortList.setData(sortListItemUnify)
+        sortList?.setData(sortListItemUnify)
 
-        view.goToStaticSheet?.text = MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_extra))
+        goToStaticSheet?.text =
+            MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_extra))
 
-        view.goToStaticSheet?.setOnClickListener {
+        goToStaticSheet?.setOnClickListener {
             val sheet = StaticInfoBottomSheet.newInstance()
             sheet.show(childFragmentManager)
         }
 
-        view.sortList?.let {
+        sortList?.let {
             it.onLoadFinish {
 
                 it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
-
 
                 it.setOnItemClickListener { adapterView, view, index, l ->
                     onItemSortClickedBottomSheet(index, sortListItemUnify, it)
@@ -62,7 +68,9 @@ class EditKeywordSortSheet : BottomSheetUnify() {
     }
 
 
-    private fun onItemSortClickedBottomSheet(position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify) {
+    private fun onItemSortClickedBottomSheet(
+        position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify,
+    ) {
         try {
             positionSort = position
             selectedSortText = position
@@ -97,8 +105,10 @@ class EditKeywordSortSheet : BottomSheetUnify() {
 
     private fun mapToItemUnifyList(): ArrayList<ListItemUnify> {
         val itemUnifyList: ArrayList<ListItemUnify> = arrayListOf()
-        var item1 = ListItemUnify(getString(R.string.topads_edit_keyword_edit_info_sheet_title_1), getString(R.string.topads_edit_keyword_edit_info_sheet_desc_1))
-        var item2 = ListItemUnify(getString(R.string.topads_edit_keyword_edit_info_sheet_title_2), getString(R.string.topads_edit_keyword_edit_info_sheet_desc_2))
+        val item1 = ListItemUnify(getString(R.string.topads_edit_keyword_edit_info_sheet_title_1),
+            getString(R.string.topads_edit_keyword_edit_info_sheet_desc_1))
+        val item2 = ListItemUnify(getString(R.string.topads_edit_keyword_edit_info_sheet_title_2),
+            getString(R.string.topads_edit_keyword_edit_info_sheet_desc_2))
 
         item1.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
         item2.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)

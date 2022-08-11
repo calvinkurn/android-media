@@ -1,11 +1,15 @@
 package com.tokopedia.home_component.viewholders
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -27,6 +31,7 @@ import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 
 /**
@@ -35,8 +40,9 @@ import com.tokopedia.unifycomponents.DividerUnify
 class DynamicLegoBannerViewHolder(itemView: View,
                                   val legoListener: DynamicLegoBannerListener?,
                                   val homeComponentListener: HomeComponentListener?,
-                                  val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null):
-        AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
+                                  val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null,
+                                  private val cardInteraction: Boolean = false
+): AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
     private var isCacheData = false
     private var isLego24UsingRollenceVariant = false
     companion object {
@@ -91,7 +97,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     element.channelModel,
                     adapterPosition + 1,
                     isCacheData,
-                    isLego24UsingRollenceVariant)
+                    isLego24UsingRollenceVariant,
+                    cardInteraction
+            )
             var marginValue = 0
             var marginBottom = 0
             recyclerView.clearDecorations()
@@ -164,7 +172,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
                           private val channel: ChannelModel,
                           private val parentPosition: Int,
                           private val isCacheData: Boolean,
-                          private val isLego24UsingRollenceVariant: Boolean = false) : RecyclerView.Adapter<LegoItemViewHolder>() {
+                          private val isLego24UsingRollenceVariant: Boolean = false,
+                          private val cardInteraction: Boolean = false
+    ) : RecyclerView.Adapter<LegoItemViewHolder>() {
         private var grids: List<ChannelGrid> = channel.channelGrids
         private val layout = channel.channelConfig.layout
 
@@ -176,7 +186,17 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-            return LegoItemViewHolder(v)
+            val viewHolder = LegoItemViewHolder(v)
+            if(viewType == LEGO_LANDSCAPE){
+                viewHolder.cardUnify.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
+            }
+            else if(viewType == LEGO_SQUARE){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    viewHolder.imageView.findViewById<ImageView>(R.id.imageView).foreground =
+                        ColorDrawable(ContextCompat.getColor(parent.context, android.R.color.transparent))
+                }
+            }
+            return viewHolder
         }
 
         override fun getItemViewType(position: Int): Int {
@@ -232,7 +252,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         }
 
         private fun setLegoClickListener(holder: LegoItemViewHolder, grid: ChannelGrid, position: Int) {
-            holder.imageView.setOnClickListener {
+            val clickListener = View.OnClickListener {
                 when (layout) {
                     DynamicChannelLayout.LAYOUT_6_IMAGE -> {
                         listener?.onClickGridSixImage(channel, grid, position, parentPosition)
@@ -248,6 +268,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     }
                 }
             }
+            if(getItemViewType(position) == LEGO_LANDSCAPE) holder.itemView.setOnClickListener(clickListener)
+            else holder.imageView.setOnClickListener(clickListener)
         }
 
         override fun getItemCount(): Int {
@@ -256,7 +278,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
     }
 
     class LegoItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imageView: ShimmeringImageView = view.findViewById(R.id.image)
+        val cardUnify: CardUnify2 by lazy { view.findViewById(R.id.item_lego_card) }
+        val imageView: ShimmeringImageView = view.findViewById<ShimmeringImageView?>(R.id.image)
         val context: Context
             get() = itemView.context
     }

@@ -18,6 +18,10 @@
     <string name="cp_delete_warning_desc">Kalau dihapus, post kamu diganti dengan foto barang yang dipilih.</string>
     <string name="cp_title_edit">Edit</string>
     <string name="cp_get_commission">Raih Komisi</string>
+    <string name="cp_play_btn_content_desc">Play Button</string>
+    <string name="cp_del_btn_content_desc">Delete Media Button</string>
+    <string name="cp_thumbnail_content_desc">Profile Image</string>
+    <string name="cp_img_checkl_content_desc">Image Icon CheckMark</string>
 
     <string name="cp_share_tokopedia">Follower</string>
     <string name="cp_share_facebook">Facebook</string>
@@ -76,5 +80,73 @@
     <string name="feed_product_page_search_bar_placeholder_text">Cari produk di %s </string>
     <string name="feed_product_page_filter_title">Urutkan</string>
     <string name="feed_content_default_filter_value">Pembaruan Terakhir</string>
+    <string name="content_creation_search_bs_header">Pilih produk dari</string>
+    <string name="content_creation_tagging_page_header_text">Pilih produk dari <![CDATA["<font color='#212121'><b> %s </b></font> ]]></string>
+    <string name="content_creation_search_bs_item_tokopedia">Tokopedia</string>
+    <string name="content_creation_search_bs_header_item_tokopedia">Akun saya</string>
+    <string name="content_creation_search_bs_item_last_purchase">Terakhir Dibeli</string>
+    <string name="content_creation_search_bs_item_wishlist">Wishlist</string>
+    <string name="content_creation_search_bs_header_item_shop">Toko saya</string>
+    <string name="content_creation_search_coachmark_header">Nge-tag produk dari mana-mana</string>
+    <string name="content_creation_search_coachmark_desc">Kamu bahkan bisa nge-tag dari yang terakhir
+dibeli, Wishlist, dan bahkan produk tokomu.</string>
+    <string name="content_creation_search_shop_item_button_text">Lihat Toko</string>
+    <string name="content_creation_barang_text">Barang</string>
+    <string name="content_creation_toko_text">Toko</string>
 
+    <!-- Content Creation UGC -->
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_title">Yakin mau ganti ke profil tokomu?</string>
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_desc">Tag yang dipilih akan hilang, karena kamu hanya bisa tag dari produk tokomu.</string>
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_primary_button">Lanjut Tag Produk</string>
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_secondary_button">Ganti sebagai penjual</string>
+
+    <!-- Product Tag -->
+    <string name="content_creation_product_tag_title">Tag Produk</string>
+    <string name="cc_product_tag_source_label">Pilih produk dari</string>
+    <string name="cc_product_tag_source_my_account_label">Akun saya</string>
+    <string name="cc_product_tag_source_my_shop_label">Toko saya</string>
+    <string name="cc_product_tag_search_hint">Cari di Tokopedia</string>
+    <string name="cc_product_tag_search_hint_template">Cari di %s</string>
+    <string name="cc_failed_load_product">Gagal memuat produk. Silahkan ulangi.</string>
+    <string name="cc_failed_load_shop">Gagal memuat toko. Silahkan ulangi.</string>
+
+    <string name="cc_no_product_tag_title">Kamu belum pernah nge-tag produk, lho</string>
+    <string name="cc_no_product_tag_desc">Coba cari dulu produknya, atau kamu juga bisa pilih produk dari pencarian yang lain.</string>
+
+    <string name="cc_no_last_purchased_product_title">Kamu belum pernah beli produk di Tokopedia</string>
+    <string name="cc_no_last_purchased_product_desc">Ayo mulai belanja, supaya kamu bisa ceritain pengalamanmu di Feed.</string>
+
+    <string name="cc_no_my_shop_product_title">Kamu belum punya produk</string>
+    <string name="cc_no_my_shop_product_desc">Yuk, upload produk di tokomu dulu supaya bisa nge-tag di postingan!</string>
+    <string name="cc_no_my_shop_product_filter_title">Oops, produknya tidak ada di tokomu</string>
+    <string name="cc_no_my_shop_product_filter_desc">Yuk, cari produknya lagi supaya bisa nge-tag di postingan!</string>
+
+    <string name="cc_no_shop_product_title">Oops, toko ini belum punya produk</string>
+    <string name="cc_no_shop_product_desc">Yuk, cari produk di toko lainnya supaya bisa nge-tag di postingan!</string>
+    <string name="cc_no_shop_product_filter_title">Oops, produknya tidak ada di toko ini</string>
+    <string name="cc_no_shop_product_filter_desc">Yuk, cari produknya di toko lain aja supaya bisa nge-tag di postingan!</string>
+
+    <string name="cc_product_stock_template">Stok %d</string>
+
+    <string name="cc_shop_closed">Toko Tutup Sementara</string>
+    <string name="cc_shop_moderated">Dalam Pengawasan</string>
+    <string name="cc_shop_inactive">Toko Sudah Tidak Aktif</string>
+
+    <string name="cc_product_tag_filter_label">Filter</string>
+    <string name="cc_product_tag_sort_label">Urutkan</string>
+    <string name="cc_product_tag_save">Simpan</string>
+    <string name="cc_filter_product_count_template">Tampilkan %s produk</string>
+    <string name="cc_filter_product_count_label">Tampilkan produk</string>
+    <string name="cc_filter_shop_count_template">Tampilkan %s Toko</string>
+    <string name="cc_filter_shop_count_label">Tampilkan Toko</string>
+
+    <string name="cc_global_search_product_filter_not_found_title">Nggak ada barang yang sesuai dari filter ini</string>
+    <string name="cc_global_search_product_filter_not_found_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
+    <string name="cc_global_search_product_query_not_found_title">Oops, barangnya nggak ketemu</string>
+    <string name="cc_global_search_product_query_not_found_desc">Coba periksa lagi kata kunci atau cek rekomendasi lainnya.</string>
+
+    <string name="cc_global_search_shop_filter_not_found_title">Nggak ada toko yang sesuai dari filter ini</string>
+    <string name="cc_global_search_shop_filter_not_found_desc">Coba kurangi filter yang lagi aktif atau reset filter.</string>
+    <string name="cc_global_search_shop_query_not_found_title">Oops, tokonya nggak ketemu</string>
+    <string name="cc_global_search_shop_query_not_found_desc">Coba periksa lagi kata kunci atau cek rekomendasi lainnya.</string>
 </resources>

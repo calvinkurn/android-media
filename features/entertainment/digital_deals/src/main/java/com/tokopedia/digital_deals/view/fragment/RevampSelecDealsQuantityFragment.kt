@@ -23,18 +23,28 @@ import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics
 import com.tokopedia.digital_deals.view.utils.Utils
 import com.tokopedia.digital_deals.view.viewmodel.DealsVerifyViewModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.deal_item_card.iv_brand
-import kotlinx.android.synthetic.main.deal_item_card.tv_brand_name
-import kotlinx.android.synthetic.main.fragment_brand_detail.toolbar
-import kotlinx.android.synthetic.main.fragment_checkout_deal.tv_deal_details
-import kotlinx.android.synthetic.main.fragment_checkout_deal.tv_total_amount
-import kotlinx.android.synthetic.main.fragment_deal_quantity.*
+import kotlinx.android.synthetic.main.deal_item_card.tv_brand_name_revamped
+import kotlinx.android.synthetic.main.deal_item_card.tv_mrp_revamped
+import kotlinx.android.synthetic.main.fragment_deal_quantity.tv_deal_details
+import kotlinx.android.synthetic.main.fragment_deal_quantity.tv_total_amount
+import kotlinx.android.synthetic.main.fragment_deal_quantity.iv_add
+import kotlinx.android.synthetic.main.fragment_deal_quantity.iv_subtract
+import kotlinx.android.synthetic.main.fragment_deal_quantity.progress_bar_layout
+import kotlinx.android.synthetic.main.fragment_deal_quantity.toolbar
+import kotlinx.android.synthetic.main.fragment_deal_quantity.tv_continue
+import kotlinx.android.synthetic.main.fragment_deal_quantity.tv_no_quantity
+import kotlinx.android.synthetic.main.fragment_deal_quantity.tv_sales_price
 import javax.inject.Inject
 
 class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
@@ -70,6 +80,10 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState != null) {
+            dealsDetail = savedInstanceState.getParcelable(EXTRA_PDP_PASS_DATA) ?: DealsDetailsResponse()
+            toolbar.setTitle(context?.resources?.getString(com.tokopedia.digital_deals.R.string.select_number_of_voucher).orEmpty())
+        }
         showLayout()
         observeVerify()
     }
@@ -81,7 +95,9 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dealsDetail = dealFragmentCallback.dealDetails
+        dealFragmentCallback?.dealDetails?.let {
+            dealsDetail = it
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -95,15 +111,21 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(EXTRA_PDP_PASS_DATA, dealsDetail)
+    }
+
     private fun showLayout(){
+        dealFragmentCallback?.hideMainToolbar()
         toolbar?.apply {
             (activity as BaseSimpleActivity).setSupportActionBar(this)
             setNavigationIcon(ContextCompat.getDrawable(context, com.tokopedia.digital_deals.R.drawable.ic_close_deals))
-            setTitle(resources.getString(com.tokopedia.digital_deals.R.string.select_number_of_voucher))
+            setTitle(context?.resources?.getString(com.tokopedia.digital_deals.R.string.select_number_of_voucher).orEmpty())
         }
 
         iv_brand?.loadImage(dealsDetail.imageWeb)
-        tv_brand_name?.text = dealsDetail.brand.title
+        tv_brand_name_revamped?.text = dealsDetail.brand.title
         tv_deal_details?.text = dealsDetail.displayName
 
         minQuantity = if(dealsDetail.minQty > 0) dealsDetail.minQty else 1
@@ -111,14 +133,14 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
         currentQuantity = minQuantity
 
         if (dealsDetail.mrp != 0 && dealsDetail.mrp != dealsDetail.salesPrice) {
-            tv_mrp?.show()
-            tv_mrp?.text = Utils.convertToCurrencyString(dealsDetail.mrp.toLong())
-            tv_mrp?.paintFlags = tv_mrp.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG
+            tv_mrp_revamped?.show()
+            tv_mrp_revamped?.text = Utils.convertToCurrencyString(dealsDetail.mrp.toLong())
+            tv_mrp_revamped?.paintFlags = tv_mrp_revamped.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG
         } else {
-            tv_mrp?.gone()
+            tv_mrp_revamped?.gone()
         }
 
-        tv_no_quantity?.text = String.format(resources.getString(com.tokopedia.digital_deals.R.string.quantity_of_deals), currentQuantity)
+        tv_no_quantity?.text = String.format(context?.resources?.getString(com.tokopedia.digital_deals.R.string.quantity_of_deals).orEmpty(), currentQuantity)
         tv_sales_price?.text = Utils.convertToCurrencyString(dealsDetail.salesPrice.toLong())
         tv_total_amount?.text = Utils.convertToCurrencyString(dealsDetail.salesPrice.toLong())
 
@@ -234,6 +256,7 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     companion object{
         const val REQUEST_CODE_LOGIN = 101
+        private const val EXTRA_PDP_PASS_DATA = "EXTRA_PDP_DETAIL_PASS_DATA"
 
         fun createInstance(): RevampSelecDealsQuantityFragment {
             return RevampSelecDealsQuantityFragment()

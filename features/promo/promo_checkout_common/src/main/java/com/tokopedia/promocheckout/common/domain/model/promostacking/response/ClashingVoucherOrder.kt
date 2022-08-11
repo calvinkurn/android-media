@@ -14,7 +14,7 @@ data class ClashingVoucherOrder(
         val uniqueId: String = "",
 
         @SerializedName("cart_id")
-        val cartId: Int = 0,
+        val cartId: String = "0",
 
         @SerializedName("promo_name")
         val promoName: String = "",
