@@ -15,6 +15,12 @@ import com.tokopedia.content.common.ui.toolbar.ContentColor.TRANSPARENT
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
 import com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+import com.tokopedia.unifyprinciples.R.color.Unify_NN0
+import com.tokopedia.unifyprinciples.R.color.Unify_NN400
+import com.tokopedia.content.common.R.color.soft_gray
+import com.tokopedia.content.common.R.color.soft_dark
+import com.tokopedia.content.common.R.color.Unify_NN1000
+import com.tokopedia.content.common.R.color.Unify_NN950
 
 class ImagePickerCommonToolbar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -70,21 +76,26 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
             mBinding.imgComToolbarNavIcon.setImage(newIconId = navIcon)
         }
 
-    fun setContentColor(contentColor: ContentColor) = with(mBinding) {
+    fun setCustomizeContentColor(contentColor: ContentColor, enableDarkMode: Boolean = true) = with(mBinding) {
         val content: Int
+        val contentAccent: Int
         val background: Int
         when(contentColor) {
             LIGHT, TRANSPARENT -> {
-                content = getColor(context, Unify_Static_White)
-                background = if (contentColor == LIGHT) getColor(context, Unify_Static_Black)
+                content = if (enableDarkMode) getColor(context, Unify_NN0) else getColor(context, Unify_Static_White)
+                contentAccent = if (enableDarkMode) getColor(context, Unify_NN400) else getColor(context, soft_gray)
+                background = if (contentColor == LIGHT) {
+                    if (enableDarkMode) getColor(context, Unify_NN1000) else getColor(context, Unify_Static_Black)
+                }
                 else Color.TRANSPARENT
             }
             DARK -> {
-                content = getColor(context, Unify_Static_Black)
-                background = getColor(context, Unify_Static_White)
+                content = if (enableDarkMode) getColor(context, Unify_NN1000) else getColor(context, Unify_Static_Black)
+                contentAccent = if (enableDarkMode) getColor(context, Unify_NN950) else getColor(context, soft_dark)
+                background = if (enableDarkMode) getColor(context, Unify_NN0) else getColor(context, Unify_Static_White)
             }
         }
-        textComToolbarTitle.setTextColor(content)
+        textComToolbarTitle.setTextColor(contentAccent)
         textComToolbarSubtitle.setTextColor(content)
         imgComToolbarNavIcon.setImage(newLightEnable = content, newDarkEnable = content)
         imgContentCreatorExpand.setImage(newLightEnable = content, newDarkEnable = content)

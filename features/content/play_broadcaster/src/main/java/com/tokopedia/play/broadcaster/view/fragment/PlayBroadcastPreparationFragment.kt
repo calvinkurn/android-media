@@ -231,7 +231,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             subtitle = parentViewModel.getShopName()
             icon = parentViewModel.getShopIconUrl()
             navIcon = CLOSE
-            setContentColor(ContentColor.TRANSPARENT)
+            setCustomizeContentColor(ContentColor.TRANSPARENT, false)
 
             setOnAccountClickListener {
                 toaster.showToaster("switching account")
