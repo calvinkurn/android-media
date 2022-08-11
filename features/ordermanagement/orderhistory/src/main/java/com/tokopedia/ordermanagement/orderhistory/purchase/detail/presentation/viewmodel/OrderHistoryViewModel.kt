@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.domain.usecase.OrderHistoryUseCase
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.model.OrderHistoryResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -41,7 +42,7 @@ class OrderHistoryViewModel @Inject constructor(
             val params = HashMap<String, Any?>()
             params[PARAM_REQUEST_BY] = userMode
             params[PARAM_ORDER_ID] = orderId
-            params[PARAM_USER_ID] = userSession.userId.toLong()
+            params[PARAM_USER_ID] = userSession.userId.toLongOrZero()
             params[PARAM_LANGUAGE] = LANGUAGE_ID
             orderHistoryUseCase.setRequestParams(params.toMap())
             _orderHistory.postValue(OrderHistoryResult.OrderHistorySuccess(orderHistoryUseCase.execute()))
