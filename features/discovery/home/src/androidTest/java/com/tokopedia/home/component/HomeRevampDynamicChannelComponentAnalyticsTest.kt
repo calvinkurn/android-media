@@ -83,8 +83,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
                 recyclerView = recyclerView
         )
-        val recyclerViewBalanceWidget: RecyclerView? =
-            activityRule.activity.findViewById(R.id.rv_balance_widget_data)
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
 
@@ -334,11 +332,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testReminderWidgetSalam(){
-        val recyclerView: RecyclerView =
-            activityRule.activity.findViewById(R.id.rv_balance_widget_data)
-        balanceWidgetRecyclerViewIdlingResource = BalanceWidgetRecyclerViewIdlingResource(
-            recyclerView = recyclerView
-        )
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(
