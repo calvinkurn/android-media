@@ -289,8 +289,6 @@ open class DynamicProductDetailFragment :
     ScreenShotListener, PlayWidgetListener {
 
     companion object {
-        // for set transparent searchbar on toolbar
-        private const val ALPHA_MAX = 255
 
         private const val DEBOUNCE_CLICK = 750
 
@@ -496,6 +494,7 @@ open class DynamicProductDetailFragment :
                 toolbarTransitionRangePixel = toolbarTransitionRangePixel,
                 navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                     override fun onAlphaChanged(offsetAlpha: Float) {
+                        // seller app have not search bar
                         if (!GlobalConfig.isSellerApp()) {
                             navToolbar?.setSearchBarAlpha(alpha = offsetAlpha)
                         }
@@ -3791,15 +3790,6 @@ open class DynamicProductDetailFragment :
             com.tokopedia.searchbar.R.color.searchbar_dms_state_light_icon
         }
         return ContextCompat.getColor(requireContext(), unifyColor)
-    }
-
-    /**
-     * Set search bar alpha on toolbar when recyclerview on scroll
-     */
-    private fun NavToolbar.setSearchBarAlpha(alpha: Float) {
-        findViewById<EditText>(R.id.et_search).alpha = alpha / ALPHA_MAX
-        findViewById<LinearLayout>(R.id.layout_search).alpha = alpha / ALPHA_MAX
-        findViewById<IconUnify>(R.id.search_magnify_icon).alpha = alpha / ALPHA_MAX
     }
 
     private fun setupToolbarState(shouldTransparent: Boolean) {

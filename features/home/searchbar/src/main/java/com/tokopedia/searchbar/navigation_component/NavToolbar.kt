@@ -61,6 +61,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import timber.log.Timber
 
 class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     companion object {
@@ -97,6 +98,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val TYPE_EDITABLE = 1
         }
         private const val MAX_BACKGROUND_ALPHA = 225f
+        // for set transparent searchbar on toolbar
+        private const val ALPHA_MAX = 255
     }
 
     //public variable
@@ -147,6 +150,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
     private val etSearch : EditText by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.et_search)
+    }
+    private val iconSearchMagnify : IconUnify by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.search_magnify_icon)
     }
 
     @Inject
@@ -770,4 +776,12 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     override fun isLoggedIn(): Boolean = userSessionInterface?.isLoggedIn?:false
 
     override fun getPageName(): String = toolbarPageName
+
+    fun setSearchBarAlpha(alpha: Float) = runCatching {
+        etSearch.alpha = alpha / ALPHA_MAX
+        layoutSearch.alpha = alpha / ALPHA_MAX
+        iconSearchMagnify.alpha = alpha / ALPHA_MAX
+    }.onFailure {
+        Timber.e(it)
+    }
 }

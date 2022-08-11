@@ -1,6 +1,5 @@
 package com.tokopedia.searchbar.navigation_component.listener
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.searchbar.R
