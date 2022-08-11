@@ -1,20 +1,21 @@
 package com.tokopedia.common_digital.common.data.api
 
 import android.content.Context
-import android.util.Log
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.network.authentication.AuthKeyExt
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.authentication.AuthKeyExt
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.Response
+import timber.log.Timber
 import java.io.IOException
 
 /**
@@ -34,12 +35,18 @@ class DigitalInterceptor(@ApplicationContext context: Context,
     @Throws(IOException::class)
     override fun throwChainProcessCauseHttpError(response: Response) {
         val errorBody = response.peekBody(BYTE_COUNT.toLong()).string()
-        Log.d(TAG, "Error body response : $errorBody")
+        Timber.d(TAG, "Error body response : $errorBody")
         if (errorBody.isNotEmpty()) {
             val digitalErrorResponse: TkpdDigitalResponse.DigitalErrorResponse =
                 TkpdDigitalResponse.DigitalErrorResponse.factory(errorBody, response.code)
             if (digitalErrorResponse.typeOfError == TkpdDigitalResponse.DigitalErrorResponse.ERROR_DIGITAL) {
-                throw ResponseErrorException(digitalErrorResponse.digitalErrorMessageFormatted)
+                if (digitalErrorResponse.errors.isEmpty()){
+                    throw ResponseErrorException(errorBody)
+                }
+
+                if (digitalErrorResponse.errors.first().id == UNVERIFIED_PHONE_NUMBER_ERROR_ID){
+                    throw DigitalAtcErrorException(errorBody)
+                }
             } else if (digitalErrorResponse.typeOfError == TkpdDigitalResponse.DigitalErrorResponse.ERROR_SERVER) {
                 if (digitalErrorResponse.status.equals(
                         DigitalError.STATUS_UNDER_MAINTENANCE,
@@ -91,6 +98,7 @@ class DigitalInterceptor(@ApplicationContext context: Context,
     companion object {
         private val TAG = DigitalInterceptor::class.java.simpleName
         private const val DEFAULT_TOKOPEDIA_ORGANIZATION_NAME = "Tokopedia"
+        private const val UNVERIFIED_PHONE_NUMBER_ERROR_ID = "1104"
     }
 
     init {
