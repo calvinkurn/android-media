@@ -471,11 +471,17 @@ class ManageProductFragment : BaseDaggerFragment() {
 
     private fun showEditProductBottomSheet(productList: List<SellerCampaignProductList.Product>) {
         if (productList.isEmpty()) return
-        val bottomSheet = EditProductInfoBottomSheet.newInstance(productList)
+        val bottomSheet = EditProductInfoBottomSheet.newInstance(campaignId, productList)
         bottomSheet.setOnEditProductSuccessListener {
             doOnDelayFinished(DELAY) {
                 loadProductsData()
                 showSuccessEditProductToaster()
+            }
+        }
+        bottomSheet.setOnDeleteProductSuccessListener {
+            doOnDelayFinished(DELAY) {
+                loadProductsData()
+                showSuccessDeleteProductToaster()
             }
         }
         bottomSheet.show(childFragmentManager)
