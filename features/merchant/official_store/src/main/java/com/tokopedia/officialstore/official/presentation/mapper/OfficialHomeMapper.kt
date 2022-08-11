@@ -240,7 +240,7 @@ object OfficialHomeMapper {
         action: (updatedList: MutableList<Visitable<*>>) -> Unit
     ) {
         val newList = currentList.toMutableList()
-        newList.forEach {
+        currentList.forEach {
             if (it is BestSellerDataModel && it.channelId == bestSellerDataModel.channelId) {
                 newList.add(bestSellerDataModel)
             } else {
@@ -248,7 +248,7 @@ object OfficialHomeMapper {
             }
         }
         val isBestSellerWidgetNotExist =
-            newList.indexOfFirst { it is BestSellerDataModel } == com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper.WIDGET_NOT_FOUND
+            newList.indexOfFirst { it is BestSellerDataModel } == WIDGET_NOT_FOUND
         if (isBestSellerWidgetNotExist) {
             if (newList.size > RECOM_WIDGET_POSITION) {
                 newList.add(RECOM_WIDGET_POSITION, bestSellerDataModel)
