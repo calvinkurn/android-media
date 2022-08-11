@@ -10,7 +10,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/product_detail_info_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         android:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -20,7 +20,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/merchant_product_detail_label_product_detail"
-        app:typographyType="heading_4"
+        app:typographyType="display_1"
         app:typographyWeight="bold"
         tools:text="Detail Produk" />
 
@@ -44,7 +44,7 @@
         android:ellipsize="end"
         android:longClickable="false"
         android:maxLines="5"
-        app:typographyType="body_2"
+        app:typographyType="paragraph_2"
         tools:text="Uniqlo AIRism JAKET UV CUT HOODIE RETSLETING - Orange Jaket Uniqlo Airism - Original Store..." />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -55,9 +55,9 @@
         android:layout_marginEnd="16dp"
         android:text="@string/label_read_detail"
         android:layout_marginTop="8dp"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:visibility="visible"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.tokopedia.product.share.tracker
 
+import com.tokopedia.product.share.ekstensions.ProductShareConstant
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_AND_FILES
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_CLICK_CHANNEL_SCREENSHOT_SHARE_BOTTOMSHEET
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOMSHEET
@@ -80,8 +81,10 @@ object ProductShareTracking {
                 EVENT_CLICK_PDP_SHARING,
                 EVENT_CATEGORY_PDP_SHARING,
                 EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOMSHEET,
-                channel+" - "+UniversalShareBottomSheet.getUserType()+" - "+productId+" - "+campaignId+" - "+bundleId)
+                channel+" - "+UniversalShareBottomSheet.getUserType()+" - "+productId+" - "+campaignId+" - "
+                        +bundleId+" - "+UniversalShareBottomSheet.Companion.KEY_IMAGE_DEFAULT)
         mapEvent.appendDefaultTracker(userId, productId)
+        mapEvent[ProductShareConstant.TRACKER_ID] = ProductShareConstant.TRACKER_ID_CLICK_SHARING_CHANNEL
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 

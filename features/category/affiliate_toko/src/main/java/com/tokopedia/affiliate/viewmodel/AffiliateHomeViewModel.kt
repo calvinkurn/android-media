@@ -4,13 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.NO_UI_METRICS
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TOTAL_ITEMS_METRIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateDateFilterData
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
-import com.tokopedia.affiliate.model.pojo.AffiliateUserPerformaData
-import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
@@ -43,12 +42,12 @@ class AffiliateHomeViewModel @Inject constructor(
     private var dataPlatformShimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
-    private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
+    private var affiliateDataList =
+        MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
     private var errorMessage = MutableLiveData<Throwable>()
     private var rangeChanged = MutableLiveData<Boolean>()
-    private var showProductCount = true
     private var lastID = "0"
     private var firstTime = true
     private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
@@ -71,7 +70,7 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getAnnouncementInformation() {
         launchCatchError(block = {
             affiliateAnnouncement.value =
-                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
+                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(PAGE_ANNOUNCEMENT_HOME)
         }, onError = {
             it.printStackTrace()
         })
@@ -79,9 +78,9 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun getAffiliatePerformance(page: Int) {
         launchCatchError(block = {
-            if(firstTime) affiliateUserPerformanceUseCase.getAffiliateFilter()?.let { filters ->
-                filters.data?.getAffiliateDateFilter?.forEach { filter->
-                    if(filter?.filterType == "LastThirtyDays"){
+            if (firstTime) affiliateUserPerformanceUseCase.getAffiliateFilter().let { filters ->
+                filters.data?.getAffiliateDateFilter?.forEach { filter ->
+                    if (filter?.filterType == "LastThirtyDays") {
                         filter.filterDescription?.let { selectedDateMessage = it }
                         filter.filterValue?.let { selectedDateValue = it }
                         filter.filterTitle?.let { selectedDateRange = it }
@@ -104,9 +103,9 @@ class AffiliateHomeViewModel @Inject constructor(
                 lastID
             ).getAffiliatePerformanceList?.data?.data.let {
                 lastID = it?.lastID ?: "0"
-                if(page == PAGE_ZERO) dataPlatformShimmerVisibility.value = false
-                convertDataToVisitables(it, performanceList, page)?.let { visitables ->
-                    affiliateDataList.value = visitables
+                if (page == PAGE_ZERO) dataPlatformShimmerVisibility.value = false
+                convertDataToVisitable(it, performanceList, page)?.let { visitable ->
+                    affiliateDataList.value = visitable
                 }
 
             }
@@ -133,20 +132,25 @@ class AffiliateHomeViewModel @Inject constructor(
         return userSessionInterface.isLoggedIn
     }
 
-    fun convertDataToVisitables(
-            data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data?,
-            performanceList: AffiliateUserPerformaListItemData?,
-            page: Int
+    private fun convertDataToVisitable(
+        data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data?,
+        performanceList: AffiliateUserPerformaListItemData?,
+        page: Int
     ): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
         val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         if (page == PAGE_ZERO) {
-            tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData(selectedDateRange,selectedDateMessage)))
+            tempList.add(
+                AffiliateDateFilterModel(
+                    AffiliateDateFilterData(
+                        selectedDateRange,
+                        selectedDateMessage
+                    )
+                )
+            )
             tempList.add(
                 AffiliateUserPerformanceModel(
-                    AffiliateUserPerformaData(
-                        getListFromData(
-                            performanceList
-                        ), totalItemsCount.value,showProductCount
+                    getListFromData(
+                        performanceList
                     )
                 )
             )
@@ -158,7 +162,7 @@ class AffiliateHomeViewModel @Inject constructor(
                         tempList.add(AffiliatePerformaSharedProductCardsModel(product))
                     }
                 }
-            } else if(totalItemsCount.value == 0) {
+            } else if (totalItemsCount.value == 0) {
                 tempList.add(AffiliateNoPromoItemFoundModel())
             }
             return tempList
@@ -166,19 +170,19 @@ class AffiliateHomeViewModel @Inject constructor(
         return null
     }
 
-    private fun getListFromData(affiliatePerfomanceResponse: AffiliateUserPerformaListItemData?): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
-        val performaTempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-        affiliatePerfomanceResponse?.getAffiliatePerformance?.data?.userData?.let { userData ->
+    private fun getListFromData(affiliatePerformanceResponse: AffiliateUserPerformaListItemData?): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
+        val performanceTempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+        affiliatePerformanceResponse?.getAffiliatePerformance?.data?.userData?.let { userData ->
             userData.metrics = userData.metrics.sortedBy { metrics -> metrics?.order }
             userData.metrics.forEach { metrics ->
                 if (metrics?.metricType == TOTAL_ITEMS_METRIC_TYPE) {
                     totalItemsCount.value = metrics.metricValue?.toInt()
-                } else if(metrics?.order != NO_UI_METRICS) {
-                    performaTempList.add(AffiliateUserPerformanceListModel(metrics))
+                } else if (metrics?.order != NO_UI_METRICS) {
+                    performanceTempList.add(AffiliateUserPerformanceListModel(metrics))
                 }
             }
         }
-        return performaTempList
+        return performanceTempList
     }
 
     fun getSelectedDate(): String {

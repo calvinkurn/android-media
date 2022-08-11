@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.media.player.image.presentation.fragment
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +9,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.image_gallery.ImagePreview
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.utils.MediaException
+import com.tokopedia.media.loader.wrapper.MediaDataSource
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.common.extension.collectWhenResumed
@@ -117,6 +122,11 @@ class ReviewImagePlayerFragment : BaseDaggerFragment() {
         collectToasterEvent()
     }
 
+    override fun onDestroyView() {
+        binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.clearImage()
+        super.onDestroyView()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         reviewImagePlayerViewModel.saveState(outState)
@@ -158,45 +168,19 @@ class ReviewImagePlayerFragment : BaseDaggerFragment() {
     }
 
     private fun setupLayout() {
-        binding?.imagePreviewReviewMediaImagePlayer?.imagePreviewUnifyListener = object: ImagePreview.ImagePreviewUnifyListener {
-            override fun onZoom(scaleFactor: Float) {}
-
-            override fun onZoomEnd(scaleFactor: Float) {
-                reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(scaleFactor == UNZOOM_SCALE_FACTOR)
-            }
-
-            override fun onZoomStart(scaleFactor: Float) {
-                reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(scaleFactor == UNZOOM_SCALE_FACTOR)
-            }
-        }
         binding?.imagePreviewReviewMediaImagePlayer?.onImageDoubleClickListener = {
-            if (binding?.imagePreviewReviewMediaImagePlayer?.mScaleFactor == UNZOOM_SCALE_FACTOR) {
-                binding?.imagePreviewReviewMediaImagePlayer?.setScaleFactor(ZOOM_SCALE_FACTOR)
-            } else {
-                binding?.imagePreviewReviewMediaImagePlayer?.setScaleFactor(UNZOOM_SCALE_FACTOR)
+            if (isAdded) {
+                if (binding?.imagePreviewReviewMediaImagePlayer?.mScaleFactor == UNZOOM_SCALE_FACTOR) {
+                    reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(false)
+                    binding?.imagePreviewReviewMediaImagePlayer?.setScaleFactor(ZOOM_SCALE_FACTOR)
+                } else {
+                    reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(true)
+                    binding?.imagePreviewReviewMediaImagePlayer?.setScaleFactor(UNZOOM_SCALE_FACTOR)
+                }
             }
         }
         binding?.btnReviewMediaImagePlayerSeeMore?.setOnClickListener {
             listener?.onSeeMoreClicked()
-        }
-        binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.onUrlLoaded = { success ->
-            binding?.imagePreviewReviewMediaImagePlayerShimmer?.gone()
-            if (success) {
-                if (!reviewImagePlayerViewModel.getImpressHolder().isInvoke) {
-                    reviewImagePlayerViewModel.getImpressHolder().invoke()
-                    listener?.onImageImpressed(getImageUri())
-                }
-            } else {
-                sharedReviewMediaGalleryViewModel.enqueueToaster(
-                    ToasterUiModel(
-                        String.format(TOASTER_KEY_ERROR_LOAD_IMAGE, getImageUri()),
-                        StringRes(R.string.review_image_player_toaster_error_message),
-                        Toaster.TYPE_ERROR,
-                        Toaster.LENGTH_INDEFINITE,
-                        StringRes(R.string.review_image_player_toaster_error_action)
-                    )
-                )
-            }
         }
     }
 
@@ -207,7 +191,9 @@ class ReviewImagePlayerFragment : BaseDaggerFragment() {
     private fun collectToasterEvent() {
         viewLifecycleOwner.collectWhenResumed(sharedReviewMediaGalleryViewModel.toasterEventActionClickQueue) {
             if (it == String.format(TOASTER_KEY_ERROR_LOAD_IMAGE, getImageUri())) {
-                binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.setImageUrl(getImageUri())
+                binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.loadImage(getImageUri()) {
+                    listener(onError = ::onErrorLoadImage, onSuccess = ::onSuccessLoadImage)
+                }
             }
         }
     }
@@ -215,7 +201,9 @@ class ReviewImagePlayerFragment : BaseDaggerFragment() {
     private fun updateUi(uiState: ReviewImagePlayerUiState) {
         if (uiState.imageUri.isNotEmpty()) {
             binding?.imagePreviewReviewMediaImagePlayer?.mLoaderView?.hide()
-            binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.setImageUrl(uiState.imageUri)
+            binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.loadImage(getImageUri()) {
+                listener(onError = ::onErrorLoadImage, onSuccess = ::onSuccessLoadImage)
+            }
             binding?.imagePreviewReviewMediaImagePlayer?.show()
             when (uiState) {
                 is ReviewImagePlayerUiState.Showing -> {
@@ -232,6 +220,41 @@ class ReviewImagePlayerFragment : BaseDaggerFragment() {
                     }
                 }
             }
+        }
+    }
+
+    private fun onErrorLoadImage(exception: MediaException?) {
+        binding?.imagePreviewReviewMediaImagePlayerShimmer?.gone()
+        val messageStringRes = if (exception == null) {
+            StringRes(R.string.review_image_player_toaster_error_message)
+        } else {
+            StringRes(
+                R.string.review_image_player_toaster_error_message,
+                listOf(
+                    ErrorHandler.getErrorMessagePair(
+                        context = null,
+                        e = exception,
+                        builder = ErrorHandler.Builder().build()
+                    ).second
+                )
+            )
+        }
+        sharedReviewMediaGalleryViewModel.enqueueToaster(
+            ToasterUiModel(
+                String.format(TOASTER_KEY_ERROR_LOAD_IMAGE, getImageUri()),
+                messageStringRes,
+                Toaster.TYPE_ERROR,
+                Toaster.LENGTH_INDEFINITE,
+                StringRes(R.string.review_image_player_toaster_error_action)
+            )
+        )
+    }
+
+    private fun onSuccessLoadImage(bitmap: Bitmap?, mediaDataSource: MediaDataSource?) {
+        binding?.imagePreviewReviewMediaImagePlayerShimmer?.gone()
+        if (!reviewImagePlayerViewModel.getImpressHolder().isInvoke) {
+            reviewImagePlayerViewModel.getImpressHolder().invoke()
+            listener?.onImageImpressed(getImageUri())
         }
     }
 

@@ -6,7 +6,11 @@ import com.tokopedia.product.addedit.description.presentation.model.VideoLinkMod
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.draft.presentation.model.ProductDraftUiModel
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_STRING
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.getWeightUnitString
+import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.draft.data.model.detail.ShowCaseInputModel
@@ -107,6 +111,7 @@ object AddEditProductMapper {
         val productInputModel = ProductInputModel()
         if(productDraft.variantInputModel.isNotEmpty()) {
             productInputModel.variantInputModel = mapJsonToObject(productDraft.variantInputModel, VariantInputModel::class.java)
+            productInputModel.variantInputModel.fixVariantData(productInputModel.shipmentInputModel)
         } else {
             productInputModel.variantInputModel = VariantInputModel()
         }
@@ -130,7 +135,8 @@ object AddEditProductMapper {
             isActive = productDraft.detailInputModel.preorder.isActive
         }
         productInputModel.detailInputModel.wholesaleList = productDraft.detailInputModel.wholesaleList.map { wholeSale ->
-            WholeSaleInputModel(wholeSale.price, wholeSale.quantity)
+            val decrementedQuantity = wholeSale.quantity.toLong().dec().toString() // decremented because BE need value+1 at last submit trial
+            WholeSaleInputModel(wholeSale.price, decrementedQuantity)
         }
         productInputModel.detailInputModel.productShowCases = productDraft.detailInputModel.productShowCases.map { showCase ->
             ShowcaseItemPicker(showcaseId = showCase.showcaseId, showcaseName = showCase.showcaseName)
@@ -170,6 +176,16 @@ object AddEditProductMapper {
                 AddEditProductDraftMapper.getCompletionPercent(draft),
         )
     }
+
+    private fun VariantInputModel.fixVariantData(shipmentInputModel: ShipmentInputModel) {
+        val isOldVariantData = hasVariant() && products.any { it.weight == null }
+        if (isOldVariantData) {
+            val weightUnit = getWeightUnitString(shipmentInputModel.weightUnit)
+            val weight = GetProductMapper().convertToGram(shipmentInputModel.weight, weightUnit)
+            products.forEach {
+                it.weight = weight
+                it.weightUnit = UNIT_GRAM_STRING
+            }
+        }
+    }
 }
-
-

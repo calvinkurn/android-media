@@ -22,13 +22,13 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.CastAnalyticHelper
-import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.analytic.PlayPiPAnalytic
-import com.tokopedia.play.analytic.ProductAnalyticHelper
+import com.tokopedia.play.analytic.*
 import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
@@ -76,7 +76,6 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
@@ -88,6 +87,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -105,7 +105,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
     private val castAnalyticHelper: CastAnalyticHelper,
     private val performanceClassConfig: PerformanceClassConfig,
-) :
+    private val newAnalytic: PlayNewAnalytic,
+    ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
         PlayFragmentContract,
@@ -126,7 +127,8 @@ class PlayUserInteractionFragment @Inject constructor(
         ProductSeeMoreViewComponent.Listener,
         KebabMenuViewComponent.Listener,
         InteractiveActiveViewComponent.Listener,
-        InteractiveGameResultViewComponent.Listener
+        InteractiveGameResultViewComponent.Listener,
+        ChooseAddressViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -159,6 +161,7 @@ class PlayUserInteractionFragment @Inject constructor(
     ) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
+    private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
 
     /**
      * Interactive
@@ -228,6 +231,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
 
+    private var localCache: LocalCacheModel = LocalCacheModel()
+
     /**
      * Animation
      */
@@ -263,17 +268,19 @@ class PlayUserInteractionFragment @Inject constructor(
         setupObserve()
 
         invalidateSystemUiVisibility()
+        initAddress()
     }
 
     override fun onStart() {
         super.onStart()
         viewSize.rootView.requestApplyInsetsWhenAttached()
+        initAddress()
     }
 
     override fun onPause() {
         super.onPause()
         isOpened = false
-        productAnalyticHelper.sendImpressedFeaturedProducts()
+        productAnalyticHelper.sendImpressedFeaturedProducts(partner = playViewModel.latestCompleteChannelData.partnerInfo.type)
         analytic.getTrackingQueue().sendAll()
     }
 
@@ -301,6 +308,11 @@ class PlayUserInteractionFragment @Inject constructor(
             )
             super.onActivityResult(requestCode, resultCode, data)
         }
+
+        if(requestCode == REQUEST_CODE_ADDRESS_LIST && resultCode == Activity.RESULT_OK) {
+            chooseAddressView?.hideBottomSheet()
+            initAddress()
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -316,6 +328,7 @@ class PlayUserInteractionFragment @Inject constructor(
         super.onResume()
         isOpened = true
         invalidateSystemUiVisibility()
+        initAddress()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -494,7 +507,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product, ProductSectionUiModel.Section.ConfigUiModel.Empty, position))
-        analytic.clickFeaturedProduct(product, position)
+        if(product.isTokoNow) newAnalytic.clickFeaturedProductNow(product, position)
+        else analytic.clickFeaturedProduct(product, position)
     }
 
     /**
@@ -549,17 +563,10 @@ class PlayUserInteractionFragment @Inject constructor(
         if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             invalidateChatListBounds(shouldForceInvalidate = true)
         }
-
-        if (isHidingInsets && rtnView?.isAnimating() == true && rtnView?.isAnimatingHide() != true) {
-            val height = rtnView?.getRtnHeight() ?: return
-            chatListView?.setMask(height.toFloat() + offset8, false)
-        } else {
-            chatListView?.setMask(MASK_NO_CUT_HEIGHT, false)
-        }
     }
 
     private fun initAnalytic() {
-        productAnalyticHelper = ProductAnalyticHelper(analytic)
+        productAnalyticHelper = ProductAnalyticHelper(analytic, newAnalytic)
     }
 
     private fun setupView(view: View) {
@@ -811,10 +818,11 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
-                renderViewAllProductView(state.tagItems, state.bottomInsets)
-                renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
+                renderViewAllProductView(state.tagItems, state.bottomInsets, state.address, state.partner)
+                renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status, state.address)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderKebabMenuView(state.kebabMenu)
+                renderAddressWidget(state.address)
 
                 renderInteractiveDialog(prevState?.interactive, state.interactive)
                 renderWinnerBadge(state = state.winnerBadge)
@@ -1613,9 +1621,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderViewAllProductView(
         tagItem: TagItemUiModel,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState>
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
+        address: AddressWidgetUiState,
+        partner: PlayPartnerInfo
     ) {
-        if(!bottomInsets.isAnyShown) productSeeMoreView?.show()
+        if(!bottomInsets.isAnyShown && !address.shouldShow) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
 
         val productListSize = tagItem.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().sumOf {
@@ -1630,7 +1640,13 @@ class PlayUserInteractionFragment @Inject constructor(
         tagItem: TagItemUiModel,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         status: PlayStatusUiModel,
+        address: AddressWidgetUiState
     ) {
+        if(address.shouldShow) {
+            productFeaturedView?.hide()
+            return
+        }
+
         if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
             productFeaturedView?.setPlaceholder()
         } else if (prevTagItem?.product?.productSectionList != tagItem.product.productSectionList) {
@@ -1674,6 +1690,10 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderKebabMenuView(kebabMenuUiState: PlayKebabMenuUiState) {
         if(kebabMenuUiState.shouldShow) kebabMenuView?.show()
         else kebabMenuView?.hide()
+    }
+
+    private fun renderAddressWidget(addressUiState: AddressWidgetUiState){
+        chooseAddressView?.rootView?.showWithCondition(addressUiState.shouldShow)
     }
 
     private fun castViewOnStateChanged(
@@ -1768,6 +1788,45 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(OpenKebabAction)
     }
 
+    /***
+     * Choose Address
+     */
+
+    private fun initAddress() {
+        if(ChooseAddressUtils.isLocalizingAddressHasUpdated(context = requireContext(), localizingAddressStateData = localCache)) {
+            localCache = ChooseAddressUtils.getLocalizingAddressData(context = requireContext())
+            val warehouseId = localCache.warehouses.find {
+                it.service_type == localCache.service_type
+            }?.warehouse_id ?: 0
+
+            playViewModel.submitAction(SendWarehouseId(isOOC = localCache.isOutOfCoverage(), id = warehouseId.toString()))
+        }
+    }
+
+    override fun onAddressUpdated(view: ChooseAddressViewComponent) {
+        initAddress()
+        playViewModel.submitAction(RetryGetTagItemsAction)
+    }
+
+    override fun onInfoClicked(view: ChooseAddressViewComponent) {
+        newAnalytic.clickInfoAddressWidgetNow()
+        playViewModel.submitAction(OpenFooterUserReport(
+            TokopediaUrl.getInstance().WEB +
+                getString(R.string.play_tokonow_info_weblink)))
+    }
+
+    override fun onImpressedAddressWidget(view: ChooseAddressViewComponent) {
+        newAnalytic.impressAddressWidgetNow()
+    }
+
+    override fun onImpressedBtnChoose(view: ChooseAddressViewComponent) {
+        newAnalytic.impressChooseAddressNow()
+    }
+
+    override fun onBtnChooseClicked(view: ChooseAddressViewComponent) {
+        newAnalytic.clickChooseAddressNow()
+    }
+
     override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
         playViewModel.submitAction(InteractiveGameResultBadgeClickedAction(bottomSheetMaxHeight))
         analytic.clickWinnerBadge(
@@ -1781,6 +1840,7 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
 
         private const val REQUEST_CODE_LOGIN = 192
+        private const val REQUEST_CODE_ADDRESS_LIST = 399
 
         private const val PERCENT_BOTTOMSHEET_HEIGHT = 0.6
 

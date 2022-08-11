@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -60,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl7"
                     android:background="@drawable/background_blur_deal"
-                    />
+                    android:contentDescription="background deal" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -100,17 +101,17 @@
         app:cardBackgroundColor="@color/Unify_N0">
 
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/ll_buynow"
-            style="@style/TextView.Small.White"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_margin="14dp"
+            android:textColor="@color/Unify_N0"
             android:background="@drawable/button_buy_now_background"
             android:gravity="center"
+            app:typographyType="display_2"
             android:text="@string/buy_now" />
-
 
     </androidx.cardview.widget.CardView>
 
@@ -127,7 +128,8 @@
             android:id="@+id/prog_bar"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            tools:ignore="UnifyComponentUsage" />
     </FrameLayout>
 
 

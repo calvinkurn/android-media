@@ -22,7 +22,7 @@ import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselChipsAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapterTypeFactory
@@ -267,6 +267,7 @@ class InspirationCarouselViewHolder(
             shopLocation = shopLocation,
             shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
             isTopAds = isOrganicAds,
+            cardInteraction = true,
         )
     }
 

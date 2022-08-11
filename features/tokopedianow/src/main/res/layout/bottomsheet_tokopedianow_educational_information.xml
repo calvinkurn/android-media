@@ -108,4 +108,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tp_terms_and_conditions" />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/ubtn_visit_now"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="9dp"
+        android:visibility="gone"
+        android:text="@string/tokopedianow_educational_information_visit_now_button_bottomsheet"
+        app:unifyButtonVariant="ghost"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_background_image" />
 </androidx.constraintlayout.widget.ConstraintLayout>

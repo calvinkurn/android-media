@@ -304,9 +304,9 @@
     <string name="review_create_later">Selesai</string>
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
-    <string name="review_create_bottom_sheet_text_area_empty_incentive">Tulis min. 40 karakter buat dapetin hadiahnya ✍️️</string>
+    <string name="review_create_bottom_sheet_text_area_empty_incentive">Tulis min. 40 karakter buat dapetin hadiahnya ✍️️️</string>
     <string name="review_create_bottom_sheet_text_area_partial_incentive">Lengkapi sedikit lagi biar dapet hadiahnya 🙌</string>
-    <string name="review_create_bottom_sheet_text_area_eligible_for_incentive">Oke siap dikirim. Pastikan kamu sertain foto juga!  📸</string>
+    <string name="review_create_bottom_sheet_text_area_eligible_for_incentive">Testimoni sudah lengkap? Tambah foto atau video, ya  📸</string>
 
     <!-- Review Reminder -->
     <string name="review_reminder_tab_title_1">Kirim Pesan</string>
@@ -429,6 +429,7 @@
     <string name="review_media_image_player_see_more_button_text">Lihat Semua</string>
     <string name="review_image_player_see_more">Tersedia %1$d foto &amp; video dari pembeli</string>
     <string name="review_image_player_toaster_error_message">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
+    <string name="review_image_player_toaster_error_message_with_error_code">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya! Kode Error: (%1$s)</string>
     <string name="review_image_player_toaster_error_action">Refresh</string>
 
     <string name="ic_create_review_image_remove_content_description">Buang gambar</string>

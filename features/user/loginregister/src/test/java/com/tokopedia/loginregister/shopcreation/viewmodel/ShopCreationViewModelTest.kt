@@ -4,8 +4,21 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.loginregister.FileUtil
-import com.tokopedia.loginregister.shopcreation.domain.pojo.*
-import com.tokopedia.loginregister.shopcreation.domain.usecase.*
+import com.tokopedia.loginregister.shopcreation.domain.pojo.GetUserProfileCompletionPojo
+import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
+import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoPojo
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileCompletionData
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileUpdate
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileUpdatePojo
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileValidate
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileValidatePojo
+import com.tokopedia.loginregister.shopcreation.domain.usecase.GetUserProfileCompletionUseCase
+import com.tokopedia.loginregister.shopcreation.domain.usecase.RegisterCheckUseCase
+import com.tokopedia.loginregister.shopcreation.domain.usecase.ShopInfoUseCase
+import com.tokopedia.loginregister.shopcreation.domain.usecase.UpdateUserProfileUseCase
+import com.tokopedia.loginregister.shopcreation.domain.usecase.ValidateUserProfileUseCase
 import com.tokopedia.sessioncommon.data.Error
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -95,6 +108,7 @@ class ShopCreationViewModelTest {
     lateinit var graphqlResponse: GraphqlResponse
 
     private lateinit var viewmodel: ShopCreationViewModel
+    private val mockValidateToken = "validateToken"
 
     @Before
     fun before() {
@@ -120,7 +134,7 @@ class ShopCreationViewModelTest {
         viewmodel.addNameResponse.observeForever(addNameObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddNameResponse
 
-        viewmodel.addName("")
+        viewmodel.addName("", mockValidateToken)
 
         verify { addNameObserver.onChanged(any<Success<UserProfileUpdate>>()) }
         assert(viewmodel.addNameResponse.value is Success)
@@ -135,7 +149,7 @@ class ShopCreationViewModelTest {
         viewmodel.addNameResponse.observeForever(addNameObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddNameResponse
 
-        viewmodel.addName("")
+        viewmodel.addName("", mockValidateToken)
 
         verify { addNameObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addNameResponse.value is Fail)
@@ -151,7 +165,7 @@ class ShopCreationViewModelTest {
         viewmodel.addNameResponse.observeForever(addNameObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddNameResponse
 
-        viewmodel.addName("")
+        viewmodel.addName("", mockValidateToken)
 
         verify { addNameObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addNameResponse.value is Fail)
@@ -163,7 +177,7 @@ class ShopCreationViewModelTest {
         viewmodel.addNameResponse.observeForever(addNameObserver)
         coEvery { updateUserProfileUseCase(any()) } coAnswers { throw throwable }
 
-        viewmodel.addName("")
+        viewmodel.addName("", mockValidateToken)
 
         verify { addNameObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addNameResponse.value is Fail)
@@ -179,7 +193,7 @@ class ShopCreationViewModelTest {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddPhoneResponse
 
-        viewmodel.addPhone("")
+        viewmodel.addPhone("", mockValidateToken)
 
         verify { addPhoneObserver.onChanged(any<Success<UserProfileUpdate>>()) }
     }
@@ -191,7 +205,7 @@ class ShopCreationViewModelTest {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddPhoneResponse
 
-        viewmodel.addPhone("")
+        viewmodel.addPhone("", mockValidateToken)
 
         verify { addPhoneObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addPhoneResponse.value is Fail)
@@ -208,7 +222,7 @@ class ShopCreationViewModelTest {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddPhoneResponse
 
-        viewmodel.addPhone("")
+        viewmodel.addPhone("", mockValidateToken)
 
         verify { addPhoneObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addPhoneResponse.value is Fail)
@@ -221,7 +235,7 @@ class ShopCreationViewModelTest {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
         coEvery { updateUserProfileUseCase(any()) } coAnswers { throw throwable }
 
-        viewmodel.addPhone("")
+        viewmodel.addPhone("", mockValidateToken)
 
         verify { addPhoneObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addPhoneResponse.value is Fail)

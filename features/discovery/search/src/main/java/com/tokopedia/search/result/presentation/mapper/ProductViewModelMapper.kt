@@ -3,8 +3,8 @@ package com.tokopedia.search.result.presentation.mapper
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.SearchProductModel.Banner
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselData
+import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselOption
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelated
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProduct
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProductBadge
@@ -18,23 +18,24 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.Related
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProductData
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
+import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
+import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 
 class ProductViewModelMapper {
@@ -47,6 +48,7 @@ class ProductViewModelMapper {
         isLocalSearch: Boolean,
         dimension90: String,
         keyword: String,
+        isLocalSearchRecommendation: Boolean,
     ): ProductDataView {
         val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
 
@@ -69,6 +71,8 @@ class ProductViewModelMapper {
             searchProductData.productList,
             pageTitle,
             dimension90,
+            isLocalSearchRecommendation,
+            searchProductModel.getProductListType()
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,
@@ -99,8 +103,17 @@ class ProductViewModelMapper {
         productDataView.additionalParams = searchProductHeader.additionalParams
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
         productDataView.defaultView = searchProductHeader.defaultView
-        productDataView.bannerDataView = convertToBannerDataView(searchProductData.banner)
-        productDataView.lastFilterDataView = convertToLastFilterDataView(searchProductModel)
+        productDataView.bannerDataView = BannerDataView.create(
+            searchProductData.banner,
+            keyword,
+            dimension90,
+            pageTitle,
+        )
+        productDataView.lastFilterDataView = convertToLastFilterDataView(
+            searchProductModel,
+            keyword,
+            dimension90,
+        )
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
         productDataView.violation = convertToViolationView(searchProductData.violation)
         productDataView.backendFilters = searchProductModel.backendFilters
@@ -205,10 +218,19 @@ class ProductViewModelMapper {
             productModels: List<Product>,
             pageTitle: String,
             dimension90: String,
+            isLocalSearchRecommendation: Boolean,
+            productListType: String,
     ): List<ProductItemDataView> {
         return productModels.mapIndexed { index, productModel ->
             val position = lastProductItemPosition + index + 1
-            convertToProductItem(productModel, position, pageTitle, dimension90,)
+            convertToProductItem(
+                productModel,
+                position,
+                pageTitle,
+                dimension90,
+                isLocalSearchRecommendation,
+                productListType,
+            )
         }
     }
 
@@ -217,6 +239,8 @@ class ProductViewModelMapper {
             position: Int,
             pageTitle: String,
             dimension90: String,
+            isLocalSearchRecommendation: Boolean,
+            productListType: String,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
         productItem.productID = productModel.id
@@ -255,10 +279,11 @@ class ProductViewModelMapper {
         productItem.topadsTag = productModel.ads.tag
         productItem.minOrder = productModel.minOrder
         productItem.productUrl = productModel.url
-        productItem.pageTitle = pageTitle
+        productItem.pageTitle = if(isLocalSearchRecommendation) pageTitle else ""
         productItem.dimension90 = dimension90
         productItem.applink = productModel.applink
         productItem.customVideoURL = productModel.customVideoURL
+        productItem.productListType = productListType
         return productItem
     }
 
@@ -358,6 +383,7 @@ class ProductViewModelMapper {
             val isChipsActive = index == 0
             InspirationCarouselDataView.Option(
                     opt.title,
+                    opt.subtitle,
                     opt.url,
                     opt.applink,
                     opt.bannerImageUrl,
@@ -385,25 +411,36 @@ class ProductViewModelMapper {
                     opt.componentId,
                     data.trackingOption.toIntOrZero(),
                     dimension90,
+                    createInspirationCarouselCardButtonViewModel(opt),
             )
         }
     }
 
-    private fun convertToBannerDataView(bannerModel: Banner): BannerDataView {
-        return BannerDataView(
-                bannerModel.position,
-                bannerModel.text,
-                bannerModel.applink,
-                bannerModel.imageUrl
+    private fun createInspirationCarouselCardButtonViewModel(
+        option: InspirationCarouselOption,
+    ): InspirationCarouselDataView.CardButton {
+        return InspirationCarouselDataView.CardButton(
+            option.cardButton.title,
+            option.cardButton.applink,
         )
     }
 
-    private fun convertToLastFilterDataView(searchProductModel: SearchProductModel): LastFilterDataView {
+    private fun convertToLastFilterDataView(
+        searchProductModel: SearchProductModel,
+        keyword: String,
+        dimension90: String,
+    ): LastFilterDataView {
         val lastFilterData = searchProductModel.lastFilter.data
 
         return LastFilterDataView(
             filterList = lastFilterData.filters,
             title = lastFilterData.title,
+            keyword = keyword,
+            applink = lastFilterData.applink,
+            trackingOption = lastFilterData.trackingOption,
+            componentId = lastFilterData.componentId,
+            dimension90 = dimension90,
+            valueName = lastFilterData.title + lastFilterData.filters.joinToString { it.name }
         )
     }
 

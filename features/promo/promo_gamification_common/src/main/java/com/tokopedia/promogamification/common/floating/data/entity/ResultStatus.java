@@ -1,44 +1,40 @@
 package com.tokopedia.promogamification.common.floating.data.entity;
 
-import com.google.gson.annotations.Expose;
+import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+public class ResultStatus{
 
-public class ResultStatus {
+	@SerializedName("reason")
+	private String reason;
 
-    @SerializedName("code")
-    @Expose
-    private String code;
-    @SerializedName("message")
-    @Expose
-    private List<String> message = null;
-    @SerializedName("reason")
-    @Expose
-    private String reason;
+	@SerializedName("code")
+	private String code;
 
-    public String getCode() {
-        return code;
-    }
+	@SerializedName("message")
+	private List<String> message;
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+	public void setReason(String reason){
+		this.reason = reason;
+	}
 
-    public List<String> getMessage() {
-        return message;
-    }
+	public String getReason(){
+		return reason;
+	}
 
-    public void setMessage(List<String> message) {
-        this.message = message;
-    }
+	public void setCode(String code){
+		this.code = code;
+	}
 
-    public String getReason() {
-        return reason;
-    }
+	public String getCode(){
+		return code;
+	}
 
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
+	public void setMessage(List<String> message){
+		this.message = message;
+	}
 
+	public List<String> getMessage(){
+		return message;
+	}
 }

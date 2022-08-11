@@ -61,7 +61,9 @@ class MiniCartListUiModelMapper @Inject constructor() {
     private fun getTotalProductAvailable(miniCartData: MiniCartData): Int {
         var count = 0
         miniCartData.data.availableSection.availableGroup.forEach { availableGroup ->
-            count += availableGroup.cartDetails.size
+            availableGroup.cartDetails.forEach {
+                count += it.products.size
+            }
         }
 
         return count
@@ -71,7 +73,9 @@ class MiniCartListUiModelMapper @Inject constructor() {
         var count = 0
         miniCartData.data.unavailableSection.forEach { unavailableSection ->
             unavailableSection.unavailableGroup.forEach { unavailableGroup ->
-                count += unavailableGroup.cartDetails.size
+                unavailableGroup.cartDetails.forEach {
+                    count += it.products.size
+                }
             }
         }
 
@@ -315,10 +319,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             shopId = shop.shopId
             shopName = shop.shopName
             shopType = shop.shopTypeInfo.titleFmt
-            freeShippingType =
-                    if (shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
-                    else if (shipmentInformation.freeShipping.eligible) "bebas ongkir"
-                    else ""
+            freeShippingType = product.freeShippingGeneral.boName
             errorType = unavailableReason
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId

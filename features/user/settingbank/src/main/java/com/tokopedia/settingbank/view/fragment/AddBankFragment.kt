@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
@@ -45,7 +46,6 @@ import javax.inject.Inject
 class AddBankFragment : BaseDaggerFragment() {
 
 
-    private val REQUEST_OTP: Int = 103
 
     override fun getScreenName(): String? = null
 
@@ -418,7 +418,7 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun isAccountNameLengthValid(accountHolderName: String): Boolean {
-        if (accountHolderName.length in 3..128) {
+        if (accountHolderName.length in BANK_ACC_START_IDX..BANK_ACC_LAST_IDX) {
             return true
         }
         return false
@@ -454,7 +454,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun openPinVerification() {
         val OTP_TYPE_ADD_BANK_ACCOUNT = 12
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
@@ -517,6 +517,10 @@ class AddBankFragment : BaseDaggerFragment() {
         const val ARG_OUT_ACCOUNT_NUMBER = "ARG_OUT_ACCOUNT_NUMBER"
         const val ARG_OUT_ACCOUNT_HOLDER_NAME = "ARG_OUT_ACCOUNT_HOLDER_NAME"
         const val ARG_OUT_ACCOUNT_NAME_IS_MANUAL = "ARG_OUT_ACCOUNT_NAME_IS_MANUAL"
+        private const val REQUEST_OTP = 103
+
+        const val BANK_ACC_START_IDX = 3
+        const val BANK_ACC_LAST_IDX = 128
     }
 
     private fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {

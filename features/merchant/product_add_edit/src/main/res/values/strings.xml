@@ -114,6 +114,7 @@
     <string name="action_add_new_wholesale_price">Tambah grosir</string>
     <string name="error_empty_wholesale_quantity">Jumlah minimal tidak boleh kosong</string>
     <string name="error_zero_wholesale_quantity">Minimum pemesanan tidak boleh 0</string>
+    <string name="error_zero_wholesale_max_quantity">Maks. %d</string>
     <string name="error_wholesale_quantity_less_min_order">Jumlah harus lebih > dari min. pemesanan</string>
     <string name="error_wholesale_quantity_must_bigger_than_previous_input">Jumlah harus lebih > dari sebelumnya</string>
     <string name="error_empty_wholesale_price">Harga grosir tidak boleh kosong</string>
@@ -132,7 +133,7 @@
     <string name="label_minimum_order">Minimum pemesanan</string>
     <string name="error_empty_product_stock">Stok tidak boleh kosong</string>
     <string name="error_minimum_stock_quantity">Stok minimal %d</string>
-    <string name="error_available_stock_quantity_exceeding_max_limit">Stok melebihi batas maks. 999.999</string>
+    <string name="error_available_stock_quantity_exceeding_max_limit">Stok melebihi batas maks. %s</string>
     <string name="error_empty_minimum_order">Minimum pemesanan tidak boleh kosong</string>
     <string name="error_minimum_order_cant_be_zero">Minimum pemesanan tidak boleh 0</string>
     <string name="error_minimum_order_exceed_max_limit">Min. Beli harus diisi antara 1 &#8211; 10.000.</string>
@@ -270,10 +271,6 @@
     <string name="label_draft_product_empty">Draft Produk Anda kosong</string>
     <string name="label_draft_product_add_product">Tambah Produk</string>
     <string name="label_draft_has_not_have_product_name_yet">Belum ada nama produk</string>
-
-    <!-- set cash back -->
-    <string name="product_edit_set_cashback_success">Pengaturan Cashback untuk produk ini berhasil</string>
-    <string name="product_edit_set_cashback_error">Gagal mengatur cashback untuk produk ini. Coba lagi, ya.</string>
 
     <!--network errors-->
     <string name="error_gql_failed">Terjadi kesalahan koneksi</string>

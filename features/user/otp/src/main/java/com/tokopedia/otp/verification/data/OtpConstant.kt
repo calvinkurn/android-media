@@ -1,6 +1,7 @@
-package com.tokopedia.otp.verification.domain.data
+package com.tokopedia.otp.verification.data
 
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * @author rival
@@ -19,7 +20,17 @@ object OtpConstant {
     const val OTP_WA_NOT_REGISTERED_SUBTITLE = "otp-wa-not-registered-subtitle"
     const val OTP_WA_NOT_REGISTERED_IMG_LINK = "otp-wa-not-registered-img-link"
 
-    val PIN_V2_SALT = if(GlobalConfig.DEBUG) "c456bbc2c9c746ffaf67787d7c59945d" else "b9f14c8ed04a41c7a5361b648a088b69"
+    private const val staging = "staging"
+
+    val PIN_V2_SALT = getSalt()
+
+    private fun getSalt(): String {
+        return if (GlobalConfig.DEBUG && TokopediaUrl.getInstance().TYPE.value.lowercase() == staging) {
+            "c456bbc2c9c746ffaf67787d7c59945d"
+        } else {
+            "b9f14c8ed04a41c7a5361b648a088b69"
+        }
+    }
 
     object OtpMode {
         const val SMS = "sms"

@@ -1,0 +1,9 @@
+{
+  "SocialNetworkGetConsent": {
+    "data": {
+      "opt_in": false
+    },
+    "messages": [],
+    "error_code": ""
+  }
+}

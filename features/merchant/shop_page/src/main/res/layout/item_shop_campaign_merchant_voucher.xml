@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:orientation="vertical"
+    android:clipToPadding="false"
+    android:clipChildren="false">
+
+    <com.tokopedia.mvcwidget.views.MvcView
+        android:id="@+id/merchantVoucherWidget"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        app:mvlwTitleString="@string/merchant_voucher"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        android:clipChildren="false"/>
+
+    <include
+        android:id="@+id/merchantVoucherReload"
+        layout="@layout/partial_shop_home_get_failed"/>
+
+    <include
+        android:id="@+id/merchantVoucherShimmering"
+        layout="@layout/partial_shop_home_voucher_shimmering"/>
+
+</LinearLayout>

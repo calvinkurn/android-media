@@ -20,7 +20,8 @@ data class ProductVariant(
         val pictures: List<Picture>,
         val isAllStockEmpty: Boolean = false,
         val access: ProductManageAccess,
-        val campaignTypeList: List<CampaignType>?
+        val campaignTypeList: List<CampaignType>?,
+        val maxStock: Int?
 ): Visitable<ProductVariantAdapterFactory> {
 
     override fun type(typeFactory: ProductVariantAdapterFactory): Int {

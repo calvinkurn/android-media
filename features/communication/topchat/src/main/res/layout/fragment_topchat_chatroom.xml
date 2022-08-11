@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:background="@color/Unify_NN50">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/rv_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/footer"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:descendantFocusability="beforeDescendants"
+        android:scrollbars="vertical">
+
+        <com.tokopedia.topchat.chatroom.view.customview.BackgroundImageView
+            android:id="@+id/iv_bg_chat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:adjustViewBounds="true" />
+
+        <com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
+            android:id="@+id/recycler_view_chatroom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/footer"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            android:clipToPadding="false"
+            android:descendantFocusability="beforeDescendants"
+            android:scrollbars="vertical" />
+
+        <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+            android:id="@+id/fb_new_unread_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:visibility="gone"
+            app:fbType="group"
+            tools:visibility="visible" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
+        android:id="@+id/ll_transaction_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/notifier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N700"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/dp_topchat_10"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/dp_topchat_10"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_topchat_85"
+            android:layout_marginRight="@dimen/dp_topchat_85"
+            android:layout_weight="1"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="body_3"
+            tools:text="@string/error_no_connection_retrying" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/action"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:textColor="@color/Unify_N0"
+            app:loader_type="circular_white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/chat_blocked_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl5"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/blocked_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/desc_chat_blocked"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/enable_chat_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/blocked_text"
+                android:gravity="center_horizontal"
+                android:text="@string/enable_chat_settings"
+                android:textColor="@color/Unify_G500"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
+
+        </RelativeLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/add_comment_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/cl_attachment_preview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:animateLayoutChanges="true"
+                android:background="@color/Unify_NN50"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:layout_height="20dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_attachment_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/chatcommon_12dp"
+                    android:paddingEnd="@dimen/dp_topchat_14"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                <com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
+                    android:id="@+id/rv_srw"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/unify_space_12"
+                    android:visibility="gone"
+                    tools:layout_height="50dp"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_attachment_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="cl_attachment_preview" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_template"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_attachment_preview"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingStart="@dimen/spacing_lvl4"
+                android:paddingEnd="@dimen/spacing_lvl4"
+                android:background="@color/Unify_NN50"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_template_chat_layout"
+                tools:orientation="horizontal"
+                tools:scrollbars="horizontal"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_text_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="list_template" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/text_area_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/barrier_text_area"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+
+                <com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
+                    android:id="@+id/reply_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:paddingBottom="@dimen/dp_topchat_10"
+                    android:paddingStart="@dimen/spacing_lvl4"
+                    android:paddingTop="@dimen/unify_space_8"
+                    android:paddingEnd="@dimen/unify_space_12" />
+
+                <com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayout
+                    android:id="@+id/layout_chat_text_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="gone"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+                android:id="@+id/fl_chat_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/text_area_layout"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <View
+                android:id="@+id/view_chat_box_padding"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl0"
+                app:layout_constraintTop_toBottomOf="@id/text_area_layout"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/chat_area_shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="168dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:loader_corner_radius="8dp"
+            app:loader_type="rect"
+            tools:visibility="gone"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
