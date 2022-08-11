@@ -239,14 +239,16 @@ object TopChatAnalyticsKt {
         shopId: String,
         stateReport: String
     ) {
-        createGeneralEvent(
-            event = Event.VIEW_COMMUNICATION_IRIS,
-            category = Category.INBOX_CHAT,
-            action = Action.SELLER_CLICK_REPORT_TICKER,
-            label = "$shopId - $stateReport",
-            businessUnit = COMMUNICATION,
-            currentSite = CURRENT_SITE_TOKOPEDIA,
-            trackerId = "33142"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_REPORT_TICKER,
+                label = "$shopId - $stateReport",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33142"
+            )
         )
     }
 
@@ -254,14 +256,16 @@ object TopChatAnalyticsKt {
         shopId: String,
         stateReport: String
     ) {
-        createGeneralEvent(
-            event = Event.CLICK_COMMUNICATION,
-            category = Category.INBOX_CHAT,
-            action = Action.SELLER_CLICK_REPORT_TICKER,
-            label = "$shopId - $stateReport",
-            businessUnit = COMMUNICATION,
-            currentSite = CURRENT_SITE_TOKOPEDIA,
-            trackerId = "33143"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_REPORT_TICKER,
+                label = "$shopId - $stateReport",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33143"
+            )
         )
     }
 
@@ -269,14 +273,16 @@ object TopChatAnalyticsKt {
         shopId: String,
         stateReport: String
     ) {
-        createGeneralEvent(
-            event = Event.CLICK_COMMUNICATION,
-            category = Category.INBOX_CHAT,
-            action = Action.SELLER_CLICK_CLOSE_REPORT_TICKER,
-            label = "$shopId - $stateReport",
-            businessUnit = COMMUNICATION,
-            currentSite = CURRENT_SITE_TOKOPEDIA,
-            trackerId = "33144"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_CLOSE_REPORT_TICKER,
+                label = "$shopId - $stateReport",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33144"
+            )
         )
     }
 
@@ -294,14 +300,16 @@ object TopChatAnalyticsKt {
             replyChatSpeed, targetReplyChatSpeed
         )
 
-        createGeneralEvent(
-            event = Event.VIEW_COMMUNICATION_IRIS,
-            category = Category.INBOX_CHAT,
-            action = Action.SELLER_IMPRESS_TICKER_BOTTOMSHEET,
-            label = label,
-            businessUnit = COMMUNICATION,
-            currentSite = CURRENT_SITE_TOKOPEDIA,
-            trackerId = "33145"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_IMPRESS_TICKER_BOTTOMSHEET,
+                label = label,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33145"
+            )
         )
     }
 
@@ -319,14 +327,16 @@ object TopChatAnalyticsKt {
             replyChatSpeed, targetReplyChatSpeed
         )
 
-        createGeneralEvent(
-            event = Event.CLICK_COMMUNICATION,
-            category = Category.INBOX_CHAT,
-            action = Action.SELLER_CLICK_SHOP_PERFORMANCE,
-            label = label,
-            businessUnit = COMMUNICATION,
-            currentSite = CURRENT_SITE_TOKOPEDIA,
-            trackerId = "33146"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_SHOP_PERFORMANCE,
+                label = label,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33146"
+            )
         )
     }
 
@@ -344,14 +354,16 @@ object TopChatAnalyticsKt {
             replyChatSpeed, targetReplyChatSpeed
         )
 
-        createGeneralEvent(
-            event = Event.CLICK_COMMUNICATION,
-            category = Category.INBOX_CHAT,
-            action = Action.SELLER_CLICK_OPERATIONAL_INSIGHT_CTA,
-            label = label,
-            businessUnit = COMMUNICATION,
-            currentSite = CURRENT_SITE_TOKOPEDIA,
-            trackerId = "33147"
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Category.INBOX_CHAT,
+                action = Action.SELLER_CLICK_OPERATIONAL_INSIGHT_CTA,
+                label = label,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = "33147"
+            )
         )
     }
 

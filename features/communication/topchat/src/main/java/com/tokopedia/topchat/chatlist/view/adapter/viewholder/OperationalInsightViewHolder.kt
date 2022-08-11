@@ -80,6 +80,7 @@ class OperationalInsightViewHolder(
         binding?.iconCloseTickerChatPerformance?.setOnClickListener {
             listener.onOperationalInsightCloseButtonClicked(element)
         }
+        listener.onOperationalInsightTickerShown(element)
     }
 
     companion object {
