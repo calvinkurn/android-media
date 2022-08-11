@@ -74,7 +74,7 @@ class VideoPictureView @JvmOverloads constructor(
 
         if (videoPictureAdapter == null) {
             setupViewPagerCallback()
-            setupViewPager(containerType = containerType, listener = listener)
+            setupViewPager(containerType = containerType)
             //If first position is video and selected: process the video
         }
 
@@ -176,8 +176,7 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun setupViewPager(
-        containerType: MediaContainerType,
-        listener: DynamicProductDetailListener?
+        containerType: MediaContainerType
     ) {
         videoPictureAdapter = VideoPictureAdapter(
             mListener,
