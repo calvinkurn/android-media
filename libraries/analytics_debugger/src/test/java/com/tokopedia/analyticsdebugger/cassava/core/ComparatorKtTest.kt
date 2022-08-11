@@ -43,6 +43,17 @@ class ComparatorKtTest {
     }
 
     @Test
+    fun `given invalid but redundant tracker when strictly validated should give redundant keys`() {
+        val tes = mapOf<String, Any>("event" to "event name","eventLabel" to ".*")
+        val db = mapOf<String, Any>("event" to "event name", "eventLabel" to "event label", "field" to "some value")
+
+        val result = tes.canValidate(db, true)
+
+        assertFalse(result.isValid)
+        assertThat(result.errorCause, `is`("Map size is different. field are recorded but not defined in the query"))
+    }
+
+    @Test
     fun `regular subset should return true with no message`() {
         val tes = fu.getJsonArrayResources("ana.json")
         val db = fu.getJsonArrayResources("ana_actual.json")

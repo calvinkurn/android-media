@@ -59,10 +59,20 @@ internal fun Map<String, Any>.canValidate(
         }
     }
     return when {
-        strict -> CassavaValidateResult(
-            this.size == obj.size,
-            if (isNeedCause && (this.size != obj.size)) "Map size is different" else ""
-        )
+        strict -> {
+            var errMessage = ""
+            if (isNeedCause && (this.size != obj.size)) {
+                errMessage = "Map size is different. "
+                val redundant = obj.keys.subtract(this.keys)
+                if (redundant.isNotEmpty()) {
+                    errMessage += "${redundant.joinToString()} are recorded but not defined in the query"
+                }
+            }
+            CassavaValidateResult(
+                this.size == obj.size,
+                errMessage
+            )
+        }
         else -> CassavaValidateResult(true, "")
     }
 }
