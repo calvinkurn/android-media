@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.applink.RouteManager;
@@ -29,7 +28,7 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
 
     private static final String TAG_EMONEY_TIME_CHECK_LOGIC = "EMONEY_TIME_CHECK_LOGIC";
     private static final String TAG_EMONEY_DEBUG = "EMONEY_DEBUG";
-    private static final int DIVIVER = 1000000;
+    private static final int DIVIDER = 1000000;
 
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
@@ -51,19 +50,24 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
             newIntent.replaceExtras(intent);
             newIntent.setAction(intent.getAction());
 
-            long endTime = System.nanoTime();
-            long duration = (endTime - startTime)/DIVIVER;
-            String durationString =  ""+duration+" ms";
-
+            String durationString = getDuration(startTime);
             newIntent.putExtra(TAG_EMONEY_TIME_CHECK_LOGIC, durationString);
-
-            Map<String, String> messageMap = new HashMap<>();
-            messageMap.put(TAG_EMONEY_TIME_CHECK_LOGIC, durationString);
-            Log.d(TAG_EMONEY_DEBUG, TAG_EMONEY_TIME_CHECK_LOGIC+" "+durationString);
-            ServerLogger.log(Priority.P2, TAG_EMONEY_DEBUG, messageMap);
+            sendLog(durationString);
 
             context.startActivity(newIntent);
         }
+    }
+
+    private static String getDuration(long startTime) {
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime)/DIVIDER;
+        return ""+duration+" ms";
+    }
+
+    private static void sendLog(String durationString) {
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put(TAG_EMONEY_TIME_CHECK_LOGIC, durationString);
+        ServerLogger.log(Priority.P2, TAG_EMONEY_DEBUG, messageMap);
     }
 
     @Override

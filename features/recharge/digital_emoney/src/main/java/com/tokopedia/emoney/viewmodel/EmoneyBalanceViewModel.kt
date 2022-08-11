@@ -1,7 +1,6 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
-import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiryResponse
@@ -152,16 +151,10 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     private fun logDebugEmoney(map: HashMap<String, String>) {
-        map.forEach {
-            Log.d(EMONEY_DEBUG_TAG, "${it.key} ${it.value}")
-        }
         sendLogDebugEmoney(map)
     }
 
     private fun logDebugAllEmoney() {
-        mapLoggerDebugData.forEach {
-            Log.d(EMONEY_DEBUG_TAG, "${it.key} ${it.value}")
-        }
         sendLogDebugEmoney(mapLoggerDebugData)
     }
 
