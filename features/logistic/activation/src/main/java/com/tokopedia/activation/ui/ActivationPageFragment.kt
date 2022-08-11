@@ -56,7 +56,6 @@ class ActivationPageFragment: BaseDaggerFragment() {
         ViewModelProviders.of(this, viewModelFactory)[ActivationPageViewModel::class.java]
     }
 
-    private val animationDuration: Long = 300
     private var codIcon: ImageView? = null
     private var codTitleText: Typography? = null
     private var codDescText: Typography? = null
@@ -139,7 +138,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
         if(expandLayout) {
             codExpandLL?.show()
         } else {
-            codImageExtend?.animate()?.rotation(180f)?.duration = animationDuration
+            codImageExtend?.animate()?.rotation(ANIMATION_ROTATION)?.duration = ANIMATION_DURATION
             codExpandLL?.gone()
         }
 
@@ -224,11 +223,11 @@ class ActivationPageFragment: BaseDaggerFragment() {
     private fun initListeners() {
         codImageExtend?.setOnClickListener {
             if(expandLayout) {
-                codImageExtend?.animate()?.rotation(180f)?.duration = animationDuration
+                codImageExtend?.animate()?.rotation(ANIMATION_ROTATION)?.duration = ANIMATION_DURATION
                 expandLayout = false
                 codExpandLL?.let { layout -> collapse(layout) }
             } else {
-                codImageExtend?.animate()?.rotation(0f)?.duration = animationDuration
+                codImageExtend?.animate()?.rotation(0f)?.duration = ANIMATION_DURATION
                 expandLayout = true
                 codExpandLL?.let { layout -> expand(layout) }
             }
@@ -330,7 +329,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
                 return true
             }
         }
-        anim.interpolator = PathInterpolatorCompat.create(0.77f, 0f, 0.175f, 1f)
+        anim.interpolator = PathInterpolatorCompat.create(INTERPOLATOR_X1, INTERPOLATOR_Y1, INTERPOLATOR_X2, INTERPOLATOR_Y2)
         anim.duration = (targetHeight / view.context.resources.displayMetrics.density).toInt().toLong()
         view.startAnimation(anim)
     }
@@ -426,5 +425,16 @@ class ActivationPageFragment: BaseDaggerFragment() {
         itemLayout?.gone()
         globalError?.visible()
     }
+
+    companion object {
+
+        private const val ANIMATION_DURATION = 300L
+        private const val ANIMATION_ROTATION = 180f
+        private const val INTERPOLATOR_X1 = 0.77f
+        private const val INTERPOLATOR_X2 = 0.175f
+        private const val INTERPOLATOR_Y1 = 0f
+        private const val INTERPOLATOR_Y2 = 1f
+    }
+
 
 }
