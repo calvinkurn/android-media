@@ -273,12 +273,12 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
                 ?: GeneralExtraParam()
             clientNumber = digitalTelcoExtraParam.clientNumber
-            productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+            productId = digitalTelcoExtraParam.productId.toIntOrZero()
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                categoryId = digitalTelcoExtraParam.categoryId.toIntOrZero()
             }
             if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
+                menuId = digitalTelcoExtraParam.menuId.toIntOrZero()
             }
             operatorId = digitalTelcoExtraParam.operatorId
         }
@@ -462,7 +462,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             setFavoriteNumberLoading()
             getFavoriteNumbers(
                 listOf(categoryId),
-                viewModel.operatorList.map { it.id.toInt() },
+                viewModel.operatorList.map { it.id.toIntOrZero() },
                 favoriteNumberTypes
             )
         }

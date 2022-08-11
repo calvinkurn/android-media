@@ -917,12 +917,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM)
                 ?: TopupBillsExtraParam()
             clientNumber = digitalTelcoExtraParam.clientNumber
-            productIdFromApplink = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+            productIdFromApplink = digitalTelcoExtraParam.productId.toIntOrZero()
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                categoryId = digitalTelcoExtraParam.categoryId.toIntOrZero()
             }
             if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
+                menuId = digitalTelcoExtraParam.menuId.toIntOrZero()
             }
         }
 
@@ -1199,7 +1199,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     override fun onClickedChevron(denom: DenomData) {
         digitalPDPAnalytics.clickChevronBuyWidget(
-            DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toInt()),
+            DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toIntOrZero()),
             operator.attributes.name,
             denom.price,
             denom.slashPrice,

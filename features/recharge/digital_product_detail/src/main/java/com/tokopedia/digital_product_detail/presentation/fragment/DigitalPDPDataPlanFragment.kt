@@ -223,12 +223,12 @@ class DigitalPDPDataPlanFragment :
             val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
                 ?: TopupBillsExtraParam()
             clientNumber = digitalTelcoExtraParam.clientNumber
-            productIdFromApplink = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+            productIdFromApplink = digitalTelcoExtraParam.productId.toIntOrZero()
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                categoryId = digitalTelcoExtraParam.categoryId.toIntOrZero()
             }
             if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
+                menuId = digitalTelcoExtraParam.menuId.toIntOrZero()
             }
         }
         if (!clientNumber.isNullOrEmpty()) {

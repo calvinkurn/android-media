@@ -190,12 +190,12 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
                 ?: GeneralExtraParam()
             clientNumber = digitalTelcoExtraParam.clientNumber
-            productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+            productId = digitalTelcoExtraParam.productId.toIntOrZero()
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                categoryId = digitalTelcoExtraParam.categoryId.toIntOrZero()
             }
             if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
+                menuId = digitalTelcoExtraParam.menuId.toIntOrZero()
             }
             operatorId = digitalTelcoExtraParam.operatorId
         }
@@ -420,7 +420,11 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             listOf(binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setRecommendationLoading()
         viewModel.cancelRecommendationJob()
-        viewModel.getRecommendations(clientNumbers, listOf(categoryId), listOf(operatorId.toInt()))
+        viewModel.getRecommendations(
+            clientNumbers,
+            listOf(categoryId),
+            listOf(operatorId.toIntOrZero())
+        )
     }
 
     private fun getCatalogMenuDetail() {
@@ -440,7 +444,11 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun getFavoriteNumber(favoriteNumberTypes: List<FavoriteNumberType>) {
         viewModel.run {
             setFavoriteNumberLoading()
-            getFavoriteNumbers(listOf(categoryId), listOf(operatorId.toInt()), favoriteNumberTypes)
+            getFavoriteNumbers(
+                listOf(categoryId),
+                listOf(operatorId.toIntOrZero()),
+                favoriteNumberTypes
+            )
         }
     }
 
@@ -1051,7 +1059,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
     override fun onClickedChevron(denom: DenomData) {
         digitalPDPAnalytics.clickChevronBuyWidget(
-            DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toInt()),
+            DigitalPDPCategoryUtil.getCategoryName(denom.categoryId.toIntOrZero()),
             DigitalPDPCategoryUtil.getOperatorName(operatorId),
             denom.price,
             denom.slashPrice,
