@@ -6,6 +6,11 @@ import com.google.gson.annotations.SerializedName
  * created by @bayazidnasir on 3/8/2022
  */
 
+data class Errors(
+    @SerializedName("errors")
+    val errors: List<ErrorAtc> = emptyList()
+)
+
 data class ErrorAtc(
     @SerializedName("status")
     val status: Int = 0,
@@ -13,10 +18,7 @@ data class ErrorAtc(
     @SerializedName("title")
     val title: String = "",
 
-    @SerializedName("applink_url")
-    val appLinkUrl: String = "",
-
-    @SerializedName("atc_error_page")
+    @SerializedName("error_page")
     val atcErrorPage: AtcErrorPage = AtcErrorPage()
 )
 
@@ -27,7 +29,7 @@ data class AtcErrorPage(
     @SerializedName("title")
     val title: String = "",
 
-    @SerializedName("subtitle")
+    @SerializedName("sub_title")
     val subTitle: String = "",
 
     @SerializedName("image_url")
