@@ -6,10 +6,12 @@ import com.tokopedia.campaign.entity.Result
 import com.tokopedia.tkpd.flashsale.presentation.data.request.DoFlashSaleProductSubmissionRequest
 import com.tokopedia.tkpd.flashsale.presentation.domain.entity.ProductDeleteResult
 import com.tokopedia.tkpd.flashsale.presentation.domain.entity.ProductSubmissionResult
+import com.tokopedia.tkpd.flashsale.presentation.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.presentation.domain.usecase.DoFlashSaleProductDeleteUseCase
 import com.tokopedia.tkpd.flashsale.presentation.domain.usecase.DoFlashSaleProductSubmissionUseCase
 import com.tokopedia.tkpd.flashsale.presentation.domain.usecase.GetFlashSaleListForSellerMetaUseCase
+import com.tokopedia.tkpd.flashsale.presentation.domain.usecase.GetFlashSaleReservedProductListUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +21,8 @@ class LandingContainerViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getFlashSaleListForSellerMetaUseCase: GetFlashSaleListForSellerMetaUseCase,
     private val doFlashSaleProductSubmissionUseCase: DoFlashSaleProductSubmissionUseCase,
-    private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase
+    private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
+    private val getFlashSaleReservedProductListUseCase: GetFlashSaleReservedProductListUseCase
 ) : BaseViewModel(dispatchers.main){
 
     private val _tabsMetadata = MutableStateFlow<Result<List<TabMetadata>>>(Result.Loading)
@@ -30,6 +33,9 @@ class LandingContainerViewModel @Inject constructor(
 
     private val _deleteProductResult = MutableStateFlow<Result<ProductDeleteResult>>(Result.Loading)
     val deleteProductResult = _deleteProductResult.asStateFlow()
+
+    private val _reservedProduct = MutableStateFlow<Result<ReservedProduct>>(Result.Loading)
+    val reservedProduct = _reservedProduct.asStateFlow()
 
     fun getTabsMetaData() {
         _tabsMetadata.value = Result.Loading
@@ -49,7 +55,7 @@ class LandingContainerViewModel @Inject constructor(
     }
 
     fun submitProduct() {
-        _tabsMetadata.value = Result.Loading
+        _submitProductResult.value = Result.Loading
 
         launchCatchError(
             dispatchers.io,
@@ -73,18 +79,36 @@ class LandingContainerViewModel @Inject constructor(
     }
 
     fun deleteProduct() {
-        _tabsMetadata.value = Result.Loading
+        _deleteProductResult.value = Result.Loading
 
         launchCatchError(
             dispatchers.io,
             block = {
-                val params = DoFlashSaleProductDeleteUseCase.Param(938228, listOf(1,2,3,4), "122402171660132340376")
+                val params = DoFlashSaleProductDeleteUseCase.Param(938228, listOf(1,2,3,4), "122402171660144143955")
                 val response = doFlashSaleProductDeleteUseCase.execute(params)
 
                 _deleteProductResult.value = Result.Success(response)
             },
             onError = { error ->
                 _deleteProductResult.value = Result.Failure(error)
+            }
+        )
+
+    }
+
+    fun getReservedProduct() {
+        _reservedProduct.value = Result.Loading
+
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val params = GetFlashSaleReservedProductListUseCase.Param( "122402171660144143955", 0)
+                val response = getFlashSaleReservedProductListUseCase.execute(params)
+
+                _reservedProduct.value = Result.Success(response)
+            },
+            onError = { error ->
+                _reservedProduct.value = Result.Failure(error)
             }
         )
 

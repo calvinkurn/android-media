@@ -1,10 +1,10 @@
 package com.tokopedia.tkpd.flashsale.presentation.presentation.list
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -13,7 +13,7 @@ import com.tokopedia.campaign.entity.Result
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentLandingContainerBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class LandingContainerFragment : BaseDaggerFragment() {
@@ -52,7 +52,7 @@ class LandingContainerFragment : BaseDaggerFragment() {
         setupView()
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-             viewModel.tabsMetadata.collectLatest { result ->
+             viewModel.tabsMetadata.collect { result ->
                 when(result) {
                     Result.Loading -> {
                         println()
@@ -72,6 +72,7 @@ class LandingContainerFragment : BaseDaggerFragment() {
         viewModel.getTabsMetaData()
         viewModel.submitProduct()
         viewModel.deleteProduct()
+        viewModel.getReservedProduct()
 
 
     }
