@@ -139,12 +139,14 @@ fun String.toIntRangeCheck(block:(number:String)->Unit):Int {
     return try {
         val longValue: Long = this.toLong()
         return if (longValue < Int.MIN_VALUE || longValue > Int.MAX_VALUE) {
+            // We will add new relic log here
             block(this)
             0
         } else {
             longValue.toInt()
         }
     }catch (e:Exception) {
+        // We will add new relic log here
         block(this)
         0
     }
