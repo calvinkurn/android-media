@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,10 +14,16 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_electronic_money.util.CardUtils;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class NFCHandlerActivity extends AppCompatActivity {
 
     private static final String TAG_EMONEY_TIME_CHECK_LOGIC = "EMONEY_TIME_CHECK_LOGIC";
+    private static final String TAG_EMONEY_DEBUG = "EMONEY_DEBUG";
     private static final int DIVIVER = 1000000;
 
     @Override
@@ -48,7 +55,14 @@ public class NFCHandlerActivity extends AppCompatActivity {
 
             long endTime = System.nanoTime();
             long duration = (endTime - startTime)/DIVIVER;
-            newIntent.putExtra(TAG_EMONEY_TIME_CHECK_LOGIC, ""+duration+" ms");
+            String durationString =  ""+duration+" ms";
+
+            newIntent.putExtra(TAG_EMONEY_TIME_CHECK_LOGIC, durationString);
+
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put(TAG_EMONEY_TIME_CHECK_LOGIC, durationString);
+            Log.d(TAG_EMONEY_DEBUG, TAG_EMONEY_TIME_CHECK_LOGIC+" "+durationString);
+            ServerLogger.log(Priority.P2, TAG_EMONEY_DEBUG, messageMap);
 
             startActivity(newIntent);
             finish();

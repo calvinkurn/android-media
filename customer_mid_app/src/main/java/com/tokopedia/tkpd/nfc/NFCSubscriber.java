@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.applink.RouteManager;
@@ -16,12 +17,18 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_electronic_money.util.CardUtils;
 import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
 public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
 
     private static final String TAG_EMONEY_TIME_CHECK_LOGIC = "EMONEY_TIME_CHECK_LOGIC";
+    private static final String TAG_EMONEY_DEBUG = "EMONEY_DEBUG";
     private static final int DIVIVER = 1000000;
 
     private NfcAdapter nfcAdapter;
@@ -46,7 +53,14 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
 
             long endTime = System.nanoTime();
             long duration = (endTime - startTime)/DIVIVER;
-            newIntent.putExtra(TAG_EMONEY_TIME_CHECK_LOGIC, ""+duration+" ms");
+            String durationString =  ""+duration+" ms";
+
+            newIntent.putExtra(TAG_EMONEY_TIME_CHECK_LOGIC, durationString);
+
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put(TAG_EMONEY_TIME_CHECK_LOGIC, durationString);
+            Log.d(TAG_EMONEY_DEBUG, TAG_EMONEY_TIME_CHECK_LOGIC+" "+durationString);
+            ServerLogger.log(Priority.P2, TAG_EMONEY_DEBUG, messageMap);
 
             context.startActivity(newIntent);
         }
