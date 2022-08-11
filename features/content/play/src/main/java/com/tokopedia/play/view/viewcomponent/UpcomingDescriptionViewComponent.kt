@@ -34,6 +34,7 @@ class UpcomingDescriptionViewComponent(
 
     private val txt = (rootView as Typography)
     private var originalText: String = ""
+    private var truncatedText: SpannedString? = null
     private val ctx: Context
         get() = rootView.context
     var isExpand: Boolean = false
@@ -110,7 +111,8 @@ class UpcomingDescriptionViewComponent(
                     txt.ellipsize = TextUtils.TruncateAt.END
                     val length = newText.filter { it.isLetterOrDigit() }.length
                     val truncatedTxt = newText.take(length - TRIMMED_CHARS).toString()
-                    txt.text = getText(truncatedTxt)
+                    if(truncatedText == null) truncatedText = getText(truncatedTxt)
+                    txt.text = if(truncatedText == null) getText(truncatedTxt) else truncatedText
                     txt.movementMethod = LinkMovementMethod.getInstance()
                 }
                 else -> {
