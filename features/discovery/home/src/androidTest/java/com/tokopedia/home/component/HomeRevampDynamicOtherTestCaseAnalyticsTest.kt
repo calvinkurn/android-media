@@ -22,6 +22,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home.util.BalanceWidgetRecyclerViewIdlingResource
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
@@ -52,6 +53,7 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
+    private var balanceWidgetRecyclerViewIdlingResource: BalanceWidgetRecyclerViewIdlingResource? = null
     private var visibilityIdlingResource: ViewVisibilityIdlingResource? = null
 
     @Before
@@ -68,6 +70,11 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
                 recyclerView = recyclerView
         )
+        val recyclerViewBalanceWidget: RecyclerView =
+            activityRuleOtherTestCase.activity.findViewById(R.id.rv_balance_widget_data)
+        balanceWidgetRecyclerViewIdlingResource = BalanceWidgetRecyclerViewIdlingResource(
+            recyclerView = recyclerViewBalanceWidget
+        )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
 
@@ -75,6 +82,9 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
     fun tearDown() {
         visibilityIdlingResource?.let {
             IdlingRegistry.getInstance().unregister(visibilityIdlingResource)
+        }
+        balanceWidgetRecyclerViewIdlingResource?.let {
+            IdlingRegistry.getInstance().unregister(balanceWidgetRecyclerViewIdlingResource)
         }
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
