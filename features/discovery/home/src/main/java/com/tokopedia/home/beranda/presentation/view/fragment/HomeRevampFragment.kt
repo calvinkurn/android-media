@@ -550,7 +550,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
         navToolbar = view.findViewById(R.id.navToolbar)
-        getSearchHint()
 
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
@@ -595,6 +594,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             it.setIcon(icons)
         }
         onChooseAddressUpdated()
+        getSearchPlaceHolderHint()
 
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
@@ -610,7 +610,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return view
     }
 
-    private fun getSearchHint() {
+    private fun getSearchPlaceHolderHint() {
         if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
         }
