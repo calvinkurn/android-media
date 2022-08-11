@@ -5,6 +5,7 @@ import android.content.Context
 import android.text.Spanned
 import android.text.SpannedString
 import android.text.TextPaint
+import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -105,6 +106,8 @@ class UpcomingDescriptionViewComponent(
             val newText = txt.layout.text
             when {
                 !isExpand -> {
+                    txt.maxLines = 2
+                    txt.ellipsize = TextUtils.TruncateAt.END
                     val length = newText.filter { it.isLetterOrDigit() }.length
                     val truncatedTxt = newText.take(length - TRIMMED_CHARS).toString()
                     txt.text = getText(truncatedTxt)
