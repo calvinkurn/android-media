@@ -72,7 +72,6 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
                 videoControl?.updateCenterButtonState(isPlaying)
-             //   videoControl?.showController(isPlaying)
             }
 
             override fun onPlayerError(error: ExoPlaybackException) {

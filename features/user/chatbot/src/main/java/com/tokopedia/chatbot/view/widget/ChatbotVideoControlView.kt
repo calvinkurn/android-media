@@ -25,6 +25,8 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
     private val centerPauseButton: ImageView = findViewById(R.id.video_center_pause_button)
     private val videoControlContainer: LinearLayout = findViewById(R.id.nav_container)
     private val videoPauseButtonHandler = Handler(Looper.getMainLooper())
+    private val controllerPlayButton : ImageView = findViewById(R.id.exo_play)
+    private val controllerPauseButton : ImageView = findViewById(R.id.exo_pause)
 
     var listener: Listener? = null
         set(value) {
@@ -39,6 +41,8 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
     fun updateCenterButtonState(isPlaying: Boolean) {
         centerPlayButtonConditionalShow(!isPlaying)
         centerPauseButtonConditionalShow(isPlaying)
+        controllerPlayButtonConditionalShow(!isPlaying)
+        controllerPauseButtonConditionalShow(isPlaying)
     }
 
     private fun centerPlayButtonConditionalShow(isShowing: Boolean) {
@@ -52,6 +56,14 @@ class ChatbotVideoControlView(context: Context, attributeSet: AttributeSet) :
                 centerPauseButtonConditionalShow(false)
             }, HIDE_DELAY)
         }
+    }
+
+    private fun controllerPlayButtonConditionalShow(isShowing: Boolean) {
+        controllerPlayButton.showWithCondition(isShowing)
+    }
+
+    private fun controllerPauseButtonConditionalShow(isShowing: Boolean) {
+        controllerPauseButton.showWithCondition(isShowing)
     }
 
     private fun setUpListener() {
