@@ -685,7 +685,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        val desc = context?.getString(feedComponentR.string.feed_share_default_text_cdp)?.let {
+        val desc = context?.getString(feedComponentR.string.cdp_share_default_text)?.let {
             String.format(
                 it, item.product.name,"%s", item.shopName, item.priceFmt)
         }
