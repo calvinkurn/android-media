@@ -9,7 +9,7 @@
     >
 
     <com.tokopedia.content.common.ui.toolbar.ImagePickerCommonToolbar
-        android:id="@+id/view_action_bar"
+        android:id="@+id/toolbar_content_common"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +94,7 @@
         android:id="@+id/group_preparation_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="view_action_bar, view_preparation_menu,
+        app:constraint_referenced_ids="toolbar_content_common, view_preparation_menu,
                                         fl_bro_start_livestream, ic_bro_preparation_switch_camera"
         />
 

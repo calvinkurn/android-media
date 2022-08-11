@@ -226,7 +226,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Setup */
     private fun setupView() {
-        binding.viewActionBar.apply {
+        binding.toolbarContentCommon.apply {
             title = getString(com.tokopedia.content.common.R.string.feed_content_post_sebagai)
             subtitle = parentViewModel.getShopName()
             icon = parentViewModel.getShopIconUrl()
@@ -245,7 +245,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun setupInsets() {
-        binding.viewActionBar.doOnApplyWindowInsets { v, insets, _, margin ->
+        binding.toolbarContentCommon.doOnApplyWindowInsets { v, insets, _, margin ->
             val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
             val newTopMargin = margin.top + insets.systemWindowInsetTop
             if (marginLayoutParams.topMargin != newTopMargin) {
