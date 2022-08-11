@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:lottie_url="https://assets.tokopedia.net/asts/android/user/goto_seamless/goto_seamless_illustration.json"
+        app:lottie_url="@string/lottie_goto_seamless_illustration"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"/>
 
