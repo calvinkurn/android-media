@@ -5,57 +5,41 @@ import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.iconunify.IconUnify
-import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.content.common.R
+import androidx.core.content.ContextCompat.getColor
+import com.tokopedia.content.common.databinding.ImagepickerInstaComToolbarBinding
+import com.tokopedia.content.common.ui.toolbar.ContentColor.LIGHT
+import com.tokopedia.content.common.ui.toolbar.ContentColor.DARK
+import com.tokopedia.content.common.ui.toolbar.ContentColor.TRANSPARENT
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyR
 
 class ImagePickerCommonToolbar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
-) : androidx.appcompat.widget.Toolbar(context, attrs) {
-
-    private lateinit var toolbarIcon: AppCompatImageView
-    private lateinit var toolbarTitle: Typography
-    private lateinit var toolbarSubtitle: Typography
-    private lateinit var toolbarNavIcon: AppCompatImageView
-    private lateinit var toolbarExpandIcon: IconUnify
-    private lateinit var toolbarParent: ConstraintLayout
-
-    private fun getLayout() = R.layout.imagepicker_insta_com_toolbar
+) : Toolbar(context, attrs) {
 
     private var mOnClickListener: AccountClickListener? = null
     private var mOnBackListener: BackClickListener? = null
 
     init {
-        LayoutInflater.from(context).inflate(getLayout(), this, true)
         initViews()
     }
 
     private fun initViews() {
-        setContentInsetsRelative(0,contentInsetEnd)
-        setContentInsetsAbsolute(0,contentInsetRight)
+        setContentInsetsRelative(0, contentInsetEnd)
+        setContentInsetsAbsolute(0, contentInsetRight)
 
-        background = ColorDrawable(MethodChecker.getColor(context, unifyR.color.Unify_Background))
-        toolbarIcon  = findViewById(R.id.img_com_toolbar_icon)
-        toolbarTitle = findViewById(R.id.img_com_toolbar_title)
-        toolbarSubtitle = findViewById(R.id.img_com_toolbar_subtitle)
-        toolbarNavIcon  = findViewById(R.id.img_com_toolbar_nav_icon)
-        toolbarParent  = findViewById(R.id.toolbar_parent)
-        toolbarExpandIcon  = findViewById(R.id.content_creator_expand_icon)
-
-        toolbarNavIcon.setOnClickListener {
+        mBinding.imgComToolbarNavIcon.setOnClickListener {
             mOnBackListener?.invoke()
         }
 
-        toolbarExpandIcon.setOnClickListener {
+        mBinding.imgComToolbarIcon.setOnClickListener {
             mOnClickListener?.invoke()
         }
 
-        toolbarSubtitle.setOnClickListener {
+        mBinding.textComToolbarSubtitle.setOnClickListener {
             mOnClickListener?.invoke()
         }
     }
@@ -63,29 +47,28 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
     var icon: String = ""
         set(value) {
             field = value
-
-            toolbarIcon.loadImageCircle(value)
-            toolbarIcon.visibility = if(value.isNotEmpty()) View.VISIBLE else View.GONE
+            mBinding.imgComToolbarIcon.loadImageCircle(value)
+            mBinding.imgComToolbarIcon.visibility = if(value.isNotEmpty()) View.VISIBLE else View.GONE
         }
 
     var title: String = ""
         set(value) {
             field = value
-            toolbarTitle.text = value
+            mBinding.textComToolbarTitle.text = value
         }
 
     var subtitle: String = ""
         set(value) {
             field = value
-            toolbarSubtitle.text = value
+            mBinding.textComToolbarSubtitle.text = value
         }
 
     fun getToolbarParentView(): ConstraintLayout {
-        return toolbarParent
+        return mBinding.toolbarParent
     }
 
     fun showHideExpandIcon(shouldShowExpandIcon: Boolean){
-        toolbarExpandIcon.visibility = if(shouldShowExpandIcon) View.VISIBLE else View.GONE
+        mBinding.imgContentCreatorExpand.visibility = if(shouldShowExpandIcon) View.VISIBLE else View.GONE
     }
 
     fun setOnBackClickListener(listener: AccountClickListener?) {
