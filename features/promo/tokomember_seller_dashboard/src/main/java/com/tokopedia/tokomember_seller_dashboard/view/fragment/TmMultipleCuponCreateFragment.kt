@@ -64,7 +64,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC_END
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE_END
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
@@ -161,6 +160,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private var isDateManual = false
     private var programType = ""
     private var periodMonth = 0
+    private var firstTimeStart = false
+    private var firstTimeEnd = false
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -1147,26 +1148,37 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var day = 0
         var dayInId = ""
         context?.let {
+            val minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
 
             when(type){
                  0 -> {
                      val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                     minDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
                      currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
                      maxDate.time = currentDate.time
                      maxDate.add(Calendar.YEAR, 1)
+
+                     if(updatedStartTimeCoupon.isNotEmpty() && firstTimeStart){
+                         currentDate.time = sdf.parse(updatedStartTimeCoupon + "00") ?: Date()
+                     }
                  }
 
                 1 -> {
                     val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    minDate.time = sdf.parse(updatedStartTimeCoupon + "00") ?: Date()
                     currentDate.time = sdf.parse(updatedStartTimeCoupon + "00") ?: Date()
                     maxDate.time = currentDate.time
                     maxDate.add(Calendar.YEAR, 1)
+
+                    if(updatedEndTimeCoupon.isNotEmpty() && firstTimeEnd){
+                        currentDate.time = sdf.parse(updatedEndTimeCoupon + "00") ?: Date()
+                    }
                 }
             }
 
-            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate).apply {
+            val datepickerObject = DateTimePickerUnify(it, minDate, currentDate, maxDate).apply {
                 setTitle(title)
                 setInfo(desc)
                 setInfoVisible(true)
@@ -1187,6 +1199,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                                 couponStartDate = selectedCalendar?.time?.let { dateTime ->
                                     convertDateTime(dateTime)
                                 }.toString()
+
+                                firstTimeStart = true
                                 updatedStartTimeCoupon = couponStartDate.substring(0, couponStartDate.length-2)
                                 couponStartDate = couponStartDate.substringBefore(" ")
                             }
@@ -1194,6 +1208,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                                 couponEndDate = selectedCalendar?.time?.let { dateTime ->
                                     convertDateTime(dateTime)
                                 }.toString()
+                                firstTimeEnd = true
                                 updatedEndTimeCoupon = couponEndDate.substring(0, couponEndDate.length-2)
                                 couponEndDate = couponEndDate.substringBefore(" ")
                             }
@@ -1224,8 +1239,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var selectedHour = ""
         var selectedMinute = ""
         context?.let { ctx ->
-            val currentDate =
-                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+            val defaultTime = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
             val maxDate =
                 GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 23)
@@ -1237,10 +1251,17 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     set(Calendar.MINUTE, 0)
                 }
 
+            if(startTime != null && type == 0 && firstTimeStart){
+                defaultTime.time = startTime?.time
+            }
+            if(startTime != null && type == 1 && firstTimeEnd){
+                defaultTime.time = startTime?.time
+            }
+
             val timerPickerUnify = DateTimePickerUnify(
                 context = ctx,
                 minDate = minDate,
-                defaultDate = currentDate,
+                defaultDate = defaultTime,
                 maxDate = maxDate,
                 type = DateTimePickerUnify.TYPE_TIMEPICKER
             ).apply {
@@ -1255,12 +1276,14 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
                     when (type) {
                         0 -> {
+                            firstTimeStart = true
                             couponStartTime = "$selectedHour:$selectedMinute"
                             updatedStartTimeCoupon = startTime?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
                             }.toString()
                         }
                         1 -> {
+                            firstTimeEnd = true
                             couponEndTime = "$selectedHour:$selectedMinute"
                             updatedEndTimeCoupon = startTime?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
