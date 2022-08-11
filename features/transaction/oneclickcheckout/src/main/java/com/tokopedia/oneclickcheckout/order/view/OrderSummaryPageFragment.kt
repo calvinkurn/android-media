@@ -235,7 +235,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)?.let {
                     //reset
                     viewModel.validateUsePromoRevampUiModel = null
-                    viewModel.updatePromoState(PromoUiModel().apply {
+                    viewModel.updatePromoStateWithoutCalculate(PromoUiModel().apply {
                         titleDescription = it.successDataModel.defaultEmptyPromoMessage
                     })
                     // todo: reset BO -> if lastValidateUsePromoRequest do not contains BO promo then isApplyLogisticPromo = false, else no op
