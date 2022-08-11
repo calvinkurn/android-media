@@ -3222,7 +3222,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         }
                     }else if(shipmentDataList.get(i) instanceof UploadPrescriptionUiModel){
                         UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
-                        if(firstFoundPosition > 0 && uploadPrescriptionUiModel.getUploadedImageCount() != null && uploadPrescriptionUiModel.getUploadedImageCount() == 0){
+                        if(uploadPrescriptionUiModel.getUploadedImageCount() != null && uploadPrescriptionUiModel.getUploadedImageCount() == 0){
+                            if (firstFoundPosition == 0) {
+                                firstFoundPosition = i;
+                            }
                             uploadPrescriptionUiModel.setError(true);
                             onNeedUpdateViewItem(i);
                         }
