@@ -7,7 +7,7 @@ class PlayWidgetHomeAnalyticModel : PlayWidgetAnalyticModel {
 
     override val prefix: String = "HOME"
 
-    override val category: String = "homepage - cmp"
+    override val category: String = "homepage-cmp"
 
     override val promotionsItemName: String = "play-home-widget"
 
