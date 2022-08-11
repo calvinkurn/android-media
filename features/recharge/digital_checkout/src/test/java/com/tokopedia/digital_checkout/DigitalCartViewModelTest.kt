@@ -38,6 +38,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertNull
@@ -833,6 +834,36 @@ class DigitalCartViewModelTest {
     }
 
     @Test
+    fun onCheckout_onSuccessWithGql() {
+        // given
+        val dummyResponse = PaymentPassData()
+        dummyResponse.queryString = "this is query"
+        dummyResponse.redirectUrl = "www.tokopedia.com"
+        dummyResponse.callbackSuccessUrl = "successurl"
+        dummyResponse.callbackFailedUrl = "failedUrl"
+        dummyResponse.transactionId = "transactionId"
+
+        coEvery {
+            digitalCheckoutUseCase.execute(any(), any(), any(), any())
+        } returns dummyResponse
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), true)
+
+        // then
+        val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
+        assert(paymentPassDataValue != null)
+        assert(paymentPassDataValue!!.callbackFailedUrl == dummyResponse.callbackFailedUrl)
+        assert(paymentPassDataValue.callbackSuccessUrl == dummyResponse.callbackSuccessUrl)
+        assert(paymentPassDataValue.redirectUrl == dummyResponse.redirectUrl)
+        assert(paymentPassDataValue.queryString == dummyResponse.queryString)
+        assert(paymentPassDataValue.transactionId == dummyResponse.transactionId)
+    }
+
+    @Test
     fun onCheckout_onFailed() {
         // given
         coEvery {
@@ -949,6 +980,51 @@ class DigitalCartViewModelTest {
 
         // then
         assert(digitalCartViewModel.isNeedOtp.value == null)
+    }
+
+    @Test
+    fun onCheckoutGql_withFintechProduct() {
+        // given
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+
+        digitalCartViewModel.requestCheckoutParam = DigitalCheckoutDataParameter(
+            isNeedOtp = false,
+            fintechProducts = hashMapOf(
+                "First" to FintechProduct(
+                    info = FintechProduct.FintechProductInfo(
+                        iconUrl = "dummy icon url"
+                    )
+                ),
+                "Second" to FintechProduct(
+                    info = FintechProduct.FintechProductInfo(
+                        iconUrl = ""
+                    )
+                )
+            )
+        )
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier(), true)
+
+        // then
+        assert(digitalCartViewModel.isNeedOtp.value == null)
+
+        coVerify (exactly = 1) {
+            digitalAnalytics.eventProceedCheckoutTebusMurah(
+                any(),
+                any(),
+                "123"
+            )
+        }
+        coVerify (exactly = 1) {
+            digitalAnalytics.eventProceedCheckoutCrossell(
+                any(),
+                any(),
+                "123"
+            )
+        }
     }
 
     @Test
