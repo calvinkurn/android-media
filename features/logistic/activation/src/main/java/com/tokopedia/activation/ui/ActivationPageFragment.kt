@@ -287,7 +287,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
 
     private fun validateActivatedShipping(){
         val userId = userSession.userId
-        viewModel.validateActivatedShipping(userId.toInt())
+        viewModel.validateActivatedShipping(userId.toLong())
     }
 
     private fun collapse(view: View) {
