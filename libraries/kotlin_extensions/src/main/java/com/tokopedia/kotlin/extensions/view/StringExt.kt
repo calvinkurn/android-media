@@ -126,3 +126,19 @@ fun String?.toEmpty(): String = ""
 
 val String.Companion.EMPTY get() = ""
 val String.Companion.SPACE get() = " "
+
+
+fun String.toIntRangeCheck(block:(number:String)->Unit):Int {
+    return try {
+        val longValue: Long = this.toLong()
+        return if (longValue < Int.MIN_VALUE || longValue > Int.MAX_VALUE) {
+            block(this)
+            0
+        } else {
+            longValue.toInt()
+        }
+    }catch (e:Exception) {
+        block(this)
+        0
+    }
+}
