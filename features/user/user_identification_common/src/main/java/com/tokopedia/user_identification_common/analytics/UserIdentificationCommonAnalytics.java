@@ -188,7 +188,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_CAMERA_SELFIE,
-                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
+                "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "35240");
     }
 
@@ -198,7 +198,7 @@ public class UserIdentificationCommonAnalytics {
         }
 
         track(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
+                Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_FLIP_CAMERA_KTP,
                 "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
@@ -224,25 +224,11 @@ public class UserIdentificationCommonAnalytics {
         }
 
         track(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
+                Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_SHUTTER_CAMERA_SELFIE,
                 "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "35133");
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_SELFIE_PAGE,
-                Action.CLICK_ON_BUTTON_SHUTTER_CAMERA_SELFIE,
-                projectID + " - " + getKycType(String.valueOf(projectID))
-        ));
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_SELFIE_PAGE,
-                Action.CLICK_ON_BUTTON_CAPTURE_CAMERA,
-                projectID + " - " + getKycType(String.valueOf(projectID))
-        ));
     }
 
     public void eventViewErrorImageTooLargeKtpPage() {
@@ -254,22 +240,13 @@ public class UserIdentificationCommonAnalytics {
         ), "2627");
     }
 
-    public void eventViewErrorImageTooLargeSelfiePage() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.VIEW_KYC,
-                Category.KYC_PAGE,
-                Action.VIEW_ERROR_IMAGE_TOO_LARGE_SELFIE,
-                ""
-        ));
-    }
-
     public void eventClickFlipCameraSelfie() {
         if(projectID ==4){
             sendTradeInClickEvent(Action.CLICK_FLIP_CAMERA_SELFIE,"");
         }
 
         track(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
+                Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_FLIP_CAMERA_SELFIE,
                 "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
@@ -295,12 +272,12 @@ public class UserIdentificationCommonAnalytics {
     }
 
     public void eventClickCloseImagePreviewKtp() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 Label.labelThree + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
-        ));
+        ), "2646");
     }
 
     public void eventClickCloseImagePreviewSelfie() {
@@ -308,7 +285,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_CLOSE_IMAGE_PREVIEW_SELFIE,
-                "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
+                "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "35241");
     }
 
@@ -331,18 +308,11 @@ public class UserIdentificationCommonAnalytics {
         }
 
         track(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
+                Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_RECAPTURE_SELFIE,
                 "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "35134");
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_SELFIE_PAGE,
-                Action.CLICK_BUTTON_RECAPTURE,
-                projectID + " - " + getKycType(String.valueOf(projectID))
-        ));
     }
 
     public void eventClickNextImagePreviewKtp() {
@@ -364,18 +334,11 @@ public class UserIdentificationCommonAnalytics {
         }
 
         track(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
+                Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_NEXT_IMAGE_PREVIEW_SELFIE,
                 "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "35135");
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_SELFIE_PAGE,
-                Action.CLICK_ON_BUTTON_LANJUT_PREVIEW,
-                projectID + " - " + getKycType(String.valueOf(projectID))
-        ));
     }
 
     public void eventViewFinalForm() {
@@ -384,7 +347,7 @@ public class UserIdentificationCommonAnalytics {
         }
 
         track(TrackAppUtils.gtmData(
-                Event.VIEW_KYC,
+                Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_FINAL_FORM_PAGE,
                 "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
@@ -433,13 +396,6 @@ public class UserIdentificationCommonAnalytics {
                 Action.CLICK_RETAKE_SELFIE_FINAL_FORM_PAGE,
                 "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "2647");
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_SELFIE_PAGE,
-                Action.CLICK_RETAKE_SELFIE_FINAL_FORM_PAGE,
-                "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
-        ));
     }
 
     public void eventClickChangeKtpSelfieFinalFormPage(){
@@ -452,21 +408,12 @@ public class UserIdentificationCommonAnalytics {
     }
 
     public void eventClickBackChangeKtpSelfieFinalFormPage(){
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 Label.labelThree + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
-        ));
-    }
-
-    public void eventClickUploadPhotos() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_UPLOAD_PHOTOS,
-                ""
-        ));
+        ), "2646");
     }
 
     public void eventClickTermsFinalFormPage() {
@@ -475,7 +422,7 @@ public class UserIdentificationCommonAnalytics {
         }
 
         track(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
+                Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE,
                 ""
@@ -524,12 +471,12 @@ public class UserIdentificationCommonAnalytics {
     }
 
     public void eventClickBackKtpPage() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 Label.labelOne + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
-        ));
+        ), "2621");
     }
 
     public void eventClickDialogExit() {

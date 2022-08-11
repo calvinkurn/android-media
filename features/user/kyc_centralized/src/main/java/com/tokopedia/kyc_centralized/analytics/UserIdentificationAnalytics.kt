@@ -7,6 +7,7 @@ import com.tokopedia.user_identification_common.KYCConstant
 /**
  * @author by alvinatin on 26/11/18.
  */
+
 class UserIdentificationAnalytics private constructor(private val projectID: Int) {
 
     private object Event {
@@ -75,18 +76,13 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventClickKycTnc(isChecked: Boolean) {
-        val data = TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
             Event.CLICK_VERIFICATION,
             Category.KYC_PAGE,
             Action.CLICK_ON_TNC_KYC,
             if(isChecked) "${Label.LABEL_CHECK} - $projectID - ${getKycType(projectID.toString())}"
             else "${Label.LABEL_UNCHECK} - $projectID - ${getKycType(projectID.toString())}"
-        )
-
-        data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
-        data[KEY_CURRENT_SITE] = CURRENT_SITE
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+        ), "")
     }
 
     fun eventClickOnNextOnBoarding() {
@@ -112,12 +108,12 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventClickBackPendingPage() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 "${Label.labelTwo} - $projectID - ${getKycType(projectID.toString())}"
-        ))
+        ), "2619")
     }
 
     fun eventClickOnButtonPendingPage() {
@@ -148,12 +144,12 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventClickBackRejectedPage() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 "${Label.labelThree} - $projectID - ${getKycType(projectID.toString())}"
-        ))
+        ), "2619")
     }
 
     fun eventClickNextRejectedPage() {
@@ -163,13 +159,6 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Action.CLICK_NEXT_REJECTED_PAGE,
                 "click - $projectID - ${getKycType(projectID.toString())}"
         ), "2666")
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_ACCOUNT,
-                Category.KYC_ONBOARDING_PAGE,
-                Action.CLICK_RETRY_VERIFICATION,
-                "click - $projectID - ${getKycType(projectID.toString())}"
-        ))
     }
 
     fun eventClickOnButtonBlacklistPage() {
@@ -182,21 +171,21 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventClickBackBlacklistPage() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
                 "${Label.labelFour} - $projectID - ${getKycType(projectID.toString())}"
-        ))
+        ), "2619")
     }
 
     fun eventViewSuccessPage() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        track(TrackAppUtils.gtmData(
                 Event.VIEW_KYC,
                 Category.KYC_PAGE,
                 Action.VIEW_SUCCES_PAGE,
             "success - $projectID - ${getKycType(projectID.toString())}"
-        ))
+        ), "35214")
     }
 
     fun eventClickBackSuccessPage() {
@@ -209,12 +198,12 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
     }
 
     fun eventClickTermsSuccessPage() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
+        track(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,
             "success - $projectID - ${getKycType(projectID.toString())}"
-        ))
+        ), "35136")
     }
 
     private fun sendTradeInClickEvent(Action: String, label: String) {
@@ -243,6 +232,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         data[KYCConstant.CURRENT_SITE] = KYCConstant.TOKOPEDIA_MARKETPLACE
         data[KYCConstant.TRACKER_ID] = trackerId
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
+
     }
 
     companion object {
@@ -250,12 +240,6 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         fun createInstance(projectID: Int): UserIdentificationAnalytics {
             return UserIdentificationAnalytics(projectID)
         }
-
-        private const val KEY_BUSINESS_UNIT = "businessUnit"
-        private const val KEY_CURRENT_SITE = "currentSite"
-
-        private const val BUSSINESS_UNIT = "user platform"
-        private const val CURRENT_SITE = "tokopediamarketplace"
 
         private const val TYPE_ALA_CARTE = "ala carte"
         private const val TYPE_CKYC = "ckyc"

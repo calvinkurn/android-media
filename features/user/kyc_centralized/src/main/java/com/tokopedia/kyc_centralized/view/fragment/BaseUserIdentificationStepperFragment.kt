@@ -108,7 +108,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                 handleKtpImage(data)
             }
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_TOO_BIG) {
-            sendAnalyticErrorImageTooLarge(requestCode)
             NetworkErrorHelper.showRedSnackbar(activity, context?.resources?.getString(R.string.error_text_image_file_too_big).orEmpty())
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_NOT_EXIST) {
             NetworkErrorHelper.showRedSnackbar(activity, context?.resources?.getString(R.string.error_text_image_cant_be_accessed).orEmpty())
@@ -139,14 +138,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         val ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
         stepperModel?.ktpFile = ktpFile.toEmptyStringIfNull()
         stepperListener?.goToNextPage(stepperModel)
-    }
-
-    private fun sendAnalyticErrorImageTooLarge(requestCode: Int) {
-        when (requestCode) {
-            KYCConstant.REQUEST_CODE_CAMERA_KTP -> analytics?.eventViewErrorImageTooLargeKtpPage()
-            KYCConstant.REQUEST_CODE_CAMERA_FACE -> analytics?.eventViewErrorImageTooLargeSelfiePage()
-            else -> {}
-        }
     }
 
     protected val isKycSelfie: Boolean
