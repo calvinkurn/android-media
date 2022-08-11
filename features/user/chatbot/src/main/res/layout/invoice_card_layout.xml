@@ -74,7 +74,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_invoice_desc"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:ellipsize="end"
@@ -84,7 +84,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_invoice_name"
             app:typographyType="small"
-            android:visibility="visible"
+            tools:visibility="gone"
             tools:text="+4 barang lainnyag" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -109,26 +109,24 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_price"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             android:gravity="top"
             android:includeFontPadding="false"
             android:maxLines="1"
             android:textColor="@color/Unify_Y500"
-            app:layout_constraintBottom_toTopOf="@id/btn_pilih"
             app:layout_constraintLeft_toRightOf="@id/tv_price_prefix"
-            app:layout_constraintTop_toBottomOf="@id/tv_invoice_desc"
+            app:layout_constraintTop_toTopOf="@id/tv_price_prefix"
             app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Rp 25.500" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:layout_width="match_parent"
-            android:layout_height="@dimen/unify_space_24"
+            android:layout_height="@dimen/unify_space_32"
             android:id="@+id/btn_pilih"
             android:visibility="visible"
             android:text="@string/chatbot_invoice_button"
