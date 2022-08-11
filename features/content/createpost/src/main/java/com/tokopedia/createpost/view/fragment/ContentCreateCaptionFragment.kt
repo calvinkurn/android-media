@@ -78,7 +78,7 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         initView()
     }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val menuTitle = activity?.getString(R.string.feed_content_text_post)
+        val menuTitle = activity?.getString(com.tokopedia.content.common.R.string.feed_content_text_post)
         if (!menuTitle.isNullOrEmpty()) {
             MenuManager.addCustomMenu(activity, menuTitle, true, menu) {
                 activityListener?.postFeed()

@@ -32,10 +32,10 @@ import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker_insta.common.BundleData
-import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
-import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.toolbar.ImagePickerCommonToolbar
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -257,10 +257,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             createPostAnalytics.eventClickBackOnProductTaggingPage()
 
             val dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.feed_content_dialog_title))
-            dialog.setDescription(getString(R.string.feed_content_dialog_desc))
-            dialog.setPrimaryCTAText(getString(R.string.feed_content_primary_cta_text))
-            dialog.setSecondaryCTAText(getString(R.string.feed_content_sec_cta_text))
+            dialog.setTitle(getString(com.tokopedia.content.common.R.string.feed_content_dialog_title))
+            dialog.setDescription(getString(com.tokopedia.content.common.R.string.feed_content_dialog_desc))
+            dialog.setPrimaryCTAText(getString(com.tokopedia.content.common.R.string.feed_content_primary_cta_text))
+            dialog.setSecondaryCTAText(getString(com.tokopedia.content.common.R.string.feed_content_sec_cta_text))
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 createPostAnalytics.eventClickContinueOnConfirmationPopup()
@@ -332,7 +332,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
         toolbarCommon.apply {
             icon = selectedFeedAccount.iconUrl
-            title = getString(R.string.feed_content_post_sebagai)
+            title = getString(com.tokopedia.content.common.R.string.feed_content_post_sebagai)
             subtitle = selectedFeedAccount.name
             createPostViewModel?.let {
                 val isAllowSwitchAccount = mFeedAccountList.size > 1 && mFeedAccountList.find { acc -> acc.isUserPostEligible } != null

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="content_common_space_1">1dp</dimen>
+    <dimen name="content_common_space_6">6dp</dimen>
+    <dimen name="content_common_space_8">8dp</dimen>
+    <dimen name="content_common_space_10">10dp</dimen>
+    <dimen name="content_common_space_20">20dp</dimen>
+</resources>

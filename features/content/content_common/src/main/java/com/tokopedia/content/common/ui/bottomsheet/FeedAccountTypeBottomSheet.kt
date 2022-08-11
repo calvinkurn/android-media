@@ -1,0 +1,110 @@
+package com.tokopedia.content.common.ui.bottomsheet
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import androidx.fragment.app.FragmentManager
+import com.tokopedia.content.common.databinding.BottomSheetFeedAccountTypeBinding
+import com.tokopedia.content.common.ui.adapter.FeedAccountTypeAdapter
+import com.tokopedia.content.common.ui.itemdecoration.FeedAccountTypeItemDecoration
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.viewholder.FeedAccountTypeViewHolder
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.content.common.R
+
+/**
+ * Created By : Jonathan Darwin on April 13, 2022
+ */
+class FeedAccountTypeBottomSheet : BottomSheetUnify() {
+
+    private var _binding: BottomSheetFeedAccountTypeBinding? = null
+    private val binding: BottomSheetFeedAccountTypeBinding
+        get() = _binding!!
+
+    private val adapter: FeedAccountTypeAdapter by lazy {
+        FeedAccountTypeAdapter(object : FeedAccountTypeViewHolder.Listener {
+            override fun onClick(item: FeedAccountUiModel) {
+                mAnalytic?.clickAccountTypeItem(item)
+                dismiss()
+                mListener?.onAccountClick(item)
+            }
+        })
+    }
+
+    private val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
+    private var mListener: Listener? = null
+    private var mAnalytic: FeedAccountTypeAnalytic? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupBottomSheet()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        mListener = null
+    }
+
+    private fun setupBottomSheet() {
+        _binding = BottomSheetFeedAccountTypeBinding.inflate(
+            LayoutInflater.from(requireContext())
+        )
+        setChild(binding.root)
+    }
+
+    private fun setupView() {
+        setTitle(getString(R.string.feed_account_bottom_sheet_title))
+
+        binding.rvFeedAccount.addItemDecoration(FeedAccountTypeItemDecoration(requireContext()))
+        binding.rvFeedAccount.adapter = adapter
+
+        adapter.updateData(mFeedAccountList)
+    }
+
+    fun setOnAccountClickListener(listener: Listener?) {
+        mListener = listener
+    }
+
+    fun showNow(fragmentManager: FragmentManager) {
+        if(!isAdded) show(fragmentManager, TAG)
+    }
+
+    fun setData(feedAccountList: List<FeedAccountUiModel>): FeedAccountTypeBottomSheet {
+        mFeedAccountList.clear()
+        mFeedAccountList.addAll(feedAccountList)
+
+        if(isAdded) adapter.updateData(mFeedAccountList)
+
+        return this
+    }
+
+    fun setAnalytic(analytic: FeedAccountTypeAnalytic) {
+        mAnalytic = analytic
+    }
+
+    companion object {
+        private const val TAG = "FeedAccountTypeBottomSheet"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ): FeedAccountTypeBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedAccountTypeBottomSheet
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                FeedAccountTypeBottomSheet::class.java.name
+            ) as FeedAccountTypeBottomSheet
+        }
+    }
+
+    interface Listener {
+        fun onAccountClick(feedAccount: FeedAccountUiModel)
+    }
+}

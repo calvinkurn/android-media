@@ -97,7 +97,7 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name="com.tokopedia.createpost.producttag.view.activity.FeedAutoCompleteActivity"
+        <activity android:name="com.tokopedia.content.common.producttag.view.activity.FeedAutoCompleteActivity"
             android:label="@string/cp_title_edit"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

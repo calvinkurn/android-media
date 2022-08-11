@@ -27,11 +27,11 @@ import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
-import com.tokopedia.imagepicker_insta.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
-import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.toolbar.ImagePickerCommonToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.di.ImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration

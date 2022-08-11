@@ -6,7 +6,14 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
-import android.view.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.View
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
@@ -26,7 +33,7 @@ import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
+import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
@@ -36,15 +43,24 @@ import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
-import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.Runnable
 import kotlin.math.round
@@ -123,7 +139,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val menuTitle =  activity?.getString(R.string.feed_content_text_lanjut)
+        val menuTitle =  activity?.getString(com.tokopedia.content.common.R.string.feed_content_text_lanjut)
         if(!menuTitle.isNullOrEmpty()) {
             MenuManager.addCustomMenu(activity, menuTitle, true, menu) {
                 GlobalScope.launchCatchError(Dispatchers.IO, block = {
@@ -199,7 +215,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             openProductTaggingScreen()
         } else {
             Toaster.build(requireView(),
-                getString(R.string.feed_content_more_than_5_product_tag),
+                getString(com.tokopedia.content.common.R.string.feed_content_more_than_5_product_tag),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR).show()
         }
@@ -512,7 +528,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
         if (createPostModel.completeImageList[currentImagePos].products.size == 0 && !isDeletedFromBubble)
             Toaster.build(requireView(),
-                getString(R.string.feed_content_delete_toaster_text),
+                getString(com.tokopedia.content.common.R.string.feed_content_delete_toaster_text),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL).show()
     }
@@ -520,7 +536,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private fun updateTotalProductTaggedText() {
         val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
         tvImagePosition.text = String.format(
-            requireContext().getString(R.string.feed_content_position_text),
+            requireContext().getString(com.tokopedia.content.common.R.string.feed_content_position_text),
             pos
         )
     }
