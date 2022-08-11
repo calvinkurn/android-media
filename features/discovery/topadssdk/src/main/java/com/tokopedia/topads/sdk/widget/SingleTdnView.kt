@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
@@ -20,11 +21,13 @@ import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.LoaderUnify
 import timber.log.Timber
 
 class SingleTdnView : BaseCustomView {
 
-    private var tdnBanner: ImageView? = null
+    private val tdnBanner: ImageView by lazy { findViewById(R.id.tdnBanner) }
+    private val tdnShimmer: LoaderUnify by lazy { findViewById(R.id.tdnShimmer) }
 
     constructor(context: Context) : super(context) {
         init()
@@ -44,70 +47,76 @@ class SingleTdnView : BaseCustomView {
 
     private fun init() {
         View.inflate(context, R.layout.layout_widget_single_tdn_view, this)
-        tdnBanner = findViewById(R.id.tdnBanner)
     }
 
     fun setTdnModel(
         topAdsImageViewModel: TopAdsImageViewModel,
         onTdnBannerClicked: (applink: String) -> Unit,
         cornerRadius: Int,
+        onLoadFailed: () -> Unit,
+        onTdnBannerImpressed: () -> Unit
     ) {
-        tdnBanner?.let {
-            loadImage(
-                topAdsImageViewModel,
-                onTdnBannerClicked = onTdnBannerClicked,
-                cornerRadius = cornerRadius
+        tdnShimmer.layoutParams =
+            ConstraintLayout.LayoutParams(
+                context.resources.displayMetrics.widthPixels,
+                context.resources.getDimensionPixelSize(R.dimen.sdk_dp_112)
             )
-        }
+        loadImage(
+            topAdsImageViewModel,
+            onTdnBannerClicked = onTdnBannerClicked,
+            cornerRadius = cornerRadius,
+            onLoadFailed = onLoadFailed,
+            onTdnBannerImpressed = onTdnBannerImpressed
+        )
     }
 
-    fun loadImage(
+    private fun loadImage(
         imageData: TopAdsImageViewModel,
         cornerRadius: Int = Int.ZERO,
-        onLoadFailed: () -> Unit = {},
+        onLoadFailed: () -> Unit,
         onTdnBannerClicked: (applink: String) -> Unit,
+        onTdnBannerImpressed: () -> Unit
     ) {
         if (!imageData.imageUrl.isNullOrEmpty()) {
             val width = context.resources.displayMetrics.widthPixels
-            tdnBanner?.let {
-                getRequestBuilder(imageData.imageUrl, cornerRadius).override(
-                    width,
-                    getHeight(imageData.imageWidth, imageData.imageHeight, width)
-                )
-                    .addListener(object : RequestListener<Drawable> {
+            getRequestBuilder(imageData.imageUrl, cornerRadius).override(
+                width,
+                getHeight(imageData.imageWidth, imageData.imageHeight, width.toFloat())
+            )
+                .addListener(object : RequestListener<Drawable> {
 
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            Timber.d("Error in loading TDN Banner")
-                            onLoadFailed.invoke()
-                            return false
-                        }
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Timber.d("Error in loading TDN Banner")
+                        onLoadFailed.invoke()
+                        return false
+                    }
 
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            recordImpression(imageData)
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        tdnShimmer.hide()
+                        recordImpression(imageData, onTdnBannerImpressed)
+                        Timber.d("TDN Banner is loaded successfully")
 
-                            Timber.d("TDN Banner is loaded successfully")
+                        recordClick(imageData, onTdnBannerClicked)
 
-                            recordClick(imageData, onTdnBannerClicked)
+                        return false
+                    }
 
-                            return false
-                        }
+                })
+                .into(tdnBanner)
 
-                    })
-                    .into(it)
-            }
         } else {
-            tdnBanner?.hide()
+            tdnBanner.hide()
         }
 
     }
@@ -116,7 +125,7 @@ class SingleTdnView : BaseCustomView {
         imageData: TopAdsImageViewModel,
         onTdnBannerClicked: (applink: String) -> Unit
     ) {
-        tdnBanner?.setOnClickListener {
+        tdnBanner.setOnClickListener {
             Timber.d("TDN Banner is clicked")
             imageData.applink?.let { applink -> onTdnBannerClicked(applink) }
             TopAdsUrlHitter(context).hitClickUrl(
@@ -129,9 +138,12 @@ class SingleTdnView : BaseCustomView {
         }
     }
 
-    private fun recordImpression(imageData: TopAdsImageViewModel) {
+    private fun recordImpression(
+        imageData: TopAdsImageViewModel,
+        onTdnBannerImpressed: () -> Unit
+    ) {
         imageData.ImpressHolder?.let { ImpressHolder ->
-            tdnBanner?.addOnImpressionListener(ImpressHolder) {
+            tdnBanner.addOnImpressionListener(ImpressHolder) {
                 TopAdsUrlHitter(context).hitImpressionUrl(
                     this.javaClass.name,
                     imageData.adViewUrl,
@@ -139,6 +151,7 @@ class SingleTdnView : BaseCustomView {
                     "",
                     ""
                 )
+                onTdnBannerImpressed.invoke()
             }
         }
     }
@@ -156,8 +169,7 @@ class SingleTdnView : BaseCustomView {
         }
     }
 
-    private fun getHeight(width: Int, height: Int, deviceWidth: Int): Int {
-        val deviceWidth = deviceWidth.toFloat()
+    private fun getHeight(width: Int, height: Int, deviceWidth: Float): Int {
         val widthRatio = deviceWidth / width.toFloat()
         return (widthRatio * height).toInt()
     }

@@ -37,9 +37,11 @@ class TdnCarouselView : BaseCustomView {
     fun setCarouselModel(
         topAdsImageViewModel: List<TopAdsImageViewModel>,
         onTdnBannerClicked: (applink: String) -> Unit,
-        cornerRadius: Int
+        cornerRadius: Int,
+        onLoadFailed: () -> Unit,
+        onTdnBannerImpressed: () -> Unit
     ) {
-        tdnCarouselAdapter = TdnCarouselAdapter(onTdnBannerClicked, cornerRadius)
+        tdnCarouselAdapter = TdnCarouselAdapter(onTdnBannerClicked, cornerRadius, onLoadFailed, onTdnBannerImpressed)
         val list = findViewById<RecyclerView>(R.id.tdnCarouselRv)
         list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         list.adapter = tdnCarouselAdapter

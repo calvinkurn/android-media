@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
@@ -18,11 +19,14 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.unifycomponents.LoaderUnify
 import timber.log.Timber
 
 class TdnCarouselAdapter(
     private val onTdnBannerClicked: (applink: String) -> Unit,
     private val cornerRadius: Int,
+    private val onLoadFailed: () -> Unit,
+    private val onTdnBannerImpressed: () -> Unit
 ) : RecyclerView.Adapter<TdnCarouselAdapter.TdnCarouselViewHolder>() {
 
     private val shopAdsProductItemList = arrayListOf<TopAdsImageViewModel>()
@@ -30,7 +34,7 @@ class TdnCarouselAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TdnCarouselViewHolder {
         val view: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.layout_widget_single_tdn_view, parent, false)
-        return TdnCarouselViewHolder(view, cornerRadius, onTdnBannerClicked)
+        return TdnCarouselViewHolder(view, cornerRadius, onTdnBannerClicked, onLoadFailed, onTdnBannerImpressed)
     }
 
     override fun onBindViewHolder(holder: TdnCarouselViewHolder, position: Int) {
@@ -52,16 +56,26 @@ class TdnCarouselAdapter(
         itemView: View,
         private val cornerRadius: Int,
         private val onTdnBannerClicked: (applink: String) -> Unit,
+        private val onLoadFailed: () -> Unit,
+        private val onTdnBannerImpressed: () -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val tdnBanner = itemView.findViewById<ImageView>(R.id.tdnBanner)
+        private var tdnShimmer = itemView.findViewById<ImageView>(R.id.tdnShimmer)
 
         fun bind(shopProductModelItem: TopAdsImageViewModel?) {
+            tdnShimmer.layoutParams =
+                ConstraintLayout.LayoutParams(
+                    calculatedWidth(itemView.context.resources.displayMetrics.widthPixels),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.sdk_dp_112)
+                )
             shopProductModelItem?.let {
                 loadImage(
                     it,
                     onTdnBannerClicked = onTdnBannerClicked,
-                    cornerRadius = cornerRadius
+                    cornerRadius = cornerRadius,
+                    onLoadFailed = onLoadFailed,
+                    onTdnBannerImpressed = onTdnBannerImpressed
                 )
             }
         }
@@ -71,6 +85,7 @@ class TdnCarouselAdapter(
             cornerRadius: Int = Int.ZERO,
             onLoadFailed: () -> Unit = {},
             onTdnBannerClicked: (applink: String) -> Unit,
+            onTdnBannerImpressed: () -> Unit
         ) {
             if (!imageData.imageUrl.isNullOrEmpty()) {
                 val width = itemView.context.resources.displayMetrics.widthPixels
@@ -99,8 +114,10 @@ class TdnCarouselAdapter(
                             dataSource: DataSource?,
                             isFirstResource: Boolean
                         ): Boolean {
-                            recordImpression(imageData)
+                            recordImpression(imageData, onTdnBannerImpressed)
                             Timber.d("TDN Banner is loaded successfully")
+
+                            tdnShimmer.hide()
 
                             recordClick(imageData, onTdnBannerClicked)
 
@@ -135,7 +152,10 @@ class TdnCarouselAdapter(
             }
         }
 
-        private fun recordImpression(imageData: TopAdsImageViewModel) {
+        private fun recordImpression(
+            imageData: TopAdsImageViewModel,
+            onTdnBannerImpressed: () -> Unit
+        ) {
             imageData.ImpressHolder?.let { ImpressHolder ->
                 tdnBanner?.addOnImpressionListener(ImpressHolder) {
                     TopAdsUrlHitter(itemView.context).hitImpressionUrl(
@@ -145,6 +165,7 @@ class TdnCarouselAdapter(
                         "",
                         ""
                     )
+                    onTdnBannerImpressed.invoke()
                 }
             }
         }
