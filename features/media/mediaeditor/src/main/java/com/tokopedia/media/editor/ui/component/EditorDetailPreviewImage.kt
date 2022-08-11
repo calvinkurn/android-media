@@ -3,15 +3,18 @@ package com.tokopedia.media.editor.ui.component
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Handler
 import android.util.AttributeSet
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.values
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRectModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorRotateModel
@@ -73,6 +76,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
     fun initializeCrop(uriSource: Uri){
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
+        disableRotate()
         initListener()
     }
 
@@ -87,16 +91,18 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         }
     }
 
+    fun disableRotate() {
+        cropImageView.isRotateEnabled = false
+    }
+
     fun getScale(): Pair<Float, Float>{
         return Pair(cropImageView.scaleX, cropImageView.scaleY)
     }
 
     fun hideOverlay(){
-        overlayView.hide()
-    }
-
-    fun showOverlay(){
-        overlayView.show()
+        overlayView.setCropFrameColor(Color.TRANSPARENT)
+        overlayView.setCropGridColor(Color.TRANSPARENT)
+        overlayView.setDimmedColor(Color.TRANSPARENT)
     }
 
     fun getBitmap(): Bitmap{
@@ -145,6 +151,10 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         }
 
         // if rotated image is overflow from the original ratio then we can use ucrop crop feature
+        val matrixImage = cropImageView.imageMatrix?.values()
+        val translateX = matrixImage?.get(2) ?: 0f
+        val transientY = matrixImage?.get(5) ?: 0f
+
         cropImageView.cropAndSaveImage(
             Bitmap.CompressFormat.PNG,
             100,
@@ -163,13 +173,15 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
                             finalRotationDegree = finalRotationDegree,
                             sliderValue = sliderValue,
                             rotateNumber = if(isRotate) rotateNumber else  -1,
-                            data = data
+                            data = data,
+                            translateX,
+                            transientY
                         )
                     )
                 }
 
                 override fun onCropFailure(t: Throwable) {
-                    Toast.makeText(context, "Crop Error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Crop Error - ${t.message}", Toast.LENGTH_LONG).show()
                 }
             }
         )
@@ -185,7 +197,9 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         finalRotationDegree: Float,
         sliderValue: Float,
         rotateNumber: Int,
-        data: EditorDetailUiModel?
+        data: EditorDetailUiModel?,
+        translateX: Float? = null,
+        translateY: Float? = null
     ): Bitmap {
         val originalWidth = originalBitmap.width
         val originalHeight = originalBitmap.height
@@ -194,14 +208,11 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         val scaleX = scale.first
         val scaleY = scale.second
 
-        // matrix scale didn't affect rotation value, positive will always clockwise on matrix
-        val rotateDegree = abs(finalRotationDegree)
-
         val matrix = Matrix()
 
         matrix.preScale(scaleX, scaleY)
         matrix.postRotate(
-            rotateDegree,
+            finalRotationDegree,
             (originalWidth / 2).toFloat(),
             (originalHeight / 2).toFloat()
         )
@@ -228,6 +239,11 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
                 imageHeight,
                 rotateNumber
             )
+
+            data?.cropBound?.apply {
+                this.translateX = translateX ?: 0f
+                this.translateY = translateY ?: 0f
+            }
         } else {
             data?.cropBound = EditorCropRectModel(
                 offsetX,
@@ -235,18 +251,23 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
                 imageWidth,
                 imageHeight,
                 cropImageView.currentScale,
-                ""
+                "",
+                translateX ?: 0f,
+                translateY ?: 0f
             )
         }
 
+        val normalizeX = if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
+        val normalizeY = if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
+        return Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
 //        return Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
-        return if (rotateNumber != -1)
-            Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
-        else {
-            val normalizeX = if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
-            val normalizeY = if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
-            Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
-        }
+//        return if (rotateNumber != -1)
+//            Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
+//        else {
+//            val normalizeX = if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
+//            val normalizeY = if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
+//            Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
+//        }
 
     }
 

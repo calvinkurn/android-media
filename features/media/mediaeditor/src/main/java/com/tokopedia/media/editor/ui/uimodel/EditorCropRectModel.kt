@@ -6,5 +6,7 @@ data class EditorCropRectModel(
     val imageWidth: Int,
     val imageHeight: Int,
     val scale: Float,
-    var croppedUrl: String
+    var croppedUrl: String,
+    var translateX: Float,
+    var translateY: Float
 )

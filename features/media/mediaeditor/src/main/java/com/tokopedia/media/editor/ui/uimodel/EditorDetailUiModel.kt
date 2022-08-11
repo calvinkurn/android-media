@@ -48,6 +48,8 @@ data class EditorDetailUiModel(
         val rectOffsetY = parcel.readInt()
         val scale = parcel.readFloat()
         val croppedUrl = parcel.readString()
+        val translateX = parcel.readFloat()
+        val translateY = parcel.readFloat()
 
         if (rectHeight != -1 && rectWidth != -1 && rectOffsetX != -1 && rectOffsetY != -1) {
             val cropRect = EditorCropRectModel(
@@ -56,7 +58,9 @@ data class EditorDetailUiModel(
                 rectWidth,
                 rectHeight,
                 scale,
-                croppedUrl ?: ""
+                croppedUrl ?: "",
+                translateX,
+                translateY
             )
 
             cropBound = cropRect
@@ -147,6 +151,8 @@ data class EditorDetailUiModel(
             parcel.writeInt(cropBound?.offsetY ?: -1)
             parcel.writeFloat(cropBound?.scale ?: -1f)
             parcel.writeString(cropBound?.croppedUrl ?: "")
+            parcel.writeFloat(cropBound?.translateX ?: 0f)
+            parcel.writeFloat(cropBound?.translateY ?: 0f)
 
             // rotate
             parcel.writeFloat(rotateData?.rotateDegree ?: 0f)
