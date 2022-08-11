@@ -48,21 +48,12 @@ class ProductGeneralInfoViewHolder(
     override fun bind(element: ProductGeneralInfoDataModel) {
         val shouldRenderView = shouldRenderView(element = element)
 
-        // render layout view
         renderView(shouldRender = shouldRenderView)
 
-        // render content view
         if (shouldRenderView) {
-            // set event
             setEvent(element = element)
-
-            // render icon
             renderContent(element = element)
-
-            // set text to widget
             setWidgetContent(element = element)
-
-            // set widget margin
             setWidgetMargin(element = element)
         }
     }
@@ -75,11 +66,10 @@ class ProductGeneralInfoViewHolder(
      * set event to each widget
      */
     private fun setEvent(element: ProductGeneralInfoDataModel) {
-        // tracking impression event
         view.addOnImpressionListener(element.impressHolder) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
-        // set event
+
         view.setOnClickListener {
             if (element.applink.isNotBlank()) {
                 listener.onInfoClicked(element.applink, element.name, getComponentTrackData(element))
@@ -102,24 +92,19 @@ class ProductGeneralInfoViewHolder(
         element: ProductGeneralInfoDataModel,
     ) = with(binding) {
 
-        // label `see`
         pdpSee.showWithCondition(element.applink.isNotBlank())
 
-        // info icon
         val icon = element.getIconUrl(isDarkModel = binding.root.context.isDarkMode())
         pdpIcon.shouldShowWithAction(icon.isNotEmpty()) {
             pdpIcon.loadIcon(icon)
         }
 
-        // partner logo
         icPdpPartnerLogo.shouldShowWithAction(element.additionalIcon.isNotEmpty()) {
             icPdpPartnerLogo.loadIcon(element.additionalIcon)
         }
 
-        // title
         pdpInfoTitle.showWithCondition(element.title.isNotEmpty())
 
-        // description
         pdpInfoDesc.showWithCondition(element.subtitle.isNotEmpty())
     }
 

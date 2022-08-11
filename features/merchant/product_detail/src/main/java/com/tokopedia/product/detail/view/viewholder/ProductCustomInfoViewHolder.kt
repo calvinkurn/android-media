@@ -61,16 +61,12 @@ class ProductCustomInfoViewHolder(
         renderView(shouldRender = shouldRenderView)
 
         if (shouldRenderView) {
-            // set impression event
             impressComponent(element)
 
-            // set widget margin
             setWidgetMargin(element)
 
-            // render widget
             setWidgetContent(element)
 
-            // set AppLink
             setupAppLink(element)
         }
     }
@@ -99,9 +95,6 @@ class ProductCustomInfoViewHolder(
         }
     }
 
-    /**
-     * tracking impression event
-     */
     private fun impressComponent(element: ProductCustomInfoDataModel) {
         if (element.title.isNotEmpty() && element.icon.isNotEmpty()) {
             val componentTrack = getComponentTrackData(element)
