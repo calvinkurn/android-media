@@ -56,6 +56,19 @@
             tools:text="@string/sfs_placeholder_quota_resource" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgEventRegistered"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:textColor="@color/Unify_NN600"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tpgCampaignName"
+            app:layout_constraintTop_toBottomOf="@+id/tpgPackageInfo"
+            app:typographyType="body_3"
+            tools:text="@string/sfs_placeholder_quota_resource" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpgStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -233,7 +246,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="tpgPackageInfo, tpgCampaignName"/>
+            app:constraint_referenced_ids="tpgPackageInfo, tpgCampaignName, tpgEventRegistered"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

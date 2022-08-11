@@ -368,6 +368,8 @@
     <string name="campaign_detail_remaining_label">Sisa</string>
     <string name="campaign_detail_sold_label">Terjual</string>
     <string name="sfs_placeholder_quota_resource">Sumber kuota: %s</string>
+    <string name="sfs_placeholder_event_registered">Terdaftar event: [%s]</string>
     <string name="package_info_label">Dibuat dengan kuota</string>
+    <string name="package_info_placeholder">[%s]</string>
 
 </resources>

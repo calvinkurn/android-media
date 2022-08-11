@@ -262,7 +262,9 @@ class CampaignDetailFragment : BaseDaggerFragment(),
         viewModel.cancelCampaignActionResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is CancelCampaignActionResult.ActionAllowed -> showCancelCampaignDialog(result.campaign)
-                is CancelCampaignActionResult.RegisteredEventCampaign -> showRegisteredEventCampaignCancelErrorMessage(result.campaign)
+                is CancelCampaignActionResult.RegisteredEventCampaign -> showRegisteredEventCampaignCancelErrorMessage(
+                    result.campaign
+                )
             }
         }
     }
@@ -396,7 +398,8 @@ class CampaignDetailFragment : BaseDaggerFragment(),
     private fun handlePackageInfo(campaign: CampaignUiModel) {
         val binding = binding ?: return
 
-        binding.tgPackageInfo.text = campaign.packageInfo.packageName
+        binding.tgPackageInfo.text =
+            getString(R.string.package_info_placeholder, campaign.packageInfo.packageName)
         binding.tgPackageInfo.isVisible = campaign.packageInfo.packageName.isNotEmpty()
         binding.tgPackageInfoLabel.isVisible = campaign.packageInfo.packageName.isNotEmpty()
     }

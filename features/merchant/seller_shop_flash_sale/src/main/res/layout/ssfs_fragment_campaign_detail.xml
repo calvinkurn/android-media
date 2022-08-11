@@ -230,6 +230,7 @@
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginEnd="@dimen/unify_space_16"
                 android:textColor="@color/Unify_N700_96"
+                android:ellipsize="end"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tg_campaign_detail_id"
                 app:typographyType="body_3"
