@@ -18,7 +18,6 @@
 //import androidx.test.espresso.matcher.ViewMatchers.withText
 //import androidx.test.platform.app.InstrumentationRegistry
 //import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-//import com.tokopedia.cassavatest.getAnalyticsWithQuery
 //import com.tokopedia.cassavatest.hasAllSuccess
 //import com.tokopedia.product.addedit.R
 //import com.tokopedia.product.addedit.mock.AddEditProductAddingMockResponseConfig
@@ -91,9 +90,5 @@
 //    }
 //
 //    private fun doAnalyticDebuggerTest(fileName: String) {
-//        MatcherAssert.assertThat(
-//                getAnalyticsWithQuery(gtmLogDBSource, context, fileName),
-//                hasAllSuccess()
-//        )
 //    }
 //}
