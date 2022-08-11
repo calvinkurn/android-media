@@ -37,7 +37,6 @@ data class DynamicParameterModel(
     @Expose
     @SerializedName("table_filter")
     val tableFilter: String = "",
-    @Expose
     @SerializedName("sub_page_source")
     val subPageSource: String = ""
 ) {
