@@ -321,8 +321,8 @@ class TopupBillsViewModel @Inject constructor(
         return enquiryParams
     }
 
-    fun createMenuDetailParams(menuId: Int): Map<String, Any> {
-        return mapOf(PARAM_MENU_ID to menuId)
+    fun createMenuDetailParams(menuId: Int, platformId: Int = 5): Map<String, Any> {
+        return mapOf(PARAM_MENU_ID to menuId, PARAM_PLATFORM_ID to platformId)
     }
 
     fun createCatalogPluginParams(operatorId: Int, categoryId: Int): Map<String, Any> {
@@ -417,6 +417,7 @@ class TopupBillsViewModel @Inject constructor(
         const val PARAM_FILTERS = "filters"
         const val PARAM_CART = "cart"
         const val PARAM_MENU_ID = "menuID"
+        const val PARAM_PLATFORM_ID = "platformID"
         const val PARAM_CATEGORY_ID = "categoryID"
 
         const val PLUGIN_PARAM_KEY = "Key"

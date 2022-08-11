@@ -387,10 +387,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 topupBillsViewModel.createEnquiryParams(operatorId, productId, inputData))
     }
 
-    fun getMenuDetail(menuId: Int) {
+    fun getMenuDetail(menuId: Int, platformId: Int = 5) {
         onLoadingMenuDetail(true)
         topupBillsViewModel.getMenuDetail(CommonTopupBillsGqlQuery.catalogMenuDetail,
-                topupBillsViewModel.createMenuDetailParams(menuId))
+                topupBillsViewModel.createMenuDetailParams(menuId, platformId))
     }
 
     fun getCatalogPluginData(operatorId: Int, categoryId: Int) {

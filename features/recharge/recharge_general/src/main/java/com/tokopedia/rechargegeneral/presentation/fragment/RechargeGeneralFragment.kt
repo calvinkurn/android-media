@@ -913,7 +913,12 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         recharge_general_enquiry_button.show()
         loading_view.show()
 
-        getMenuDetail(menuId)
+        if (isAddSBM) {
+            getMenuDetail(menuId, PLATFORM_ID_ADD_SBM)
+        } else {
+            getMenuDetail(menuId)
+        }
+
         getFavoriteNumbers(categoryId)
         getCatalogPluginData(operatorId, categoryId)
         getOperatorCluster(menuId)
@@ -1407,6 +1412,8 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         const val RECENT_TRANSACTION_LABEL = "Transaksi Terakhir"
 
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
+
+        const val PLATFORM_ID_ADD_SBM = 48
 
         val ITEM_DECORATOR_SIZE = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
 
