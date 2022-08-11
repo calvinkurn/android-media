@@ -113,6 +113,9 @@
     <string name="view_applink_list">View Applink List</string>
 
     <string name="enable_new_typography_guideline">Enable New Typography Guideline</string>
-
+    <string name="convert_resource_id_to_resource_name">Convert Resource ID to Resource Name</string>
+    <string name="input_resource_id">Please input Resource ID after #0x prefix</string>
+    <string name="prefix_resource_id">#0x</string>
+    <string name="prefix_resource_name">Resource name: </string>
 
 </resources>

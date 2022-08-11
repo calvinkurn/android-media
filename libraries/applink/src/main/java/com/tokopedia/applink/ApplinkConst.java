@@ -266,6 +266,7 @@ public interface ApplinkConst {
     String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
     String CONTACT_US = "tokopedia://contact-us";
     String CONTACT_US_NATIVE = "tokopedia://contactus";
+    String RESOLUTION_SUCCESS = "tokopedia://resolution/success-create?url={redirect_url}";
     String TOKOPEDIA_CARE_HELP = "tokopedia://webview?url=https://www.tokopedia.com/help/seller";
 
     String ORDER_LIST = "tokopedia://order";

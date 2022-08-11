@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -386,7 +387,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
 
         checkoutBottomViewWidget.setOnClickConsentListener {
-            RouteManager.route(context, GOTO_PLUS_TNC_APPLINK)
+            RouteManager.route(context, it)
         }
 
     }
@@ -691,7 +692,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun interruptRequestTokenVerification(phoneNumber: String?) {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
@@ -830,9 +831,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
         private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
         private const val LEADING_MARGIN_SPAN = 16
-
-        private const val TNC_URL = "https://www.tokopedia.com/help/article/tnc-gotoplus"
-        private const val GOTO_PLUS_TNC_APPLINK = "tokopedia://webview?url=$TNC_URL&titlebar=false"
 
         fun newInstance(
             passData: DigitalCheckoutPassData?,

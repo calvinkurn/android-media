@@ -21,6 +21,7 @@ import com.tokopedia.updateinactivephone.features.onboarding.withpin.InactivePho
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseInactivePhoneSubmitDataFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 
 open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFragment() {
 
@@ -181,7 +182,7 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
     }
 
     open fun gotoValidateNewPhoneNumber() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(
             ApplinkConstInternalGlobal.PARAM_USER_ID_ENC,
             inactivePhoneUserDataModel?.userIdEnc.orEmpty()
