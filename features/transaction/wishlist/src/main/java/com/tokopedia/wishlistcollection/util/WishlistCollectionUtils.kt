@@ -38,6 +38,24 @@ object WishlistCollectionUtils {
                     TYPE_COLLECTION_CREATE
                 )
             listCollection.add(createNewItem)
+
+            listCollection.add(
+                WishlistCollectionTypeLayoutData(
+                    recomm.title,
+                    WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
+                )
+            )
+            recomm.recommendationProductCardModelData.forEachIndexed { index, productCardModel ->
+                if (recomm.listRecommendationItem.isNotEmpty()) {
+                    listCollection.add(
+                        WishlistCollectionTypeLayoutData(
+                            productCardModel,
+                            WishlistV2Consts.TYPE_RECOMMENDATION_LIST,
+                            recommItem = recomm.listRecommendationItem[index]
+                        )
+                    )
+                }
+            }
         }
 
         return listCollection

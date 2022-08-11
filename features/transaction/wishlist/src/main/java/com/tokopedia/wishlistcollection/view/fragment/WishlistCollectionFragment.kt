@@ -9,8 +9,11 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -22,6 +25,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -72,6 +76,10 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     private var _allCollectionView: View? = null
     private var _createCollectionView: View? = null
     private lateinit var trackingQueue: TrackingQueue
+    private lateinit var rvScrollListener: EndlessRecyclerViewScrollListener
+    private var onLoadMore = false
+    private var isFetchRecommendation = false
+    private var currRecommendationListPage = 1
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -204,25 +212,47 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 }
             }
             wishlistCollectionNavtoolbar.setIcon(icons)
+        }
+        addEndlessScrollListener()
+    }
 
-            val glm = GridLayoutManager(context, 2).apply {
-                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                    override fun getSpanSize(position: Int): Int {
-                        return when (collectionAdapter.getItemViewType(position)) {
-                            WishlistCollectionAdapter.LAYOUT_COLLECTION_TICKER -> 2
-                            LAYOUT_RECOMMENDATION_TITLE -> 2
-                            WishlistCollectionAdapter.LAYOUT_EMPTY_COLLECTION -> 2
-                            else -> 1
-                        }
+    private fun addEndlessScrollListener() {
+        val glm = GridLayoutManager(context, 2).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return when (collectionAdapter.getItemViewType(position)) {
+                        WishlistCollectionAdapter.LAYOUT_COLLECTION_TICKER -> 2
+                        LAYOUT_RECOMMENDATION_TITLE -> 2
+                        WishlistCollectionAdapter.LAYOUT_EMPTY_COLLECTION -> 2
+                        else -> 1
                     }
                 }
             }
+        }
 
+        rvScrollListener = object : EndlessRecyclerViewScrollListener(glm) {
+
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                currentPage += 1
+                onLoadMore = true
+                if (isFetchRecommendation) {
+                    loadRecommendationList()
+                }
+            }
+        }
+
+        binding?.run {
             rvWishlistCollection.apply {
                 layoutManager = glm
                 adapter = collectionAdapter
+                addOnScrollListener(rvScrollListener)
             }
         }
+    }
+
+    private fun loadRecommendationList() {
+        currRecommendationListPage += 1
+        collectionViewModel.loadRecommendation(currRecommendationListPage)
     }
 
     private fun setToolbarTitle(title: String) {
@@ -242,6 +272,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     private fun doRefresh() {
+        onLoadMore = false
+        isFetchRecommendation = false
+        currRecommendationListPage = 1
         getWishlistCollections()
         collectionAdapter.resetTicker()
     }

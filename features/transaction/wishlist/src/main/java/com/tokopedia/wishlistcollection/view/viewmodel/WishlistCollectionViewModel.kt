@@ -21,6 +21,7 @@ import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionUseCase
 import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class WishlistCollectionViewModel @Inject constructor(
@@ -102,5 +103,28 @@ class WishlistCollectionViewModel @Inject constructor(
             WishlistV2Utils.convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
             recommendation.recommendationItemList, recommendation.title
         )
+    }
+
+    fun loadRecommendation(page: Int) {
+        val listData = arrayListOf<WishlistCollectionTypeLayoutData>()
+        launch {
+            try {
+                val recommItems = getRecommendationWishlistV2(
+                    page, listOf(),
+                    WishlistV2Consts.EMPTY_WISHLIST_PAGE_NAME
+                )
+                recommItems.recommendationProductCardModelData.forEach { item ->
+                    listData.add(
+                        WishlistCollectionTypeLayoutData(
+                            item,
+                            WishlistV2Consts.TYPE_RECOMMENDATION_LIST
+                        )
+                    )
+                }
+                _collectionData.value = Success(listData)
+            } catch (e: Exception) {
+                _collectionData.value = Fail(e)
+            }
+        }
     }
 }
