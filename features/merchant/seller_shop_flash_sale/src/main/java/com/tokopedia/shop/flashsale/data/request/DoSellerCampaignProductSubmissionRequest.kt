@@ -16,6 +16,7 @@ data class DoSellerCampaignProductSubmissionRequest(
         @SuppressLint("Invalid Data Type") // BE still using number
         @SerializedName("product_id")
         val productId: Long,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("final_price")
         val finalPrice: Long,
         @SerializedName("custom_stock")

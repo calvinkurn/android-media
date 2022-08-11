@@ -6,7 +6,6 @@ class ImageGeneratorConstants {
         const val FS_TOKO = "tJHYeb"
         const val RILISAN_SPESIAL = "aaGBeS"
         const val MVC_PRODUCT = "ZmygOT"
-        const val FLASH_SALE_TOKO = "tJHYeb"
     }
     object ImageGeneratorKeys{
         const val PRODUCT_IMAGE_URL = "product_image_url"

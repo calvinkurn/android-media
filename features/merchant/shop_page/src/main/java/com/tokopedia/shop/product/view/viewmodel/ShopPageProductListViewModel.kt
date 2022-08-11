@@ -1,7 +1,9 @@
 package com.tokopedia.shop.product.view.viewmodel
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -18,15 +20,28 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageMapper
-import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
+import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
+import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
@@ -45,19 +60,22 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class ShopPageProductListViewModel @Inject constructor(
-        private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
-        private val mvcSummaryUseCase: MVCSummaryUseCase,
-        private val getMembershipUseCase: GetMembershipUseCaseNew,
-        private val userSession: UserSessionInterface,
-        private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
-        private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
-        private val getShopProductUseCase: GqlGetShopProductUseCase,
-        private val getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>,
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-        private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-        private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-        private val shopProductSortMapper: ShopProductSortMapper,
+    private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
+    private val mvcSummaryUseCase: MVCSummaryUseCase,
+    private val getMembershipUseCase: GetMembershipUseCaseNew,
+    private val userSession: UserSessionInterface,
+    private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
+    private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
+    private val getShopProductUseCase: GqlGetShopProductUseCase,
+    private val getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>,
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+    private val shopProductSortMapper: ShopProductSortMapper,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val updateCartUseCase: UpdateCartUseCase,
+    private val deleteCartUseCase: DeleteCartUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
@@ -81,19 +99,40 @@ class ShopPageProductListViewModel @Inject constructor(
     val claimMembershipResp = MutableLiveData<Result<MembershipClaimBenefitResponse>>()
     val bottomSheetFilterLiveData = MutableLiveData<Result<DynamicFilterModel>>()
     val shopProductFilterCountLiveData = MutableLiveData<Result<Int>>()
+    val miniCartAdd: LiveData<Result<AddToCartDataModel>>
+        get() = _miniCartAdd
+    private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
+
+    val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
+        get() = _miniCartUpdate
+    private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
+
+    val miniCartRemove: LiveData<Result<Pair<String, String>>>
+        get() = _miniCartRemove
+    private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
     val isLogin: Boolean
         get() = userSession.isLoggedIn
     val userDeviceId: String
         get() = userSession.deviceId
     private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase>()
     private var shopSortList = mutableListOf<ShopProductSortModel>()
+    private var miniCartData : MiniCartSimplifiedData? = null
+
+    val updatedShopProductListQuantityData: LiveData<MutableList<Visitable<*>>>
+        get() = _updatedShopProductListQuantityData
+    private val _updatedShopProductListQuantityData = MutableLiveData<MutableList<Visitable<*>>>()
+
+    val shopPageAtcTracker: LiveData<ShopPageAtcTracker>
+        get() = _shopPageAtcTracker
+    private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
 
     fun getBuyerViewContentData(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>,
             isShopWidgetAlreadyShown: Boolean,
             widgetUserAddressLocalData: LocalCacheModel,
-            context: Context?
+            context: Context?,
+            isEnableDirectPurchase: Boolean
     ) {
         launchCatchError(coroutineContext, {
             coroutineScope {
@@ -114,7 +153,7 @@ class ShopPageProductListViewModel @Inject constructor(
                 }
                 val shopProductEtalaseHighlightDataAsync = async(dispatcherProvider.io) {
                     if (isShopWidgetAlreadyShown) null
-                    else getShopProductEtalaseHighlightData(shopId, etalaseList,widgetUserAddressLocalData)
+                    else getShopProductEtalaseHighlightData(shopId, etalaseList,widgetUserAddressLocalData, isEnableDirectPurchase)
                 }
                 membershipStampProgressDataAsync.await()?.let {
                     membershipData.postValue(Success(it))
@@ -138,7 +177,8 @@ class ShopPageProductListViewModel @Inject constructor(
     private suspend fun getShopProductEtalaseHighlightData(
             shopId: String,
             etalaseList: List<ShopEtalaseItemDataModel>,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            isEnableDirectPurchase: Boolean
     ): ShopProductEtalaseHighlightUiModel? {
         try {
             val listEtalaseHighlight = etalaseList
@@ -155,7 +195,8 @@ class ShopPageProductListViewModel @Inject constructor(
                             it.etalaseId,
                             "",
                             getSort(it.etalaseId),
-                            widgetUserAddressLocalData
+                            widgetUserAddressLocalData,
+                            isEnableDirectPurchase = isEnableDirectPurchase
                     ).listShopProductUiModel
                 }
             }.awaitAll()
@@ -196,7 +237,7 @@ class ShopPageProductListViewModel @Inject constructor(
         return try {
             val response =  mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
             val code = response.data?.resultStatus?.code
-            if (code != ShopHomeViewModel.CODE_STATUS_SUCCESS) {
+            if (code != CODE_STATUS_SUCCESS) {
                 val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(response.data?.resultStatus?.message.toString()))
                 ShopPageExceptionHandler.logExceptionToCrashlytics(
                         ShopPageExceptionHandler.ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA,
@@ -266,7 +307,8 @@ class ShopPageProductListViewModel @Inject constructor(
             rating: String = "",
             pmax: Int = 0,
             pmin: Int = 0,
-            fcategory: Int? = null
+            fcategory: Int? = null,
+            isEnableDirectPurchase: Boolean
     ): GetShopProductUiModel {
         useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
                 page = page,
@@ -288,9 +330,16 @@ class ShopPageProductListViewModel @Inject constructor(
         val totalProductData = productListResponse.totalData
         return GetShopProductUiModel(
                 isHasNextPage,
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), etalaseId) },
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(
+                    it,
+                    isMyShop(shopId),
+                    etalaseId,
+                    isEnableDirectPurchase = isEnableDirectPurchase
+                )},
                 totalProductData
-        )
+        ).apply {
+            updateProductCardQuantity(listShopProductUiModel.toMutableList())
+        }
     }
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
@@ -310,7 +359,8 @@ class ShopPageProductListViewModel @Inject constructor(
             productPerPage: Int,
             selectedEtalaseId: String,
             shopProductFilterParameter: ShopProductFilterParameter,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            isEnableDirectPurchase: Boolean
     ) {
         launchCatchError(block = {
             val listShopProduct = withContext(dispatcherProvider.io) {
@@ -326,7 +376,8 @@ class ShopPageProductListViewModel @Inject constructor(
                         shopProductFilterParameter.getRating(),
                         shopProductFilterParameter.getPmax(),
                         shopProductFilterParameter.getPmin(),
-                        shopProductFilterParameter.getCategory()
+                        shopProductFilterParameter.getCategory(),
+                        isEnableDirectPurchase
                 )
             }
             productListData.postValue(Success(listShopProduct))
@@ -407,7 +458,8 @@ class ShopPageProductListViewModel @Inject constructor(
     fun setInitialProductList(
             shopId: String,
             productPerPage: Int,
-            initialProductListData: ShopProduct.GetShopProduct
+            initialProductListData: ShopProduct.GetShopProduct,
+            isEnableDirectPurchase: Boolean
     ) {
         productListData.postValue(Success(
                 GetShopProductUiModel(
@@ -417,10 +469,17 @@ class ShopPageProductListViewModel @Inject constructor(
                                 initialProductListData.totalData
                         ),
                         initialProductListData.data.map {
-                            ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), "")
+                            ShopPageProductListMapper.mapShopProductToProductViewModel(
+                                it,
+                                isMyShop(shopId),
+                                "",
+                                isEnableDirectPurchase = isEnableDirectPurchase
+                            )
                         },
                         initialProductListData.totalData
-                )
+                ).apply {
+                    updateProductCardQuantity(listShopProductUiModel.toMutableList())
+                }
         ))
     }
 
@@ -487,5 +546,211 @@ class ShopPageProductListViewModel @Inject constructor(
         return shopSortList.firstOrNull {
             it.value == sortId
         }?.name.orEmpty()
+    }
+
+    fun handleAtcFlow(
+        quantity: Int,
+        shopId: String,
+        componentName: String,
+        shopProductUiModel: ShopProductUiModel
+    ) {
+        val miniCartItem = getMiniCartItem(miniCartData, shopProductUiModel.id)
+        when {
+            miniCartItem == null -> addItemToCart(shopProductUiModel.id, shopId, quantity, componentName, shopProductUiModel)
+            quantity.isZero() -> removeItemCart(miniCartItem, componentName, shopProductUiModel)
+            else -> updateItemCart(miniCartItem, quantity, componentName, shopProductUiModel)
+        }
+    }
+
+    private fun addItemToCart(
+        productId: String,
+        shopId: String,
+        quantity: Int,
+        componentName: String,
+        shopProductUiModel: ShopProductUiModel
+    ) {
+        val addToCartRequestParams =
+            AddToCartUseCase.getMinimumParams(
+                productId = productId,
+                shopId = shopId,
+                quantity = quantity
+            )
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+            trackAddToCart(
+                it.data.cartId,
+                it.data.productId.toString(),
+                shopProductUiModel.name,
+                shopProductUiModel.displayedPrice,
+                shopProductUiModel.isVariant,
+                it.data.quantity,
+                ShopPageAtcTracker.AtcType.ADD,
+                componentName
+            )
+            _miniCartAdd.postValue(Success(it))
+        }, {
+            _miniCartAdd.postValue(Fail(it))
+        })
+    }
+
+    private fun updateItemCart(
+        miniCartItem: MiniCartItem.MiniCartItemProduct,
+        quantity: Int,
+        componentName: String,
+        shopProductUiModel: ShopProductUiModel
+    ) {
+        val existingQuantity = miniCartItem.quantity
+        miniCartItem.quantity = quantity
+        val cartId = miniCartItem.cartId
+        val updateCartRequest = UpdateCartRequest(
+            cartId = cartId,
+            quantity = miniCartItem.quantity,
+            notes = miniCartItem.notes
+        )
+        updateCartUseCase.setParams(
+            updateCartRequestList = listOf(updateCartRequest),
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+        )
+        updateCartUseCase.execute({
+            val atcType = if(quantity < existingQuantity){
+                ShopPageAtcTracker.AtcType.UPDATE_REMOVE
+            } else {
+                ShopPageAtcTracker.AtcType.UPDATE_ADD
+            }
+            trackAddToCart(
+                miniCartItem.cartId,
+                miniCartItem.productId,
+                shopProductUiModel.name,
+                shopProductUiModel.displayedPrice,
+                shopProductUiModel.isVariant,
+                miniCartItem.quantity,
+                atcType,
+                componentName
+            )
+            _miniCartUpdate.value = Success(it)
+        }, {
+            _miniCartUpdate.postValue(Fail(it))
+        })
+    }
+
+    private fun removeItemCart(
+        miniCartItem: MiniCartItem.MiniCartItemProduct,
+        componentName: String,
+        shopProductUiModel: ShopProductUiModel
+    ) {
+        deleteCartUseCase.setParams(
+            cartIdList = listOf(miniCartItem.cartId)
+        )
+        deleteCartUseCase.execute({
+            val productId = miniCartItem.productId
+            val data = Pair(productId, it.data.message.joinToString(separator = ", "))
+            trackAddToCart(
+                miniCartItem.cartId,
+                miniCartItem.productId,
+                shopProductUiModel.name,
+                shopProductUiModel.displayedPrice,
+                shopProductUiModel.isVariant,
+                miniCartItem.quantity,
+                ShopPageAtcTracker.AtcType.REMOVE,
+                componentName
+            )
+            _miniCartRemove.postValue(Success(data))
+        }, {
+            _miniCartRemove.postValue(Fail(it))
+        })
+    }
+
+    private fun getMiniCartItem(
+        miniCartSimplifiedData: MiniCartSimplifiedData?,
+        productId: String
+    ): MiniCartItem.MiniCartItemProduct? {
+        val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
+        return items.getMiniCartItemProduct(productId)
+    }
+
+    fun setMiniCartData(miniCartSimplifiedData: MiniCartSimplifiedData?) {
+        miniCartData = miniCartSimplifiedData
+    }
+
+    fun getShopProductDataWithUpdatedQuantity(listProductTabWidget: MutableList<Visitable<*>>) {
+        updateProductCardQuantity(listProductTabWidget)
+        _updatedShopProductListQuantityData.postValue(listProductTabWidget)
+    }
+
+    private fun updateProductCardQuantity(listProductTabWidget: MutableList<Visitable<*>>) {
+        listProductTabWidget.forEachIndexed { index, productTabWidget ->
+            when(productTabWidget){
+                is ShopProductUiModel -> {
+                    updateShopProductUiModelQuantity(productTabWidget).let {
+                        listProductTabWidget.setElement(index, it)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateShopProductUiModelQuantity(productModel: ShopProductUiModel): ShopProductUiModel {
+        val matchedMiniCartItem = getMatchedMiniCartItem(productModel)
+        if (matchedMiniCartItem.isNotEmpty()) {
+            val cartQuantity = matchedMiniCartItem.sumOf {
+                it.quantity.orZero()
+            }
+            if(cartQuantity != productModel.productInCart) {
+                productModel.productInCart = cartQuantity
+                productModel.isNewData = true
+            } else {
+                productModel.isNewData = false
+            }
+        } else {
+            if(!productModel.productInCart.isZero()) {
+                productModel.productInCart = 0
+                productModel.isNewData = true
+            } else {
+                productModel.productInCart = 0
+                productModel.isNewData = false
+            }
+        }
+        return productModel
+    }
+
+    private fun getMatchedMiniCartItem(
+        shopProductUiModel: ShopProductUiModel
+    ): List<MiniCartItem.MiniCartItemProduct> {
+        return miniCartData?.let { miniCartSimplifiedData ->
+            val isVariant = shopProductUiModel.isVariant
+            val listMatchedMiniCartItemProduct = if (isVariant) {
+                miniCartSimplifiedData.miniCartItems.values.filterIsInstance<MiniCartItem.MiniCartItemProduct>()
+                    .filter { it.productParentId == shopProductUiModel.parentId}
+            } else {
+                val childProductId = shopProductUiModel.id
+                miniCartSimplifiedData.miniCartItems.getMiniCartItemProduct(childProductId)?.let {
+                    listOf(it)
+                }.orEmpty()
+            }
+            listMatchedMiniCartItemProduct.filter { !it.isError }
+        }.orEmpty()
+    }
+
+    private fun trackAddToCart(
+        cartId: String,
+        productId: String,
+        productName: String,
+        productPrice: String,
+        isVariant: Boolean,
+        quantity: Int,
+        atcType: ShopPageAtcTracker.AtcType,
+        componentName: String
+    ) {
+        val mvcLockedToProductAddToCartTracker = ShopPageAtcTracker(
+            cartId,
+            productId,
+            productName,
+            productPrice,
+            isVariant,
+            quantity,
+            atcType,
+            componentName
+        )
+        _shopPageAtcTracker.postValue(mvcLockedToProductAddToCartTracker)
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
@@ -38,7 +39,7 @@ class ChooseProductViewModel @Inject constructor(
         get() = _isAddProductSuccess
 
     val isSelectionValid = Transformations.map(selectedItems) {
-        ReserveProductMapper.canReserveProduct(it)
+        ReserveProductMapper.canReserveProduct(it, previousSelectedProductCount)
     }
 
     val isSelectionHasVariant = Transformations.map(selectedItems) {
@@ -46,6 +47,7 @@ class ChooseProductViewModel @Inject constructor(
     }
 
     private var searchKeyword: String = ""
+    private var previousSelectedProductCount: Int = Int.ZERO
 
     fun isSearching(): Boolean {
         return searchKeyword.isNotEmpty()
@@ -77,8 +79,7 @@ class ChooseProductViewModel @Inject constructor(
                 )
                 val isProductAddSuccess = result.errorMessage.isEmpty()
                 _isAddProductSuccess.postValue(isProductAddSuccess)
-                if (isProductAddSuccess)
-                    _errors.postValue(MessageErrorException(result.errorMessage))
+                _errors.postValue(MessageErrorException(result.errorMessage))
             },
             onError = { error ->
                 _errors.postValue(error)
@@ -92,5 +93,9 @@ class ChooseProductViewModel @Inject constructor(
 
     fun setSelectedItems(selectedItems: List<SelectedProductModel>) {
         _selectedItems.value = selectedItems
+    }
+
+    fun setPreviousSelectedProductCount(count: Int) {
+        previousSelectedProductCount = count
     }
 }

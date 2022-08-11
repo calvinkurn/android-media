@@ -1431,9 +1431,9 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private suspend fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
-        if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
+        if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished || giveaway.status == InteractiveUiModel.Giveaway.Status.Unknown) {
             _interactive.update {
-                it.copy(interactive = InteractiveUiModel.Unknown)
+                it.copy(interactive = InteractiveUiModel.Unknown, isPlaying = false)
             }
             checkLeaderboard(channelId)
         } else {
@@ -1444,9 +1444,9 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private suspend fun handleQuizFromNetwork(quiz: InteractiveUiModel.Quiz) {
-        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
+        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished || quiz.status == InteractiveUiModel.Quiz.Status.Unknown) {
             _interactive.update {
-                it.copy(interactive = InteractiveUiModel.Unknown)
+                it.copy(interactive = InteractiveUiModel.Unknown, isPlaying = false)
             }
             checkLeaderboard(channelId)
         } else {
@@ -1591,11 +1591,10 @@ class PlayViewModel @AssistedInject constructor(
 
                 _tagItems.update {
                     it.copy(
-                        product = it.product.copy(
-                            productSectionList = mappedData.first
-                        ),
-                        maxFeatured = mappedData.second,
-                        bottomSheetTitle = mappedData.third
+                        product = mappedData.product,
+                        bottomSheetTitle = mappedData.bottomSheetTitle,
+                        maxFeatured = mappedData.maxFeatured,
+                        resultState = mappedData.resultState,
                     )
                 }
             }

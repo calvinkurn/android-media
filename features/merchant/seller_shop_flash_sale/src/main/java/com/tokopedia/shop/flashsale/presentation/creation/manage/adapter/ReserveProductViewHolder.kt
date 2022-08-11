@@ -50,6 +50,7 @@ class ReserveProductViewHolder(
         val skuText = context.getString(R.string.chooseproduct_sku_text, skuValue)
         val stockText = context.getString(R.string.chooseproduct_stock_total_text, item.stock)
         val variantText = context.getString(R.string.chooseproduct_variant_text, item.variant.size.dec())
+        val isSelected = selectedProducts.any { it.productId == item.productId }
 
         binding?.apply {
             tvProductName.text = item.productName
@@ -59,16 +60,18 @@ class ReserveProductViewHolder(
             tvProductPrice.text = item.price.getCurrencyFormatted()
             labelVariantCount.text = variantText
             labelVariantCount.isVisible = item.variant.size.isMoreThanZero()
-            checkboxItem.isChecked = selectedProducts.any { it.productId == item.productId }
+            checkboxItem.isChecked = isSelected
             tvDisabledReason.setTextAndCheckShow(item.disabledReason)
         }
 
         if (item.disabled) {
             // set from item disability
             setListEnable(false)
-        } else if (!item.isSelected) {
+        } else if (!isSelected) {
             // set from adapter input enabled
             setListEnable(inputEnabled)
+        } else {
+            setListEnable(true)
         }
     }
 
