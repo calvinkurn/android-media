@@ -17,16 +17,18 @@
         android:background="@color/Unify_Background"
         >
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_com_toolbar_nav_icon"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:paddingStart="14dp"
             android:paddingEnd="@dimen/dp_11"
+            app:icon_color_light_enable="@color/Unify_Static_Black"
+            app:icon_color_night_enable="@color/Unify_Static_Black"
+            app:icon_name="ARROW_BACK"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/imagepicker_insta_com_back" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_com_toolbar_icon"
