@@ -550,6 +550,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
         navToolbar = view.findViewById(R.id.navToolbar)
+        getSearchHint()
 
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
@@ -558,7 +559,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         //show nav toolbar
         navToolbar?.visibility = View.VISIBLE
-        getSearchHint()
         activity?.let { navToolbar?.setupToolbarWithStatusBar(it) }
         navToolbar?.let {
             viewLifecycleOwner.lifecycle.addObserver(it)
