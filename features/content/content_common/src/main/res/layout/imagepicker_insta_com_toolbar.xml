@@ -13,9 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="@dimen/spacing_lvl3"
-        android:paddingBottom="@dimen/spacing_lvl3"
-        android:background="@color/Unify_Background"
-        >
+        android:paddingBottom="@dimen/spacing_lvl3">
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_com_toolbar_nav_icon"
