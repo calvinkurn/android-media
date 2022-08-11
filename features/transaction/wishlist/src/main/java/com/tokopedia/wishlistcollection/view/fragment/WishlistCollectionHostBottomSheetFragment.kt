@@ -18,6 +18,7 @@ import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishli
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
 
 class WishlistCollectionHostBottomSheetFragment: Fragment(),
     BottomSheetCollectionWishlistAdapter.ActionListener,
@@ -27,6 +28,7 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
     private var productId = ""
     private var src = ""
     private var bottomSheetCollection = BottomSheetAddCollectionWishlist()
+    private var isProductActive = false
 
     companion object {
         @JvmStatic
@@ -35,6 +37,7 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
                 arguments = bundle.apply {
                     putString(PATH_PRODUCT_ID, this.getString(PATH_PRODUCT_ID))
                     putString(PATH_SRC, this.getString(PATH_SRC))
+                    putBoolean(IS_PRODUCT_ACTIVE, this.getBoolean(IS_PRODUCT_ACTIVE))
                 }
             }
         }
@@ -44,13 +47,20 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         productId = arguments?.getString(PATH_PRODUCT_ID) ?: ""
         src = arguments?.getString(PATH_SRC) ?: ""
-        showBottomSheetCollection(childFragmentManager, productId, src)
+        isProductActive = arguments?.getBoolean(IS_PRODUCT_ACTIVE) ?: false
+        showBottomSheetCollection(childFragmentManager, productId, src, isProductActive)
     }
 
-    private fun showBottomSheetCollection(fragmentManager: FragmentManager, productId: String, source: String) {
-        bottomSheetCollection = BottomSheetAddCollectionWishlist.newInstance(productId, source)
+    private fun showBottomSheetCollection(
+        fragmentManager: FragmentManager,
+        productId: String,
+        source: String,
+        isProductActive: Boolean
+    ) {
+        bottomSheetCollection = BottomSheetAddCollectionWishlist.newInstance(productId, source, isProductActive)
         if (bottomSheetCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCollection.setActionListener(this@WishlistCollectionHostBottomSheetFragment)
         bottomSheetCollection.setOnDismissListener { activity?.finish() }

@@ -6,11 +6,21 @@
     android:layout_margin="8dp"
     android:paddingBottom="20dp">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_oos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_add_wishlist_collection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/ticker_oos"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

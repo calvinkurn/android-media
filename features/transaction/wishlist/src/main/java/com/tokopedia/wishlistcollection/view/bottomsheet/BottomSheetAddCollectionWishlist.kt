@@ -15,9 +15,12 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -42,6 +45,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_MAIN_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_CREATE_NEW_COLLECTION
 import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetAddCollectionViewModel
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
 import java.util.ArrayList
 import javax.inject.Inject
 
@@ -50,6 +54,8 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private val collectionAdapter = BottomSheetCollectionWishlistAdapter()
     private var actionListener: ActionListener? = null
+    private var isProductActive: Boolean = false
+    private var toasterErrorMessage: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -63,17 +69,27 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         fun onFailedSaveItemToCollection(errorMessage: String)
     }
 
+    /*override fun onDismiss(dialog: DialogInterface) {
+        // TODO: need to change to applink if needed to show toaster
+        if (toasterErrorMessage.isNotEmpty()) {
+            showToaster(toasterErrorMessage, "", Toaster.TYPE_ERROR)
+            toasterErrorMessage = ""
+        }
+        super.onDismiss(dialog)
+    }*/
+
     companion object {
         private const val TAG: String = "AddToCollectionWishlistBottomSheet"
         const val REQUEST_CODE_LOGIN = 288
         const val OPEN_WISHLIST_COLLECTION = "OPEN_WISHLIST_COLLECTION"
 
         @JvmStatic
-        fun newInstance(productId: String, source: String): BottomSheetAddCollectionWishlist {
+        fun newInstance(productId: String, source: String, isProductActive: Boolean): BottomSheetAddCollectionWishlist {
             return BottomSheetAddCollectionWishlist().apply {
                 val bundle = Bundle()
                 bundle.putString(PRODUCT_IDs, productId)
                 bundle.putString(SOURCE, source)
+                bundle.putBoolean(IS_PRODUCT_ACTIVE, isProductActive)
                 arguments = bundle
             }
         }
@@ -108,6 +124,16 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
         binding?.rvAddWishlistCollection?.adapter = collectionAdapter
         binding?.rvAddWishlistCollection?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         setChild(binding?.root)
+        if (!isProductActive) {
+            binding?.tickerOos?.apply {
+                visible()
+                closeButtonVisibility = View.GONE
+                setTextDescription(getString(R.string.collection_ticker_oos))
+                tickerType = Ticker.TYPE_ANNOUNCEMENT
+            }
+        } else {
+            binding?.tickerOos?.gone()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -138,6 +164,7 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
     private fun loadData() {
         val productId = arguments?.get(PRODUCT_IDs).toString()
         val source = arguments?.get(SOURCE).toString()
+        isProductActive = arguments?.get(IS_PRODUCT_ACTIVE) as Boolean
         val param = GetWishlistCollectionsBottomSheetParams(
             productIds = productId,
             source = source
@@ -161,12 +188,16 @@ class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tok
                     } else {
                         val errorMessage = result.data.errorMessage.first().ifEmpty { context?.getString(
                             R.string.wishlist_common_error_msg) }
-                        errorMessage?.let { showToaster(it, "", Toaster.TYPE_ERROR) }
+                        if (errorMessage != null) {
+                            toasterErrorMessage = errorMessage
+                        }
+                        dismiss()
                     }
                 }
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
-                    showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    toasterErrorMessage = errorMessage
+                    dismiss()
                 }
             }
         }

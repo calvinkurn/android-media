@@ -434,6 +434,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 is Success -> {
                     finishRefresh()
                     result.data.getWishlistCollectionItems.let { collectionDetail ->
+                        if (paramGetCollectionItems.sortFilters.isEmpty() && paramGetCollectionItems.query.isEmpty()) {
+                            hideSearchAndFilter()
+                        } else {
+                            showSearchAndFilter()
+                        }
                         toolbarTitle = collectionDetail.headerTitle
                         updateToolbarTitle(toolbarTitle)
                         rvScrollListener.setHasNextPage(collectionDetail.hasNextPage)
@@ -1021,6 +1026,20 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun hideTotalLabel() {
         binding?.run {
             wishlistCollectionDetailStickyCountManageLabel.rlWishlistCollectionDetailManage.gone()
+        }
+    }
+
+    private fun hideSearchAndFilter() {
+        binding?.run {
+            wishlistCollectionDetailSearchbar.gone()
+            clWishlistCollectionDetailHeader.gone()
+        }
+    }
+
+    private fun showSearchAndFilter() {
+        binding?.run {
+            wishlistCollectionDetailSearchbar.visible()
+            clWishlistCollectionDetailHeader.visible()
         }
     }
 
@@ -1838,7 +1857,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         setOnClickListener {
                             showBottomSheetCollection(
                                 childFragmentManager,
-                                listSelectedProductIds.toString(),
+                                listSelectedProductIds.joinToString(),
                                 SRC_WISHLIST_COLLECTION
                             )
                         }
@@ -2281,7 +2300,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         productId: String,
         source: String
     ) {
-        bottomSheetCollection = BottomSheetAddCollectionWishlist.newInstance(productId, source)
+        bottomSheetCollection = BottomSheetAddCollectionWishlist.newInstance(
+            productId,
+            source,
+            false
+        )
         if (bottomSheetCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCollection.setActionListener(this@WishlistCollectionDetailFragment)
         bottomSheetCollection.show(fragmentManager)

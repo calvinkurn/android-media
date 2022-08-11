@@ -257,6 +257,7 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -1860,7 +1861,8 @@ open class DynamicProductDetailFragment :
                 productInfo?.basic?.productID?.let {
                     context?.let { context ->
                         if (isUsingAddRemoveWishlistV2(context)) {
-                            addWishlistV2(componentTrackDataModel)
+                            println("++ isProductActive = ${productInfo?.isProductActive()}")
+                            addWishlistV2(componentTrackDataModel, productInfo?.isProductActive())
                         } else {
                             addWishList()
                             trackingEventSuccessAddToWishlist(componentTrackDataModel)
@@ -4714,7 +4716,10 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    private fun addWishlistV2(componentTrackDataModel: ComponentTrackDataModel) {
+    private fun addWishlistV2(
+        componentTrackDataModel: ComponentTrackDataModel,
+        isProductActive: Boolean
+    ) {
         val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
         viewModel.addWishListV2(productId, object : WishlistV2ActionListener {
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {
@@ -4740,6 +4745,7 @@ open class DynamicProductDetailFragment :
                     if (result.success && WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(context)) {
                         val applinkCollection = "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
                         val intentBottomSheetWishlistCollection = RouteManager.getIntent(context, applinkCollection)
+                        intentBottomSheetWishlistCollection.putExtra(WishlistV2CommonConsts.IS_PRODUCT_ACTIVE, isProductActive)
                         startActivityForResult(intentBottomSheetWishlistCollection, REQUEST_CODE_ADD_WISHLIST_COLLECTION)
                     } else {
                         view?.let { v ->

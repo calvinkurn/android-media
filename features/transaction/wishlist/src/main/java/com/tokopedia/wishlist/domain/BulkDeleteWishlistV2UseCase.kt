@@ -56,8 +56,8 @@ class BulkDeleteWishlistV2UseCase @Inject constructor(@ApplicationContext privat
 
     companion object {
         val QUERY = """
-            mutation WishlistBulkRemoveV2(${'$'}productID: [SuperInteger], ${'$'}userID: SuperInteger, ${'$'}mode: Int, ${'$'}additionalParameters: AddParams) {
-                    wishlist_bulk_remove_v2(productID: ${'$'}productID, userID: ${'$'}userID, mode: ${'$'}mode, additionalParameters: ${'$'}additionalParameters) {
+            mutation WishlistBulkRemoveV2(${'$'}productID: [SuperInteger], ${'$'}userID: SuperInteger, ${'$'}mode: Int, ${'$'}additionalParameters: AddParams, ${'$'}source: String) {
+                    wishlist_bulk_remove_v2(productID: ${'$'}productID, userID: ${'$'}userID, mode: ${'$'}mode, additionalParameters: ${'$'}additionalParameters, source: ${'$'}source) {
                     id
                     success
                     message
