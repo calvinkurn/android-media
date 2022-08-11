@@ -1,6 +1,9 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.kotlin.extensions.orFalse
@@ -593,5 +596,20 @@ object DynamicProductDetailMapper {
         } else {
             productInfo.finalPrice
         }
+    }
+
+    fun getAffiliatePageDetail(productInfo: DynamicProductInfoP1): AffiliatePageDetail {
+        val categoryId = productInfo.basic.category.detail.lastOrNull()?.id ?: ""
+        return AffiliatePageDetail(
+            pageId = productInfo.basic.productID,
+            source = AffiliateSdkPageSource.PDP(
+                shopId = productInfo.basic.shopID,
+                productInfo = AffiliateSdkProductInfo(
+                    categoryID = categoryId,
+                    isVariant = productInfo.isProductVariant(),
+                    stockQty = productInfo.getFinalStock().toIntOrZero()
+                )
+            )
+        )
     }
 }
