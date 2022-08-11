@@ -54,6 +54,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -420,11 +421,11 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             loaderCheckout.gone()
             hideContent()
 
-            it.setButtonFull(true)
-            it.errorIllustration.loadImage(error.atcErrorPage.imageUrl)
+            it.errorIllustration.loadImageFitCenter(error.atcErrorPage.imageUrl)
             it.errorAction.text = error.atcErrorPage.buttons.first().label
             it.errorTitle.text = error.atcErrorPage.title
             it.errorDescription.text = error.atcErrorPage.subTitle
+            it.errorSecondaryAction.gone()
 
             it.setActionClickListener {
                 RouteManager.getIntent(context, error.atcErrorPage.buttons.first().appLinkUrl).apply {
