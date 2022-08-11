@@ -30,8 +30,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_com_toolbar_icon"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="@dimen/content_common_space_32"
+            android:layout_height="@dimen/content_common_space_32"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/img_com_toolbar_nav_icon"
             app:layout_constraintTop_toTopOf="parent" />
