@@ -1708,9 +1708,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     // Project ARMY, clear from promo BBO ticker
     @Override
-    public void onCancelVoucherLogisticClicked(String pslCode, int position) {
+    public void onCancelVoucherLogisticClicked(String pslCode, int position, ShipmentCartItemModel shipmentCartItemModel) {
         checkoutAnalyticsCourierSelection.eventCancelPromoStackingLogistic();
-        shipmentPresenter.cancelAutoApplyPromoStackLogistic(position, pslCode);
+        shipmentPresenter.cancelAutoApplyPromoStackLogistic(position, pslCode, shipmentCartItemModel);
         shipmentAdapter.cancelAllCourierPromo();
     }
 
@@ -1752,6 +1752,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 NotEligiblePromoHolderdata notEligiblePromoHolderdata = new NotEligiblePromoHolderdata();
                                 notEligiblePromoHolderdata.setPromoTitle(voucherOrdersItemUiModel.getTitleDescription());
                                 notEligiblePromoHolderdata.setPromoCode(voucherOrdersItemUiModel.getCode());
+                                notEligiblePromoHolderdata.setUniqueId(voucherOrdersItemUiModel.getUniqueId());
                                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
                                     if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
                                         notEligiblePromoHolderdata.setShopName(shipmentCartItemModel.getShopName());
@@ -2106,7 +2107,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
                             !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) && isClearPromo) {
                         String promoLogisticCode = shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode();
-                        shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode);
+                        shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode, shipmentCartItemModel);
                         ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
                         if (validateUsePromoRequest != null) {
                             for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
