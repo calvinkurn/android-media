@@ -2524,6 +2524,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setCodes(listOrderCodes);
                     ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
                     ordersItem.setShopId(shipmentCartItemModel.getShopId());
+                    ordersItem.setBoType(shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType());
                     setValidateUseSpIdParam(shipmentCartItemModel, ordersItem);
                     listOrderItem.add(ordersItem);
                 }
@@ -2625,6 +2626,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ordersItem.setCodes(listCodes);
                 ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
                 ordersItem.setShopId(shipmentCartItemModel.getShopId());
+                ordersItem.setBoType(shipmentCartItemModel.getShipmentCartData().getBoMetadata().getBoType());
                 ordersItem.setInsurancePrice(shipmentCartItemModel.isInsurance() ? 1 : 0);
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() == null) {
                     ordersItem.setShippingId(0);
@@ -2973,38 +2975,38 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel) {
         if (lastApplyUiModel == null) return;
 
-        ArrayList<Order> listOrder = new ArrayList<>();
-        Order order = new Order();
-        for (int i = 0; i < shipmentAdapter.getShipmentCartItemModelList().size(); i++) {
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelList().get(i);
-            order.setShopId(shipmentCartItemModel.getShopId());
-            order.setUniqueId(shipmentCartItemModel.getCartString());
-            order.setChecked(true);
-
-            ArrayList<String> listOrderCodes = new ArrayList<>();
-            for (int x = 0; x < lastApplyUiModel.getVoucherOrders().size(); x++) {
-                if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyUiModel.getVoucherOrders().get(x).getUniqueId())) {
-                    listOrderCodes.add(lastApplyUiModel.getVoucherOrders().get(x).getCode());
-                    break;
-                }
-            }
-            order.setCodes(listOrderCodes);
-
-            ArrayList<ProductDetail> listProduct = new ArrayList<>();
-            for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
-                CartItemModel cartItemModel = shipmentCartItemModel.getCartItemModels().get(j);
-                ProductDetail productDetail = new ProductDetail();
-                productDetail.setProductId(cartItemModel.getProductId());
-                productDetail.setQuantity(cartItemModel.getQuantity());
-                listProduct.add(productDetail);
-            }
-            order.setProduct_details(listProduct);
-            listOrder.add(order);
-        }
-
-        PromoRequest promoRequest = new PromoRequest();
-        promoRequest.setState(CheckoutConstant.CHECKOUT);
-        promoRequest.setCodes(new ArrayList<>(lastApplyUiModel.getCodes()));
+//        ArrayList<Order> listOrder = new ArrayList<>();
+//        Order order = new Order();
+//        for (int i = 0; i < shipmentAdapter.getShipmentCartItemModelList().size(); i++) {
+//            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelList().get(i);
+//            order.setShopId(shipmentCartItemModel.getShopId());
+//            order.setUniqueId(shipmentCartItemModel.getCartString());
+//            order.setChecked(true);
+//
+//            ArrayList<String> listOrderCodes = new ArrayList<>();
+//            for (int x = 0; x < lastApplyUiModel.getVoucherOrders().size(); x++) {
+//                if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyUiModel.getVoucherOrders().get(x).getUniqueId())) {
+//                    listOrderCodes.add(lastApplyUiModel.getVoucherOrders().get(x).getCode());
+//                    break;
+//                }
+//            }
+//            order.setCodes(listOrderCodes);
+//
+//            ArrayList<ProductDetail> listProduct = new ArrayList<>();
+//            for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
+//                CartItemModel cartItemModel = shipmentCartItemModel.getCartItemModels().get(j);
+//                ProductDetail productDetail = new ProductDetail();
+//                productDetail.setProductId(cartItemModel.getProductId());
+//                productDetail.setQuantity(cartItemModel.getQuantity());
+//                listProduct.add(productDetail);
+//            }
+//            order.setProduct_details(listProduct);
+//            listOrder.add(order);
+//        }
+//
+//        PromoRequest promoRequest = new PromoRequest();
+//        promoRequest.setState(CheckoutConstant.CHECKOUT);
+//        promoRequest.setCodes(new ArrayList<>(lastApplyUiModel.getCodes()));
 
         ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
         PromoRequest promoRequestParam = generateCouponListRecommendationRequest();

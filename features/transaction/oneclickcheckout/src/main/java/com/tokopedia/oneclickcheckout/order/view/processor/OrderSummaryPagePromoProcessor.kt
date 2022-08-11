@@ -15,6 +15,9 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -72,10 +75,23 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         return resultValidateUse
     }
 
-    suspend fun clearOldLogisticPromo(oldPromoCode: String) {
+    suspend fun clearOldLogisticPromo(oldPromoCode: String, orderCart: OrderCart) {
         withContext(executorDispatchers.io) {
             try {
-                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true).executeOnBackground()
+                val params = ClearPromoRequest(
+                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        isOcc = true,
+                        ClearPromoOrderData(
+                                orders = listOf(
+                                        ClearPromoOrder(
+                                                uniqueId = orderCart.cartString,
+                                                boType = orderCart.shop.boMetadata.boType,
+                                                codes = arrayListOf(oldPromoCode)
+                                        )
+                                )
+                        )
+                )
+                clearCacheAutoApplyStackUseCase.get().setParams(params).executeOnBackground()
             } catch (t: Throwable) {
                 //ignore throwable
             }
@@ -147,11 +163,25 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         return resultValidateUse
     }
 
-    suspend fun cancelIneligiblePromoCheckout(promoCodeList: ArrayList<String>): Pair<Boolean, OccGlobalEvent> {
+    suspend fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, orderCart: OrderCart): Pair<Boolean, OccGlobalEvent> {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList, true).executeOnBackground()
+                val params = ClearPromoRequest(
+                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        isOcc = true,
+                        ClearPromoOrderData(
+                                codes = notEligiblePromoHolderdataList.mapNotNull { if (it.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) it.promoCode else null },
+                                orders = listOf(
+                                        ClearPromoOrder(
+                                                uniqueId = orderCart.cartString,
+                                                boType = orderCart.shop.boMetadata.boType,
+                                                codes = notEligiblePromoHolderdataList.mapNotNull { if (it.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) null else it.promoCode }.toMutableList()
+                                        )
+                                )
+                        )
+                )
+                clearCacheAutoApplyStackUseCase.get().setParams(params).executeOnBackground()
                 return@withContext true to OccGlobalEvent.Loading
             } catch (t: Throwable) {
                 return@withContext false to OccGlobalEvent.Error(t.cause ?: t)
@@ -167,6 +197,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val ordersItem = Order()
         ordersItem.shopId = orderCart.shop.shopId
         ordersItem.uniqueId = orderCart.cartString
+        ordersItem.boType = orderCart.shop.boMetadata.boType
         val productDetails: ArrayList<ProductDetail> = ArrayList()
         orderCart.products.forEach {
             if (!it.isError) {
@@ -234,6 +265,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val ordersItem = OrdersItem()
         ordersItem.shopId = orderCart.shop.shopId
         ordersItem.uniqueId = orderCart.cartString
+        ordersItem.boType = orderCart.shop.boMetadata.boType
 
         val productDetails: ArrayList<ProductDetailsItem> = ArrayList()
         orderCart.products.forEach {
@@ -305,7 +337,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
             return if (shouldShowIneligibleBottomSheet()) {
                 false to OccGlobalEvent.PromoClashing(notEligiblePromoHolderdataList)
             } else {
-                return cancelIneligiblePromoCheckout(ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
+                return cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList, orderCart)
             }
         }
         return true to OccGlobalEvent.Loading
@@ -354,15 +386,23 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
 
     private suspend fun handlePromoThrowable(throwable: Throwable, validateUsePromoRequest: ValidateUsePromoRequest): Boolean {
         if (throwable is AkamaiErrorException) {
-            val allPromoCodes = arrayListOf<String>()
-            validateUsePromoRequest.orders.first().codes.also {
-                allPromoCodes.addAll(it)
-            }
-            validateUsePromoRequest.codes.forEach {
-                allPromoCodes.add(it)
-            }
             try {
-                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, allPromoCodes, true).executeOnBackground()
+                val order = validateUsePromoRequest.orders.first()
+                val params = ClearPromoRequest(
+                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        isOcc = true,
+                        ClearPromoOrderData(
+                                codes = validateUsePromoRequest.codes,
+                                orders = listOf(
+                                        ClearPromoOrder(
+                                                uniqueId = order.uniqueId,
+                                                boType = order.boType,
+                                                codes = order.codes
+                                        )
+                                )
+                        )
+                )
+                clearCacheAutoApplyStackUseCase.get().setParams(params).executeOnBackground()
             } catch (t: Throwable) {
                 //ignore throwable
             }
