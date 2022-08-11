@@ -38,8 +38,8 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
 
     fun showTable(items: List<TablePageUiModel>) {
         binding.run {
-            tableViewPageControl.visibility =
-                if (items.size > Int.ONE && isPageIndicatorEnabled) View.VISIBLE else View.GONE
+            val shouldShowPageControl = items.size > Int.ONE && isPageIndicatorEnabled
+            tableViewPageControl.isVisible = shouldShowPageControl
             if (isPageIndicatorEnabled) {
                 tableViewPageControl.setIndicator(items.size)
             }
@@ -104,7 +104,7 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
 
     fun resetHeight() {
         binding.run {
-            highestHeight = 0
+            highestHeight = Int.ZERO
             rvTableViewPage.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             rvTableViewPage.requestLayout()
         }

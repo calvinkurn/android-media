@@ -2903,8 +2903,8 @@ open class ProductManageFragment :
                     val data = it.data
 
                     if (data is ShowFilterTab) {
-                        val mappedData = getTabData(data)
-                        filterTab?.show(mappedData)
+                        val tabData = getTabData(data)
+                        filterTab?.show(tabData)
                     } else {
                         filterTab?.update(data, this)
                     }

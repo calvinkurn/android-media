@@ -45,15 +45,6 @@ class UnificationTabBottomSheet : BaseBottomSheet<ShcBottomSheetUnificationTabBi
         setupRecyclerView()
     }
 
-    private fun setupRecyclerView() {
-        val tabAdapter = UnificationTabAdapter(items)
-        tabAdapter.setOnItemSelectedListener(onTabSelected)
-        binding?.rvShcUnification?.run {
-            layoutManager = LinearLayoutManager(context)
-            adapter = tabAdapter
-        }
-    }
-
     fun setOnTabItemSelected(action: (UnificationTabUiModel) -> Unit): UnificationTabBottomSheet {
         this.onTabSelected = action
         return this
@@ -71,5 +62,14 @@ class UnificationTabBottomSheet : BaseBottomSheet<ShcBottomSheetUnificationTabBi
         }
 
         show(fm, TAG)
+    }
+
+    private fun setupRecyclerView() {
+        val tabAdapter = UnificationTabAdapter(items)
+        tabAdapter.setOnItemSelectedListener(onTabSelected)
+        binding?.rvShcUnification?.run {
+            layoutManager = LinearLayoutManager(context)
+            adapter = tabAdapter
+        }
     }
 }
