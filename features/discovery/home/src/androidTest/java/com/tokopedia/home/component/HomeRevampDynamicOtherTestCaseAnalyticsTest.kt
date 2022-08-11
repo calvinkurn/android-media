@@ -70,11 +70,13 @@ class HomeRevampDynamicChannelComponentOtherTestCaseAnalyticsTest {
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
                 recyclerView = recyclerView
         )
-        val recyclerViewBalanceWidget: RecyclerView =
+        val recyclerViewBalanceWidget: RecyclerView? =
             activityRuleOtherTestCase.activity.findViewById(R.id.rv_balance_widget_data)
-        balanceWidgetRecyclerViewIdlingResource = BalanceWidgetRecyclerViewIdlingResource(
-            recyclerView = recyclerViewBalanceWidget
-        )
+        recyclerViewBalanceWidget?.let {
+            balanceWidgetRecyclerViewIdlingResource = BalanceWidgetRecyclerViewIdlingResource(
+                recyclerView = it
+            )
+        }
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
 
