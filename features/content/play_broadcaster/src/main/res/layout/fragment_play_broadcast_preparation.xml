@@ -8,13 +8,10 @@
     android:background="@color/play_bro_dms_preparation_overlay"
     >
 
-    <com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
+    <com.tokopedia.content.common.ui.toolbar.ImagePickerCommonToolbar
         android:id="@+id/view_action_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

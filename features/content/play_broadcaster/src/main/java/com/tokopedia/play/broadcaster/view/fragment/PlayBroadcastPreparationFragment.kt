@@ -10,7 +10,9 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
+import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
@@ -30,7 +32,6 @@ import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
-import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.PreparationMenuView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
@@ -68,7 +69,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
     private val analyticManager: PreparationAnalyticManager,
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
-    ActionBarView.Listener,
     PreparationMenuView.Listener,
     TitleFormView.Listener,
     CoverFormView.Listener {
@@ -226,8 +226,21 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Setup */
     private fun setupView() {
-        binding.viewActionBar.setShopName(parentViewModel.getShopName())
-        binding.viewActionBar.setShopIcon(parentViewModel.getShopIconUrl())
+        binding.viewActionBar.apply {
+            title = getString(com.tokopedia.content.common.R.string.feed_content_post_sebagai)
+            subtitle = parentViewModel.getShopName()
+            icon = parentViewModel.getShopIconUrl()
+            navIcon = CLOSE
+            setContentColor(ContentColor.TRANSPARENT)
+
+            setOnAccountClickListener {
+                toaster.showToaster("switching account")
+            }
+            setOnBackClickListener {
+                analytic.clickCloseOnPreparation()
+                activity?.onBackPressed()
+            }
+        }
         binding.formTitle.setMaxCharacter(viewModel.maxTitleChars)
     }
 
@@ -262,7 +275,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private fun setupListener() {
         binding.apply {
-            viewActionBar.setListener(this@PlayBroadcastPreparationFragment)
             viewPreparationMenu.setListener(this@PlayBroadcastPreparationFragment)
             formTitle.setListener(this@PlayBroadcastPreparationFragment)
             formCover.setListener(this@PlayBroadcastPreparationFragment)
@@ -553,13 +565,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             } else null,
             listener = schedulePickerListener,
         )
-    }
-
-    /** Callback Action Bar */
-    override fun onClickClosePreparation() {
-        analytic.clickCloseOnPreparation()
-
-        activity?.onBackPressed()
     }
 
     /** Callback Preparation Menu */
