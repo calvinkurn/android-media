@@ -189,7 +189,7 @@ class PlayViewModel @AssistedInject constructor(
         NetworkResult.Loading
     )
     private val _loadingBuy = MutableStateFlow(false)
-    private val _isFirstGame = MutableStateFlow(false)
+    private val _autoOpenInteractive = MutableStateFlow(false)
     private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
 
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
@@ -1428,7 +1428,7 @@ class PlayViewModel @AssistedInject constructor(
         repo.setActive(interactive.id)
 
         //new game set as first game
-        _isFirstGame.setValue { true }
+        _autoOpenInteractive.setValue { true }
 
         when (interactive) {
             is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
@@ -1438,8 +1438,8 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleAutoOpen(){
-        if(_isFirstGame.value && !repo.hasJoined(_interactive.value.interactive.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying){
-            _isFirstGame.setValue { false }
+        if(_autoOpenInteractive.value && !repo.hasJoined(_interactive.value.interactive.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying){
+            _autoOpenInteractive.setValue { false }
             handlePlayingInteractive(shouldPlay = true)
         }
     }

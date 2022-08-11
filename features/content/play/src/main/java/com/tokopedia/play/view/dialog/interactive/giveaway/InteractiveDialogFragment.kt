@@ -15,6 +15,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.util.withCache
@@ -35,7 +36,7 @@ import com.tokopedia.play_common.view.game.setupGiveaway
 import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -51,6 +52,9 @@ class InteractiveDialogFragment @Inject constructor(
     private var mDataSource: DataSource? = null
 
     private lateinit var viewModel: PlayViewModel
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(CoroutineDispatchersProvider.main + job)
 
     private val followViewListener = object : InteractiveFollowView.Listener {
         override fun onFollowImpressed(view: InteractiveFollowView) {
@@ -180,8 +184,7 @@ class InteractiveDialogFragment @Inject constructor(
                         if (widget is QuizWidgetView) {
                             widget.animateAnswer(event.isTrue)
                         }
-                        delay(FADE_TRANSITION_DELAY)
-                        dismiss()
+                        dismissDialog()
                     }
                     else -> {
                     }
@@ -190,6 +193,13 @@ class InteractiveDialogFragment @Inject constructor(
         }
     }
 
+    private fun dismissDialog(){
+        job.cancelChildren()
+        scope.launch {
+            delay(FADE_TRANSITION_DELAY)
+            dismiss()
+        }
+    }
 
     private fun renderGiveawayDialog(
         giveaway: InteractiveUiModel.Giveaway,
@@ -319,6 +329,11 @@ class InteractiveDialogFragment @Inject constructor(
             return if (parent.childCount < 0) null
             else parent.getChildAt(0)
         }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        scope.cancel()
+    }
 
     companion object {
         private const val TAG = "InteractiveDialogFragment"

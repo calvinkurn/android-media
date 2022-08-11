@@ -73,7 +73,7 @@ interface PlayInteractiveAnalytic {
         interactiveId: String,
         shopId: String,
         channelId: String
-    ) {}
+    )
 
     fun impressLeaderBoard(interactiveId: String, shopId: String, channelId: String)
 }

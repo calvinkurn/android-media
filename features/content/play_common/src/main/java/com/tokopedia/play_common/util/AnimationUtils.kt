@@ -10,6 +10,8 @@ import androidx.dynamicanimation.animation.SpringForce
  * @author by astidhiyaa on 01/07/22
  */
 object AnimationUtils {
+    private const val DEFAULT_VELOCIY = 14f
+
     fun addSpringAnim(
         view: View,
         property: DynamicAnimation.ViewProperty,
@@ -17,7 +19,7 @@ object AnimationUtils {
         finalPosition: Float,
         @FloatRange(from = 0.1) stiffness: Float,
         @FloatRange(from = 0.0) dampingRatio: Float,
-        @FloatRange(from = 0.0) velocity: Float = 14f,
+        @FloatRange(from = 0.0) velocity: Float = DEFAULT_VELOCIY,
     ): SpringAnimation {
         val spring = SpringForce(finalPosition)
         spring.apply {
