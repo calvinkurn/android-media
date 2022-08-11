@@ -21,13 +21,14 @@ import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import javax.inject.Inject
 
 /**
  * Created by @ilhamsuaib on 08/07/22.
  */
 
 @GqlQuery("GetUnificationDataGqlQuery", GetUnificationDataUseCase.QUERY)
-class GetUnificationDataUseCase(
+class GetUnificationDataUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
     unificationMapper: UnificationMapper,
     dispatchers: CoroutineDispatchers,

@@ -211,22 +211,6 @@ class SellerHomeUseCaseModule {
 
     @SellerHomeScope
     @Provides
-    fun provideGetUnificationDataUseCase(
-        gqlRepository: GraphqlRepository,
-        mapper: UnificationMapper,
-        dispatchers: CoroutineDispatchers,
-        getTableDataUseCase: GetTableDataUseCase
-    ): GetUnificationDataUseCase {
-        return GetUnificationDataUseCase(
-            gqlRepository = gqlRepository,
-            getTableDataUseCase = getTableDataUseCase,
-            unificationMapper = mapper,
-            dispatchers = dispatchers
-        )
-    }
-
-    @SellerHomeScope
-    @Provides
     fun provideGetTickerUseCase(
         gqlRepository: GraphqlRepository,
         mapper: TickerMapper,
