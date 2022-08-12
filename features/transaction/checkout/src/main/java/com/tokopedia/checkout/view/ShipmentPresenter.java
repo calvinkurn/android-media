@@ -2384,7 +2384,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             final long shippingId = voucherOrdersItemUiModel.getShippingId();
             final long spId = voucherOrdersItemUiModel.getSpId();
             // assuming voucher with shippingId and spId not empty as voucher for BO
-            if (shippingId != -1 && spId != -1) {
+            if (shippingId > 0 && spId > 0) {
                 if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doUnapplyBo(voucherOrdersItemUiModel);
                 }
