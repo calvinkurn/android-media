@@ -2379,14 +2379,23 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
-        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel: validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+        // loop for red state first, then do auto apply BO
+        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
             final long shippingId = voucherOrdersItemUiModel.getShippingId();
             final long spId = voucherOrdersItemUiModel.getSpId();
             // assuming voucher with shippingId and spId not empty as voucher for BO
             if (shippingId != -1 && spId != -1) {
                 if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doUnapplyBo(voucherOrdersItemUiModel);
-                } else {
+                }
+            }
+        }
+        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+            final long shippingId = voucherOrdersItemUiModel.getShippingId();
+            final long spId = voucherOrdersItemUiModel.getSpId();
+            // assuming voucher with shippingId and spId not empty as voucher for BO
+            if (shippingId != -1 && spId != -1) {
+                if (!voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                     doApplyBo(voucherOrdersItemUiModel);
                 }
             }
@@ -2407,18 +2416,21 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getShipmentCartItemPositionByUniqueId(shipmentCartItemModelList, voucherOrdersItemUiModel.getUniqueId());
         if (itemPosition != -1) {
             getView().resetCourier(itemPosition);
-            clearPromoCodeFromLastValidateUseRequest(voucherOrdersItemUiModel.getCode());
+            // todo: show micro interaction (nanti aja)
+            clearOrderPromoCodeFromLastValidateUseRequest(voucherOrdersItemUiModel.getCode());
             getView().onNeedUpdateViewItem(itemPosition);
         }
     }
 
     @Override
-    public void clearPromoCodeFromLastValidateUseRequest(String promoCode) {
-        final List<String> codes = lastValidateUsePromoRequest.getCodes();
-        if (!codes.isEmpty()) {
-            codes.remove(promoCode);
+    public void clearOrderPromoCodeFromLastValidateUseRequest(String promoCode) {
+        String uniqueId = "";
+        // todo: bobby: send uniqueId as function parameter
+        for (OrdersItem order : lastValidateUsePromoRequest.getOrders()) {
+            if (order.getUniqueId().equals(uniqueId)) {
+                order.getCodes().remove(promoCode);
+            }
         }
-        lastValidateUsePromoRequest.setCodes(codes);
     }
 
     private void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel) {
@@ -2426,7 +2438,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getShipmentCartItemPositionByUniqueId(shipmentCartItemModelList, voucherOrdersItemUiModel.getUniqueId());
         if (itemPosition != -1) {
             final ShipmentCartItemModel shipmentCartItemModel = shipmentCartItemModelList.get(itemPosition);
-            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
+            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() == null ||
                     !shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode().equals(voucherOrdersItemUiModel.getCode())) {
                 processBoPromoCourierRecommendation(itemPosition, voucherOrdersItemUiModel, shipmentCartItemModel);
             }
@@ -2445,7 +2457,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (getRecipientAddressModel() != null) {
             cornerId = getRecipientAddressModel().isCornerAddress();
         }
-        String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
+        String pslCode = voucherOrdersItemUiModel.getCode();
         boolean isLeasing = shipmentCartItemModel.isLeasingProduct();
 
         String mvc = generateRatesMvcParam(cartString);
@@ -2472,23 +2484,24 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         } else {
             observable = ratesUseCase.execute(param);
         }
-        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+//        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+//                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             String promoCode = voucherOrdersItemUiModel.getCode();
-            int shipperId = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId();
-            int spId = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId();
-            boolean isForceReload = itemPosition > -1;
-            observable
-                    .map(shippingRecommendationData ->
-                            stateConverter.fillState(shippingRecommendationData, shopShipmentList,
-                                    spId, 0))
-                    .subscribe(
-                            new GetBoPromoCourierRecommendationSubscriber(
-                                    getView(), this, promoCode, shipperId, spId, itemPosition,
-                                    shippingCourierConverter, shipmentCartItemModel,
-                                    false, isTradeInDropOff, isForceReload
-                            ));
-        }
+            int shippingId = voucherOrdersItemUiModel.getShippingId();
+            int spId = voucherOrdersItemUiModel.getSpId();
+            getView().setStateLoadingCourierStateAtIndex(itemPosition, true);
+            compositeSubscription.add(
+                    observable
+                            .map(shippingRecommendationData ->
+                                    stateConverter.fillState(shippingRecommendationData, shopShipmentList,
+                                            spId, 0))
+                            .subscribe(
+                                    new GetBoPromoCourierRecommendationSubscriber(
+                                            getView(), this, promoCode, shippingId, spId, itemPosition,
+                                            shippingCourierConverter, shipmentCartItemModel,
+                                            true, isTradeInDropOff, false
+                                    )));
+//        }
     }
 
     private List<Product> getProductForRatesRequest(ShipmentCartItemModel shipmentCartItemModel) {
