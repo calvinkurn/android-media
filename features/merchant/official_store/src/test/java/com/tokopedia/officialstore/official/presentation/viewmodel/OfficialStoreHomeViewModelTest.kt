@@ -932,8 +932,13 @@ class OfficialStoreHomeViewModelTest {
         val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
         val osBenefits = OfficialStoreBenefits()
         val osFeatured = OfficialStoreFeaturedShop()
-        val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
+        val osDynamicChannel = mutableListOf(
+            OfficialStoreChannel(channel = Channel(
+                layout = DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL)
+            )
+        )
         val page = 1
+        val title = "Rekomendasi Untukmu"
 
         onGetOfficialStoreBanners_thenReturn(osBanners)
         onGetOfficialStoreBenefits_thenReturn(osBenefits)
@@ -941,15 +946,21 @@ class OfficialStoreHomeViewModelTest {
         onGetDynamicChannel_thenReturn(osDynamicChannel)
         onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-        val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(
-            RecommendationItem()
-        )))
+        val listOfRecom = mutableListOf(
+            RecommendationWidget(
+                title = title,
+                recommendationItemList = listOf(
+                    RecommendationItem()
+                )
+            )
+        )
 
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns listOfRecom
 
         viewModel.loadFirstData(category)
+        viewModel.counterTitleShouldBeRendered += 1
         viewModel.loadMoreProducts(category.categoryId, page)
 
         viewModel.removeRecomWidget()
@@ -962,17 +973,42 @@ class OfficialStoreHomeViewModelTest {
 
     @Test
     fun given_countdown_finished__when_dynamic_channel_flashsale__then_remove_widget() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelType = "$prefixUrl$slug"
+        val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
+        val osBenefits = OfficialStoreBenefits()
+        val osFeatured = OfficialStoreFeaturedShop()
+        val osDynamicChannel = mutableListOf(
+            OfficialStoreChannel(channel = Channel(
+                layout = DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL)
+            )
+        )
         val page = 1
-        val categoryId = "0"
-        val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(
-            RecommendationItem()
-        )))
+        val title = "Rekomendasi Untukmu"
+
+        onGetOfficialStoreBanners_thenReturn(osBanners)
+        onGetOfficialStoreBenefits_thenReturn(osBenefits)
+        onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+        onGetDynamicChannel_thenReturn(osDynamicChannel)
+        onSetupDynamicChannelParams_thenCompleteWith(channelType)
+
+        val listOfRecom = mutableListOf(
+            RecommendationWidget(
+                title = title,
+                recommendationItemList = listOf(
+                    RecommendationItem()
+                )
+            )
+        )
 
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns listOfRecom
 
-        viewModel.loadMoreProducts(categoryId, page)
+        viewModel.loadFirstData(category)
+        viewModel.loadMoreProducts(category.categoryId, page)
 
         viewModel.removeFlashSale()
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is DynamicChannelDataModel })
@@ -1031,5 +1067,157 @@ class OfficialStoreHomeViewModelTest {
         val resultRecomTitle = viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationTitleDataModel } as? ProductRecommendationTitleDataModel
         assertNotNull(resultRecomTitle)
         assertTrue(resultRecomTitle?.title == title)
+    }
+
+    @Test
+    fun given_banner_empty__when_load_first_data__should_not_have_banners() {
+        runBlocking {
+            val prefixUrl = "prefix"
+            val slug = "slug"
+            val category = createCategory(prefixUrl, slug)
+            val channelType = "$prefixUrl$slug"
+            val osBanners = OfficialStoreBanners(banners = mutableListOf())
+            val osBenefits = OfficialStoreBenefits()
+            val osFeatured = OfficialStoreFeaturedShop()
+            val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
+
+            onGetOfficialStoreBanners_thenReturn(osBanners)
+            onGetOfficialStoreBenefits_thenReturn(osBenefits)
+            onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+            onGetDynamicChannel_thenReturn(osDynamicChannel)
+            onSetupDynamicChannelParams_thenCompleteWith(channelType)
+
+            viewModel.loadFirstData(category)
+
+            assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBannerDataModel && it.banner == osBanners.banners })
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBenefitDataModel && it.benefit == osBenefits.benefits })
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialFeaturedShopDataModel && it.featuredShop == osFeatured.featuredShops })
+        }
+    }
+
+    @Test
+    fun given_eligible_for_disable_mapping_banners__when_load_first_data__should_not_have_banners() {
+        runBlocking {
+            val prefixUrl = "prefix"
+            val slug = "slug"
+            val category = createCategory(prefixUrl, slug)
+            val channelType = "$prefixUrl$slug"
+            val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
+            val osBenefits = OfficialStoreBenefits()
+            val osFeatured = OfficialStoreFeaturedShop()
+            val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
+
+            onGetOfficialStoreBanners_thenReturn(osBanners)
+            onGetOfficialStoreBenefits_thenReturn(osBenefits)
+            onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+            onGetDynamicChannel_thenReturn(osDynamicChannel)
+            onSetupDynamicChannelParams_thenCompleteWith(channelType)
+            coEvery { officialStoreConfig.isEligibleForDisableMappingBanner() } returns true
+
+            viewModel.loadFirstData(category)
+
+            assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBannerDataModel && it.banner == osBanners.banners })
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBenefitDataModel && it.benefit == osBenefits.benefits })
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialFeaturedShopDataModel && it.featuredShop == osFeatured.featuredShops })
+        }
+    }
+
+    @Test
+    fun given_eligible_for_disable_mapping_benefits__when_load_first_data__should_not_fetch_benefits() {
+        runBlocking {
+            val prefixUrl = "prefix"
+            val slug = "slug"
+            val category = createCategory(prefixUrl, slug)
+            val channelType = "$prefixUrl$slug"
+            val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
+            val osFeatured = OfficialStoreFeaturedShop()
+            val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
+
+            onGetOfficialStoreBanners_thenReturn(osBanners)
+            onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+            onGetDynamicChannel_thenReturn(osDynamicChannel)
+            onSetupDynamicChannelParams_thenCompleteWith(channelType)
+            coEvery { officialStoreConfig.isEligibleForDisableMappingBenefit() } returns true
+
+            viewModel.loadFirstData(category)
+
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBannerDataModel && it.banner == osBanners.banners })
+            assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBenefitDataModel })
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialFeaturedShopDataModel && it.featuredShop == osFeatured.featuredShops })
+        }
+    }
+
+    @Test
+    fun given_eligible_for_disable_mapping_featured_shop__when_load_first_data__should_not_fetch_featured_shop() {
+        runBlocking {
+            val prefixUrl = "prefix"
+            val slug = "slug"
+            val category = createCategory(prefixUrl, slug)
+            val channelType = "$prefixUrl$slug"
+            val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
+            val osBenefits = OfficialStoreBenefits()
+            val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
+
+            onGetOfficialStoreBanners_thenReturn(osBanners)
+            onGetOfficialStoreBenefits_thenReturn(osBenefits)
+            onGetDynamicChannel_thenReturn(osDynamicChannel)
+            onSetupDynamicChannelParams_thenCompleteWith(channelType)
+            coEvery { officialStoreConfig.isEligibleForDisableMappingOfficialFeaturedShop() } returns true
+
+            viewModel.loadFirstData(category)
+
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBannerDataModel && it.banner == osBanners.banners })
+            assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialBenefitDataModel && it.benefit == osBenefits.benefits })
+            assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is OfficialFeaturedShopDataModel })
+        }
+    }
+
+    @Test
+    fun given_eligible_for_disable_best_seller_widget_success_when_get_osDynamicChannel_bestSelling__should_not_fetch_recom_widget() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+
+        val dynamicChannelResponse = mutableListOf(
+            OfficialStoreChannel(channel = Channel(
+                layout = DynamicChannelLayout.LAYOUT_BEST_SELLING, id = channelId)
+            )
+        )
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { officialStoreConfig.isEligibleForDisableBestSellerWidget() } returns true
+
+        viewModel.loadFirstData(category)
+
+        coVerify(inverse = true){ getRecommendationUseCaseCoroutine.getData(any()) }
+    }
+
+    @Test
+    fun given_eligible_for_disable_remove_best_seller_widget__when_swipe_refresh__then_do_not_remove_best_seller() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelType = "$prefixUrl$slug"
+        val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
+        val osBenefits = OfficialStoreBenefits()
+        val osFeatured = OfficialStoreFeaturedShop()
+        val osDynamicChannel = mutableListOf(
+            OfficialStoreChannel(channel = Channel(
+                layout = DynamicChannelLayout.LAYOUT_BEST_SELLING)
+            )
+        )
+
+        onGetOfficialStoreBanners_thenReturn(osBanners)
+        onGetOfficialStoreBenefits_thenReturn(osBenefits)
+        onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+        onGetDynamicChannel_thenReturn(osDynamicChannel)
+        onSetupDynamicChannelParams_thenCompleteWith(channelType)
+        coEvery { officialStoreConfig.isEligibleForDisableRemoveBestSellerWidget() } returns true
+
+        viewModel.loadFirstData(category)
+
+        viewModel.removeRecomWidget()
+        assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is BestSellerDataModel })
     }
 }
