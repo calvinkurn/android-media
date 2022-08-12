@@ -15,7 +15,6 @@ import com.tokopedia.tokopedianow.common.model.MediaItemUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
-import com.tokopedia.unifyprinciples.Typography
 
 class MediaSliderView @JvmOverloads constructor(
     context: Context,
@@ -57,7 +56,6 @@ class MediaSliderView @JvmOverloads constructor(
 
                     renderImage(position, mediaList)
                     renderPlayBtn(position, mediaList)
-                    renderVideoDuration(position, mediaList)
                     renderFullScreenBtn(position, mediaList)
                 }
             }
@@ -95,20 +93,6 @@ class MediaSliderView @JvmOverloads constructor(
 
         btnBg?.showWithCondition(isVideo)
         playBtn?.showWithCondition(isVideo)
-    }
-
-    private fun View.renderVideoDuration(position: Int, mediaList: List<MediaItemUiModel>) {
-        val media = mediaList[position]
-        val isVideo = media.type == MediaType.VIDEO
-        val durationBg = findViewById<ImageUnify>(R.id.video_duration_bg)
-        val videoDuration = findViewById<Typography>(R.id.text_video_duration)
-
-        if (isVideo) {
-            videoDuration.text = media.duration
-        }
-
-        durationBg?.showWithCondition(isVideo)
-        videoDuration?.showWithCondition(isVideo)
     }
 
     private fun View.renderFullScreenBtn(position: Int, mediaList: List<MediaItemUiModel>) {

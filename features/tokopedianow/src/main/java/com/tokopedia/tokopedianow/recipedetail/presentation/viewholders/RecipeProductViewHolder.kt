@@ -5,6 +5,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -36,6 +38,7 @@ class RecipeProductViewHolder(
         renderProductButton(product)
         renderQuantityEditor(product)
         renderDeleteBtn(product)
+        setOnClickListener(product)
     }
 
     private fun renderProductInfo(product: RecipeProductUiModel) {
@@ -62,7 +65,10 @@ class RecipeProductViewHolder(
     private fun renderDiscountLabel(product: RecipeProductUiModel) {
         binding?.labelDiscount?.apply {
             if (product.discountPercentage.isNotEmpty()) {
-                text = product.discountPercentage
+                text = context.getString(
+                    R.string.tokopedianow_percentage_format,
+                    product.discountPercentage
+                )
                 show()
             } else {
                 hide()
@@ -100,6 +106,8 @@ class RecipeProductViewHolder(
                 btnDeleteCart.show()
                 btnProductCta.hide()
                 quantityEditor.show()
+                quantityEditor.minValue = product.minOrder
+                quantityEditor.maxValue = product.maxOrder
                 quantityEditor.setValue(quantity)
                 addTextChangeListener(qtyEditorListener)
             } else {
@@ -124,6 +132,20 @@ class RecipeProductViewHolder(
         binding?.btnDeleteCart?.setOnClickListener {
             recipeDetailView?.deleteCartItem(product.id)
         }
+    }
+
+    private fun setOnClickListener(item: RecipeProductUiModel) {
+        binding?.root?.setOnClickListener {
+            goToProductDetailPage(item)
+        }
+    }
+
+    private fun goToProductDetailPage(item: RecipeProductUiModel) {
+        RouteManager.route(
+            itemView.context,
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            item.id
+        )
     }
 
     private fun qtyEditorListener(product: RecipeProductUiModel): TextWatcher {
