@@ -309,7 +309,8 @@ ext {
             jjwtApi               : "io.jsonwebtoken:jjwt-api:0.11.2",
             jjwtImpl              : "io.jsonwebtoken:jjwt-impl:0.11.2",
             jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2",
-            gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion"
+            gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
+            dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0"
     ]
 
     testDependencies = [
