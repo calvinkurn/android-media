@@ -13,6 +13,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.observeOnce
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.usercomponents.explicit.view.ExplicitData
 import com.tokopedia.usercomponents.explicit.view.ExplicitView
 
@@ -46,7 +47,7 @@ class ExplicitWidgetViewHolder(itemView: View, private val fragment: Fragment) :
 
                     explicitView.setupView(mExplicitWidgetViewModel.explicitViewContract, explicitData)
                     val param: ViewGroup.LayoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                    explicitView.setPadding(
+                    binding.parentExplicit.setPadding(
                             itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
                             itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
                             itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
