@@ -76,6 +76,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
@@ -116,6 +117,7 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetWishlistColl
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
@@ -301,6 +303,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         observingDeleteCollectionItems()
         observingDeleteWishlistCollection()
         observingDeleteProgress()
+        observingAtc()
     }
 
     private fun observingDeleteProgress() {
@@ -427,8 +430,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             } else {
                                 // bulkDeleteMode == 1 (manual choose via cleaner bottomsheet)
                                 // bulkDeleteMode == 2 (choose automatic deletion)
-                                // bulkDeleteMode == 1 (manual choose via cleaner bottomsheet)
-                                // bulkDeleteMode == 2 (choose automatic deletion)
                                 turnOffBulkDeleteCleanMode()
                                 hideTotalLabel()
                                 binding?.run { rvWishlistCollectionDetail.scrollToPosition(0) }
@@ -541,6 +542,53 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
                     // log to crashlytics
                     logToCrashlytics(labelError, result.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observingAtc() {
+        wishlistCollectionDetailViewModel.atcResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    hideLoadingDialog()
+                    if (it.data.isStatusError()) {
+                        val atcErrorMessage = it.data.getAtcErrorMessage()
+                        if (atcErrorMessage != null) {
+                            showToaster(atcErrorMessage, "", Toaster.TYPE_ERROR)
+                        } else {
+                            context?.getString(Rv2.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
+                        }
+                    } else {
+                        val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
+                        showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
+                        WishlistV2Analytics.clickAtcOnWishlist(wishlistItemOnAtc, userSession.userId, indexOnAtc, it.data.data.cartId)
+                    }
+                }
+                is Fail -> {
+                    hideLoadingDialog()
+                    context?.also { ctx ->
+                        val throwable = it.throwable
+                        var errorMessage = if (throwable is ResponseErrorException) {
+                            throwable.message ?: ""
+                        } else {
+                            ErrorHandler.getErrorMessage(ctx, throwable, ErrorHandler.Builder().withErrorCode(false))
+                        }
+                        if (errorMessage.isBlank()) {
+                            errorMessage = ctx.getString(Rv2.string.wishlist_v2_common_error_msg)
+                        }
+                        showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+
+                        val labelError = String.format(
+                            getString(Rv2.string.on_error_observing_atc_string_builder),
+                            userSession.userId ?: "",
+                            errorMessage,
+                            throwable.message ?: "")
+                        // log error type to newrelic
+                        ServerLogger.log(Priority.P2, "WISHLIST_V2_ERROR", mapOf("type" to labelError))
+                        // log to crashlytics
+                        logToCrashlytics(labelError, throwable)
+                    }
                 }
             }
         }
@@ -710,6 +758,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     triggerSearch()
                 }
                 true
+            }
+            wishlistCollectionDetailSearchbar.clearListener = {
+                searchQuery = ""
+                hideKeyboardFromSearchBar()
+                triggerSearch()
             }
 
             val pageSource: String
@@ -1369,6 +1422,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                                 "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?${ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID}=${wishlistItem.id}&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST"
                             val intentBottomSheetWishlistCollection =
                                 RouteManager.getIntent(context, applinkCollection)
+                            intentBottomSheetWishlistCollection.putExtra(IS_PRODUCT_ACTIVE, wishlistItem.available)
                             startActivityForResult(
                                 intentBottomSheetWishlistCollection,
                                 ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
@@ -2014,7 +2068,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             shopId = wishlistItem.shop.id.toInt(),
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
         )
-        // wishlistCollectionDetailViewModel.doAtc(atcParam)
+        wishlistCollectionDetailViewModel.doAtc(atcParam)
         wishlistItemOnAtc = wishlistItem
         indexOnAtc = position
     }

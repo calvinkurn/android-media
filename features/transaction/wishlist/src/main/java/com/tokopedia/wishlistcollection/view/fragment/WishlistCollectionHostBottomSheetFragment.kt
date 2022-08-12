@@ -28,7 +28,7 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
     private var productId = ""
     private var src = ""
     private var bottomSheetCollection = BottomSheetAddCollectionWishlist()
-    private var isProductActive = false
+    private var isProductActive = true
 
     companion object {
         @JvmStatic
@@ -50,7 +50,7 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
 
         productId = arguments?.getString(PATH_PRODUCT_ID) ?: ""
         src = arguments?.getString(PATH_SRC) ?: ""
-        isProductActive = arguments?.getBoolean(IS_PRODUCT_ACTIVE) ?: false
+        isProductActive = arguments?.getBoolean(IS_PRODUCT_ACTIVE) ?: true
         showBottomSheetCollection(childFragmentManager, productId, src, isProductActive)
     }
 

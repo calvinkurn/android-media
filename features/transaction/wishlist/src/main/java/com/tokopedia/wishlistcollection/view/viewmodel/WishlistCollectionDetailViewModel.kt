@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -49,6 +52,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val deleteCollectionItemsUseCase: DeleteWishlistCollectionItemsUseCase,
     private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase,
     private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase,
+    private val atcUseCase: AddToCartUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _collectionItems =
@@ -83,6 +87,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val _deleteWishlistProgressResult = MutableLiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>()
     val deleteWishlistProgressResult: LiveData<Result<DeleteWishlistProgressResponse.DeleteWishlistProgress>>
         get() = _deleteWishlistProgressResult
+
+    private val _atcResult = MutableLiveData<Result<AddToCartDataModel>>()
+    val atcResult: LiveData<Result<AddToCartDataModel>>
+        get() = _atcResult
 
     fun getWishlistCollectionItems(
         params: GetWishlistCollectionItemsParams,
@@ -223,5 +231,18 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         }, onError = {
             _deleteWishlistProgressResult.postValue(Fail(it))
         })
+    }
+
+    fun doAtc(atcParams: AddToCartRequestParams) {
+        launch {
+            try {
+                atcUseCase.setParams(atcParams)
+                val result = atcUseCase.executeOnBackground()
+                _atcResult.value = Success(result)
+            } catch (e: Exception) {
+                Timber.d(e)
+                _atcResult.value = Fail(e)
+            }
+        }
     }
 }
