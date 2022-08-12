@@ -91,7 +91,8 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     override fun getComponent(): LogoutComponent {
         return DaggerLogoutComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .baseComponent((application as BaseMainApplication).baseAppComponent)
+                .context(this)
                 .build()
     }
 
