@@ -651,7 +651,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun onDraftClicked(draft: DraftItemModel) {
-        launchCampaignInformationPageWithDraftMode(draft.id)
+        launchCampaignInformationPageWitheEditDraftMode(draft.id)
     }
 
     private fun showLoaderDialog() {
@@ -841,7 +841,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         startActivityForResult(starter, REQUEST_CODE_CREATE_CAMPAIGN_INFO)
     }
 
-    private fun launchCampaignInformationPageWithDraftMode(campaignId: Long) {
+    private fun launchCampaignInformationPageWitheEditDraftMode(campaignId: Long) {
         val starter = Intent(activity, CampaignInformationActivity::class.java)
 
         val bundle = Bundle()
