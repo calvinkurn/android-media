@@ -62,8 +62,7 @@ class NavigationViewModel @Inject constructor(
 
     private fun jobIsValid() = getNotificationJob == null || getNotificationJob?.isActive == false
 
-    private fun iconNeedNotificationCounter(): Boolean =
-        registeredIconList.any { it in supportedNotificationIcon }
+    private fun iconNeedNotificationCounter(): Boolean = registeredIconList.any { it in supportedNotificationIcon }
 
     //triggering observer without heavy process
     fun <T> MutableLiveData<T>.applyLiveDataValue() {
