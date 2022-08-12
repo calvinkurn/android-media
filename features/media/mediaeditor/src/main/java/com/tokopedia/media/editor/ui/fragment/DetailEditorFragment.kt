@@ -436,14 +436,16 @@ class DetailEditorFragment @Inject constructor(
                     imageWidth,
                     imageHeight,
                     finalRotationDegree,
-                    data.cropRotateValue.rotateDegree,
-                    data.cropRotateValue.orientationChangeNumber,
+                    cropRotateData.rotateDegree,
+                    cropRotateData.orientationChangeNumber,
                     null,
                     0f,
                     0f,
                     0f,
                     isRotate = false,
                     isCrop = false,
+                    cropRotateData.scaleX,
+                    cropRotateData.scaleY
                 )
 
                 viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(bitmapResult)

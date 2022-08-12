@@ -148,6 +148,10 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
                     imageWidth: Int,
                     imageHeight: Int
                 ) {
+                    val scale = getScale()
+                    val scaleX = scale.first
+                    val scaleY = scale.second
+
                     onCropFinish(
                         getProcessedBitmap(
                             bitmap,
@@ -160,7 +164,9 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
                             translateY,
                             imageScale,
                             isRotate = isRotate,
-                            isCrop = isCrop
+                            isCrop = isCrop,
+                            scaleX,
+                            scaleY
                         )
                     )
                 }
@@ -187,14 +193,12 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         translateY: Float,
         imageScale: Float,
         isRotate: Boolean,
-        isCrop: Boolean
+        isCrop: Boolean,
+        scaleX: Float,
+        scaleY: Float
     ): Bitmap {
         val originalWidth = originalBitmap.width
         val originalHeight = originalBitmap.height
-
-        val scale = getScale()
-        val scaleX = scale.first
-        val scaleY = scale.second
 
         val matrix = Matrix()
 
