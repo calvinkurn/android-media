@@ -117,6 +117,9 @@ class PlayUpcomingViewModel @Inject constructor(
             )
         }
 
+    val isExpanded: Boolean
+            get() = _upcomingInfo.value.description.isExpanded
+
     fun initPage(channelId: String, channelData: PlayChannelData) {
         this.mChannelId = channelId
         this.mChannelData = channelData
@@ -220,6 +223,16 @@ class PlayUpcomingViewModel @Inject constructor(
             CloseSharingOptionUpcomingAction -> handleCloseSharingOption()
             is ClickSharingOptionUpcomingAction -> handleSharingOption(action.shareModel)
             is SharePermissionUpcomingAction -> handleSharePermission(action.label)
+            ExpandDescriptionUpcomingAction -> handleExpandText()
+        }
+    }
+
+    private fun handleExpandText(){
+        viewModelScope.launch {
+            _upcomingInfo.update {
+                it.copy(description = it.description.copy(isExpanded = !isExpanded))
+            }
+            _uiEvent.emit(PlayUpcomingUiEvent.ExpandDescriptionEvent(isExpanded))
         }
     }
 

@@ -16,6 +16,7 @@ import androidx.core.text.buildSpannedString
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.play.view.uimodel.DescriptionUiModel
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
@@ -33,28 +34,26 @@ class UpcomingDescriptionViewComponent(
 ) : ViewComponent(container, idRes) {
 
     private val txt = (rootView as Typography)
-    private var originalText: String = ""
-    private var truncatedText: SpannedString? = null
     private val ctx: Context
         get() = rootView.context
-    var isExpand: Boolean = false
+    private var desc: DescriptionUiModel = DescriptionUiModel()
 
     init {
         txt.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
     private val animExpand: ObjectAnimator
-        get() = ObjectAnimator.ofInt(txt, PARAM_MAX_LINES, if (!isExpand) MIN_LINES else MAX_LINES)
+        get() = ObjectAnimator.ofInt(txt, PARAM_MAX_LINES, if (!desc.isExpanded) MIN_LINES else MAX_LINES)
             .apply {
                 duration = UnifyMotion.T2
                 setupExpandable()
             }
 
-    fun setupText(description: String) {
-        if(description.isBlank()) return
+    fun setupText(description: DescriptionUiModel) {
+        if (description.text.isBlank()) return
 
-        originalText = description
-        txt.text = originalText
+        desc = description
+        txt.text = description.text
 
         setupExpandable()
     }
@@ -72,10 +71,7 @@ class UpcomingDescriptionViewComponent(
         }
 
     fun resetText() {
-        if(originalText.isBlank()) return
-
-        isExpand = !isExpand
-        listener.onTextClicked(isExpand, this)
+        listener.onTextClicked(this)
         animateText()
     }
 
@@ -104,33 +100,34 @@ class UpcomingDescriptionViewComponent(
 
     private fun setupExpandable() {
         txt.doOnLayout {
-            val newText = txt.layout.text
-            when {
-                !isExpand -> {
-                    txt.maxLines = 2
-                    txt.ellipsize = TextUtils.TruncateAt.END
-                    val length = newText.filter { it.isLetterOrDigit() }.length
-                    val truncatedTxt = newText.take(length - TRIMMED_CHARS).toString()
-                    if(truncatedText == null) truncatedText = getText(truncatedTxt)
-                    txt.text = if(truncatedText == null) getText(truncatedTxt) else truncatedText
-                    txt.movementMethod = LinkMovementMethod.getInstance()
-                }
-                else -> {
-                    txt.text = originalText
-                    txt.ellipsize = null
-                    txt.maxLines = MAX_LINES
-                }
-            }
+            if (txt.lineCount <= 2) return@doOnLayout
+            val newText = txt.layout.text.toString()
+            expandText(description = newText, isExpand = desc.isExpanded)
+        }
+    }
+
+    private fun expandText(description: String, isExpand: Boolean) {
+        if (!isExpand) {
+            txt.maxLines = 2
+            txt.ellipsize = TextUtils.TruncateAt.END
+            val length = description.filter { it.isLetterOrDigit() }.length
+            val truncatedTxt = description.take(length - TRIMMED_CHARS)
+            txt.text = getText(truncatedTxt)
+            txt.movementMethod = LinkMovementMethod.getInstance()
+        } else {
+            txt.text = description
+            txt.ellipsize = null
+            txt.maxLines = MAX_LINES
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy(){
+    fun onDestroy() {
         animExpand.cancel()
     }
 
     interface Listener {
-        fun onTextClicked(isExpand: Boolean, view: UpcomingDescriptionViewComponent)
+        fun onTextClicked(view: UpcomingDescriptionViewComponent)
     }
 
     companion object {

@@ -9,6 +9,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.DescriptionUiModel
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
@@ -240,7 +241,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             coverUrl = coverUrl,
             startTime = startTime,
             isAlreadyLive = false,
-            description = description,
+            description = DescriptionUiModel(text = description, isExpanded = false),
         )
 
     private fun emptyVideoMetaInfo() = PlayVideoMetaInfoUiModel(

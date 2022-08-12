@@ -20,19 +20,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.databinding.FragmentPlayUpcomingBinding
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
-import com.tokopedia.play.view.uimodel.action.ClickFollowUpcomingAction
-import com.tokopedia.play.view.uimodel.action.ClickPartnerNameUpcomingAction
-import com.tokopedia.play.view.uimodel.action.ClickShareUpcomingAction
-import com.tokopedia.play.view.uimodel.action.ClickSharingOptionUpcomingAction
-import com.tokopedia.play.view.uimodel.action.ClickUpcomingButton
-import com.tokopedia.play.view.uimodel.action.CloseSharingOptionUpcomingAction
-import com.tokopedia.play.view.uimodel.action.CopyLinkUpcomingAction
-import com.tokopedia.play.view.uimodel.action.ImpressUpcomingChannel
-import com.tokopedia.play.view.uimodel.action.OpenUpcomingPageResultAction
-import com.tokopedia.play.view.uimodel.action.ScreenshotTakenUpcomingAction
-import com.tokopedia.play.view.uimodel.action.SharePermissionUpcomingAction
-import com.tokopedia.play.view.uimodel.action.ShowShareExperienceUpcomingAction
-import com.tokopedia.play.view.uimodel.action.UpcomingTimerFinish
+import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
 import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
@@ -223,6 +211,9 @@ class PlayUpcomingFragment @Inject constructor(
                         )
                     }
                     is PlayUpcomingUiEvent.ShowError -> toaster.showError(event.error)
+                    is PlayUpcomingUiEvent.ExpandDescriptionEvent -> {
+                        binding.vOverlay.showWithCondition(event.isExpanded)
+                    }
                 }
             }
         }
@@ -285,7 +276,7 @@ class PlayUpcomingFragment @Inject constructor(
                 if(it.coverUrl.isNotEmpty()) {
                     binding.ivUpcomingCover.setImageUrl(it.coverUrl)
                     binding.ivUpcomingCover.setOnClickListener {
-                       if (description.isExpand) description.resetText()
+                       if (playUpcomingViewModel.isExpanded) description.resetText()
                     }
                 }
 
@@ -365,8 +356,8 @@ class PlayUpcomingFragment @Inject constructor(
         playUpcomingViewModel.submitAction(CopyLinkUpcomingAction)
     }
 
-    override fun onTextClicked(isExpand: Boolean, view: UpcomingDescriptionViewComponent) {
-        binding.vOverlay.showWithCondition(isExpand)
+    override fun onTextClicked(view: UpcomingDescriptionViewComponent) {
+        playUpcomingViewModel.submitAction(ExpandDescriptionUpcomingAction)
     }
 
     private fun copyToClipboard(content: String) {

@@ -33,3 +33,8 @@ object CopyLinkUpcomingAction: PlayUpcomingAction()
 
 data class OpenUpcomingPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayUpcomingAction()
 
+/**
+ * Description
+ */
+object ExpandDescriptionUpcomingAction: PlayUpcomingAction()
+
