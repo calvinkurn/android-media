@@ -182,6 +182,17 @@ class HomeFragmentUiTest {
                 HomeTagHelper.getTokopointsBalanceWidgetTag(context)
             )
         ).check(matches(isClickable()))
+
+        onView(
+            withTagStringValue(
+                HomeTagHelper.getSubscriptionBalanceWidgetTag(context)
+            )
+        ).check(matches(isDisplayed()))
+        onView(
+            withTagStringValue(
+                HomeTagHelper.getSubscriptionBalanceWidgetTag(context)
+            )
+        ).check(matches(isClickable()))
     }
 
     /**
@@ -243,7 +254,7 @@ class HomeFragmentUiTest {
         desc: String? = null,
         isSingleCoachmark: Boolean = false
     ) {
-        Thread.sleep(1000)
+        Thread.sleep(3000)
         titleRes?.let {
             onView(withText(titleRes))
                 .inRoot(RootMatchers.isPlatformPopup())

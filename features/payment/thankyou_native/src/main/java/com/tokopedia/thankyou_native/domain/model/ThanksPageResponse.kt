@@ -136,7 +136,9 @@ data class CustomDataOther(
     @SerializedName("tracking_data")
     val trackingData: String?,
     @SerializedName("is_enjoy_plus_benefit")
-    val isEnjoyPLus:String?
+    val isEnjoyPLus:String?,
+    @SerializedName("custom_illustration")
+    val customIllustration:String?
 ): Parcelable
 
 @Parcelize
@@ -356,7 +358,7 @@ data class PurchaseItem(
         @SerializedName("weight_unit")
         val weightUnit: String,
         @SerializedName("total_price")
-        val totalPrice: Float,
+        val totalPrice: Double,
         @SerializedName("total_price_str")
         val totalPriceStr: String,
         @SerializedName("promo_code")
@@ -399,7 +401,7 @@ data class BundleGroupItem(
     @SerializedName("title")
     val bundleTitle: String,
     @SerializedName("total_price")
-    val totalPrice: Float,
+    val totalPrice: Double,
     @SerializedName("total_price_str")
     val totalPriceStr: String
 ): Parcelable {
@@ -407,7 +409,7 @@ data class BundleGroupItem(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readFloat(),
+        parcel.readDouble(),
         parcel.readString() ?: ""
     )
 
@@ -415,7 +417,7 @@ data class BundleGroupItem(
         parcel.writeString(groupId)
         parcel.writeString(bundleIcon)
         parcel.writeString(bundleTitle)
-        parcel.writeFloat(totalPrice)
+        parcel.writeDouble(totalPrice)
         parcel.writeString(totalPriceStr)
     }
 
