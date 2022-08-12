@@ -198,7 +198,7 @@ data class Coupon(
         @SerializedName("is_bebas_ongkir")
         val isBebasOngkir: Boolean = false,
         @SerializedName("additional_bo_datas")
-        val additionalBoData: List<AdditionalBoData> = emptyList()
+        val additionalBoData: List<AdditionalBoData> = emptyList(),
 )
 
 data class AdditionalBoData(

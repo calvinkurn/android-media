@@ -51,7 +51,7 @@ data class PromoListItemUiModel(
             var boClashingInfos: List<ClashingInfo> = emptyList(),
             // Store BO promo data
             // When user choose BO promo, get unique id and promo code from here
-            var boAdditionalData: List<AdditionalBoData> = emptyList()
+            var boAdditionalData: List<AdditionalBoData> = emptyList(),
     )
 
     data class UiState(
@@ -64,7 +64,7 @@ data class PromoListItemUiModel(
             var isHighlighted: Boolean = false,
             var isUpdateSelectionStateAction: Boolean = false,
             var isLastPromoItem: Boolean = false,
-            var isBebasOngkir: Boolean = false
+            var isBebasOngkir: Boolean = false,
     )
 
 }

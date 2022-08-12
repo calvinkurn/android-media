@@ -13,7 +13,7 @@ data class FragmentUiModel(
             var preAppliedPromoCode: List<String> = emptyList(),
             var defaultErrorMessage: String = "",
             var boClashingMessage: String = "",
-            var boClashingImage: String = ""
+            var boClashingImage: String = "",
     )
 
     data class UiState(
@@ -21,7 +21,7 @@ data class FragmentUiModel(
             var hasPreAppliedPromo: Boolean = false,
             var hasAnyPromoSelected: Boolean = false,
             var hasFailedToLoad: Boolean = false,
-            var hasSelectedBoClashingPromo: Boolean = false
+            var hasSelectedBoClashingPromo: Boolean = false,
     )
 
 }
