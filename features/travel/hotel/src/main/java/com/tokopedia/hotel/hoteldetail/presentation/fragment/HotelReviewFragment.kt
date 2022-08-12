@@ -6,14 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.common.util.QueryHotelPropertyReview
 import com.tokopedia.hotel.databinding.FragmentHotelReviewBinding
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
@@ -56,7 +55,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
             param.propertyId = it.getString(ARG_PROPERTY_ID, "0")
         }
 
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory)
         reviewViewModel = viewModelProvider.get(HotelReviewViewModel::class.java)
     }
 
@@ -159,7 +158,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
             isFirstTime = false
         }
         param.page = page - 1
-        reviewViewModel.getReview(HotelGqlQuery.PROPERTY_REVIEW, param)
+        reviewViewModel.getReview(QueryHotelPropertyReview(), param)
 
     }
 

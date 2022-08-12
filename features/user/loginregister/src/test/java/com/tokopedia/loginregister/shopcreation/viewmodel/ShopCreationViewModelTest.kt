@@ -108,6 +108,7 @@ class ShopCreationViewModelTest {
     lateinit var graphqlResponse: GraphqlResponse
 
     private lateinit var viewmodel: ShopCreationViewModel
+    private val mockValidateToken = "validateToken"
 
     @Before
     fun before() {
@@ -133,7 +134,7 @@ class ShopCreationViewModelTest {
         viewmodel.addNameResponse.observeForever(addNameObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddNameResponse
 
-        viewmodel.addName("")
+        viewmodel.addName("", mockValidateToken)
 
         verify { addNameObserver.onChanged(any<Success<UserProfileUpdate>>()) }
         assert(viewmodel.addNameResponse.value is Success)
@@ -148,7 +149,7 @@ class ShopCreationViewModelTest {
         viewmodel.addNameResponse.observeForever(addNameObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddNameResponse
 
-        viewmodel.addName("")
+        viewmodel.addName("", mockValidateToken)
 
         verify { addNameObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addNameResponse.value is Fail)
@@ -164,7 +165,7 @@ class ShopCreationViewModelTest {
         viewmodel.addNameResponse.observeForever(addNameObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddNameResponse
 
-        viewmodel.addName("")
+        viewmodel.addName("", mockValidateToken)
 
         verify { addNameObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addNameResponse.value is Fail)
@@ -176,7 +177,7 @@ class ShopCreationViewModelTest {
         viewmodel.addNameResponse.observeForever(addNameObserver)
         coEvery { updateUserProfileUseCase(any()) } coAnswers { throw throwable }
 
-        viewmodel.addName("")
+        viewmodel.addName("", mockValidateToken)
 
         verify { addNameObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addNameResponse.value is Fail)
@@ -192,7 +193,7 @@ class ShopCreationViewModelTest {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddPhoneResponse
 
-        viewmodel.addPhone("")
+        viewmodel.addPhone("", mockValidateToken)
 
         verify { addPhoneObserver.onChanged(any<Success<UserProfileUpdate>>()) }
     }
@@ -204,7 +205,7 @@ class ShopCreationViewModelTest {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddPhoneResponse
 
-        viewmodel.addPhone("")
+        viewmodel.addPhone("", mockValidateToken)
 
         verify { addPhoneObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addPhoneResponse.value is Fail)
@@ -221,7 +222,7 @@ class ShopCreationViewModelTest {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddPhoneResponse
 
-        viewmodel.addPhone("")
+        viewmodel.addPhone("", mockValidateToken)
 
         verify { addPhoneObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addPhoneResponse.value is Fail)
@@ -234,7 +235,7 @@ class ShopCreationViewModelTest {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
         coEvery { updateUserProfileUseCase(any()) } coAnswers { throw throwable }
 
-        viewmodel.addPhone("")
+        viewmodel.addPhone("", mockValidateToken)
 
         verify { addPhoneObserver.onChanged(any<Fail>()) }
         assert(viewmodel.addPhoneResponse.value is Fail)

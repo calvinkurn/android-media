@@ -48,7 +48,6 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_PRODUCT)
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, userSession.shopId)
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, true)
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, "")
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, "")
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED, MAX_ALLOWED_PRODUCT - viewModel.productIdList.size)
         intent.putStringArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_HIDDEN, ArrayList(viewModel.productIdList))

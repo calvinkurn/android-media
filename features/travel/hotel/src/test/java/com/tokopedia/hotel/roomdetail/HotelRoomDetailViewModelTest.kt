@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.roomdetail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.roomdetail.presentation.viewmodel.HotelRoomDetailViewModel
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
@@ -44,7 +45,7 @@ class HotelRoomDetailViewModelTest {
         coEvery { hotelAddToCartUseCase.execute(any(), any()) } returns Success(HotelAddCartData.Response(HotelAddCartData("aab")))
 
         //when
-        hotelRoomDetailViewModel.addToCart("", HotelAddCartParam())
+        hotelRoomDetailViewModel.addToCart(DummyHotelGqlQueryInterfaceImpl(), HotelAddCartParam())
 
         //then
         assert(hotelRoomDetailViewModel.addCartResponseResult.value is Success)
@@ -57,7 +58,7 @@ class HotelRoomDetailViewModelTest {
         coEvery { hotelAddToCartUseCase.execute(any(), any()) } returns Fail(Throwable())
 
         //when
-        hotelRoomDetailViewModel.addToCart("", HotelAddCartParam())
+        hotelRoomDetailViewModel.addToCart(DummyHotelGqlQueryInterfaceImpl(), HotelAddCartParam())
 
         //then
         assert(hotelRoomDetailViewModel.addCartResponseResult.value is Fail)

@@ -94,6 +94,7 @@
 /features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
 /features/merchant/campaign_list/                       @tokopedia/android-minionken-dev
 /features/merchant/shop_discount/                       @tokopedia/android-minionken-dev
+/features/merchant/campaign_common/                     @tokopedia/android-minionken-dev
 /features/merchant/seller_shop_flash_sale               @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
@@ -200,7 +201,7 @@
 /features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
 /features/media/mediapicker-common/                     @tokopedia/android-minionkevin-dev
 
-/features/user/chatbot/                         		@tokopedia/android-minionyoda-dev
+/features/user/chatbot/                         		@tokopedia/android-minionken-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/profilecompletion/                       @tokopedia/android-minionkevin-dev
 /features/user/vote/                            		@tokopedia/android-minionkevin-dev
@@ -246,8 +247,8 @@
 /features/communication/topchat/                        @tokopedia/android-minionkevin-dev
 /features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
 
-/features/operational/contact_us        				@tokopedia/android-minionyoda-dev
-/features/operational/csat_rating        				@tokopedia/android-minionyoda-dev
+/features/operational/contact_us        				@tokopedia/android-minionken-dev
+/features/operational/csat_rating        				@tokopedia/android-minionken-dev
 
 /features/fintech/common_wallet         				@tokopedia/android-minionyoda-dev
 /features/fintech/fintech_home_widget         			@tokopedia/android-minionyoda-dev

@@ -145,13 +145,13 @@ class MilestoneViewHolder(
                 rvShcMissionMilestone.gone()
                 tvShcMilestoneCta.gone()
                 showProgressWithAnimation()
-                iconShcToggleMission.setImage(IconUnify.CHEVRON_UP)
+                iconShcToggleMission.setImage(IconUnify.CHEVRON_DOWN)
                 showCloseWidgetButton(element)
             } else {
                 rvShcMissionMilestone.visible()
                 setupSeeMoreCta(element)
                 hideProgressWithAnimation()
-                iconShcToggleMission.setImage(IconUnify.CHEVRON_DOWN)
+                iconShcToggleMission.setImage(IconUnify.CHEVRON_UP)
                 btnShcCloseMission.gone()
             }
             if (!element.isAlreadyMinimized) {

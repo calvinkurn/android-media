@@ -1291,6 +1291,10 @@ class NewShopPageFragment :
                 .appendQueryParameter(SearchApiConst.SRP_PAGE_ID, shopId)
                 .appendQueryParameter(SearchApiConst.SRP_PAGE_TITLE, shopName)
                 .appendQueryParameter(SearchApiConst.NAVSOURCE, SHOP_SEARCH_PAGE_NAV_SOURCE)
+                .appendQueryParameter(SearchApiConst.PLACEHOLDER, String.format(
+                    getString(R.string.shop_product_search_hint_2),
+                    shopPageHeaderDataModel?.shopName.orEmpty())
+                )
                 .appendQueryParameter(SearchApiConst.BASE_SRP_APPLINK, shopSrpAppLink)
                 .build()
                 .toString()

@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import javax.inject.Inject
 
-class PickerPreviewActivity : BaseActivity()
+open class PickerPreviewActivity : BaseActivity()
     , NavToolbarComponent.Listener
     , DrawerSelectionWidget.Listener {
 
@@ -316,7 +316,7 @@ class PickerPreviewActivity : BaseActivity()
         finish()
     }
 
-    private fun initInjector() {
+    protected open fun initInjector() {
         DaggerPreviewComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()

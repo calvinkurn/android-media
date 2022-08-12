@@ -4,24 +4,20 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.travel.country_code.R
 import com.tokopedia.travel.country_code.di.TravelCountryCodeComponent
 import com.tokopedia.travel.country_code.presentation.adapter.PhoneCodePickerAdapterTypeFactory
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import com.tokopedia.travel.country_code.presentation.viewmodel.PhoneCodePickerViewModel
-import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
+import com.tokopedia.travel.country_code.util.QueryTravelCountryCode
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -43,7 +39,7 @@ class PhoneCodePickerFragment : BaseListFragment<TravelCountryPhoneCode, PhoneCo
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             viewModel = viewModelProvider.get(PhoneCodePickerViewModel::class.java)
         }
     }
@@ -84,7 +80,13 @@ class PhoneCodePickerFragment : BaseListFragment<TravelCountryPhoneCode, PhoneCo
                 }
                 is Fail -> {
                     view?.run {
-                        Toaster.make(this, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(com.tokopedia.resources.common.R.string.general_label_ok))
+                        Toaster.build(
+                            this,
+                            ErrorHandler.getErrorMessage(context, it.throwable),
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR,
+                            getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                        ).show()
                     }
                 }
             }
@@ -107,7 +109,7 @@ class PhoneCodePickerFragment : BaseListFragment<TravelCountryPhoneCode, PhoneCo
             .inject(this)
 
     override fun loadData(page: Int) {
-        viewModel.getCountryList(TravelCountryCodeGqlQuery.ALL_COUNTRY)
+        viewModel.getCountryList(QueryTravelCountryCode())
     }
 
     companion object {
