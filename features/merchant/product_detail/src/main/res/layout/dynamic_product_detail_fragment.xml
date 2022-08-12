@@ -56,39 +56,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="btn_pdp_container,base_btn_follow" />
+        app:constraint_referenced_ids="sticky_login_pdp,partial_layout_button_action,base_btn_follow" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/btn_pdp_container"
-        android:layout_width="0dp"
+    <com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
+        android:id="@+id/sticky_login_pdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/partial_layout_button_action"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:sticky_highlight_color="@color/Unify_G500"
+        app:sticky_left_icon="@drawable/ic_toped_widget_login"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/partial_layout_button_action"
+        layout="@layout/partial_layout_button_action"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:visibility="visible">
-
-        <com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
-            android:id="@+id/sticky_login_pdp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/partial_layout_button_action"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:sticky_highlight_color="@color/Unify_G500"
-            app:sticky_left_icon="@drawable/ic_toped_widget_login" />
-
-        <include
-            android:id="@+id/partial_layout_button_action"
-            layout="@layout/partial_layout_button_action"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="gone" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/base_btn_follow"
