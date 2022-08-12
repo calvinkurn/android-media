@@ -138,7 +138,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
             rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
         }
-        showTickerIsUnVerifiedPhoneNumber()
     }
 
     override fun getClientInputNumber(): DigitalClientNumberWidget = postpaidClientNumberWidget
@@ -265,10 +264,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     ?: TopupBillsExtraParam()
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                    menuId = digitalTelcoExtraParam.menuId.toInt()
+                    menuId = digitalTelcoExtraParam.menuId.toIntOrZero()
                 }
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                    categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                    categoryId = digitalTelcoExtraParam.categoryId.toIntOrZero()
                 }
                 rechargeProductFromSlice = this.getString(RECHARGE_PRODUCT_EXTRA, "")
             }
@@ -458,25 +457,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    //TODO : the toaster will be replace by ticker
-    private fun showTickerIsUnVerifiedPhoneNumber(){
-        if(!userSession.isMsisdnVerified){
-            view?.let {
-                Toaster.build(
-                    it,
-                    "Mohon verifikasi no - HP mu",
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    "Ok"
-                ) {
-                    RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE).apply {
-                        startActivityForResult(this, REQUEST_CODE_VERIFY_NUMBER)
-                    }
-                }.show()
-            }
-        }
-    }
-
     override fun renderProductFromCustomData(isDelayed: Boolean) {
         try {
             if (postpaidClientNumberWidget.getInputNumber().length >= MINIMUM_OPERATOR_PREFIX) {
@@ -552,12 +532,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 error.title,
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.common_digital.R.string.digital_common_toaster_button_label)
-            ) {
-                RouteManager.getIntent(context, error.atcErrorPage.buttons.first().appLinkUrl).apply {
-                    startActivityForResult(this, REQUEST_CODE_VERIFY_NUMBER)
-                }
-            }.show()
+            ).show()
         }
     }
 
