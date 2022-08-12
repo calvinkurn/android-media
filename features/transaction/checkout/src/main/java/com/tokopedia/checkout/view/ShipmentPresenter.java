@@ -1010,7 +1010,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                        }
                                                    }
 
-                                                   cancelAutoApplyPromoStackAfterClash(clashPromoCodes);
+                                                   cancelAutoApplyPromoStackAfterClash(clashingInfoDetailUiModel);
                                                }
 
                                                reloadCourierForMvc(validateUsePromoRevampUiModel, lastSelectedCourierOrderIndex, cartString);
@@ -1959,11 +1959,48 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     // Clear promo after clash (rare, almost zero probability)
     @Override
-    public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared) {
+    public void cancelAutoApplyPromoStackAfterClash(ClashingInfoDetailUiModel clashingInfoDetailUiModel) {
+        ArrayList<String> globalPromoCode = new ArrayList<>();
+        ArrayList<ClearPromoOrder> clearOrders = new ArrayList<>();
+        for (PromoClashOptionUiModel promoClashOptionUiModel : clashingInfoDetailUiModel.getOptions()) {
+            if (promoClashOptionUiModel != null && promoClashOptionUiModel.getVoucherOrders() != null) {
+                for (PromoClashVoucherOrdersUiModel promoClashVoucherOrdersUiModel : promoClashOptionUiModel.getVoucherOrders()) {
+                    if (promoClashVoucherOrdersUiModel.getUniqueId().isEmpty()) {
+                        if (!globalPromoCode.contains(promoClashVoucherOrdersUiModel.getCode())) {
+                            globalPromoCode.add(promoClashVoucherOrdersUiModel.getCode());
+                        }
+                    } else {
+                        ClearPromoOrder order = getClearPromoOrderByUniqueId(clearOrders, promoClashVoucherOrdersUiModel.getUniqueId());
+                        if (order != null) {
+                            if (!order.getCodes().contains(promoClashVoucherOrdersUiModel.getCode())) {
+                                order.getCodes().add(promoClashVoucherOrdersUiModel.getCode());
+                            }
+                        } else {
+                            ShipmentCartItemModel cartItemModel = null;
+                            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                                if (shipmentCartItemModel.getCartString().equals(promoClashVoucherOrdersUiModel.getUniqueId())) {
+                                    cartItemModel = shipmentCartItemModel;
+                                    break;
+                                }
+                            }
+                            if (cartItemModel != null) {
+                                ArrayList<String> codes = new ArrayList<>();
+                                codes.add(promoClashVoucherOrdersUiModel.getCode());
+                                clearOrders.add(new ClearPromoOrder(
+                                        promoClashVoucherOrdersUiModel.getUniqueId(),
+                                        cartItemModel.getShipmentCartData().getBoMetadata().getBoType(),
+                                        codes
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+        }
         setCouponStateChanged(true);
         getView().showLoading();
         getView().setHasRunningApiCall(true);
-        clearCacheAutoApplyStackUseCase.setParams(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodesToBeCleared);
+        clearCacheAutoApplyStackUseCase.setParams(new ClearPromoRequest(OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, false, new ClearPromoOrderData(globalPromoCode, clearOrders)));
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(
                         new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this)
