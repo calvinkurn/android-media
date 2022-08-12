@@ -11,13 +11,7 @@ data class EditorCropRotateModel(
     var scaleX: Float,
     var scaleY: Float,
     var rotateDegree: Float,
-    var orientationChangeNumber: Int
-){
-    fun isRotate(): Boolean{
-        return (scaleX != 0f && scaleX != 1f ) || rotateDegree != 0f || orientationChangeNumber != 0
-    }
-
-    fun isCrop(): Boolean{
-        return imageWidth != 0 && imageHeight != 0
-    }
-}
+    var orientationChangeNumber: Int,
+    var isRotate: Boolean,
+    var isCrop: Boolean
+)

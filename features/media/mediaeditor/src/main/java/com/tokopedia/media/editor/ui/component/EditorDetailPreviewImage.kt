@@ -87,7 +87,6 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         sliderValue: Float,
         rotateNumber: Int,
         data: EditorDetailUiModel?,
-        isRotate: Boolean,
         onCropFinish: (cropResult: Bitmap) -> Unit,
     ) {
         val bitmap = cropImageView.drawable.toBitmap()
@@ -100,6 +99,10 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         val translateY = matrixImage?.get(5) ?: 0f
 
         val imageScale = cropImageView.currentScale
+
+        // if previous value is true then use it, otherwise use current editor state for indicator
+        val isRotate = if(data?.cropRotateValue?.isRotate == true) true else data?.isToolRotate() ?: false
+        val isCrop = if(data?.cropRotateValue?.isCrop == true) true else data?.isToolCrop() ?: false
 
         // if rotated image is same with original ratio without overflow, ucrop will skip it
         // need to manually crop & save
@@ -124,7 +127,9 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
                 cropViewScaleX,
                 cropViewScaleY,
                 sliderValue,
-                rotateNumber
+                rotateNumber,
+                isRotate = isRotate,
+                isCrop = isCrop
             )
 
             onCropFinish(Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true))
@@ -153,7 +158,9 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
                             data = data,
                             translateX,
                             translateY,
-                            imageScale
+                            imageScale,
+                            isRotate = isRotate,
+                            isCrop = isCrop
                         )
                     )
                 }
@@ -178,7 +185,9 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         data: EditorDetailUiModel?,
         translateX: Float,
         translateY: Float,
-        imageScale: Float
+        imageScale: Float,
+        isRotate: Boolean,
+        isCrop: Boolean
     ): Bitmap {
         val originalWidth = originalBitmap.width
         val originalHeight = originalBitmap.height
@@ -218,7 +227,9 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
             scaleX,
             scaleY,
             sliderValue,
-            rotateNumber
+            rotateNumber,
+            isRotate = isRotate,
+            isCrop = isCrop
         )
 
         val normalizeX = if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX

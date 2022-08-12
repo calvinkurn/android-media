@@ -347,7 +347,7 @@ class DetailEditorFragment @Inject constructor(
             // read previous value & implement if current editor is rotate
             cropView.post {
                 // === Read previous ROTATE data & implement
-                if(cropRotateData.isRotate()){
+                if(cropRotateData.isRotate){
                     // need to check if previous value is rotate / not, if rotated then ratio is changed
                     val isRotate = cropRotateData.orientationChangeNumber % 2 == 1
 
@@ -368,7 +368,7 @@ class DetailEditorFragment @Inject constructor(
                 }
 
                 // == Read previous CROP data & implement
-                if(cropRotateData.isCrop()){
+                if(cropRotateData.isCrop){
                     overlayView.setTargetAspectRatio(cropRotateData.imageWidth / cropRotateData.imageHeight.toFloat())
                     overlayView.setupCropBounds()
 
@@ -416,7 +416,7 @@ class DetailEditorFragment @Inject constructor(
         // if crop / rotate tool implement ucrop previous state, if not then create cropped image
         if (data.isToolRotate() || data.isToolCrop()) {
             implementPreviousStateRotate(previousState.cropRotateValue)
-        } else if(data.cropRotateValue.isCrop() || data.cropRotateValue.isRotate()) {
+        } else if(data.cropRotateValue.isCrop || data.cropRotateValue.isRotate) {
             val currentBitmap = viewBinding?.imgUcropPreview?.getBitmap()
             val cropRotateData = data.cropRotateValue
             currentBitmap?.let {
@@ -428,7 +428,7 @@ class DetailEditorFragment @Inject constructor(
                 val offsetY = cropRotateData.offsetY
                 val imageHeight = cropRotateData.imageHeight
 
-                // get processed
+                // get processed, since data param is set to be null then other data value is not necessary
                 val bitmapResult = viewBinding?.imgUcropPreview?.getProcessedBitmap(
                     it,
                     offsetX,
@@ -441,7 +441,9 @@ class DetailEditorFragment @Inject constructor(
                     null,
                     0f,
                     0f,
-                    0f
+                    0f,
+                    isRotate = false,
+                    isCrop = false,
                 )
 
                 viewBinding?.imgUcropPreview?.cropImageView?.setImageBitmap(bitmapResult)
@@ -505,8 +507,7 @@ class DetailEditorFragment @Inject constructor(
                     finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
                     sliderValue = rotateFilterRepositoryImpl.sliderValue,
                     rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
-                    data,
-                    data.isToolRotate()
+                    data
                 ) {
                     saveImage(it)
                 }
