@@ -191,8 +191,6 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
      */
 
     private fun writeBalanceRequest(cryptogram: String, terminalRandomNumber: ByteArray): ByteArray {
-        val cryptogramPositionStart = 32
-        val cryptogramPositionEnd = 64
         val command = COMMAND_WRITE_BALANCE.plus(0x03.toByte()).plus(0x14.toByte()).plus(0x02.toByte()).plus(0x14.toByte()).plus(0x03.toByte()). //fixed value
         plus(terminalRandomNumber). //Terminal Random Number
         plus(stringToByteArrayRadix(getStringFromNormalPosition(cryptogram, cryptogramPositionStart, cryptogramPositionEnd))). // Cryptogram
@@ -229,43 +227,6 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                     terminalRandomNumber: String,
                     cardRandomNumber: String
     ): String? {
-        //CAN
-        val positionCANStart = 9
-        val positionCANEnd = 16
-        //CSN
-        val positionCSNStart = 17
-        val positionCSNEnd = 24
-        //Card Random
-        val positionCardRandomStart = 0
-        val positionCardRandomEnd = 16
-        //Purse Status
-        val positionPurseStatus = 2
-        //Purse Balance
-        val positionPurseBalanceStart = 3
-        val positionPurseBalanceEnd = 5
-        //Last Credit TRP
-        val positionLastCreditTRPStart = 29
-        val positionLastCreditTRPEnd = 32
-        //Last Credit Header
-        val positionLastCreditHeaderStart = 33
-        val positionLastCreditHeaderEnd = 40
-        //Last TRX TRP
-        val positionLastTRXTRPStart = 43
-        val positionLastTRXTRPEnd = 46
-        //Last TRX Record
-        val positionLastTRXRecordStart = 47
-        val positionLastTRXRecordEnd = 62
-        //Bad Debt Counter
-        val positionBadCounter = 64
-        //Last TRX Option
-        val positionLastTRXOptionByte = 95
-        //First Eight Byte
-        val positionFirstEightByteStart = 96
-        val positionFirstEightByteEnd = 103
-        //Last Counter
-        val positionLastCounterStart = 104
-        val positionLastCounterEnd = 111
-
         if (securePurse.isNotEmpty()
                 && securePurse.length == MAX_SECURE_PURSE_LENGTH
                 && terminalRandomNumber.isNotEmpty()
@@ -296,8 +257,6 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
      * @return the random 16 string that needed as TERMINAL_RANDOM_NUMBER
      */
     fun getRandomString(): String {
-        val positionRandomStringStart = 1
-        val positionRandomStringEnd = 16
         val allowedChars = ('A'..'F') + ('0'..'9')
         return (positionRandomStringStart..positionRandomStringEnd)
                 .map { allowedChars.random() }
@@ -360,6 +319,49 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
         private const val FIX_VALUE = "0001"
         private const val FIX_VALUE_6TH_ROW = "00000000"
+
+        //CAN
+        private const val positionCANStart = 9
+        private const val positionCANEnd = 16
+        //CSN
+        private const val positionCSNStart = 17
+        private const val positionCSNEnd = 24
+        //Card Random
+        private const val positionCardRandomStart = 0
+        private const val positionCardRandomEnd = 16
+        //Purse Status
+        private const val positionPurseStatus = 2
+        //Purse Balance
+        private const val positionPurseBalanceStart = 3
+        private const val positionPurseBalanceEnd = 5
+        //Last Credit TRP
+        private const val positionLastCreditTRPStart = 29
+        private const val positionLastCreditTRPEnd = 32
+        //Last Credit Header
+        private const val positionLastCreditHeaderStart = 33
+        private const val positionLastCreditHeaderEnd = 40
+        //Last TRX TRP
+        private const val positionLastTRXTRPStart = 43
+        private const val positionLastTRXTRPEnd = 46
+        //Last TRX Record
+        private const val positionLastTRXRecordStart = 47
+        private const val positionLastTRXRecordEnd = 62
+        //Bad Debt Counter
+        private const val positionBadCounter = 64
+        //Last TRX Option
+        private const val positionLastTRXOptionByte = 95
+        //First Eight Byte
+        private const val positionFirstEightByteStart = 96
+        private const val positionFirstEightByteEnd = 103
+        //Last Counter
+        private const val positionLastCounterStart = 104
+        private const val positionLastCounterEnd = 111
+
+        private const val cryptogramPositionStart = 32
+        private const val cryptogramPositionEnd = 64
+
+        private const val positionRandomStringStart = 1
+        private const val positionRandomStringEnd = 16
 
         val COMMAND_GET_CHALLENGE = byteArrayOf(
                 0x00.toByte(),  // CLA Class
