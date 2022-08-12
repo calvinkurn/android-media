@@ -9,8 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -58,6 +63,7 @@ import java.util.*
 import javax.inject.Inject
 
 private const val REQUEST_LOGIN = 345
+private const val TOASTER_DURATION_DELETE_COMMENT = 3000
 
 class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.View.ViewHolder,
     MentionAdapterListener {
@@ -160,32 +166,48 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     ): Boolean {
         if (canDeleteComment || isInfluencer()) {
             if (userSession != null && userSession?.isLoggedIn != false) {
-                deleteComment(adapterPosition)
-                var toBeDeleted = true
-                view?.let {
-                    val coroutineScope = CoroutineScope(Dispatchers.Main)
-                    coroutineScope.launch {
-                        if (activity != null && isAdded) {
-                            if (toBeDeleted)
-                                presenter.deleteComment(id, adapterPosition)
-                        }
-                    }
-                    Toaster.toasterCustomCtaWidth =
-                            com.tokopedia.unifyprinciples.R.dimen.unify_space_96
-                    Toaster.build(
-                            it,
-                            getString(R.string.kol_delete_1_comment),
-                            3000,
-                            Toaster.TYPE_NORMAL,
-                            getString(R.string.kol_delete_comment_ok)
-                    ) {
-                        feedAnalytics.clickKembalikanCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
-                        adapter?.clearList()
-                        presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
-                        toBeDeleted = false
-                    }.show()
+                val view = this.view ?: return false
 
+                var toBeDeleted = true
+                deleteComment(adapterPosition)
+
+                Toaster.toasterCustomCtaWidth = com.tokopedia.unifyprinciples.R.dimen.unify_space_96
+                val toaster = Toaster.build(
+                    view,
+                    getString(R.string.kol_delete_1_comment),
+                    TOASTER_DURATION_DELETE_COMMENT,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.kol_delete_comment_ok)
+                ) {
+                    feedAnalytics.clickKembalikanCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
+                    adapter?.clearList()
+                    presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
+                    toBeDeleted = false
                 }
+
+                val deleteFn = {
+                    if (activity != null && isAdded) {
+                        if (toBeDeleted) presenter.deleteComment(id, adapterPosition)
+                        toBeDeleted = false
+                    }
+                }
+
+                val lifecycleObserver = object : LifecycleEventObserver {
+                    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                        if (event != Lifecycle.Event.ON_DESTROY) return
+                        deleteFn()
+                    }
+                }
+                viewLifecycleOwner.lifecycle.addObserver(lifecycleObserver)
+
+                viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+                    delay(TOASTER_DURATION_DELETE_COMMENT.toLong())
+                    deleteFn()
+                    viewLifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
+                }
+
+                toaster.show()
+
             } else {
                 goToLogin()
             }
@@ -223,6 +245,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             isDeletable = canDeleteComment
         )
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.setIsCommentPage(true)
         sheet.onReport = {
             if (userSession?.isLoggedIn == true) {
                 reportBottomSheet = ReportBottomSheet.newInstance(
@@ -267,11 +290,10 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             kolComment?.append(userToMention)
         } else {
             val mentionFormatBuilder = StringBuilder()
-            if (kolComment?.text?.isNotEmpty() == true && kolComment?.text?.get(
-                    kolComment?.length()
-                        ?: 1 - 1
-                ) != ' '
-            ) mentionFormatBuilder.append(" ")
+            val isCommentNotEmpty = kolComment?.text?.isNotEmpty() == true
+            val isLastCharNotBlank = if (isCommentNotEmpty) kolComment?.text?.last() != ' ' else false
+            if (isLastCharNotBlank) mentionFormatBuilder.append(" ")
+
             mentionFormatBuilder
                 .append("@")
                 .append(MethodChecker.fromHtml(user?.fullName))
@@ -318,6 +340,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         val list = ArrayList<Visitable<*>?>()
         kolComments?.let { list.addAll(it.listNewComments) }
         list.reverse()
+        totalNewComment = list.size
         adapter?.addList(list)
 
         header?.isCanLoadMore = kolComments?.isHasNextPage ?: false
@@ -360,7 +383,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         kolComment?.setText("")
         enableSendComment()
         KeyboardHandler.DropKeyboard(context, kolComment)
-        totalNewComment += 1
+        val numberOfComments = adapter?.itemCount ?: -1
+        /**totalNewComment is number of comment item in adapter excluding first caption item*/
+        totalNewComment = if (numberOfComments != -1) numberOfComments - 1 else totalNewComment
 
         listComment?.scrollToPosition(adapter?.itemCount ?: 1 - 1)
         activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
@@ -380,7 +405,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     override fun onSuccessDeleteComment(adapterPosition: Int) {
         if (adapterPosition <= adapter?.itemCount ?: 0) {
-            totalNewComment -= 1
+            val numberOfComments = adapter?.itemCount ?: -1
+            /**totalNewComment is number of comment item in adapter excluding first caption item*/
+            totalNewComment = if (numberOfComments != -1) numberOfComments - 1 else totalNewComment
             activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
         }
         adapter?.removeLoading()
@@ -488,6 +515,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         val list = ArrayList<Visitable<*>?>()
         kolComments?.let { list.addAll(it.listNewComments) }
         list.reverse()
+        totalNewComment = list.size
         adapter?.setList(list)
         adapter?.notifyDataSetChanged()
     }
@@ -560,4 +588,11 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         presenter.detachView()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        try {
+            Toaster.onCTAClick = View.OnClickListener {  }
+        } catch (ignored: UninitializedPropertyAccessException) {}
+    }
 }

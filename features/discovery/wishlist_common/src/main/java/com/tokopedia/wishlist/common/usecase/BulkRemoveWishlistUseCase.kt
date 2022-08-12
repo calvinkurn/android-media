@@ -9,6 +9,11 @@ import com.tokopedia.wishlist.common.response.BulkRemoveWishListResponse
 import rx.Observable
 import javax.inject.Inject
 
+@Deprecated(
+    message = "This usecase will be deleted, use new dependency implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)",
+    replaceWith = ReplaceWith("BulkDeleteWishlistV2UseCase",
+        imports = ["import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase"])
+)
 open class BulkRemoveWishlistUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase): UseCase<WishlistActionData>() {
 
 

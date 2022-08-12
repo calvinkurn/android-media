@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -40,6 +39,7 @@ import com.tokopedia.affiliate.AFFILIATE_WITHDRAWAL
 import com.tokopedia.affiliate.APP_LINK_KYC
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.KYC_DONE
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.PRODUCT_TYPE
 import com.tokopedia.affiliate.TRANSACTION_TYPE_DEPOSIT
@@ -47,13 +47,16 @@ import com.tokopedia.affiliate.TRANSACTION_TYPE_WITHDRAWAL
 import com.tokopedia.affiliate.WITHDRAWAL_APPLINK_PROD
 import com.tokopedia.affiliate.WITHDRAWAL_APPLINK_STAGING
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.setAnnouncementData
+import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.unifycomponents.ImageUrlLoader
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -62,7 +65,7 @@ import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeChangeInterface{
+class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(), AffiliateDatePickerRangeChangeInterface{
 
     private lateinit var affiliateIncomeViewModel : AffiliateIncomeViewModel
     private var userName : String = ""
@@ -90,7 +93,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         affiliateIncomeViewModel = ViewModelProvider(this)[AffiliateIncomeViewModel::class.java]
-        if(savedInstanceState == null) affiliateIncomeViewModel.setBlacklisted((activity as? AffiliateActivity)?.getBlackListedStatus() ?: false)
         setObservers()
     }
 
@@ -164,7 +166,37 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             view?.let {
             Toaster.build(it, getString(R.string.affiliate_retry_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
-        })}
+        })
+        affiliateIncomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
+            onGetValidateUserData(validateUserdata)
+        })
+        affiliateIncomeViewModel.getAffiliateAnnouncement().observe(this) { announcementData ->
+            sendTickerImpression(
+                announcementData.getAffiliateAnnouncementV2?.data?.type,
+                announcementData.getAffiliateAnnouncementV2?.data?.id
+            )
+            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
+                announcementData,
+                activity,
+                source = PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
+            )
+        }
+    }
+
+    private fun sendTickerImpression(tickerType: String?, tickerId: Long?) {
+        if (tickerId.isMoreThanZero()) {
+            AffiliateAnalytics.sendTickerEvent(
+                AffiliateAnalytics.EventKeys.VIEW_ITEM,
+                AffiliateAnalytics.ActionKeys.IMPRESSION_TICKER_COMMUNICATION,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                "$tickerType - $tickerId",
+                PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY,
+                tickerId!!,
+                AffiliateAnalytics.ItemKeys.AFFILIATE_PENDAPATAN_TICKER_COMMUNICATION,
+               UserSession(context).userId
+            )
+        }
+    }
 
     private fun onGetError(error: Throwable?) {
         view?.findViewById<GlobalError>(R.id.withdrawal_global_error)?.run {
@@ -296,7 +328,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
     private fun afterViewCreated() {
         initUi()
-        affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
         view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
         view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.let {
             it.setOnRefreshListener {
@@ -336,20 +367,19 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.affiliate_withdrawal)
         }
         initDateRangeClickListener()
-        affiliateIncomeViewModel.getAffiliateBalance()
+        affiliateIncomeViewModel.getAffiliateValidateUser(UserSession(context).email)
     }
 
-    private var tarikSaldoBtn : UnifyButton? = null
+    private var enableTarikSaldo = false
     private fun initUi() {
-        tarikSaldoBtn =  view?.findViewById(R.id.saldo_button_affiliate)
         setTarikSaldoButtonUI()
         when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
             AFFILIATE_WITHDRAWAL,
             ""
         )) {
-            AFFILIATE_WITHDRAWAL -> if(!affiliateIncomeViewModel.getIsBlackListed()) tarikSaldoBtn?.isEnabled = true
+            AFFILIATE_WITHDRAWAL -> enableTarikSaldo = true
             else ->{
-                tarikSaldoBtn?.isEnabled = false
+                enableTarikSaldo = false
                 initTicker()
             }
         }
@@ -409,28 +439,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         }
     }
 
-//    override fun getVMFactory(): ViewModelProvider.Factory {
-//        return viewModelProvider
-//    }
-//
-//    override fun initInject() {
-//        getComponent().injectIncomeFragment(this)
-//    }
-
-//    private fun getComponent(): AffiliateComponent =
-//            DaggerAffiliateComponent
-//                    .builder()
-//                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-//                    .build()
-//
-//    override fun getViewModelType(): Class<AffiliateIncomeViewModel> {
-//        return AffiliateIncomeViewModel::class.java
-//    }
-//
-//    override fun setViewModel(viewModel: BaseViewModel) {
-//        affiliateIncomeViewModel = viewModel as AffiliateIncomeViewModel
-//    }
-
     override fun rangeChanged(range: AffiliateDatePickerData) {
         sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_SIMPAN,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE_FILTER,range.value)
         affiliateIncomeViewModel.onRangeChanged(range)
@@ -439,5 +447,49 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     override fun onRangeSelectionButtonClicked() {
 
     }
+
+    override fun onSystemDown() {
+        affiliateIncomeViewModel.getAnnouncementInformation()
+        hideAllView()
+        disableSwipeToRefresh()
+    }
+
+    private fun disableSwipeToRefresh() {
+        view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.apply {
+            setOnRefreshListener {
+                isRefreshing = false
+            }
+        }
+    }
+
+    private fun hideAllView() {
+        view?.findViewById<CardUnify>(R.id.withdrawal_home_widget)?.hide()
+        view?.findViewById<Typography>(R.id.transaction_history_affiliate)?.hide()
+        view?.findViewById<CardUnify>(R.id.filterCard)?.hide()
+    }
+
+    override fun onReviewed() {
+        initTarikSaldo(false)
+        affiliateIncomeViewModel.getAnnouncementInformation()
+        affiliateIncomeViewModel.getAffiliateBalance()
+        affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
+    }
+
+    private fun initTarikSaldo(isReviewed: Boolean) {
+        view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.isEnabled = isReviewed  && enableTarikSaldo
+    }
+
+    override fun onUserRegistered() {
+        initTarikSaldo(true)
+        affiliateIncomeViewModel.getAnnouncementInformation()
+        affiliateIncomeViewModel.getAffiliateBalance()
+        affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
+    }
+
+    override fun getViewModelType(): Class<AffiliateIncomeViewModel> {
+        return AffiliateIncomeViewModel::class.java
+    }
+
+    override fun setViewModel(viewModel: BaseViewModel){}
 
 }

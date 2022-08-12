@@ -121,6 +121,9 @@
     <string name="btn_nonaktifkan">Nonaktifkan</string>
     <string name="shop_postal_code_invalid">Format kode pos invalid</string>
     <string name="edit_address_success">Alamat berhasil disimpan!</string>
+    <string name="add_address_success">Alamat berhasil ditambahkan!</string>
+    <string name="title_ticker_shop_setting">Atur lokasi toko di halaman Pengiriman</string>
+    <string name="desc_ticker_shop_setting"><![CDATA[Sekarang kamu bisa mengatur lokasi tokomu langsung di <a href="">Halaman Pengiriman</a>.]]></string>
     <string name="share_address_confirmation_title">Bagikan alamat kamu?</string>
     <string name="share_address_confirmation_description">Kamu akan membagikan alamat ke temanmu. Untuk keamanan datamu, Pastikan nama akun Tokopedia teman kamu sudah benar, ya.</string>
     <string name="share_address_confirmation_tnc_content">Dengan klik Bagikan Sekarang, saya setuju untuk membagikan alamat sesuai dengan </string>

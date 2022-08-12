@@ -4,7 +4,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
-import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
+import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.presentation.data.TagihanDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -150,7 +150,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
         onGetAddToCart_thenReturn(response)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
         verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
     }
@@ -162,7 +162,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -174,7 +174,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -184,7 +184,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         val errorMessageException = MessageErrorException()
         onGetAddToCart_thenReturn(errorMessageException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorExceptions(errorMessageException)
     }

@@ -1,8 +1,7 @@
 package com.tokopedia.gm.common.domain.mapper
 
 import com.tokopedia.gm.common.constant.KYCStatusId
-import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPMShopInfoDataModel
-import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoByIDResponse
+import com.tokopedia.gm.common.data.source.cloud.model.GMShopInfoResponse
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
@@ -16,9 +15,11 @@ import javax.inject.Inject
 class PMShopInfoMapper @Inject constructor() {
 
     fun mapRemoteModelToUiModel(
-        response: GoldGetPMShopInfoDataModel?,
-        shopInfoByID: ShopInfoByIDResponse.ShopInfoByID
+        data: GMShopInfoResponse
     ): PMShopInfoUiModel {
+        val response = data.goldGetPMShopInfo
+        val shopInfoByID = data.shopInfoByID
+        val nextUpdateInfo = data.nextUpdateInfo
         return PMShopInfoUiModel(
             shopCreatedDate = shopInfoByID.result.firstOrNull()?.createInfo?.shopCreated.orEmpty(),
             isNewSeller = response?.isNewSeller.orTrue(),
@@ -39,7 +40,8 @@ class PMShopInfoMapper @Inject constructor() {
                 ?: PMShopInfoUiModel.DEFAULT_ORDER_THRESHOLD,
             netItemValueOneMonth = response?.nivOneMonth.orZero(),
             netItemValuePmProThreshold = response?.nivPmProThreshold
-                ?: PMShopInfoUiModel.DEFAULT_NIV_THRESHOLD
+                ?: PMShopInfoUiModel.DEFAULT_NIV_THRESHOLD,
+            nextMonthlyRefreshDate = nextUpdateInfo.nextMonthlyRefreshDate.orEmpty()
         )
     }
 }

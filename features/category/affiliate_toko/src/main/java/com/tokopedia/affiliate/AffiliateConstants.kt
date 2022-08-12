@@ -130,13 +130,19 @@ const val TYPE_DIVIDER = "divider"
 
 const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 
-const val dd_MMM_yyyy_HH_mm = "dd MMM yyyy, HH:mm"
+const val NEW_DATE_FORMAT = "dd MMM yyyy, HH:mm"
 
 const val UTC = "UTC"
 
 const val CLICK_TYPE = "totalClick"
 
 const val COMMISSION_TYPE = "totalCommission"
+
+const val SYSTEM_DOWN = "systemDown"
+
+const val ON_REVIEWED = "onReviewed"
+
+const val ON_REGISTERED = "onRegistered"
 
 const val TIME_SIX = 6
 
@@ -149,3 +155,14 @@ const val TIME_FIFTEEN = 15
 const val TIME_SIXTEEN = 16
 
 const val TIME_EIGHTEEN = 18
+
+const val PAGE_LIMIT = 20
+
+const val NO_UI_METRICS = 0
+
+const val TOTAL_ITEMS_METRIC_TYPE = "totalItems"
+
+const val PAGE_ANNOUNCEMENT_ALL = 0
+const val PAGE_ANNOUNCEMENT_HOME = 1
+const val PAGE_ANNOUNCEMENT_PROMOSIKAN = 2
+const val PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY = 3

@@ -1,0 +1,36 @@
+{
+  "readme": "Feed Content Creation - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event":"clickPG",
+      "eventAction":"click - account types selection",
+      "eventCategory":"content feed post creation",
+      "eventLabel":"(user|shop)",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"clickPG",
+      "eventAction":"click - available account types",
+      "eventCategory":"content feed post creation",
+      "eventLabel":"",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    },
+    {
+      "event":"clickPG",
+      "eventAction":"click - change account to seller",
+      "eventCategory":"content feed post creation",
+      "eventLabel":"",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId": ".*"
+    }
+  ]
+}

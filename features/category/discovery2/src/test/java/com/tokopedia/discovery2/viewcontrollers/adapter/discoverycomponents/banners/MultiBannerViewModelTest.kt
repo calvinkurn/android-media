@@ -1,12 +1,20 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners
 
 import android.app.Application
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.notifier.NotifierCheckReminder
+import com.tokopedia.discovery2.data.notifier.NotifierSetReminder
+import com.tokopedia.discovery2.data.push.PushStatusResponse
+import com.tokopedia.discovery2.data.push.PushSubscriptionResponse
+import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
+import com.tokopedia.discovery2.usecase.SubScribeToUseCase
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.BANNER_ACTION_CODE
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
@@ -21,6 +29,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.net.SocketTimeoutException
 
 class MultiBannerViewModelTest {
 
@@ -28,13 +37,21 @@ class MultiBannerViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
-    private val application: Application = mockk()
+    private val application: Application = mockk(relaxed = true)
 
     private val viewModel: MultiBannerViewModel by lazy {
         spyk(MultiBannerViewModel(application, componentsItem, 99))
     }
 
     private val bannerUseCase: BannerUseCase by lazy {
+        mockk()
+    }
+
+    private val subScribeToUseCase: SubScribeToUseCase by lazy {
+        mockk()
+    }
+
+    private val checkPushStatusUseCase: CheckPushStatusUseCase by lazy {
         mockk()
     }
 
@@ -69,6 +86,11 @@ class MultiBannerViewModelTest {
     @Test
     fun `test for position`() {
         assert(viewModel.position == 99)
+    }
+
+    @Test
+    fun `test for application`(){
+        assert(viewModel.application === application)
     }
 
     @Test
@@ -137,16 +159,55 @@ class MultiBannerViewModelTest {
 
     /****************************************** onAttachToViewHolder() ****************************************/
     @Test
-    fun `test for onAttachToViewHolder`() {
-        viewModel.bannerUseCase = bannerUseCase
-        coEvery { componentsItem.properties?.dynamic } returns true
-        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint, application.applicationContext) } returns true
+    fun `test for onAttachToViewHolder when Data properties is null`() {
+        coEvery { componentsItem.properties } returns null
 
-        val list = ArrayList<ComponentsItem>()
-        coEvery { componentsItem.getComponentsItem() } returns list
         viewModel.onAttachToViewHolder()
 
-        TestCase.assertEquals(viewModel.getComponentData().value != null, true)
+        TestCase.assertEquals(viewModel.syncData.value, null)
+    }
+
+    @Test
+    fun `test for onAttachToViewHolder when loadFirstPageComponents returns true`() {
+        viewModel.bannerUseCase = bannerUseCase
+        val list = ArrayList<DataItem>()
+        every { componentsItem.data } returns list
+        coEvery { componentsItem.properties?.dynamic } returns true
+        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } returns true
+
+        viewModel.onAttachToViewHolder()
+
+        TestCase.assertEquals(viewModel.hideShimmer.value, true)
+    }
+
+    @Test
+    fun `test for onAttachToViewHolder when loadFirstPageComponents throws exception`() {
+        viewModel.bannerUseCase = bannerUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem()
+        list.add(item)
+        every { componentsItem.data } returns list
+        coEvery { componentsItem.properties?.dynamic } returns true
+        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } throws Exception("Error")
+
+        viewModel.onAttachToViewHolder()
+
+        TestCase.assertEquals(viewModel.hideShimmer.value, true)
+    }
+
+    @Test
+    fun `test for onAttachToViewHolder when loadFirstPageComponents throws SocketTimeoutException`() {
+        viewModel.bannerUseCase = bannerUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem()
+        list.add(item)
+        every { componentsItem.data } returns list
+        coEvery { componentsItem.properties?.dynamic } returns true
+        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } throws SocketTimeoutException("Error")
+
+        viewModel.onAttachToViewHolder()
+
+        TestCase.assertEquals(viewModel.showErrorState.value, true)
     }
 
 
@@ -193,6 +254,27 @@ class MultiBannerViewModelTest {
     /****************************************** onBannerClicked() ****************************************/
 
     @Test
+    fun `test for onBannerClicked when bannerData value is null`() {
+        every { componentsItem.data } returns null
+
+        viewModel.onBannerClicked(0,context)
+
+        TestCase.assertEquals(viewModel.syncData.value, null)
+    }
+
+    @Test
+    fun `test for onBannerClicked when position returns null`() {
+        val list = ArrayList<DataItem>()
+        val item = DataItem()
+        list.add(item)
+        every { componentsItem.data } returns list
+
+        viewModel.onBannerClicked(1,context)
+
+        TestCase.assertEquals(viewModel.syncData.value, null)
+    }
+
+    @Test
     fun `banner action is APPLINK`() {
         list.clear()
         coEvery { componentsItem.data} returns list
@@ -215,6 +297,83 @@ class MultiBannerViewModelTest {
         viewModel.onBannerClicked(0, context)
 
         coVerify { viewModel.navigate(context,"tokopedia://xyz") }
+    }
+
+    @Test
+    fun `banner action test when action is code`() {
+        val list = ArrayList<DataItem>()
+        val item = DataItem(applinks = "tokopedia", action = "CODE")
+        list.add(item)
+        every { componentsItem.data } returns list
+        val clipData : ClipData = mockk(relaxed = true)
+        every { (application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).setPrimaryClip(clipData)} just Runs
+
+        viewModel.onBannerClicked(0, context)
+
+        assert(viewModel.checkApplink().value != null)
+    }
+
+    @Test
+    fun `banner action test when action is push notifier and login is true`() {
+        viewModel.subScribeToUseCase = subScribeToUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { viewModel.isUserLoggedIn() } returns true
+        val notifierSetReminder = NotifierSetReminder(isSuccess = 1)
+        val pushSubscriptionResponse = PushSubscriptionResponse(notifierSetReminder = notifierSetReminder)
+        coEvery { subScribeToUseCase.subscribeToPush(any()) } returns pushSubscriptionResponse
+
+        viewModel.onBannerClicked(0, context)
+
+        assert(viewModel.getPushBannerStatusData().value?.first == 0)
+    }
+
+    @Test
+    fun `banner action test when action is push notifier and NotifierSetReminder returns isSuccess as 2`() {
+        viewModel.subScribeToUseCase = subScribeToUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { viewModel.isUserLoggedIn() } returns true
+        val notifierSetReminder = NotifierSetReminder(isSuccess = 2)
+        val pushSubscriptionResponse = PushSubscriptionResponse(notifierSetReminder = notifierSetReminder)
+        coEvery { subScribeToUseCase.subscribeToPush(any()) } returns pushSubscriptionResponse
+
+        viewModel.onBannerClicked(0, context)
+
+        assert(viewModel.getPushBannerStatusData().value?.first == 0)
+    }
+
+    @Test
+    fun `banner action test when action is push notifier and subscribeToPush throws exception`() {
+        viewModel.subScribeToUseCase = subScribeToUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { viewModel.isUserLoggedIn() } returns true
+        coEvery { subScribeToUseCase.subscribeToPush(any()) } throws Exception("Error")
+
+        viewModel.onBannerClicked(0, context)
+
+        assert(viewModel.syncData.value == null)
+    }
+
+    @Test
+    fun `banner action test when action is push notifier and login is false`() {
+        viewModel.subScribeToUseCase = subScribeToUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { viewModel.isUserLoggedIn() } returns false
+
+        viewModel.onBannerClicked(0, context)
+
+        assert(viewModel.getShowLoginData().value == true)
     }
 
     @Test
@@ -248,22 +407,87 @@ class MultiBannerViewModelTest {
     }
 
     @Test
-    fun `user not loggedin for pushNotification`() {
-//        coEvery { componentsItem.data?.get(0)?.action } returns "PUSH_NOTIFIER"
-//        coEvery { viewModel.isUserLoggedIn() } returns false
-//        assertTrue(viewModel.getShowLoginData().value ?: false)
+    fun `banner action test when action is xyz and login is false`() {
+        viewModel.subScribeToUseCase = subScribeToUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem(applinks = "tokopedia", action = "XYZ")
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { viewModel.navigate(context, any()) } just Runs
 
+        viewModel.onBannerClicked(0,context)
+
+        verify { viewModel.navigate(context,any()) }
+    }
+
+    /****************************************** end of onBannerClicked() ****************************************/
+
+    /****************************************** campaignSubscribedStatus() ****************************************/
+    @Test
+    fun `Test for campaignSubscribedStatus when action is PUSH_NOTIFIER and checkPushStatus returns success`() {
+        viewModel.checkPushStatusUseCase = checkPushStatusUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { viewModel.isUserLoggedIn()} returns true
+        val notifierCheckReminder = NotifierCheckReminder(status = 1)
+        val pushSubscriptionResponse = PushStatusResponse(notifierCheckReminder = notifierCheckReminder)
+        coEvery { checkPushStatusUseCase.checkPushStatus(any()) } returns pushSubscriptionResponse
+
+        viewModel.campaignSubscribedStatus(0)
+
+        assert(viewModel.getPushBannerSubscriptionData().value == 0)
     }
 
     @Test
-    fun `user loggedin for pushNotification`() {
-//        coEvery { componentsItem.data?.get(0)?.action } returns "PUSH_NOTIFIER"
-//        coEvery { viewModel.isUserLoggedIn() } returns true
-//        coVerify {
-//        }
+    fun `Test for campaignSubscribedStatus when action is PUSH_NOTIFIER and  checkPushStatus throws Exception`() {
+        viewModel.checkPushStatusUseCase = checkPushStatusUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem(applinks = "tokopedia", action = "PUSH_NOTIFIER")
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { viewModel.isUserLoggedIn()} returns true
+        coEvery { checkPushStatusUseCase.checkPushStatus(any()) } throws Exception("Error")
 
+        viewModel.campaignSubscribedStatus(0)
+
+        assert(viewModel.syncData.value == null)
     }
 
+    @Test
+    fun `Test for campaignSubscribedStatus when action is LOCAL_CALENDAR and checkPushStatus returns success`() {
+        viewModel.checkPushStatusUseCase = checkPushStatusUseCase
+        val list = ArrayList<DataItem>()
+        val item = DataItem(applinks = "tokopedia", action = "LOCAL_CALENDAR")
+        list.add(item)
+        every { componentsItem.data } returns list
+        every { viewModel.isUserLoggedIn()} returns false
+        val notifierSetReminder = NotifierCheckReminder(status = 1)
+        val pushSubscriptionResponse = PushStatusResponse(notifierCheckReminder = notifierSetReminder)
+        coEvery { checkPushStatusUseCase.checkPushStatus(any()) } returns pushSubscriptionResponse
+
+        viewModel.campaignSubscribedStatus(0)
+
+        assert(viewModel.getPushBannerSubscriptionData().value == 0)
+    }
+
+    /****************************************** end of campaignSubscribedStatus() ****************************************/
+
+    /****************************************** reload() ****************************************/
+    @Test
+    fun `Test for reload`() {
+        every { componentsItem.noOfPagesLoaded } returns 0
+        viewModel.bannerUseCase = bannerUseCase
+        val list = ArrayList<DataItem>()
+        every { componentsItem.data } returns list
+        coEvery { componentsItem.properties?.dynamic } returns true
+        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } returns true
+
+        viewModel.reload()
+
+        TestCase.assertEquals(viewModel.hideShimmer.value, true)
+    }
     @Test
     fun `test for setComponentPromoNameForCoupons when component is SingleBanner`() {
         val list = mutableListOf(DataItem(action = BANNER_ACTION_CODE))

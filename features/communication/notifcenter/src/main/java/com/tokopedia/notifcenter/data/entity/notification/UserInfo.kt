@@ -7,9 +7,5 @@ data class UserInfo(
     @SerializedName("email")
     val email: String = "",
     @SerializedName("fullname")
-    val fullname: String = "",
-    @SerializedName("shop_id")
-    val shopId: Long = 0,
-    @SerializedName("user_id")
-    val userId: Long = 0
+    val fullname: String = ""
 )

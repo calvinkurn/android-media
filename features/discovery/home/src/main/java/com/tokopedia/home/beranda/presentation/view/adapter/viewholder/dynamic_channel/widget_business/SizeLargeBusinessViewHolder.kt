@@ -10,8 +10,9 @@ import com.tokopedia.home.beranda.data.model.HomeWidget
 
 class SizeLargeBusinessViewHolder (
         itemView: View,
-        listener: BusinessUnitItemViewListener
-) : SizeSmallBusinessViewHolder(itemView, listener) {
+        listener: BusinessUnitItemViewListener,
+        cardInteraction: Boolean = false
+) : SizeSmallBusinessViewHolder(itemView, listener, cardInteraction) {
 
 
     private var icon: AppCompatImageView = itemView.findViewById(R.id.icon)
@@ -21,6 +22,9 @@ class SizeLargeBusinessViewHolder (
     private var desc2nd: TextView? = itemView.findViewById(R.id.desc2nd)
     companion object {
         val LAYOUT: Int = R.layout.layout_template_large_business
+        const val MAX_LINES_1 = 1
+        const val MAX_LINES_2 = 2
+        const val MAX_LINES_3 = 3
     }
 
     override fun getProductName(): TextView {
@@ -51,12 +55,12 @@ class SizeLargeBusinessViewHolder (
                 && element?.desc2nd.isNullOrEmpty()
         ) {
             if (hasPrice(element) || hasTagLabel(element)) {
-                title1st?.maxLines = 2
+                title1st?.maxLines = MAX_LINES_2
             } else {
-                title1st?.maxLines = 3
+                title1st?.maxLines = MAX_LINES_3
             }
         } else {
-            title1st?.maxLines = 1
+            title1st?.maxLines = MAX_LINES_1
         }
     }
 
@@ -80,14 +84,14 @@ class SizeLargeBusinessViewHolder (
                 && element?.desc2nd.isNullOrEmpty()
         ) {
             if (hasPrice(element) || hasTagLabel(element)) {
-                desc1st?.maxLines = 2
+                desc1st?.maxLines = MAX_LINES_2
                 desc1st?.gravity = Gravity.START
             } else {
-                desc1st?.maxLines = 3
+                desc1st?.maxLines = MAX_LINES_3
                 desc1st?.gravity = Gravity.START
             }
         } else {
-            desc1st?.maxLines = 1
+            desc1st?.maxLines = MAX_LINES_1
             desc1st?.gravity = Gravity.END
         }
     }

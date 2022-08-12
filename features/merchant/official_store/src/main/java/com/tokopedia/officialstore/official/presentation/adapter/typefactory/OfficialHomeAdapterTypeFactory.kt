@@ -159,7 +159,7 @@ class OfficialHomeAdapterTypeFactory(
             BestSellerViewHolder.LAYOUT -> BestSellerViewHolder(view, recommendationWidgetListener)
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
             OfficialLoadingMoreViewHolder.LAYOUT -> OfficialLoadingMoreViewHolder(view)
-            OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(view)
+            OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(view, dcEventHandler)
             OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(view)
             OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(view, featuredShopListener)
             DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(view, dcEventHandler)

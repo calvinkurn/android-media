@@ -26,6 +26,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -40,10 +41,14 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -57,6 +62,7 @@ class AtcVariantViewModel @Inject constructor(
         private val addToCartOcsUseCase: AddToCartOcsUseCase,
         private val addToCartOccUseCase: AddToCartOccMultiUseCase,
         private val addWishListUseCase: AddWishListUseCase,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
         private val updateCartUseCase: UpdateCartUseCase,
         private val deleteCartUseCase: DeleteCartUseCase,
         private val toggleFavoriteUseCase: ToggleFavoriteUseCase
@@ -68,7 +74,7 @@ class AtcVariantViewModel @Inject constructor(
 
     //This livedata is only for access variant, cartRedirection, and warehouse locally in viewmodel
     private var aggregatorData: ProductVariantAggregatorUiData? = null
-    private var minicartData: MutableMap<String, MiniCartItem>? = null
+    private var minicartData: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null
     private var variantActivityResult: ProductVariantResult = ProductVariantResult()
     private var localQuantityData: MutableMap<String, Int> = mutableMapOf()
 
@@ -125,7 +131,7 @@ class AtcVariantViewModel @Inject constructor(
         return aggregatorData
     }
 
-    fun onVariantClicked(isTokoNow: Boolean,
+    fun onVariantClicked(showQtyEditor: Boolean,
                          selectedOptionKey: String,
                          selectedOptionId: String,
                          variantImage: String, // only use when user click partially to update the image
@@ -144,7 +150,13 @@ class AtcVariantViewModel @Inject constructor(
                     ?: listOf())
             val selectedMiniCart = minicartData?.get(selectedVariantChild?.productId ?: "")
             val shouldShowDeleteButton = selectedMiniCart != null
-            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, aggregatorData?.cardRedirection, isShopOwner, selectedMiniCart != null, aggregatorData?.alternateCopy)
+            val cartData = AtcCommonMapper.mapToCartRedirectionData(
+                    selectedVariantChild,
+                    aggregatorData?.cardRedirection,
+                    isShopOwner,
+                    selectedMiniCart != null,
+                    aggregatorData?.alternateCopy
+            )
 
             val isPartiallySelected = AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
             val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
@@ -159,7 +171,7 @@ class AtcVariantViewModel @Inject constructor(
                     selectedVariantChild = selectedVariantChild,
                     variantImage = variantImage,
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
-                    isTokoNow = isTokoNow,
+                    showQtyEditor = showQtyEditor,
                     selectedQuantity = selectedQuantity,
                     shouldShowDeleteButton = shouldShowDeleteButton,
                     aggregatorUiData = aggregatorData)
@@ -256,7 +268,7 @@ class AtcVariantViewModel @Inject constructor(
             //Generate visitables
             val visitables = AtcCommonMapper.mapToVisitable(
                     selectedChild = selectedChild,
-                    isTokoNow = aggregatorParams.isTokoNow,
+                    showQtyEditor = aggregatorParams.showQtyEditor,
                     initialSelectedVariant = initialSelectedOptionIds,
                     processedVariant = processedVariant,
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
@@ -317,19 +329,23 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun assignLocalQuantityWithMiniCartQuantity(miniCart: List<MiniCartItem>?) {
+    private fun assignLocalQuantityWithMiniCartQuantity(miniCart: List<MiniCartItem.MiniCartItemProduct>?) {
         if (miniCart == null) return
         miniCart.forEach {
-            localQuantityData[it.productId] = it.quantity
+                localQuantityData[it.productId] = it.quantity
+            }
         }
-    }
 
     private suspend fun getAggregatorAndMiniCartData(aggregatorParams: ProductVariantBottomSheetParams, isLoggedIn: Boolean) {
         /**
          * If data completely provided from previous page, use that
          * if not call GQL
          */
-        if (aggregatorParams.variantAggregator.isAggregatorEmpty() || (aggregatorParams.isTokoNow && aggregatorParams.miniCartData == null && isLoggedIn)) {
+        val shouldHitMiniCart = (aggregatorParams.isTokoNow || aggregatorParams.showQtyEditor)
+                && aggregatorParams.miniCartData == null
+                && isLoggedIn
+
+        if (aggregatorParams.variantAggregator.isAggregatorEmpty() || shouldHitMiniCart) {
             val result = aggregatorMiniCartUseCase.executeOnBackground(
                     productId = aggregatorParams.productId,
                     source = aggregatorParams.pageSource,
@@ -338,10 +354,11 @@ class AtcVariantViewModel @Inject constructor(
                     pdpSession = aggregatorParams.pdpSession,
                     shopId = aggregatorParams.shopId,
                     isLoggedIn = isLoggedIn,
-                    extParams = aggregatorParams.extParams
+                    extParams = aggregatorParams.extParams,
+                    showQtyEditor = aggregatorParams.showQtyEditor
             )
             aggregatorData = result.variantAggregator
-            minicartData = result.miniCartData?.toMutableMap()
+            minicartData = result.miniCartData?.mapProductsWithProductId()?.toMutableMap()
             if (aggregatorParams.pageSource == VariantPageSource.PDP_PAGESOURCE.source) {
                 updateActivityResult(shouldRefreshPreviousPage = true)
             }
@@ -353,25 +370,39 @@ class AtcVariantViewModel @Inject constructor(
 
     fun addWishlist(productId: String, userId: String) {
         addWishListUseCase.createObservable(productId,
-                userId, object : WishListActionListener {
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                _addWishlistResult.postValue(Throwable(errorMessage ?: "").asFail())
-            }
+            userId, object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    _addWishlistResult.postValue(Throwable(errorMessage ?: "").asFail())
+                }
 
-            override fun onSuccessAddWishlist(productId: String?) {
+                override fun onSuccessAddWishlist(productId: String?) {
+                    updateActivityResult(shouldRefreshPreviousPage = true)
+                    updateButtonAndWishlistLocally(productId ?: "")
+                    _addWishlistResult.postValue(true.asSuccess())
+                }
+
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    // no op
+                }
+
+                override fun onSuccessRemoveWishlist(productId: String?) {
+                    // no op
+                }
+            })
+    }
+
+    fun addWishlistV2(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
+        viewModelScope.launch(dispatcher.main) {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            val result = withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
                 updateActivityResult(shouldRefreshPreviousPage = true)
-                updateButtonAndWishlistLocally(productId ?: "")
-                _addWishlistResult.postValue(true.asSuccess())
+                updateButtonAndWishlistLocally(productId)
+                wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorAddWishList(result.throwable, productId)
             }
-
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                // no op
-            }
-
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                // no op
-            }
-        })
+        }
     }
 
     private fun updateButtonAndWishlistLocally(productId: String) {
@@ -392,12 +423,16 @@ class AtcVariantViewModel @Inject constructor(
         _buttonData.postValue(generateCartRedir.asSuccess())
     }
 
-    private fun updateMiniCartAndButtonData(productId: String, quantity: Int, isTokoNow: Boolean, cartId: String = "", notes: String = "") {
-        if (!isTokoNow) return
+    private fun updateMiniCartAndButtonData(productId: String,
+                                            quantity: Int,
+                                            showQtyEditor: Boolean,
+                                            cartId: String = "",
+                                            notes: String = "") {
+        if (!showQtyEditor) return
         val selectedMiniCartData = minicartData?.get(productId)
 
         if (selectedMiniCartData == null) {
-            minicartData?.set(productId, MiniCartItem(
+            minicartData?.set(productId, MiniCartItem.MiniCartItemProduct(
                     cartId = cartId,
                     productId = productId,
                     quantity = quantity,
@@ -427,7 +462,7 @@ class AtcVariantViewModel @Inject constructor(
             val data = deleteCartUseCase.executeOnBackground()
 
             updateMiniCartAndButtonAfterDelete(productId)
-            updateQuantityEditorDeleteButtonAfterAtc(isTokoNow = true, value = false)
+            updateQuantityEditorDeleteButtonAfterAtc(showQtyEditor = true, value = false)
             val minOrder = getVariantData()?.getChildByProductId(productId)?.getFinalMinOrder() ?: 0
             updateQuantity(minOrder, productId)
 
@@ -444,7 +479,7 @@ class AtcVariantViewModel @Inject constructor(
                shippingMinPrice: Double,
                trackerAttributionPdp: String,
                trackerListNamePdp: String,
-               isTokoNow: Boolean) {
+               showQtyEditor: Boolean) {
         val selectedChild = getVariantData()?.getChildByOptionId(getSelectedOptionIds()?.values?.toList()
                 ?: listOf())
         val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
@@ -452,8 +487,8 @@ class AtcVariantViewModel @Inject constructor(
         val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
                 ?: selectedChild?.getFinalMinOrder() ?: 1
 
-        if (selectedMiniCart != null && isTokoNow) {
-            getUpdateCartUseCase(selectedMiniCart, updatedQuantity, isTokoNow)
+        if (selectedMiniCart != null && showQtyEditor) {
+            getUpdateCartUseCase(selectedMiniCart, updatedQuantity, showQtyEditor)
         } else {
             val atcRequestParam = AtcCommonMapper.generateAtcData(
                     actionButtonCart = actionButton,
@@ -465,20 +500,20 @@ class AtcVariantViewModel @Inject constructor(
                     categoryName = categoryName,
                     shippingMinPrice = shippingMinPrice,
                     userId = userId,
-                    isTokoNow = isTokoNow,
+                    showQtyEditor = showQtyEditor,
                     selectedStock = updatedQuantity)
-            addToCart(atcRequestParam, isTokoNow)
+            addToCart(atcRequestParam, showQtyEditor)
         }
     }
 
-    private fun addToCart(atcParams: Any, isTokoNow: Boolean) {
+    private fun addToCart(atcParams: Any, showQtyEditor: Boolean) {
         viewModelScope.launchCatchError(block = {
             val requestParams = RequestParams.create()
             requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
 
             when (atcParams) {
                 is AddToCartRequestParams -> {
-                    getAddToCartUseCase(requestParams, isTokoNow)
+                    getAddToCartUseCase(requestParams, showQtyEditor)
                 }
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
@@ -492,7 +527,7 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun getUpdateCartUseCase(params: MiniCartItem, updatedQuantity: Int, isTokoNow: Boolean) {
+    private fun getUpdateCartUseCase(params: MiniCartItem.MiniCartItemProduct, updatedQuantity: Int, showQtyEditor: Boolean) {
         viewModelScope.launchCatchError(block = {
             val copyOfMiniCartItem = params.copy(quantity = updatedQuantity)
             val updateCartRequest = UpdateCartRequest(
@@ -509,7 +544,11 @@ class AtcVariantViewModel @Inject constructor(
             }
 
             if (result.error.isEmpty()) {
-                updateMiniCartAndButtonData(productId = copyOfMiniCartItem.productId, isTokoNow = isTokoNow, quantity = copyOfMiniCartItem.quantity, notes = copyOfMiniCartItem.notes)
+                updateMiniCartAndButtonData(
+                        productId = copyOfMiniCartItem.productId,
+                        showQtyEditor = showQtyEditor,
+                        quantity = copyOfMiniCartItem.quantity,
+                        notes = copyOfMiniCartItem.notes)
                 _updateCartLiveData.postValue(result.data.message.asSuccess())
             } else {
                 _updateCartLiveData.postValue(MessageErrorException(result.error.firstOrNull()
@@ -521,14 +560,14 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun updateQuantityEditorDeleteButtonAfterAtc(isTokoNow: Boolean, value: Boolean) {
-        if (isTokoNow) {
+    private fun updateQuantityEditorDeleteButtonAfterAtc(showQtyEditor: Boolean, value: Boolean) {
+        if (showQtyEditor) {
             val updatedList = AtcCommonMapper.updateDeleteButtonQtyEditor((_initialData.value as Success).data, value)
             _initialData.postValue(updatedList.asSuccess())
         }
     }
 
-    private suspend fun getAddToCartUseCase(requestParams: RequestParams, isTokoNow: Boolean) {
+    private suspend fun getAddToCartUseCase(requestParams: RequestParams, showQtyEditor: Boolean) {
         val result = withContext(dispatcher.io) {
             addToCartUseCase.createObservable(requestParams).toBlocking().single()
         }
@@ -536,8 +575,13 @@ class AtcVariantViewModel @Inject constructor(
             val errorMessage = result.errorMessage.firstOrNull() ?: ""
             _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
         } else {
-            updateQuantityEditorDeleteButtonAfterAtc(isTokoNow, true)
-            updateMiniCartAndButtonData(result.data.productId.toString(), result.data.quantity, isTokoNow, result.data.cartId, result.data.notes)
+            updateQuantityEditorDeleteButtonAfterAtc(showQtyEditor, true)
+            updateMiniCartAndButtonData(
+                    productId = result.data.productId.toString(),
+                    quantity = result.data.quantity,
+                    showQtyEditor = showQtyEditor,
+                    cartId = result.data.cartId,
+                    notes = result.data.notes)
             _addToCartLiveData.postValue(result.asSuccess())
         }
     }
@@ -590,7 +634,7 @@ class AtcVariantViewModel @Inject constructor(
         return aggregatorData?.nearestWarehouse?.get(productId)
     }
 
-    private fun getSelectedMiniCartItem(productId: String): MiniCartItem? {
+    private fun getSelectedMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         return minicartData?.get(productId)
     }
 

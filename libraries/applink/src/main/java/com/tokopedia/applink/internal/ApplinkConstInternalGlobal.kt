@@ -64,10 +64,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/payment-setting
     const val PAYMENT_SETTING = "$INTERNAL_GLOBAL/payment-setting"
 
-    //ChooseTokocashAccountActivity
-    // tokopedia-android-internal://global/choose-account
-    const val CHOOSE_ACCOUNT = "$INTERNAL_GLOBAL/choose-account"
-
     // AddNameRegisterActivity
     // tokopedia-android-internal://global/add-name-register
     const val ADD_NAME_REGISTER = "$INTERNAL_GLOBAL/add-name-register"
@@ -211,28 +207,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-pin-from-2fa
     const val ADD_PIN_FROM_2FA = "$INTERNAL_GLOBAL/add-pin-from-2fa"
 
-    // VerificationActivity
-    // tokopedia-android-internal://global/cotp
-    const val COTP = "$INTERNAL_GLOBAL/cotp"
-
-    // ReceiverNotifActivity
-    // tokopedia-android-internal://global/otp-push-notif-receiver
-    const val OTP_PUSH_NOTIF_RECEIVER = "$INTERNAL_GLOBAL/otp-push-notif-receiver"
-
-    // SettingNotifActivity
-    // tokopedia-android-internal://global/otp-push-notif-setting
-    const val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
-
-    // LoginByQrActivity
-    // tokopedia-android-internal://global/qr-login
-    @JvmField
-    val QR_LOGIN = "$INTERNAL_GLOBAL/qr-login"
-
-    // LoginByQrResultActivity
-    // tokopedia-android-internal://global/qr-login-result
-    @JvmField
-    val QR_LOGIN_RESULT = "$INTERNAL_GLOBAL/qr-login-result"
-
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     const val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
@@ -342,17 +316,6 @@ object ApplinkConstInternalGlobal {
         DFFALLBACKURL_KEY +"={fallbackUrl}"
 
     /**
-     * LogoutActivity
-     * @applink : tokopedia-android-internal://global/logout
-     * @param   : [PARAM_IS_RETURN_HOME]
-     * default is 'true', set 'false' if you wan get activity result
-     **/
-    const val LOGOUT = "$INTERNAL_GLOBAL/logout"
-    /** for param logout */
-    const val PARAM_IS_RETURN_HOME = "return_to_home"
-    const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
-
-    /**
      * TermPrivacyActivity
      * @applink : tokopedia-android-internal://global/term-privacy/{page}/
      **/
@@ -420,10 +383,6 @@ object ApplinkConstInternalGlobal {
     // FundsAndInvestmentActivity
     // tokopedia-android-internal://global/funds-and-investment
     const val FUNDS_AND_INVESTMENT = "$INTERNAL_GLOBAL/funds-and-investment"
-
-    // ChooseAccountFingerprintActivity
-    // tokopedia-android-internal://global/choose-account-fingerprint
-    const val CHOOSE_ACCOUNT_FINGERPRINT = "$INTERNAL_GLOBAL/choose-account-fingerprint"
 
     //SeamlessActivity
     const val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"

@@ -43,6 +43,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -55,8 +59,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val userSessionInterface: UserSessionInterface,
         private val addWishListUseCase: AddWishListUseCase,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
+        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val getDisplayHeadlineAds: GetDisplayHeadlineAds,
         private val getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase,
         private val bestSellerMapper: BestSellerMapper,
@@ -206,7 +212,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private suspend fun getOfficialStoreBanners(
         categoryId: String,
         isCache: Boolean,
-        onCompleteInvokeData: () -> Unit = {}
+        onCompleteInvokeData: () -> Unit
     ): Result<OfficialStoreBanners> {
         return withContext(dispatchers.io) {
             try {
@@ -278,7 +284,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(data.first().copy(channelId = channelId))
             _recomWidget.value = Success(bestSellerDataModel)
         } catch (t: Throwable) {
-            Fail(t)
+            _recomWidget.value = Fail(t)
         }
     }
 
@@ -298,7 +304,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
+    fun addWishlist(
+        model: RecommendationItem,
+        callback: (Boolean, Throwable?) -> Unit
+    ) {
         if (model.isTopAds) {
             launchCatchError(block = {
                 _topAdsWishlistResult.value = addTopAdsWishlist(model)
@@ -307,21 +316,40 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 callback.invoke(false, it)
             }
         } else {
-            addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    callback.invoke(true, null)
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-
-                override fun onSuccessRemoveWishlist(productId: String?) {}
-
-            })
+            doAddWishlist(model, callback)
         }
+    }
+
+    fun addWishlistV2(
+        model: RecommendationItem,
+        wishlistV2ActionListener: WishlistV2ActionListener
+    ) {
+        launch(dispatchers.main) {
+            addToWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+            val result = withContext(dispatchers.io) { addToWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessAddWishlist(result.data, model.productId.toString())
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorAddWishList(result.throwable, model.productId.toString())
+            }
+        }
+    }
+
+    private fun doAddWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
+        addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                callback.invoke(false, Throwable(errorMessage))
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                callback.invoke(true, null)
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+
+            override fun onSuccessRemoveWishlist(productId: String?) {}
+
+        })
     }
 
     fun removeWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
@@ -338,6 +366,18 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 callback.invoke(true, null)
             }
         })
+    }
+
+    fun removeWishlistV2(model: RecommendationItem, wishlistV2ActionListener: WishlistV2ActionListener) {
+        launch(dispatchers.main) {
+            deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+            val result = withContext(dispatchers.io) { deleteWishlistV2UseCase.executeOnBackground() }
+            if (result is Success) {
+                wishlistV2ActionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+            } else if (result is Fail) {
+                wishlistV2ActionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
+            }
+        }
     }
 
     private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
@@ -367,10 +407,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _featuredShopRemove.value = featuredShopDataModel
         }
     }
-
-    fun isLoggedIn() = userSessionInterface.isLoggedIn
-
-    fun getUserId() = userSessionInterface.userId
 
     fun resetIsFeatureShopAllowed() {
         isFeaturedShopAllowed = false

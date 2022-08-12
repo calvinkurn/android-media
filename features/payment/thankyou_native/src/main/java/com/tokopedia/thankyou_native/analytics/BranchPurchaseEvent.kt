@@ -56,7 +56,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         paymentData.setProductType(getProductTypeForBranch())
         paymentData.isNewBuyer = thanksPageData.isNewUser
         paymentData.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
-        var revenue = 0F
+        var revenue = 0.0
         shopOrder.purchaseItemList.forEach { purchaseItem ->
             if (isItemPartOfRevenue(purchaseItem)) {
                 revenue += purchaseItem.totalPrice

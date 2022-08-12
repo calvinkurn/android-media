@@ -30,4 +30,11 @@ object ApplinkConstInternalLogistic {
 
     const val TNC_WEBVIEW = "$INTERNAL_LOGISTIC/logistictnc"
 
+    const val RESCHEDULE_PICKUP = "$INTERNAL_LOGISTIC/reschedulepickup?order_id={order_id}"
+
+    const val PROOF_OF_DELIVERY = "$INTERNAL_LOGISTIC/shipping/pod/{orderId}"
+
+    const val PARAM_SOURCE = "source"
+
+    const val MANAGE_ADDRESS_FROM_ACCOUNT = "$MANAGE_ADDRESS?$PARAM_SOURCE=account"
 }

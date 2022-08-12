@@ -46,6 +46,7 @@ import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.utils.URLParser;
 import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
@@ -58,6 +59,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -86,6 +88,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String PARAM_BOOL_FALSE = "false";
     private static final int SHOP_MVC_LOCKED_TO_PRODUCT_TOTAL_SEGMENT = 3;
     private static final int SHOP_MVC_LOCKED_TO_PRODUCT_VOUCHER_SEGMENT = 1;
+    private static final String REDIRECTION_LINK_PARAM = "r";
+    private static final String USER_ID_PARAM = "uid";
+    private static final String ENV_PARAM = "t";
+    private static final String ENV_VALUE = "android";
+    private static final String TOP_ADS_REDIRECTION = "TOP_ADS_REDIRECTION";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -202,10 +209,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openSimilarProduct(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_SIMILAR_PRODUCT;
                     break;
-                case DeepLinkChecker.OTHER:
-                    prepareOpenWebView(uriData);
-                    screenName = AppScreen.SCREEN_DEEP_LINK;
-                    break;
                 case DeepLinkChecker.INVOICE:
                     openInvoice(uriData);
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
@@ -255,10 +258,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openOrderList(uriData);
                     screenName = "";
                     break;
-                case DeepLinkChecker.DEALS:
-                    prepareOpenWebView(uriData);
-                    screenName = AppScreen.DEALS_PAGE;
-                    break;
                 case DeepLinkChecker.TRAVEL_HOMEPAGE:
                     openTravelHomepage(linkSegment, uriData, defaultBundle);
                     screenName = "";
@@ -279,6 +278,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openPowerMechant(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.TOKOFOOD:
+                    openTokoFood(uriData);
+                    screenName = "";
+                    break;
+                case DeepLinkChecker.TOP_ADS_CLICK_LINK:
+                     doTopAdsOperation(uriData);
+                     screenName = "";
+                     break;
+                case DeepLinkChecker.DEALS:
+                case DeepLinkChecker.OTHER:
                 default:
                     prepareOpenWebView(uriData);
                     screenName = uriData.getPath();
@@ -289,6 +298,41 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 context.finish();
             }
         }
+    }
+
+    private void doTopAdsOperation(Uri uriData) {
+        Uri newUri = replaceUriParameter(uriData, userSession);
+        String redirectionUrl = uriData.getQueryParameter(REDIRECTION_LINK_PARAM);
+        new TopAdsUrlHitter(context).hitClickUrlAndStoreHeader(this.getClass().getCanonicalName(),
+                newUri.toString(), "", "", "", userSession.isLoggedIn());
+        if (redirectionUrl != null && !redirectionUrl.isEmpty()) {
+            RouteManager.route(context, redirectionUrl);
+        } else {
+            logRequest(uriData);
+            RouteManager.route(context, ApplinkConst.HOME);
+        }
+    }
+
+    private void logRequest(Uri uriData) {
+        Map<String, String> map = new HashMap<>();
+        map.put("type", "request");
+        map.put("uri", uriData.toString());
+        ServerLogger.log(Priority.P2, TOP_ADS_REDIRECTION, map);
+    }
+
+    private static Uri replaceUriParameter(Uri uri, UserSessionInterface userSession) {
+        final Set<String> params = uri.getQueryParameterNames();
+        final Uri.Builder newUri = uri.buildUpon().clearQuery();
+        for (String param : params) {
+            if (param.equals(USER_ID_PARAM)) {
+                newUri.appendQueryParameter(param, userSession.getUserId());
+            } else if (param.equals(ENV_PARAM)) {
+                newUri.appendQueryParameter(param, ENV_VALUE);
+            } else {
+                newUri.appendQueryParameter(param, uri.getQueryParameter(param));
+            }
+        }
+        return newUri.build();
     }
 
     private void openSaldoDeposit() {
@@ -464,6 +508,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openPowerMechant(Uri uriData) {
         Intent intent = RouteManager.getIntent(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
+        viewListener.goToPage(intent);
+    }
+
+    private void openTokoFood(Uri uriData) {
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.TokoFood.HOME);
         viewListener.goToPage(intent);
     }
 

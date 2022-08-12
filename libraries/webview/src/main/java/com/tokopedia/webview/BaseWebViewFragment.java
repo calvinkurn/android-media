@@ -9,9 +9,11 @@ import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
 import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
+import static com.tokopedia.webview.ConstantKt.LOGIN;
 import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
+import static com.tokopedia.webview.ConstantKt.WWW_TOKOPEDIA_COM;
 import static com.tokopedia.webview.ConstantKt.ZOOM_US_STRING;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.decode;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
@@ -80,6 +82,7 @@ import com.tokopedia.webview.ext.UrlEncoderExtKt;
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import kotlin.Unit;
@@ -105,6 +108,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
+    private static final String RESOLUTION_APPLINK = "tokopedia://resolution/success-create";
     private static final String REGISTER_APPLINK = "tokopedia://registration";
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
@@ -189,11 +193,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
         Uri uri = Uri.parse(url);
         String host = uri.getHost();
-        if(uri.getUserInfo()!=null) {
+        if (uri.getUserInfo() != null) {
             ErrorHandler.Builder builder = new ErrorHandler.Builder();
             builder.sendToScalyr(true);
             builder.setErrorCode(true);
-            Toast.makeText(getActivity(), ErrorHandler.getErrorMessage(getActivity(), new NullPointerException("Unable to open link"), builder ), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), ErrorHandler.getErrorMessage(getActivity(), new NullPointerException("Unable to open link"), builder), Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
 
@@ -294,6 +298,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     protected void loadWeb() {
         String url = getUrl();
         if (isTokopediaUrl) {
+            webView.requestFocus();
             webView.loadAuthUrl(url, new UserSession(getContext()));
         } else {
             redirectToNativeBrowser();
@@ -355,7 +360,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
-            if (imagePath != null && base64!= null) {
+            if (imagePath != null && base64 != null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
                 jsCallbackBuilder.append("javascript:")
                         .append(mJsHciCallbackFuncName)
@@ -423,7 +428,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    public static @Nullable String encodeToBase64(String imagePath, int quality) {
+    public static @Nullable
+    String encodeToBase64(String imagePath, int quality) {
         Bitmap bm = BitmapFactory.decodeFile(imagePath);
         if (bm == null) {
             return null;
@@ -844,12 +850,18 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
             if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
                 Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalUserPlatform.LOGOUT);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, true);
+                intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, false);
+                intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY, true);
                 startActivityForResult(intent, REQUEST_CODE_LOGOUT);
             } else {
                 startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
             }
+            return true;
+        }
+
+        if (url.contains(RESOLUTION_APPLINK)) {
+            RouteManager.route(getContext(), url);
+            activity.finish();
             return true;
         }
 
@@ -875,6 +887,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             } else {
                 logApplinkErrorOpen(url);
             }
+        } else { // network url
+            if (handleWebUrlLogin(uri)) {
+                return true;
+            }
         }
         if (!allowOverride) {
             return false;
@@ -882,6 +898,20 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean handleWebUrlLogin(Uri uri) {
+        if (WWW_TOKOPEDIA_COM.equals(uri.getHost())) {
+            List<String> pathSegments = uri.getPathSegments();
+            // https://www.tokopedia.com/login/?...
+            if (pathSegments.size() == 1 &&
+                    LOGIN.equals(pathSegments.get(0)) &&
+                    !userSession.isLoggedIn()) {
+                startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isBriIntent(Uri uri) {

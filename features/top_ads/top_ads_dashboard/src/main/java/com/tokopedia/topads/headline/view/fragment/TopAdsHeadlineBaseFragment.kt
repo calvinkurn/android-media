@@ -52,8 +52,8 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private var appBarLayout: AppBarLayout? = null
     private var hariIni: ConstraintLayout? = null
     private var pager: ViewPager? = null
-    private lateinit var headlineAdsViePager: ViewPager
-    private lateinit var headlineTabLayout: TabsUnify
+    private var headlineAdsViePager: ViewPager? = null
+    private var headlineTabLayout: TabsUnify?=null
     private var noTabSpace: View? = null
 
     @Inject
@@ -99,7 +99,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     override fun loadChildStatisticsData() {
         swipeRefreshLayout?.isRefreshing = false
-        val list = (headlineAdsViePager.adapter as? TopAdsDashboardBasePagerAdapter)?.getList()
+        val list = (headlineAdsViePager?.adapter as? TopAdsDashboardBasePagerAdapter)?.getList()
         list?.forEach { fragmentTabItem ->
             when (val f = fragmentTabItem.fragment) {
                 is TopAdsDashDeletedGroupFragment -> {
@@ -161,15 +161,17 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun renderHeadlineViewPager() {
-        headlineAdsViePager.adapter = getHeadlineViewPagerAdapter()
-        headlineTabLayout.setupWithViewPager(headlineAdsViePager)
+        headlineAdsViePager?.adapter = getHeadlineViewPagerAdapter()
+        headlineAdsViePager?.let { headlineTabLayout?.setupWithViewPager(it) }
     }
 
     private fun getHeadlineViewPagerAdapter(): TopAdsDashboardBasePagerAdapter {
         val list: ArrayList<FragmentTabItem> = arrayListOf()
-        headlineTabLayout.getUnifyTabLayout().removeAllTabs()
-        headlineTabLayout.addNewTab(TopAdsDashboardConstant.IKLAN_TOKO)
-        headlineTabLayout.customTabMode = TabLayout.MODE_SCROLLABLE
+        headlineTabLayout?.let {
+            it.getUnifyTabLayout().removeAllTabs()
+            it.addNewTab(TopAdsDashboardConstant.IKLAN_TOKO)
+            it.customTabMode = TabLayout.MODE_SCROLLABLE
+        }
         list.add(
             FragmentTabItem(
                 TopAdsDashboardConstant.IKLAN_TOKO,
@@ -185,10 +187,10 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     private fun addDeletedTab(list: ArrayList<FragmentTabItem>) {
         if (isDeletedTabEnabled) {
-            headlineTabLayout.show()
+            headlineTabLayout?.show()
             noTabSpace?.hide()
-            headlineTabLayout.customTabMode = TabLayout.MODE_FIXED
-            headlineTabLayout.addNewTab(TopAdsDashboardConstant.DIHAPUS)
+            headlineTabLayout?.customTabMode = TabLayout.MODE_FIXED
+            headlineTabLayout?.addNewTab(TopAdsDashboardConstant.DIHAPUS)
             list.add(
                 FragmentTabItem(
                     TopAdsDashboardConstant.DIHAPUS,
@@ -274,11 +276,11 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     override fun setDeletedGroupCount(size: Int) {
-        headlineTabLayout.getUnifyTabLayout().getTabAt(1)?.setCounter(size)
+        headlineTabLayout?.getUnifyTabLayout()?.getTabAt(1)?.setCounter(size)
     }
 
     override fun setGroupCount(size: Int) {
-        headlineTabLayout.getUnifyTabLayout().getTabAt(0)?.setCounter(size)
+        headlineTabLayout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
     }
 
     override fun onAttach(context: Context) {

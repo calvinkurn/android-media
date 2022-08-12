@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_collapsed_product"
-    android:layout_width="@dimen/dp_80"
+    android:layout_width="80dp"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -12,6 +12,17 @@
         android:layout_height="72dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/image_bundle_icon"
+        android:layout_width="23dp"
+        android:layout_height="23dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/icon_bundling_dms_color"
+        app:layout_constraintBottom_toBottomOf="@+id/image_product"
+        app:layout_constraintEnd_toEndOf="@+id/image_product"
+        app:shapeAppearanceOverlay="@style/roundedImageDisplay" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_variant_name"

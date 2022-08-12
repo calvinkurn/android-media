@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -21,7 +22,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -47,6 +47,7 @@ import com.tokopedia.review.feature.inbox.presentation.InboxReputationActivity
 import com.tokopedia.review.feature.inboxreview.analytics.InboxReviewTracking
 import com.tokopedia.review.feature.inboxreview.di.component.DaggerInboxReviewComponent
 import com.tokopedia.review.feature.inboxreview.di.component.InboxReviewComponent
+import com.tokopedia.review.feature.inboxreview.di.qualifier.InboxReviewGson
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.FeedbackInboxReviewListener
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.GlobalErrorStateListener
@@ -61,6 +62,13 @@ import com.tokopedia.review.feature.inboxreview.util.InboxReviewPreference
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.reviewcommon.extension.put
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -98,6 +106,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     @Inject
     lateinit var inboxReviewPreference: InboxReviewPreference
 
+    @Inject
+    @InboxReviewGson
+    lateinit var gson: Gson
+
     private var binding by autoClearedNullable<FragmentInboxReviewBinding>()
 
     private val inboxReviewViewModel: InboxReviewViewModel by lazy {
@@ -105,7 +117,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private val inboxReviewAdapterTypeFactory by lazy {
-        InboxReviewAdapterTypeFactory(this, this)
+        InboxReviewAdapterTypeFactory(
+            feedbackInboxReviewListener = this,
+            globalErrorStateListener = this,
+            reviewMediaThumbnailListener = ReviewMediaThumbnailListener(),
+            reviewMediaThumbnailRecycledViewPool = RecyclerView.RecycledViewPool()
+        )
     }
 
     private val inboxReviewAdapter: InboxReviewAdapter
@@ -119,7 +136,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private var itemSortFilterList = ArrayList<SortFilterItem>()
 
-    private var cacheManager: SaveInstanceCacheManager? = null
     private var bottomSheet: FilterRatingBottomSheet? = null
 
     private var feedbackInboxList: MutableList<FeedbackInboxUiModel>? = null
@@ -252,19 +268,19 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         val feedbackReplyUiModel = ProductReplyUiModel(data.productID, data.productImageUrl, data.productName, data.variantName)
         val mapFeedbackData = InboxReviewMapper.mapFeedbackInboxToFeedbackUiModel(data)
 
-        cacheManager = context?.let {
-            SaveInstanceCacheManager(it, true).apply {
-                put(SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, mapFeedbackData)
-                put(SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, feedbackReplyUiModel)
-            }
+        val cacheManager = SaveInstanceCacheManager(
+            context = requireContext(),
+            generateObjectId = true
+        ).apply {
+            put(customId = SellerReviewReplyFragment.EXTRA_FEEDBACK_DATA, objectToPut = mapFeedbackData, gson = gson)
+            put(customId = SellerReviewReplyFragment.EXTRA_PRODUCT_DATA, objectToPut = feedbackReplyUiModel, gson = gson)
+            put(customId = SellerReviewReplyFragment.EXTRA_SHOP_ID, objectToPut = inboxReviewViewModel.userSession.shopId.orEmpty(), gson = gson)
+            put(customId = SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, objectToPut = isEmptyReply, gson = gson)
         }
 
         startActivityForResult(Intent(context, SellerReviewReplyActivity::class.java).apply {
-            putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager?.id)
-            putExtra(SellerReviewReplyFragment.EXTRA_SHOP_ID, inboxReviewViewModel.userSession.shopId.orEmpty())
-            putExtra(SellerReviewReplyFragment.IS_EMPTY_REPLY_REVIEW, isEmptyReply)
+            putExtra(SellerReviewReplyFragment.CACHE_OBJECT_ID, cacheManager.id)
         }, RESULT_INTENT_REVIEW_REPLY)
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -279,25 +295,30 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
     }
 
-    override fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>,
-                                    feedbackId: String,
-                                    productId: String,
-                                    position: Int) {
-
+    fun onMediaItemClicked(
+        preloadedReviewMediaData: ProductrevGetReviewMedia,
+        feedbackID: String,
+        productId: String,
+        position: Int
+    ) {
         InboxReviewTracking.eventClickSpecificImageReview(
-                feedbackId,
-                getQuickFilter(),
-                inboxReviewViewModel.userSession.shopId.orEmpty(),
-                productId
+            feedbackID,
+            getQuickFilter(),
+            inboxReviewViewModel.userSession.shopId.orEmpty(),
+            productId
         )
         context?.run {
-            startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                    context = this,
-                    title = titleProduct,
-                    imageUrls = imageUrls,
-                    imageThumbnailUrls = thumbnailsUrl,
-                    imagePosition = position
-            ))
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context = this,
+                pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
+                productID = productId,
+                shopID = "",
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position.inc(),
+                showSeeMore = false,
+                preloadedDetailedReviewMediaResult = preloadedReviewMediaData
+            ).run { startActivity(this) }
         }
     }
 
@@ -739,4 +760,30 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         coachmark = context?.let { CoachMark2(it) }
     }
 
+    private inner class ReviewMediaThumbnailListener : ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            inboxReviewAdapter.findFeedbackInboxContainingThumbnail(item)?.let {
+                onMediaItemClicked(
+                    mapReviewMediaData(it.reviewMediaThumbnail),
+                    it.feedbackId,
+                    it.productID,
+                    position
+                )
+            }
+        }
+
+        private fun mapReviewMediaData(
+            reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
+        ): ProductrevGetReviewMedia {
+            return ProductrevGetReviewMedia(
+                reviewMedia = reviewMediaThumbnailUiModel.generateReviewMedia(),
+                detail = Detail(
+                    reviewDetail = listOf(),
+                    reviewGalleryImages = reviewMediaThumbnailUiModel.generateReviewGalleryImage(),
+                    reviewGalleryVideos = reviewMediaThumbnailUiModel.generateReviewGalleryVideo(),
+                    mediaCount = reviewMediaThumbnailUiModel.generateMediaCount()
+                )
+            )
+        }
+    }
 }

@@ -105,6 +105,7 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
         `Given category view model`(
                 defaultCategoryL1,
                 categoryL2Id,
+                defaultExternalServiceType,
                 mapOf(SearchApiConst.SC to categoryL3Id)
         )
 

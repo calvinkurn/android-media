@@ -14,9 +14,11 @@ import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
-import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel.Companion.THRESHOLD_VIEW_COUNT
 import java.text.NumberFormat
 
@@ -46,7 +48,13 @@ object ShopPageProductListMapper {
         )
     }
 
-    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean, etalaseId: String, etalaseType: Int? = null): ShopProductUiModel =
+    fun mapShopProductToProductViewModel(
+        shopProduct: ShopProduct,
+        isMyOwnProduct: Boolean,
+        etalaseId: String,
+        etalaseType: Int? = null,
+        isEnableDirectPurchase: Boolean
+    ): ShopProductUiModel =
             with(shopProduct) {
                 ShopProductUiModel().also {
                     it.id = productId
@@ -73,6 +81,9 @@ object ShopPageProductListMapper {
                     it.etalaseId = etalaseId
                     it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                     it.etalaseType = etalaseType
+                    it.stock = stock.toLong()
+                    it.maximumOrder = getMaximumOrder(shopProduct)
+                    it.isEnableDirectPurchase = isEnableDirectPurchase
                     when (it.etalaseType) {
                         ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
                             it.isUpcoming  = campaign.isUpcoming
@@ -88,6 +99,7 @@ object ShopPageProductListMapper {
                             it.hideGimmick = campaign.hideGimmick
                             it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
                             it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                            setStockAndSoldOutForCampaignEtalase(it, shopProduct)
                         }
                         ShopEtalaseTypeDef.ETALASE_FLASH_SALE -> {
                             it.isUpcoming  = campaign.isUpcoming
@@ -108,10 +120,25 @@ object ShopPageProductListMapper {
                                 it.displayedPrice = campaign.discountedPriceFmt
                             }
                             it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                            setStockAndSoldOutForCampaignEtalase(it, shopProduct)
+                        }
+                        ShopEtalaseTypeDef.ETALASE_THEMATIC_CAMPAIGN -> {
+                            it.isEnableDirectPurchase = false
                         }
                     }
+                    it.isVariant = hasVariant
+                    it.minimumOrder = minimumOrder
+                    it.parentId = parentId
                 }
             }
+
+    private fun setStockAndSoldOutForCampaignEtalase(
+        shopProductUiModel: ShopProductUiModel,
+        shopProduct: ShopProduct
+    ) {
+        shopProductUiModel.stock = shopProduct.campaign.customStock.toLongOrZero().takeIf {!it.isZero()} ?: shopProduct.stock.toLong()
+        shopProductUiModel.isSoldOut = shopProductUiModel.stock.isZero()
+    }
 
     private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupUiModel {
         return LabelGroupUiModel(
@@ -200,7 +227,7 @@ object ShopPageProductListMapper {
 
         val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductUiModel.isShowFreeOngkir, shopProductUiModel.freeOngkirPromoIcon ?: "")
 
-        return ProductCardModel(
+        val baseProductCardModel = ProductCardModel(
                 productImageUrl = shopProductUiModel.imageUrl ?: "",
                 productName = shopProductUiModel.name ?: "",
                 discountPercentage = discountPercentage.takeIf { !shopProductUiModel.hideGimmick } ?: "",
@@ -216,6 +243,66 @@ object ShopPageProductListMapper {
                 stockBarLabel = shopProductUiModel.stockLabel,
                 stockBarPercentage = shopProductUiModel.stockBarPercentage,
                 isWideContent = isWideContent
+        )
+        return if (shopProductUiModel.isEnableDirectPurchase && isProductCardIsNotSoldOut(shopProductUiModel.isSoldOut)) {
+            val productCardModel = if (shopProductUiModel.isVariant) {
+                createProductCardWithVariantAtcModel(
+                    shopProductUiModel,
+                    baseProductCardModel
+                )
+            } else {
+                if (shopProductUiModel.productInCart.isZero()) {
+                    createProductCardWithDefaultAddToCardModel(baseProductCardModel)
+                } else {
+                    createProductCardWithNonVariantAtcModel(
+                        shopProductUiModel,
+                        baseProductCardModel
+                    )
+                }
+            }
+            productCardModel.copy(
+                hasThreeDots = false
+            )
+        } else {
+            baseProductCardModel.copy(
+                hasThreeDots = isShowThreeDots
+            )
+        }
+    }
+
+    private fun isProductCardIsNotSoldOut(isProductSoldOut: Boolean): Boolean {
+        return !isProductSoldOut
+    }
+
+    private fun createProductCardWithDefaultAddToCardModel(baseProductCardModel: ProductCardModel): ProductCardModel {
+        return baseProductCardModel.copy(
+            variant = null,
+            nonVariant = null,
+            hasAddToCartButton = true
+        )
+    }
+
+    private fun createProductCardWithVariantAtcModel(
+        shopProductUiModel: ShopProductUiModel,
+        baseProductCardModel: ProductCardModel
+    ): ProductCardModel {
+        return baseProductCardModel.copy(
+            variant = ProductCardModel.Variant(
+                shopProductUiModel.productInCart
+            )
+        )
+    }
+
+    private fun createProductCardWithNonVariantAtcModel(
+        shopProductUiModel: ShopProductUiModel,
+        baseProductCardModel: ProductCardModel
+    ): ProductCardModel {
+        return baseProductCardModel.copy(
+            nonVariant = ProductCardModel.NonVariant(
+                quantity = shopProductUiModel.productInCart,
+                minQuantity = shopProductUiModel.minimumOrder,
+                maxQuantity = shopProductUiModel.maximumOrder
+            )
         )
     }
 
@@ -243,5 +330,23 @@ object ShopPageProductListMapper {
                 type = labelGroupUiModel.type,
                 imageUrl = labelGroupUiModel.url
         )
+    }
+
+    fun convertCommaValue(productIdList: List<String?>): String {
+        val stringBuilder = StringBuilder()
+        for (i in productIdList.indices) {
+            stringBuilder.append(productIdList[i])
+            if (i != productIdList.size - 1) {
+                stringBuilder.append(",")
+            }
+        }
+        return stringBuilder.toString()
+    }
+
+    private fun getMaximumOrder(shopProductResponse: ShopProduct): Int {
+        return shopProductResponse.campaign.maxOrder.takeIf { !it.isZero() } ?:
+        shopProductResponse.maximumOrder.takeIf { !it.isZero() } ?:
+        shopProductResponse.campaign.customStock.toIntOrZero().takeIf { !it.isZero() } ?:
+        shopProductResponse.stock
     }
 }

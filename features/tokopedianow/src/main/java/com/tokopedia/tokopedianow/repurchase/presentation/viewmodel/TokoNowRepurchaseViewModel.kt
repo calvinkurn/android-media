@@ -21,7 +21,9 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
@@ -66,7 +68,8 @@ import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurc
 import com.tokopedia.tokopedianow.repurchase.presentation.model.RepurchaseProductListMeta
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
-import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedSortFilter
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -184,7 +187,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             getMiniCartJob?.cancel()
             launchCatchError(block = {
-                getMiniCartUseCase.setParams(shopId)
+                getMiniCartUseCase.setParams(shopId, MiniCartSource.TokonowRepurchasePage)
                 val data = getMiniCartUseCase.executeOnBackground()
                 val isInitialLoad = _getLayout.value == null
 
@@ -314,7 +317,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
         if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && isLoggedIn) {
             launchCatchError(block = {
-                getMiniCartUseCase.setParams(listOf(shopId))
+                getMiniCartUseCase.setParams(listOf(shopId), MiniCartSource.TokonowRepurchasePage)
                 val data = getMiniCartUseCase.executeOnBackground()
                 setProductAddToCartQuantity(data)
             }) {
@@ -361,9 +364,9 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         selectedCategoryFilter = null
     }
 
-    private fun getMiniCartItem(productId: String): MiniCartItem? {
+    private fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
-        return items.firstOrNull { it.productId == productId }
+        return items.getMiniCartItemProduct(productId)
     }
 
     private fun setCategoryFilter(selectedFilter: SelectedSortFilter?) {
@@ -539,7 +542,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }
     }
 
-    private fun removeItemFromCart(miniCartItem: MiniCartItem) {
+    private fun removeItemFromCart(miniCartItem: MiniCartItem.MiniCartItemProduct) {
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )
@@ -552,7 +555,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         })
     }
 
-    private fun updateItemCart(miniCartItem: MiniCartItem, quantity: Int) {
+    private fun updateItemCart(miniCartItem: MiniCartItem.MiniCartItemProduct, quantity: Int) {
         miniCartItem.quantity = quantity
         val updateCartRequest = UpdateCartRequest(
             cartId = miniCartItem.cartId,

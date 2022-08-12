@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
  * @author by milhamj on 28/11/18.
  */
 data class DynamicPostViewModel(
-        val id: Int = 0,
+        val id: String = "",
         val title: Title = Title(),
         val header: Header = Header(),
         val postTag: PostTag = PostTag(),

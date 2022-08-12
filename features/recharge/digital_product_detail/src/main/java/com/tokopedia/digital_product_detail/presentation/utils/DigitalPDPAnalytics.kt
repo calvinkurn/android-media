@@ -225,7 +225,7 @@ class DigitalPDPAnalytics {
     ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, IMPRESSION_LAST_TRANSACTION_ICON)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}")
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}_${recomData.itemType}")
             putParcelableArrayList(
                 ITEMS,
                 mapperRecommendationToItemList(recomData, operatorName, position)
@@ -247,7 +247,7 @@ class DigitalPDPAnalytics {
     ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_LAST_TRANSACTION_ICON)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}_${position}")
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}_${position}_${recomData.itemType}")
             putString(ITEM_LIST, productListName)
             putParcelableArrayList(
                 ITEMS,
@@ -494,12 +494,13 @@ class DigitalPDPAnalytics {
         cartId: String,
         productId: String,
         productName: String,
-        price: String
+        price: String,
+        channelId: String,
     ){
 
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_LANJUT_BAYAR)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName} - ${operatorName}")
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName} - ${operatorName} - ${channelId}")
             putParcelableArrayList(ITEMS, mapperAtcToItemList(
                 categoryId, categoryName, cartId, operatorName, productId, productName, price
             ))

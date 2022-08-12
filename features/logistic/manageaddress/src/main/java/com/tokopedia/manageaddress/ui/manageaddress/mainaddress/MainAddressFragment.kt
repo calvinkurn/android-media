@@ -118,6 +118,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     var isFromEditChosenAddress: Boolean? = null
     private var isFromDeleteAddress: Boolean? = false
     private var isStayOnPageState: Boolean? = false
+    private var source: String = ""
 
     override fun getScreenName(): String = ""
 
@@ -156,6 +157,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
         viewModel.savedQuery = arguments?.getString(ManageAddressConstant.EXTRA_QUERY) ?: ""
         viewModel.receiverUserId = arguments?.getString(ManageAddressConstant.QUERY_RECEIVER_USER_ID)
         viewModel.senderUserId = arguments?.getString(ManageAddressConstant.QUERY_SENDER_USER_ID)
+        source = arguments?.getString(ApplinkConstInternalLogistic.PARAM_SOURCE) ?: ""
     }
 
     private fun initAdapter() {
@@ -405,6 +407,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
             val addressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (addressDataModel != null) {
                 setChosenAddressANA(addressDataModel)
+                view?.let { Toaster.build(it, getString(R.string.add_address_success), Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
             } else {
                 performSearch(viewModel.savedQuery, null)
             }
@@ -464,6 +467,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
         if (eligibleForEditRevamp) {
             val intent = RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}")
+            intent.putExtra(ApplinkConstInternalLogistic.PARAM_SOURCE, source)
             startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
         } else {
             val token = viewModel.token

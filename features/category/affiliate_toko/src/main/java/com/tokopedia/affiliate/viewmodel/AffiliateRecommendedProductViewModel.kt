@@ -3,9 +3,12 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.PAGE_LIMIT
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateRecommendedProductData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
+import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateRecommendedProductUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -13,14 +16,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AffiliateRecommendedProductViewModel @Inject constructor(
-    private val userSessionInterface: UserSessionInterface,
-    private val affiliateRecommendedProductUseCase: AffiliateRecommendedProductUseCase,
+    private val affiliateRecommendedProductUseCase: AffiliateRecommendedProductUseCase
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var pageInfo = MutableLiveData<AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.PageInfo>()
     private var errorMessage = MutableLiveData<String>()
-    private val pageLimit = 20
+    private val pageLimit = PAGE_LIMIT
     var isUserBlackListed : Boolean = false
 
     fun getAffiliateRecommendedProduct(identifier : String,page : Int) {

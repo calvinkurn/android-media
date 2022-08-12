@@ -11,5 +11,6 @@
     <color name="chatbot_color_option_list_text">#F531353B</color>
     <color name="chatbot_chat_background">#F3F5F8</color>
     <color name="chatbot_color_date">#F531353B</color>
+    <color name="chatbot_transparent">#00000000</color>
 
 </resources>

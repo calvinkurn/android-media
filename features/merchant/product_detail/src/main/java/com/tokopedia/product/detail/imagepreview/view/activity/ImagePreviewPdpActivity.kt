@@ -25,7 +25,16 @@ import com.tokopedia.product.detail.imagepreview.view.listener.ImagePreviewPdpVi
 import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPdpViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
+import org.xml.sax.ErrorHandler
 import java.util.*
 import javax.inject.Inject
 
@@ -112,10 +121,14 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     private fun initListener() {
         binding?.btnAddToWishlist?.setOnClickListener {
             if (userSession.isLoggedIn) {
+                var isWishlistUsingV2 = false
+                if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(this)) isWishlistUsingV2 = true
                 if (isWishlisted) {
-                    removeWishlist()
+                    if (isWishlistUsingV2) removeWishlistV2(this)
+                    else removeWishlist()
                 } else {
-                    addWishlist()
+                    if (isWishlistUsingV2) addWishlistV2(this)
+                    else addWishlist()
                 }
             } else {
                 gotoLogin()
@@ -168,9 +181,14 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
         }
     }
 
+    private fun isProductIdValid(productId: String): Boolean {
+        return productId.isNotEmpty() && productId.matches(Regex(ImagePreviewPdpViewModel.PATTERN_REGEX))
+    }
+
     override fun addWishlist() {
-        showLoading()
-        viewModel.addWishList(
+        if (isProductIdValid(productId)) {
+            showLoading()
+            viewModel.addWishList(
                 productId,
                 onSuccessAddWishlist = {
                     hideLoading()
@@ -180,14 +198,52 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
                 },
                 onErrorAddWishList = {
                     hideLoading()
-                    onErrorAddWishlist(Throwable(it))
+                    it?.let {
+                        onErrorAddWishlist(Throwable(it))
+                    }
                 }
-        )
+            )
+        } else {
+            onErrorAddWishlist(Throwable(resources.getString(com.tokopedia.wishlist_common.R.string.add_to_wishlist_invalid)))
+        }
+    }
+
+    override fun addWishlistV2(context: Context) {
+        if (isProductIdValid(productId)) {
+            showLoading()
+            viewModel.addWishListV2(
+                productId,
+                object : WishlistV2ActionListener {
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
+                        val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, rootView)
+                    }
+
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {
+                        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
+                        AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, rootView)
+                    }
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                    override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
+                }
+            )
+        } else {
+            val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
+            val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context,
+                Throwable(resources.getString(com.tokopedia.wishlist_common.R.string.add_to_wishlist_invalid)))
+            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, rootView)
+        }
     }
 
     override fun removeWishlist() {
-        showLoading()
-        viewModel.removeWishList(
+        if (isProductIdValid(productId)) {
+            showLoading()
+            viewModel.removeWishList(
                 productId,
                 onSuccessRemoveWishlist = {
                     hideLoading()
@@ -199,7 +255,42 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
                     hideLoading()
                     onErrorRemoveWishlist(Throwable(it))
                 }
-        )
+            )
+        } else {
+            onErrorRemoveWishlist(Throwable(resources.getString(com.tokopedia.wishlist_common.R.string.add_to_wishlist_invalid)))
+        }
+    }
+
+    override fun removeWishlistV2(context: Context) {
+        if (isProductIdValid(productId)) {
+            showLoading()
+            viewModel.removeWishListV2(productId,
+                object: WishlistV2ActionListener{
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {}
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
+                        val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, rootView)
+                    }
+
+                    override fun onSuccessRemoveWishlist(
+                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                        productId: String
+                    ) {
+                        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
+                        AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, rootView)
+                    }
+                })
+        } else {
+            val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
+            val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context,
+                Throwable(resources.getString(com.tokopedia.wishlist_common.R.string.add_to_wishlist_invalid)))
+            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, rootView)
+        }
     }
 
     override fun gotoLogin() {
@@ -216,12 +307,12 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
 
     override fun onSuccessAddWishlist() {
         isWishlisted = true
-        showMessage(resources.getString(R.string.image_preview_add_wishlist_success))
+        showMessage(resources.getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg))
     }
 
     override fun onSuccessRemoveWishlist() {
         isWishlisted = false
-        showMessage(resources.getString(R.string.image_preview_remove_wishlist_success))
+        showMessage(resources.getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg))
     }
 
     override fun onErrorAddWishlist(throwable: Throwable) {
@@ -239,7 +330,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
 
     override fun showErrorMessage(message: String) {
         val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
-        Toaster.make(rootView, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
+        Toaster.make(rootView, message, Toaster.toasterLength, TYPE_ERROR)
     }
 
     companion object {

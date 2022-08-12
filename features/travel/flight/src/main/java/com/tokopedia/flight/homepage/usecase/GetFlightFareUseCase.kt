@@ -1,6 +1,6 @@
 package com.tokopedia.flight.homepage.usecase
 
-import com.tokopedia.flight.homepage.data.cache.FlightDashboardGQLQueries.FLIGHT_FARE_CALENDAR_QUERY
+import com.tokopedia.flight.homepage.data.cache.QueryFlightFareCalendar
 import com.tokopedia.flight.homepage.presentation.model.FlightFareAttributes
 import com.tokopedia.flight.homepage.presentation.model.FlightFareData
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
@@ -16,7 +16,6 @@ import com.tokopedia.travelcalendar.dateToString
 import com.tokopedia.usecase.coroutines.UseCase
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * @author by jessica on 22/10/20
@@ -24,6 +23,10 @@ import kotlin.collections.ArrayList
 
 class GetFlightFareUseCase @Inject constructor(private val gqlRepository: GraphqlRepository)
     : UseCase<ArrayList<FlightFareAttributes>>(){
+
+    private companion object{
+        const val EXPIRED_CACHE_TIME = 10
+    }
 
     var params: HashMap<String, Any> = hashMapOf()
     var minDate: Date = Date()
@@ -42,10 +45,10 @@ class GetFlightFareUseCase @Inject constructor(private val gqlRepository: Graphq
 
         val diffYear = (maxYear - minYear)
         for (i in 0..diffYear) {
-            val graphqlRequest = GraphqlRequest(FLIGHT_FARE_CALENDAR_QUERY, FlightFareData::class.java, params)
+            val graphqlRequest = GraphqlRequest(QueryFlightFareCalendar(), FlightFareData::class.java, params)
             val gqlResponse = gqlRepository.response(listOf(graphqlRequest),
                     GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXPIRED_CACHE_TIME).build())
 
             val errors = gqlResponse.getError(FlightFareData::class.java)
             if (!errors.isNullOrEmpty()) {

@@ -7,6 +7,7 @@ object ProductDetailConstant {
 
     const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+    const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
 
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_X_SOURCE = "pdp"
@@ -76,6 +77,7 @@ object ProductDetailConstant {
     const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"
     const val PRODUCT_SHIPPING_INFO = "shipping"
     const val ORDER_PRIORITY = "order_prio"
+    const val COD = "cod"
     const val PRODUCT_FULLFILMENT = "fulfillment"
     const val PRODUCT_PROTECTION = "protection"
     const val VALUE_PROP = "value_prop"
@@ -167,4 +169,11 @@ object ProductDetailConstant {
 
     const val REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING = "android_enable_pdp_custom_sharing"
     const val REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING = true
+
+    const val BUYER_IMAGE_TEXT = "Foto Pembeli"
+
+    const val WISHLIST_ERROR_TYPE = "error_wishlist"
+    const val WISHLIST_STATUS_KEY = "wishlist_status"
+    const val ADD_WISHLIST = "true"
+    const val REMOVE_WISHLIST = "false"
 }

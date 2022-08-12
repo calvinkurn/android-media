@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/image_banner_homepage"
+<com.tokopedia.unifycomponents.CardUnify2
+    android:id="@+id/banner_card"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true">
+
+    <com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
+        android:id="@+id/image_banner_homepage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</com.tokopedia.unifycomponents.CardUnify2>

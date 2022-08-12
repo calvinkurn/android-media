@@ -7,7 +7,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselOptionGridBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.utils.view.binding.viewBinding
@@ -37,15 +37,16 @@ class InspirationCarouselOptionGridViewHolder(
 
     private fun InspirationCarouselDataView.Option.Product.toProductCardModel(): ProductCardModel {
         return ProductCardModel(
-                productImageUrl = imgUrl,
-                productName = name,
-                formattedPrice = priceStr,
-                slashedPrice = if (discountPercentage > 0) originalPrice else "",
-                discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
-                countSoldRating = ratingAverage,
-                labelGroupList = labelGroupDataList.toProductCardModelLabelGroup(),
-                shopLocation = shopLocation,
-                shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
+            productImageUrl = imgUrl,
+            productName = name,
+            formattedPrice = priceStr,
+            slashedPrice = if (discountPercentage > 0) originalPrice else "",
+            discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
+            countSoldRating = ratingAverage,
+            labelGroupList = labelGroupDataList.toProductCardModelLabelGroup(),
+            shopLocation = shopLocation,
+            shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
+            cardInteraction = true,
         )
     }
 

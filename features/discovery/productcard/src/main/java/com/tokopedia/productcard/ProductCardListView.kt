@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Space
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -26,10 +25,14 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
@@ -38,9 +41,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
     private val video: VideoPlayerController by lazy{
-        VideoPlayerController(this, R.id.videoProduct, R.id.imageProduct)
+        VideoPlayerController(this, R.id.videoProduct, R.id.productCardImage)
     }
-    private val cardViewProductCard: CardView? by lazy(NONE) {
+    private val cardViewProductCard: CardUnify2? by lazy(NONE) {
         findViewById(R.id.cardViewProductCard)
     }
     private val constraintLayoutProductCard: ConstraintLayout? by lazy(NONE) {
@@ -83,7 +86,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         findViewById(R.id.textCategoryBottom)
     }
     private val imageProduct: ImageView? by lazy(NONE) {
-        findViewById(R.id.imageProduct)
+        findViewById(R.id.productCardImage)
     }
     private val buttonAddVariant: UnifyButton? by lazy(NONE) {
         findViewById(ViewStubId(R.id.buttonAddVariantStub), ViewId(R.id.buttonAddVariant))
@@ -121,6 +124,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
     private val spaceCampaignBestSeller: Space? by lazy(NONE) {
         findViewById(R.id.spaceCampaignBestSeller)
+    }
+    private val remoteConfig : RemoteConfig by lazy(NONE) {
+        FirebaseRemoteConfigImpl(context)
     }
     private val productCardFooterLayoutContainer: FrameLayout by lazy(NONE) {
         findViewById(R.id.productCardFooterLayoutContainer)
@@ -223,6 +229,11 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
+
+        cardViewProductCard?.animateOnPress = if(remoteConfig.getBoolean(RemoteConfigKey.PRODUCT_CARD_ENABLE_INTERACTION, true)
+            && productCardModel.cardInteraction){
+                CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        } else CardUnify2.ANIMATE_OVERLAY
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -349,5 +360,15 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonAddToCart.isEnabled = false
         buttonAddToCart.buttonVariant = UnifyButton.Variant.FILLED
         buttonAddToCart.text = context.getString(R.string.product_card_out_of_stock)
+    }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        super.setOnClickListener(l)
+        cardViewProductCard?.setOnClickListener(l)
+    }
+
+    override fun setOnLongClickListener(l: OnLongClickListener?) {
+        super.setOnLongClickListener(l)
+        cardViewProductCard?.setOnLongClickListener(l)
     }
 }

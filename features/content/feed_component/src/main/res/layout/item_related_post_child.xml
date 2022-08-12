@@ -12,6 +12,7 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="8dp"
+    android:backgroundTint="@color/Unify_N0"
     app:cardElevation="2dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="false">
@@ -48,7 +49,8 @@
                 android:layout_marginRight="4dp"
                 android:visibility="gone"
                 tools:srcCompat="@drawable/ic_badge_shop_official"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:contentDescription="@string/kol_badge_content_desc" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/name"

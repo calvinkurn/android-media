@@ -134,7 +134,11 @@ data class CustomDataOther(
     @SerializedName("delay_duration")
     val delayDuration: String?,
     @SerializedName("tracking_data")
-    val trackingData: String?
+    val trackingData: String?,
+    @SerializedName("is_enjoy_plus_benefit")
+    val isEnjoyPLus:String?,
+    @SerializedName("custom_illustration")
+    val customIllustration:String?
 ): Parcelable
 
 @Parcelize
@@ -254,6 +258,8 @@ data class ShopOrder(
         val storeName: String?,
         @SerializedName("item_list")
         val purchaseItemList: ArrayList<PurchaseItem>,
+        @SerializedName("add_ons_section_description")
+        val addOnSectionDescription: String?,
         @SerializedName("addon_item")
         val addOnItemList : ArrayList<AddOnItem>,
         @SerializedName("bundle_group_data")
@@ -352,7 +358,7 @@ data class PurchaseItem(
         @SerializedName("weight_unit")
         val weightUnit: String,
         @SerializedName("total_price")
-        val totalPrice: Float,
+        val totalPrice: Double,
         @SerializedName("total_price_str")
         val totalPriceStr: String,
         @SerializedName("promo_code")
@@ -395,7 +401,7 @@ data class BundleGroupItem(
     @SerializedName("title")
     val bundleTitle: String,
     @SerializedName("total_price")
-    val totalPrice: Float,
+    val totalPrice: Double,
     @SerializedName("total_price_str")
     val totalPriceStr: String
 ): Parcelable {
@@ -403,7 +409,7 @@ data class BundleGroupItem(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readFloat(),
+        parcel.readDouble(),
         parcel.readString() ?: ""
     )
 
@@ -411,7 +417,7 @@ data class BundleGroupItem(
         parcel.writeString(groupId)
         parcel.writeString(bundleIcon)
         parcel.writeString(bundleTitle)
-        parcel.writeFloat(totalPrice)
+        parcel.writeDouble(totalPrice)
         parcel.writeString(totalPriceStr)
     }
 

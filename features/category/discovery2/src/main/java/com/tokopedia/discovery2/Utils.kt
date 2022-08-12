@@ -1,9 +1,14 @@
 package com.tokopedia.discovery2
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.*
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.Color
+import android.graphics.Outline
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
 import android.text.Html
@@ -14,17 +19,28 @@ import androidx.annotation.RequiresApi
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.Constant.QueryParamConstants.RPC_DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.Constant.QueryParamConstants.RPC_TARGET_TITLE_ID
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.user.session.UserSession
+import java.net.URLDecoder
+import java.net.URLEncoder
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Pattern
 import kotlin.math.floor
 
 
@@ -84,6 +100,7 @@ class Utils {
         const val RPC_PAGE__SIZE = "rpc_page_size"
         const val RPC_NEXT_PAGE = "rpc_next_page"
         const val DARK_MODE = "dark_mode"
+        const val DEFAULT_ENCODING = "UTF-8"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -214,6 +231,18 @@ class Utils {
             return addressQueryParameterMap
         }
 
+        fun addQueryParamMap(queryParameterMap: MutableMap<String, String?>): MutableMap<String, String> {
+            val queryParamValues: MutableMap<String,String> = mutableMapOf()
+            if(!queryParameterMap[DYNAMIC_SUBTITLE].isNullOrEmpty()){
+                queryParamValues[RPC_DYNAMIC_SUBTITLE] = queryParameterMap[DYNAMIC_SUBTITLE]!!.toEncodedString()
+            }
+            if(!queryParameterMap[TARGET_TITLE_ID].isNullOrEmpty()){
+                queryParamValues[RPC_TARGET_TITLE_ID] = queryParameterMap[TARGET_TITLE_ID]!!
+            }
+
+            return queryParamValues
+        }
+
         fun isFutureSale(saleStartDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleStartDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
@@ -275,6 +304,19 @@ class Utils {
             } catch (exception: Exception) {
                 MethodChecker.getColor(context, defaultColor)
             }
+        }
+
+        @SuppressLint("ResourceType")
+        fun getValidHexCode(context: Context, color: String?): String {
+            if (color.isNullOrEmpty()) {
+                return context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            }
+            val regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$"
+            val pattern: Pattern = Pattern.compile(regex)
+            return if(pattern.matcher(color).matches())
+                color
+            else
+                context.resources.getString(com.tokopedia.unifyprinciples.R.color.Unify_Background)
         }
 
         fun setTimerBoxDynamicBackground(view: View, color: Int) {
@@ -374,16 +416,16 @@ class Utils {
         }
 
         fun updateProductAddedInCart(products:List<ComponentsItem>,
-                                             map: Map<String, MiniCartItem>?) {
+                                             map: Map<MiniCartItemKey, MiniCartItem>?) {
             if (map == null) return
             products.forEach { componentsItem ->
                 componentsItem.data?.firstOrNull()?.let { dataItem ->
-                    if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(dataItem.parentProductId)) {
-                        map[dataItem.parentProductId]?.quantity?.let { quantity ->
+                    if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.parentProductId ?: "", type = MiniCartItemType.PARENT))) {
+                        map.getMiniCartItemParentProduct(dataItem.parentProductId ?: "")?.totalQuantity?.let { quantity ->
                             dataItem.quantity = quantity
                         }
-                    }else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(dataItem.productId)) {
-                        map[dataItem.productId]?.quantity?.let { quantity ->
+                    }else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(MiniCartItemKey(dataItem.productId ?: ""))) {
+                        map.getMiniCartItemProduct(dataItem.productId ?: "")?.quantity?.let { quantity ->
                             dataItem.quantity = quantity
                         }
                     }
@@ -406,6 +448,22 @@ class Utils {
                 FirebaseCrashlytics.getInstance().recordException(Exception(t))
             } else {
                 t.printStackTrace()
+            }
+        }
+
+        fun String.toEncodedString(): String{
+            return try {
+                URLEncoder.encode(this,DEFAULT_ENCODING)
+            }catch (exception: Exception){
+                this
+            }
+        }
+
+        fun String.toDecodedString(): String{
+            return try {
+                URLDecoder.decode(this,DEFAULT_ENCODING)
+            }catch (exception: Exception){
+                this
             }
         }
     }

@@ -6,24 +6,30 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
 import com.tokopedia.hotel.booking.data.model.TokopointsSumCoupon
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
+import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
 import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import io.mockk.mockkObject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,6 +62,7 @@ class HotelBookingViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        mockkObject(HotelUtil.Companion)
         hotelBookingViewModel = HotelBookingViewModel(graphqlRepository, getContactListUseCase, upsertContactListUseCase,
                 travelTickerCoroutineUseCase, dispatcher)
     }
@@ -72,7 +79,7 @@ class HotelBookingViewModelTest {
         } returns contacts
 
         //when
-        hotelBookingViewModel.getContactList("")
+        hotelBookingViewModel.getContactList(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert((hotelBookingViewModel.contactListResult.value as List<TravelContactListModel.Contact>).isNotEmpty())
@@ -89,7 +96,7 @@ class HotelBookingViewModelTest {
         } returns Success(TravelUpsertContactModel.Response(TravelUpsertContactModel.Response.SuccessResponse(true)))
 
         //when
-        hotelBookingViewModel.updateContactList("", TravelUpsertContactModel.Contact())
+        hotelBookingViewModel.updateContactList(DummyHotelGqlQueryInterfaceImpl(), TravelUpsertContactModel.Contact())
 
     }
 
@@ -106,7 +113,7 @@ class HotelBookingViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelBookingViewModel.getCartData("", "")
+        hotelBookingViewModel.getCartData(DummyHotelGqlQueryInterfaceImpl(), "")
 
         //then
         assert(hotelBookingViewModel.hotelCartResult.value is Success)
@@ -126,7 +133,7 @@ class HotelBookingViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelBookingViewModel.getCartData("", "")
+        hotelBookingViewModel.getCartData(DummyHotelGqlQueryInterfaceImpl(), "")
 
         //then
         assert(hotelBookingViewModel.hotelCartResult.value is Fail)
@@ -145,7 +152,55 @@ class HotelBookingViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelBookingViewModel.checkoutCart("", HotelCheckoutParam())
+        hotelBookingViewModel.checkoutCart(DummyHotelGqlQueryInterfaceImpl(), HotelCheckoutParam())
+
+        //then
+        assert(hotelBookingViewModel.hotelCheckoutResult.value is Success)
+        assert((hotelBookingViewModel.hotelCheckoutResult.value as Success<HotelCheckoutResponse>).data.redirectUrl == "www.tokopedia.com")
+    }
+
+    @Test
+    fun checkoutCartWithTokenNotEmpty_shouldBeSuccess() {
+        //given
+        val checkoutResponse = HotelCheckoutResponse.Response(HotelCheckoutResponse(redirectUrl = "www.tokopedia.com"))
+        val graphqlSuccessResponse = GraphqlResponse(
+            mapOf<Type, Any>(HotelCheckoutResponse.Response::class.java to checkoutResponse),
+            mapOf<Type, List<GraphqlError>>(),
+            false)
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } returns graphqlSuccessResponse
+
+        every {
+            HotelUtil.md5(any())
+        } returns "2022"
+
+        //when
+        hotelBookingViewModel.checkoutCart(DummyHotelGqlQueryInterfaceImpl(), HotelCheckoutParam())
+
+        //then
+        assert(hotelBookingViewModel.hotelCheckoutResult.value is Success)
+        assert((hotelBookingViewModel.hotelCheckoutResult.value as Success<HotelCheckoutResponse>).data.redirectUrl == "www.tokopedia.com")
+    }
+
+    @Test
+    fun checkoutCartWithTokenEmpty_shouldBeSuccess() {
+        //given
+        val checkoutResponse = HotelCheckoutResponse.Response(HotelCheckoutResponse(redirectUrl = "www.tokopedia.com"))
+        val graphqlSuccessResponse = GraphqlResponse(
+            mapOf<Type, Any>(HotelCheckoutResponse.Response::class.java to checkoutResponse),
+            mapOf<Type, List<GraphqlError>>(),
+            false)
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } returns graphqlSuccessResponse
+
+        every {
+            HotelUtil.md5(any())
+        } returns ""
+
+        //when
+        hotelBookingViewModel.checkoutCart(DummyHotelGqlQueryInterfaceImpl(), HotelCheckoutParam())
 
         //then
         assert(hotelBookingViewModel.hotelCheckoutResult.value is Success)
@@ -164,40 +219,75 @@ class HotelBookingViewModelTest {
         } returns graphqlErrorResponse
 
         //when
-        hotelBookingViewModel.checkoutCart("", HotelCheckoutParam())
+        hotelBookingViewModel.checkoutCart(DummyHotelGqlQueryInterfaceImpl(), HotelCheckoutParam())
 
         //then
         assert(hotelBookingViewModel.hotelCheckoutResult.value is Fail)
     }
 
+
     @Test
-    fun onCancelAppliedVoucher_shouldBeSuccess() {
+    fun onCancelAppliedVoucherWithAttributesTrue_shouldBeSuccess() {
         //given
+        val expected = PromoData(state = TickerCheckoutView.State.ACTIVE)
+        val flightCancelResponse = FlightCancelVoucher(attributes = FlightCancelVoucher.Attributes(success = true))
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf<Type, Any>(FlightCancelVoucher::class.java to FlightCancelVoucher()),
-                mapOf<Type, List<GraphqlError>>(),
-                false)
+            mapOf<Type, Any>(FlightCancelVoucher.Response::class.java to FlightCancelVoucher.Response(flightCancelResponse)),
+            mapOf<Type, List<GraphqlError>>(),
+            false)
+
         coEvery {
             graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
-        hotelBookingViewModel.onCancelAppliedVoucher("")
+        hotelBookingViewModel.applyPromoData(expected)
+        hotelBookingViewModel.onCancelAppliedVoucher(DummyHotelGqlQueryInterfaceImpl())
+
+        //then
+        hotelBookingViewModel.promoData.verifyValueEquals(expected)
+    }
+
+    @Test
+    fun onCancelAppliedVoucherWithAttributesFalse_shouldBeError() {
+        //given
+        val expected = PromoData(state = TickerCheckoutView.State.FAILED)
+        val flightCancelResponse = FlightCancelVoucher(attributes = FlightCancelVoucher.Attributes(success = false))
+        val graphqlSuccessResponse = GraphqlResponse(
+                mapOf<Type, Any>(FlightCancelVoucher.Response::class.java to FlightCancelVoucher.Response(flightCancelResponse)),
+                mapOf<Type, List<GraphqlError>>(),
+                false)
+
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } returns graphqlSuccessResponse
+
+        //when
+        hotelBookingViewModel.applyPromoData(expected)
+        hotelBookingViewModel.onCancelAppliedVoucher(DummyHotelGqlQueryInterfaceImpl())
+
+        //then
+        hotelBookingViewModel.promoData.verifyValueEquals(expected)
     }
 
     @Test
     fun onCancelAppliedVoucher_shouldBeError() {
         //given
+        val expected = PromoData(state = TickerCheckoutView.State.FAILED)
         val graphqlErrorResponse = GraphqlResponse(
                 mapOf<Type, Any>(),
-                mapOf<Type, List<GraphqlError>>(FlightCancelVoucher::class.java to listOf(GraphqlError())),
+                mapOf<Type, List<GraphqlError>>(FlightCancelVoucher.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
         //when
-        hotelBookingViewModel.onCancelAppliedVoucher("")
+        hotelBookingViewModel.applyPromoData(expected)
+        hotelBookingViewModel.onCancelAppliedVoucher(DummyHotelGqlQueryInterfaceImpl())
+
+        //then
+        hotelBookingViewModel.promoData.verifyValueEquals(expected)
     }
 
     @Test
@@ -212,7 +302,7 @@ class HotelBookingViewModelTest {
         } returns graphqlSuccessResponse
 
         //when
-        hotelBookingViewModel.getTokopointsSumCoupon("")
+        hotelBookingViewModel.getTokopointsSumCoupon(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert((hotelBookingViewModel.tokopointSumCouponResult.value as String).equals("33 Kupon"))
@@ -230,7 +320,7 @@ class HotelBookingViewModelTest {
         } returns graphqlFailResponse
 
         //when
-        hotelBookingViewModel.getTokopointsSumCoupon("")
+        hotelBookingViewModel.getTokopointsSumCoupon(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert((hotelBookingViewModel.tokopointSumCouponResult.value as String).isEmpty())

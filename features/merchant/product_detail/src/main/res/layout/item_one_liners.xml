@@ -8,7 +8,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/one_liners_top_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
@@ -41,14 +41,14 @@
             android:id="@+id/one_liners_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="Stok Tersedia" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/one_liners_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text=" • Terakhir update minggu ini" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -66,7 +66,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/one_liners_bottom_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="2dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/one_liners_container"
         tools:visibility="visible" />

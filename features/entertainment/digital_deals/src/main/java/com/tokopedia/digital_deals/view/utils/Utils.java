@@ -54,7 +54,7 @@ public class Utils {
     public static String LOCATION_COORDINATES = "coordinates";
     public static String QUERY_PARAM_CITY_ID = "cities";
     public static String LOCATION_NAME = "Jakarta";
-    public static int LOCATION_ID = 318;
+    public static String LOCATION_ID = "318";
     public static int MAX_ITEMS_FOR_GA = 5;
     public static final String NEXT_URL = "nexturl";
     private static final float MAX_RADIUS = 25.0f;
@@ -122,7 +122,7 @@ public class Utils {
         List<Outlet> outlets2 = new ArrayList<>();
         for (Outlet outlet : outlets) {
 
-            if (outlet.getLocationId() == location.getId()) {
+            if (outlet.getLocationId().equals(location.getId())) {
                 outlets1.add(outlet);
             } else {
                 if (!TextUtils.isEmpty(outlet.getSearchName())

@@ -23,6 +23,10 @@ class GetCurrentInteractiveUseCase @Inject constructor(
           playInteractiveGetCurrentInteractive(req:{
             channelID: ${"$$PARAM_CHANNEL_ID"}
           }){
+            meta {
+              active
+              waiting_duration: waitingDuration
+            }
             interactive {
               interactive_id: interactiveID
               interactive_type: interactiveType
@@ -32,6 +36,19 @@ class GetCurrentInteractiveUseCase @Inject constructor(
               countdown_end: countdownEnd
               countdown_end_delay: countdownEndDelay
               waiting_duration: waitingDuration
+            }
+            quiz {
+              interactive_id: interactiveID
+              status
+              question
+              prize
+              countdown_end: countdownEnd
+              choices {
+                id
+                text
+                isCorrect
+              }
+              user_choice: userChoice
             }
           }
         }

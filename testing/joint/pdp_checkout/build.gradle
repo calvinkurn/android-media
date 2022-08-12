@@ -37,6 +37,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    implementation projectOrAar(rootProject.ext.libraries.telemetry)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

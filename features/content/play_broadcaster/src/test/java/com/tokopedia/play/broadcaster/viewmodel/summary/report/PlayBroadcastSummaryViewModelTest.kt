@@ -1,9 +1,14 @@
 package com.tokopedia.play.broadcaster.viewmodel.summary.report
 
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveSummaryLivestreamResponse
 import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveSummaryLivestreamUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetSellerLeaderboardUseCase
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastSummaryViewModelRobot
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.model.SummaryLeaderboardInfo
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricType
@@ -28,10 +33,13 @@ class PlayBroadcastSummaryViewModelTest {
 
     private val testDispatcher = rule.dispatchers
 
-    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
+    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser())
 
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true)
+    private val mockGetSellerLeaderboardUseCase: GetSellerLeaderboardUseCase = mockk(relaxed = true)
+    private val mockGetInteractiveSummaryLivestreamUseCase: GetInteractiveSummaryLivestreamUseCase =
+        mockk(relaxed = true)
 
     private val modelBuilder = UiModelBuilder()
     private val mockException = modelBuilder.buildException()
@@ -45,20 +53,27 @@ class PlayBroadcastSummaryViewModelTest {
             )
         )
     )
+    private val mockSlotResponse = GetSellerLeaderboardSlotResponse()
+    private val mockParticipant = GetInteractiveSummaryLivestreamResponse(
+        GetInteractiveSummaryLivestreamResponse.PlayInteractiveGetSummaryLivestream(0)
+    )
 
     @Test
     fun `when get traffic summary is success, then it should return success`() {
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStats
-
+        coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns mockSlotResponse
+        coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns mockParticipant
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,
             getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
             getChannelUseCase = mockGetChannelUseCase,
+            getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
+            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
         )
 
         robot.use {
-            val state = it.recordState {  }
+            val state = it.recordState { }
 
             with(state) {
                 liveReport.trafficMetricsResult.assertEqualTo(
@@ -76,8 +91,8 @@ class PlayBroadcastSummaryViewModelTest {
     @Test
     fun `when get traffic summary is success & theres a leaderboard, then it should return success with additional metrics`() {
 
-        val mockTotalInteractiveParticipant = "1"
-        val mockMetricList = mutableListOf<TrafficMetricUiModel>(
+        val mockTotalInteractiveParticipant = "0"
+        val mockMetricList = mutableListOf(
             TrafficMetricUiModel(
                 type = TrafficMetricType.GameParticipants,
                 count = mockTotalInteractiveParticipant,
@@ -86,18 +101,24 @@ class PlayBroadcastSummaryViewModelTest {
             addAll(playBroadcastMapper.mapToLiveTrafficUiMetrics(mockLiveStats.channel.metrics))
         }
 
+        val mockSlotResponse = mockSlotResponse.copy(
+            data = GetSellerLeaderboardSlotResponse.Data(slots = listOf(GetSellerLeaderboardSlotResponse.SlotData()))
+        )
+
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStats
-
+        coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns mockSlotResponse
+        coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns mockParticipant
         val robot = PlayBroadcastSummaryViewModelRobot(
-            summaryLeaderboardInfo = SummaryLeaderboardInfo(true, mockTotalInteractiveParticipant),
             dispatcher = testDispatcher,
             getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
             getChannelUseCase = mockGetChannelUseCase,
+            getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
+            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
         )
 
         robot.use {
-            val state = it.recordState {  }
+            val state = it.recordState { }
 
             with(state) {
                 liveReport.trafficMetricsResult.assertEqualTo(
@@ -122,10 +143,10 @@ class PlayBroadcastSummaryViewModelTest {
         )
 
         robot.use {
-            val state = it.recordState {  }
+            val state = it.recordState { }
 
             with(state) {
-                when(val result = liveReport.trafficMetricsResult) {
+                when (val result = liveReport.trafficMetricsResult) {
                     is NetworkResult.Fail -> {
                         assertTrue(result.error.message == mockException.message)
                         assertTrue(channelSummary.isEmpty())
@@ -139,24 +160,55 @@ class PlayBroadcastSummaryViewModelTest {
     @Test
     fun `when duration is less than 60 seconds, it wont be eligible to post video`() {
         val mockLiveStatUnder60Second = mockLiveStats.copy(
-            duration = "00:00:10"
+            duration = "00:00:59"
         )
 
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStatUnder60Second
-
+        coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns mockSlotResponse
+        coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns mockParticipant
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,
-            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
             getChannelUseCase = mockGetChannelUseCase,
+            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+            getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
+            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
         )
 
         robot.use {
-            val state = it.recordState {  }
+            val state = it.recordState { }
 
             with(state.channelSummary) {
                 duration.assertEqualTo(mockLiveStatUnder60Second.duration)
                 isEligiblePostVideo.assertFalse()
+            }
+        }
+    }
+
+    @Test
+    fun `when duration is exactly 60 second, it should be eligible to post video`() {
+        val mockLiveStat60Second = mockLiveStats.copy(
+            duration = "00:01:00"
+        )
+
+        coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
+        coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStat60Second
+        coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns mockSlotResponse
+        coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns mockParticipant
+        val robot = PlayBroadcastSummaryViewModelRobot(
+            dispatcher = testDispatcher,
+            getChannelUseCase = mockGetChannelUseCase,
+            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+            getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
+            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
+        )
+
+        robot.use {
+            val state = it.recordState { }
+
+            with(state.channelSummary) {
+                duration.assertEqualTo(mockLiveStat60Second.duration)
+                isEligiblePostVideo.assertTrue()
             }
         }
     }
@@ -169,15 +221,18 @@ class PlayBroadcastSummaryViewModelTest {
 
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStatExact1Hour
-
+        coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns mockSlotResponse
+        coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns mockParticipant
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,
-            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
             getChannelUseCase = mockGetChannelUseCase,
+            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+            getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
+            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
         )
 
         robot.use {
-            val state = it.recordState {  }
+            val state = it.recordState { }
 
             with(state.channelSummary) {
                 duration.assertEqualTo(mockLiveStatExact1Hour.duration)
@@ -194,15 +249,18 @@ class PlayBroadcastSummaryViewModelTest {
 
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetLiveStatisticsUseCase.executeOnBackground() } returns mockLiveStatWithWrongDuration
-
+        coEvery { mockGetSellerLeaderboardUseCase.executeOnBackground() } returns mockSlotResponse
+        coEvery { mockGetInteractiveSummaryLivestreamUseCase.executeOnBackground() } returns mockParticipant
         val robot = PlayBroadcastSummaryViewModelRobot(
             dispatcher = testDispatcher,
-            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
             getChannelUseCase = mockGetChannelUseCase,
+            getLiveStatisticsUseCase = mockGetLiveStatisticsUseCase,
+            getSellerLeaderboardUseCase = mockGetSellerLeaderboardUseCase,
+            getInteractiveSummaryLivestreamUseCase = mockGetInteractiveSummaryLivestreamUseCase
         )
 
         robot.use {
-            val state = it.recordState {  }
+            val state = it.recordState { }
 
             with(state.channelSummary) {
                 isEligiblePostVideo.assertFalse()

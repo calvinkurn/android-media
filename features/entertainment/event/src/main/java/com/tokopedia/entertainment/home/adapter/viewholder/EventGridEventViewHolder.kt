@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,10 +17,19 @@ import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.*
-import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.*
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.btn_see_all
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.ent_recycle_view_grid
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.ent_title_card
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.image
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.txt_location
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.txt_price
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.txt_start_title
+import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.txt_title
+import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 /**
  * Author errysuprayogi on 27,January,2020
@@ -100,13 +110,41 @@ class EventGridEventViewHolder(itemView: View,
             holder.view.setOnClickListener {
                 gridlistener.clickSectionEventProduct(item, items, titleGrid,
                         position + 1)
-                //todo navcontroller pdp
                 clickGridListener.redirectToPDPEvent(item.seoURL)
             }
             holder.view.addOnImpressionListener(item, {
                 gridlistener.impressionSectionEventProduct(item, items, titleGrid,
                         position + 1)
             })
+
+            holder.view.txt_title.apply {
+                val labelParams = this.layoutParams as ConstraintLayout.LayoutParams
+                if (item.location.isEmpty()) {
+                    labelParams.topToBottom = holder.view.image.id
+                } else {
+                    labelParams.topToBottom = holder.view.txt_location.id
+                }
+                layoutParams = labelParams
+            }
+
+            holder.view.txt_start_title.apply {
+                if (item.location.isNotEmpty()) {
+                    setMargin(
+                        getDimens(unifyDimens.spacing_lvl3),
+                        getDimens(unifyDimens.spacing_lvl3),
+                        getDimens(unifyDimens.spacing_lvl3),
+                        getDimens(unifyDimens.unify_space_0)
+                    )
+                } else {
+                    setMargin(
+                        getDimens(unifyDimens.spacing_lvl3),
+                        getDimens(unifyDimens.spacing_lvl6),
+                        getDimens(unifyDimens.spacing_lvl3),
+                        getDimens(unifyDimens.unify_space_0)
+                    )
+                }
+            }
+
         }
 
         fun setList(list: MutableList<EventItemModel>) {

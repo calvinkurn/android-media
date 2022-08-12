@@ -1,0 +1,159 @@
+<resources>
+    <string name="app_name">tokofood</string>
+    <string name="tokofood_title">GoFood</string>
+    <string name="title_tokofood_post_purchase" translatable="false">Detail Pesanan</string>
+
+    <!-- Home -->
+    <string name="home_usp_powered_by">Dilayani</string>
+    <string name="home_usp_bottom_sheet_title">GoFood-in di Tokopedia</string>
+    <string name="home_no_pin_poin_title">Kamu belum set pinpoint lokasi</string>
+    <string name="home_no_pin_poin_desc">Untuk meningkatkan pengalaman  belanja kamu, set pinpoint terlebih dahulu, ya!</string>
+    <string name="home_no_pin_poin_button">Set pin point</string>
+    <string name="home_no_address_title">Biar bisa pesan di GoFood di Tokopedia, masukkan alamat dulu, ya!</string>
+    <string name="home_no_address_desc">Pesannya sekarang, sampainya sekejap ke alamatmu.</string>
+    <string name="home_no_address_button">Masukkan Alamat</string>
+    <string name="home_out_of_coverage_title">Yaah, saat ini TokoFood belum bisa antar ke alamatmu</string>
+    <string name="home_out_of_coverage_desc">TokoFood akan segera hadir di daerah alamatmu. Tunggu tanggal mainnya, ya!</string>
+    <string name="home_out_of_coverafe_button">Ubah Alamat</string>
+    <string name="home_back_to_home">Kembali ke Home</string>
+    <string name="home_merchant_closed">Toko Tutup</string>
+    <string name="home_merchant_title">Eksplor Makanan &amp; Minuman Lainnya!</string>
+    <string name="home_merchant_desc">Banyak pilihan yang bikin kamu ketagihan</string>
+    <string name="home_share_main_text">Jajan enak, banyak pilihan, cepat sampai. Yuk, cobain GoFood di Tokopedia!</string>
+    <string name="home_share_title">GoFood kini hadir di Tokopedia!</string>
+    <string name="home_share_desc">Jelajahi berbagai pilihan restoran dengan menu-menu kesukaanmu. Banyak promonya, cepat sampainya.</string>
+    <string name="home_share_tn_title">GoFood</string>
+    <string name="home_category_empty_state_title">Yah, belum ada apa apa disini</string>
+    <string name="home_category_empty_state_desc">Yuk, cek kategori lain untuk temukan resto yang kamu incar.</string>
+    <string name="home_category_empty_state_try_again">Coba Lagi</string>
+    <string name="home_merchant_list_content_desc">Merchant Image</string>
+    <string name="home_usp_content_desc">USP Image</string>
+    <!-- Mini Cart -->
+    <string name="minicart_order">Pesan (%d)</string>
+    <string name="minicart_order_empty">Pesan</string>
+
+    <!-- Purchase -->
+    <string name="text_purchase_message_need_pinpoint"><![CDATA[Pengiriman &amp; estimasi tiba akan tampil di sini setelah pinpoint terdeteksi. <b><font color=#00AA5B>Atur Pinpoint</font></b>]]></string>
+    <string name="text_purchase_add_notes">Tambah Catatan</string>
+    <string name="text_purchase_change_notes">Ubah Catatan</string>
+    <string name="text_purchase_add_notes_and_variant">Tambah Catatan/Varian</string>
+    <string name="text_purchase_change_notes_and_variant">Ubah Catatan/Varian</string>
+    <string name="text_purchase_consent_next">Lanjut</string>
+    <string name="text_purchase_to_homepage">Ke Homepage</string>
+    <string name="text_purchase_order_notes">Catatan pesanan</string>
+    <string name="text_purchase_address_phone">%s (%s)"</string>
+    <string name="text_purchase_choose_payment">Pilih Pembayaran</string>
+    <string name="text_purchase_payment_total">Total Tagihan</string>
+    <string name="text_purchase_dash">-</string>
+    <string name="text_purchase_use_promo">Pakai Promo (%d)</string>
+    <string name="text_purchase_delete_item">Hapus %s item yang tidak bisa diproses?</string>
+    <string name="text_purchase_delete_all">Semua item ini akan dihapus dari keranjangmu.</string>
+    <string name="text_purchase_success_delete">%d item berhasil dihapus.</string>
+    <string name="text_purchase_delete">Hapus</string>
+    <string name="text_purchase_back">Kembali</string>
+    <string name="text_purchase_no_pinpoint">Kamu belum set pinpoint lokasi</string>
+    <string name="text_purchase_pinpoint_benefit">Untuk meningkatkan pengalaman  belanja kamu, set pinpoint terlebih dahulu, ya!</string>
+    <string name="text_purchase_set_pinpoint">Set pin point</string>
+    <string name="text_purchase_success_notes">Sip, catatanmu tersimpan.</string>
+    <string name="text_purchase_success_quantity">Quantity berhasil diubah</string>
+    <string name="text_purchase_okay">Oke</string>
+    <string name="text_purchase_failed_to_payment">Oops, gagal lanjut ke Pembayaran.</string>
+    <string name="text_purchase_try_again">Coba Lagi</string>
+    <string name="text_purchase_show_less">Tampilkan Lebih Sedikit</string>
+    <string name="text_purchase_show_all">Tampilkan Semua</string>
+    <string name="text_purchase_shipping_price">(%s)</string>
+    <string name="text_purchase_order_list">Daftar Pesanan</string>
+    <string name="text_purchase_add_order">Tambah Pesanan</string>
+    <string name="text_purchase_ticker_unavailable_product"><![CDATA[%s <a href="#">Lihat</a>]]></string>
+    <string name="text_purchase_success_edit_address">Berhasil mengubah alamat</string>
+    <string name="text_purchase_main_address">Utama</string>
+    <string name="text_purchase_choose_other_address">Pilih Alamat Lain</string>
+    <string name="text_purchase_delivery_address">Alamat Pengiriman</string>
+    <string name="text_purchase_transaction_summary">Ringkasan Belanja</string>
+    <string name="text_purchase_unavailable_promo">Promo yang belum bisa dipakai</string>
+    <string name="text_purchase_save">Simpan</string>
+
+    <!-- Merchant Page -->
+    <string name="action_share">Share</string>
+    <string name="action_open_global_menu">Open Global Menu</string>
+    <string name="action_save">Simpan</string>
+    <string name="text_rating_title">%s Rating</string>
+    <string name="text_distance_title">Jarak</string>
+    <string name="text_estimation_title">Tiba</string>
+    <string name="text_ops_hour_title">Jam Operasional</string>
+    <string name="text_customizable">Bisa Custom</string>
+    <string name="text_promo">Promo</string>
+    <string name="text_order">Pesan</string>
+    <string name="text_sold_out">Terjual Habis</string>
+    <string name="text_order_bottomsheet_title">Ada catatan buat menu ini?</string>
+    <string name="text_save">Simpan</string>
+    <string name="text_mandatory_selection">Harus dipilih</string>
+    <string name="text_single_mandatory_add_on_amount">Pilih %d</string>
+    <string name="text_multiple_mandatory_add_on_amount">Pilih min. %d, maks. %d</string>
+    <string name="text_optional_add_on_wording">Opsional • Pilih maks. %d</string>
+    <string name="text_dot_separator">&#160;•&#160;</string>
+    <string name="text_add_on_name">%s:&#160;</string>
+    <string name="text_note_saved_message">Sip, catatanmu tersimpan.</string>
+    <string name="text_product_removed">1 item telah dihapus</string>
+    <string name="text_error_product_custom_selection">Ada custom yang belum dipilih, nih.</string>
+    <string name="text_orders">%s Pesanan</string>
+    <string name="text_order_note">Catatan</string>
+    <string name="text_out_of_stock">Stok habis</string>
+    <string name="text_free">Gratis</string>
+    <string name="action_merchant_ok">Oke</string>
+    <string name="action_order">Pesan</string>
+    <string name="action_edit">Ubah</string>
+    <string name="action_update">Perbarui</string>
+    <string name="action_add_custom_product">Tambah Custom</string>
+    <string name="category_filter_bottom_sheet_title">Mau menu dari kategori apa?</string>
+    <string name="desc_merchant_page_share">Hai, kamu! Jajan dari %1s jadi makin mudah di Tokopedia! Cek makanan-minuman yang kamu suka, yuk.</string>
+    <string name="desc_merchant_food_share">Coba cek ini, deh: %1s %2s %3s di Tokopedia. Bisa langsung sampai, lho.</string>
+    <string name="og_desc_merchant_page_share">Jajan dari %1s sekarang bisa di Tokopedia! Checkout cepat, bisa langsung sampai.</string>
+    <string name="og_desc_merchant_food_share">Jajan "%1s" %2s jadi makin mudah di Tokopedia! Pesan hari ini, tiba hari ini.</string>
+    <string name="title_change_merchant_label">Mau pesan dari resto ini aja?</string>
+    <string name="desc_change_merchant_label">Boleh, kok. Tapi, menu yang kamu pilih dari resto sebelumnya akan terhapus, ya.</string>
+    <string name="btn_confirm_order_change_merchant">Iya, Pesan</string>
+    <string name="btn_cancel_order_change_merchant">Nggak Jadi</string>
+    <string name="text_header_order_custom">Custom pesanan</string>
+    <string name="text_order_customization_total_order">Jumlah Pesanan:</string>
+    <string name="text_order_customization_total_price">Total Harga</string>
+    <string name="text_order_customization_note_optional">Opsional</string>
+
+    <!-- Order Tracking -->
+    <string name="order_tracking_invoice_number_label">No. Invoice</string>
+    <string name="order_tracking_invoice_date_label">Tanggal Pembelian</string>
+    <string name="order_tracking_detail_payment_label">Detail Pembayaran</string>
+    <string name="order_tracking_order_number_label">Order Number</string>
+    <string name="order_tracking_estimation_time"><![CDATA[%1s <b>%2$s</b>]]></string>
+    <string name="order_tracking_detail_order_header_label">Detail Pesanan</string>
+    <string name="order_tracking_shipping_restaurant_label">Dari Resto</string>
+    <string name="order_detail_shipping_header_label">Detail Pengiriman</string>
+    <string name="order_detail_shipping_destination_label">Dikirim ke</string>
+    <string name="order_detail_payment_header_label">Rincian Pembayaran</string>
+
+    <string name="order_detail_expand_cta_label">Tampilkan Lebih Banyak</string>
+    <string name="order_detail_collapse_cta_label">Tampilkan Lebih Ringkas</string>
+    <string name="order_detail_qty_food_value">%1s x %2s</string>
+    <string name="order_detail_variant_option_value">%1s : %2s</string>
+
+    <string name="order_tracking_temporary_finish_title">Yay, pesananmu sudah sampai!</string>
+    <string name="order_tracking_temporary_finish_desc">Pesananmu sampai dalam 15 menit. Terima kasih sudah nungguin dan selamat menikmati.</string>
+
+    <string name="order_tracking_help_button_title">Bantuan</string>
+    <string name="order_completed_buy_again_button_title">Beli Lagi</string>
+    <string name="secondary_action_bottomsheet_header">Lainnya</string>
+    <string name="order_tracking_toolbar_desc_with_eta">%1s • %2s</string>
+    <string name="driver_call_title_bottomsheet">Telepon Driver</string>
+    <string name="driver_call_now_button">Telepon Sekarang</string>
+    <string name="driver_call_enabled_title_bottomsheet">Nomor HP-mu akan disamarkan</string>
+    <string name="driver_call_enabled_desc_bottomsheet">Kontakmu aman. Driver tidak bisa lihat nomor HP kamu di panggilan ini.</string>
+
+    <string name="driver_call_disabled_title_bottomsheet">Oops, kamu tidak bisa telepon driver</string>
+    <string name="driver_call_disabled_desc_bottomsheet">Sesi kamu untuk telpon driver sudah habis.</string>
+    <string name="error_message_hit_driver_phone_number">Oops, ada gangguan yang perlu kami bereskan. Balik lagi nanti, ya.</string>
+
+    <!-- id -->
+    <item name="product_ui_model" type="id" />
+    <item name="custom_order_detail" type="id" />
+    <item name="dataset_position" type="id" />
+</resources>

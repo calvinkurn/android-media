@@ -1,10 +1,18 @@
 package com.tokopedia.play.broadcaster.ui.state
 
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import java.util.*
 
 /**
@@ -16,6 +24,13 @@ data class PlayBroadcastUiState(
     val selectedProduct: List<ProductTagSectionUiModel>,
     val schedule: ScheduleUiModel,
     val isExiting: Boolean,
+    val quizForm: QuizFormUiState,
+    val interactive: InteractiveUiModel,
+    val interactiveConfig: InteractiveConfigUiModel,
+    val interactiveSetup: InteractiveSetupUiModel,
+    val quizDetail: QuizDetailStateUiModel,
+    val onBoarding: OnboardingUiModel,
+    val quizBottomSheetUiState: QuizBottomSheetUiState,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -31,6 +46,13 @@ data class PlayBroadcastUiState(
                 selectedProduct = emptyList(),
                 schedule = ScheduleUiModel.Empty,
                 isExiting = false,
+                quizForm = QuizFormUiState.Empty,
+                interactive = InteractiveUiModel.Unknown,
+                interactiveConfig = InteractiveConfigUiModel.empty(),
+                interactiveSetup = InteractiveSetupUiModel.Empty,
+                quizDetail = QuizDetailStateUiModel.Empty,
+                onBoarding = OnboardingUiModel.Empty,
+                quizBottomSheetUiState = QuizBottomSheetUiState.Empty,
             )
     }
 }
@@ -77,5 +99,57 @@ data class ScheduleConfigUiModel(
                     defaultDate = defaultDate,
                 )
             }
+    }
+}
+
+data class QuizFormUiState(
+    val quizFormData: QuizFormDataUiModel,
+    val quizFormState: QuizFormStateUiModel,
+    val isNeedToUpdateUI: Boolean,
+) {
+    companion object {
+        val Empty: QuizFormUiState
+            get() {
+                return QuizFormUiState(
+                    quizFormData = QuizFormDataUiModel(),
+                    quizFormState = QuizFormStateUiModel.Nothing,
+                    isNeedToUpdateUI = false,
+                )
+            }
+    }
+}
+
+data class OnboardingUiModel(
+    val firstInteractive: Boolean,
+    val firstGameResult:Boolean,
+) {
+
+    companion object {
+        val Empty: OnboardingUiModel
+            get() = OnboardingUiModel(
+                firstInteractive = false,
+                firstGameResult = false,
+            )
+
+        fun create(pref: HydraSharedPreferences) = OnboardingUiModel(
+            firstInteractive = pref.isFirstInteractive(),
+            firstGameResult = pref.isFirstGameResult(),
+        )
+    }
+
+}
+
+data class QuizBottomSheetUiState(
+    val quizDetailState: QuizDetailStateUiModel,
+    val quizChoiceDetailState: QuizChoiceDetailStateUiModel,
+) {
+    companion object {
+        val Empty: QuizBottomSheetUiState
+        get() {
+            return QuizBottomSheetUiState(
+                quizDetailState = QuizDetailStateUiModel.Empty,
+                quizChoiceDetailState =  QuizChoiceDetailStateUiModel.Empty,
+            )
+        }
     }
 }

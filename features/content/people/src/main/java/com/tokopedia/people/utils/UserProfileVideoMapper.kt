@@ -33,13 +33,12 @@ object UserProfileVideoMapper {
     fun map(
         playSlotList: PlayPostContentItem,
         shopId: String,
-        displayName: String
     ): PlayWidgetChannelUiModel {
-        return getWidgetItemUiModel(playSlotList, shopId, displayName)
+        return getWidgetItemUiModel(playSlotList, shopId)
 
     }
 
-    private fun getWidgetItemUiModel(item: PlayPostContentItem, shopId: String, displayName: String): PlayWidgetChannelUiModel{
+    private fun getWidgetItemUiModel(item: PlayPostContentItem, shopId: String): PlayWidgetChannelUiModel{
 
         //check PlayWidgetShareUiModel(item.share.text -> is it be `item.share.text for "fullShareContent"`
         val performanceSummaryLink = ""
@@ -61,11 +60,10 @@ object UserProfileVideoMapper {
                         getPromoType(item.configurations.promoLabels).text
                     ),
                     reminderType = getReminderType(item.configurations.reminder.isSet),
-                    //TODO partner check later
-                    partner = PlayWidgetPartnerUiModel("", displayName),
+                    partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
                     video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
                     channelType = channelType,
-                    hasGiveaway = mapHasGiveaway(item.configurations.promoLabels),
+                    hasGame = mapHasGame(item.configurations.promoLabels),
                     //TODO later
                     share = PlayWidgetShareUiModel("", false),
                     performanceSummaryLink = performanceSummaryLink,
@@ -80,7 +78,7 @@ object UserProfileVideoMapper {
         }
     }
 
-    private fun mapHasGiveaway(promoLabels: List<PostPromoLabel>): Boolean {
+    private fun mapHasGame(promoLabels: List<PostPromoLabel>): Boolean {
         return promoLabels.firstOrNull { it.text == HADIAH } != null
     }
 

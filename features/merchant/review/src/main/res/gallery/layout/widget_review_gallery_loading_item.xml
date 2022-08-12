@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:viewBindingIgnore="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -13,18 +15,17 @@
             android:id="@+id/review_gallery_image_shimmering"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            app:loader_corner_radius="0dp"
-            app:loader_type="rect"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
-            />
+            app:loader_corner_radius="0dp"
+            app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/review_gallery_image_load_error"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            android:src="@drawable/imagestate_error"
             android:background="@color/Unify_N50"
+            android:src="@drawable/imagestate_error"
             android:visibility="gone"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,8 +34,8 @@
             android:id="@+id/review_loading_item_barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="review_gallery_image_load_error, review_gallery_image_shimmering"
-            app:barrierDirection="bottom" />
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="review_gallery_image_load_error, review_gallery_image_shimmering" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/review_gallery_rating_shimmering"
@@ -49,7 +50,7 @@
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/review_gallery_product_variant_name"
             android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
+            android:layout_height="10dp"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl6"
             app:loader_corner_radius="0dp"

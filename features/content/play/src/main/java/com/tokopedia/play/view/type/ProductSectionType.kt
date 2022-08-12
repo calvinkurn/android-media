@@ -7,6 +7,7 @@ enum class ProductSectionType(val value: String) {
     Active("active"),
     Other("other"),
     Upcoming("upcoming"),
+    TokoNow("tokonow"),
     Unknown("");
 
     companion object{

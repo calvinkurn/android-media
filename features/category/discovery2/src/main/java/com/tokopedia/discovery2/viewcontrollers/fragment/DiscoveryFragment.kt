@@ -56,6 +56,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -90,8 +92,8 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.mvcwidget.AnimatedInfos
@@ -193,6 +195,7 @@ class DiscoveryFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
+    var currentTabPosition: Int? = null
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
@@ -220,6 +223,8 @@ class DiscoveryFragment :
                 bundle.putString(CATEGORY_ID, queryParameterMap[CATEGORY_ID])
                 bundle.putString(EMBED_CATEGORY, queryParameterMap[EMBED_CATEGORY])
                 bundle.putString(RECOM_PRODUCT_ID, queryParameterMap[RECOM_PRODUCT_ID])
+                bundle.putString(DYNAMIC_SUBTITLE, queryParameterMap[DYNAMIC_SUBTITLE])
+                bundle.putString(TARGET_TITLE_ID, queryParameterMap[TARGET_TITLE_ID])
             }
         }
     }
@@ -1098,6 +1103,16 @@ class DiscoveryFragment :
         }
     }
 
+    fun scrollToComponentWithID(componentID:String){
+        val position = discoveryViewModel.scrollToPinnedComponent(
+            discoveryAdapter.currentList, componentID
+        )
+        if (position >= 0) {
+            userPressed = false
+            smoothScrollToComponentWithPosition(position)
+        }
+    }
+
     private fun setAnimationOnScroll() {
         recyclerView.addOnScrollListener(mDiscoveryFab.getScrollListener())
     }
@@ -1145,9 +1160,16 @@ class DiscoveryFragment :
         getDiscoveryAnalytics().clearProductViewIds(true)
         miniCartData = null
         resetAnchorTabs()
+        checkTabPositionBeforeRefresh()
         discoveryViewModel.resetScroll()
         discoveryViewModel.clearPageData()
         fetchDiscoveryPageData()
+    }
+
+    private fun checkTabPositionBeforeRefresh(){
+        if((activity as? DiscoveryActivity)?.isFromCategory() != true && currentTabPosition != null){
+            this.arguments?.putString(ACTIVE_TAB,(currentTabPosition).toString())
+        }
     }
 
     private fun resetAnchorTabs(){
@@ -1641,7 +1663,8 @@ class DiscoveryFragment :
                     shopIds,
                     this,
                     this,
-                    pageName = MiniCartAnalytics.Page.DISCOVERY_PAGE
+                    pageName = MiniCartAnalytics.Page.DISCOVERY_PAGE,
+                    source = MiniCartSource.TokonowDiscoveryPage
                 )
                 miniCartWidget?.show()
             } else {
@@ -1663,16 +1686,7 @@ class DiscoveryFragment :
     }
 
     private fun syncWithCart(data:MiniCartSimplifiedData){
-        val map = HashMap<String,MiniCartItem>()
-        data.miniCartItems.associateByTo (map,{ it.productId })
-        val variantMap = data.miniCartItems.groupBy { it.productParentId }
-        for((parentProductId,list) in variantMap){
-            if(parentProductId.isNotEmpty() && parentProductId!="0"){
-                val quantity = list.sumOf { it.quantity }
-                map[parentProductId] = MiniCartItem(productParentId = parentProductId,quantity = quantity)
-            }
-        }
-        setCartData(map,pageEndPoint)
+        setCartData(data.miniCartItems,pageEndPoint)
         miniCartData = data
         reSync()
     }
@@ -1727,17 +1741,21 @@ class DiscoveryFragment :
                 if (position >= 0) {
                     userPressed = false
                     anchorViewHolder?.viewModel?.updateSelectedSection(sectionID, true)
-                    val smoothScroller: RecyclerView.SmoothScroller =
-                        object : LinearSmoothScroller(context) {
-                            override fun getVerticalSnapPreference(): Int {
-                                return SNAP_TO_START
-                            }
-                        }
-                    smoothScroller.targetPosition = position
-                    staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+                    smoothScrollToComponentWithPosition(position)
                 }
             }
         }
+    }
+
+    private fun smoothScrollToComponentWithPosition(position: Int) {
+        val smoothScroller: RecyclerView.SmoothScroller =
+            object : LinearSmoothScroller(context) {
+                override fun getVerticalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+            }
+        smoothScroller.targetPosition = position
+        staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
     }
 
     fun updateSelectedSection(sectionID: String) {

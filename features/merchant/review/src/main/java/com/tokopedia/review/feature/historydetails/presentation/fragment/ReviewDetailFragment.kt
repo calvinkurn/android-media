@@ -16,7 +16,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -36,7 +35,6 @@ import com.tokopedia.review.common.data.ProductrevGetReviewDetailReview
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.OnBackPressedListener
-import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.common.util.getReviewStar
@@ -44,7 +42,12 @@ import com.tokopedia.review.databinding.FragmentReviewDetailBinding
 import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTracking
 import com.tokopedia.review.feature.historydetails.di.DaggerReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
+import com.tokopedia.review.feature.historydetails.presentation.mapper.ReviewDetailDataMapper
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -52,8 +55,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ReviewDetailFragment : BaseDaggerFragment(),
-    HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickListener,
-    OnBackPressedListener, ReviewScoreClickListener, ReviewPerformanceMonitoringContract {
+    HasComponent<ReviewDetailComponent>, OnBackPressedListener, ReviewScoreClickListener,
+    ReviewPerformanceMonitoringContract {
 
     companion object {
         const val KEY_FEEDBACK_ID = "feedbackID"
@@ -80,6 +83,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     private var reviewConnectionErrorRetryButton: UnifyButton? = null
 
     private var binding by autoClearedNullable<FragmentReviewDetailBinding>()
+
+    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -155,6 +160,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         initHeader()
         initErrorPage()
         observeReviewDetails()
+        observeReviewMediaThumbnail()
         observeInsertReputationResult()
     }
 
@@ -173,10 +179,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         removeObservers(viewModel.submitReputationResult)
     }
 
-    override fun onAttachedImagesClicked(
-        productName: String,
-        attachedImages: List<String>,
-        position: Int
+    fun onAttachedMediaClicked(
+        productID: String,
+        position: Int,
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel?
     ) {
         (viewModel.reviewDetails.value as? Success)?.let {
             ReviewDetailTracking.eventClickImageGallery(
@@ -185,7 +191,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 viewModel.getUserId()
             )
         }
-        goToImagePreview(productName, attachedImages.filter { it.isNotEmpty() }, position)
+        goToImagePreview(productID, position, reviewMediaThumbnailUiModel)
     }
 
     override fun onBackPressed() {
@@ -264,6 +270,12 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun observeReviewMediaThumbnail() {
+        viewModel.reviewMediaThumbnails.observe(viewLifecycleOwner, {
+            setupReviewMediaThumbnail(it)
+        })
+    }
+
     private fun observeInsertReputationResult() {
         viewModel.submitReputationResult.observe(viewLifecycleOwner, {
             when (it) {
@@ -331,14 +343,6 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 }
             }
             addHeaderIcons(editable)
-            if (attachments.isNotEmpty()) {
-                binding?.reviewDetailAttachedImages?.apply {
-                    setImages(attachments, productName, this@ReviewDetailFragment)
-                    show()
-                }
-            } else {
-                binding?.reviewDetailAttachedImages?.hide()
-            }
             binding?.reviewDetailDate?.setTextAndCheckShow(
                 getString(
                     R.string.review_date,
@@ -370,6 +374,18 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             }
             binding?.reviewDetailBadRatingReason?.showBadRatingReason(badRatingReasonFmt)
             binding?.reviewDetailBadRatingDisclaimerWidget?.setDisclaimer(ratingDisclaimer)
+        }
+    }
+
+    private fun setupReviewMediaThumbnail(reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel) {
+        if (reviewMediaThumbnailUiModel.mediaThumbnails.isNotEmpty()) {
+            binding?.reviewDetailAttachedMedia?.apply {
+                setListener(reviewMediaThumbnailListener)
+                setData(reviewMediaThumbnailUiModel)
+                show()
+            }
+        } else {
+            binding?.reviewDetailAttachedMedia?.hide()
         }
     }
 
@@ -534,16 +550,26 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         startActivity(shareIntent)
     }
 
-    private fun goToImagePreview(productName: String, attachedImages: List<String>, position: Int) {
-        startActivity(context?.let {
-            ImagePreviewSliderActivity.getCallingIntent(
-                it,
-                productName,
-                attachedImages,
-                attachedImages,
-                position
-            )
-        })
+    private fun goToImagePreview(
+        productID: String,
+        position: Int,
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel?
+    ) {
+        context?.let { context ->
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context = context,
+                pageSource = ReviewMediaGalleryRouter.PageSource.REVIEW,
+                productID = productID,
+                shopID = viewModel.getShopId(),
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position.inc(),
+                showSeeMore = false,
+                preloadedDetailedReviewMediaResult = ReviewDetailDataMapper.mapReviewDetailDataToReviewMediaPreviewData(
+                    reviewMediaThumbnailUiModel
+                )
+            ).let { startActivity(it) }
+        }
     }
 
     private fun goToPdp(productId: String) {
@@ -599,6 +625,20 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 Toaster.TYPE_ERROR,
                 getString(R.string.review_oke)
             ).show()
+        }
+    }
+
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            viewModel.reviewDetails.value?.let { reviewDetailsResult ->
+                if (reviewDetailsResult is Success) {
+                    onAttachedMediaClicked(
+                        reviewDetailsResult.data.product.productId,
+                        position,
+                        viewModel.reviewMediaThumbnails.value
+                    )
+                }
+            }
         }
     }
 }

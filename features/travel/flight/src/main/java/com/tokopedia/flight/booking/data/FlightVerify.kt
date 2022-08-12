@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -50,7 +51,7 @@ data class FlightVerify(
     data class FlightVerifyCart(
             @SerializedName("productId")
             @Expose
-            val productId: Int = 0,
+            val productId: String = "0",
 
             @SerializedName("quantity")
             @Expose
@@ -75,6 +76,7 @@ data class FlightVerify(
             @Expose
             val oldPriceNumeric: Int = 0,
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("priceDetail")
             @Expose
             val priceDetail: List<FlightCart.PriceDetail> = listOf(),
@@ -98,6 +100,7 @@ data class FlightVerify(
     )
 
     data class CartConfiguration(
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             var price: Int = 0

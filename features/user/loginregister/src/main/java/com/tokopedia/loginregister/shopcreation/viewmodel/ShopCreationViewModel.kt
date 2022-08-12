@@ -10,8 +10,16 @@ import com.tokopedia.loginregister.shopcreation.domain.param.RegisterCheckParam
 import com.tokopedia.loginregister.shopcreation.domain.param.ShopInfoParam
 import com.tokopedia.loginregister.shopcreation.domain.param.UpdateUserProfileParam
 import com.tokopedia.loginregister.shopcreation.domain.param.ValidateUserProfileParam
-import com.tokopedia.loginregister.shopcreation.domain.pojo.*
-import com.tokopedia.loginregister.shopcreation.domain.usecase.*
+import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileCompletionData
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileUpdate
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileValidate
+import com.tokopedia.loginregister.shopcreation.domain.usecase.GetUserProfileCompletionUseCase
+import com.tokopedia.loginregister.shopcreation.domain.usecase.RegisterCheckUseCase
+import com.tokopedia.loginregister.shopcreation.domain.usecase.ShopInfoUseCase
+import com.tokopedia.loginregister.shopcreation.domain.usecase.UpdateUserProfileUseCase
+import com.tokopedia.loginregister.shopcreation.domain.usecase.ValidateUserProfileUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
@@ -75,9 +83,9 @@ open class ShopCreationViewModel @Inject constructor(
     val getShopInfoResponse: LiveData<Result<ShopInfoByID>>
         get() = _getShopInfoResponse
 
-    fun addName(name: String) {
+    fun addName(name: String, validateToken: String) {
         launchCatchError(block = {
-            val params = UpdateUserProfileParam(fullname = name)
+            val params = UpdateUserProfileParam(fullname = name, validateToken = validateToken)
             val result = updateUserProfileUseCase(params)
             result.data.let {
                 _addNameResponse.value = when {
@@ -97,9 +105,9 @@ open class ShopCreationViewModel @Inject constructor(
         })
     }
 
-    fun addPhone(phone: String) {
+    fun addPhone(phone: String, validateToken: String) {
         launchCatchError(block = {
-            val params = UpdateUserProfileParam(phone = phone)
+            val params = UpdateUserProfileParam(phone = phone, validateToken = validateToken)
             val result = updateUserProfileUseCase(params)
             result.data.let {
                 _addPhoneResponse.value = when {

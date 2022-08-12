@@ -77,8 +77,20 @@ data class PlayPostContentItem(
     val stats: PlayPostContentItemStats,
 
     @SerializedName("configurations")
-    val configurations: PlayPostConfigurations
-) : BaseItem()
+    val configurations: PlayPostConfigurations,
+
+    @SerializedName("partner")
+    val partner: Partner,
+) : BaseItem() {
+
+    data class Partner(
+        @SerializedName("id")
+        val id: String,
+
+        @SerializedName("name")
+        val name: String,
+    )
+}
 
 data class PlayPostContentItemStats(
     @SerializedName("view")
@@ -87,10 +99,10 @@ data class PlayPostContentItemStats(
 
 data class StatsView(
     @SerializedName("value")
-    val value: String,
+    var value: String,
 
     @SerializedName("formatted")
-    val formatted: String
+    var formatted: String
 )
 
 data class PlayPostConfigurations(
@@ -115,5 +127,3 @@ data class PostPromoLabel(
     @SerializedName("type")
     val type: String
 )
-
-

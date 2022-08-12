@@ -16,6 +16,7 @@ import com.tokopedia.play.view.custom.multiplelikes.PlayLikeBubblesView
 import com.tokopedia.play.view.storage.multiplelikes.MultipleLikesIconCacheStorage
 import com.tokopedia.play.view.uimodel.PlayLikeBubbleUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
+import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.view.getBitmapFromUrl
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.*
@@ -28,6 +29,7 @@ class LikeBubbleViewComponent(
     @IdRes idRes: Int,
     private val scope: CoroutineScope,
     private val iconCacheStorage: MultipleLikesIconCacheStorage,
+    private val performanceClassConfig: PerformanceClassConfig,
 ) : ViewComponent(container, idRes) {
 
     private val bubbleLikeView = findViewById<PlayLikeBubblesView>(R.id.bubble_like_view)
@@ -52,7 +54,14 @@ class LikeBubbleViewComponent(
         PlayLikeBubbleUiModel(it, bgColorList.map(this::getColor))
     }
 
-    private val manager = PlayLikeBubblesManager(scope)
+    private val manager = PlayLikeBubblesManager(
+        scope,
+        when (performanceClassConfig.performanceClass) {
+            PerformanceClassConfig.PERFORMANCE_CLASS_LOW -> MAX_BUBBLES_LOW
+            PerformanceClassConfig.PERFORMANCE_CLASS_HIGH -> MAX_BUBBLES_HIGH
+            else -> MAX_BUBBLES_AVERAGE
+        }
+    )
 
     init {
         manager.setView(bubbleLikeView)
@@ -161,6 +170,10 @@ class LikeBubbleViewComponent(
     }
 
     private companion object {
+        const val MAX_BUBBLES_LOW = 10
+        const val MAX_BUBBLES_AVERAGE = 20
+        const val MAX_BUBBLES_HIGH = 25
+
         const val SHOT_PER_BATCH = 3
         const val SPAMMING_LIKE_DELAY = 200L
     }

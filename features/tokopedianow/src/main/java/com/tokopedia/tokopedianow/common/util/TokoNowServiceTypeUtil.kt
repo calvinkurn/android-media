@@ -9,8 +9,12 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 
 object TokoNowServiceTypeUtil {
-    const val EDU_BOTTOM_SHEET_RESOURCE_ID = "edu_bottomsheet_resource_id"
-    const val EDU_WIDGET_RESOURCE_ID = "edu_widget_resource_id"
+    const val EDU_BOTTOMSHEET_DURATION_RESOURCE_ID = "edu_bottomsheet_duration_resource_id"
+    const val EDU_BOTTOMSHEET_STOCK_RESOURCE_ID = "edu_bottomsheet_stock_resource_id"
+    const val EDU_BOTTOMSHEET_FAQ_RESOURCE_ID = "edu_bottomsheet_faq_resource_id"
+    const val EDU_BOTTOMSHEET_SK_RESOURCE_ID = "edu_bottomsheet_sk_resource_id"
+    const val EDU_WIDGET_DURATION_RESOURCE_ID = "edu_widget_duration_resource_id"
+    const val EDU_WIDGET_SELECTED_PRODUCT_FREE_SHIPPING_RESOURCE_ID = "edu_widget_selected_product_free_shipping_resource_id"
     const val SHARING_WIDGET_RESOURCE_ID = "sharing_widget_resource_id"
     const val REPURCHASE_EMPTY_RESOURCE_ID = "repurchase_empty_resource_id"
     const val SEARCH_CATEGORY_SUBTITLE_RESOURCE_ID = "search_category_subtitle_resource_id"
@@ -19,6 +23,7 @@ object TokoNowServiceTypeUtil {
     const val OUT_OF_COVERAGE_DESCRIPTION_ID = "out_of_coverage_description"
     const val OUT_OF_COVERAGE_PRIMARY_BUTTON_ID = "out_of_coverage_primary_button"
     const val OUT_OF_COVERAGE_SECONDARY_BUTTON_ID = "out_of_coverage_secondary_button"
+    const val SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID = "switch_service_type_toaster_resource_id"
 
     /*
     * Create the key to access and wrap resourceId into TokoNowStringResource data class
@@ -27,12 +32,29 @@ object TokoNowServiceTypeUtil {
     * 2. resourceId2h and resourceId20m -> Put here only if we want to get the resourceId of string in either 20 min or 2 hr delivery duration.
     */
     private val resourceIdsMap = mutableMapOf(
-        EDU_BOTTOM_SHEET_RESOURCE_ID to TokoNowStringResource(
+        EDU_BOTTOMSHEET_DURATION_RESOURCE_ID to TokoNowStringResource(
             resourceId2h = R.string.tokopedianow_home_educational_information_2h_duration_bottomsheet,
             resourceId20m = R.string.tokopedianow_home_educational_information_20m_duration_bottomsheet
         ),
-        EDU_WIDGET_RESOURCE_ID to TokoNowStringResource(
-            formattedResourceId = R.string.tokopedianow_home_educational_information_duration
+        EDU_BOTTOMSHEET_STOCK_RESOURCE_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_home_educational_information_2h_stock_available_bottomsheet,
+            resourceId20m = R.string.tokopedianow_home_educational_information_20m_stock_available_bottomsheet
+        ),
+        EDU_BOTTOMSHEET_FAQ_RESOURCE_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_home_educational_information_2h_twenty_four_hours_bottomsheet,
+            resourceId20m = R.string.tokopedianow_home_educational_information_20m_twenty_four_hours_bottomsheet
+        ),
+        EDU_BOTTOMSHEET_SK_RESOURCE_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_home_educational_information_2h_terms_and_conditions_bottomsheet,
+            resourceId20m = R.string.tokopedianow_home_educational_information_20m_terms_and_conditions_bottomsheet
+        ),
+        EDU_WIDGET_DURATION_RESOURCE_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_home_educational_information_2h_duration,
+            resourceId20m = R.string.tokopedianow_home_educational_information_20m_duration
+        ),
+        EDU_WIDGET_SELECTED_PRODUCT_FREE_SHIPPING_RESOURCE_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_home_educational_information_free_shipping,
+            resourceId20m = R.string.tokopedianow_home_educational_information_selected_product
         ),
         SHARING_WIDGET_RESOURCE_ID to TokoNowStringResource(
             formattedResourceId = R.string.tokopedianow_home_sharing_education_title
@@ -63,6 +85,10 @@ object TokoNowServiceTypeUtil {
         OUT_OF_COVERAGE_SECONDARY_BUTTON_ID to TokoNowStringResource(
             resourceId2h = R.string.tokopedianow_common_empty_state_button_return,
             resourceId20m = R.string.tokopedianow_common_empty_state_button_change_address
+        ),
+        SWITCH_SERVICE_TYPE_TOASTER_RESOURCE_ID to TokoNowStringResource(
+            resourceId2h = R.string.tokopedianow_on_boarding_2h_toaster,
+            resourceId20m = R.string.tokopedianow_on_boarding_20m_toaster
         )
     )
 

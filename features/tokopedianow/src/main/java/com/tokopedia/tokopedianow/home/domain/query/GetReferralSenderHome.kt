@@ -1,11 +1,21 @@
 package com.tokopedia.tokopedianow.home.domain.query
 
-import com.tokopedia.tokopedianow.home.domain.usecase.GetReferralSenderHomeUseCase
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-object GetReferralSenderHome {
-    val QUERY = """
-        query GetReferralSenderHome(${'$'}${GetReferralSenderHomeUseCase.SLUG}: String!){
-          gamiReferralSenderHome(slug:${'$'}${GetReferralSenderHomeUseCase.SLUG}) {
+internal object GetReferralSenderHome: GqlQueryInterface {
+
+    const val PARAM_SLUG = "slug"
+
+    private const val OPERATION_NAME = "gamiReferralSenderHome"
+
+    override fun getOperationNameList(): List<String> {
+        return listOf(OPERATION_NAME)
+    }
+
+    override fun getQuery(): String {
+        return """
+        query $OPERATION_NAME(${'$'}${PARAM_SLUG}: String!){
+          $OPERATION_NAME(slug:${'$'}${PARAM_SLUG}) {
             resultStatus {
                 code
                 message
@@ -23,5 +33,10 @@ object GetReferralSenderHome {
             }
           }
         }
-    """.trimIndent()
+        """.trimIndent()
+    }
+
+    override fun getTopOperationName(): String {
+        return OPERATION_NAME
+    }
 }

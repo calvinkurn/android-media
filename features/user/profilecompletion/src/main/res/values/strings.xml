@@ -179,7 +179,8 @@
     <string name="success_edit_username">Yay! Username kamu berhasil diubah.</string>
     <string name="success_add_username">"Yay! Username berhasil ditambah.</string>
     <string name="success_edit_bio">Yay! Bio kamu berhasil diubah.</string>
-    <string name="success_add_bio">"Yay! Bio berhasil ditambah.</string>    <string name="error_cant_empty">Wajib diisi.</string>
+    <string name="success_add_bio">"Yay! Bio berhasil ditambah.</string>
+    <string name="error_cant_empty">Wajib diisi.</string>
     <string name="title_gender">Jenis Kelamin</string>
     <string name="title_user_id">User ID</string>
     <string name="success_copy_userid">User ID berhasil disalin!</string>
@@ -190,4 +191,17 @@
     <string name="no_verified">Belum Diverifikasi</string>
     <string name="success_verify_phone">Yay! Nomor HP kamu berhasil diverifikasi.</string>
 
+    <!--CLOSE ACCOUNT-->
+    <string name="close_account">Tutup Akun</string>
+    <string name="close_account_title">Kamu belum memenuhi syarat untuk tutup akun 🙏🏼</string>
+    <string name="close_account_sub_title">Syarat tutup akun:</string>
+    <string name="close_account_requirement_description_1">Tidak ada Saldo Tokopedia, Tokopedia Emas, dan Tokopedia Reksa Dana.</string>
+    <string name="close_account_requirement_description_2">Tidak ada cicilan dan pinjaman yang belum lunas atau sedang diajukan.</string>
+    <string name="close_account_requirement_description_3">Tidak ada transaksi yang sedang berjalan.</string>
+    <string name="close_account_requirement_image_1">https://images.tokopedia.net/img/android/user/profilecompletion/ic_close_account_requirement_1.png</string>
+    <string name="close_account_requirement_image_2">https://images.tokopedia.net/img/android/user/profilecompletion/ic_close_account_requirement_2.png</string>
+    <string name="close_account_requirement_image_3">https://images.tokopedia.net/img/android/user/profilecompletion/ic_close_account_requirement_3.png</string>
+    <string name="close_account_requirement_check">Belum Terpenuhi</string>
+    <string name="close_account_oke">Oke</string>
+    <string name="close_account_failed">Yaah, lagi ada gangguan. Tunggu sebentar &amp; coba lagi, ya.</string>
 </resources>

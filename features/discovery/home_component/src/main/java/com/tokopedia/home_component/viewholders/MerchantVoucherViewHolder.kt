@@ -26,7 +26,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class MerchantVoucherViewHolder(
     itemView: View,
-    private val merchantVoucherComponentListener: MerchantVoucherComponentListener
+    private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
+    private val cardInteraction: Boolean = false,
 ) : AbstractViewHolder<MerchantVoucherDataModel>(itemView), CommonProductCardCarouselListener {
     private var binding: GlobalDcMerchantVoucherBinding? by viewBinding()
     private var adapter: MerchantVoucherAdapter? = null
@@ -80,7 +81,7 @@ class MerchantVoucherViewHolder(
     }
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
+        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
         adapter = MerchantVoucherAdapter(visitables, typeFactoryImpl)
         binding?.homeComponentMvcRv?.adapter = adapter
         binding?.homeComponentMvcRv?.scrollToPosition(0)

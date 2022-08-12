@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -82,6 +83,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
 
     private var isLocalization: Boolean? = false
 
+    private var source: String = ""
+
     var tabAdapter: ManageAddressViewPagerAdapter? = null
 
     override fun getScreenName(): String = ""
@@ -105,7 +108,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
         isLocalization = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_LOCALIZATION)
         viewModel.receiverUserId = arguments?.getString(ManageAddressConstant.QUERY_RECEIVER_USER_ID)
         viewModel.senderUserId = arguments?.getString(ManageAddressConstant.QUERY_SENDER_USER_ID)
-
+        source = arguments?.getString(PARAM_SOURCE) ?: ""
         initSearchView()
 
         initView()
@@ -230,6 +233,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
             intent.putExtra(KERO_TOKEN, token)
             intent.putExtra(EXTRA_REF, screenName)
+            intent.putExtra(PARAM_SOURCE, source)
             startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
         } else {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)

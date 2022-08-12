@@ -17,7 +17,7 @@ data class PickerParam(
     @SerializedName("maxVideoItem") private var maxVideoItem: Int = 2,
     @SerializedName("maxVideoFileSize") private var maxVideoFileSize: Long = 250_000_000, // 250 mb
     @SerializedName("minVideoDuration") private var minVideoDuration: Int = 3000, // equals 3 sec
-    @SerializedName("maxVideoDuration") private var maxVideoDuration: Long = 30_000, // equals 30 sec
+    @SerializedName("maxVideoDuration") private var maxVideoDuration: Int = 30_000, // equals 30 sec
     @SerializedName("maxImageFileSize") private var maxImageFileSize: Long = 10_000_000, // 10 mb
     @SerializedName("minImageResolution") private var minImageResolution: Int = 300, // px
     @SerializedName("maxImageResolution") private var maxImageResolution: Int = 20000, // px
@@ -36,6 +36,7 @@ data class PickerParam(
     fun isImageModeOnly() = modeType == ModeType.IMAGE_ONLY
     fun isVideoModeOnly() = modeType == ModeType.VIDEO_ONLY
     fun isCommonPageType() = pageType == PageType.COMMON
+    fun isGalleryPageType() = pageType == PageType.GALLERY
     fun ratioIsSquare() = cameraRatio == CameraRatio.Square
     fun isMultipleSelectionType() = isMultipleSelection
     fun isIncludeVideoFile() = modeType == ModeType.COMMON
@@ -61,7 +62,7 @@ data class PickerParam(
     fun maxVideoItem(value: Int) = apply { maxVideoItem = value }
     fun maxVideoFileSize(value: Long) = apply { maxVideoFileSize = value }
     fun minVideoDuration(value: Int) = apply { minVideoDuration = value }
-    fun maxVideoDuration(value: Long) = apply { maxVideoDuration = value }
+    fun maxVideoDuration(value: Int) = apply { maxVideoDuration = value }
     fun maxImageFileSize(value: Long) = apply { maxImageFileSize = value }
     fun minImageResolution(value: Int) = apply { minImageResolution = value }
     fun maxImageResolution(value: Int) = apply { maxImageResolution = value }

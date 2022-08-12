@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.search_map.presentation.fragment
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -11,9 +12,15 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.DisplayMetrics
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -29,7 +36,11 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -46,12 +57,18 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.common.util.QueryHotelPropertySearch
 import com.tokopedia.hotel.databinding.FragmentHotelSearchMapBinding
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
-import com.tokopedia.hotel.search_map.data.model.*
+import com.tokopedia.hotel.search_map.data.model.FilterV2
 import com.tokopedia.hotel.search_map.data.model.FilterV2.Companion.FILTER_TYPE_SORT
+import com.tokopedia.hotel.search_map.data.model.HotelLoadingModel
+import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
+import com.tokopedia.hotel.search_map.data.model.Property
+import com.tokopedia.hotel.search_map.data.model.PropertySearch
+import com.tokopedia.hotel.search_map.data.model.QuickFilter
+import com.tokopedia.hotel.search_map.data.model.Sort
 import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
@@ -61,7 +78,12 @@ import com.tokopedia.hotel.search_map.presentation.adapter.PropertyAdapterTypeFa
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import com.tokopedia.hotel.search_map.presentation.widget.HotelFilterBottomSheets
 import com.tokopedia.hotel.search_map.presentation.widget.SubmitFilterListener
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilter
@@ -79,6 +101,7 @@ import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as UnifyPrincipleRes
 
 /**
  * @author by furqan on 01/03/2021
@@ -442,7 +465,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         binding?.fabHotelInfoMaxRadius?.setMargins(
             0,
-            resources.getDimensionPixelSize(R.dimen.hotel_70dp),
+            getDimensionPixelSize(R.dimen.hotel_70dp),
             0,
             0
         )
@@ -554,8 +577,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun loadData(page: Int) {
-        val searchQuery = HotelGqlQuery.PROPERTY_SEARCH
-        hotelSearchMapViewModel.searchProperty(page, searchQuery)
+        hotelSearchMapViewModel.searchProperty(page, QueryHotelPropertySearch())
     }
 
     override fun getAdapterTypeFactory(): PropertyAdapterTypeFactory =
@@ -666,8 +688,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
             textView.layoutParams = param
-            textView.text = resources.getString(R.string.hotel_search_result_change)
-            textView.fontType = Typography.BODY_2
+            textView.text = getString(R.string.hotel_search_result_change)
+            textView.fontType = Typography.DISPLAY_2
             textView.setTextColor(
                 ContextCompat.getColor(
                     it,
@@ -716,7 +738,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         showSearchWithMap()
                         setupContentMargin(true)
-                        googleMap.uiSettings.setAllGesturesEnabled(false)
+                        if (::googleMap.isInitialized){
+                            googleMap.uiSettings.setAllGesturesEnabled(false)
+                        }
 
                         if (isViewFullMap) {
                             trackingHotelUtil.searchCloseMap(
@@ -729,28 +753,32 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         }
                     }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                        if (searchPropertiesMap.isNullOrEmpty()) {
-                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
-                        } else {
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[0]))
-                            val newLatLng = getMapCenter(searchPropertiesMap[0])
-                            googleMap.animateCamera(
-                                CameraUpdateFactory.newLatLngZoom(
-                                    newLatLng,
-                                    MAPS_ZOOM_OUT
+                        if (::googleMap.isInitialized){
+                            if (searchPropertiesMap.isNullOrEmpty()) {
+                                googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
+                            } else {
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[0]))
+                                val newLatLng = getMapCenter(searchPropertiesMap[0])
+                                googleMap.animateCamera(
+                                    CameraUpdateFactory.newLatLngZoom(
+                                        newLatLng,
+                                        MAPS_ZOOM_OUT
+                                    )
                                 )
-                            )
-                        }
-                        setupContentMargin(false)
-                        if (binding?.containerEmptyResultState?.isVisible == true) {
-                            googleMap.uiSettings.setAllGesturesEnabled(false)
-                            enabledMapsClick()
-                        } else {
-                            enabledMapsGesture()
+                            }
+                            setupContentMargin(false)
+                            if (binding?.containerEmptyResultState?.isVisible == true) {
+                                googleMap.uiSettings.setAllGesturesEnabled(false)
+                                enabledMapsClick()
+                            } else {
+                                enabledMapsGesture()
+                            }
                         }
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
-                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
+                        if (::googleMap.isInitialized){
+                            googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
+                        }
                         setupContentMargin(false)
 
                         enabledMapsGesture()
@@ -772,8 +800,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
 
         })
-        binding?.tvHotelSearchListTitle?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
+        binding?.tvHotelSearchListTitle?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 binding?.tvHotelSearchListTitle?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
 
@@ -783,21 +810,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 var bottomSheetHeaderHeight =
                     binding?.tvHotelSearchListTitle?.measuredHeight // title height
                 bottomSheetHeaderHeight = bottomSheetHeaderHeight?.plus(
-                    resources.getDimensionPixelSize(
-                        com.tokopedia.unifycomponents.R.dimen.bottom_sheet_knob_height
-                    )
+                    getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.bottom_sheet_knob_height)
                 ) // knob height
                 bottomSheetHeaderHeight = bottomSheetHeaderHeight?.plus(
-                    resources.getDimensionPixelSize(
-                        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
-                    )
+                    getDimensionPixelSize(UnifyPrincipleRes.dimen.spacing_lvl3)
                 ) // knob top margin
                 bottomSheetHeaderHeight =
                     bottomSheetHeaderHeight?.plus(titleLayoutParam.topMargin) // title top margin
                 bottomSheetHeaderHeight = bottomSheetHeaderHeight?.plus(
-                    resources.getDimensionPixelSize(
-                        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4
-                    )
+                    getDimensionPixelSize(UnifyPrincipleRes.dimen.spacing_lvl4)
                 ) // add margin
 
                 bottomSheetBehavior.peekHeight = bottomSheetHeaderHeight ?: 0
@@ -810,26 +831,26 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             if (isExpanded) {
                 it.rvVerticalPropertiesHotelSearchMap.setMargin(
                     0,
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7),
+                    getDimensionPixelSize(UnifyPrincipleRes.dimen.spacing_lvl7),
                     0,
                     0
                 )
                 it.containerEmptyResultState.setMargin(
                     0,
-                    resources.getDimensionPixelSize(R.dimen.hotel_80dp),
+                    getDimensionPixelSize(R.dimen.hotel_80dp),
                     0,
                     0
                 )
             } else {
                 it.rvVerticalPropertiesHotelSearchMap.setMargin(
                     0,
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
+                    getDimensionPixelSize(UnifyPrincipleRes.dimen.spacing_lvl3),
                     0,
                     0
                 )
                 it.containerEmptyResultState.setMargin(
                     0,
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
+                    getDimensionPixelSize(UnifyPrincipleRes.dimen.spacing_lvl4),
                     0,
                     0
                 )
@@ -839,7 +860,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 hideSearchWithMap()
                 it.rvVerticalPropertiesHotelSearchMap.setMargin(
                     0,
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7),
+                    getDimensionPixelSize(UnifyPrincipleRes.dimen.spacing_lvl7),
                     0,
                     0
                 )
@@ -971,15 +992,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun enabledMapsClick() {
-        binding?.mapHotelSearchMap?.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
-                when (motionEvent.action) {
-                    MotionEvent.ACTION_DOWN -> v.performClick()
-                }
-                return true
+        binding?.mapHotelSearchMap?.setOnTouchListener { v, motionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> v.performClick()
             }
-        })
+            true
+        }
         binding?.mapHotelSearchMap?.setOnClickListener {
             collapseBottomSheet()
         }
@@ -1050,7 +1070,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
         binding?.btnGetRadiusHotelSearchMap?.setMargins(
             0,
-            resources.getDimensionPixelSize(R.dimen.hotel_70dp),
+            getDimensionPixelSize(R.dimen.hotel_70dp),
             0,
             0
         )
@@ -1111,17 +1131,19 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         )
                     )
                     putPriceMarkerOnTop(position)
-                    if (cardListPosition == SELECTED_POSITION_INIT) {
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
-                        val newLatLng = getMapCenter(searchPropertiesMap[position])
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(newLatLng))
-                    } else {
-                        googleMap.animateCamera(
-                            CameraUpdateFactory.newLatLngZoom(
-                                searchPropertiesMap[position],
-                                MAPS_STREET_LEVEL_ZOOM
+                    if (::googleMap.isInitialized){
+                        if (cardListPosition == SELECTED_POSITION_INIT) {
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
+                            val newLatLng = getMapCenter(searchPropertiesMap[position])
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLng(newLatLng))
+                        } else {
+                            googleMap.animateCamera(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    searchPropertiesMap[position],
+                                    MAPS_STREET_LEVEL_ZOOM
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
@@ -1179,7 +1201,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         context: Context,
         @DrawableRes drawableId: Int
     ): BitmapDescriptor {
-        var drawable = ContextCompat.getDrawable(context, drawableId)
+        val drawable = ContextCompat.getDrawable(context, drawableId)
 
         val bitmap = Bitmap.createBitmap(
             drawable?.intrinsicWidth ?: 0,
@@ -1570,8 +1592,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         if (hotelSearchMapViewModel.liveSearchResult.value != null &&
             hotelSearchMapViewModel.liveSearchResult.value is Success
         ) {
-            var sortOption =
-                (hotelSearchMapViewModel.liveSearchResult.value as Success).data.displayInfo.sort
+            val sortOption = (hotelSearchMapViewModel.liveSearchResult.value as Success).data.displayInfo.sort
             sortOption.firstOrNull { it.displayName == filter.values.firstOrNull() }
         } else null
 
@@ -1725,7 +1746,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         binding?.containerEmptyResultState?.visible()
         binding?.containerEmptyResultState?.doOnNextLayout {
             bottomSheetBehavior.peekHeight = binding?.containerEmptyResultState?.bottom ?: 0 +
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6)
+                    getDimensionPixelSize(UnifyPrincipleRes.dimen.layout_lvl6)
         }
     }
 
@@ -1794,6 +1815,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 quickFilter.indicatorCounter -= 1
             }
         }
+    }
+
+    private fun getDimensionPixelSize(@DimenRes id: Int): Int{
+        return context?.resources?.getDimensionPixelSize(id) ?: 0
     }
 
     companion object {

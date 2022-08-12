@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_5
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_6
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -119,10 +120,11 @@ class TopAdsHeadlineViewHolder(
 
     private fun handlingHeadlineTitle(data: List<CpmData>?) {
         data?.let {
-            if (it.isNotEmpty() && it.firstOrNull()?.cpm?.layout != LAYOUT_6) {
-                titleView.show()
-            } else {
+            val cpmLayout = it.firstOrNull()?.cpm?.layout
+            if (cpmLayout != null && (cpmLayout == LAYOUT_6 || cpmLayout == LAYOUT_5)) {
                 titleView.hide()
+            } else {
+                titleView.show()
             }
         }
     }

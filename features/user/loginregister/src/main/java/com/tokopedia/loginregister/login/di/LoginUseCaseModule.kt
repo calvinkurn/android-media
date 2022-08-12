@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.login.di
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -31,29 +32,26 @@ import javax.inject.Named
 class LoginUseCaseModule {
 
     @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
-    @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
     @Provides
-    fun provideRegisterCheckGraphQlUseCase(graphqlRepository: GraphqlRepository)
+    fun provideRegisterCheckGraphQlUseCase(@ApplicationContext graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<RegisterCheckPojo> = GraphqlUseCase(graphqlRepository)
 
     @Provides
-    fun provideLoginTokenUseCaseV2(graphqlRepository: GraphqlRepository, @Named(SessionModule.SESSION_MODULE) userSessionInterface: UserSessionInterface): LoginTokenV2UseCase {
+    fun provideLoginTokenUseCaseV2(@ApplicationContext graphqlRepository: GraphqlRepository, userSessionInterface: UserSessionInterface): LoginTokenV2UseCase {
         val useCase = GraphqlUseCase<LoginTokenPojoV2>(graphqlRepository)
         return LoginTokenV2UseCase(useCase, userSessionInterface)
     }
 
     @Provides
-    fun provideActivateUserUseCase(graphqlRepository: GraphqlRepository): ActivateUserUseCase {
+    fun provideActivateUserUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): ActivateUserUseCase {
         val useCase = GraphqlUseCase<ActivateUserPojo>(graphqlRepository)
         return ActivateUserUseCase(useCase)
     }
 
     @Provides
-    fun provideGeneratePublicKeyUseCase(graphqlRepository: GraphqlRepository): GeneratePublicKeyUseCase {
+    fun provideGeneratePublicKeyUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): GeneratePublicKeyUseCase {
         val useCase = GraphqlUseCase<GenerateKeyPojo>(graphqlRepository)
         return GeneratePublicKeyUseCase(useCase)
     }
@@ -64,8 +62,7 @@ class LoginUseCaseModule {
     }
 
     @Provides
-    fun provideLoginFingerprintUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers, @Named(
-        SessionModule.SESSION_MODULE) userSessionInterface: UserSessionInterface, fingerprintPreference: FingerprintPreference
+    fun provideLoginFingerprintUsecase(@ApplicationContext graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers, userSessionInterface: UserSessionInterface, fingerprintPreference: FingerprintPreference
     ): LoginFingerprintUseCase {
         val useCase = GraphqlUseCase<LoginTokenPojo>(graphqlRepository)
         return LoginFingerprintUseCase(useCase, dispatchers, userSessionInterface, fingerprintPreference)

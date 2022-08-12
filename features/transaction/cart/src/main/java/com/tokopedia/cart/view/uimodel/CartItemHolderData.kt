@@ -57,6 +57,7 @@ data class CartItemHolderData(
         var originalBundleQuantity: Int = 0,
         var editBundleApplink: String = "",
         var bundleIconUrl: String = "",
+        var bundleGrayscaleIconUrl: String = "",
         var bundleLabelQuantity: Int = 0,
 
         // Analytics data
@@ -71,6 +72,7 @@ data class CartItemHolderData(
         var promoDetails: String = "",
         var isFreeShippingExtra: Boolean = false,
         var isFreeShipping: Boolean = false,
+        var freeShippingName: String = "",
         var campaignId: String = "",
         var originalQty: Int = 0,
         var originalNotes: String = "",

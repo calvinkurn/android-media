@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.qui
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
@@ -119,7 +120,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             var componentID = components.id
             if(components.properties?.dynamic == true && !components.dynamicOriginalId.isNullOrEmpty())
                 componentID = components.dynamicOriginalId!!
-            dynamicFilterModel.value = filterRepository.getFilterData(componentID, mutableMapOf(), components.pageEndPoint)
+            val queryParameterMap = mutableMapOf<String, Any>()
+            queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(components.userAddressData))
+            dynamicFilterModel.value = filterRepository.getFilterData(componentID, queryParameterMap, components.pageEndPoint)
             renderDynamicFilter(dynamicFilterModel.value?.data)
         }, onError = {
             Timber.e(it)
@@ -253,9 +256,9 @@ class QuickFilterViewModel(val application: Application, val components: Compone
             (components.searchParameter.contains(it) && components.searchParameter.get(it) != DEFAULT_SORT_ID && components.searchParameter.get(it).isNotEmpty())
         }
         _filterCountLiveData.value = if (list.isNullOrEmpty()) {
-            components.filterController.filterViewStateSet.size
+            components.filterController.getFilterCount()
         } else {
-            components.filterController.filterViewStateSet.size + 1
+            components.filterController.getFilterCount() + 1
         }
     }
 
