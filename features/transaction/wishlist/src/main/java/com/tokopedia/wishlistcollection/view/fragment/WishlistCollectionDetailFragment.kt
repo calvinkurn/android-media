@@ -233,7 +233,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val OPTION_ID_SORT_OLDEST = "6"
         private const val SOURCE_AUTOMATIC_DELETION = "wishlist_automatic_delete"
         private const val OK = "OK"
-        const val DEFAULT_TITLE = "Wishlist Collection Detail"
         private const val SRC_WISHLIST = "wishlist"
         private const val DELAY_REFETCH_PROGRESS_DELETION = 5000L
     }
@@ -689,15 +688,15 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 )
             )
         }
-        var titleToolbar = DEFAULT_TITLE
         activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
         toasterMessageInitial =
             arguments?.getString(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, "") as String
         collectionId =
             arguments?.getString(ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID) ?: ""
         paramGetCollectionItems.collectionId = collectionId
+        var titleToolbar = ""
         if (newCollectionDetailTitle.isNotEmpty()) titleToolbar = newCollectionDetailTitle
-        setToolbarTitle(titleToolbar)
+        updateToolbarTitle(titleToolbar)
         setSwipeRefreshLayout()
         binding?.run {
             wishlistCollectionDetailSearchbar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
@@ -788,16 +787,10 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         showToaster(toasterMessageInitial, "", Toaster.TYPE_NORMAL)
     }
 
-    private fun setToolbarTitle(title: String) {
-        binding?.run {
-            wishlistCollectionDetailNavtoolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE)
-            wishlistCollectionDetailNavtoolbar.setToolbarTitle(title)
-        }
-    }
-
     private fun updateToolbarTitle(title: String) {
         collectionName = title
         binding?.run {
+            wishlistCollectionDetailNavtoolbar.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE)
             wishlistCollectionDetailNavtoolbar.setToolbarTitle(title)
         }
     }
