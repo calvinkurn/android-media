@@ -733,7 +733,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
         val dataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, KEY_VIEW_ITEM)
-            putString(TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_MINICART)
+            putString(TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_TOKONOW_MINI_CART)
             putString(TrackAppUtils.EVENT_ACTION, EVENT_ACTION_VIEW_BUNDLING)
             putString(TrackAppUtils.EVENT_LABEL, "$warehouseId - $bundlePosition - $bundleId - $bundleName - $priceCut")
             putString(KEY_TRACKER_ID, VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_IMPRESSED)
@@ -775,7 +775,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
         val dataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, EVENT_NAME_SELECT_CONTENT)
-            putString(TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_MINICART)
+            putString(TrackAppUtils.EVENT_CATEGORY, EVENT_CATEGORY_TOKONOW_MINI_CART)
             putString(TrackAppUtils.EVENT_ACTION, EVENT_ACTION_CLICK_BUNDLING_WIDGET)
             putString(TrackAppUtils.EVENT_LABEL, "$warehouseId - $bundlePosition - $bundleId - $bundleName - $priceCut")
             putString(KEY_TRACKER_ID, VALUE_TRACKER_ID_PRODUCT_BUNDLE_RECOM_CLICKED)
