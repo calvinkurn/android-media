@@ -173,37 +173,37 @@ class NavigationViewModelTest {
         Assert.assertEquals(0, topNavigationValue.totalNewInbox)
     }
 
-    @Test
-    fun `Given something`() {
-        //if (jobIsValid() && iconNeedNotificationCounter()) { true & false
-        val mockGetNotificationUseCase = mockk<GetNotificationUseCase>()
-
-        coEvery {
-            mockGetNotificationUseCase.executeOnBackground()
-        } returns TopNavNotificationModel(
-                totalGlobalNavNotif = mockTotalGlobalNotif,
-                totalNewInbox = mockTotalNewInbox,
-                totalInbox = mockTotalInbox,
-                totalNotif = mockTotalNotif,
-                totalCart = mockTotalCart
-        )
-
-        val navigationViewModel = NavigationViewModel(
-                dispatcher = CoroutineTestDispatchersProvider,
-                getNotificationUseCase = mockGetNotificationUseCase
-        )
-        val mockIconBuilderWithSupportedIcon = IconBuilder().addIcon(IconList.ID_CART){}.build()
-
-        navigationViewModel.setRegisteredIconList(mockIconBuilderWithSupportedIcon)
-        navigationViewModel.getNotification()
-        navigationViewModel.applyNotification()
-        navigationViewModel.getNotification()
-
-        val topNavigationValue = navigationViewModel.navNotificationLiveData.value!!
-        Assert.assertEquals(mockTotalNotif, topNavigationValue.totalNotif)
-        Assert.assertEquals(mockTotalCart, topNavigationValue.totalCart)
-        Assert.assertEquals(mockTotalGlobalNotif, topNavigationValue.totalGlobalNavNotif)
-        Assert.assertEquals(mockTotalInbox, topNavigationValue.totalInbox)
-        Assert.assertEquals(mockTotalNewInbox, topNavigationValue.totalNewInbox)
-    }
+//    @Test
+//    fun `Given something`() {
+//        //if (jobIsValid() && iconNeedNotificationCounter()) { true & false
+//        val mockGetNotificationUseCase = mockk<GetNotificationUseCase>()
+//
+//        coEvery {
+//            mockGetNotificationUseCase.executeOnBackground()
+//        } returns TopNavNotificationModel(
+//                totalGlobalNavNotif = mockTotalGlobalNotif,
+//                totalNewInbox = mockTotalNewInbox,
+//                totalInbox = mockTotalInbox,
+//                totalNotif = mockTotalNotif,
+//                totalCart = mockTotalCart
+//        )
+//
+//        val navigationViewModel = NavigationViewModel(
+//                dispatcher = CoroutineTestDispatchersProvider,
+//                getNotificationUseCase = mockGetNotificationUseCase
+//        )
+//        val mockIconBuilderWithSupportedIcon = IconBuilder().addIcon(IconList.ID_CART){}.build()
+//
+//        navigationViewModel.setRegisteredIconList(mockIconBuilderWithSupportedIcon)
+//        navigationViewModel.getNotification()
+//        navigationViewModel.applyNotification()
+//        navigationViewModel.getNotification()
+//
+//        val topNavigationValue = navigationViewModel.navNotificationLiveData.value!!
+//        Assert.assertEquals(mockTotalNotif, topNavigationValue.totalNotif)
+//        Assert.assertEquals(mockTotalCart, topNavigationValue.totalCart)
+//        Assert.assertEquals(mockTotalGlobalNotif, topNavigationValue.totalGlobalNavNotif)
+//        Assert.assertEquals(mockTotalInbox, topNavigationValue.totalInbox)
+//        Assert.assertEquals(mockTotalNewInbox, topNavigationValue.totalNewInbox)
+//    }
 }
