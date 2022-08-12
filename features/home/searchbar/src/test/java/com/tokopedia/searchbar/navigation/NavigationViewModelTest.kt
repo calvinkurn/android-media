@@ -212,8 +212,6 @@ class NavigationViewModelTest {
         Assert.assertEquals(mockTotalGlobalNotif, topNavigationValueReload.totalGlobalNavNotif)
         Assert.assertEquals(mockTotalInbox, topNavigationValueReload.totalInbox)
         Assert.assertEquals(mockTotalNewInbox, topNavigationValueReload.totalNewInbox)
-
-
     }
 
     @Test
