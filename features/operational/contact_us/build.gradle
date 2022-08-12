@@ -53,6 +53,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
+
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
