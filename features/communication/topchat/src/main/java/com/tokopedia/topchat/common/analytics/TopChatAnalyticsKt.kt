@@ -243,7 +243,7 @@ object TopChatAnalyticsKt {
             createGeneralEvent(
                 event = Event.VIEW_COMMUNICATION_IRIS,
                 category = Category.INBOX_CHAT,
-                action = Action.SELLER_CLICK_REPORT_TICKER,
+                action = Action.SELLER_IMPRESS_REPORT_TICKER,
                 label = "$shopId - $stateReport",
                 businessUnit = COMMUNICATION,
                 currentSite = CURRENT_SITE_TOKOPEDIA,
@@ -434,6 +434,7 @@ object TopChatAnalyticsKt {
         const val CLICK_CLOSE_SRW_ONBOARDING = "click close on srw onboarding"
         const val VIEW_BUNDLING_PRODUCT_CARD = "view on bundling product card"
         const val CLICK_BUNDLING_PRODUCT_CTA = "click on bundling product card"
+        const val SELLER_IMPRESS_REPORT_TICKER = "seller impress on report ticker"
         const val CLICK_SEND_MSG_ON_NOTIF = "click sent msg on notifpush"
         const val SELLER_CLICK_REPORT_TICKER = "seller click on report ticker"
         const val SELLER_CLICK_CLOSE_REPORT_TICKER = "seller click close on report ticker"
