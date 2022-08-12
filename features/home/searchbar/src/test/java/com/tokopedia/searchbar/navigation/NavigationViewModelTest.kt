@@ -8,7 +8,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
@@ -26,7 +25,6 @@ class NavigationViewModelTest {
 
     @Test
     fun `Test navigationViewModel with supported icon when getAllNotification success then livedata value updated`() {
-        //if (jobIsValid() && iconNeedNotificationCounter()) { true & true
         val mockGetNotificationUseCase = mockk<GetNotificationUseCase>()
 
         coEvery {
@@ -58,7 +56,6 @@ class NavigationViewModelTest {
 
     @Test
     fun `Test navigationViewModel with supported icon when getAllNotification failed then livedata value is empty`() {
-        //if (jobIsValid() && iconNeedNotificationCounter()) { true & true
         val mockGetNotificationUseCase = mockk<GetNotificationUseCase>()
 
         coEvery {
@@ -84,7 +81,6 @@ class NavigationViewModelTest {
 
     @Test
     fun `Test navigationViewModel with no supported icon when getAllNotification then not doing any process`() {
-        //if (jobIsValid() && iconNeedNotificationCounter()) { true & false
         val mockGetNotificationUseCase = mockk<GetNotificationUseCase>()
 
         coEvery {
@@ -112,7 +108,6 @@ class NavigationViewModelTest {
 
     @Test
     fun `Test navigationViewModel with supported icon when applyNotification then keep live data value updated`() {
-        //if (jobIsValid() && iconNeedNotificationCounter()) { true & true
         val mockGetNotificationUseCase = mockk<GetNotificationUseCase>()
 
         coEvery {
@@ -176,8 +171,7 @@ class NavigationViewModelTest {
     }
 
     @Test
-    fun `Given something`() = runBlocking {
-        //if (jobIsValid() && iconNeedNotificationCounter()) { true & false
+    fun `given supported icon when get notification second time without icon then total notification does not change`() = runBlocking {
         val mockGetNotificationUseCase = mockk<GetNotificationUseCase>()
 
         coEvery {
@@ -195,24 +189,29 @@ class NavigationViewModelTest {
                 dispatcher = CoroutineTestDispatchersProvider,
                 getNotificationUseCase = mockGetNotificationUseCase
         )
-        val mockIconBuilderWithSupportedIcon = IconBuilder().addIcon(IconList.ID_CART){}.build()
 
+        val mockIconBuilderWithSupportedIcon = IconBuilder().addIcon(IconList.ID_CART){}.build()
         navigationViewModel.setRegisteredIconList(mockIconBuilderWithSupportedIcon)
         navigationViewModel.getNotification()
         navigationViewModel.applyNotification()
-        val mockIconBuilderWithoutSupportedIcon = IconBuilder().addIcon(IconList.ID_SEARCH){}.build()
-        navigationViewModel.setRegisteredIconList(mockIconBuilderWithoutSupportedIcon)
-        navigationViewModel.getNotification()
-        val mockIconBuilderWithoutSupportedIcon2 = IconBuilder().build()
-        navigationViewModel.setRegisteredIconList(mockIconBuilderWithoutSupportedIcon2)
+
+        val topNavigationValue = navigationViewModel.navNotificationLiveData.value ?: TopNavNotificationModel()
+        Assert.assertEquals(mockTotalNotif, topNavigationValue.totalNotif)
+        Assert.assertEquals(mockTotalCart, topNavigationValue.totalCart)
+        Assert.assertEquals(mockTotalGlobalNotif, topNavigationValue.totalGlobalNavNotif)
+        Assert.assertEquals(mockTotalInbox, topNavigationValue.totalInbox)
+        Assert.assertEquals(mockTotalNewInbox, topNavigationValue.totalNewInbox)
+
+        val mockIconBuilderWithoutIcon = IconBuilder().build()
+        navigationViewModel.setRegisteredIconList(mockIconBuilderWithoutIcon)
         navigationViewModel.getNotification()
         navigationViewModel.applyNotification()
 
-//        val topNavigationValue = navigationViewModel.navNotificationLiveData.value!!
-//        Assert.assertEquals(mockTotalNotif, topNavigationValue.totalNotif)
-//        Assert.assertEquals(mockTotalCart, topNavigationValue.totalCart)
-//        Assert.assertEquals(mockTotalGlobalNotif, topNavigationValue.totalGlobalNavNotif)
-//        Assert.assertEquals(mockTotalInbox, topNavigationValue.totalInbox)
-//        Assert.assertEquals(mockTotalNewInbox, topNavigationValue.totalNewInbox)
+        val topNavigationValueReload = navigationViewModel.navNotificationLiveData.value ?: TopNavNotificationModel()
+        Assert.assertEquals(mockTotalNotif, topNavigationValueReload.totalNotif)
+        Assert.assertEquals(mockTotalCart, topNavigationValueReload.totalCart)
+        Assert.assertEquals(mockTotalGlobalNotif, topNavigationValueReload.totalGlobalNavNotif)
+        Assert.assertEquals(mockTotalInbox, topNavigationValueReload.totalInbox)
+        Assert.assertEquals(mockTotalNewInbox, topNavigationValueReload.totalNewInbox)
     }
 }
