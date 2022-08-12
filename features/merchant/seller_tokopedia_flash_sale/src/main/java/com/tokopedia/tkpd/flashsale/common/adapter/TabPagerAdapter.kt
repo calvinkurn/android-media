@@ -12,5 +12,8 @@ class TabPagerAdapter(
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun getItemCount(): Int = fragments.size
+
     override fun createFragment(position: Int) = fragments[position].second
+
+    fun getTitle(position: Int) = fragments[position].first
 }

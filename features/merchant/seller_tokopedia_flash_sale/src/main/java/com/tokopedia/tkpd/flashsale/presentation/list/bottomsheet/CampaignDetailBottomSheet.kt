@@ -4,10 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsBottomsheetCampaignDetailBinding
@@ -46,10 +42,18 @@ class CampaignDetailBottomSheet: BottomSheetUnify() {
     }
 
     private fun displayTabs() {
+        val timelineTitle = getString(R.string.campaigndetail_timeline_title)
+        val criteriaTitle = getString(R.string.campaigndetail_criteria_title)
+        val productCriteriaTitle = getString(R.string.campaigndetail_product_criteria_title)
+
+        val timelineFragment = CampaignTimelineFragment()
+        val criteriaFragment = CampaignCriteriaFragment()
+        val productCriteriaFragment = CampaignProductCriteriaFragment()
+
         val fragments = listOf(
-            Pair("ABC", CampaignTimelineFragment()),
-            Pair("DEF", CampaignCriteriaFragment()),
-            Pair("ABC🇮🇩", CampaignProductCriteriaFragment())
+            Pair(timelineTitle, timelineFragment),
+            Pair(criteriaTitle, criteriaFragment),
+            Pair(productCriteriaTitle, productCriteriaFragment)
         )
         val pagerAdapter = TabPagerAdapter(childFragmentManager,
             viewLifecycleOwner.lifecycle, fragments)
@@ -59,7 +63,7 @@ class CampaignDetailBottomSheet: BottomSheetUnify() {
             tabsDetails.customTabMode = TabLayout.MODE_FIXED
 
             TabsUnifyMediator(tabsDetails, viewPagerContent) { tab, currentPosition ->
-                tab.setCustomText(fragments.getOrNull(currentPosition)?.first.orEmpty())
+                tab.setCustomText(pagerAdapter.getTitle(currentPosition))
             }
         }
     }

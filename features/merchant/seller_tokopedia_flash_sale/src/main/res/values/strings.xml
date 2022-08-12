@@ -1,6 +1,10 @@
 <resources>
     <string name="fs_tkpd_title">Flash Sale Tokopedia</string>
 
+    <string name="campaigndetail_criteria_title">Kriteria Umum</string>
+    <string name="campaigndetail_product_criteria_title">Kriteria Produk</string>
+    <string name="campaigndetail_timeline_title">Timeline</string>
+
     <string-array name="criteria_items">
         <item>Pastikan harga diskon produkmu lebih rendah dari harga termurah di Tokopedia untuk produk serupa.</item>
         <item>Tampilan foto produk harus terlihat jelas, tidak terpotong, dengan pencahayaan terang, dan tidak berlatar putih polos. Foto produk yang terhalang logo kurir tertentu, watermark, atau tulisan tidak dapat mengikuti campaign.</item>
