@@ -10,7 +10,9 @@ import java.util.Locale
  */
 
 fun String?.toIntOrZero(): Int {
-    return this?.toIntOrNull() ?: 0
+    return this?.toIntOrZero {
+        // New Relic Log would be added here
+    } ?: 0
 }
 
 fun String?.toLongOrString() = this?.toLongOrNull() ?: this
@@ -135,7 +137,7 @@ fun String.digitsOnly(): Long {
 }
 
 
-fun String.toIntRangeCheck(block:(number:String)->Unit):Int {
+fun String.toIntOrZero(block:(number:String)->Unit):Int {
     return try {
         val longValue: Long = this.toLong()
         return if (longValue < Int.MIN_VALUE || longValue > Int.MAX_VALUE) {
