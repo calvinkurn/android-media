@@ -54,7 +54,9 @@ class NavigationViewModel @Inject constructor(
             getNotificationJob = viewModelScope.launchCatchError(coroutineContext, {
                 topNavNotificationModel = getNotificationUseCase.executeOnBackground()
                 _navNotificationModel.postValue(topNavNotificationModel)
-            }) {}
+            }) {
+
+            }
         }
     }
 
