@@ -641,19 +641,19 @@ class PlayUserInteractionFragment @Inject constructor(
         /**
          * This is a temporary workaround for when insets not working as intended inside viewpager
          */
-        val realBottomMargin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val layoutParams = viewSize.rootView.layoutParams as? ViewGroup.MarginLayoutParams
+        val initialBottomMargin = layoutParams?.bottomMargin ?: 0
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                val layoutParams = viewSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
-                val initialBottomMargin = layoutParams.bottomMargin
                 val rootInsets = activity?.window?.decorView?.rootWindowInsets
                 if (portraitInsets == null && orientation.isPortrait) portraitInsets = rootInsets
                 val insets = if (orientation.isPortrait) portraitInsets else rootInsets
                 if (insets != null) {
                     layoutParams.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
-                    initialBottomMargin
                 } else error("Insets not supported")
-            } catch (e: Throwable) { 0 }
-        } else 0
+            } catch (e: Throwable) {  }
+        }
 
         viewSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
             val skipTop = !isOpened && insets.systemWindowInsetTop == 0
@@ -664,7 +664,7 @@ class PlayUserInteractionFragment @Inject constructor(
             /**
              * Reduce margin by the first added value
              */
-            val margin = recordedMargin.copy(bottom = realBottomMargin)
+            val margin = recordedMargin.copy(bottom = initialBottomMargin)
 
             var isMarginChanged = false
 
