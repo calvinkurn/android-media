@@ -30,8 +30,6 @@ class ProductGeneralInfoViewHolder(
 
         // add space between info description right and `see` label when title and icon is empty
         private const val DESCRIPTION_MARGIN_RIGHT_WHEN_TITLE_ICON_IS_HIDE = 38
-        // partner logo margin left by default
-        private const val PARTNER_LOGO_MARGIN_LEFT_WHEN_DEFAULT = 4
 
         // add space between info description top and parent when title and icon is empty
         private const val DESCRIPTION_MARGIN_TOP_WHEN_TITLE_ICON_IS_HIDE = 18
@@ -97,10 +95,6 @@ class ProductGeneralInfoViewHolder(
             pdpIcon.loadIcon(icon)
         }
 
-        icPdpPartnerLogo.shouldShowWithAction(element.additionalIcon.isNotEmpty()) {
-            icPdpPartnerLogo.loadIcon(element.additionalIcon)
-        }
-
         pdpInfoTitle.showWithCondition(element.title.isNotEmpty())
 
         pdpInfoDesc.showWithCondition(element.subtitle.isNotEmpty())
@@ -127,15 +121,6 @@ class ProductGeneralInfoViewHolder(
         if (element.title.isEmpty() && element.parentIcon.isEmpty()) {
             // when appLink is available & partner logo is available
             if (element.applink.isNotBlank() && element.additionalIcon.isNotBlank()) {
-                // set partner logo margin right for avoid broken with `see` label
-                // margin left by default
-                binding.icPdpPartnerLogo.setMargin(
-                    left = PARTNER_LOGO_MARGIN_LEFT_WHEN_DEFAULT.toPx(),
-                    top = Int.ZERO,
-                    right = DESCRIPTION_MARGIN_RIGHT_WHEN_TITLE_ICON_IS_HIDE.toPx(),
-                    bottom = Int.ZERO
-                )
-
                 // set description margin top to parent for align with appLink label
                 binding.pdpInfoDesc.setMargin(
                     left = Int.ZERO,
@@ -144,14 +129,6 @@ class ProductGeneralInfoViewHolder(
                     bottom = Int.ZERO
                 )
             } else if(element.applink.isNotBlank()) { // when appLink is available & partner logo is NOT available
-                // set partner logo by margin default
-                binding.icPdpPartnerLogo.setMargin(
-                    left = PARTNER_LOGO_MARGIN_LEFT_WHEN_DEFAULT.toPx(),
-                    top = Int.ZERO,
-                    right = Int.ZERO,
-                    bottom = Int.ZERO
-                )
-
                 // set description margin right to parent with 0dp value
                 binding.pdpInfoDesc.setMargin(
                     left = Int.ZERO,
@@ -172,14 +149,6 @@ class ProductGeneralInfoViewHolder(
             binding.pdpInfoDesc.setMargin(
                 left = Int.ZERO,
                 top = DESCRIPTION_MARGIN_TOP_WHEN_TITLE_ICON_IS_SHOW.toPx(),
-                right = Int.ZERO,
-                bottom = Int.ZERO
-            )
-
-            // set partner logo by margin default
-            binding.icPdpPartnerLogo.setMargin(
-                left = PARTNER_LOGO_MARGIN_LEFT_WHEN_DEFAULT.toPx(),
-                top = Int.ZERO,
                 right = Int.ZERO,
                 bottom = Int.ZERO
             )
