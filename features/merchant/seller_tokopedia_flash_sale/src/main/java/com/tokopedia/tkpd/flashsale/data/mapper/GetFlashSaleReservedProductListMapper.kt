@@ -1,8 +1,8 @@
-package com.tokopedia.tkpd.flashsale.presentation.data.mapper
+package com.tokopedia.tkpd.flashsale.data.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.tkpd.flashsale.presentation.data.response.GetFlashSaleReservedProductListResponse
-import com.tokopedia.tkpd.flashsale.presentation.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleReservedProductListResponse
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import javax.inject.Inject
 
 class GetFlashSaleReservedProductListMapper @Inject constructor() {

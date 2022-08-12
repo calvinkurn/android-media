@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.presentation.list
+package com.tokopedia.tkpd.flashsale.presentation.list
 
 import android.os.Bundle
 import android.view.LayoutInflater

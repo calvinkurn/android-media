@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.domain.usecase
+package com.tokopedia.tkpd.flashsale.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -7,11 +7,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.tkpd.flashsale.presentation.data.mapper.DoFlashSaleProductSubmissionMapper
-import com.tokopedia.tkpd.flashsale.presentation.data.request.CampaignParticipationRequestHeader
-import com.tokopedia.tkpd.flashsale.presentation.data.request.DoFlashSaleProductSubmissionRequest
-import com.tokopedia.tkpd.flashsale.presentation.data.response.DoFlashSaleProductSubmissionResponse
-import com.tokopedia.tkpd.flashsale.presentation.domain.entity.ProductSubmissionResult
+import com.tokopedia.tkpd.flashsale.data.mapper.DoFlashSaleProductSubmissionMapper
+import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
+import com.tokopedia.tkpd.flashsale.data.request.DoFlashSaleProductSubmissionRequest
+import com.tokopedia.tkpd.flashsale.data.response.DoFlashSaleProductSubmissionResponse
+import com.tokopedia.tkpd.flashsale.domain.entity.ProductSubmissionResult
 import javax.inject.Inject
 
 

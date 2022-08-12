@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.domain.usecase
+package com.tokopedia.tkpd.flashsale.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -7,11 +7,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.tkpd.flashsale.presentation.data.mapper.DoFlashSaleProductDeleteMapper
-import com.tokopedia.tkpd.flashsale.presentation.data.request.CampaignParticipationRequestHeader
-import com.tokopedia.tkpd.flashsale.presentation.data.request.DoFlashSaleProductDeleteRequest
-import com.tokopedia.tkpd.flashsale.presentation.data.response.DoFlashSaleProductDeleteResponse
-import com.tokopedia.tkpd.flashsale.presentation.domain.entity.ProductDeleteResult
+import com.tokopedia.tkpd.flashsale.data.mapper.DoFlashSaleProductDeleteMapper
+import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
+import com.tokopedia.tkpd.flashsale.data.request.DoFlashSaleProductDeleteRequest
+import com.tokopedia.tkpd.flashsale.data.response.DoFlashSaleProductDeleteResponse
+import com.tokopedia.tkpd.flashsale.domain.entity.ProductDeleteResult
 import javax.inject.Inject
 
 

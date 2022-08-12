@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.domain.entity
+package com.tokopedia.tkpd.flashsale.domain.entity
 
 data class TabMetadata(
     val tabId: Int,
