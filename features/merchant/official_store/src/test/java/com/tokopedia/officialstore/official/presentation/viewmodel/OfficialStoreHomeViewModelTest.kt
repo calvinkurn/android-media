@@ -925,6 +925,33 @@ class OfficialStoreHomeViewModelTest {
 
     @Test
     fun given_refresh__when_swipe_layout__then_remove_recom_and_topads_headline_widget() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelType = "$prefixUrl$slug"
+        val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
+        val osBenefits = OfficialStoreBenefits()
+        val osFeatured = OfficialStoreFeaturedShop()
+        val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
+        val page = 1
+
+        onGetOfficialStoreBanners_thenReturn(osBanners)
+        onGetOfficialStoreBenefits_thenReturn(osBenefits)
+        onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
+        onGetDynamicChannel_thenReturn(osDynamicChannel)
+        onSetupDynamicChannelParams_thenCompleteWith(channelType)
+
+        val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(
+            RecommendationItem()
+        )))
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.loadFirstData(category)
+        viewModel.loadMoreProducts(category.categoryId, page)
+
         viewModel.removeRecomWidget()
         viewModel.removeRecommendation()
         viewModel.removeTopAdsHeadlineWidget()
@@ -935,6 +962,18 @@ class OfficialStoreHomeViewModelTest {
 
     @Test
     fun given_countdown_finished__when_dynamic_channel_flashsale__then_remove_widget() {
+        val page = 1
+        val categoryId = "0"
+        val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(
+            RecommendationItem()
+        )))
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.loadMoreProducts(categoryId, page)
+
         viewModel.removeFlashSale()
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is DynamicChannelDataModel })
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationDataModel })
