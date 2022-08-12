@@ -47,8 +47,10 @@ data class PromoListItemUiModel(
             // fields related to bebas ongkir promo
 
             // Store clashing info with BO
-            // When user choose BO OR choose promo that clashes with BO, info will be shown in bottomsheet
+            // When user choose promo that clashes with BO, info will be shown in bottomsheet
             var boClashingInfos: List<ClashingInfo> = emptyList(),
+            // Store BO promo data
+            // When user choose BO promo, get unique id and promo code from here
             var boAdditionalData: List<AdditionalBoData> = emptyList()
     )
 

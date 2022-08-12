@@ -20,21 +20,22 @@ class PromoListHeaderDisabledViewHolder(private val viewBinding: PromoCheckoutMa
 
     override fun bind(element: PromoListHeaderUiModel) {
         with(viewBinding) {
-            if (IconHelper.isIconFromUrl(element.uiData.iconUnify)) {
-                iconPromoListHeader.gone()
-                if (element.uiData.iconUrl.isNotEmpty()) {
-                    imagePromoListHeader.setImageUrl(element.uiData.iconUrl)
+            if (element.uiData.iconUnify.isNotBlank()) {
+                if (IconHelper.isIconFromUrl(element.uiData.iconUnify)) {
+                    iconPromoListHeader.gone()
+                    if (element.uiData.iconUrl.isNotEmpty()) {
+                        imagePromoListHeader.setImageUrl(element.uiData.iconUrl)
+                    } else {
+                        imagePromoListHeader.gone()
+                    }
                 } else {
                     imagePromoListHeader.gone()
-                }
-            } else {
-                imagePromoListHeader.gone()
-                if (element.uiData.iconUnify.isNotBlank()) {
                     iconPromoListHeader.setImage(IconHelper.getIcon(element.uiData.iconUnify))
                     iconPromoListHeader.show()
-                } else {
-                    iconPromoListHeader.gone()
                 }
+            } else {
+                iconPromoListHeader.gone()
+                imagePromoListHeader.gone()
             }
 
             labelPromoListHeaderTitle.text = Utils.getHtmlFormat(element.uiData.title)
