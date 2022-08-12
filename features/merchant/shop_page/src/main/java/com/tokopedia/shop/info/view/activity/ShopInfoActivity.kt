@@ -23,8 +23,14 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
         super.onCreate(savedInstanceState)
         setupLayout(savedInstanceState)
         window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
-        toolbar?.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        setupToolbar()
         inflateFragment()
+    }
+
+    private fun setupToolbar() {
+        setSupportActionBar(toolbar)
+        toolbar?.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onNewIntent(intent: Intent) {

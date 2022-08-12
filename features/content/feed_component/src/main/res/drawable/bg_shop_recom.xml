@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="@dimen/unify_space_8" />
+    <stroke
+        android:width="@dimen/feed_shop_recom_item_stroke"
+        android:color="@color/Unify_NN200" />
+</shape>
