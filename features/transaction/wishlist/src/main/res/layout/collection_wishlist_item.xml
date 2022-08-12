@@ -25,7 +25,8 @@
                 android:layout_height="154dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_image_placeholder="@drawable/placeholder_img"/>
 
             <GridLayout
                 android:id="@+id/gl_collection_item"
@@ -44,28 +45,32 @@
                     app:unify_image_corner_radius="0"
                     app:unify_image_type="rect"
                     android:layout_marginEnd="3dp"
-                    android:layout_marginBottom="3dp"/>
+                    android:layout_marginBottom="3dp"
+                    app:unify_image_placeholder="@drawable/placeholder_img"/>
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/img_collection_2"
                     android:layout_width="77dp"
                     android:layout_height="77dp"
                     app:unify_image_corner_radius="0"
-                    app:unify_image_type="rect"/>
+                    app:unify_image_type="rect"
+                    app:unify_image_placeholder="@drawable/placeholder_img"/>
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/img_collection_3"
                     android:layout_width="77dp"
                     android:layout_height="77dp"
                     app:unify_image_corner_radius="0"
-                    app:unify_image_type="rect"/>
+                    app:unify_image_type="rect"
+                    app:unify_image_placeholder="@drawable/placeholder_img"/>
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/img_collection_4"
                     android:layout_width="77dp"
                     android:layout_height="77dp"
                     app:unify_image_corner_radius="0"
-                    app:unify_image_type="rect"/>
+                    app:unify_image_type="rect"
+                    app:unify_image_placeholder="@drawable/placeholder_img"/>
 
             </GridLayout>
 

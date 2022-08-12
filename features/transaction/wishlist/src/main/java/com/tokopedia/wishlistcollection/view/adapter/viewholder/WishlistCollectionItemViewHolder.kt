@@ -5,7 +5,11 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts.SPEC_0
@@ -45,16 +49,31 @@ class WishlistCollectionItemViewHolder(
             }
             if (item.dataObject.images.isEmpty()) {
                 binding.glCollectionItem.gone()
-                binding.singleCollectionItem.visible()
+                binding.singleCollectionItem.apply {
+                    visible()
+                    clearImage()
+                }
             } else {
                 when (item.dataObject.images.size) {
                     TOTAL_IMG_4 -> {
                         binding.singleCollectionItem.gone()
                         binding.glCollectionItem.visible()
-                        binding.imgCollection1.setImageUrl(item.dataObject.images[0])
-                        binding.imgCollection2.setImageUrl(item.dataObject.images[1])
-                        binding.imgCollection3.setImageUrl(item.dataObject.images[2])
-                        binding.imgCollection4.setImageUrl(item.dataObject.images[3])
+                        binding.imgCollection1.loadImage(item.dataObject.images[0]) {
+                            setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                            setPlaceHolder(R.drawable.placeholder_img)
+                        }
+                        binding.imgCollection2.loadImage(item.dataObject.images[1]) {
+                            setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                            setPlaceHolder(R.drawable.placeholder_img)
+                        }
+                        binding.imgCollection3.loadImage(item.dataObject.images[2]) {
+                            setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                            setPlaceHolder(R.drawable.placeholder_img)
+                        }
+                        binding.imgCollection4.loadImage(item.dataObject.images[3]) {
+                            setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                            setPlaceHolder(R.drawable.placeholder_img)
+                        }
                     }
                     TOTAL_IMG_3 -> {
                         binding.singleCollectionItem.gone()
@@ -66,7 +85,10 @@ class WishlistCollectionItemViewHolder(
                         params1.setMargins(0, 0, WishlistV2Utils.toDp(3), 0)
                         binding.imgCollection1.apply {
                             layoutParams = params1
-                            setImageUrl(item.dataObject.images[0])
+                            loadImage(item.dataObject.images[0]) {
+                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setPlaceHolder(R.drawable.placeholder_img)
+                            }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
                         val params2: GridLayout.LayoutParams =
@@ -74,11 +96,17 @@ class WishlistCollectionItemViewHolder(
                         params2.setMargins(0, 0, 0, WishlistV2Utils.toDp(3))
                         binding.imgCollection2.apply {
                             layoutParams = params2
-                            setImageUrl(item.dataObject.images[1])
+                            loadImage(item.dataObject.images[1]) {
+                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setPlaceHolder(R.drawable.placeholder_img)
+                            }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
                         binding.imgCollection3.apply {
-                            setImageUrl(item.dataObject.images[2])
+                            loadImage(item.dataObject.images[2]) {
+                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setPlaceHolder(R.drawable.placeholder_img)
+                            }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
                         binding.imgCollection4.gone()
@@ -93,7 +121,10 @@ class WishlistCollectionItemViewHolder(
                         params1.setMargins(0, 0, WishlistV2Utils.toDp(3), 0)
                         binding.imgCollection1.apply {
                             layoutParams = params1
-                            setImageUrl(item.dataObject.images[0])
+                            loadImage(item.dataObject.images[0]) {
+                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setPlaceHolder(R.drawable.placeholder_img)
+                            }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
 
@@ -103,7 +134,10 @@ class WishlistCollectionItemViewHolder(
                         params2.height = WishlistV2Utils.toDp(MERGE_SIZE)
                         binding.imgCollection2.apply {
                             layoutParams = params2
-                            setImageUrl(item.dataObject.images[1])
+                            loadImage(item.dataObject.images[1]) {
+                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setPlaceHolder(R.drawable.placeholder_img)
+                            }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
                         binding.imgCollection3.gone()
@@ -113,7 +147,10 @@ class WishlistCollectionItemViewHolder(
                         binding.glCollectionItem.gone()
                         binding.singleCollectionItem.apply {
                             visible()
-                            setImageUrl(item.dataObject.images[0])
+                            loadImage(item.dataObject.images[0]) {
+                                setCacheStrategy(MediaCacheStrategy.RESOURCE)
+                                setPlaceHolder(R.drawable.placeholder_img)
+                            }
                         }
                     }
                 }
