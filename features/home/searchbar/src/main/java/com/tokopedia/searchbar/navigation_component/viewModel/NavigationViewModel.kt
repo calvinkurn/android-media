@@ -57,8 +57,6 @@ class NavigationViewModel @Inject constructor(
                 topNavNotificationModel = getNotificationUseCase.executeOnBackground()
                 _navNotificationModel.postValue(topNavNotificationModel)
             }) {
-                println("dhabalog ${it.localizedMessage}")
-                val x = 1
             }
         }
     }
