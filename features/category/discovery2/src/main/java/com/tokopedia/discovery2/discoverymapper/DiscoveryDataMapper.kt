@@ -19,11 +19,13 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
+import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import kotlin.math.roundToInt
 
 private const val CHIPS = "Chips"
@@ -326,6 +328,58 @@ class DiscoveryDataMapper {
                 nonVariant = nonVariantProductCard(dataItem),
                 cardInteraction = true
         )
+    }
+
+    fun mapListToBundleProductList(component: ComponentsItem): ArrayList<BundleUiModel> {
+        val bundleModelList: ArrayList<BundleUiModel> = arrayListOf()
+        val bundleShopUiModel = BundleShopUiModel(
+                shopId = component.data?.firstOrNull()?.shopId ?: "",
+                shopName = component.data?.firstOrNull()?.shopName ?: "",
+                shopIconUrl = component.data?.firstOrNull()?.shopLogo ?: ""
+        )
+        component.data?.firstOrNull()?.bundlings?.forEach { bundlings ->
+            val bundleDetailUiModelList: ArrayList<BundleDetailUiModel> = arrayListOf()
+            val bundleProductUiModel: ArrayList<BundleProductUiModel> = arrayListOf()
+            val bundleModel = BundleUiModel(
+                    bundleName = bundlings?.bundlingData?.firstOrNull()?.bundleName ?: "",
+                    bundleType = if (bundlings?.type == "multiple_bundling") BundleTypes.MULTIPLE_BUNDLE else BundleTypes.SINGLE_BUNDLE,
+                    bundleDetails = bundleDetailUiModelList.apply {
+                        bundlings?.bundlingData?.firstOrNull()?.bundleDetails?.forEach { bundleDetails ->
+                            add(BundleDetailUiModel(
+                                    bundleId = (bundleDetails?.bundleId ?: "").toString(),
+                                    originalPrice = (bundleDetails?.originalPrice ?: "").toString(),
+                                    displayPrice = (bundleDetails?.displayPrice ?: "").toString(),
+                                    displayPriceRaw = bundleDetails?.displayPriceRaw ?: 0,
+                                    discountPercentage = bundleDetails?.discountPercentage?.roundToIntOrZero()
+                                            ?: 0,
+                                    isPreOrder = bundleDetails?.preOrder ?: false,
+                                    preOrderInfo = "", // need to check for this key
+                                    savingAmountWording = bundleDetails?.savingAmountWording ?: "",
+                                    minOrder = bundleDetails?.minOrder.toZeroIfNull(),
+                                    minOrderWording = "",// need to check for this key
+                                    isSelected = false,// need to check for this key
+                                    totalSold = 0,// need to check for this key
+                                    shopInfo = bundleShopUiModel,
+                                    products = bundleProductUiModel.apply {
+                                        bundlings.bundlingData?.firstOrNull()?.bundleProducts?.forEach { bundleProducts ->
+                                            add(BundleProductUiModel(
+                                                    productId = (bundleProducts?.productId
+                                                            ?: "").toString(),
+                                                    productName = bundleProducts?.productName.toString(),
+                                                    productImageUrl = bundleProducts?.imageUrl
+                                                            ?: "",
+                                                    productAppLink = bundleProducts?.applink ?: "",
+                                                    hasVariant = false // need to check for this key
+                                            ))
+                                        }
+                                    }
+                            ))
+                        }
+                    }
+            )
+            bundleModelList.add(bundleModel)
+        }
+        return bundleModelList
     }
 
     private fun nonVariantProductCard(dataItem: DataItem): ProductCardModel.NonVariant? {

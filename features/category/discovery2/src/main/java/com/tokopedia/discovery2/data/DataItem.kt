@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.data.productbundling.Bundlings
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
@@ -467,6 +468,9 @@ data class DataItem(
 
         @SerializedName("catalog_slugs")
         var catalogSlug : List<String?>? = null,
+
+        @SerializedName("bundlings")
+        var bundlings : List<Bundlings?>? = null,
 
         @field:SerializedName("products")
         val products: List<ProductsItem?>? = null,

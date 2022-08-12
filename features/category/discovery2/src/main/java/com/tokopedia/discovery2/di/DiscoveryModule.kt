@@ -26,6 +26,8 @@ import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherGQLRep
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
 import com.tokopedia.discovery2.repository.mycoupon.MyCouponGQLRepository
 import com.tokopedia.discovery2.repository.mycoupon.MyCouponRepository
+import com.tokopedia.discovery2.repository.productbundling.ProductBundlingGQLRepository
+import com.tokopedia.discovery2.repository.productbundling.ProductBundlingRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
@@ -182,6 +184,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideShopCardRepository(): ShopCardRepository {
         return ShopCardGQLRepository()
+    }
+
+    @Provides
+    fun provideProductBundlingRepository(): ProductBundlingRepository {
+        return ProductBundlingGQLRepository()
     }
 
     @Provides
