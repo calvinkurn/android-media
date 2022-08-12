@@ -2218,18 +2218,15 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
         } else {
-            if (isAutoDeletion) {
-                doResetFilter()
-            } else {
-                setSwipeRefreshLayout()
-                collectionItemsAdapter.hideCheckbox()
-                binding?.run {
+            collectionItemsAdapter.hideCheckbox()
+            doResetFilter()
+            setSwipeRefreshLayout()
+            binding?.run {
                     containerDeleteSemuaWishlist.gone()
                     containerDeleteCollectionDetail.gone()
                     clWishlistCollectionDetailHeader.visible()
                     wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.visible()
                     wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.visible()
-                }
             }
         }
     }
