@@ -42,6 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -698,9 +699,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
                         delay(RESET_QTY_DEBOUNCE_TIME)
                     }
                     val previousQuantity = if (data.isBundlingItem) data.bundleQuantity else data.quantity
-                    if (previousQuantity != newValue) {
+                    if (isActive && previousQuantity != newValue) {
                         validateQty(newValue, data)
-                        if (newValue != 0) {
+                        if (isActive && newValue != 0) {
                             actionListener?.onCartItemQuantityChanged(data, newValue)
                             handleRefreshType(data, viewHolderListener)
                         }
@@ -747,11 +748,15 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             qtyEditorCart.addButton.isEnabled = false
             qtyEditorCart.subtractButton.isEnabled = false
         } else if (newValue >= element.maxOrder) {
-            qtyEditorCart.setValue(element.maxOrder)
+            if (newValue > element.maxOrder) {
+                qtyEditorCart.setValue(element.maxOrder)
+            }
             qtyEditorCart.addButton.isEnabled = false
             qtyEditorCart.subtractButton.isEnabled = true
         } else if (newValue <= element.minOrder) {
-            qtyEditorCart.setValue(element.minOrder)
+            if (newValue < element.minOrder) {
+                qtyEditorCart.setValue(element.minOrder)
+            }
             qtyEditorCart.addButton.isEnabled = true
             qtyEditorCart.subtractButton.isEnabled = false
         } else {

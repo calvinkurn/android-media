@@ -83,9 +83,9 @@ open class ShopCreationViewModel @Inject constructor(
     val getShopInfoResponse: LiveData<Result<ShopInfoByID>>
         get() = _getShopInfoResponse
 
-    fun addName(name: String) {
+    fun addName(name: String, validateToken: String) {
         launchCatchError(block = {
-            val params = UpdateUserProfileParam(fullname = name)
+            val params = UpdateUserProfileParam(fullname = name, validateToken = validateToken)
             val result = updateUserProfileUseCase(params)
             result.data.let {
                 _addNameResponse.value = when {
@@ -105,9 +105,9 @@ open class ShopCreationViewModel @Inject constructor(
         })
     }
 
-    fun addPhone(phone: String) {
+    fun addPhone(phone: String, validateToken: String) {
         launchCatchError(block = {
-            val params = UpdateUserProfileParam(phone = phone)
+            val params = UpdateUserProfileParam(phone = phone, validateToken = validateToken)
             val result = updateUserProfileUseCase(params)
             result.data.let {
                 _addPhoneResponse.value = when {

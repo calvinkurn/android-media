@@ -10,12 +10,10 @@ interface AttachProductContract {
         fun hideAllLoadingIndicator()
         fun showErrorMessage(throwable: Throwable)
         fun updateButtonBasedOnChecked(checkedCount: Int)
-        fun setShopName(shopName: String)
     }
 
     interface Activity {
         fun finishActivityWithResult(products: ArrayList<ResultProduct>)
         fun goToAddProduct(shopId: String)
-        fun setShopName(shopName: String)
     }
 }
