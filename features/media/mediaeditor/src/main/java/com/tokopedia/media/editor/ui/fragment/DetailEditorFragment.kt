@@ -96,11 +96,11 @@ class DetailEditorFragment @Inject constructor(
                 rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
                 data
             ) {
-                saveImage(it)
+                writeToStorage(it)
             }
         } else {
             viewBinding?.imgUcropPreview?.getBitmap()?.let {
-                saveImage(it)
+                writeToStorage(it)
             }
         }
     }
@@ -137,7 +137,7 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onRemoveBackgroundClicked() {
         viewBinding?.imgUcropPreview?.let { editorDetailPreviewImage ->
-            saveImage(editorDetailPreviewImage.getBitmap(), isFinish = false)
+            writeToStorage(editorDetailPreviewImage.getBitmap(), isFinish = false)
             data.resultUrl?.let { it ->
                 viewModel.setRemoveBackground(it) { _ ->
                     viewBinding?.let {
@@ -539,7 +539,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun editingSave() {
+    private fun finishPage() {
         val intent = Intent()
 
         if (data.isToolRemoveBackground()) data.clearValue()
@@ -549,7 +549,7 @@ class DetailEditorFragment @Inject constructor(
         activity?.finish()
     }
 
-    private fun saveImage(bitmapParam: Bitmap, filename: String? = null, isFinish: Boolean = true) {
+    private fun writeToStorage(bitmapParam: Bitmap, filename: String? = null, isFinish: Boolean = true) {
         viewBinding?.let {
             try {
                 val file = getDestinationUri(requireContext(), filename).toFile()
@@ -567,7 +567,7 @@ class DetailEditorFragment @Inject constructor(
                 val uri = file.toUri()
                 data.resultUrl = uri.path
 
-                if (isFinish) editingSave()
+                if (isFinish) finishPage()
             } catch (e: Exception) {
             }
         }
