@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
@@ -16,7 +17,6 @@ import androidx.core.text.buildSpannedString
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.play.view.uimodel.DescriptionUiModel
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
@@ -36,26 +36,38 @@ class UpcomingDescriptionViewComponent(
     private val txt = (rootView as Typography)
     private val ctx: Context
         get() = rootView.context
-    private var desc: DescriptionUiModel = DescriptionUiModel()
+
+    private var uiModel: DescriptionUiModel = DescriptionUiModel()
 
     init {
         txt.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
     private val animExpand: ObjectAnimator
-        get() = ObjectAnimator.ofInt(txt, PARAM_MAX_LINES, if (!desc.isExpanded) MIN_LINES else MAX_LINES)
+        get() = ObjectAnimator.ofInt(
+            txt,
+            PARAM_MAX_LINES,
+            if (!uiModel.isExpanded) MIN_LINES else MAX_LINES
+        )
             .apply {
-                duration = UnifyMotion.T2
-                expandText(description = desc.text, isExpand = desc.isExpanded)
+                duration = UnifyMotion.T3
+                expandText(
+                    description = uiModel.originalText,
+                    isExpand = !uiModel.isExpanded
+                )
             }
 
-    fun setupText(description: DescriptionUiModel) {
-        if (description.text.isBlank()) return
+    fun setupText(description: String) {
+        if (description.isBlank()) return
 
-        desc = description
-        txt.text = description.text
+        uiModel.originalText = description
+        txt.text = description
 
         setupExpandable()
+    }
+
+    fun setupExpand(isExpanded: Boolean) {
+        uiModel.isExpanded = isExpanded
     }
 
     private val clickableSpan: ClickableSpan
@@ -71,6 +83,8 @@ class UpcomingDescriptionViewComponent(
         }
 
     fun resetText() {
+        if (uiModel.originalText.isBlank()) return
+
         listener.onTextClicked(this)
         animateText()
     }
@@ -100,25 +114,27 @@ class UpcomingDescriptionViewComponent(
 
     private fun setupExpandable() {
         txt.doOnLayout {
-            if (txt.lineCount <= 2) return@doOnLayout
             val newText = txt.layout.text.toString()
-            expandText(description = newText, isExpand = desc.isExpanded)
+            if (newText == uiModel.originalText) return@doOnLayout
+            expandText(description = newText, isExpand = uiModel.isExpanded)
         }
     }
 
     private fun expandText(description: String, isExpand: Boolean) {
+        Log.d("sukses", uiModel.isExpanded.toString())
         if (!isExpand) {
-            txt.maxLines = 2
             txt.ellipsize = TextUtils.TruncateAt.END
-            val length = description.filter { it.isLetterOrDigit() }.length
-            val truncatedTxt = description.take(length - TRIMMED_CHARS)
-            txt.text = getText(truncatedTxt)
             txt.movementMethod = LinkMovementMethod.getInstance()
+            txt.text = if (uiModel.truncatedText.isEmpty()) {
+                val length = description.filter { it.isLetterOrDigit() }.length
+                uiModel.truncatedText = getText(description.take(length - TRIMMED_CHARS))
+                uiModel.truncatedText
+            } else uiModel.truncatedText // move to get text
         } else {
-            txt.text = description
+            txt.text = uiModel.originalText
             txt.ellipsize = null
-            txt.maxLines = MAX_LINES
         }
+        txt.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -129,6 +145,12 @@ class UpcomingDescriptionViewComponent(
     interface Listener {
         fun onTextClicked(view: UpcomingDescriptionViewComponent)
     }
+
+    data class DescriptionUiModel(
+        var originalText: String = "",
+        var isExpanded: Boolean = false,
+        var truncatedText: SpannedString = buildSpannedString { }
+    )
 
     companion object {
         private const val PARAM_MAX_LINES = "maxLines"

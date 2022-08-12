@@ -9,7 +9,6 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.DescriptionUiModel
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel

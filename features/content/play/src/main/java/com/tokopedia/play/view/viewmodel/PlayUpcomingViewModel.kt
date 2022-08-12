@@ -76,6 +76,7 @@ class PlayUpcomingViewModel @Inject constructor(
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _upcomingInfo = MutableStateFlow(PlayUpcomingUiModel())
     private val _upcomingState = MutableStateFlow<PlayUpcomingState>(PlayUpcomingState.Unknown)
+    private val _isExpanded = MutableStateFlow(DescriptionUiState(isExpand = false))
 
     private val _observableKolId = MutableLiveData<String>()
 
@@ -91,12 +92,13 @@ class PlayUpcomingViewModel @Inject constructor(
     val uiState: Flow<PlayUpcomingUiState> = combine(
         _partnerInfo,
         _upcomingInfoUiState.distinctUntilChanged(),
-        _channelDetail,
-    ) { partner, upcomingInfo, channelDetail ->
+        _channelDetail, _isExpanded,
+    ) { partner, upcomingInfo, channelDetail, isExpanded ->
         PlayUpcomingUiState(
             partner = partner,
             upcomingInfo = upcomingInfo,
             channel = channelDetail,
+            description = isExpanded,
         )
     }.flowOn(dispatchers.computation)
 
@@ -118,7 +120,7 @@ class PlayUpcomingViewModel @Inject constructor(
         }
 
     val isExpanded: Boolean
-            get() = _upcomingInfo.value.description.isExpanded
+            get() = _isExpanded.value.isExpand
 
     fun initPage(channelId: String, channelData: PlayChannelData) {
         this.mChannelId = channelId
@@ -228,10 +230,8 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun handleExpandText(){
+        _isExpanded.update { it.copy(isExpand = !it.isExpand) }
         viewModelScope.launch {
-            _upcomingInfo.update {
-                it.copy(description = it.description.copy(isExpanded = !isExpanded))
-            }
             _uiEvent.emit(PlayUpcomingUiEvent.ExpandDescriptionEvent(isExpanded))
         }
     }

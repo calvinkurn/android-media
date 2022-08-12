@@ -25,6 +25,7 @@ import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
 import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
+import com.tokopedia.play.view.uimodel.state.DescriptionUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingInfoUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.play.view.viewcomponent.ShareExperienceViewComponent
@@ -151,6 +152,12 @@ class PlayUpcomingFragment @Inject constructor(
         playUpcomingViewModel.submitAction(ImpressUpcomingChannel)
     }
 
+    private fun renderDescription(prevState: DescriptionUiState?, state: DescriptionUiState){
+        if(prevState?.isExpand != state.isExpand) {
+            description.setupExpand(state.isExpand)
+        }
+    }
+
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playUpcomingViewModel.uiState.withCache().collectLatest { cachedState ->
@@ -161,6 +168,7 @@ class PlayUpcomingFragment @Inject constructor(
                 renderPartnerInfoView(prevState?.partner, state.partner)
                 renderShareView(state.channel)
                 renderUpcomingInfo(prevState?.upcomingInfo, state.upcomingInfo)
+                renderDescription(prevState?.description, state.description)
             }
         }
 
@@ -279,7 +287,6 @@ class PlayUpcomingFragment @Inject constructor(
                        if (playUpcomingViewModel.isExpanded) description.resetText()
                     }
                 }
-
                 description.setupText(it.description)
                 upcomingTimer.setupTimer(it.startTime)
             }

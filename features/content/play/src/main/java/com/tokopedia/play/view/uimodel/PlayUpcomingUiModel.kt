@@ -11,7 +11,7 @@ data class PlayUpcomingUiModel(
     val startTime: String = "",
     val isAlreadyLive: Boolean = false,
     val refreshWaitingDuration: Int = REFRESH_WAITING_DURATION,
-    val description: DescriptionUiModel = DescriptionUiModel(),
+    val description: String = "",
 ) {
     companion object {
         const val COMING_SOON = "COMING_SOON"
@@ -19,5 +19,3 @@ data class PlayUpcomingUiModel(
         const val REFRESH_WAITING_DURATION = 5000
     }
 }
-
-data class DescriptionUiModel(val text: String = "", val isExpanded: Boolean = false)

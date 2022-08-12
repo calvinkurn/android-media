@@ -11,6 +11,7 @@ data class PlayUpcomingUiState(
     val partner: PlayPartnerInfo,
     val upcomingInfo: PlayUpcomingInfoUiState,
     val channel: PlayChannelDetailUiModel,
+    val description: DescriptionUiState,
 )
 
 data class PlayUpcomingInfoUiState(
@@ -18,13 +19,15 @@ data class PlayUpcomingInfoUiState(
     val state: PlayUpcomingState
 )
 
-sealed class PlayUpcomingState {
-    object Unknown: PlayUpcomingState()
+data class DescriptionUiState(val isExpand: Boolean)
 
-    object RemindMe: PlayUpcomingState()
-    object Reminded: PlayUpcomingState()
-    object WatchNow: PlayUpcomingState()
-    object WaitingRefreshDuration: PlayUpcomingState()
-    object Refresh: PlayUpcomingState()
-    object Loading: PlayUpcomingState()
+sealed class PlayUpcomingState {
+    object Unknown : PlayUpcomingState()
+
+    object RemindMe : PlayUpcomingState()
+    object Reminded : PlayUpcomingState()
+    object WatchNow : PlayUpcomingState()
+    object WaitingRefreshDuration : PlayUpcomingState()
+    object Refresh : PlayUpcomingState()
+    object Loading : PlayUpcomingState()
 }
