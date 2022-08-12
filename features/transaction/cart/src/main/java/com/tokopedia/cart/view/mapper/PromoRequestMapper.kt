@@ -38,23 +38,23 @@ object PromoRequestMapper {
                                 cartShopHolderData,
                             ).toMutableList()
 
-                            val (a, b) = getShippingFromValidateUseByUniqueId(
+                            val (first, second) = getShippingFromValidateUseByUniqueId(
                                 it,
                                 cartShopHolderData,
                             )
-                            shippingId = a
-                            spId = b
+                            shippingId = first
+                            spId = second
                         } else if (it is LastApplyPromo) {
                             codes = getPromoCodesFromLastApplyByUniqueId(
                                 it,
                                 cartShopHolderData,
                             ).toMutableList()
-                            val (a, b) = getShippingFromLastApplyByUniqueId(
+                            val (first, second) = getShippingFromLastApplyByUniqueId(
                                 it,
                                 cartShopHolderData,
                             )
-                            shippingId = a
-                            spId = b
+                            shippingId = first
+                            spId = second
                         }
                     }
                     shopId = cartShopHolderData.shopId.toLongOrZero()
