@@ -8,16 +8,18 @@ import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.analytics.EMPTY_STRING
 import com.tokopedia.discovery2.databinding.ExplicitWidgetLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.observeOnce
+import com.tokopedia.usercomponents.explicit.view.ExplicitData
 import com.tokopedia.usercomponents.explicit.view.ExplicitView
 
 class ExplicitWidgetViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val binding: ExplicitWidgetLayoutBinding = ExplicitWidgetLayoutBinding.bind(itemView)
-    private lateinit var explicitView : ExplicitView
+    private lateinit var explicitView: ExplicitView
     private lateinit var mExplicitWidgetViewModel: ExplicitWidgetViewModel
-
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mExplicitWidgetViewModel = discoveryBaseViewModel as ExplicitWidgetViewModel
@@ -28,17 +30,28 @@ class ExplicitWidgetViewHolder(itemView: View, private val fragment: Fragment) :
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
             mExplicitWidgetViewModel.getComponentData().observeOnce(it, Observer { componentItem ->
-                if(!this::explicitView.isInitialized && !componentItem.isExplicitWidgetHidden) {
+                if (!this::explicitView.isInitialized && !componentItem.isExplicitWidgetHidden) {
+
                     explicitView = ExplicitView(
                             itemView.context,
-                            null,
-                            templateName = componentItem.data?.firstOrNull()?.templateName
-                                    ?: "",
-                            pageName = componentItem.name ?:"",
-                            pagePath = removeDashPagePath(componentItem.pagePath),
-                            pageType = componentItem.pageType
+                            null
                     )
+
+                    //data model required to pass in setupView
+                    val explicitData = ExplicitData(templateName = componentItem.data?.firstOrNull()?.templateName
+                            ?: "",
+                            pageName = (fragment as DiscoveryFragment).arguments?.getString(DiscoveryActivity.SOURCE) ?: "",
+                            pagePath = removeDashPagePath(componentItem.pagePath),
+                            pageType = componentItem.pageType)
+
+                    explicitView.setupView(mExplicitWidgetViewModel.explicitViewContract, explicitData)
                     val param: ViewGroup.LayoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                    explicitView.setPadding(
+                            itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                            itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                            itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                            itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                    )
                     explicitView.layoutParams = param
                     binding.parentExplicit.removeAllViews()
                     binding.parentExplicit.addView(explicitView)
