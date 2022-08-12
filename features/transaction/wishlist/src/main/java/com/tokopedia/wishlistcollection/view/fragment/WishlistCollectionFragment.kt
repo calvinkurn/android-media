@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -432,7 +430,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=${dataCreate.id}"
         val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
         intentCollectionDetail.putExtra(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, dataCreate.message)
-        startActivity(intentCollectionDetail)
+        startActivityForResult(intentCollectionDetail, REQUEST_CODE_COLLECTION_DETAIL)
     }
 
     override fun onCreateCollectionItemBind(allCollectionView: View, createCollectionView: View) {
@@ -528,8 +526,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_COLLECTION_DETAIL && resultCode == Activity.RESULT_OK) {
             getWishlistCollections()
-            /*val isNeedRefresh = data?.getBooleanExtra(EXTRA_NEED_REFRESH, false)
-            if (isNeedRefresh == true) getWishlistCollections()*/
+            binding?.run { rvWishlistCollection.scrollToPosition(0) }
 
             val isSuccess = data?.getBooleanExtra(ApplinkConstInternalPurchasePlatform.BOOLEAN_EXTRA_SUCCESS, false)
             val messageToaster =
