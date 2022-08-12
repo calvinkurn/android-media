@@ -34,6 +34,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
         overlayView.setDimmedColor(ContextCompat.getColor(context, principleR.color.Unify_Static_White))
+        disabledTouchEvent()
         initListener()
     }
 
@@ -41,6 +42,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
+        disabledTouchEvent()
         initListener()
     }
 
@@ -48,6 +50,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
+        disabledTouchEvent()
         initListener()
     }
 
@@ -55,6 +58,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
+        disabledTouchEvent()
         initListener()
     }
 
@@ -62,6 +66,7 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         val resultDestination = getDestinationUri(context)
         cropImageView.setImageUri(uriSource, resultDestination)
         hideOverlay()
+        disabledTouchEvent()
         initListener()
     }
 
@@ -70,31 +75,6 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         cropImageView.setImageUri(uriSource, resultDestination)
         disableRotate()
         initListener()
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-            /**
-             * Component will lose the ability to interact with user input via touch
-             * if you want to enable the interaction again please re-init the component
-             */
-    fun disabledTouchEvent() {
-        cropImageView.setOnTouchListener { _, _ ->
-            true
-        }
-    }
-
-    fun disableRotate() {
-        cropImageView.isRotateEnabled = false
-    }
-
-    fun getScale(): Pair<Float, Float>{
-        return Pair(cropImageView.scaleX, cropImageView.scaleY)
-    }
-
-    fun hideOverlay(){
-        overlayView.setCropFrameColor(Color.TRANSPARENT)
-        overlayView.setCropGridColor(Color.TRANSPARENT)
-        overlayView.setDimmedColor(Color.TRANSPARENT)
     }
 
     fun getBitmap(): Bitmap{
@@ -244,6 +224,31 @@ class EditorDetailPreviewImage(context: Context, attributeSet: AttributeSet) :
         val normalizeX = if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
         val normalizeY = if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
         return Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    /**
+     * Component will lose the ability to interact with user input via touch
+     * if you want to enable the interaction again please re-init the component
+     */
+    private fun disabledTouchEvent() {
+        cropImageView.setOnTouchListener { _, _ ->
+            true
+        }
+    }
+
+    private fun disableRotate() {
+        cropImageView.isRotateEnabled = false
+    }
+
+    private fun getScale(): Pair<Float, Float>{
+        return Pair(cropImageView.scaleX, cropImageView.scaleY)
+    }
+
+    private fun hideOverlay(){
+        overlayView.setCropFrameColor(Color.TRANSPARENT)
+        overlayView.setCropGridColor(Color.TRANSPARENT)
+        overlayView.setDimmedColor(Color.TRANSPARENT)
     }
 
     private fun initListener(){
