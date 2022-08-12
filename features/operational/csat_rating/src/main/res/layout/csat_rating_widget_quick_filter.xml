@@ -7,7 +7,7 @@
         android:id="@+id/rv_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" />
+        android:paddingLeft="@dimen/csat_dp_10"
+        android:paddingRight="@dimen/csat_dp_10" />
 
 </LinearLayout>

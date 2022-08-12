@@ -128,7 +128,7 @@
         android:background="@drawable/bg_button_state"
         android:gravity="center"
         android:text="@string/csat_submit"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_Static_White"
         app:typographyType="display_2"
         app:typographyWeight="bold"
         app:layout_constraintBottom_toBottomOf="parent"
