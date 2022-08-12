@@ -9,15 +9,8 @@ import com.tokopedia.picker.common.utils.isImageFormat
 import com.tokopedia.picker.common.utils.isVideoFormat
 import java.io.File
 
-class ImageId(val value: Long) {
-
-    fun isInValid(): Boolean = value == -1L
-
-}
-
 class PickerFile constructor(
-    filePath: String,
-    private val id: ImageId = ImageId(-1)
+    filePath: String
 ) : File(filePath) {
 
     fun safeDelete() {
@@ -58,11 +51,7 @@ class PickerFile constructor(
     }
 
     fun readableVideoDuration(context: Context?): String {
-        return if (id.isInValid()) {
-            VideoDurationRetriever.get(context, this).humanize()
-        } else {
-            VideoDurationRetriever.get(context, id.value).humanize()
-        }
+        return VideoDurationRetriever.get(context, this).humanize()
     }
 
     /*

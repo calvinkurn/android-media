@@ -1,4 +1,4 @@
-package com.tokopedia.media.preview.managers
+package com.tokopedia.media.preview.data.repository
 
 import android.content.Context
 import com.tokopedia.picker.common.utils.ImageCompressor
@@ -7,13 +7,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.File
 
-interface ImageCompressionManager {
+interface ImageCompressionRepository {
     fun compress(paths: List<String>): Flow<List<String>>
 }
 
-class ImageCompressionManagerImpl(
+class ImageCompressionRepositoryImpl(
     private val context: Context
-) : ImageCompressionManager {
+) : ImageCompressionRepository {
 
     override fun compress(paths: List<String>): Flow<List<String>> {
         return flow {

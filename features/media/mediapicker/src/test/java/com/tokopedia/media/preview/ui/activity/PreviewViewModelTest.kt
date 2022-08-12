@@ -1,8 +1,8 @@
 package com.tokopedia.media.preview.ui.activity
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.media.preview.managers.ImageCompressionManager
-import com.tokopedia.media.preview.managers.SaveToGalleryManager
+import com.tokopedia.media.preview.data.repository.ImageCompressionRepository
+import com.tokopedia.media.preview.data.repository.SaveToGalleryRepository
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.getFileFormatByMimeType
@@ -35,8 +35,8 @@ class PreviewViewModelTest {
         coroutineScopeRule.dispatchers.main
     )
 
-    private val saveToGalleryManagerMock = mockk<SaveToGalleryManager>()
-    private val imageCompressorMock = mockk<ImageCompressionManager>()
+    private val saveToGalleryRepository = mockk<SaveToGalleryRepository>()
+    private val imageCompressorRepository = mockk<ImageCompressionRepository>()
 
     private lateinit var viewModel: PreviewViewModel
 
@@ -45,15 +45,15 @@ class PreviewViewModelTest {
         mockkStatic(::getFileFormatByMimeType)
 
         viewModel = PreviewViewModel(
-            imageCompressorMock,
-            saveToGalleryManagerMock
+            imageCompressorRepository,
+            saveToGalleryRepository
         )
     }
 
     @Test
     fun `check isLoading not empty`() {
         // When
-        every { imageCompressorMock.compress(any()) } returns flow { }
+        every { imageCompressorRepository.compress(any()) } returns flow { }
         viewModel.files(mockMediaUiModel)
 
         // Then
@@ -69,8 +69,8 @@ class PreviewViewModelTest {
 
         // When
         every { getFileFormatByMimeType(any(), any(), any()) } returns false
-        every { saveToGalleryManagerMock.dispatch(any()) } returns null
-        every { imageCompressorMock.compress(any()) } returns flow {
+        every { saveToGalleryRepository.dispatch(any()) } returns null
+        every { imageCompressorRepository.compress(any()) } returns flow {
             emit(
                 listOf("")
             )
@@ -99,8 +99,8 @@ class PreviewViewModelTest {
 
         // When
         every { getFileFormatByMimeType(any(), any(), any()) } returns true
-        every { saveToGalleryManagerMock.dispatch(any()) } returns null
-        every { imageCompressorMock.compress(any()) } answers {
+        every { saveToGalleryRepository.dispatch(any()) } returns null
+        every { imageCompressorRepository.compress(any()) } answers {
             flow {
                 emit(firstArg())
             }

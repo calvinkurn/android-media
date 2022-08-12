@@ -11,21 +11,9 @@ object VideoDurationRetriever {
 
     private const val KEY_DURATION = MediaMetadataRetriever.METADATA_KEY_DURATION
 
-    fun get(context: Context?, file: PickerFile): Int {
+    fun get(context: Context?, file: PickerFile?): Int {
         val uri = Uri.fromFile(file)
-        return get(context, uri)
-    }
 
-    fun get(context: Context?, imageId: Long): Int {
-        val uri = Uri.withAppendedPath(
-            MediaStore.Files.getContentUri("external"),
-            imageId.toString()
-        )
-
-        return get(context, uri)
-    }
-
-    fun get(context: Context?, uri: Uri): Int {
         return try {
             with(MediaMetadataRetriever()) {
                 setDataSource(context, uri)

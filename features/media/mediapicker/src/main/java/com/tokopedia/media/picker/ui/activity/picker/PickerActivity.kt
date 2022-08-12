@@ -273,7 +273,7 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onGetVideoDuration(media: MediaUiModel): Int {
-        return VideoDurationRetriever.get(applicationContext, media.id)
+        return VideoDurationRetriever.get(applicationContext, media.file)
     }
 
     override fun onCameraTabSelected(isDirectClick: Boolean) {

@@ -39,7 +39,7 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiMode
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.safeRemove
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 open class CameraFragment @Inject constructor(
@@ -259,8 +259,8 @@ open class CameraFragment @Inject constructor(
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            cameraViewModel.pictureTaken.collectLatest {
-                if (it == null) return@collectLatest
+            cameraViewModel.pictureTaken.collect {
+                if (it == null) return@collect
 
                 val file = it
                     .asPickerFile()
@@ -271,7 +271,7 @@ open class CameraFragment @Inject constructor(
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            cameraViewModel.videoTaken.collectLatest {
+            cameraViewModel.videoTaken.collect {
                 cameraView.onStartTakeVideo(it)
             }
         }
