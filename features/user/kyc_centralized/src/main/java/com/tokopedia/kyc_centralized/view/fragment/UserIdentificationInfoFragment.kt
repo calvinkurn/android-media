@@ -219,6 +219,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             activity?.onBackPressed()
         }, onCheckedChanged = {
             analytics?.eventClickKycTnc(it)
+        }, onTncClicked = {
+            analytics?.eventClickTermsSuccessPage()
         })
         analytics?.eventViewOnKYCOnBoarding()
     }
