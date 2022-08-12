@@ -37,6 +37,10 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
 
     private var activeImageUrl: String = ""
 
+    fun isShowDialogConfirmation(): Boolean{
+        return viewModel.getEditState(activeImageUrl)?.editList?.isNotEmpty() ?: false
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

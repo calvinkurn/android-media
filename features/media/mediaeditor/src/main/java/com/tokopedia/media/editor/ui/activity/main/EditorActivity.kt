@@ -6,9 +6,13 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
+import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
+import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.picker.common.EXTRA_EDITOR_PARAM
 import com.tokopedia.picker.common.EditorParam
@@ -98,7 +102,36 @@ class EditorActivity : BaseEditorActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        val fragment = (fragment as EditorFragment)
+        if (fragment.isShowDialogConfirmation()){
+            showBackDialogConfirmation()
+        } else {
+            super.onBackPressed()
+        }
+    }
 
+    private fun showBackDialogConfirmation(){
+        var dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(resources.getString(editorR.string.editor_activity_dialog_title))
+        dialog.setDescription(resources.getString(editorR.string.editor_activity_dialog_desc))
+
+        dialog.dialogPrimaryCTA.apply {
+            text = resources.getString(editorR.string.editor_activity_dialog_primary_button_text)
+            setOnClickListener {
+                super.onBackPressed()
+            }
+        }
+
+        dialog.dialogSecondaryLongCTA.apply {
+            text = resources.getString(editorR.string.editor_activity_dialog_secondary_button_text)
+            setOnClickListener {
+                dialog.hide()
+            }
+        }
+
+        dialog.show()
+    }
 
     companion object {
         private const val CACHE_PARAM_INTENT_DATA = "intent_data.param_editor"

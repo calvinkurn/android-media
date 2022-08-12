@@ -81,6 +81,30 @@ class DetailEditorFragment @Inject constructor(
 
     private var removeBackgroundRetryLimit = 3
 
+    private var isEdited = false
+
+    fun isShowDialogConfirmation(): Boolean{
+        return isEdited
+    }
+
+    fun saveAndExit(){
+        if (data.isToolRotate() || data.isToolCrop()) {
+            // if current tools editor not rotate then skip crop data set by sent empty object on data
+            viewBinding?.imgUcropPreview?.cropRotate(
+                finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
+                sliderValue = rotateFilterRepositoryImpl.sliderValue,
+                rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
+                data
+            ) {
+                saveImage(it)
+            }
+        } else {
+            viewBinding?.imgUcropPreview?.getBitmap()?.let {
+                saveImage(it)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -102,11 +126,13 @@ class DetailEditorFragment @Inject constructor(
     override fun onBrightnessValueChanged(value: Float) {
         viewModel.setBrightness(value)
         data.brightnessValue = value
+        isEdited = true
     }
 
     override fun onContrastValueChanged(value: Float) {
         viewModel.setContrast(value)
         data.contrastValue = value
+        isEdited = true
     }
 
     override fun onRemoveBackgroundClicked() {
@@ -138,16 +164,20 @@ class DetailEditorFragment @Inject constructor(
             }
             // set result null, just use it as temporary for save image to cache
             data.resultUrl = null
+
+            isEdited = true
         }
     }
 
     override fun onWatermarkChanged(value: Int) {
         viewModel.setWatermark(value)
         data.watermarkMode = value
+        isEdited = true
     }
 
     override fun onRotateValueChanged(rotateValue: Float) {
         rotateFilterRepositoryImpl.rotate(viewBinding?.imgUcropPreview, rotateValue, false)
+        isEdited = true
     }
 
     override fun onImageMirror() {
@@ -169,6 +199,8 @@ class DetailEditorFragment @Inject constructor(
 
             overlayView.setTargetAspectRatio(ratio)
             cropView.targetAspectRatio = ratio
+
+            isEdited = true
         }
     }
 
@@ -503,21 +535,7 @@ class DetailEditorFragment @Inject constructor(
         }
 
         viewBinding?.btnSave?.setOnClickListener {
-            if (data.isToolRotate() || data.isToolCrop()) {
-                // if current tools editor not rotate then skip crop data set by sent empty object on data
-                viewBinding?.imgUcropPreview?.cropRotate(
-                    finalRotationDegree = rotateFilterRepositoryImpl.getFinalRotationDegree(),
-                    sliderValue = rotateFilterRepositoryImpl.sliderValue,
-                    rotateNumber = rotateFilterRepositoryImpl.rotateNumber,
-                    data
-                ) {
-                    saveImage(it)
-                }
-            } else {
-                viewBinding?.imgUcropPreview?.getBitmap()?.let {
-                    saveImage(it)
-                }
-            }
+            saveAndExit()
         }
     }
 

@@ -22,4 +22,15 @@
     <!-- Toast text -->
     <string name="editor_undo_state_format">Undo %s</string>
     <string name="editor_redo_state_format">Redo %s</string>
+    
+    <!-- Dialog confirmation text -->
+    <string name="editor_detail_activity_dialog_title">Batal simpan edit media?</string>
+    <string name="editor_detail_activity_dialog_desc">Hasil editan media kamu bakal hilang kalau nggak disimpan. Mau simpan hasil editanmu?</string>
+    <string name="editor_detail_activity_dialog_primary_button_text">Simpan dan Keluar</string>
+    <string name="editor_detail_activity_dialog_secondary_button_text">Keluar tanpa Simpan</string>
+
+    <string name="editor_activity_dialog_title">Yakin mau keluar?</string>
+    <string name="editor_activity_dialog_desc">Ada media yang sudah kamu edit, lho. Kalau kamu keluar, hasil editan kamu akan hilang.</string>
+    <string name="editor_activity_dialog_primary_button_text">Ya, Keluar</string>
+    <string name="editor_activity_dialog_secondary_button_text">Tetap di Sini</string>
 </resources>

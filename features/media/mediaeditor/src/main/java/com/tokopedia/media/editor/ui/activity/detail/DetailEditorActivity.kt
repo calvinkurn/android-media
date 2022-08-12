@@ -4,8 +4,11 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.base.BaseEditorActivity
+import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import javax.inject.Inject
 
@@ -57,6 +60,41 @@ class DetailEditorActivity : BaseEditorActivity() {
         EditorInjector
             .get(applicationContext)
             .inject(this)
+    }
+
+    override fun onBackPressed() {
+        val fragment = (fragment as DetailEditorFragment)
+        if (fragment.isShowDialogConfirmation()){
+            showBackDialogConfirmation(onPrimaryClick = {
+                fragment.saveAndExit()
+            }, onSecondaryClick = {
+                super.onBackPressed()
+            })
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    private fun showBackDialogConfirmation(onPrimaryClick: () -> Unit, onSecondaryClick: () -> Unit){
+        var dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(resources.getString(editorR.string.editor_detail_activity_dialog_title))
+        dialog.setDescription(resources.getString(editorR.string.editor_detail_activity_dialog_desc))
+
+        dialog.dialogPrimaryCTA.apply {
+            text = resources.getString(editorR.string.editor_detail_activity_dialog_primary_button_text)
+            setOnClickListener {
+                onPrimaryClick()
+            }
+        }
+
+        dialog.dialogSecondaryLongCTA.apply {
+            text = resources.getString(editorR.string.editor_detail_activity_dialog_secondary_button_text)
+            setOnClickListener {
+                onSecondaryClick()
+            }
+        }
+
+        dialog.show()
     }
 
     companion object {
