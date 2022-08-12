@@ -54,9 +54,8 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         intent?.data?.let {
-            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toInt() ?: KYCConstant.STATUS_DEFAULT
+            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toIntOrNull() ?: KYCConstant.STATUS_DEFAULT
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         }
