@@ -29,21 +29,17 @@ class DigitalAddToCartUseCase @Inject constructor(
         if (isUseGql) {
             var returnResult: DigitalAtcTrackingModel? = null
 
-            gqlUseCase.setParams(
-                digitalCheckoutPassData, userId, digitalIdentifierParam
-            )
+            gqlUseCase.setParams(digitalCheckoutPassData, userId, digitalIdentifierParam)
+
             val result = gqlUseCase.executeOnBackground().atcResponse
 
-            if (result.errors.isNotEmpty()) {
-                throw Throwable(result.errors.first().title)
-            }
-
-            returnResult = if (result.data.id.isNotEmpty()) {
+            returnResult = if (result.data.id.isNotEmpty() || result.errors.isNotEmpty()) {
                 DigitalAtcMapper.mapToDigitalAtcTrackingModel(
                     null,
                     result,
                     digitalCheckoutPassData,
-                    userId
+                    userId,
+                    error = DigitalAtcMapper.mapErrorToErrorAtc(result.errors)
                 )
             } else {
                 null

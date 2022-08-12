@@ -218,7 +218,11 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
                 userId,
                 isUseGql
             )
-            _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
+            if (categoryIdAtc.errorAtc == null){
+                _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
+            }else{
+                _errorAtc.value = categoryIdAtc.errorAtc
+            }
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                 _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))

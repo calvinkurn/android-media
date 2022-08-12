@@ -63,10 +63,14 @@ class DigitalAddToCartViewModel @Inject constructor(
 
                 data?.let {
                     rechargeAnalytics.eventAddToCart(it)
-                    if (it.categoryId.isNotEmpty()) {
-                        _addToCartResult.postValue(Success(it.categoryId))
-                    } else {
-                        _addToCartResult.postValue(Success(digitalCheckoutPassData.categoryId ?: ""))
+                    if (it.atcError != null){
+                        _errorAtc.postValue(it.atcError)
+                    }else{
+                        if (it.categoryId.isNotEmpty()) {
+                            _addToCartResult.postValue(Success(it.categoryId))
+                        }  else {
+                            _addToCartResult.postValue(Success(digitalCheckoutPassData.categoryId ?: ""))
+                        }
                     }
                     return@launchCatchError
                 }
