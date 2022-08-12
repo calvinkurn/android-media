@@ -38,6 +38,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import javax.inject.Inject
 
 class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageComponent>, TippingValueAdapter.ActionListener {
@@ -224,10 +225,10 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val text = binding.etNominalTip.editText.text.toString()
-                if (s.isNotEmpty() && text.toInt() < minAmount) {
+                if (s.isNotEmpty() && text.toIntSafely() < minAmount) {
                     setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.minimum_tipping, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(minAmount)))
                     binding.btnTipping.isEnabled = false
-                } else if (s.isNotEmpty() && text.toInt() > maxAmount) {
+                } else if (s.isNotEmpty() && text.toIntSafely() > maxAmount) {
                     setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.maksimum_tipping, CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(maxAmount)))
                     binding.btnTipping.isEnabled = false
                 } else {
