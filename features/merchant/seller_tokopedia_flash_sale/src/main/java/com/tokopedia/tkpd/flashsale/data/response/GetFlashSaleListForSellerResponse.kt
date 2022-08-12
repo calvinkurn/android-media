@@ -1,3 +1,4 @@
+package com.tokopedia.tkpd.flashsale.data.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -13,7 +14,7 @@ data class GetFlashSaleListForSellerResponse(
     ) {
         data class Campaign(
             @SerializedName("campaign_id")
-            val campaignId: Int = 0,
+            val campaignId: String = "",
             @SerializedName("cancellation_reason")
             val cancellationReason: String = "",
             @SerializedName("cover_image")
@@ -31,21 +32,21 @@ data class GetFlashSaleListForSellerResponse(
             @SerializedName("remaining_quota")
             val remainingQuota: Int = 0,
             @SerializedName("review_end_date_unix")
-            val reviewEndDateUnix: Int = 0,
+            val reviewEndDateUnix: Long = 0,
             @SerializedName("review_start_date_unix")
-            val reviewStartDateUnix: Int = 0,
+            val reviewStartDateUnix: Long = 0,
             @SerializedName("slug")
             val slug: String = "",
             @SerializedName("start_date_unix")
             val startDateUnix: Long = 0,
             @SerializedName("status_id")
-            val statusId: Int = 0,
+            val statusId: String = "",
             @SerializedName("status_text")
             val statusText: String = "",
             @SerializedName("submission_end_date_unix")
-            val submissionEndDateUnix: Int = 0,
+            val submissionEndDateUnix: Long = 0,
             @SerializedName("submission_start_date_unix")
-            val submissionStartDateUnix: Int = 0,
+            val submissionStartDateUnix: Long = 0,
             @SerializedName("use_multilocation")
             val useMultilocation: Boolean = false
         ) {

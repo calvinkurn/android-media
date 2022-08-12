@@ -56,6 +56,7 @@ class LandingContainerFragment : BaseDaggerFragment() {
         viewModel.submitProduct()
         viewModel.deleteProduct()
         viewModel.getReservedProduct()
+        viewModel.getFlashSaleList()
     }
 
     private fun observeUiState() {
