@@ -1216,6 +1216,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 sortFilterPrefix.setOnClickListener {
                     resetAllFilters()
                     paramGetCollectionItems = GetWishlistCollectionItemsParams()
+                    var inCollection = ""
+                    if (collectionId.isNotEmpty() && collectionId != "0") {
+                        inCollection = "inside"
+                    }
+                    paramGetCollectionItems.inCollection = inCollection
+                    paramGetCollectionItems.collectionId = collectionId
                     if (searchQuery.isNotEmpty()) paramGetCollectionItems.query = searchQuery
                     doRefresh()
                     WishlistV2Analytics.clickXChipsToClearFilter()
