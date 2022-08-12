@@ -19,7 +19,7 @@ data class PlayUpcomingInfoUiState(
     val state: PlayUpcomingState
 )
 
-data class DescriptionUiState(val isExpand: Boolean)
+data class DescriptionUiState(val isExpand: Boolean) // add description text too
 
 sealed class PlayUpcomingState {
     object Unknown : PlayUpcomingState()

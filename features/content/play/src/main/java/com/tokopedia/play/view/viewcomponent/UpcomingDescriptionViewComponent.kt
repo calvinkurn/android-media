@@ -9,11 +9,11 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.core.text.buildSpannedString
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -40,17 +40,19 @@ class UpcomingDescriptionViewComponent(
     private var uiModel: DescriptionUiModel = DescriptionUiModel()
 
     init {
-        txt.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        txt.updateLayoutParams {
+            this.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
     }
 
     private val animExpand: ObjectAnimator
         get() = ObjectAnimator.ofInt(
             txt,
             PARAM_MAX_LINES,
-            if (!uiModel.isExpanded) MIN_LINES else MAX_LINES
+            if (uiModel.isExpanded) MIN_LINES else MAX_LINES
         )
             .apply {
-                duration = UnifyMotion.T3
+                duration = UnifyMotion.T2
                 expandText(
                     description = uiModel.originalText,
                     isExpand = !uiModel.isExpanded
@@ -121,7 +123,6 @@ class UpcomingDescriptionViewComponent(
     }
 
     private fun expandText(description: String, isExpand: Boolean) {
-        Log.d("sukses", uiModel.isExpanded.toString())
         if (!isExpand) {
             txt.ellipsize = TextUtils.TruncateAt.END
             txt.movementMethod = LinkMovementMethod.getInstance()
@@ -134,7 +135,6 @@ class UpcomingDescriptionViewComponent(
             txt.text = uiModel.originalText
             txt.ellipsize = null
         }
-        txt.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

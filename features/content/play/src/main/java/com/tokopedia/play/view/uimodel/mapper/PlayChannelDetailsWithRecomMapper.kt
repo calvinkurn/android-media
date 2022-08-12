@@ -240,7 +240,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             coverUrl = coverUrl,
             startTime = startTime,
             isAlreadyLive = false,
-            description = DescriptionUiModel(text = description, isExpanded = false),
+            description = description,
         )
 
     private fun emptyVideoMetaInfo() = PlayVideoMetaInfoUiModel(
