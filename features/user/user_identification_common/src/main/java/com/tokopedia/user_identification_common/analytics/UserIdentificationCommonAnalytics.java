@@ -372,7 +372,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelOne + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
+                Label.labelOne + " - click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "2646");
     }
 
@@ -437,7 +437,7 @@ public class UserIdentificationCommonAnalytics {
 
     public void eventClickBackFinalForm() {
         track(TrackAppUtils.gtmData(
-                Event.VIEW_ACCOUNT_IRIS,
+                Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_FINAL_FORM_PAGE,
                 "success - " + projectID + " - " + getKycType(String.valueOf(projectID))

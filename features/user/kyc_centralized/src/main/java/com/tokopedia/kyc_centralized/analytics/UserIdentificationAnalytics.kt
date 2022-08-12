@@ -136,7 +136,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
 
     fun eventViewRejectedPage() {
         track(TrackAppUtils.gtmData(
-                Event.VIEW_KYC,
+                Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_REJECTED_PAGE,
             "success - $projectID - ${getKycType(projectID.toString())}"
@@ -181,7 +181,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
 
     fun eventViewSuccessPage() {
         track(TrackAppUtils.gtmData(
-                Event.VIEW_KYC,
+                Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_SUCCES_PAGE,
             "success - $projectID - ${getKycType(projectID.toString())}"
@@ -190,7 +190,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
 
     fun eventClickBackSuccessPage() {
         track(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
+                Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_SUCCESS_PAGE,
             "success - $projectID - ${getKycType(projectID.toString())}"
