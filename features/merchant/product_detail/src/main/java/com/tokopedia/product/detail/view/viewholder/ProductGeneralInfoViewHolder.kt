@@ -71,9 +71,7 @@ class ProductGeneralInfoViewHolder(
         }
 
         view.setOnClickListener {
-            if (element.applink.isNotBlank()) {
-                listener.onInfoClicked(element.applink, element.name, getComponentTrackData(element))
-            }
+            listener.onInfoClicked(element.applink, element.name, getComponentTrackData(element))
         }
     }
 
@@ -92,7 +90,7 @@ class ProductGeneralInfoViewHolder(
         element: ProductGeneralInfoDataModel,
     ) = with(binding) {
 
-        pdpSee.showWithCondition(element.applink.isNotBlank())
+        pdpSee.showWithCondition(element.isApplink)
 
         val icon = element.getIconUrl(isDarkModel = binding.root.context.isDarkMode())
         pdpIcon.shouldShowWithAction(icon.isNotEmpty()) {
