@@ -8,6 +8,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -174,13 +176,14 @@ class NavigationViewModelTest {
     }
 
     @Test
-    fun `Given something`() {
+    fun `Given something`() = runBlocking {
         //if (jobIsValid() && iconNeedNotificationCounter()) { true & false
         val mockGetNotificationUseCase = mockk<GetNotificationUseCase>()
 
         coEvery {
             mockGetNotificationUseCase.executeOnBackground()
-        } returns TopNavNotificationModel(
+        } returns
+                TopNavNotificationModel(
                 totalGlobalNavNotif = mockTotalGlobalNotif,
                 totalNewInbox = mockTotalNewInbox,
                 totalInbox = mockTotalInbox,
@@ -197,9 +200,13 @@ class NavigationViewModelTest {
         navigationViewModel.setRegisteredIconList(mockIconBuilderWithSupportedIcon)
         navigationViewModel.getNotification()
         navigationViewModel.applyNotification()
-        val mockIconBuilderWithoutSupportedIcon = IconBuilder().build()
+        val mockIconBuilderWithoutSupportedIcon = IconBuilder().addIcon(999){}.build()
         navigationViewModel.setRegisteredIconList(mockIconBuilderWithoutSupportedIcon)
         navigationViewModel.getNotification()
+        val mockIconBuilderWithoutSupportedIcon2 = IconBuilder().build()
+        navigationViewModel.setRegisteredIconList(mockIconBuilderWithoutSupportedIcon2)
+        navigationViewModel.getNotification()
+        navigationViewModel.applyNotification()
 
 //        val topNavigationValue = navigationViewModel.navNotificationLiveData.value!!
 //        Assert.assertEquals(mockTotalNotif, topNavigationValue.totalNotif)

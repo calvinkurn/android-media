@@ -1,6 +1,5 @@
 package com.tokopedia.searchbar.navigation_component.viewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -11,7 +10,6 @@ import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotification
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import com.tokopedia.searchbar.navigation_component.icons.IconConfig
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import javax.inject.Inject
 
@@ -56,14 +54,14 @@ class NavigationViewModel @Inject constructor(
             getNotificationJob = viewModelScope.launchCatchError(coroutineContext, {
                 topNavNotificationModel = getNotificationUseCase.executeOnBackground()
                 _navNotificationModel.postValue(topNavNotificationModel)
-            }) {
-            }
+            }) {}
         }
     }
 
     private fun jobIsValid() = getNotificationJob == null || getNotificationJob?.isActive == false
 
-    private fun iconNeedNotificationCounter(): Boolean = registeredIconList.any { it in supportedNotificationIcon }
+    private fun iconNeedNotificationCounter(): Boolean =
+        registeredIconList.any { it in supportedNotificationIcon }
 
     //triggering observer without heavy process
     fun <T> MutableLiveData<T>.applyLiveDataValue() {
