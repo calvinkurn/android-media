@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
+import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
@@ -235,7 +236,11 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
 
             setOnAccountClickListener {
-                toaster.showToaster("switching account")
+                FeedAccountTypeBottomSheet
+                    .getFragment(childFragmentManager, requireContext().classLoader)
+//                    TODO implement this when the data ready
+//                    .setData()
+                    .showNow(childFragmentManager)
             }
             setOnBackClickListener {
                 analytic.clickCloseOnPreparation()
