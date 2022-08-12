@@ -164,7 +164,7 @@ class OperationalInsightBottomSheet(
 
     private fun initActualReplyRate() {
         val tvActualReplyRate: Typography? = childView?.findViewById(R.id.tv_actual_chat_reply_rate)
-        val textActualReplyRate = "${ticker.data?.chatReplied?.removeDecimal()}%"
+        val textActualReplyRate = "${ticker.data?.chatReplied}%"
         tvActualReplyRate?.let {
             it.text = textActualReplyRate
             val replyRateColor = getActualReplyRateTextColor()
@@ -189,7 +189,7 @@ class OperationalInsightBottomSheet(
 
     private fun initActualReplySpeed() {
         val tvActualReplySpeed: Typography? = childView?.findViewById(R.id.tv_actual_chat_reply_speed)
-        val textActualReplySpeed = "${ticker.data?.chatSpeed?.removeDecimal()} menit"
+        val textActualReplySpeed = "${ticker.data?.chatSpeed} menit"
         tvActualReplySpeed?.let {
             it.text = textActualReplySpeed
             val replyRateColor = getActualReplySpeedTextColor()
@@ -214,7 +214,7 @@ class OperationalInsightBottomSheet(
 
     private fun initActualDiscussionReplyRate() {
         val tvActualReplyRate: Typography? = childView?.findViewById(R.id.tv_actual_chat_and_discussion_reply_rate)
-        val textActualReplyRate = "${ticker.data?.discussionReplied?.removeDecimal()}%"
+        val textActualReplyRate = "${ticker.data?.discussionReplied}%"
         tvActualReplyRate?.let {
             it.text = textActualReplyRate
             val replyRateColor = getActualDiscussionReplyRateTextColor()
@@ -239,7 +239,7 @@ class OperationalInsightBottomSheet(
 
     private fun initActualDiscussionReplySpeed() {
         val tvActualReplySpeed: Typography? = childView?.findViewById(R.id.tv_actual_chat_and_discussion_reply_speed)
-        val textActualReplySpeed = "${ticker.data?.discussionSpeed?.removeDecimal()} menit"
+        val textActualReplySpeed = "${ticker.data?.discussionSpeed} menit"
         tvActualReplySpeed?.let {
             it.text = textActualReplySpeed
             val replyRateColor = getActualDiscussionReplySpeedTextColor()
@@ -269,7 +269,7 @@ class OperationalInsightBottomSheet(
     private fun initTarget() {
         val tvReplyRateTarget: Typography? = childView?.findViewById(R.id.tv_target_rate_reply)
         val replyRateTarget = ticker.target?.chatRepliedTarget.toIntSafely()
-        val textReplyRate = "${ticker.target?.chatRepliedTarget?.removeDecimal()}%"
+        val textReplyRate = "${ticker.target?.chatRepliedTarget}%"
         val textReplyRateTarget = if (replyRateTarget < LIMIT) {
             ">$textReplyRate"
         } else {
@@ -280,7 +280,7 @@ class OperationalInsightBottomSheet(
         }
 
         val tvReplyRateSpeed: Typography? = childView?.findViewById(R.id.tv_target_rate_speed)
-        val textReplyRateSpeed = "<${ticker.target?.chatSpeedTarget?.removeDecimal()} menit"
+        val textReplyRateSpeed = "<${ticker.target?.chatSpeedTarget} menit"
         tvReplyRateSpeed?.let {
             it.text = textReplyRateSpeed
         }
@@ -302,10 +302,6 @@ class OperationalInsightBottomSheet(
         ctaOperationalInsight?.setOnClickListener {
             goToOperationalInsightPage()
         }
-    }
-
-    private fun Float.removeDecimal(): String {
-        return DecimalFormat(DECIMAL_FORMAT).format(this)
     }
 
     private fun createSpannableWithLink(completeString: String): SpannableString {
@@ -391,7 +387,6 @@ class OperationalInsightBottomSheet(
 
     companion object {
         private const val LIMIT = 100
-        private const val DECIMAL_FORMAT = "#"
         private const val SHOP_PERFORMANCE = "Performa Toko"
     }
 }
