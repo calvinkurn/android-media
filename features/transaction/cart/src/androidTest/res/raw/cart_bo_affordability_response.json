@@ -127,6 +127,11 @@
                     "eligible": false,
                     "badge_url": ""
                   },
+                  "free_shipping_general": {
+                    "bo_name": "bebas ongkir",
+                    "bo_type": 1,
+                    "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                  },
                   "preorder": {
                     "is_preorder": false,
                     "duration": ""
@@ -568,6 +573,11 @@
                           "eligible": false,
                           "badge_url": ""
                         },
+                        "free_shipping_general": {
+                          "bo_name": "bebas ongkir",
+                          "bo_type": 1,
+                          "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                        },
                         "booking_stock": 0,
                         "is_product_volume_weight": false,
                         "initial_price": 50000,
@@ -691,6 +701,11 @@
                           "eligible": false,
                           "badge_url": ""
                         },
+                        "free_shipping_general": {
+                          "bo_name": "bebas ongkir",
+                          "bo_type": 1,
+                          "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                        },
                         "booking_stock": 0,
                         "is_product_volume_weight": false,
                         "initial_price": 55000,
@@ -749,6 +764,11 @@
                   "free_shipping_extra": {
                     "eligible": false,
                     "badge_url": ""
+                  },
+                  "free_shipping_general": {
+                    "bo_name": "bebas ongkir",
+                    "bo_type": 1,
+                    "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
                   },
                   "preorder": {
                     "is_preorder": false,
@@ -1240,6 +1260,11 @@
                           "eligible": false,
                           "badge_url": ""
                         },
+                        "free_shipping_general": {
+                          "bo_name": "bebas ongkir",
+                          "bo_type": 1,
+                          "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                        },
                         "booking_stock": 0,
                         "is_product_volume_weight": false,
                         "initial_price": 10000,
@@ -1297,6 +1322,11 @@
                   },
                   "free_shipping_extra": {
                     "eligible": false,
+                    "badge_url": ""
+                  },
+                  "free_shipping_general": {
+                    "bo_name": "",
+                    "bo_type": 0,
                     "badge_url": ""
                   },
                   "preorder": {
@@ -1817,6 +1847,11 @@
                           "eligible": false,
                           "badge_url": ""
                         },
+                        "free_shipping_general": {
+                          "bo_name": "",
+                          "bo_type": 0,
+                          "badge_url": ""
+                        },
                         "booking_stock": 0,
                         "is_product_volume_weight": false,
                         "initial_price": 1000,
@@ -1874,6 +1909,11 @@
                   },
                   "free_shipping_extra": {
                     "eligible": false,
+                    "badge_url": ""
+                  },
+                  "free_shipping_general": {
+                    "bo_name": "",
+                    "bo_type": 0,
                     "badge_url": ""
                   },
                   "preorder": {
@@ -2102,6 +2142,11 @@
                           "eligible": false,
                           "badge_url": ""
                         },
+                        "free_shipping_general": {
+                          "bo_name": "",
+                          "bo_type": 0,
+                          "badge_url": ""
+                        },
                         "booking_stock": 0,
                         "is_product_volume_weight": false,
                         "initial_price": 5000,
@@ -2160,6 +2205,11 @@
                   "free_shipping_extra": {
                     "eligible": false,
                     "badge_url": ""
+                  },
+                  "free_shipping_general": {
+                    "bo_name": "bebas ongkir",
+                    "bo_type": 1,
+                    "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
                   },
                   "preorder": {
                     "is_preorder": false,
@@ -2479,6 +2529,11 @@
                           "eligible": false,
                           "badge_url": ""
                         },
+                        "free_shipping_general": {
+                          "bo_name": "bebas ongkir",
+                          "bo_type": 1,
+                          "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                        },
                         "booking_stock": 0,
                         "is_product_volume_weight": false,
                         "initial_price": 0,
@@ -2604,6 +2659,11 @@
                           "eligible": false,
                           "badge_url": ""
                         },
+                        "free_shipping_general": {
+                          "bo_name": "bebas ongkir",
+                          "bo_type": 1,
+                          "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+                        },
                         "booking_stock": 0,
                         "is_product_volume_weight": false,
                         "initial_price": 0,
@@ -2728,6 +2788,11 @@
                         "free_shipping_extra": {
                           "eligible": false,
                           "badge_url": ""
+                        },
+                        "free_shipping_general": {
+                          "bo_name": "bebas ongkir",
+                          "bo_type": 1,
+                          "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
                         },
                         "booking_stock": 0,
                         "is_product_volume_weight": false,

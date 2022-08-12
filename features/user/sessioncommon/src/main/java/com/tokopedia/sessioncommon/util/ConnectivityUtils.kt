@@ -9,6 +9,8 @@ import android.net.ConnectivityManager
 import android.telephony.TelephonyManager
 import androidx.appcompat.app.AppCompatActivity
 import java.lang.reflect.Method
+import java.net.NetworkInterface
+
 
 /**
  * Created by Yoris on 18/10/21.
@@ -17,9 +19,19 @@ import java.lang.reflect.Method
 object ConnectivityUtils {
 
     fun isSilentVerificationPossible(context: Context?): Boolean {
-        return if(context != null)
-            isMobileDataEnabled(context) && isSimCardReady(context)
+        return if (context != null)
+            isMobileDataEnabled(context) && isSimCardReady(context) && !isVpnConnectionActive()
         else false
+    }
+
+    // vpn interface always use tun0 in android
+    fun isVpnConnectionActive(): Boolean {
+        try {
+            NetworkInterface.getNetworkInterfaces().toList().forEach {
+                if (it.isUp && it.name.contains("tun0")) { return true }
+            }
+        } catch (ignored: Exception) {}
+        return false
     }
 
     fun isMobileDataEnabled(context: Context): Boolean {
@@ -37,7 +49,8 @@ object ConnectivityUtils {
 
     fun getSimCardStatus(context: Context): Int {
         return try {
-            val telMgr = context.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
+            val telMgr =
+                context.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
             telMgr.simState
         } catch (e: Exception) {
             TelephonyManager.SIM_STATE_UNKNOWN

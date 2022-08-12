@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lottie_confetti_tap">https://assets.tokopedia.net/asts/android/content/play/play_interactive_tap_confetti.json</string>
-    <string name="lottie_button_tap">https://assets.tokopedia.net/asts/android/content/play/play_interactive_tap_button.json</string>
-
     <string name="img_bg_winning_dialog_decor">https://images.tokopedia.net/img/android/content/play/ic_play_interactive_decor.png</string>
     <string name="img_bg_interactive_confetti_big">https://images.tokopedia.net/img/android/content/play/ic_play_interactive_confetti_big.png</string>
 </resources>
