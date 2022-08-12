@@ -1,7 +1,7 @@
-package com.tokopedia.tkpd.flashsale.presentation.data.mapper
+package com.tokopedia.tkpd.flashsale.data.mapper
 
-import com.tokopedia.tkpd.flashsale.presentation.data.response.DoFlashSaleProductSubmissionResponse
-import com.tokopedia.tkpd.flashsale.presentation.domain.entity.ProductSubmissionResult
+import com.tokopedia.tkpd.flashsale.data.response.DoFlashSaleProductSubmissionResponse
+import com.tokopedia.tkpd.flashsale.domain.entity.ProductSubmissionResult
 import javax.inject.Inject
 
 class DoFlashSaleProductSubmissionMapper @Inject constructor() {

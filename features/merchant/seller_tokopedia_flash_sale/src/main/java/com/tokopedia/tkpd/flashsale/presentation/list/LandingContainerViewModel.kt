@@ -1,14 +1,14 @@
-package com.tokopedia.tkpd.flashsale.presentation.presentation.list
+package com.tokopedia.tkpd.flashsale.presentation.list
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.tkpd.flashsale.presentation.data.request.DoFlashSaleProductSubmissionRequest
-import com.tokopedia.tkpd.flashsale.presentation.domain.entity.TabMetadata
-import com.tokopedia.tkpd.flashsale.presentation.domain.usecase.DoFlashSaleProductDeleteUseCase
-import com.tokopedia.tkpd.flashsale.presentation.domain.usecase.DoFlashSaleProductSubmissionUseCase
-import com.tokopedia.tkpd.flashsale.presentation.domain.usecase.GetFlashSaleListForSellerMetaUseCase
-import com.tokopedia.tkpd.flashsale.presentation.domain.usecase.GetFlashSaleReservedProductListUseCase
+import com.tokopedia.tkpd.flashsale.data.request.DoFlashSaleProductSubmissionRequest
+import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
+import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductDeleteUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductSubmissionUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleReservedProductListUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

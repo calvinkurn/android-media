@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.data.request
+package com.tokopedia.tkpd.flashsale.data.request
 
 
 import com.google.gson.annotations.SerializedName
@@ -11,7 +11,7 @@ data class GetFlashSaleReservedProductListRequest(
     @SerializedName("pagination")
     val pagination: Pagination,
     @SerializedName("filter")
-    val filter:Filter,
+    val filter: Filter,
 ) {
     data class Pagination(
         @SerializedName("rows")

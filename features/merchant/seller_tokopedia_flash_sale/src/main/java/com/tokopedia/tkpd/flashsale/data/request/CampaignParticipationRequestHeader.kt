@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.data.request
+package com.tokopedia.tkpd.flashsale.data.request
 
 import com.google.gson.annotations.SerializedName
 
