@@ -200,7 +200,7 @@ class NavigationViewModelTest {
         navigationViewModel.setRegisteredIconList(mockIconBuilderWithSupportedIcon)
         navigationViewModel.getNotification()
         navigationViewModel.applyNotification()
-        val mockIconBuilderWithoutSupportedIcon = IconBuilder().addIcon(999){}.build()
+        val mockIconBuilderWithoutSupportedIcon = IconBuilder().addIcon(IconList.ID_SEARCH){}.build()
         navigationViewModel.setRegisteredIconList(mockIconBuilderWithoutSupportedIcon)
         navigationViewModel.getNotification()
         val mockIconBuilderWithoutSupportedIcon2 = IconBuilder().build()
