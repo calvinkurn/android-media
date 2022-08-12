@@ -3,6 +3,7 @@
     <dimen name="csat_dp_0.1">0.1dp</dimen>
     <dimen name="csat_dp_1">1dp</dimen>
     <dimen name="csat_dp_5">5dp</dimen>
+    <dimen name="csat_dp_9">9dp</dimen>
     <dimen name="csat_dp_10">10dp</dimen>
     <dimen name="csat_dp_15">15dp</dimen>
     <dimen name="csat_dp_20">20dp</dimen>

@@ -2,4 +2,6 @@
 <resources>
     <color name="csat_dms_rating_bg">#252930</color>
     <color name="csat_dms_rating_inactive">#8B96AC</color>
+    <color name="csat_dms_divider">#3D444F</color>
+    <color name="csat_dms_reason_text">#DCE4ED</color>
 </resources>

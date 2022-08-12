@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@color/grey_500"
+            android:textColor="@color/csat_dms_reason_text"
             app:typographyType="display_2"
             tools:text="sdfjsdlfk" />
 

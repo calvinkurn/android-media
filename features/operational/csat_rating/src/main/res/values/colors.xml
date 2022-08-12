@@ -8,4 +8,6 @@
     <color name="csat_dms_rating_active_5">#00ad51</color>
     <color name="csat_dms_rating_bg">#FFFFFF</color>
     <color name="csat_dms_rating_inactive">#5B6776</color>
+    <color name="csat_dms_divider">#E5E7E9</color>
+    <color name="csat_dms_reason_text">#6D7588</color>
 </resources>
