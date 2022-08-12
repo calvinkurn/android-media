@@ -9,24 +9,12 @@ import java.io.IOException
  * created by @bayazidnasir on 11/8/2022
  */
 
-class DigitalAtcErrorException : IOException {
+class DigitalAtcErrorException(message: String?) : IOException(message) {
 
-    private var errorBody: String? = null
+    private var errorBody: String? = message
 
     override val message: String
         get() = getError().title
-
-    constructor() : super()
-
-    constructor(message: String?) : super(message){
-        this.errorBody = message
-    }
-
-    constructor(message: String?, cause: Throwable?) : super(message, cause){
-        this.errorBody = message
-    }
-
-    constructor(cause: Throwable?) : super(cause)
 
     fun getError(): ErrorAtc{
         return if (parseError().isNotEmpty()){
