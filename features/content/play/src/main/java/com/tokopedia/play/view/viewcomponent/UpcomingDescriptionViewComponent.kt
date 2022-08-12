@@ -46,7 +46,7 @@ class UpcomingDescriptionViewComponent(
         get() = ObjectAnimator.ofInt(txt, PARAM_MAX_LINES, if (!desc.isExpanded) MIN_LINES else MAX_LINES)
             .apply {
                 duration = UnifyMotion.T2
-                setupExpandable()
+                expandText(description = desc.text, isExpand = desc.isExpanded)
             }
 
     fun setupText(description: DescriptionUiModel) {
