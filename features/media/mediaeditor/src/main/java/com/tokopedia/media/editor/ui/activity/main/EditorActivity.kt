@@ -113,18 +113,18 @@ class EditorActivity : BaseEditorActivity() {
 
     private fun showBackDialogConfirmation(){
         var dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(resources.getString(editorR.string.editor_activity_dialog_title))
-        dialog.setDescription(resources.getString(editorR.string.editor_activity_dialog_desc))
+        dialog.setTitle(getString(editorR.string.editor_activity_dialog_title))
+        dialog.setDescription(getString(editorR.string.editor_activity_dialog_desc))
 
         dialog.dialogPrimaryCTA.apply {
-            text = resources.getString(editorR.string.editor_activity_dialog_primary_button_text)
+            text = getString(editorR.string.editor_activity_dialog_primary_button_text)
             setOnClickListener {
                 super.onBackPressed()
             }
         }
 
         dialog.dialogSecondaryLongCTA.apply {
-            text = resources.getString(editorR.string.editor_activity_dialog_secondary_button_text)
+            text = getString(editorR.string.editor_activity_dialog_secondary_button_text)
             setOnClickListener {
                 dialog.hide()
             }

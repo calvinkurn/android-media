@@ -15,8 +15,9 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.data.repository.ColorFilterRepositoryImpl
 import com.tokopedia.media.editor.data.repository.ContrastFilterRepositoryImpl
@@ -111,7 +112,7 @@ class DetailEditorFragment @Inject constructor(
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            R.layout.fragment_detail_editor,
+            editorR.layout.fragment_detail_editor,
             container,
             false
         )
@@ -143,16 +144,16 @@ class DetailEditorFragment @Inject constructor(
                     viewBinding?.let {
                         Toaster.build(
                             it.editorFragmentDetailRoot,
-                            getString(R.string.editor_tool_remove_background_failed_normal),
+                            getString(editorR.string.editor_tool_remove_background_failed_normal),
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_NORMAL,
-                            getString(R.string.editor_tool_remove_background_failed_cta)
+                            getString(editorR.string.editor_tool_remove_background_failed_cta)
                         ) {
                             removeBackgroundRetryLimit--
                             if (removeBackgroundRetryLimit == 0) {
                                 Toast.makeText(
                                     requireContext(),
-                                    getString(R.string.editor_tool_remove_background_failed_normal),
+                                    getString(editorR.string.editor_tool_remove_background_failed_normal),
                                     Toast.LENGTH_LONG
                                 ).show()
                                 activity?.finish()
@@ -522,7 +523,7 @@ class DetailEditorFragment @Inject constructor(
 
             watermarkComponent.getButtonRef().apply {
                 val roundedCorner =
-                    context?.resources?.getDimension(R.dimen.editor_watermark_rounded) ?: 0f
+                    context?.resources?.getDimension(editorR.dimen.editor_watermark_rounded) ?: 0f
                 this.first.loadImageRounded(resultBitmap1, roundedCorner)
                 this.second.loadImageRounded(resultBitmap2, roundedCorner)
             }
@@ -535,8 +536,41 @@ class DetailEditorFragment @Inject constructor(
         }
 
         viewBinding?.btnSave?.setOnClickListener {
-            saveAndExit()
+            // if no editing perform, then skip save
+            if(isEdited) {
+                if(data.isToolRemoveBackground()){
+                    showRemoveBackgroundSaveConfirmation{
+                        saveAndExit()
+                    }
+                } else {
+                    saveAndExit()
+                }
+            } else {
+                activity?.finish()
+            }
         }
+    }
+
+    private fun showRemoveBackgroundSaveConfirmation(onPrimaryClick: () -> Unit){
+        val dialog = DialogUnify(requireContext(),DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(getString(editorR.string.editor_remove_bg_dialog_title))
+        dialog.setDescription(getString(editorR.string.editor_remove_bg_dialog_desc))
+
+        dialog.dialogPrimaryCTA.apply {
+            text = getString(editorR.string.editor_remove_bg_dialog_primary_button_text)
+            setOnClickListener {
+                onPrimaryClick()
+            }
+        }
+
+        dialog.dialogSecondaryLongCTA.apply {
+            text = getString(editorR.string.editor_remove_bg_dialog_secondary_button_text)
+            setOnClickListener {
+                dialog.hide()
+            }
+        }
+
+        dialog.show()
     }
 
     private fun finishPage() {

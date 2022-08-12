@@ -33,4 +33,9 @@
     <string name="editor_activity_dialog_desc">Ada media yang sudah kamu edit, lho. Kalau kamu keluar, hasil editan kamu akan hilang.</string>
     <string name="editor_activity_dialog_primary_button_text">Ya, Keluar</string>
     <string name="editor_activity_dialog_secondary_button_text">Tetap di Sini</string>
+
+    <string name="editor_remove_bg_dialog_title">Ingin simpan hapus latar belakang?</string>
+    <string name="editor_remove_bg_dialog_desc">Dengan lanjut simpan, nilai atau pengaturan edit lainnya yang udah kamu atur sebelumnya akan ke-reset.</string>
+    <string name="editor_remove_bg_dialog_primary_button_text">Lanjut Simpan</string>
+    <string name="editor_remove_bg_dialog_secondary_button_text">Balik</string>
 </resources>

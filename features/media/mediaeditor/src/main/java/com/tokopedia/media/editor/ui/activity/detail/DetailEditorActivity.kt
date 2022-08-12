@@ -77,18 +77,18 @@ class DetailEditorActivity : BaseEditorActivity() {
 
     private fun showBackDialogConfirmation(onPrimaryClick: () -> Unit, onSecondaryClick: () -> Unit){
         var dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(resources.getString(editorR.string.editor_detail_activity_dialog_title))
-        dialog.setDescription(resources.getString(editorR.string.editor_detail_activity_dialog_desc))
+        dialog.setTitle(getString(editorR.string.editor_detail_activity_dialog_title))
+        dialog.setDescription(getString(editorR.string.editor_detail_activity_dialog_desc))
 
         dialog.dialogPrimaryCTA.apply {
-            text = resources.getString(editorR.string.editor_detail_activity_dialog_primary_button_text)
+            text = getString(editorR.string.editor_detail_activity_dialog_primary_button_text)
             setOnClickListener {
                 onPrimaryClick()
             }
         }
 
         dialog.dialogSecondaryLongCTA.apply {
-            text = resources.getString(editorR.string.editor_detail_activity_dialog_secondary_button_text)
+            text = getString(editorR.string.editor_detail_activity_dialog_secondary_button_text)
             setOnClickListener {
                 onSecondaryClick()
             }
