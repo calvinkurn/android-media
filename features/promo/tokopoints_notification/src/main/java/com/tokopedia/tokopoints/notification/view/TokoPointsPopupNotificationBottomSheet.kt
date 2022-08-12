@@ -15,8 +15,8 @@ import com.tokopedia.tokopoints.notification.model.PopupNotification
 import com.tokopedia.tokopoints.notification.utils.AnalyticsTrackerUtil
 
 class TokoPointsPopupNotificationBottomSheet:BottomSheets() {
-    var mData:PopupNotification?=null
-    private var couponTitle:String?=null
+    var mData:PopupNotification? = null
+    private var couponTitle:String=""
 
     override fun getLayoutResourceId(): Int {
         return R.layout.tp_layout_popup_notification
@@ -36,7 +36,7 @@ class TokoPointsPopupNotificationBottomSheet:BottomSheets() {
 
         action?.text=mData?.buttonText
         if(mData?.catalog==null || TextUtils.isEmpty(mData?.catalog?.title)){
-            couponTitle = mData?.title
+            couponTitle = mData?.title ?: ""
             title?.gravity = Gravity.CENTER_HORIZONTAL
         } else {
             couponTitle = "${mData?.catalog?.title} ${mData?.catalog?.subTitle}"
@@ -58,17 +58,17 @@ class TokoPointsPopupNotificationBottomSheet:BottomSheets() {
             sender?.text = "-${mData?.sender}"
         }
 
-        if (mData?.catalog == null || mData?.catalog?.expired == null || mData?.catalog?.expired!!.isEmpty()) {
+        if (mData?.catalog == null || TextUtils.isEmpty(mData?.catalog?.expired)) {
             count?.visibility = View.GONE
         } else {
             count?.visibility = View.VISIBLE
             count?.text = mData?.catalog?.expired
         }
 
-        if (mData?.imageURL != null && mData?.imageURL!!.isNotEmpty()) {
+        if (!TextUtils.isEmpty(mData?.imageURL)) {
             ImageHandler.loadImageFitCenter(banner?.context, banner, mData?.imageURL)
         } else {
-            if (mData?.catalog != null && mData?.catalog?.imageUrlMobile != null && mData?.catalog!!.imageUrlMobile!!.isNotEmpty()) {
+            if (mData?.catalog != null && !TextUtils.isEmpty(mData?.catalog?.imageUrlMobile)) {
                 ImageHandler.loadImageFitCenter(banner?.context,
                     banner,
                     mData?.catalog?.imageUrlMobile)
@@ -82,7 +82,7 @@ class TokoPointsPopupNotificationBottomSheet:BottomSheets() {
                 AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                 AnalyticsTrackerUtil.CategoryKeys.POPUP_TERIMA_HADIAH,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN_KUPON,
-                couponTitle!!)
+                couponTitle)
         }
         updateHeight()
     }
@@ -100,7 +100,7 @@ class TokoPointsPopupNotificationBottomSheet:BottomSheets() {
             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
             AnalyticsTrackerUtil.CategoryKeys.POPUP_TERIMA_HADIAH,
             AnalyticsTrackerUtil.ActionKeys.CLICK_CLOSE_BUTTON,
-            couponTitle!!
+            couponTitle
         )
     }
 }
