@@ -8,7 +8,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -171,7 +170,7 @@ class NavigationViewModelTest {
     }
 
     @Test
-    fun `given supported icon when get notification second time without icon then total notification does not change`() = runBlocking {
+    fun `given supported icon when get notification second time without icon then total notification does not change`() {
         val mockGetNotificationUseCase = mockk<GetNotificationUseCase>()
 
         coEvery {
