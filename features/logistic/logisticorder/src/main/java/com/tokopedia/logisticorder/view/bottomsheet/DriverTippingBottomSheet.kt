@@ -2,7 +2,10 @@ package com.tokopedia.logisticorder.view.bottomsheet
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.text.*
+import android.text.Editable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextWatcher
 import android.text.style.BulletSpan
 import android.view.LayoutInflater
 import android.view.View
