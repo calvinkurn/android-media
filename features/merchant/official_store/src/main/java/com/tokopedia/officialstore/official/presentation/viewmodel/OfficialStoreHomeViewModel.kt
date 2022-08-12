@@ -252,7 +252,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     )
                     isFeaturedShopAllowed = true
                 }
-                if (it.channel.layout == DynamicChannelLayout.LAYOUT_BEST_SELLING){
+                else if (it.channel.layout == DynamicChannelLayout.LAYOUT_BEST_SELLING){
                     fetchRecomWidgetData(it.channel.pageName,  it.channel.widgetParam, it.channel.id)
                 }
             }
@@ -302,25 +302,25 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
         launchCatchError(coroutineContext, block={
-            getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
-            val data = getDisplayHeadlineAds.executeOnBackground()
-            val updatedFeaturedShop = if (data.isEmpty()) {
-                isFeaturedShopAllowed = false
-                featuredShopDataModel.copy(
-                    state = FeaturedShopDataModel.STATE_READY,
-                    page = featuredShopDataModel.page
-                )
-            } else {
-                featuredShopDataModel.copy(
-                    channelModel = featuredShopDataModel.channelModel.copy(
-                        channelGrids = data.mappingTopAdsHeaderToChannelGrid()
-                    ),
-                    state = FeaturedShopDataModel.STATE_READY,
-                    page = featuredShopDataModel.page
-                )
-            }
-
             if (!officialStoreConfig.isEligibleForDisableShopWidget()) {
+                getDisplayHeadlineAds.createParams(featuredShopDataModel.channelModel.widgetParam)
+                val data = getDisplayHeadlineAds.executeOnBackground()
+                val updatedFeaturedShop = if (data.isEmpty()) {
+                    isFeaturedShopAllowed = false
+                    featuredShopDataModel.copy(
+                        state = FeaturedShopDataModel.STATE_READY,
+                        page = featuredShopDataModel.page
+                    )
+                } else {
+                    featuredShopDataModel.copy(
+                        channelModel = featuredShopDataModel.channelModel.copy(
+                            channelGrids = data.mappingTopAdsHeaderToChannelGrid()
+                        ),
+                        state = FeaturedShopDataModel.STATE_READY,
+                        page = featuredShopDataModel.page
+                    )
+                }
+
                 OfficialHomeMapper.updateFeaturedShop(updatedFeaturedShop, _officialStoreListVisitable){
                     _officialStoreLiveData.postValue(it)
                 }
@@ -331,7 +331,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     removeAll {
                         it is FeaturedShopDataModel && it.channelModel.id == featuredShopDataModel.channelModel.id
                     }
-                    _officialStoreLiveData.postValue(this)
                 }
             }
         }

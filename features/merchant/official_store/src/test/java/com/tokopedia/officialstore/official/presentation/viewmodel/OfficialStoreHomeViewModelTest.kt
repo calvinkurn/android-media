@@ -1220,4 +1220,57 @@ class OfficialStoreHomeViewModelTest {
         viewModel.removeRecomWidget()
         assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is BestSellerDataModel })
     }
+
+    @Test
+    fun given_eligible_for_disable_remove_featured_shop__when_get_headlineAds_error_then_do_nothing() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+            listOf(
+                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_FEATURED_SHOP, id = channelId))
+            )
+        )
+
+        val expectedFeaturedShopDataModel = FeaturedShopDataModel(
+            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                dynamicChannelResponse.first().channel, 0
+            )
+        )
+
+        val error = MessageErrorException()
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { getDisplayHeadlineAds.executeOnBackground() } throws error
+        coEvery { officialStoreConfig.isEligibleForDisableRemoveShopWidget() } returns true
+
+        viewModel.loadFirstData(category)
+
+        assertNotNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is FeaturedShopDataModel && it.channelModel.id == expectedFeaturedShopDataModel.channelModel.id })
+    }
+
+//    @Test
+//    fun given_eligible_for_disable_featured_shop_widget_when_get_osDynamicChannel_featured_shop__then_do_nothing() {
+//        val prefixUrl = "prefix"
+//        val slug = "slug"
+//        val category = createCategory(prefixUrl, slug)
+//        val channelId = "123"
+//
+//        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+//        dynamicChannelResponse.addAll(
+//            listOf(
+//                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_FEATURED_SHOP, id = channelId))
+//            )
+//        )
+//
+//        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+//        coEvery { officialStoreConfig.isEligibleForDisableShopWidget() } returns true
+//
+//        viewModel.loadFirstData(category)
+//
+//        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is FeaturedShopDataModel })
+//    }
 }
