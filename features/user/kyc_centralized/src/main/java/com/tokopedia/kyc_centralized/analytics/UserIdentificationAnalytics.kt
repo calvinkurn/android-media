@@ -71,7 +71,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                "${Label.labelOne} - $projectID - ${getKycType(projectID.toString())}"
+                "${Label.labelOne} - click - $projectID - ${getKycType(projectID.toString())}"
         ), "2619")
     }
 
@@ -100,7 +100,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
 
     fun eventViewPendingPage() {
         track(TrackAppUtils.gtmData(
-                Event.VIEW_KYC,
+                Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.VIEW_PENDING_PAGE,
             "success - $projectID - ${getKycType(projectID.toString())}"
@@ -202,7 +202,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_TERMS_AND_CONDITION_SUCCESS_PAGE,
-            "success - $projectID - ${getKycType(projectID.toString())}"
+            "click - $projectID - ${getKycType(projectID.toString())}"
         ), "35136")
     }
 

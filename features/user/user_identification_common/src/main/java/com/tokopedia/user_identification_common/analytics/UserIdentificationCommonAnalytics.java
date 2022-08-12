@@ -75,7 +75,7 @@ public class UserIdentificationCommonAnalytics {
         private static final String CLICK_RETAKE_KTP_FINAL_FORM_PAGE = "click on button foto ulang ktp";
         private static final String CLICK_CHANGE_SELFIE_FINAL_FORM_PAGE = "click on ubah foto selfie KTP";
         private static final String CLICK_RETAKE_SELFIE_FINAL_FORM_PAGE = "click on button verifikasi ulang wajah";
-        private static final String CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE = "click on syarat dan ketentuan";
+        private static final String CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE = "click on syarat dan ketentuan sukses terverifikasi";
         private static final String CLICK_UPLOAD_PHOTOS = "click on unggah foto KTP";
         private static final String CLICK_RETAKE_KTP_SELFIE_FINAL_FORM_PAGE = "click on button coba lagi";
 
@@ -125,7 +125,7 @@ public class UserIdentificationCommonAnalytics {
                     Event.CLICK_ACCOUNT,
                     Category.KYC_SELFIE_PAGE,
                     Action.CLICK_ON_BUTTON_BACK,
-                    Label.labelOne + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
+                    Label.labelOne + " - click - " + projectID + " - " + getKycType(String.valueOf(projectID))
             ), "2621");
         }
     }
@@ -179,7 +179,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelTwo + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
+                Label.labelTwo + " - click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "2621");
     }
 
@@ -276,7 +276,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelThree + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
+                Label.labelThree + " - click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "2646");
     }
 
@@ -425,7 +425,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_PAGE,
                 Action.CLICK_TERMS_AND_CONDITION_FINAL_FORM_PAGE,
-                ""
+                "click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "35136");
     }
 
@@ -437,7 +437,7 @@ public class UserIdentificationCommonAnalytics {
 
     public void eventClickBackFinalForm() {
         track(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
+                Event.VIEW_ACCOUNT_IRIS,
                 Category.KYC_PAGE,
                 Action.CLICK_BACK_FINAL_FORM_PAGE,
                 "success - " + projectID + " - " + getKycType(String.valueOf(projectID))
@@ -475,7 +475,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_KTP_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelOne + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
+                Label.labelOne + " - click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "2621");
     }
 
