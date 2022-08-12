@@ -40,13 +40,7 @@ class DigitalInterceptor(@ApplicationContext context: Context,
             val digitalErrorResponse: TkpdDigitalResponse.DigitalErrorResponse =
                 TkpdDigitalResponse.DigitalErrorResponse.factory(errorBody, response.code)
             if (digitalErrorResponse.typeOfError == TkpdDigitalResponse.DigitalErrorResponse.ERROR_DIGITAL) {
-                if (digitalErrorResponse.errors.isEmpty()){
-                    throw ResponseErrorException(errorBody)
-                }
-
-                if (digitalErrorResponse.errors.first().id == UNVERIFIED_PHONE_NUMBER_ERROR_ID){
-                    throw DigitalAtcErrorException(errorBody)
-                }
+                throw DigitalAtcErrorException(errorBody)
             } else if (digitalErrorResponse.typeOfError == TkpdDigitalResponse.DigitalErrorResponse.ERROR_SERVER) {
                 if (digitalErrorResponse.status.equals(
                         DigitalError.STATUS_UNDER_MAINTENANCE,
@@ -98,7 +92,6 @@ class DigitalInterceptor(@ApplicationContext context: Context,
     companion object {
         private val TAG = DigitalInterceptor::class.java.simpleName
         private const val DEFAULT_TOKOPEDIA_ORGANIZATION_NAME = "Tokopedia"
-        private const val UNVERIFIED_PHONE_NUMBER_ERROR_ID = "1104"
     }
 
     init {
