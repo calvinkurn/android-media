@@ -13,8 +13,8 @@ import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
 import com.tokopedia.profilecompletion.changebiousername.viewmodel.ChangeBioUsernameViewModel
 import com.tokopedia.profilecompletion.profileinfo.viewmodel.ProfileViewModel
-import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
-import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
+import com.tokopedia.profilecompletion.profilecompletion.viewmodel.ProfileInfoViewModel
+import com.tokopedia.profilecompletion.profilecompletion.viewmodel.ProfileRoleViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

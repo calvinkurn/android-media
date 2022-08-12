@@ -17,10 +17,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -59,8 +57,7 @@ import com.tokopedia.profilecompletion.profileinfo.view.uimodel.ProfileInfoTitle
 import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoItemViewHolder
 import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoTitleViewHolder
 import com.tokopedia.profilecompletion.profileinfo.viewmodel.ProfileViewModel
-import com.tokopedia.profilecompletion.settingprofile.domain.UrlSettingProfileConst
-import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfileFragment
+import com.tokopedia.profilecompletion.profileinfo.domain.UrlSettingProfileConst
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -227,37 +224,37 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         when (resultCode) {
             Activity.RESULT_OK -> {
                 when (requestCode) {
-                    SettingProfileFragment.REQUEST_CODE_EDIT_PROFILE_PHOTO -> {
+                    REQUEST_CODE_EDIT_PROFILE_PHOTO -> {
                         onSuccessGetProfilePhoto(data)
                     }
-                    SettingProfileFragment.REQUEST_CODE_CHANGE_NAME -> {
-                        showNormalToaster(getString(change_name_success_v2))
+                    REQUEST_CODE_CHANGE_NAME -> {
+                        showNormalToaster(getString(change_name_success))
                     }
-                    SettingProfileFragment.REQUEST_CODE_ADD_BOD -> {
-                        showNormalToaster(getString(success_add_bod_v2))
+                    REQUEST_CODE_ADD_BOD -> {
+                        showNormalToaster(getString(success_add_bod))
                     }
-                    SettingProfileFragment.REQUEST_CODE_EDIT_BOD -> {
-                        showNormalToaster(getString(success_change_bod_v2))
+                    REQUEST_CODE_EDIT_BOD -> {
+                        showNormalToaster(getString(success_change_bod))
                     }
-                    SettingProfileFragment.REQUEST_CODE_EDIT_PHONE -> {
-                        showNormalToaster(getString(success_change_phone_number_v2))
+                    REQUEST_CODE_EDIT_PHONE -> {
+                        showNormalToaster(getString(success_change_phone_number))
                     }
-                    SettingProfileFragment.REQUEST_CODE_ADD_EMAIL -> {
-                        showNormalToaster(getString(success_add_email_v2))
+                    REQUEST_CODE_ADD_EMAIL -> {
+                        showNormalToaster(getString(success_add_email))
                     }
-                    SettingProfileFragment.REQUEST_CODE_ADD_PHONE -> {
-                        showNormalToaster(getString(success_add_phone_v2))
+                    REQUEST_CODE_ADD_PHONE -> {
+                        showNormalToaster(getString(success_add_phone))
                     }
-                    SettingProfileFragment.REQUEST_CODE_VERIFY_PHONE -> {
+                    REQUEST_CODE_VERIFY_PHONE -> {
                         showNormalToaster(getString(success_verify_phone))
                     }
-                    SettingProfileFragment.REQUEST_CODE_ADD_GENDER -> {
-                        showNormalToaster(getString(success_add_gender_v2))
+                    REQUEST_CODE_ADD_GENDER -> {
+                        showNormalToaster(getString(success_add_gender))
                     }
-                    SettingProfileFragment.REQUEST_CODE_CHANGE_EMAIL -> {
-                        showNormalToaster(getString(change_email_change_success_v2))
+                    REQUEST_CODE_CHANGE_EMAIL -> {
+                        showNormalToaster(getString(change_email_change_success))
                     }
-                    SettingProfileFragment.REQUEST_CODE_CHANGE_USERNAME_BIO -> {
+                    REQUEST_CODE_CHANGE_USERNAME_BIO -> {
                         showNormalToaster(
                             data?.getStringExtra(
                                 ChangeBioUsernameFragment.RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO
@@ -269,7 +266,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             }
             else -> {
                 when (requestCode) {
-                    SettingProfileFragment.REQUEST_CODE_ADD_PHONE -> {
+                    REQUEST_CODE_ADD_PHONE -> {
                         AddPhoneNumberTracker().viewPersonalDataPage(false)
                     }
                 }
@@ -391,7 +388,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
                 data.profileInfoData.fullName,
                 data.profileRoleData.chancesChangeName
             )
-            startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_NAME)
+            startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
         } else {
             tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_BOTTOMSHEET)
             openBottomSheetWarning(
@@ -406,7 +403,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         if (data.profileInfoData.email.isEmpty() || !data.profileInfoData.isEmailDone) {
             tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
-            startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_EMAIL)
+            startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
         } else {
             if (data.profileInfoData.msisdn.isNotEmpty() && data.profileInfoData.isMsisdnVerified) {
                 tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
@@ -439,7 +436,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
             tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_GENDER)
             val intent =
                 RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
-            startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_GENDER)
+            startActivityForResult(intent, REQUEST_CODE_ADD_GENDER)
         }
     }
 
@@ -634,7 +631,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         val intent =
             RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.EDIT_PROFILE_INFO)
         intent.putExtra(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM, page)
-        startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_USERNAME_BIO)
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_USERNAME_BIO)
     }
 
     private fun goToChangeEmail() {
@@ -645,7 +642,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
         }.build().toString()
 
         val intent = ProfileSettingWebViewActivity.createIntent(requireContext(), url)
-        startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_EMAIL)
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_EMAIL)
     }
 
     private fun showChangeEmailDialog() {
@@ -686,33 +683,33 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
     private fun goToAddPhone() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
-        startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_PHONE)
+        startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
     private fun goToAddPhoneBy(phone: String) {
         val intent =
             RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
-        startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_VERIFY_PHONE)
+        startActivityForResult(intent, REQUEST_CODE_VERIFY_PHONE)
     }
 
     private fun goToChangePhone(phone: String, email: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-        startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_EDIT_PHONE)
+        startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
     }
 
     private fun goToAddDob() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD_TITLE, getString(title_add_bod))
-        startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_BOD)
+        startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
     }
 
     private fun goToChangeDob(bod: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD_TITLE, getString(title_change_bod))
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD, bod)
-        startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_EDIT_BOD)
+        startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
 
     private fun checkFinancialAssetsIsLoading(isLoading: Boolean) {
@@ -755,6 +752,18 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     }
 
     companion object {
+        const val REQUEST_CODE_EDIT_PHONE = 203
+        const val REQUEST_CODE_EDIT_BOD = 204
+        const val REQUEST_CODE_VERIFY_PHONE = 205
+
+        const val REQUEST_CODE_CHANGE_NAME = 300
+        const val REQUEST_CODE_ADD_BOD = 301
+        const val REQUEST_CODE_ADD_EMAIL = 302
+        const val REQUEST_CODE_ADD_PHONE = 303
+        const val REQUEST_CODE_ADD_GENDER = 304
+        const val REQUEST_CODE_CHANGE_EMAIL = 305
+        const val REQUEST_CODE_CHANGE_USERNAME_BIO = 306
+
         const val MAX_FILE_SIZE = 2048
         const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
         private const val DEFAULT_NAME = "Toppers-"
