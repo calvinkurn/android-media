@@ -651,7 +651,7 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
     }
 
     private fun onDraftClicked(draft: DraftItemModel) {
-        launchCampaignInformationPageWithEditMode(draft.id)
+        launchCampaignInformationPageWithDraftMode(draft.id)
     }
 
     private fun showLoaderDialog() {
@@ -835,6 +835,17 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
 
         val bundle = Bundle()
         bundle.putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.UPDATE)
+        bundle.putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+        starter.putExtras(bundle)
+
+        startActivityForResult(starter, REQUEST_CODE_CREATE_CAMPAIGN_INFO)
+    }
+
+    private fun launchCampaignInformationPageWithDraftMode(campaignId: Long) {
+        val starter = Intent(activity, CampaignInformationActivity::class.java)
+
+        val bundle = Bundle()
+        bundle.putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.DRAFT)
         bundle.putLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID, campaignId)
         starter.putExtras(bundle)
 

@@ -480,6 +480,13 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             binding?.tauVpsPackageName?.disable()
             binding?.tauVpsPackageName?.icon1?.alpha = ALPHA_DISABLED
         }
+
+        if (pageMode == PageMode.DRAFT) {
+            binding?.loader?.visible()
+            binding?.groupContent?.gone()
+            viewModel.getCampaignDetail(campaignId)
+            binding?.btnDraft?.gone()
+        }
     }
 
     private fun handleCoachMark() {
@@ -966,7 +973,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             if (result.isSuccess) {
                 activity?.apply {
                     // handle campaign save draft is not opened from campaign list case
-                    if (pageMode == PageMode.UPDATE) {
+                    if (pageMode == PageMode.UPDATE || pageMode == PageMode.DRAFT) {
                         CampaignListActivity.start(
                             this,
                             isSaveDraft = true,
