@@ -16,6 +16,7 @@ import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
@@ -227,7 +228,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** Setup */
     private fun setupView() {
         binding.toolbarContentCommon.apply {
-            title = getString(com.tokopedia.content.common.R.string.feed_content_post_sebagai)
+            title = getString(contentCommonR.string.feed_content_post_sebagai)
             subtitle = parentViewModel.getShopName()
             icon = parentViewModel.getShopIconUrl()
             navIcon = CLOSE
