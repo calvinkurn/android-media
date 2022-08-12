@@ -39,6 +39,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBinding,
@@ -501,9 +502,9 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                             // Use longer delay for reset qty, to support automation
                             delay(QUANTITY_RESET_DELAY)
                         }
-                        if (element.getQuantity() != newValue) {
+                        if (isActive && element.getQuantity() != newValue) {
                             validateQty(newValue, element)
-                            if (newValue != 0) {
+                            if (isActive && newValue != 0) {
                                 element.setQuantity(newValue)
                                 listener.onQuantityChanged(element, newValue)
                             }
@@ -550,11 +551,15 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 qtyEditorProduct.addButton.isEnabled = false
                 qtyEditorProduct.subtractButton.isEnabled = false
             } else if (newValue >= maxOrder) {
-                qtyEditorProduct.setValue(maxOrder)
+                if (newValue > maxOrder) {
+                    qtyEditorProduct.setValue(maxOrder)
+                }
                 qtyEditorProduct.addButton.isEnabled = false
                 qtyEditorProduct.subtractButton.isEnabled = true
             } else if (newValue <= minOrder) {
-                qtyEditorProduct.setValue(minOrder)
+                if (newValue < minOrder) {
+                    qtyEditorProduct.setValue(minOrder)
+                }
                 qtyEditorProduct.addButton.isEnabled = true
                 qtyEditorProduct.subtractButton.isEnabled = false
             } else {
