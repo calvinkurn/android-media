@@ -17,7 +17,7 @@ class WishlistV2CleanerBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vi
     private var selectedOption = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = BottomsheetWishlistStorageCleanerItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+        val binding = BottomsheetWishlistStorageCleanerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return WishlistV2CleanerOptionItemViewHolder(binding)
     }
 
@@ -53,7 +53,7 @@ class WishlistV2CleanerBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vi
                 binding.wishlistCleanerOptionIconCheck.visibility = if (selectedOption == adapterPosition) View.VISIBLE else View.GONE
             }
 
-            binding.root.setOnClickListener {
+            binding.clCleanerItem.setOnClickListener {
                 selectItem(adapterPosition)
             }
         }
