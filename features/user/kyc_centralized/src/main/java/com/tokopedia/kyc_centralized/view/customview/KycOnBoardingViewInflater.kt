@@ -42,7 +42,7 @@ object KycOnBoardingViewInflater {
         }
     }
 
-    fun setupKycBenefitView(activity: FragmentActivity?, view: View, mainAction: () -> Unit, closeButtonAction: () -> Unit, onCheckedChanged: (Boolean) -> Unit) {
+    fun setupKycBenefitView(activity: FragmentActivity?, view: View, mainAction: () -> Unit, closeButtonAction: () -> Unit, onCheckedChanged: (Boolean) -> Unit, onTncClicked: () -> Unit) {
         val kycBenefitImage = view.findViewById<ImageUnify>(R.id.image_banner)
         kycBenefitImage?.cornerRadius = 0
         kycBenefitImage.loadImage(KycUrl.KYC_BENEFIT_BANNER)
@@ -93,7 +93,6 @@ object KycOnBoardingViewInflater {
         val spannable = SpannableString(sourceString)
         spannable.setSpan(object : ClickableSpan() {
             override fun onClick(view: View) {
-                println("clickbree")
                 RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${URL_TNC}")
             }
             override fun updateDrawState(ds: TextPaint) {
