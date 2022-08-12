@@ -9,6 +9,10 @@ class FirstScreenState(private val mCaption: String, private val mQuestion: Stri
         return R.drawable.rating_active_1
     }
 
+    override fun getMessageColor(): Int {
+        return R.color.csat_dms_rating_active_1
+    }
+
     override fun getMessage(): String {
         return mCaption
     }

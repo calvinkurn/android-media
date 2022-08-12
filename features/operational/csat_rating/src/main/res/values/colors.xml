@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="message_color_bad">#ff4f00</color>
-    <color name="message_color_neutral">#fec100</color>
-    <color name="message_color_good">#00ac47</color>
     <color name="csat_dms_reaction_green">#03AC0E</color>
     <color name="csat_dms_rating_active_1">#f80454</color>
     <color name="csat_dms_rating_active_2">#ff5c00</color>
