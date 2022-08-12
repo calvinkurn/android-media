@@ -162,7 +162,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private var loaderDialog: LoaderDialog?=null
     private var fromEdit = false
     private var firstTimeStart = false
+    private var firstDateStart = false
     private var firstTimeEnd = false
+    private var firstDateEnd = false
     private var voucherId = 0
     private var errorCount = 0
     private var prefManager: TmPrefManager? = null
@@ -1153,7 +1155,6 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            continueCoupon(it)
         } else {
             noInternetUi { continueCoupon(it) }
         }
@@ -1504,15 +1505,14 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 defaultCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
             }
             val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
-            calendarMax.time = defaultCalendar.time
             minCalendar.time = defaultCalendar.time
-            calendarMax.time = defaultCalendar.time
-            if(tmCouponStartDateUnix != null && type == 0){
+            if(tmCouponStartDateUnix != null && type == 0 && firstDateStart){
                 defaultCalendar.time = tmCouponStartDateUnix?.time
             }
-            if(tmCouponEndDateUnix != null && type == 1){
+            if(tmCouponEndDateUnix != null && type == 1 && firstDateEnd){
                 defaultCalendar.time = tmCouponEndDateUnix?.time
             }
+            calendarMax.time = defaultCalendar.time
             calendarMax.add(Calendar.YEAR, 1)
 
             val datepickerObject = DateTimePickerUnify(it, minCalendar, defaultCalendar, calendarMax).apply {
@@ -1540,12 +1540,18 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                         textField.textInputLayout.editText?.setText(( "$dayInId,$date $month $year"))
                         when (type) {
                             0 -> {
+                                firstDateStart = true
                                 tmCouponStartDateUnix = selectedCalendar
-                                tmCouponStartTimeUnix = selectedCalendar
+                                if(!firstTimeStart) {
+                                    tmCouponStartTimeUnix = selectedCalendar
+                                }
                             }
                             1 -> {
+                                firstDateEnd = true
                                 tmCouponEndDateUnix = selectedCalendar
-                                tmCouponEndTimeUnix = selectedCalendar
+                                if(!firstTimeEnd) {
+                                    tmCouponEndTimeUnix = selectedCalendar
+                                }
                             }
                         }
                         dismiss()
@@ -1629,7 +1635,10 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             if (year != null) {
                                 startTime?.set(Calendar.YEAR, year)
                             }
+                            startTime?.set(Calendar.HOUR_OF_DAY, timePicker.hourPicker.activeValue.toInt())
+                            startTime?.set(Calendar.MINUTE, timePicker.minutePicker.activeValue.toInt())
                             tmCouponStartTimeUnix = startTime
+                            tmCouponStartTimeUnix?.time?.let { it1 -> TmDateUtil.convertDateTime(it1) }
                             firstTimeStart = true
                         }
                         1 -> {
@@ -1646,7 +1655,10 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                             if (year != null) {
                                 startTime?.set(Calendar.YEAR, year)
                             }
+                            startTime?.set(Calendar.HOUR_OF_DAY, timePicker.hourPicker.activeValue.toInt())
+                            startTime?.set(Calendar.MINUTE, timePicker.minutePicker.activeValue.toInt())
                             tmCouponEndTimeUnix = startTime
+                            tmCouponEndTimeUnix?.time?.let { it1 -> TmDateUtil.convertDateTime(it1) }
                             firstTimeEnd = true
                         }
                     }

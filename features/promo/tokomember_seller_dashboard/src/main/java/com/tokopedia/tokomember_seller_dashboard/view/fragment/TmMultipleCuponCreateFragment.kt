@@ -162,6 +162,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private var periodMonth = 0
     private var firstTimeStart = false
     private var firstTimeEnd = false
+    private var tmCouponStartTimeUnix : Calendar? = null
+    private var tmCouponEndTimeUnix : Calendar? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -1251,11 +1253,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     set(Calendar.MINUTE, 0)
                 }
 
-            if(startTime != null && type == 0 && firstTimeStart){
-                defaultTime.time = startTime?.time
+            if(tmCouponStartTimeUnix != null && type == 0 && firstTimeStart){
+                defaultTime.time = tmCouponStartTimeUnix?.time
             }
-            if(startTime != null && type == 1 && firstTimeEnd){
-                defaultTime.time = startTime?.time
+            if(tmCouponEndTimeUnix != null && type == 1 && firstTimeEnd){
+                defaultTime.time = tmCouponEndTimeUnix?.time
             }
 
             val timerPickerUnify = DateTimePickerUnify(
@@ -1270,24 +1272,27 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 setInfoVisible(true)
                 minuteInterval = 30
                 datePickerButton.setOnClickListener {
-                    startTime = getDate()
                     selectedHour = timePicker.hourPicker.activeValue
                     selectedMinute = timePicker.minutePicker.activeValue
 
                     when (type) {
                         0 -> {
+                            startTime = getDate()
                             firstTimeStart = true
                             couponStartTime = "$selectedHour:$selectedMinute"
                             updatedStartTimeCoupon = startTime?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
                             }.toString()
+                            tmCouponStartTimeUnix = startTime
                         }
                         1 -> {
+                            startTime = getDate()
                             firstTimeEnd = true
                             couponEndTime = "$selectedHour:$selectedMinute"
                             updatedEndTimeCoupon = startTime?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
                             }.toString()
+                            tmCouponEndTimeUnix = startTime
                         }
                     }
                     dismiss()
