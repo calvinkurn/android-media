@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -41,6 +42,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
@@ -538,6 +540,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                         intent.putExtra(ChooseAddressBottomSheet.EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
                         intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
                         intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
+                        intent.putExtra(PARAM_SOURCE, AddEditAddressSource.TOKOFOOD.source)
                         startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
                     } else {
                         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)

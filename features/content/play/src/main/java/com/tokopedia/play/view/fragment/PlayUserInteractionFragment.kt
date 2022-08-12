@@ -546,7 +546,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
         playViewModel.submitAction(
             PlayViewerNewAction.StartPlayingInteractive)
-            analytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), interactiveType = playViewModel.interactiveData)
+            newAnalytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), interactiveType = playViewModel.interactiveData, channelId = playViewModel.channelId)
     }
     //endregion
 
@@ -957,10 +957,6 @@ class PlayUserInteractionFragment @Inject constructor(
                             message = getString(R.string.play_sharing_error_generate_link),
                             actionText = getString(R.string.play_sharing_refresh),
                         )
-                    }
-                    QuizAnsweredEvent -> {
-                        delay(FADE_TRANSITION_DELAY)
-                        InteractiveDialogFragment.get(childFragmentManager)?.dismiss()
                     }
                     OpenKebabEvent -> {
                         playViewModel.onShowKebabMenuSheet()
@@ -1545,6 +1541,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 )
                 interactiveActiveView?.show()
                 interactiveFinishView?.hide()
+
+                playViewModel.submitAction(PlayViewerNewAction.AutoOpenInteractive)
             }
             InteractiveUiModel.Giveaway.Status.Finished -> {
                 interactiveActiveView?.hide()
@@ -1571,7 +1569,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 )
                 interactiveActiveView?.show()
                 interactiveFinishView?.hide()
-                analytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = state.id)
+                newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = state.id, channelId = playViewModel.channelId)
             }
             InteractiveUiModel.Quiz.Status.Finished -> {
                 interactiveActiveView?.hide()
@@ -1610,7 +1608,7 @@ class PlayUserInteractionFragment @Inject constructor(
         if (state.shouldShow) {
             interactiveResultView?.show()
             if(playViewModel.interactiveData is InteractiveUiModel.Unknown) return
-            analytic.impressWinnerBadge(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
+            newAnalytic.impressWinnerBadge(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id, channelId = playViewModel.channelId)
         }
         else interactiveResultView?.hide()
     }
@@ -1845,10 +1843,12 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
         playViewModel.submitAction(InteractiveGameResultBadgeClickedAction(bottomSheetMaxHeight))
-        analytic.clickWinnerBadge(
+        newAnalytic.clickWinnerBadge(
             shopId = playViewModel.partnerId.toString(),
             interactiveId = playViewModel.interactiveData.id,
-            interactiveType = playViewModel.interactiveData
+            interactiveType = playViewModel.interactiveData,
+            channelId = playViewModel.channelId,
+            channelType = playViewModel.channelType
         )
     }
 

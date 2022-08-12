@@ -1,6 +1,7 @@
 package com.tokopedia.play.analytic
 
 import com.tokopedia.play.analytic.campaign.PlayCampaignAnalytic
+import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
 import com.tokopedia.play.analytic.share.PlayShareExperienceAnalytic
@@ -12,36 +13,38 @@ import com.tokopedia.track.builder.Tracker
 import javax.inject.Inject
 
 /**
- * Created by kenny.hadisaputra on 26/07/22
+ * Created by jegul on 09/07/21
  */
 class PlayNewAnalytic @Inject constructor(
-    partnerAnalytic: PlayPartnerAnalytic,
-    likeAnalytic: PlayLikeAnalytic,
-    socketAnalytic: PlaySocketAnalytic,
-    upcomingAnalytic: PlayUpcomingAnalytic,
-    shareExperienceAnalytic: PlayShareExperienceAnalytic,
-    campaignAnalytic: PlayCampaignAnalytic,
-    tokoNowAnalytic: PlayTokoNowAnalytic,
+        partnerAnalytic: PlayPartnerAnalytic,
+        likeAnalytic: PlayLikeAnalytic,
+        socketAnalytic: PlaySocketAnalytic,
+        upcomingAnalytic: PlayUpcomingAnalytic,
+        shareExperienceAnalytic: PlayShareExperienceAnalytic,
+        campaignAnalytic: PlayCampaignAnalytic,
+        interactiveAnalytic: PlayInteractiveAnalytic,
+        tokoNowAnalytic: PlayTokoNowAnalytic
 ) : PlayPartnerAnalytic by partnerAnalytic,
-    PlayLikeAnalytic by likeAnalytic,
-    PlaySocketAnalytic by socketAnalytic,
-    PlayUpcomingAnalytic by upcomingAnalytic,
-    PlayShareExperienceAnalytic by shareExperienceAnalytic,
-    PlayCampaignAnalytic by campaignAnalytic,
-    PlayTokoNowAnalytic by tokoNowAnalytic {
+        PlayLikeAnalytic by likeAnalytic,
+        PlaySocketAnalytic by socketAnalytic,
+        PlayUpcomingAnalytic by upcomingAnalytic,
+        PlayShareExperienceAnalytic by shareExperienceAnalytic,
+        PlayCampaignAnalytic by campaignAnalytic,
+        PlayInteractiveAnalytic by interactiveAnalytic,
+        PlayTokoNowAnalytic by tokoNowAnalytic {
 
-    fun clickLihatToasterAtcPinnedProductCarousel(
-        channelId: String,
-        channelType: PlayChannelType,
-    ) {
-        Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_CONTENT)
-            .setEventAction("click - pinned lihat keranjang")
-            .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - ${channelType.value}")
-            .setBusinessUnit(VAL_BUSINESS_UNIT)
-            .setCurrentSite(VAL_CURRENT_SITE)
-            .build()
-            .send()
-    }
+        fun clickLihatToasterAtcPinnedProductCarousel(
+                channelId: String,
+                channelType: PlayChannelType,
+        ) {
+                Tracker.Builder()
+                        .setEvent(KEY_TRACK_CLICK_CONTENT)
+                        .setEventAction("click - pinned lihat keranjang")
+                        .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
+                        .setEventLabel("$channelId - ${channelType.value}")
+                        .setBusinessUnit(VAL_BUSINESS_UNIT)
+                        .setCurrentSite(VAL_CURRENT_SITE)
+                        .build()
+                        .send()
+        }
 }

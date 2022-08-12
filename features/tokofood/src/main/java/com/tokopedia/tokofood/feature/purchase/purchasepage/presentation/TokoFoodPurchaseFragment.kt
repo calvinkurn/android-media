@@ -28,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -40,6 +41,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
@@ -968,6 +970,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun onTextChangeShippingAddressClicked() {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS).apply {
             putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
+            putExtra(PARAM_SOURCE, ManageAddressSource.TOKOFOOD.source)
         }
         startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }

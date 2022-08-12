@@ -38,8 +38,6 @@
     <string name="seller_migration_fragment_product_tab_multi_edit_description">Ubah info stok dan harga produk dalam waktu bersamaan.</string>
     <string name="seller_migration_fragment_product_tab_featured_product_title">PRODUK UNGGULAN</string>
     <string name="seller_migration_fragment_product_tab_featured_product_description">Tampilkan 5 produk andalan dan tarik perhatian pembeli.</string>
-    <string name="seller_migration_fragment_product_tab_set_cashback_title">ATUR CASHBACK</string>
-    <string name="seller_migration_fragment_product_tab_set_cashback_description">Berikan cashback senilai 3% - 5% ke pembeli.</string>
     <string name="seller_migration_fragment_product_tab_stock_reminder_title">PENGINGAT STOK</string>
     <string name="seller_migration_fragment_product_tab_stock_reminder_description">Hindari stok kosong di tokomu dengan fitur pengingat.</string>
 
