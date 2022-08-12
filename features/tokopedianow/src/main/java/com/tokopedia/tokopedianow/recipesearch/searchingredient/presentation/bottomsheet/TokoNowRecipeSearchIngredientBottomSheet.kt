@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.recipesearch.searchingredient.presentation.bottomsheet
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowRecipeSearchIngredientBinding
@@ -19,6 +22,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
 
     companion object {
+        const val EXTRA_SEARCH_BY_INGREDIENT_IDS = "EXTRA_SEARCH_BY_INGREDIENT_IDS"
+
         private val TAG = TokoNowRecipeSearchIngredientBottomSheet::class.simpleName
 
         fun newInstance(): TokoNowRecipeSearchIngredientBottomSheet {
@@ -27,7 +32,7 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
     }
 
     private var binding by autoClearedNullable<BottomsheetTokopedianowRecipeSearchIngredientBinding>()
-    private var recipeCheckedCounter: Int = 0
+    private var recipeIdsChecked: ArrayList<String> = arrayListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView()
@@ -99,7 +104,7 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
                     id = "123",
                     imgUrl = "https://cdn1-production-images-kly.akamaized.net/3hVTEoX_tJ0lFq3_q8NoQB0hmZI=/1280x720/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3133148/original/027517900_1589942784-Raw_Fresh_Meat_With_Rosemary.jpg",
                     title = "Daging Mentah",
-                    isChecked = true
+                    isChecked = false
                 ),
                 RecipeSearchIngredientUiModel(
                     id = "124",
@@ -117,7 +122,25 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
                     id = "123",
                     imgUrl = "https://cdn1-production-images-kly.akamaized.net/3hVTEoX_tJ0lFq3_q8NoQB0hmZI=/1280x720/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3133148/original/027517900_1589942784-Raw_Fresh_Meat_With_Rosemary.jpg",
                     title = "Daging Mentah",
-                    isChecked = true
+                    isChecked = false
+                ),
+                RecipeSearchIngredientUiModel(
+                    id = "124",
+                    imgUrl = "https://cdn1-production-images-kly.akamaized.net/3hVTEoX_tJ0lFq3_q8NoQB0hmZI=/1280x720/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3133148/original/027517900_1589942784-Raw_Fresh_Meat_With_Rosemary.jpg",
+                    title = "Daging Segar",
+                    isChecked = false
+                ),
+                RecipeSearchIngredientUiModel(
+                    id = "125",
+                    imgUrl = "https://cdn1-production-images-kly.akamaized.net/3hVTEoX_tJ0lFq3_q8NoQB0hmZI=/1280x720/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3133148/original/027517900_1589942784-Raw_Fresh_Meat_With_Rosemary.jpg",
+                    title = "Daging Aja",
+                    isChecked = false
+                ),
+                RecipeSearchIngredientUiModel(
+                    id = "123",
+                    imgUrl = "https://cdn1-production-images-kly.akamaized.net/3hVTEoX_tJ0lFq3_q8NoQB0hmZI=/1280x720/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3133148/original/027517900_1589942784-Raw_Fresh_Meat_With_Rosemary.jpg",
+                    title = "Daging Mentah",
+                    isChecked = false
                 ),
                 RecipeSearchIngredientUiModel(
                     id = "124",
@@ -134,7 +157,7 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
             )
             adapter.submitList(recipes)
             // get how many items are checked
-            recipeCheckedCounter = recipes.filter { it.isChecked }.size
+            recipes.filter { it.isChecked }.map { it.id }.toCollection(recipeIdsChecked)
             showHideSearchButton(this)
 
             tpSubtitle.text = getString(R.string.tokopedianow_recipe_search_ingredient_subtitle_bottomsheet)
@@ -144,12 +167,12 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
     }
 
     private fun recipeSearchIngredientCallback() = object : RecipeSearchIngredientViewHolder.RecipeSearchIngredientListener {
-        override fun onCheckRecipe(isChecked: Boolean) {
+        override fun onCheckRecipe(isChecked: Boolean, id: String) {
             binding?.apply {
                 if (isChecked) {
-                    recipeCheckedCounter++
+                    recipeIdsChecked.add(id)
                 } else {
-                    recipeCheckedCounter--
+                    recipeIdsChecked.remove(id)
                 }
                 showHideSearchButton(this)
             }
@@ -158,15 +181,27 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
 
     private fun showHideSearchButton(binding: BottomsheetTokopedianowRecipeSearchIngredientBinding) {
         binding.apply {
-            val isShown = recipeCheckedCounter != 0
+            val isShown = recipeIdsChecked.size.isMoreThanZero()
             if (isShown) {
-                ubSearchBtn.text = getString(R.string.tokopedianow_recipe_search_ingredient_button_bottomsheet, recipeCheckedCounter)
+                ubSearchBtn.setOnClickListener {
+                    clickSearchBtn()
+                }
+                ubSearchBtn.text = getString(R.string.tokopedianow_recipe_search_ingredient_button_bottomsheet, recipeIdsChecked.size)
                 ubSearchBtn.show()
                 cvSearchBtnBackground.show()
             } else {
                 ubSearchBtn.hide()
                 cvSearchBtnBackground.hide()
             }
+        }
+    }
+
+    private fun clickSearchBtn() {
+        val intent = Intent()
+        intent.putStringArrayListExtra(EXTRA_SEARCH_BY_INGREDIENT_IDS, recipeIdsChecked)
+        activity?.run {
+            setResult(Activity.RESULT_OK, intent)
+            finish()
         }
     }
 }
