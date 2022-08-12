@@ -240,6 +240,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 analytic.clickCloseOnPreparation()
                 activity?.onBackPressed()
             }
+            if (viewModel.isFirstSwitchAccount) {
+                showCoachMarkSwitchAccount()
+                viewModel.setNotFirstSwitchAccount()
+            }
         }
         binding.formTitle.setMaxCharacter(viewModel.maxTitleChars)
     }

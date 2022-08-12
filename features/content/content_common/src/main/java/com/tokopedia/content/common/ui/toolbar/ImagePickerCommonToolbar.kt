@@ -8,19 +8,20 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getColor
-import com.tokopedia.content.common.databinding.ImagepickerInstaComToolbarBinding
-import com.tokopedia.content.common.ui.toolbar.ContentColor.LIGHT
-import com.tokopedia.content.common.ui.toolbar.ContentColor.DARK
-import com.tokopedia.content.common.ui.toolbar.ContentColor.TRANSPARENT
-import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
-import com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-import com.tokopedia.unifyprinciples.R.color.Unify_NN0
-import com.tokopedia.unifyprinciples.R.color.Unify_NN400
-import com.tokopedia.content.common.R.color.soft_gray
-import com.tokopedia.content.common.R.color.soft_dark
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.R.color.Unify_NN1000
 import com.tokopedia.content.common.R.color.Unify_NN950
+import com.tokopedia.content.common.R.color.soft_dark
+import com.tokopedia.content.common.R.color.soft_gray
+import com.tokopedia.content.common.databinding.ImagepickerInstaComToolbarBinding
+import com.tokopedia.content.common.ui.toolbar.ContentColor.*
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.unifyprinciples.R.color.Unify_NN0
+import com.tokopedia.unifyprinciples.R.color.Unify_NN400
+import com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+import com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+import com.tokopedia.content.common.R as contentCommonR
 
 class ImagePickerCommonToolbar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -29,6 +30,7 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
     private var mOnClickListener: AccountClickListener? = null
     private var mOnBackListener: BackClickListener? = null
     private var mBinding = ImagepickerInstaComToolbarBinding.inflate(LayoutInflater.from(context), this)
+    private lateinit var coachMark: CoachMark2
 
     init {
         initViews()
@@ -119,6 +121,24 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
 
         showHideExpandIcon(mOnClickListener != null)
     }
+
+    fun showCoachMarkSwitchAccount() {
+        coachMark = CoachMark2(context)
+        coachMark.showCoachMark(
+            arrayListOf(
+                CoachMark2Item(
+                    mBinding.textComToolbarSubtitle,
+                    context.getString(contentCommonR.string.sa_coach_mark_title),
+                    context.getString(contentCommonR.string.sa_coach_mark_subtitle),
+                )
+            )
+        )
+    }
+
+    fun hideCoachMarkSwitchAccount() {
+        coachMark.dismissCoachMark()
+    }
+
 }
 
 typealias AccountClickListener = () -> Unit

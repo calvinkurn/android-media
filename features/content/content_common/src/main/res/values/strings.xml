@@ -90,4 +90,8 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="cc_global_search_shop_query_not_found_title">Oops, tokonya nggak ketemu</string>
     <string name="cc_global_search_shop_query_not_found_desc">Coba periksa lagi kata kunci atau cek rekomendasi lainnya.</string>
 
+    <!--SWITCHING ACCOUNT-->
+    <string name="sa_coach_mark_title">Bisa ganti profil sesukamu, dong~</string>
+    <string name="sa_coach_mark_subtitle">Kini kamu bisa ganti ke profil toko atau jadi pembeli buat live di Tokopedia Play!</string>
+
 </resources>
