@@ -139,29 +139,48 @@ object CommonTopupbillsDummyData {
         )
     }
 
-    fun getDummyCartDataWithErrors(): ResponseCartData{
-        return ResponseCartData(
-            type = "cart",
-            id = "id",
-            errors = listOf(
-                ErrorAtc(
-                    0,
-                    "error unverified phone number",
-                    "tokopedia://home",
-                    AtcErrorPage(
-                        true,
-                        "Error unverified phone number",
-                        "your number phone is unverified",
-                        listOf(
-                            AtcErrorButton(
-                                "Verify Number Phone",
-                                "https://tokopedia.com",
-                                "tokopedia://home"
-                            )
-                        )
+    fun getDummyCartDataWithErrors(): ErrorAtc{
+        return ErrorAtc(
+            status = 400,
+            title = "this is an error",
+            atcErrorPage = AtcErrorPage(
+                isShowErrorPage = true,
+                title = "Waduh Ada Error",
+                subTitle = "Hayolo Ada Error",
+                imageUrl = "https://images.tokopedia.net/img/verify_account.png",
+                buttons = listOf(
+                    AtcErrorButton(
+                        label = "Tambah Nomor HP",
+                        url = "https://tokopedia.com",
+                        appLinkUrl = "tokopedia://home",
+                        type = "primary"
                     )
                 )
             )
         )
     }
+
+    fun getRawErrors(): String = """
+        {
+            "errors": [
+                {
+                    "id": "1104"
+                    "status": 400,
+                    "title": "this is an error",
+                    "error_page": {
+                      "show_error_page": true,
+                      "title": "Waduh Ada Error",
+                      "subtitle": "Hayolo Ada Error",
+                      "image_url": "https://images.tokopedia.net/img/verify_account.png",
+                      "buttons": [
+                        "label": "Tambah Nomor HP",
+                        "url": "https://tokopedia.com",
+                        "applink_url": "tokopedia://home",
+                        "type": "primary"
+                      ] 
+                    }
+                }
+            ]
+        }
+    """.trimIndent()
 }

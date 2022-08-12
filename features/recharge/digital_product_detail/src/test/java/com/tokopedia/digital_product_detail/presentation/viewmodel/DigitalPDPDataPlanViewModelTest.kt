@@ -450,7 +450,7 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
         val error = DigitalAtcErrorException(dataFactory.getErrors())
         onGetAddToCart_thenReturn(error)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "")
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
     }
