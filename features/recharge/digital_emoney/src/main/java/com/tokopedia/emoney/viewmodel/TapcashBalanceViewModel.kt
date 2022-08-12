@@ -173,7 +173,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                     logDebugEmoney(hashMapOf(EMONEY_TAPC_TIME_WRITE_TAG to getTimeDifferences(startTimeWrite, endTimeWrite)))
                     logDebugAllEmoney()
 
-                    tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(secureResultString, 4, 10)))
+                    tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(secureResultString, positionRandomPurseBalanceStart, positionRandomPurseBalanceEnd)))
                 }
             } catch (e: IOException) {
                 isoDep.close()
@@ -362,6 +362,9 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
         private const val positionRandomStringStart = 1
         private const val positionRandomStringEnd = 16
+
+        private const val positionRandomPurseBalanceStart = 4
+        private const val positionRandomPurseBalanceEnd = 10
 
         val COMMAND_GET_CHALLENGE = byteArrayOf(
                 0x00.toByte(),  // CLA Class
