@@ -29,13 +29,11 @@ import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPers
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Companion.REQUEST_CODE_CART_DIGITAL
-import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
@@ -87,7 +85,6 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_VERIFY_PHONE_NUMBER
-import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -1125,25 +1122,6 @@ class DigitalPDPDataPlanFragment :
                     startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
                 }
             }.show()
-        }
-    }
-
-    //TODO : the toaster will be replace by ticker
-    private fun showTickerIsUnVerifiedPhoneNumber(){
-        if(!userSession.isMsisdnVerified){
-            view?.let {
-                Toaster.build(
-                    it,
-                    "Mohon verifikasi no - HP mu",
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    "Ok"
-                ) {
-                    RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE).apply {
-                        startActivityForResult(this, REQUEST_CODE_VERIFY_PHONE_NUMBER)
-                    }
-                }.show()
-            }
         }
     }
 

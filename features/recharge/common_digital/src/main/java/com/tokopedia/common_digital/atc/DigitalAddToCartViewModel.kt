@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
-import com.tokopedia.common_digital.atc.data.response.ResponseCartData
-import com.tokopedia.common_digital.atc.utils.DigitalAtcMapper
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.DigitalAtcErrorException
@@ -37,20 +35,17 @@ class DigitalAddToCartViewModel @Inject constructor(
     val addToCartResult: LiveData<Result<String>>
         get() = _addToCartResult
 
+    private val _errorAtc = MutableLiveData<ErrorAtc>()
+    val errorAtc: LiveData<ErrorAtc>
+        get() = _errorAtc
+
+
     fun addToCart(
         digitalCheckoutPassData: DigitalCheckoutPassData,
         digitalIdentifierParam: RequestBodyIdentifier,
         digitalSubscriptionParams: DigitalSubscriptionParams,
         isUseGql: Boolean
     ) {
-    private val _errorAtc = MutableLiveData<ErrorAtc>()
-    val errorAtc: LiveData<ErrorAtc>
-        get() = _errorAtc
-
-
-    fun addToCart(digitalCheckoutPassData: DigitalCheckoutPassData,
-                  digitalIdentifierParam: RequestBodyIdentifier,
-                  digitalSubscriptionParams: DigitalSubscriptionParams) {
         if (!userSession.isLoggedIn) {
             _addToCartResult.postValue(Fail(MessageErrorException(MESSAGE_ERROR_NON_LOGIN)))
         } else {
@@ -71,11 +66,7 @@ class DigitalAddToCartViewModel @Inject constructor(
                     if (it.categoryId.isNotEmpty()) {
                         _addToCartResult.postValue(Success(it.categoryId))
                     } else {
-                        _addToCartResult.postValue(
-                            Success(
-                                digitalCheckoutPassData.categoryId ?: ""
-                            )
-                        )
+                        _addToCartResult.postValue(Success(digitalCheckoutPassData.categoryId ?: ""))
                     }
                     return@launchCatchError
                 }
