@@ -381,7 +381,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelTwo + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
+                Label.labelTwo + " - click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "2646");
     }
 
@@ -412,7 +412,7 @@ public class UserIdentificationCommonAnalytics {
                 Event.CLICK_ACCOUNT,
                 Category.KYC_SUBMISSION_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelThree + " - " + projectID + " - " + getKycType(String.valueOf(projectID))
+                Label.labelThree + " - click - " + projectID + " - " + getKycType(String.valueOf(projectID))
         ), "2646");
     }
 

@@ -77,7 +77,7 @@ object KycOnBoardingViewInflater {
         val chkBox: CheckboxUnify? = view.findViewById(R.id.kyc_benefit_checkbox)
 
         if(activity != null){
-            val spannableString = setupTncText(activity)
+            val spannableString = setupTncText(activity, onTncClicked)
             chkBox?.movementMethod = LinkMovementMethod.getInstance()
             chkBox?.setText(spannableString, TextView.BufferType.SPANNABLE)
             chkBox?.setOnCheckedChangeListener { _, isChecked ->
@@ -88,11 +88,12 @@ object KycOnBoardingViewInflater {
     }
 
 
-    fun setupTncText(activity: FragmentActivity): SpannableString {
+    fun setupTncText(activity: FragmentActivity, onTncClicked: () -> Unit): SpannableString {
         val sourceString = activity.getString(R.string.kyc_consent_text)
         val spannable = SpannableString(sourceString)
         spannable.setSpan(object : ClickableSpan() {
             override fun onClick(view: View) {
+                onTncClicked()
                 RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${URL_TNC}")
             }
             override fun updateDrawState(ds: TextPaint) {
