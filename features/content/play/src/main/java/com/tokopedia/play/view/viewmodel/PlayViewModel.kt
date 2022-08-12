@@ -189,6 +189,7 @@ class PlayViewModel @AssistedInject constructor(
         NetworkResult.Loading
     )
     private val _loadingBuy = MutableStateFlow(false)
+    private val _autoOpenInteractive = MutableStateFlow(false)
     private val _warehouseInfo = MutableStateFlow(WarehouseInfoUiModel.Empty)
 
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
@@ -548,6 +549,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
         }
+
     }
 
     //region lifecycle
@@ -897,6 +899,7 @@ class PlayViewModel @AssistedInject constructor(
             is AtcProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.AddToCart)
             is AtcProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.AddToCart)
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
+            PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
         }
     }
@@ -1423,10 +1426,21 @@ class PlayViewModel @AssistedInject constructor(
         cancelAllDelayFromSocketWinner()
         repo.save(interactive)
         repo.setActive(interactive.id)
+
+        //new game set as first game
+        _autoOpenInteractive.setValue { true }
+
         when (interactive) {
             is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
             is InteractiveUiModel.Quiz -> handleQuizFromNetwork(interactive)
             else -> {}
+        }
+    }
+
+    private fun handleAutoOpen(){
+        if(_autoOpenInteractive.value && !repo.hasJoined(_interactive.value.interactive.id) && !bottomInsets.isAnyShown && !_interactive.value.isPlaying){
+            _autoOpenInteractive.setValue { false }
+            handlePlayingInteractive(shouldPlay = true)
         }
     }
 
@@ -1891,13 +1905,20 @@ class PlayViewModel @AssistedInject constructor(
             repo.setJoined(interactiveId)
 
             updateQuizOptionUi(selectedId = option.id, correctId = response)
-            _uiEvent.emit(QuizAnsweredEvent)
+            handleEventQuizAnswered(option.id == response)
         }) {
+            handleEventQuizAnswered(false)
             setUpQuizOptionLoader(selectedId = option.id, isLoading = false)
             _uiEvent.emit(
                 ShowErrorEvent(it)
             )
         }
+    }
+
+    private fun handleEventQuizAnswered(isCorrect: Boolean) {
+        viewModelScope.launchCatchError(dispatchers.computation, block = {
+            _uiEvent.emit(QuizAnsweredEvent(isCorrect))
+        }){}
     }
 
     private fun updateQuizOptionUi(selectedId: String, correctId: String){
@@ -2001,7 +2022,6 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleClickLike(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_LIKE) {
-
         fun getNewTotalLikes(status: PlayLikeStatus): Pair<Long, String> {
             val currentTotalLike = _channelReport.value.totalLike
             val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
