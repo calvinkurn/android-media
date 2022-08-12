@@ -8,7 +8,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ViewItemAlbumPickerBinding
-import com.tokopedia.media.picker.utils.loadAlbumImage
+import com.tokopedia.media.picker.utils.loadPickerImage
 import com.tokopedia.media.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.picker.common.uimodel.AlbumUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -48,7 +48,7 @@ class AlbumAdapter constructor(
             )
 
             album.preview?.let {
-                binding?.imgPreview?.loadAlbumImage(it.toString())
+                binding?.imgPreview?.loadPickerImage(it.toString())
             }
 
             itemView.setOnClickListener {

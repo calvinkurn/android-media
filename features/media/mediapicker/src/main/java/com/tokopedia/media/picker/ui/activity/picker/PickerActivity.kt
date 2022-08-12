@@ -295,7 +295,9 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        if (!param.get().isIncludeVideoFile()) return false
+        if (!param.get().isIncludeVideoFile()) {
+            return super.dispatchTouchEvent(ev)
+        }
 
         container.cameraFragment()?.run {
             val cameraFragment = this
