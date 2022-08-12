@@ -16,7 +16,7 @@ var offFlag: Boolean? = null,
 
 @SerializedName("sumToken")
 @Expose
-var sumToken: Int? = 0,
+var sumToken: Int? = null,
 
 @SerializedName("sumTokenStr")
 @Expose
@@ -59,15 +59,19 @@ var home: TokenHomeEntity? = null,
                   else if(offFlag!!) 1
                   else 2
         dest?.writeByte(ans.toByte())
-        if(sumToken==null) dest?.writeByte(0.toByte())
+        if(sumToken==null) dest?.writeByte(0)
         else{
-            dest?.writeByte(1.toByte())
+            dest?.writeByte(1)
             dest?.writeInt(sumToken!!)
         }
         dest?.writeString(sumTokenStr)
         dest?.writeString(tokenUnit)
         dest?.writeParcelable(floating, flags)
         dest?.writeParcelable(home, flags)
+    }
+
+    fun isShowCountDown(): Boolean? {
+        return home?.tokensUser?.isShowTime
     }
 
     companion object{

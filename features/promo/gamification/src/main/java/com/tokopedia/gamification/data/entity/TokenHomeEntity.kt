@@ -17,7 +17,7 @@ data class TokenHomeEntity(
 
     @SerializedName("countingMessage")
     @Expose
-    var countingMessage: Array<String> = arrayOf(),
+    var countingMessage: List<String>? = null,
 
     @SerializedName("tokensUser")
     @Expose
@@ -29,7 +29,7 @@ data class TokenHomeEntity(
 
     @SerializedName("tokenSourceMessage")
     @Expose
-    var tokenSourceMessage: Array<String> = arrayOf(),
+    var tokenSourceMessage: List<String>? = null,
 
     @SerializedName("homeActionButton")
     @Expose
@@ -43,8 +43,8 @@ data class TokenHomeEntity(
     protected constructor(@SuppressLint("EntityFieldAnnotation") p:Parcel) : this(){
         buttonApplink = p.readString() ?: ""
         buttonURL = p.readString() ?: ""
-        countingMessage = p.createStringArray() ?: arrayOf()
-        tokenSourceMessage = p.createStringArray() ?: arrayOf()
+        countingMessage = p.createStringArrayList()
+        tokenSourceMessage = p.createStringArrayList()
         tokensUser = p.readParcelable(TokenUserEntity::class.java.classLoader)
         emptyState = p.readParcelable(TokenEmptyStateEntity::class.java.classLoader)
     }
@@ -55,8 +55,8 @@ data class TokenHomeEntity(
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeString(buttonApplink)
         dest?.writeString(buttonURL)
-        dest?.writeStringArray(countingMessage)
-        dest?.writeStringArray(tokenSourceMessage)
+        dest?.writeStringList(countingMessage)
+        dest?.writeStringList(tokenSourceMessage)
         dest?.writeParcelable(tokensUser, flags)
         dest?.writeParcelable(emptyState, flags)
     }

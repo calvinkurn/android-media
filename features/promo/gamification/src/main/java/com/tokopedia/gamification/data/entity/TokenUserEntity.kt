@@ -13,7 +13,7 @@ data class TokenUserEntity(
 
     @SerializedName("campaignID")
     @Expose
-    var campaignID: Int? = null,
+    var campaignID: String = "",
 
     @SerializedName("title")
     @Expose
@@ -44,7 +44,7 @@ data class TokenUserEntity(
         tokenUserID = if (p.readByte().toInt() == 0) null
         else p.readString()
 
-        campaignID = if (p.readByte().toInt() == 0) null else p.readInt()
+        campaignID =  p.readString() ?: ""
 
         title = p.readString() ?: ""
         unixTimestampFetch = if(p.readByte().toInt() == 0) null else p.readInt()
@@ -67,12 +67,7 @@ data class TokenUserEntity(
             dest?.writeByte(1)
             dest?.writeString(tokenUserID)
         }
-        if (campaignID == null) {
-            dest?.writeByte(0)
-        } else {
-            dest?.writeByte(1)
-            dest?.writeInt(campaignID!!)
-        }
+        dest?.writeString(campaignID)
         dest?.writeString(title)
         if (unixTimestampFetch == null) {
             dest?.writeByte(0)

@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 
 data class TokenFloatingEntity(
     @SerializedName("tokenId") @Expose
-    var tokenId: Int? = null,
+    var tokenId: String = "",
 
     @SerializedName("tokenAsset")
 @Expose
@@ -36,14 +36,13 @@ var unixTimestamp: Int? = null,
 ) : Parcelable {
 
     protected constructor(@SuppressLint("EntityFieldAnnotation") p:Parcel) : this(){
-        tokenId = if (p.readByte().toInt() == 0) null
-        else p.readInt()
+        tokenId = p.readString() ?: ""
         tokenAsset = p.readParcelable(TokenAssetEntity::class.java.classLoader)
         pageUrl = p.readString() ?: ""
         applink = p.readString() ?: ""
         timeRemainingSeconds = if (p.readByte().toInt() == 0) null
         else p.readInt()
-        val tmpIsShowTime: Byte = p.readByte()
+        val tmpIsShowTime = p.readByte()
         isShowTime = if (tmpIsShowTime.toInt() == 0) null else tmpIsShowTime.toInt() == 1
         unixTimestamp = if (p.readByte().toInt() == 0) null
         else p.readInt()
@@ -52,12 +51,7 @@ var unixTimestamp: Int? = null,
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        if (tokenId == null) {
-            dest?.writeByte(0)
-        } else {
-            dest?.writeByte(1)
-            dest?.writeInt(tokenId!!)
-        }
+        dest?.writeString(tokenId)
         dest?.writeParcelable(tokenAsset, flags)
         dest?.writeString(pageUrl)
         dest?.writeString(applink)

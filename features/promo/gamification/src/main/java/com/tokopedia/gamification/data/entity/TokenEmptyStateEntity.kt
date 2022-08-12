@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 
 data class TokenEmptyStateEntity(
     @SerializedName("title") @Expose
-    var title: String? = null,
+    var title: String = "",
 
     @SerializedName("buttonText")
 @Expose
@@ -56,9 +56,9 @@ var buttonURL: String = "",
         dest?.writeString(backgroundImgUrl)
         dest?.writeString(imageUrl)
         if (version == null) {
-            dest?.writeByte(0.toByte())
+            dest?.writeByte(0)
         } else {
-            dest?.writeByte(1.toByte())
+            dest?.writeByte(1)
             dest?.writeInt(version!!)
         }
     }
