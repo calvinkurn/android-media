@@ -2,12 +2,9 @@ package com.tokopedia.play.analytic.robot
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Context
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert
