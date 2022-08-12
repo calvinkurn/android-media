@@ -9,6 +9,7 @@ import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
@@ -109,7 +110,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 logDebugEmoney(hashMapOf("$EMONEY_TIME_CALL_TAG$loopTime" to getTimeDifferences(startTimeCallGql, endTimeCallGql)))
 
                 if (it.status == 0) {
-                    writeBalanceToCard(it.payload, balanceRawQuery, data.emoneyInquiry.id.toInt(), mapAttributesParam)
+                    writeBalanceToCard(it.payload, balanceRawQuery, data.emoneyInquiry.id.toIntSafely(), mapAttributesParam)
                 } else {
                     logDebugAllEmoney()
                     emoneyInquiry.postValue(data.emoneyInquiry)
