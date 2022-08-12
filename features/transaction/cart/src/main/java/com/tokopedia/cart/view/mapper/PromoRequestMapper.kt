@@ -33,16 +33,30 @@ object PromoRequestMapper {
                     productDetails = tmpProductDetails
                     promoData?.let {
                         if (it is PromoUiModel) {
-                            codes = getPromoCodesFromValidateUseByUniqueId(it, cartShopHolderData).toMutableList()
+                            codes = getPromoCodesFromValidateUseByUniqueId(
+                                it,
+                                cartShopHolderData,
+                            ).toMutableList()
+
+                            val (a, b) = getShippingFromValidateUseByUniqueId(
+                                it,
+                                cartShopHolderData,
+                            )
+                            shippingId = a
+                            spId = b
                         } else if (it is LastApplyPromo) {
-                            codes = getPromoCodesFromLastApplyByUniqueId(it, cartShopHolderData).toMutableList()
+                            codes = getPromoCodesFromLastApplyByUniqueId(
+                                it,
+                                cartShopHolderData,
+                            ).toMutableList()
+                            val (a, b) = getShippingFromLastApplyByUniqueId(
+                                it,
+                                cartShopHolderData,
+                            )
+                            shippingId = a
+                            spId = b
                         }
                     }
-                    // TODO: andriyan: dynamic shippingId & spId from PromoUiModel/LastApplyPromo with matching uniqueId
-                    // If found shippingId > 0, then directly set
-                    // Else keeps looping until end
-                    shippingId = 0
-                    spId = 0
                     shopId = cartShopHolderData.shopId.toLongOrZero()
                     uniqueId = cartShopHolderData.cartString
                 }
@@ -94,7 +108,32 @@ object PromoRequestMapper {
         return cartShopHolderData.promoCodes
     }
 
-    fun generateCouponListRequestParams(promoData: Any?, availableCartShopHolderDataList: List<CartShopHolderData>): PromoRequest {
+    private fun getShippingFromLastApplyByUniqueId(
+        lastApplyPromo: LastApplyPromo,
+        cartShopHolderData: CartShopHolderData
+    ): Pair<Int, Int> {
+        lastApplyPromo.lastApplyPromoData.listVoucherOrders.forEach { voucherOrder ->
+            if (voucherOrder.uniqueId == cartShopHolderData.cartString) {
+                return Pair(voucherOrder.shippingId, voucherOrder.spId)
+            }
+        }
+        return Pair(0, 0)
+    }
+
+    private fun getShippingFromValidateUseByUniqueId(
+        promoUiModel: PromoUiModel,
+        cartShopHolderData: CartShopHolderData
+    ): Pair<Int, Int> {
+        promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
+            if (voucherOrder.uniqueId == cartShopHolderData.cartString) {
+                return Pair(voucherOrder.shippingId, voucherOrder.spId)
+            }
+        }
+        return Pair(0, 0)
+    }
+
+    fun generateCouponListRequestParams(promoData: Any?, availableCartShopHolderDataList: List<CartShopHolderData>
+    ): PromoRequest {
         val orders = mutableListOf<Order>()
         availableCartShopHolderDataList.forEach { cartShopHolderData ->
             val listProductDetail = mutableListOf<ProductDetail>()
@@ -104,13 +143,12 @@ object PromoRequestMapper {
                     hasCheckedItem = true
                 }
                 val productDetail = ProductDetail(
-                        productId = cartItem.productId.toLong(),
+                    productId = cartItem.productId.toLong(),
                         quantity = cartItem.quantity,
                         bundleId = cartItem.bundleId.toLongOrZero()
                 )
                 listProductDetail.add(productDetail)
             }
-            // todo: andriyan: same here, dynamic set shippingId & spId
             val order = Order(
                     shopId = cartShopHolderData.shopId.toLongOrZero(),
                     uniqueId = cartShopHolderData.cartString,
@@ -132,6 +170,10 @@ object PromoRequestMapper {
                         if (!order.codes.contains(voucherOrder.code)) {
                             order.codes.add(voucherOrder.code)
                         }
+                        if (order.shippingId <= 0)
+                            order.shippingId = voucherOrder.shippingId
+                        if (order.spId <= 0)
+                            order.spId = voucherOrder.spId
                     }
                 }
             }
@@ -144,6 +186,10 @@ object PromoRequestMapper {
                         if (voucherOrders.code.isNotBlank() && !order.codes.contains(voucherOrders.code)) {
                             order.codes.add(voucherOrders.code)
                         }
+                        if (order.shippingId <= 0)
+                            order.shippingId = voucherOrders.shippingId
+                        if (order.spId <= 0)
+                            order.spId = voucherOrders.spId
                     }
                 }
             }
