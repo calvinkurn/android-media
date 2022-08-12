@@ -9,10 +9,24 @@ import java.io.IOException
  * created by @bayazidnasir on 11/8/2022
  */
 
-class DigitalAtcErrorException(private val errorBody: String) :IOException() {
+class DigitalAtcErrorException : IOException {
+
+    private var errorBody: String? = null
 
     override val message: String
         get() = getError().title
+
+    constructor() : super()
+
+    constructor(message: String?) : super(message){
+        this.errorBody = message
+    }
+
+    constructor(message: String?, cause: Throwable?) : super(message, cause){
+        this.errorBody = message
+    }
+
+    constructor(cause: Throwable?) : super(cause)
 
     fun getError(): ErrorAtc{
         return if (parseError().isNotEmpty()){
@@ -23,7 +37,11 @@ class DigitalAtcErrorException(private val errorBody: String) :IOException() {
     }
 
     private fun parseError():List<ErrorAtc>{
-        val json = Gson().fromJson(errorBody, Errors::class.java)
-        return json.errors
+        return if (!errorBody.isNullOrEmpty()){
+            val json = Gson().fromJson(errorBody, Errors::class.java)
+            json.errors
+        }else{
+            emptyList()
+        }
     }
 }
