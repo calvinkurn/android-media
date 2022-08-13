@@ -318,11 +318,19 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindButton(button: UnifyButton, element: ProductBundlingUiModel) {
-        button.text = element.productBundling.ctaBundling?.ctaText
+        button.text = getButtonText(element)
         button.buttonType = UnifyButton.Type.MAIN
         when(element.productBundling.ctaBundling?.isDisabled) {
             false -> bindActiveButton(button, element)
             true -> bindDisabledButton(button)
+        }
+    }
+
+    private fun getButtonText(element: ProductBundlingUiModel): String? {
+        return if (element.blastId != "0") {
+            context?.getString(R.string.action_atc)
+        } else {
+            element.productBundling.ctaBundling?.ctaText
         }
     }
 

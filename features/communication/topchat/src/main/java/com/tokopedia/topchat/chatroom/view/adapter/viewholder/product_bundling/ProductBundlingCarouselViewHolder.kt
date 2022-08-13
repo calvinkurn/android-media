@@ -2,11 +2,9 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling
 
 import android.os.Parcelable
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.MultipleProductBundlingAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ProductBundlingViewHolderBinder
@@ -62,11 +60,11 @@ class ProductBundlingCarouselViewHolder constructor(
         }
     }
 
-    override fun bind(carouselBundling: MultipleProductBundlingUiModel) {
-        super.bind(carouselBundling)
-        syncCarouselProductBundling(carouselBundling)
+    override fun bind(uiModel: MultipleProductBundlingUiModel) {
+        super.bind(uiModel)
+        syncCarouselProductBundling(uiModel)
         ProductBundlingViewHolderBinder.bindProductBundling(
-            multipleProductBundlingAdapter, carouselBundling,
+            multipleProductBundlingAdapter, uiModel,
             ProductBundlingCardAttachmentContainer.BundlingSource.PRODUCT_ATTACHMENT
         )
         ProductBundlingViewHolderBinder.bindScrollState(
