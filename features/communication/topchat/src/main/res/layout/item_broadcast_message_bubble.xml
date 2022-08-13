@@ -143,7 +143,8 @@
         <ImageView
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
-            app:srcCompat="@drawable/ic_green_chevron_right_16dp" />
+            app:srcCompat="@drawable/ic_green_chevron_right_16dp"
+            android:contentDescription="@null"/>
     </LinearLayout>
 
 </LinearLayout>
