@@ -191,12 +191,12 @@ class BitmapCroppingAndCompression constructor(
     private fun getQualityRedcution(bitmap: Bitmap): Float {
         val size = calculateSize(bitmap) / MB_DIVIDER
         return when {
-            size > 2 && size < 3 -> { KycConstant.KycCompressionQuality.Q_70.type }
-            size > 3 && size < 6 -> { KycConstant.KycCompressionQuality.Q_50.type }
-            size > 6 && size < 10 -> { KycConstant.KycCompressionQuality.Q_40.type }
-            size > 10 && size < 15 -> { KycConstant.KycCompressionQuality.Q_30.type }
-            size > 15 -> { KycConstant.KycCompressionQuality.Q_20.type }
-            else -> { KycConstant.KycCompressionQuality.Q_100.type }
+            size > KycConstant.MB_2 && size < KycConstant.MB_3 -> { KycConstant.QUALITY_70 }
+            size > KycConstant.MB_3 && size < KycConstant.MB_6 -> { KycConstant.QUALITY_50 }
+            size > KycConstant.MB_6 && size < KycConstant.MB_10 -> { KycConstant.QUALITY_40 }
+            size > KycConstant.MB_10 && size < KycConstant.MB_15 -> { KycConstant.QUALITY_30 }
+            size > KycConstant.MB_15 -> { KycConstant.QUALITY_20 }
+            else -> { KycConstant.QUALITY_100 }
         }
     }
 

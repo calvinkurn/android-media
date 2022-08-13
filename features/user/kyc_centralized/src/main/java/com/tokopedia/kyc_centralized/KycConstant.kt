@@ -9,12 +9,17 @@ object KycConstant {
     const val PADDING_ZERO = 0
     const val PADDING_0_5F = 0.5f
 
-    enum class KycCompressionQuality(val type: Float){
-        Q_100(100F),
-        Q_70(70F),
-        Q_50(50F),
-        Q_40(40F),
-        Q_30(30F),
-        Q_20(20F)
-    }
+
+    const val QUALITY_100 = 100F
+    const val QUALITY_70 = 70F
+    const val QUALITY_50 = 50F
+    const val QUALITY_40 = 40F
+    const val QUALITY_30 = 30F
+    const val QUALITY_20 = 20F
+
+    const val MB_2 = 2
+    const val MB_3 = 3
+    const val MB_6 = 6
+    const val MB_10 = 10
+    const val MB_15 = 15
 }
