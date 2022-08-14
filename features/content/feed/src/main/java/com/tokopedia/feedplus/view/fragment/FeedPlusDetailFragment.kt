@@ -29,6 +29,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl
@@ -425,7 +426,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
         val desc =
-            context.getString(com.tokopedia.feedcomponent.R.string.feed_detail_share_default_text)
+            context.getString(feedComponentR.string.feed_detail_share_default_text)
                 ?.let {
                     String.format(
                         it, item.product.name, item.shopName, item.priceFmt
@@ -805,7 +806,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<FeedDetailProductModel> {
         var postDescription = ""
         var adClickUrl = ""
-        val desc = context?.getString(com.tokopedia.feedcomponent.R.string.feed_share_default_text)
+        val desc = context?.getString(feedComponentR.string.feed_share_default_text)
         val itemList: MutableList<FeedDetailProductModel> = ArrayList()
         for (postTagItem in postTagItemList) {
             if (postTagItem.isTopads){

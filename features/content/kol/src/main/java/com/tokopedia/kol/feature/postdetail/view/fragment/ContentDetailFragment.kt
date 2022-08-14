@@ -82,7 +82,7 @@ import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.kol.R as kolR
 import com.tokopedia.network.R as networkR
-import com.tokopedia.wishlist_common.R as Rwishlist
+import com.tokopedia.wishlist_common.R as wishlistR
 
 /**
  * Created by shruti agarwal on 15/06/22
@@ -760,7 +760,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         )
         if (context != null) {
             val sheet = MenuOptionsBottomSheet.newInstance(
-                isReportable = feedXCard.reportable, canUnfollow = feedXCard.followers.isFollowed,
+                isReportable = feedXCard.reportable,
+                canUnfollow = feedXCard.followers.isFollowed,
                 isDeletable = feedXCard.deletable
             )
             if (!sheet.isAdded)
@@ -1766,10 +1767,10 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
             val feedXCard = list[rowNumber]
             Toaster.build(
                 requireView(),
-                getString(Rwishlist.string.on_success_add_to_wishlist_msg),
+                getString(wishlistR.string.on_success_add_to_wishlist_msg),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                getString(Rwishlist.string.cta_success_add_to_wishlist),
+                getString(wishlistR.string.cta_success_add_to_wishlist),
                 View.OnClickListener {
                     analyticsTracker.sendClickLihatWishlistSgcImageEvent(
                         ContentDetailPageAnalyticsDataModel(
@@ -1808,7 +1809,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                     context?.let {
 
                         var shareString =
-                            String.format(shareData.description, linkerShareData?.shareUri)
+                            String.format(shareData.description, linkerShareData?.shareUri ?: "")
                         SharingUtil.executeShareIntent(
                             shareModel,
                             linkerShareData,

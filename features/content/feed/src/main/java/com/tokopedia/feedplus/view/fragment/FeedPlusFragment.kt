@@ -38,7 +38,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.dialog.DialogUnify
@@ -2062,7 +2061,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             var finalId =
                 if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID else feedXCard.id
 
-            feedAnalytics.eventsendWatchVODAnalytics(
+            feedAnalytics.eventSendWatchVODAnalytics(
                 finalId,
                 feedXCard.typename,
                 feedXCard.followers.isFollowed,

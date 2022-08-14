@@ -1038,7 +1038,7 @@ class FeedAnalyticTracker
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
-    fun eventsendWatchVODAnalytics(channelId: String, type: String, isFollowed: Boolean, shopId: String, time: Long, mediaType: String) {
+    fun eventSendWatchVODAnalytics(channelId: String, type: String, isFollowed: Boolean, shopId: String, time: Long, mediaType: String) {
         var map = getCommonMap()
         map = map.plus(
                 mutableMapOf(

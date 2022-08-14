@@ -13,8 +13,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ContentDetailViewModel @Inject constructor(

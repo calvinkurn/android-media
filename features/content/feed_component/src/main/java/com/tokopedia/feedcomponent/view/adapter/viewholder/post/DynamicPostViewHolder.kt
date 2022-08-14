@@ -698,7 +698,7 @@ open class DynamicPostViewHolder(v: View,
             feedXCard: FeedXCard,
             playChannelId: String,
             rowNumber: Int,
-            time:Long
+            time: Long
         )
         fun onPostTagBubbleClick(
                 positionInFeed: Int,
