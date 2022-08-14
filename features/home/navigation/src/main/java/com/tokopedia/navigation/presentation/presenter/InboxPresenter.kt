@@ -1,14 +1,14 @@
 package com.tokopedia.navigation.presentation.presenter
 
-import android.content.Context
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker.Companion.userSession
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation.GlobalNavConstant
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase
@@ -80,6 +80,7 @@ class InboxPresenter @Inject constructor(
                 R.raw.query_notification
             )
         )
+        requestParams.putObject(PARAM_INPUT, Param(userSessionInterface.shopId.toLongOrZero()))
         getNotificationUseCase.execute(requestParams, InboxSubscriber(this.inboxView))
     }
 
@@ -290,6 +291,11 @@ class InboxPresenter @Inject constructor(
         this.getInboxData()
     }
 
+    data class Param(
+        @SerializedName(PARAM_SHOP_ID)
+        var shopId: Long
+    )
+
     fun onDestroy() {
         this.getRecommendationUseCase.unsubscribe()
         this.getNotificationUseCase.unsubscribe()
@@ -301,5 +307,8 @@ class InboxPresenter @Inject constructor(
     companion object {
         val X_SOURCE_RECOM_WIDGET = "recom_widget"
         val INBOX_PAGE = "inbox"
+
+        private const val PARAM_INPUT = "input"
+        private const val PARAM_SHOP_ID = "shop_id"
     }
 }

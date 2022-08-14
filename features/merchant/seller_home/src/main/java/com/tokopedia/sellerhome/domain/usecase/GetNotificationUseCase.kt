@@ -1,16 +1,19 @@
 package com.tokopedia.sellerhome.domain.usecase
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created By @ilhamsuaib on 2020-03-03
@@ -19,14 +22,15 @@ import com.tokopedia.usecase.RequestParams
 @GqlQuery("GetNotificationGqlQuery", GetNotificationUseCase.QUERY)
 class GetNotificationUseCase(
     private val gqlRepository: GraphqlRepository,
-    private val mapper: NotificationMapper
+    private val mapper: NotificationMapper,
+    private val userSession: UserSessionInterface
 ) : BaseGqlUseCase<NotificationUiModel>() {
 
     override suspend fun executeOnBackground(): NotificationUiModel {
         val gqlRequest = GraphqlRequest(
             GetNotificationGqlQuery(),
             GetNotificationsResponse::class.java,
-            params.parameters
+            getParams(userSession.shopId)
         )
         val gqlResponse: GraphqlResponse = gqlRepository.response(listOf(gqlRequest))
 
@@ -40,10 +44,24 @@ class GetNotificationUseCase(
         }
     }
 
+    private fun getParams(shopId: String): Map<String, Any?> {
+        return mapOf(
+            PARAM_INPUT to Param(shopId.toLongOrZero())
+        )
+    }
+
+    data class Param(
+        @SerializedName(PARAM_SHOP_ID)
+        var shopId: Long
+    )
+
     companion object {
+        private const val PARAM_INPUT = "input"
+        private const val PARAM_SHOP_ID = "shop_id"
+
         const val QUERY = """
-            query getNotifications(${'$'}typeId: Int!) {
-              notifications {
+            query getNotifications(${'$'}typeId: Int!, $$PARAM_INPUT: NotificationRequest) {
+              notifications(input: $$PARAM_INPUT){
                 chat {
                   unreadsSeller
                 }

@@ -1,8 +1,14 @@
 package com.tokopedia.searchbar.navigation_component.domain
 
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.searchbar.navigation_component.domain.QueryNotification.PARAM_SHOP_ID
+
 object QueryNotification {
+    private const val PARAM_INPUT = "input"
+    const val PARAM_SHOP_ID = "shop_id"
     val query: String = "" +
-            "query Notification {\n" +
+            "query Notification($$PARAM_INPUT: NotificationRequest) {\n" +
             "                  status\n" +
             "                  userShopInfo {\n" +
             "                    info {\n" +
@@ -10,7 +16,7 @@ object QueryNotification {
             "                    }\n" +
             "                  }\n" +
             "\n" +
-            "                  notifications(){\n" +
+            "                  notifications($PARAM_INPUT: $$PARAM_INPUT){\n" +
             "                  \ttotal_cart\n" +
             "                    inbox {\n" +
             "                      talk\n" +
@@ -55,4 +61,15 @@ object QueryNotification {
             "                    notif_unread\n" +
             "                  }\n" +
             "                }"
+
+    fun getNotificationParam(shopId: String): Map<String, Any> {
+        return mapOf(
+            PARAM_INPUT to Param(shopId.toLongOrZero())
+        )
+    }
 }
+
+data class Param(
+    @SerializedName(PARAM_SHOP_ID)
+    var shopId: Long
+)

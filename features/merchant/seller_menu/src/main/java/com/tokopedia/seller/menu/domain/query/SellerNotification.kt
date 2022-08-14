@@ -1,10 +1,15 @@
 package com.tokopedia.seller.menu.domain.query
 
-internal object SellerMenuNotification {
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.seller.menu.domain.query.SellerMenuNotification.PARAM_SHOP_ID
 
+internal object SellerMenuNotification {
+    private const val PARAM_INPUT = "input"
+    const val PARAM_SHOP_ID = "shop_id"
     val QUERY = """
-        query SellerMenuNotification() {
-            notifications {
+        query SellerMenuNotification($$PARAM_INPUT: NotificationRequest) {
+            notifications($PARAM_INPUT: $$PARAM_INPUT){
                 sellerOrderStatus {
                     newOrder
      	            readyToShip
@@ -19,4 +24,15 @@ internal object SellerMenuNotification {
             }
         }
     """.trimIndent()
+
+    fun getNotificationParam(shopId: String): Map<String, Any> {
+        return mapOf(
+            PARAM_INPUT to Param(shopId.toLongOrZero())
+        )
+    }
 }
+
+data class Param(
+    @SerializedName(PARAM_SHOP_ID)
+    var shopId: Long
+)

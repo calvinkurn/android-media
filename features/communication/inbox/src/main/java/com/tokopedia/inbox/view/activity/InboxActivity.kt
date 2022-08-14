@@ -246,7 +246,7 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
     }
 
     override fun refreshNotificationCounter() {
-        viewModel.getNotifications()
+        viewModel.getNotifications(userSession.shopId)
     }
 
     override fun decreaseDiscussionUnreadCounter() {
@@ -605,7 +605,7 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
     private fun setupInitialPage() {
         navigator?.start(InboxConfig.page)
         bottomNav?.setSelectedPage(InboxConfig.page)
-        viewModel.getNotifications()
+        viewModel.getNotifications(userSession.shopId)
     }
 
     private fun setupInitialToolbar() {
