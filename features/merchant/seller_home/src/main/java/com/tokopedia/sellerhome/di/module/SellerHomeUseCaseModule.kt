@@ -37,6 +37,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTickerUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -109,9 +110,10 @@ class SellerHomeUseCaseModule {
     @Provides
     fun provideGetNotificationsUseCase(
         gqlRepository: GraphqlRepository,
-        mapper: NotificationMapper
+        mapper: NotificationMapper,
+        userSession: UserSessionInterface
     ): GetNotificationUseCase {
-        return GetNotificationUseCase(gqlRepository, mapper)
+        return GetNotificationUseCase(gqlRepository, mapper, userSession)
     }
 
     @SellerHomeScope
