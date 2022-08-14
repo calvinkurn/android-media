@@ -476,6 +476,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 feedXCard
             )
         }
+        val shouldNotShowMenuIcon = (!feedXCard.reportable && !feedXCard.deletable && !feedXCard.followers.isFollowed)
+        shopMenuIcon.showWithCondition(!shouldNotShowMenuIcon)
         shopMenuIcon.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
             listener?.onClickOnThreeDots(
