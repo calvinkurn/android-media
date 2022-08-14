@@ -17,8 +17,8 @@ object BroadcasterUtil {
 
     private const val DEFAULT_RESOLUTION_VIDEO_WIDTH = 1280
     private const val DEFAULT_RESOLUTION_VIDEO_HEIGHT = 720
-    private const val HIGHEST_RESOLUTION_VIDEO_WIDTH = 1920
-    private const val HIGHEST_RESOLUTION_VIDEO_HEIGHT = 1080
+    private const val HIGHEST_VIDEO_WIDTH = 1920
+    private const val HIGHEST_VIDEO_HEIGHT = 1080
 
     /**
      * 1280x720 should be supported by every device running Android 4.1+
@@ -82,7 +82,7 @@ object BroadcasterUtil {
 
         return recordSizes?.filter {
             // Reduce 4K to FullHD, because some encoders can fail with 4K frame size.
-            (it.width <= HIGHEST_RESOLUTION_VIDEO_WIDTH || it.height <= HIGHEST_RESOLUTION_VIDEO_HEIGHT)
+            (it.width <= HIGHEST_VIDEO_WIDTH || it.height <= HIGHEST_VIDEO_HEIGHT)
                     && isSameAspectRatio(it)
         }
     }
