@@ -50,11 +50,6 @@ object BroadcasterUtil {
         return supportedPreviewSizes?.firstOrNull() ?: defaultResolution
     }
 
-    /*
-    Set the same video size for both cameras
-    If not possible (for example front camera has no FullHD support)
-    try to find video size with the same aspect ratio
-    */
     fun findFlipSize(supportedPreviewSizes: List<Streamer.Size>?, videoSize: Streamer.Size): Streamer.Size {
         val recordSizes = findSizeWithPreferredAspectRatio(videoSize.ratio, supportedPreviewSizes)
         if (!recordSizes.isNullOrEmpty()) return findBestResolution(recordSizes)
