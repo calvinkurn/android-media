@@ -467,7 +467,7 @@ open class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragm
     }
 
     override fun loadNotificationCounter() {
-        chatNotifCounterViewModel.queryGetNotifCounter()
+        chatNotifCounterViewModel.queryGetNotifCounter(userSession.shopId)
     }
 
     override fun showSearchOnBoardingTooltip() {
