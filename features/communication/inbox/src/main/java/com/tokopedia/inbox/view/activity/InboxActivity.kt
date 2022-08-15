@@ -305,12 +305,13 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
             return when (InboxConfig.page) {
                 InboxFragmentType.NOTIFICATION -> getString(R.string.inbox_title_notification)
                 InboxFragmentType.CHAT -> getString(R.string.inbox_title_chat)
-                InboxFragmentType.DISCUSSION -> getString(R.string.inbox)
+                InboxFragmentType.DISCUSSION ->
+                    getString(com.tokopedia.notifcenter.R.string.inbox)
                 InboxFragmentType.REVIEW -> getString(R.string.inbox_title_review)
-                else -> getString(R.string.inbox)
+                else -> getString(com.tokopedia.notifcenter.R.string.inbox)
             }
         }
-        return getString(R.string.inbox)
+        return getString(com.tokopedia.notifcenter.R.string.inbox)
     }
 
     protected open fun setupToolbarLifecycle() {
