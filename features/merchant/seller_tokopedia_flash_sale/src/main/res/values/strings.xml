@@ -4,6 +4,7 @@
     <string name="campaigndetail_criteria_title">Kriteria Umum</string>
     <string name="campaigndetail_product_criteria_title">Kriteria Produk</string>
     <string name="campaigndetail_timeline_title">Timeline</string>
+    <string name="campaigndetail_campaign_ended">Selesai</string>
 
     <string-array name="criteria_items">
         <item>Pastikan harga diskon produkmu lebih rendah dari harga termurah di Tokopedia untuk produk serupa.</item>

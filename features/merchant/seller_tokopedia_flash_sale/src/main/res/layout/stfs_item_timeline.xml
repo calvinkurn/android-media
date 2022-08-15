@@ -41,4 +41,17 @@
         app:typographyWeight="bold"
         tool:text="4 - 6 Jul 2022" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfProcessCenter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iconProcess"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_3"
+        tool:text="Periode Pendaftaran" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

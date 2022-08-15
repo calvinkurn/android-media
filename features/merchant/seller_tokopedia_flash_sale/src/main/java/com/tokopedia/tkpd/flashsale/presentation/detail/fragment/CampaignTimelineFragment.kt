@@ -11,11 +11,27 @@ import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaig
 import com.tokopedia.tkpd.flashsale.common.adapter.VerticalSpaceItemDecoration
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.campaigndetail.TimelineProcessAdapter
+import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CampaignTimelineFragment: BaseDaggerFragment() {
 
+    companion object {
+        private const val BUNDLE_KEY_TIMELINE_STEP_MODEL = "TimelineStepModel"
+        @JvmStatic
+        fun newInstance(timelineSteps: List<TimelineStepModel>): CampaignTimelineFragment {
+            return CampaignTimelineFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelableArrayList(BUNDLE_KEY_TIMELINE_STEP_MODEL, ArrayList(timelineSteps))
+                }
+            }
+        }
+    }
+
     private var binding by autoClearedNullable<StfsFragmentCampaignTimelineBinding>()
+    private val timelineSteps by lazy {
+        arguments?.getParcelableArrayList<TimelineStepModel>(BUNDLE_KEY_TIMELINE_STEP_MODEL)
+    }
 
     override fun getScreenName() = ""
 
@@ -46,7 +62,7 @@ class CampaignTimelineFragment: BaseDaggerFragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             addItemDecoration(VerticalSpaceItemDecoration(spacingAmount))
             adapter = TimelineProcessAdapter().apply {
-                data = listOf("Satu", "Dua", "Tiga")
+                data = timelineSteps?.toList().orEmpty()
             }
         }
     }
