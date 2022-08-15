@@ -50,32 +50,4 @@ class OrderHistoryViewModel @Inject constructor(
             _orderHistory.postValue(OrderHistoryResult.OrderHistoryFail(it))
         }
     }
-
-    private fun generateParamsNetwork2(params: HashMap<String?, Any?>): HashMap<String?, Any?> {
-        val deviceId = userSession.deviceId
-        val userId = userSession.userId
-        val hash = md5("$userId~$deviceId")
-        params[PARAM_USER_ID] = userId
-        params[PARAM_DEVICE_ID] = deviceId
-        params[PARAM_HASH] = hash
-        params[PARAM_OS_TYPE] = "1"
-        params[PARAM_TIMESTAMP] = (Date().time / 1000).toString()
-        return params
-    }
-
-    private fun md5(s: String): String {
-        return try {
-            val digest = MessageDigest.getInstance("MD5")
-            digest.update(s.toByteArray())
-            val messageDigest = digest.digest()
-            val hexString = StringBuilder()
-            for (b in messageDigest) {
-                hexString.append(String.format("%02x", b and 0xff.toByte()))
-            }
-            hexString.toString()
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            ""
-        }
-    }
 }
