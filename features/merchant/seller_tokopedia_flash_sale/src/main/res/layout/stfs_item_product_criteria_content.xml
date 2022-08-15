@@ -12,6 +12,16 @@
         android:layout_height="match_parent"
         app:layout_constraintGuide_percent="0.5"/>
 
+    <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
+        android:id="@+id/tfCategoryList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:textvalue_title="Kategori"
+        tool:textvalue_value="A, B, C" />
+
     <!-- =========================================================== -->
     <com.tokopedia.tkpd.flashsale.common.customview.TitleValueView
         android:id="@+id/tfOriginalPrice"
@@ -19,7 +29,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/guideline_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfCategoryList"
         app:textvalue_title="Kisaran Harga Awal"
         tool:textvalue_value="Rp999.999.999 - Rp999.999.999" />
 
@@ -29,7 +39,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfCategoryList"
         app:textvalue_title="Min. Diskon"
         tool:textvalue_value="80%" />
 
