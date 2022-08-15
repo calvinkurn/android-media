@@ -11,8 +11,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
 import android.view.View
-import android.widget.EditText
-import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -65,7 +63,6 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
@@ -268,10 +265,10 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import java.util.Locale
 import java.util.UUID
-import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 
 /**
  * Separator Rule
@@ -3836,7 +3833,7 @@ open class DynamicProductDetailFragment :
             addRecyclerViewScrollListener()
             setToolbarShadowState(show = true)
         } else {
-            //setContentConstraintToNavToolbarBottom()
+            setContentConstraintToNavToolbarBottom()
             setupToolbarWithStatusBarLight()
             removeRecyclerViewScrollListener()
             setToolbarShadowState(show = false)
@@ -3856,6 +3853,11 @@ open class DynamicProductDetailFragment :
                 containerDynamicProductDetail.id, ConstraintSet.TOP,
                 0
             )
+            constraintSet.connect(
+                swipeRefreshPdp.id, ConstraintSet.BOTTOM,
+                pdpButtonBarrier.id, ConstraintSet.TOP,
+                0
+            )
             constraintSet.applyTo(containerDynamicProductDetail)
         }
     }
@@ -3871,6 +3873,11 @@ open class DynamicProductDetailFragment :
             constraintSet.connect(
                 swipeRefreshPdp.id, ConstraintSet.TOP,
                 pdpNavtoolbar.id, ConstraintSet.BOTTOM,
+                0
+            )
+            constraintSet.connect(
+                swipeRefreshPdp.id, ConstraintSet.BOTTOM,
+                pdpButtonBarrier.id, ConstraintSet.TOP,
                 0
             )
             constraintSet.applyTo(containerDynamicProductDetail)
