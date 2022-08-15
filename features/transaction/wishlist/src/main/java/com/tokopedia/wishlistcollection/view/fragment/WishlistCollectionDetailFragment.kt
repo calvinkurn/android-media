@@ -491,7 +491,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
                         if (collectionDetail.totalData <= 0) {
                             if (paramGetCollectionItems.query.isNotEmpty()) {
-                                hideFilter()
+                                hideSortFilter(collectionDetail.sortFilters)
                             }
                             if (collectionDetail.sortFilters.isEmpty() && collectionDetail.items.isEmpty()) {
                                 onFailedGetWishlistV2(ResponseErrorException())
@@ -505,7 +505,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         } else {
                             hideLoader(collectionDetail.showDeleteProgress)
                             showRvWishlist()
-                            showSearchBar()
+                            // showSearchBar()
                             if (!collectionDetail.showDeleteProgress) updateTotalLabel(
                                 collectionDetail.totalData
                             )
@@ -625,7 +625,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 rvWishlistCollectionDetail.gone()
                 wishlistCollectionDetailSearchbar.gone()
                 emptyStateGlobalWishlistCollectionDetail.gone()
-                clWishlistCollectionDetailHeader.gone()
+                hideSearchBar()
+                hideFilter()
                 hideTotalLabel()
                 globalErrorWishlistCollectionDetail.visible()
                 globalErrorWishlistCollectionDetail.setType(errorType)
@@ -892,7 +893,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
         binding?.run {
             bottomButtonLayout.gone()
-            clWishlistCollectionDetailHeader.visible()
+            showFilter()
+            showSearchBar()
             if (collectionId == "0") {
                 wishlistCollectionDetailStickyCountManageLabel.apply {
                     iconGearCollectionDetail.gone()
@@ -1118,9 +1120,21 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
+    private fun showFilter() {
+        binding?.run {
+            clWishlistCollectionDetailHeader.visible()
+        }
+    }
+
     private fun showSearchBar() {
         binding?.run {
             wishlistCollectionDetailSearchbar.visible()
+        }
+    }
+
+    private fun hideSearchBar() {
+        binding?.run {
+            wishlistCollectionDetailSearchbar.gone()
         }
     }
 
@@ -2038,7 +2052,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             containerDeleteCollectionDetail.visible()
             val countExistingRemovable = countRemovableAutomaticDelete - listExcludedBulkDelete.size
 
-            deleteButtonCollection.apply {
+            deleteButtonCollectionDetail.apply {
                 isEnabled = true
                 text = getString(Rv2.string.wishlist_v2_delete_text_counter, countExistingRemovable)
                 setOnClickListener {
@@ -2047,18 +2061,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         countRemovableAutomaticDelete.toLong()
                     )
                     showPopupBulkDeleteConfirmation(countExistingRemovable)
-                }
-            }
-
-            addButtonCollection.apply {
-                isEnabled = true
-                text = getString(Rv2.string.add_collection_text_counter, countExistingRemovable)
-                setOnClickListener {
-                    showBottomSheetCollection(
-                        childFragmentManager,
-                        listSelectedProductIds.toString(),
-                        SRC_WISHLIST_COLLECTION
-                    )
                 }
             }
         }
@@ -2177,6 +2179,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             listExcludedBulkDelete.clear()
             collectionItemsAdapter.showCheckbox(isAutoDeletion)
             binding?.run {
+                hideSearchBar()
+                hideFilter()
                 wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.gone()
                 wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.gone()
                 bottomButtonLayout.visible()
@@ -2230,7 +2234,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             binding?.run {
                     containerDeleteSemuaWishlist.gone()
                     containerDeleteCollectionDetail.gone()
-                    clWishlistCollectionDetailHeader.visible()
+                    showSearchBar()
+                    showFilter()
                     wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.visible()
                     wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailTypeLayoutIcon.visible()
             }
@@ -2268,7 +2273,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         collectionItemsAdapter.hideCheckbox()
         binding?.run {
             containerDeleteCollectionDetail.gone()
-            clWishlistCollectionDetailHeader.visible()
+            showFilter()
+            showSearchBar()
             wishlistCollectionDetailStickyCountManageLabel.wishlistCollectionDetailManageLabel.text =
                 getString(Rv2.string.wishlist_manage_label)
             wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.visible()
