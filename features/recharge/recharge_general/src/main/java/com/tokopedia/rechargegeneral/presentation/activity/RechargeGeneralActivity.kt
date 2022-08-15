@@ -34,8 +34,9 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         val operatorId = bundle?.getString(PARAM_OPERATOR_ID)?.toIntOrNull() ?: 0
         val productId = bundle?.getString(PARAM_PRODUCT_ID)?.toIntOrNull() ?: 0
         val isAddSBM = bundle?.getString(PARAM_ADD_BILLS)?.toBoolean() ?: false
+        val isFromSBM = bundle?.getBoolean(EXTRA_ADD_BILLS_IS_FROM_SBM) ?: false
         val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA,"") ?: ""
-        return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId, rechargeProductFromSlice, isAddSBM)
+        return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId, rechargeProductFromSlice, isAddSBM, isFromSBM)
     }
 
     override fun getComponent(): RechargeGeneralComponent {
@@ -83,6 +84,7 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         const val PARAM_PRODUCT_ID = "product_id"
         const val PARAM_ADD_BILLS = "is_add_sbm"
         const val PARAM_CLIENT_NUMBER = "client_number"
+        const val EXTRA_ADD_BILLS_IS_FROM_SBM = "IS_FROM_SBM"
 
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
 
