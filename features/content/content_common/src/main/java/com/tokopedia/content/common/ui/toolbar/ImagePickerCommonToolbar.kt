@@ -136,7 +136,7 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
     }
 
     fun hideCoachMarkSwitchAccount() {
-        coachMark.dismissCoachMark()
+        if (this::coachMark.isInitialized && coachMark.isShowing) coachMark.dismissCoachMark()
     }
 
 }

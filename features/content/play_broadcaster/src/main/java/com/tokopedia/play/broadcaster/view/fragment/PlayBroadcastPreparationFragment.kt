@@ -241,6 +241,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
 
             setOnAccountClickListener {
+                hideCoachMarkSwitchAccount()
                 FeedAccountTypeBottomSheet
                     .getFragment(childFragmentManager, requireContext().classLoader)
 //                    TODO implement this when the data ready
