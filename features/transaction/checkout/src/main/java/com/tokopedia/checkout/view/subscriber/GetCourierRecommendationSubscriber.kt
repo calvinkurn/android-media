@@ -124,19 +124,6 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
         }
     }
 
-    /**
-     *   CLIENT       |  CART       |  LOGISTIC/RATES     | PROMO
-     *   1A. SAF      -> SAF
-     *   1B.             SAF                              -> LAST APPLIED PROMO (ALL)
-     *   1C. RESPONSE  <- SAF
-     *
-     *   2A. BO_CODE IS NOT EMPTY
-     *   2B. RATES  (with promo code)       ->  RATES
-     *   2C.                            RATES (promo code)   -> PROMO LOGISTIC/BEBAS ONGKIR YG AVAILABLE UTK ORDER UNIQUE ID (TERMASUK YG BO_CODE)
-     *   2D. RESPONSE              <-   RATES
-     *   2E. BO_CODE MATCH WITH PROMO LOGISTIC
-     */
-
     private fun generateCourierItemData(shippingCourierUiModel: ShippingCourierUiModel, shippingRecommendationData: ShippingRecommendationData, logisticPromo: LogisticPromoUiModel? = null): CourierItemData {
         var courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel)
 

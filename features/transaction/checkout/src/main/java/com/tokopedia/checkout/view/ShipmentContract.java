@@ -381,7 +381,7 @@ public interface ShipmentContract {
 
         void validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
 
-        void clearOrderPromoCodeFromLastValidateUseRequest(String promoCode);
+        void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
     }
 
 }
