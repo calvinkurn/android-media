@@ -41,7 +41,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolde
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator

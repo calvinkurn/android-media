@@ -21,7 +21,7 @@ import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
         FeedComponentModule::class,
         ViewModelModule::class,
         PlayWidgetModule::class,
-        FeedFloatingButtonManagerModule::class,
+        FeedFloatingButtonManagerModule::class
      ],
     dependencies = [BaseAppComponent::class]
 )
@@ -35,6 +35,5 @@ interface FeedPlusComponent {
     fun inject(feedPlusFragment: FeedPlusFragment)
     fun inject(feedPlusDetailFragment: FeedPlusDetailFragment)
     fun inject(dynamicFeedFragment: DynamicFeedFragment)
-    fun inject(feedOnboardingFragment: FeedOnboardingFragment)
     fun inject(feedSeeMoreFragment: PlayFeedSeeMoreFragment)
 }
