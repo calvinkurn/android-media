@@ -42,7 +42,7 @@ object KycOnBoardingViewInflater {
         }
     }
 
-    fun setupKycBenefitView(activity: FragmentActivity?, view: View, mainAction: () -> Unit, closeButtonAction: () -> Unit, onCheckedChanged: (Boolean) -> Unit) {
+    fun setupKycBenefitView(activity: FragmentActivity?, view: View, mainAction: () -> Unit, closeButtonAction: () -> Unit, onCheckedChanged: (Boolean) -> Unit, onTncClicked: () -> Unit) {
         val kycBenefitImage = view.findViewById<ImageUnify>(R.id.image_banner)
         kycBenefitImage?.cornerRadius = 0
         kycBenefitImage.loadImage(KycUrl.KYC_BENEFIT_BANNER)
@@ -77,7 +77,7 @@ object KycOnBoardingViewInflater {
         val chkBox: CheckboxUnify? = view.findViewById(R.id.kyc_benefit_checkbox)
 
         if(activity != null){
-            val spannableString = setupTncText(activity)
+            val spannableString = setupTncText(activity, onTncClicked)
             chkBox?.movementMethod = LinkMovementMethod.getInstance()
             chkBox?.setText(spannableString, TextView.BufferType.SPANNABLE)
             chkBox?.setOnCheckedChangeListener { _, isChecked ->
@@ -88,12 +88,12 @@ object KycOnBoardingViewInflater {
     }
 
 
-    fun setupTncText(activity: FragmentActivity): SpannableString {
+    fun setupTncText(activity: FragmentActivity, onTncClicked: () -> Unit): SpannableString {
         val sourceString = activity.getString(R.string.kyc_consent_text)
         val spannable = SpannableString(sourceString)
         spannable.setSpan(object : ClickableSpan() {
             override fun onClick(view: View) {
-                println("clickbree")
+                onTncClicked()
                 RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${URL_TNC}")
             }
             override fun updateDrawState(ds: TextPaint) {

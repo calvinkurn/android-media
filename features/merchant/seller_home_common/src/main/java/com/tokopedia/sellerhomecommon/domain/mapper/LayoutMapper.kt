@@ -25,6 +25,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import javax.inject.Inject
 
@@ -71,6 +72,7 @@ class LayoutMapper @Inject constructor(
                             WidgetType.RECOMMENDATION -> mapToRecommendationWidget(it, isFromCache)
                             WidgetType.MILESTONE -> mapToMilestoneWidget(it, isFromCache)
                             WidgetType.CALENDAR -> mapToCalendarWidget(it, isFromCache)
+                            WidgetType.UNIFICATION -> mapToUnificationWidget(it, isFromCache)
                             else -> mapToSectionWidget(it, isFromCache)
                         }
                     )
@@ -78,6 +80,30 @@ class LayoutMapper @Inject constructor(
             }
             return mappedList
         } else throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
+    }
+
+    private fun mapToUnificationWidget(
+        widget: WidgetModel,
+        isFromCache: Boolean
+    ): UnificationWidgetUiModel {
+        return UnificationWidgetUiModel(
+            id = (widget.id.orZero()).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty(),
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_1),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = isFromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel()
+        )
     }
 
     private fun mapToCardWidget(widget: WidgetModel, fromCache: Boolean): CardWidgetUiModel {

@@ -89,7 +89,7 @@
             android:id="@+id/custom_label_see"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
+            android:paddingStart="8dp"
             android:paddingEnd="0dp"
             android:text="@string/pdp_general_info_see"
             android:textColor="@color/Unify_GN500"

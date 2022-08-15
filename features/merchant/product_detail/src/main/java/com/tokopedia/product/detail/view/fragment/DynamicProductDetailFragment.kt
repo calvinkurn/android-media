@@ -40,6 +40,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -1577,6 +1578,41 @@ open class DynamicProductDetailFragment :
             )
             DynamicProductDetailTracking.Moengage.sendMoEngageClickReview(this)
             goToReviewDetail(basic.productID, getProductName)
+        }
+    }
+
+    override fun onSeeReviewCredibility(
+        reviewID: String,
+        reviewerUserID: String,
+        userStatistics: String,
+        userLabel: String,
+        componentTrackData: ComponentTrackDataModel
+    ) {
+        viewModel.getDynamicProductInfoP1?.run {
+            val routed = RouteManager.route(
+                context,
+                Uri.parse(
+                    UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
+                        reviewerUserID,
+                        ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_MOST_HELPFUL
+                    )
+                ).buildUpon()
+                    .appendQueryParameter(ReviewApplinkConst.PARAM_PRODUCT_ID, basic.productID)
+                    .build()
+                    .toString()
+            )
+            if (routed) {
+                DynamicProductDetailTracking.Click.onClickReviewerName(
+                    dynamicProductInfoP1 = this,
+                    reviewID = reviewID,
+                    userId = viewModel.userId,
+                    reviewerUserID = reviewerUserID,
+                    statistics = userStatistics,
+                    label = userLabel,
+                    componentTrackData = componentTrackData
+                )
+            }
         }
     }
 
