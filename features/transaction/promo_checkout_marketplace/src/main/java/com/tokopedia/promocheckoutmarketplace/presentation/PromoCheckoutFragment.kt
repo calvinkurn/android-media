@@ -131,7 +131,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val DELAY_DEFAULT_IN_MILIS = 500L
 
         private const val PREFERENCES_NAME = "promo_coachmark_preferences"
-        private const val PREFERENCES_NAME_PROMO_INFO = "promo_info_preferences"
+        private const val PREFERENCES_NAME_PROMO_CHECKOUT = "promo_checkout_marketplace"
 
         private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
         private const val KEY_HAS_SEEN_BO_INFO_BOTTOM_SHEET = "has_seen_bo_unstack_info_bottom_sheet"
@@ -1187,12 +1187,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun hasSeenBoInfoBottomSheet() : Boolean {
-        return context?.getSharedPreferences(PREFERENCES_NAME_PROMO_INFO, Context.MODE_PRIVATE)
+        return context?.getSharedPreferences(PREFERENCES_NAME_PROMO_CHECKOUT, Context.MODE_PRIVATE)
             ?.getBoolean(KEY_HAS_SEEN_BO_INFO_BOTTOM_SHEET, false) ?: false
     }
 
     private fun setHasSeenBoInfoBottomSheet() {
-        context?.getSharedPreferences(PREFERENCES_NAME_PROMO_INFO, Context.MODE_PRIVATE)
+        context?.getSharedPreferences(PREFERENCES_NAME_PROMO_CHECKOUT, Context.MODE_PRIVATE)
             ?.edit()
             ?.putBoolean(KEY_HAS_SEEN_BO_INFO_BOTTOM_SHEET, true)
             ?.apply()

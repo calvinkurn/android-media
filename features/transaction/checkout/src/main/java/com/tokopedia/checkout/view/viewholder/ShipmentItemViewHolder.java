@@ -1230,8 +1230,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
             if (shipmentCartItemModel.isCustomPinpointError()) {
                 renderErrorPinpointCourier();
-            } else if ((shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) /*|| shipmentCartItemModel.getBoCode() != ""*/ || shipmentCartItemModel.isAutoCourierSelection()) {
-                // TODO: bobby: check if boCode is not empty
+            } else if ((shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0)|| !shipmentCartItemModel.getBoCode().isEmpty() || shipmentCartItemModel.isAutoCourierSelection()) {
                 if (!hasLoadCourier) {
                     ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
                             shipmentCartItemModel, recipientAddressModel);

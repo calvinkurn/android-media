@@ -172,6 +172,8 @@ public interface ShipmentContract {
         void showPopUp(PopUpData popUpData);
 
         void updateAddOnsData(AddOnsDataModel addOnsDataModel, int identifier);
+
+        void onNeedUpdateViewItem(int position);
     }
 
     interface AnalyticsActionListener {
@@ -377,6 +379,10 @@ public interface ShipmentContract {
         void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
 
         ShipmentUpsellModel getShipmentUpsellModel();
+
+        void validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
+
+        void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
     }
 
 }
