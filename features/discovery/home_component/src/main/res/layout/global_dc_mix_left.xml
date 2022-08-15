@@ -66,7 +66,7 @@
                 android:adjustViewBounds="true"
                 android:clickable="true"
                 android:focusable="true"
-                android:scaleType="centerCrop"
+                android:scaleType="center"
                 android:contentDescription="@string/content_desc_mix_left" />
 
             <androidx.recyclerview.widget.RecyclerView
