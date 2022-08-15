@@ -2096,6 +2096,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             wishlistCollectionDetailSortFilter.run {
                 resetAllFilters()
                 paramGetCollectionItems = GetWishlistCollectionItemsParams()
+                var inCollection = ""
+                if (collectionId.isNotEmpty() && collectionId != "0") {
+                    inCollection = "inside"
+                }
+                paramGetCollectionItems.inCollection = inCollection
+                if (collectionId != "0") {
+                    paramGetCollectionItems.collectionId = collectionId
+                }
             }
         }
         doRefresh()
