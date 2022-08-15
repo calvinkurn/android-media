@@ -750,6 +750,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        onRefresh()
+
         recyclerView.addOnScrollListener(feedFloatingButtonManager.scrollListener)
         feedFloatingButtonManager.setDelayForExpandFab(recyclerView)
     }
@@ -805,6 +808,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onRefresh() {
         newFeed.visibility = View.GONE
+        hideAdapterLoading()
+        fetchFirstPage()
         afterRefresh = true
         TopAdsHeadlineActivityCounter.page = 1
     }
