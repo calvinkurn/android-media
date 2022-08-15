@@ -11,7 +11,7 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.FCMTokenReceiver;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.IFCMTokenReceiver;
-//import com.tokopedia.core.gcm.di.DaggerFcmServiceComponent;
+import com.tokopedia.core.gcm.di.DaggerFcmServiceComponent;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
@@ -50,10 +50,10 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
         FcmComponent fcmComponent = DaggerFcmComponent.builder()
                 .fcmModule(new FcmModule(getApplicationContext()))
                 .build();
-//        DaggerFcmServiceComponent.builder()
-//                .fcmComponent(fcmComponent)
-//                .build()
-//                .inject(this);
+        DaggerFcmServiceComponent.builder()
+                .fcmComponent(fcmComponent)
+                .build()
+                .inject(this);
 
         remoteConfig = new FirebaseRemoteConfigImpl(getBaseContext());
     }
