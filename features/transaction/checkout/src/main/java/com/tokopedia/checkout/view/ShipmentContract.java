@@ -247,11 +247,11 @@ public interface ShipmentContract {
         void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                             boolean isTradeIn, boolean skipUpdateOnboardingState,
                                             boolean isReloadAfterPriceChangeHinger,
-                                            String cornerId, String deviceId, String leasingId);
+                                            String cornerId, String deviceId, String leasingId, boolean isPlusSelected);
 
         void processCheckout(boolean isOneClickShipment, boolean isTradeIn,
                              boolean isTradeInDropOff, String deviceId,
-                             String cornerId, String leasingId);
+                             String cornerId, String leasingId, boolean isPlusSelected);
 
         void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
 

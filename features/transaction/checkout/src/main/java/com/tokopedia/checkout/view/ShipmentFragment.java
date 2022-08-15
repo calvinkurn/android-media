@@ -214,6 +214,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static final String ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT";
     public static final String ARG_CHECKOUT_LEASING_ID = "ARG_CHECKOUT_LEASING_ID";
     public static final String ARG_CHECKOUT_PAGE_SOURCE = "ARG_CHECKOUT_PAGE_SOURCE";
+    public static final String ARG_IS_PLUS_SELECTED = "ARG_IS_PLUS_SELECTED";
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
     private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
 
@@ -268,6 +269,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private ArrayList<String> bboPromoCodes = new ArrayList<>();
     private int shipmentLoadingIndex = -1;
 
+    private Boolean isPlusSelected = null;
+
     private Subscription delayScrollToFirstShopSubscription;
 
     private Subscription toasterThrottleSubscription;
@@ -281,6 +284,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public static ShipmentFragment newInstance(boolean isOneClickShipment,
                                                String leasingId,
                                                String pageSource,
+                                               boolean isPlusSelected,
                                                Bundle bundle) {
         if (bundle == null) {
             bundle = new Bundle();
@@ -292,6 +296,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
         }
         bundle.putString(ARG_CHECKOUT_PAGE_SOURCE, pageSource);
+        bundle.putBoolean(ARG_IS_PLUS_SELECTED, isPlusSelected);
         ShipmentFragment shipmentFragment = new ShipmentFragment();
         shipmentFragment.setArguments(bundle);
 
@@ -425,7 +430,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (savedInstanceState == null || savedShipmentCartItemModelList == null) {
             shipmentPresenter.processInitialLoadCheckoutPage(
                     false, isOneClickShipment(), isTradeIn(), true,
-                    false, null, getDeviceId(), getCheckoutLeasingId()
+                    false, null, getDeviceId(), getCheckoutLeasingId(),
+                    isPlusSelected()
             );
         } else {
             shipmentPresenter.setTickerAnnouncementHolderData(savedTickerAnnouncementModel);
@@ -500,6 +506,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             pageSource = getArguments().getString(ARG_CHECKOUT_PAGE_SOURCE);
         }
         return pageSource;
+    }
+
+    private boolean isPlusSelected() {
+        if (this.isPlusSelected == null) {
+            if (getArguments() != null) {
+                this.isPlusSelected = getArguments().getBoolean(ARG_IS_PLUS_SELECTED, false);
+            } else {
+                this.isPlusSelected = false;
+            }
+        }
+        return this.isPlusSelected;
     }
 
     private void initRecyclerViewData(ShipmentTickerErrorModel shipmentTickerErrorModel,
@@ -809,7 +826,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         rvShipment.setVisibility(View.VISIBLE);
                         shipmentPresenter.processInitialLoadCheckoutPage(
                                 false, isOneClickShipment(), isTradeIn(), true,
-                                false, null, getDeviceId(), getCheckoutLeasingId()
+                                false, null, getDeviceId(), getCheckoutLeasingId(),
+                                isPlusSelected()
                         );
                     }
                 });
@@ -947,7 +965,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             priceValidationDialog.setPrimaryCTAClickListener(() -> {
                 shipmentPresenter.processInitialLoadCheckoutPage(
                         true, isOneClickShipment(), isTradeIn(), true,
-                        true, null, getDeviceId(), getCheckoutLeasingId()
+                        true, null, getDeviceId(), getCheckoutLeasingId(),
+                        isPlusSelected()
                 );
                 priceValidationDialog.dismiss();
                 return Unit.INSTANCE;
@@ -1046,7 +1065,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     // refresh page
                     shipmentPresenter.processInitialLoadCheckoutPage(
                             true, isOneClickShipment(), isTradeIn(), true,
-                            false, null, getDeviceId(), getCheckoutLeasingId()
+                            false, null, getDeviceId(), getCheckoutLeasingId(),
+                            isPlusSelected()
                     );
                 } else {
                     onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position);
@@ -1206,7 +1226,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (refreshCheckoutPage) {
             shipmentPresenter.processInitialLoadCheckoutPage(
                     true, isOneClickShipment(), isTradeIn(), true,
-                    false, shipmentAdapter.getAddressShipmentData().getCornerId(), getDeviceId(), getCheckoutLeasingId()
+                    false, shipmentAdapter.getAddressShipmentData().getCornerId(), getDeviceId(), getCheckoutLeasingId(),
+                    isPlusSelected()
             );
         }
     }
@@ -1364,7 +1385,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onResultFromEditAddress() {
         shipmentPresenter.processInitialLoadCheckoutPage(
                 true, isOneClickShipment(), isTradeIn(), true,
-                false, null, getDeviceId(), getCheckoutLeasingId()
+                false, null, getDeviceId(), getCheckoutLeasingId(),
+                isPlusSelected()
         );
     }
 
@@ -1389,7 +1411,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 if (data != null && data.getBooleanExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, false)) {
                     shipmentPresenter.processInitialLoadCheckoutPage(
                             true, isOneClickShipment(), isTradeIn(), true,
-                            false, null, getDeviceId(), getCheckoutLeasingId()
+                            false, null, getDeviceId(), getCheckoutLeasingId(),
+                            isPlusSelected()
                     );
                 }
                 if (data != null && data.getBooleanExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, false)) {
@@ -1448,7 +1471,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
                 shipmentPresenter.processInitialLoadCheckoutPage(
                         false, isOneClickShipment(), isTradeIn(), false,
-                        false, null, getDeviceId(), getCheckoutLeasingId()
+                        false, null, getDeviceId(), getCheckoutLeasingId(),
+                        isPlusSelected()
                 );
             }
         }
@@ -1473,7 +1497,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             default:
                 shipmentPresenter.processInitialLoadCheckoutPage(
                         false, isOneClickShipment(), isTradeIn(), false,
-                        false, null, getDeviceId(), getCheckoutLeasingId()
+                        false, null, getDeviceId(), getCheckoutLeasingId(),
+                        isPlusSelected()
                 );
                 break;
         }
@@ -1850,7 +1875,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void doCheckout() {
         shipmentPresenter.processSaveShipmentState();
-        shipmentPresenter.processCheckout(isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
+        shipmentPresenter.processCheckout(isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId(), isPlusSelected());
     }
 
     @Override

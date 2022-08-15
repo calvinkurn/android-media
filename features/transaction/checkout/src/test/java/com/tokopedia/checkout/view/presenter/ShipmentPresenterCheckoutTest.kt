@@ -160,7 +160,7 @@ class ShipmentPresenterCheckoutTest {
         })
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "", false)
 
         // Then
         verifyOrder {
@@ -185,7 +185,7 @@ class ShipmentPresenterCheckoutTest {
         every { view.activityContext } returns mockContext
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "", false)
 
         // Then
         verifyOrder {
@@ -210,7 +210,7 @@ class ShipmentPresenterCheckoutTest {
         every { view.activityContext } returns mockContext
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "", false)
 
         // Then
         verifyOrder {
@@ -240,7 +240,7 @@ class ShipmentPresenterCheckoutTest {
         })
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "", false)
 
         // Then
         verifyOrder {
@@ -267,7 +267,7 @@ class ShipmentPresenterCheckoutTest {
         })
 
         // When
-        presenter.processCheckout(false, false, false, "0", "0", "0")
+        presenter.processCheckout(false, false, false, "0", "0", "0", false)
 
         // Then
         verifyOrder {
@@ -297,7 +297,7 @@ class ShipmentPresenterCheckoutTest {
         every { mockContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown) } returns errorMessage
 
         // When
-        presenter.processCheckout(false, false, false, "0", "0", "0")
+        presenter.processCheckout(false, false, false, "0", "0", "0", false)
 
         // Then
         verifyOrder {
@@ -322,7 +322,7 @@ class ShipmentPresenterCheckoutTest {
         every { checkoutUseCase.createObservable(any()) } returns Observable.error(IOException())
 
         // When
-        presenter.processCheckout(false, false, false, "0", "0", "0")
+        presenter.processCheckout(false, false, false, "0", "0", "0", false)
 
         // Then
         verifyOrder {
@@ -536,7 +536,7 @@ class ShipmentPresenterCheckoutTest {
         every { view.generateNewCheckoutRequest(any(), any()) } returns listOf(dataCheckoutRequest)
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "", false)
 
         // Then
         verifyOrder {
@@ -596,7 +596,7 @@ class ShipmentPresenterCheckoutTest {
         every { view.generateNewCheckoutRequest(capture(slot), any()) } returns listOf(dataCheckoutRequest)
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "", false)
 
         // Then
         assertEquals(2, slot.captured.size)
@@ -620,7 +620,7 @@ class ShipmentPresenterCheckoutTest {
         })
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "", false)
 
         // Then
         verifyOrder {
@@ -646,7 +646,7 @@ class ShipmentPresenterCheckoutTest {
         })
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "", false)
 
         // Then
         verifyOrder {
@@ -672,7 +672,7 @@ class ShipmentPresenterCheckoutTest {
         })
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "", false)
 
         // Then
         verifyOrder {
@@ -703,7 +703,7 @@ class ShipmentPresenterCheckoutTest {
         })
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "", false)
 
         // Then
         verifyOrder {
@@ -865,7 +865,7 @@ class ShipmentPresenterCheckoutTest {
         })
 
         // When
-        presenter.processCheckout(false, false, false, "", "", "")
+        presenter.processCheckout(false, false, false, "", "", "", false)
 
         // Then
         verifyOrder {
