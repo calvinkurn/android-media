@@ -1,4 +1,4 @@
-package com.tokopedia.campaign.widget.bottomsheet
+package com.tokopedia.campaign.components.bottomsheet.selection.single
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.campaign.databinding.BottomsheetSingleSelectionItemBinding
 import com.tokopedia.campaign.entity.SingleSelectionItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
+import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -37,7 +38,9 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
     private val singleSelectionAdapter = SingleSelectionAdapter()
     private var onItemClicked : (SingleSelectionItem) -> Unit = {}
     private val selectedItemId by lazy { arguments?.getString(BUNDLE_KEY_SELECTED_ITEM_ID).orEmpty() }
-    private val singleSelectionItems by lazy { arguments?.getParcelableArrayList<SingleSelectionItem>(BUNDLE_KEY_SINGLE_SELECTION_ITEMS)?.toList().orEmpty() }
+    private val singleSelectionItems by lazy { arguments?.getParcelableArrayList<SingleSelectionItem>(
+        BUNDLE_KEY_SINGLE_SELECTION_ITEMS
+    )?.toList().orEmpty() }
     private var displayedTitle = ""
     private var buttonTitle = ""
     private val helper = SingleSelectionHelper()
@@ -47,11 +50,6 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
         isSkipCollapseState = true
         isKeyboardOverlap = false
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -104,7 +102,7 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
         singleSelectionAdapter.submit(updatedItems)
     }
 
-    fun setOnItemClicked(onItemClicked : (SingleSelectionItem) -> Unit = {}) {
+    fun setOnApplyButtonClick(onItemClicked : (SingleSelectionItem) -> Unit) {
         this.onItemClicked = onItemClicked
     }
 
@@ -116,11 +114,18 @@ class SingleSelectionBottomSheet : BottomSheetUnify() {
         this.buttonTitle = buttonTitle
     }
 
+    fun getSelectedItem(): SingleSelectionItem? {
+        val items = singleSelectionAdapter.snapshot()
+        return helper.findSelectedItem(items)
+    }
+
     fun getBottomSheetView() : View? {
         return binding?.root
     }
 
     private fun handleSelection(selectedPackage: SingleSelectionItem) {
+        binding?.btnApply?.enable()
+
         val items = singleSelectionAdapter.snapshot()
         val updatedItems = helper.markAsSelected(selectedPackage.id, items)
 

@@ -1,8 +1,8 @@
-package com.tokopedia.campaign.widget.bottomsheet
+package com.tokopedia.campaign.components.bottomsheet.selection.single
 
 import com.tokopedia.campaign.entity.SingleSelectionItem
 
-class SingleSelectionHelper {
+internal class SingleSelectionHelper {
 
     fun markAsSelected(
         selectedItemId: String,
@@ -17,8 +17,8 @@ class SingleSelectionHelper {
         }
     }
 
-    fun findSelectedItem(vpsPackages: List<SingleSelectionItem>): SingleSelectionItem? {
-        return vpsPackages.find { vpsPackage -> vpsPackage.isSelected }
+    fun findSelectedItem(items: List<SingleSelectionItem>): SingleSelectionItem? {
+        return items.find { item -> item.isSelected }
     }
 
 }

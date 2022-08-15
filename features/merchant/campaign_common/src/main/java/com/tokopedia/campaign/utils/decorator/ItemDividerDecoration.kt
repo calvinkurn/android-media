@@ -1,4 +1,4 @@
-package com.tokopedia.campaign.widget.bottomsheet
+package com.tokopedia.campaign.utils.decorator
 
 import android.graphics.Canvas
 import android.graphics.Rect

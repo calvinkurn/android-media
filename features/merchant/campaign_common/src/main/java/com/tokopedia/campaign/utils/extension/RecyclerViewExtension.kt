@@ -4,7 +4,7 @@ import android.graphics.drawable.InsetDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.R
-import com.tokopedia.campaign.widget.bottomsheet.ItemDividerDecoration
+import com.tokopedia.campaign.utils.decorator.ItemDividerDecoration
 import com.tokopedia.unifycomponents.toPx
 
 private const val NO_INSET = 0

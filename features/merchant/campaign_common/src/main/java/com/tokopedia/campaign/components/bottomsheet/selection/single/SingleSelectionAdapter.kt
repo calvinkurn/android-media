@@ -1,4 +1,4 @@
-package com.tokopedia.campaign.widget.bottomsheet
+package com.tokopedia.campaign.components.bottomsheet.selection.single
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.databinding.ItemSingleSelectionItemBinding
 import com.tokopedia.campaign.entity.SingleSelectionItem
 
-class SingleSelectionAdapter : RecyclerView.Adapter<SingleSelectionAdapter.ViewHolder>() {
+internal class SingleSelectionAdapter : RecyclerView.Adapter<SingleSelectionAdapter.ViewHolder>() {
 
     private var onItemClicked: (SingleSelectionItem) -> Unit = {}
 
@@ -40,7 +40,7 @@ class SingleSelectionAdapter : RecyclerView.Adapter<SingleSelectionAdapter.ViewH
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(viewHolder: SingleSelectionAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val currentItem = differ.currentList[position]
         viewHolder.bind(currentItem)
     }
