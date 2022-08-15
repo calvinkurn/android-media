@@ -756,7 +756,11 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 }
                 recharge_general_ticker.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                        if (linkUrl.startsWith(PREFIX_LINK)) {
+                            RouteManager.route(context, linkUrl.toString())
+                        } else {
+                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                        }
                     }
 
                     override fun onDismiss() {
@@ -770,7 +774,11 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     val tickerAdapter = TickerPagerAdapter(context, messages)
                     tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                         override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                            RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                            if (linkUrl.startsWith(PREFIX_LINK)) {
+                                RouteManager.route(context, linkUrl.toString())
+                            } else {
+                                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                            }
                         }
                     })
                     tickerAdapter.onDismissListener = {
@@ -1388,6 +1396,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     companion object {
+        private const val PREFIX_LINK = "tokopedia"
         const val EXTRA_PARAM_MENU_ID = "EXTRA_PARAM_MENU_ID"
         const val EXTRA_PARAM_CATEGORY_ID = "EXTRA_PARAM_CATEGORY_ID"
         const val EXTRA_PARAM_OPERATOR_ID = "EXTRA_PARAM_OPERATOR_ID"
