@@ -192,6 +192,7 @@ class ProductListPresenter @Inject constructor(
     private var searchRef = ""
     private var dimension90 = ""
     private var autoCompleteApplink = ""
+    private var externalReference = ""
     private var isGlobalNavWidgetAvailable = false
     private var isShowHeadlineAdsBasedOnGlobalNav = false
 
@@ -387,6 +388,7 @@ class ProductListPresenter @Inject constructor(
             dimension90,
             keyword,
             isShowLocalSearchRecommendation(),
+            externalReference,
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -468,6 +470,7 @@ class ProductListPresenter @Inject constructor(
                 searchParameter,
                 dimension90,
                 productListType,
+                externalReference,
             )
     }
 
@@ -524,6 +527,7 @@ class ProductListPresenter @Inject constructor(
         pageId = searchParameter.getValueString(SearchApiConst.SRP_PAGE_ID)
         pageTitle = searchParameter.getValueString(SearchApiConst.SRP_PAGE_TITLE)
         searchRef = searchParameter.getValueString(SearchApiConst.SEARCH_REF)
+        externalReference = searchParameter.getValueString(SearchApiConst.SRP_EXT_REF)
         dimension90 = Dimension90Utils.getDimension90(searchParameter)
         additionalParams = ""
 
@@ -1365,6 +1369,7 @@ class ProductListPresenter @Inject constructor(
                         componentId = product.componentId,
                         originalPrice = product.originalPrice,
                         discountPercentage = product.discountPercentage,
+                        externalReference = externalReference,
                     )
                 },
                 cardButton = BroadMatchDataView.CardButton(
@@ -1680,7 +1685,8 @@ class ProductListPresenter @Inject constructor(
                 createGeneralSearchTrackingRelatedKeyword(productDataView),
                 dimension90,
                 productDataView.backendFilters,
-                productDataView.pageComponentId
+                productDataView.pageComponentId,
+                externalReference,
             )
         )
     }
@@ -2405,14 +2411,15 @@ class ProductListPresenter @Inject constructor(
 
         val mapper = InspirationCarouselProductDataViewMapper()
         val productList = mapper.convertToInspirationCarouselProductDataView(
-                inspirationCarouselChipsProductModel.searchProductCarouselByIdentifier.product,
-                clickedInspirationCarouselOption.optionPosition,
-                clickedInspirationCarouselOption.inspirationCarouselType,
-                clickedInspirationCarouselOption.layout,
-                this::productLabelGroupToLabelGroupDataView,
-                clickedInspirationCarouselOption.title,
-                inspirationCarouselTitle,
-                dimension90,
+            inspirationCarouselChipsProductModel.searchProductCarouselByIdentifier.product,
+            clickedInspirationCarouselOption.optionPosition,
+            clickedInspirationCarouselOption.inspirationCarouselType,
+            clickedInspirationCarouselOption.layout,
+            this::productLabelGroupToLabelGroupDataView,
+            clickedInspirationCarouselOption.title,
+            inspirationCarouselTitle,
+            dimension90,
+            externalReference,
         )
 
         clickedInspirationCarouselOption.product = productList

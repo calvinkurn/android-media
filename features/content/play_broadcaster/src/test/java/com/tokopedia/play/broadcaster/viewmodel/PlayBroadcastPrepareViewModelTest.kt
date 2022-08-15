@@ -51,7 +51,7 @@ class PlayBroadcastPrepareViewModelTest {
     private lateinit var mockHydraDataStore: HydraConfigStore
     private lateinit var mockBroadcastSetupDataStore: PlayBroadcastSetupDataStore
 
-    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
+    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser())
 
     private lateinit var createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase
 
@@ -91,7 +91,6 @@ class PlayBroadcastPrepareViewModelTest {
                 dispatcher = dispatcherProvider,
                 hydraConfigStore = mockHydraDataStore,
                 setupDataStore = mockBroadcastSetupDataStore,
-                userSession = userSession,
                 channelConfigStore = channelConfigStore,
                 createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
                 mDataStore = dataStore,

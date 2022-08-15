@@ -1,0 +1,46 @@
+{
+    "TokonowBundleWidget": {
+                "header": {
+                  "process_time": 0.07950089,
+                  "reason": "",
+                  "error_code": "0"
+                },
+                "data": {
+                  "widgetName": "Bundling Mini Cart Recommendation Staging",
+                  "widgetData": [
+                    {
+                      "bundleGroupID": "45749",
+                      "bundleName": "paket ikan",
+                      "bundleType": "single_bundling",
+                      "shopID": "480552",
+                      "warehouseID": "343420",
+                      "bundleDetails": [
+                        {
+                          "bundleID": "45749",
+                          "originalPrice": "Rp 12.500",
+                          "originalPriceRaw": 12500,
+                          "displayPrice": "Rp 11.875",
+                          "displayPriceRaw": 11875,
+                          "discountPercentage": 5,
+                          "isPO": false,
+                          "preorderInfo": "",
+                          "savingAmountWording": "Hemat Rp 625",
+                          "minOrder": 5,
+                          "minOrderWording": "Isi 5",
+                          "isProductsHaveVariant": false
+                        }
+                      ],
+                      "bundleProducts": [
+                        {
+                          "productID": "2150470622",
+                          "productName": "single_ikan_phase_2",
+                          "imageUrl": "https://ecs7.tokopedia.net/img/cache/700/hDjmkQ/2022/8/1/68e84345-6f28-4780-bfd6-a6ac79234235.jpg",
+                          "appLink": "tokopedia://product/2150470622",
+                          "webLink": ""
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+}

@@ -36,17 +36,6 @@
             app:layout_constraintLeft_toLeftOf="@id/view_recharge_home_single_banner_image"
             app:layout_constraintTop_toTopOf="@id/view_recharge_home_single_banner_image" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/view_recharge_home_single_banner_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/single_banner_margin"
-            android:layout_marginBottom="@dimen/single_banner_margin"
-            android:textColor="@color/Unify_N0"
-            app:layout_constraintBottom_toBottomOf="@id/view_recharge_home_single_banner_image"
-            app:layout_constraintLeft_toLeftOf="@id/view_recharge_home_single_banner_image"
-            app:typographyType="heading_4" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include

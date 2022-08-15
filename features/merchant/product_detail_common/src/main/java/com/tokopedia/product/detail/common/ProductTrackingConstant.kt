@@ -299,6 +299,12 @@ object ProductTrackingConstant {
         const val ACTION_SEE_ALL = "click - lihat semua review gallery"
     }
 
+    object MostHelpfulReview {
+        const val TRACKER_ID_CLICK_REVIEWER_NAME = "33836"
+        const val ACTON_CLICK_REVIEWER_NAME = "click - reviewer name"
+        const val LABEL_CLICK_REVIEWER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;label:%s;"
+    }
+
     object MerchantVoucher {
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
