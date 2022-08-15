@@ -475,6 +475,7 @@ class CampaignInformationViewModel @Inject constructor(
         selectedPackageId: Long,
         vpsPackages: List<VpsPackage>
     ): List<VpsPackageUiModel> {
+        val sortRule = compareBy<VpsPackageUiModel> { it.packageId }.thenBy { it.packageEndTime }
         return vpsPackages
             .map { vpsPackage ->
                 VpsPackageUiModel(
@@ -489,7 +490,7 @@ class CampaignInformationViewModel @Inject constructor(
                     vpsPackage.isShopTierBenefit()
                 )
             }
-            .sortedBy { it.packageEndTime.time }
+            .sortedWith(sortRule)
     }
 
     private fun VpsPackage.isSelected(selectedPackageId: Long) : Boolean {

@@ -102,6 +102,9 @@ class VpsPackageAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun bind(vpsPackage: VpsPackageUiModel) {
             binding.tpgPackageName.text = vpsPackage.packageName
+            binding.radioButton.isChecked = false
+            binding.root.isEnabled = false
+            binding.radioButton.isEnabled = false
             binding.labelRemainingQuota.setLabelType(Label.HIGHLIGHT_LIGHT_RED)
             binding.labelRemainingQuota.text = binding.labelRemainingQuota.context.getString(R.string.sfs_empty_quota)
         }
