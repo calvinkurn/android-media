@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsActivityCampaignDetailBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignDetailBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -25,7 +26,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignDetailViewModel::class.java) }
-    private var binding by autoClearedNullable<StfsActivityCampaignDetailBinding>()
+    private var binding by autoClearedNullable<StfsFragmentCampaignDetailBinding>()
 
     override fun getScreenName(): String = CampaignDetailFragment::class.java.canonicalName.orEmpty()
 
@@ -40,7 +41,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = StfsActivityCampaignDetailBinding.inflate(inflater, container, false)
+        binding = StfsFragmentCampaignDetailBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
