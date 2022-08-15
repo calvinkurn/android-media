@@ -29,11 +29,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".view.activity.FeedOnboardingActivity"
-            android:label="@string/title_feed_onboarding"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".view.activity.PlayVideoLiveListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">

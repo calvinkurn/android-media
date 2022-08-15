@@ -88,12 +88,9 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.R
 import com.tokopedia.wishlist_common.R as Rwishlist
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
-import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
-import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
@@ -111,7 +108,6 @@ import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
-import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
@@ -258,7 +254,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val OPEN_KOL_COMMENT = 101
         private const val OPEN_CONTENT_REPORT = 1310
         private const val CREATE_POST = 888
-        private const val OPEN_INTERESTPICK_DETAIL = 1234
         private const val OPEN_INTERESTPICK_RECOM_PROFILE = 1235
         private const val DEFAULT_VALUE = -1
         private const val OPEN_PLAY_CHANNEL = 1858
@@ -385,7 +380,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             submitInterestPickResp.observe(lifecycleOwner, Observer {
                 view?.hideLoadingTransparent()
                 when (it) {
-                    is Success -> onSuccessSubmitInterestPickData(it.data)
                     is Fail -> onErrorSubmitInterestPickData(it.throwable)
                 }
             })
@@ -912,17 +906,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         data.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG) ?: ""
                     )
                 }
-            }
-            OPEN_INTERESTPICK_DETAIL -> {
-                val selectedIdList =
-                    data.getIntegerArrayListExtra(FeedOnboardingFragment.EXTRA_SELECTED_IDS)
-                adapter.getlist().firstOrNull { it is OnboardingViewModel }?.let {
-                    (it as? OnboardingViewModel)?.dataList?.forEach { interestPickDataViewModel ->
-                        interestPickDataViewModel.isSelected =
-                            selectedIdList?.contains(interestPickDataViewModel.id) == true
-                    }
-                }
-                adapter.notifyItemChanged(0, OnboardingViewHolder.PAYLOAD_UPDATE_ADAPTER)
             }
             OPEN_PLAY_CHANNEL -> {
                 val channelId = data.getStringExtra(EXTRA_PLAY_CHANNEL_ID)
@@ -2793,22 +2776,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.eventClickFeedInterestPick(item.name)
     }
 
-    override fun onLihatSemuaItemClicked(selectedItemList: List<InterestPickDataViewModel>) {
-        feedAnalytics.eventClickFeedInterestPickSeeAll()
-        activity?.let { fragmentActivity ->
-            val bundle = Bundle()
-            bundle.putIntegerArrayList(
-                FeedOnboardingFragment.EXTRA_SELECTED_IDS,
-                ArrayList(selectedItemList.map { it.id })
-            )
-            startActivityForResult(
-                FeedOnboardingActivity.getCallingIntent(
-                    fragmentActivity,
-                    bundle
-                ), OPEN_INTERESTPICK_DETAIL
-            )
-        }
-    }
+    @Deprecated("Removed when interest_common is removed")
+    override fun onLihatSemuaItemClicked(selectedItemList: List<InterestPickDataViewModel>) {}
 
     override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<InterestPickDataViewModel>) {
         view?.showLoadingTransparent()
@@ -2842,28 +2811,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
             swipe_refresh_layout.isRefreshing = false
             swipe_refresh_layout.isEnabled = false
-        }
-    }
-
-    private fun onSuccessSubmitInterestPickData(data: SubmitInterestResponseViewModel) {
-        context?.let {
-            when (data.source) {
-                FeedViewModel.PARAM_SOURCE_SEE_ALL_CLICK -> {
-                    startActivityForResult(
-                        FeedOnboardingActivity.getCallingIntent(it, Bundle()),
-                        OPEN_INTERESTPICK_DETAIL
-                    )
-                }
-                FeedViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK -> {
-                    startActivityForResult(
-                        FollowRecomActivity.createIntent(
-                            it,
-                            data.idList.toIntArray()
-                        ), OPEN_INTERESTPICK_RECOM_PROFILE
-                    )
-                }
-
-            }
         }
     }
 
