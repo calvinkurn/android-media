@@ -64,6 +64,7 @@ object DigitalAtcMapper {
             ErrorAtc(
                 it.status.toIntOrZero(),
                 it.title,
+                it.applinkUrl,
                 atcErrorPage = it.atcErrorPage
             )
         }.first()
