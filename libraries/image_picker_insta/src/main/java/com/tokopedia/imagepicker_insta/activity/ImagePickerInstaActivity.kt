@@ -58,7 +58,7 @@ class ImagePickerInstaActivity : PermissionActivity() {
     }
 
     private fun processIntentData() {
-        toolbarTitle = intent.extras?.getString(BundleData.TITLE, "") ?: ""
+        toolbarTitle = intent.extras?.getString(BundleData.TITLE, getString(com.tokopedia.content.common.R.string.feed_content_post_sebagai)) ?: getString(com.tokopedia.content.common.R.string.feed_content_post_sebagai)
         toolbarSubTitle = intent.extras?.getString(BundleData.SUB_TITLE, "") ?: ""
         toolbarIconRes = intent.extras?.getInt(BundleData.TOOLBAR_ICON_RES) ?: 0
         menuTitle = intent.extras?.getString(BundleData.MENU_TITLE) ?: getString(R.string.imagepicker_insta_lanjut)
