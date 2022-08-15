@@ -88,30 +88,32 @@ class UpcomingDescriptionViewComponent(
         if (uiModel.originalText.isBlank()) return
 
         listener.onTextClicked(this)
-        animateText()
-    }
-
-    private fun animateText() {
         animExpand.start()
     }
 
-    private fun getText(text: String): SpannedString = buildSpannedString {
-        append(
-            text,
-            ForegroundColorSpan(
-                MethodChecker.getColor(
-                    ctx,
-                    unifyR.color.Unify_Static_White
+    private fun getText(text: String): SpannedString {
+        if (uiModel.truncatedText.isEmpty()) {
+            val length = text.filter { it.isLetterOrDigit() }.length
+            uiModel.truncatedText = buildSpannedString {
+                append(
+                    text.take(length),
+                    ForegroundColorSpan(
+                        MethodChecker.getColor(
+                            ctx,
+                            unifyR.color.Unify_Static_White
+                        )
+                    ),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-            ),
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        append(END_CHARS)
-        append(
-            getString(playR.string.play_upcoming_description_read_more),
-            clickableSpan,
-            Spanned.SPAN_EXCLUSIVE_INCLUSIVE
-        )
+                append(END_CHARS)
+                append(
+                    getString(playR.string.play_upcoming_description_read_more),
+                    clickableSpan,
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+        }
+        return uiModel.truncatedText
     }
 
     private fun setupExpandable() {
@@ -126,11 +128,7 @@ class UpcomingDescriptionViewComponent(
         if (!isExpand) {
             txt.ellipsize = TextUtils.TruncateAt.END
             txt.movementMethod = LinkMovementMethod.getInstance()
-            txt.text = if (uiModel.truncatedText.isEmpty()) {
-                val length = description.filter { it.isLetterOrDigit() }.length
-                uiModel.truncatedText = getText(description.take(length - TRIMMED_CHARS))
-                uiModel.truncatedText
-            } else uiModel.truncatedText // move to get text
+            txt.text = getText(description)
         } else {
             txt.text = uiModel.originalText
             txt.ellipsize = null
@@ -156,7 +154,6 @@ class UpcomingDescriptionViewComponent(
         private const val PARAM_MAX_LINES = "maxLines"
         private const val MIN_LINES = 2
         private const val MAX_LINES = 14
-        private const val TRIMMED_CHARS = 10
         private const val END_CHARS = "... "
     }
 }
