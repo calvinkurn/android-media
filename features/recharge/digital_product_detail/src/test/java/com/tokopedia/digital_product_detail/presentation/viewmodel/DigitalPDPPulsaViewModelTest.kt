@@ -499,6 +499,16 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
     }
 
     @Test
+    fun `when getting addToCart should run and return notNull error from gql`(){
+        val error = dataFactory.getErrorAtcFromGql()
+        onGetAddToCart_thenReturn(error)
+
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", true)
+        verifyAddToCartRepoGetCalled()
+        verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
+    }
+
+    @Test
     fun `when getting addToCart should run and return DigitalAtcErrorException when get error atc`(){
         val error = DigitalAtcErrorException(dataFactory.errorAtcResponse)
         onGetAddToCart_thenReturn(error)

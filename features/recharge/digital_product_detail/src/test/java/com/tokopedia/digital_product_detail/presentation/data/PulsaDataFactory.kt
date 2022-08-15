@@ -16,6 +16,7 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
 import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
 import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
 class PulsaDataFactory {
@@ -151,6 +152,12 @@ class PulsaDataFactory {
         return gson.fromJson(
             gson.JsonToString(GET_ADD_TO_CART),
             ResponseCartData::class.java
+        )
+    }
+
+    fun getErrorAtcFromGql(): DigitalAtcResult{
+        return DigitalAtcResult(
+            errorAtc = getErrorAtc()
         )
     }
 
