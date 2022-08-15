@@ -438,17 +438,25 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             loaderCheckout.gone()
             hideContent()
 
-            it.errorIllustration.loadImageFitCenter(error.atcErrorPage.imageUrl)
-            it.errorAction.text = error.atcErrorPage.buttons.first().label
-            it.errorTitle.text = error.atcErrorPage.title
-            it.errorDescription.text = error.atcErrorPage.subTitle
-            it.errorSecondaryAction.gone()
-
-            it.setActionClickListener {
-                RouteManager.getIntent(context, error.atcErrorPage.buttons.first().appLinkUrl).apply {
-                    startActivityForResult(this, REQUEST_VERIFY_PHONE_NUMBER)
+            if (error.atcErrorPage.buttons.isNullOrEmpty()){
+                it.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
+                it.setActionClickListener { _ ->
+                    it.gone()
+                    loadData()
+                }
+            }else{
+                it.errorAction.text = error.atcErrorPage.buttons.first().label
+                it.setActionClickListener {
+                    RouteManager.getIntent(context, error.atcErrorPage.buttons.first().appLinkUrl).apply {
+                        startActivityForResult(this, REQUEST_VERIFY_PHONE_NUMBER)
+                    }
                 }
             }
+
+            it.errorIllustration.loadImageFitCenter(error.atcErrorPage.imageUrl)
+            it.errorTitle.text = error.atcErrorPage.title.ifEmpty { error.title }
+            it.errorDescription.text = error.atcErrorPage.subTitle
+            it.errorSecondaryAction.gone()
 
             it.show()
         }
