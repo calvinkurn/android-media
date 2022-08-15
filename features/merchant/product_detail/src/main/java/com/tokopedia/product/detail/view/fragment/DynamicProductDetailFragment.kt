@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
@@ -2425,7 +2426,7 @@ open class DynamicProductDetailFragment :
 
     private fun observeToolbarState() {
         viewLifecycleOwner.observe(viewModel.toolbarTransparentState) { shouldTransparent ->
-            //setupToolbarState(shouldTransparent = shouldTransparent)
+            setupToolbarState(shouldTransparent = shouldTransparent)
         }
     }
 
@@ -3799,7 +3800,7 @@ open class DynamicProductDetailFragment :
             addRecyclerViewScrollListener()
             setToolbarShadowState(show = true)
         } else {
-            setContentConstraintToNavToolbarBottom()
+            //setContentConstraintToNavToolbarBottom()
             setupToolbarWithStatusBarLight()
             removeRecyclerViewScrollListener()
             setToolbarShadowState(show = false)
@@ -3807,11 +3808,11 @@ open class DynamicProductDetailFragment :
     }
 
     /**
-     * set swipe refresh layout(content) constraint top to parent top
      * when the toolbar is transparent, then the content is displayed full-screen
      */
     private fun setContentConstraintToParentTop() {
         binding?.apply {
+            TransitionManager.beginDelayedTransition(containerDynamicProductDetail)
             val constraintSet = ConstraintSet()
             constraintSet.clone(containerDynamicProductDetail)
             constraintSet.connect(
@@ -3824,11 +3825,11 @@ open class DynamicProductDetailFragment :
     }
 
     /**
-     * set swipe refresh layout(content) constraint top to nav toolbar bottom
      * when the toolbar is solid, then the content is displayed normally under the toolbar
      */
     private fun setContentConstraintToNavToolbarBottom() {
         binding?.apply {
+            TransitionManager.beginDelayedTransition(containerDynamicProductDetail)
             val constraintSet = ConstraintSet()
             constraintSet.clone(containerDynamicProductDetail)
             constraintSet.connect(
