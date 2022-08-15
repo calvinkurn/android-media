@@ -130,7 +130,15 @@ class UpcomingDescriptionViewComponent(
             txt.movementMethod = LinkMovementMethod.getInstance()
             txt.text = getText(description)
         } else {
-            txt.text = uiModel.originalText
+            txt.text = buildSpannedString {
+                append(uiModel.originalText)
+                append(" ")
+                append(
+                    getString(playR.string.play_upcoming_description_less),
+                    clickableSpan,
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
             txt.ellipsize = null
         }
     }
