@@ -86,8 +86,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     lateinit var loadingMediaText: String
     lateinit var queryConfiguration: QueryConfiguration
     var maxMultiSelect: Int = DEFAULT_MULTI_SELECT_LIMIT
-    val coachMarkItem = ArrayList<CoachMark2Item>()
-    private  lateinit var coachMark: CoachMark2
 
     @Inject
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
@@ -501,6 +499,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     }
 
                     toolbarCommon.setOnAccountClickListener {
+                        toolbarCommon.hideCoachMarkSwitchAccount()
                         openFeedAccountBottomSheet()
                     }
                 }
