@@ -186,7 +186,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     VideoViewHolder.VideoViewListener,
     FeedMultipleImageView.FeedMultipleImageViewListener,
     HighlightAdapter.HighlightListener,
-    InterestPickAdapter.InterestPickItemListener,
     EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener,
     RetryViewHolder.RetryViewHolderListener,
     EmptyFeedViewHolder.EmptyFeedListener,
@@ -686,7 +685,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             setAnalyticModel(PlayWidgetFeedsAnalyticModel())
             setImpressionHelper(ImpressionHelper(validator = playWidgetImpressionValidator))
         }
-        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this, playWidgetCoordinator)
+        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, playWidgetCoordinator)
         adapter = FeedPlusAdapter(typeFactory, this)
 
         val loginIdString = userSession.userId
@@ -2786,37 +2785,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedXCard.followers.isFollowed,
             duration,
             feedXCard.media.firstOrNull()?.type ?: ""
-        )
-    }
-
-    override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
-        feedAnalytics.eventClickFeedInterestPick(item.name)
-    }
-
-    override fun onLihatSemuaItemClicked(selectedItemList: List<InterestPickDataViewModel>) {
-        feedAnalytics.eventClickFeedInterestPickSeeAll()
-        activity?.let { fragmentActivity ->
-            val bundle = Bundle()
-            bundle.putIntegerArrayList(
-                FeedOnboardingFragment.EXTRA_SELECTED_IDS,
-                ArrayList(selectedItemList.map { it.id })
-            )
-            startActivityForResult(
-                FeedOnboardingActivity.getCallingIntent(
-                    fragmentActivity,
-                    bundle
-                ), OPEN_INTERESTPICK_DETAIL
-            )
-        }
-    }
-
-    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<InterestPickDataViewModel>) {
-        view?.showLoadingTransparent()
-        feedAnalytics.eventClickFeedCheckAccount(selectedItemList.size.toString())
-        feedViewModel.submitInterestPickData(
-            selectedItemList,
-            FeedViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK,
-            OPEN_INTERESTPICK_RECOM_PROFILE
         )
     }
 
