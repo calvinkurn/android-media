@@ -51,9 +51,9 @@ class CampaignDetailBottomSheet: BottomSheetUnify() {
         val productCriteriaFragment = CampaignProductCriteriaFragment()
 
         val fragments = listOf(
-            Pair(timelineTitle, timelineFragment),
             Pair(criteriaTitle, criteriaFragment),
-            Pair(productCriteriaTitle, productCriteriaFragment)
+            Pair(productCriteriaTitle, productCriteriaFragment),
+            Pair(timelineTitle, timelineFragment),
         )
         val pagerAdapter = TabPagerAdapter(childFragmentManager,
             viewLifecycleOwner.lifecycle, fragments)

@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignProductCriteriaBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.presentation.list.adapter.campaigndetail.ProductCriteriaAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CampaignProductCriteriaFragment: BaseDaggerFragment() {
@@ -33,5 +35,20 @@ class CampaignProductCriteriaFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupCriteriaList()
+    }
+
+    private fun setupCriteriaList() {
+        binding?.rvProductCriteria?.apply {
+            val criteriaItems = listOf(
+                "Olahraga",
+                "Otomotif, Fashion Pria",
+                "Suplemen Diet, + 10 lainnya"
+            )
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = ProductCriteriaAdapter().apply {
+                data = criteriaItems.toList()
+            }
+        }
     }
 }

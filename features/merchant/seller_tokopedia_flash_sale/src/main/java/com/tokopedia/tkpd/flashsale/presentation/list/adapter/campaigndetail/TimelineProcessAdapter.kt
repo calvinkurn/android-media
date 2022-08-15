@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.flashsale.presentation.list.adapter.campaigndetail
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemTimelineViewBinding
+import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemTimelineBinding
 
 class TimelineProcessAdapter: RecyclerView.Adapter<TimelineProcessAdapter.TimelineViewHolder>() {
 
@@ -14,7 +14,7 @@ class TimelineProcessAdapter: RecyclerView.Adapter<TimelineProcessAdapter.Timeli
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimelineViewHolder {
-        val binding = StfsItemTimelineViewBinding.inflate(LayoutInflater.from(parent.context),
+        val binding = StfsItemTimelineBinding.inflate(LayoutInflater.from(parent.context),
             parent, false)
         return TimelineViewHolder(binding)
     }
@@ -27,7 +27,7 @@ class TimelineProcessAdapter: RecyclerView.Adapter<TimelineProcessAdapter.Timeli
         }
     }
 
-    inner class TimelineViewHolder(private val binding: StfsItemTimelineViewBinding) :
+    inner class TimelineViewHolder(private val binding: StfsItemTimelineBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(title: String) {
