@@ -327,7 +327,9 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     private fun getButtonText(element: ProductBundlingUiModel): String? {
-        return if (element.blastId != "0") {
+        return if (element.blastId != NOT_BROADCAST &&
+            element.productBundling.ctaBundling?.isDisabled == false
+        ) {
             context?.getString(R.string.action_atc)
         } else {
             element.productBundling.ctaBundling?.ctaText
@@ -424,5 +426,6 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
 
     companion object {
         private val LAYOUT = R.layout.item_topchat_product_bundling_card
+        private const val NOT_BROADCAST = "0"
     }
 }
