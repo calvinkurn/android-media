@@ -2425,7 +2425,7 @@ open class DynamicProductDetailFragment :
 
     private fun observeToolbarState() {
         viewLifecycleOwner.observe(viewModel.toolbarTransparentState) { shouldTransparent ->
-            setupToolbarState(shouldTransparent = shouldTransparent)
+            //setupToolbarState(shouldTransparent = shouldTransparent)
         }
     }
 

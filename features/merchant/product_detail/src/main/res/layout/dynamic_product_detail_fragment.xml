@@ -29,6 +29,7 @@
         android:layout_height="84dp"
         android:contentDescription="pdp_toolbar_shadow"
         android:scaleType="fitXY"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -61,7 +62,7 @@
 
     <com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
         android:id="@+id/sticky_login_pdp"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/partial_layout_button_action"
@@ -74,7 +75,7 @@
     <include
         android:id="@+id/partial_layout_button_action"
         layout="@layout/partial_layout_button_action"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,8 +85,8 @@
     <include
         android:id="@+id/base_btn_follow"
         layout="@layout/layout_button_npl_follow"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
