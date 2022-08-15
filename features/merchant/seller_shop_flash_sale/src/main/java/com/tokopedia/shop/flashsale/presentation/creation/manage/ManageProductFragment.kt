@@ -3,6 +3,7 @@ package com.tokopedia.shop.flashsale.presentation.creation.manage
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -566,6 +567,13 @@ class ManageProductFragment : BaseDaggerFragment() {
             if (viewModel.bannerType.value == HIDE_BANNER) {
                 guidelineHeader.setGuidelineBegin(GUIDELINE_MARGIN_HEADER_MIN)
                 guidelineMarginHeader = GUIDELINE_MARGIN_HEADER_MIN
+
+                guidelineFooter.animateSlide(
+                    guidelineMarginFooter,
+                    guidelineMarginFooterMax,
+                    false
+                )
+                guidelineMarginFooter = guidelineMarginFooterMax
             } else {
                 guidelineHeader.animateSlide(
                     guidelineMarginHeader,
