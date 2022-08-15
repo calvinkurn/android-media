@@ -62,17 +62,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/pdp_info_desc"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:ellipsize="end"
             android:lineSpacingExtra="@dimen/pdp_dp_3"
             android:maxLines="2"
             android:textColor="@color/Unify_NN950"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toStartOf="@id/ic_pdp_partner_logo"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/barrier_title_bottom"
             app:typographyType="display_2"
@@ -90,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="bottom|end"
-            android:paddingStart="16dp"
+            android:paddingStart="8dp"
             android:text="@string/pdp_general_info_see"
             android:textColor="@color/Unify_GN500"
             android:visibility="gone"
@@ -100,22 +97,6 @@
             app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:visibility="visible" />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/ic_pdp_partner_logo"
-            android:layout_width="60dp"
-            android:layout_height="11dp"
-            android:layout_marginStart="4dp"
-            android:scaleType="fitStart"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/pdp_info_desc"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@+id/pdp_info_desc"
-            app:layout_constraintTop_toTopOf="@+id/pdp_info_desc"
-            tools:src="@drawable/ic_rating_apps_active"
-            tools:visibility="visible" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
