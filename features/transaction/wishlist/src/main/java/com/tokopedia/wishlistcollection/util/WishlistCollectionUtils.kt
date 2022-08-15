@@ -5,6 +5,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlistcollection.data.response.WishlistCollectionResponse
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_CREATE
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_DIVIDER
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_EMPTY_CAROUSEL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_TICKER
@@ -38,6 +39,9 @@ object WishlistCollectionUtils {
                     TYPE_COLLECTION_CREATE
                 )
             listCollection.add(createNewItem)
+
+            listCollection.add(
+                WishlistCollectionTypeLayoutData("", TYPE_COLLECTION_DIVIDER))
 
             listCollection.add(
                 WishlistCollectionTypeLayoutData(

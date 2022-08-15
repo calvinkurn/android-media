@@ -11,6 +11,7 @@ import com.tokopedia.wishlistcollection.data.model.WishlistCollectionTypeLayoutD
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_CREATE
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_DIVIDER
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_EMPTY_CAROUSEL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_ITEM
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_TICKER
@@ -29,6 +30,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         const val LAYOUT_COLLECTION_ITEM = 1
         const val LAYOUT_CREATE_COLLECTION = 2
         const val LAYOUT_EMPTY_COLLECTION = 3
+        const val LAYOUT_DIVIDER = 5
     }
 
     interface ActionListener {
@@ -92,6 +94,10 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                 val binding = WishlistV2RecommendationItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 WishlistCollectionRecommendationItemViewHolder(binding, actionListener)
             }
+            LAYOUT_DIVIDER -> {
+                val binding = WishlistCollectionDividerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                WishlistCollectionDividerViewHolder(binding)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -123,6 +129,9 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
                 TYPE_COLLECTION_EMPTY_CAROUSEL -> {
                     (holder as WishlistCollectionEmptyStateCarouselViewHolder).bind(carouselItems)
                 }
+                TYPE_COLLECTION_DIVIDER -> {
+                    (holder as WishlistCollectionDividerViewHolder).bind(element)
+                }
             }
         }
     }
@@ -139,6 +148,7 @@ class WishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
             TYPE_COLLECTION_EMPTY_CAROUSEL -> LAYOUT_EMPTY_COLLECTION
             WishlistV2Consts.TYPE_RECOMMENDATION_LIST -> WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST
             WishlistV2Consts.TYPE_RECOMMENDATION_TITLE -> WishlistV2Adapter.LAYOUT_RECOMMENDATION_TITLE
+            TYPE_COLLECTION_DIVIDER -> LAYOUT_DIVIDER
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }

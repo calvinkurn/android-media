@@ -51,6 +51,7 @@ import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
+import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollectionItem
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetOnboardingWishlistCollection
@@ -222,6 +223,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                         WishlistCollectionAdapter.LAYOUT_COLLECTION_TICKER -> 2
                         LAYOUT_RECOMMENDATION_TITLE -> 2
                         WishlistCollectionAdapter.LAYOUT_EMPTY_COLLECTION -> 2
+                        LAYOUT_DIVIDER -> 2
                         else -> 1
                     }
                 }
