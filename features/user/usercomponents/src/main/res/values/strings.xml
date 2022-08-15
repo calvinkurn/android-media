@@ -4,8 +4,10 @@
     <string name="close_button_icon">close button icon</string>
     <string name="sticky_icon">sticky icon</string>
 
+    <string name="usercomponents_failed_load_data">Konten gagal ditampilkan</string>
+    <string name="usercomponents_failed_load_data_click_retry">Klik ikon di samping buat coba lagi.</string>
+
     <!--  USER CONSENT  -->
-    <string name="user_consent_failed_load_collection">Konten gagal ditampilkan</string>
     <string name="user_consent_default_action_text">Action</string>
     <string name="user_consent_term_condition">Syarat &amp; Ketentuan</string>
     <string name="user_consent_policy">Kebijakan Privasi</string>

@@ -70,11 +70,11 @@ class BroadMatchViewHolder(
         }
     }
 
-    private fun setupRecyclerView(dataData: BroadMatchDataView){
-        val products = dataData.broadMatchItemDataViewList
+    private fun setupRecyclerView(dataView: BroadMatchDataView){
+        val products = dataView.broadMatchItemDataViewList
         val viewAllCardData: CarouselViewAllCardData? =
-            if (dataData.cardButton.title.isNotEmpty())
-                CarouselViewAllCardData(dataData.cardButton.title)
+            if (dataView.cardButton.title.isNotEmpty())
+                CarouselViewAllCardData(dataView.cardButton.title)
             else null
         broadMatchListener.productCardLifecycleObserver?.let {
             binding?.searchBroadMatchList?.productCardLifecycleObserver = it
@@ -125,7 +125,7 @@ class BroadMatchViewHolder(
             carouselViewAllCardData = viewAllCardData,
             carouselViewAllCardClickListener = object: CarouselProductCardListener.OnViewAllCardClickListener {
                 override fun onViewAllCardClick() {
-                    broadMatchListener.onBroadMatchViewAllCardClicked(dataData)
+                    broadMatchListener.onBroadMatchViewAllCardClicked(dataView)
                 }
             }
         )

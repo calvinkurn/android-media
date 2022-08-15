@@ -39,6 +39,7 @@ import com.tokopedia.affiliate.AFFILIATE_WITHDRAWAL
 import com.tokopedia.affiliate.APP_LINK_KYC
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.KYC_DONE
+import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.PRODUCT_TYPE
 import com.tokopedia.affiliate.TRANSACTION_TYPE_DEPOSIT
@@ -53,6 +54,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHisto
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -168,11 +170,32 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
         affiliateIncomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
             onGetValidateUserData(validateUserdata)
         })
-        affiliateIncomeViewModel.getAffiliateAnnouncement().observe(this,{ announcementData ->
+        affiliateIncomeViewModel.getAffiliateAnnouncement().observe(this) { announcementData ->
+            sendTickerImpression(
+                announcementData.getAffiliateAnnouncementV2?.data?.type,
+                announcementData.getAffiliateAnnouncementV2?.data?.id
+            )
             view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
                 announcementData,
-                activity)
-        })
+                activity,
+                source = PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
+            )
+        }
+    }
+
+    private fun sendTickerImpression(tickerType: String?, tickerId: Long?) {
+        if (tickerId.isMoreThanZero()) {
+            AffiliateAnalytics.sendTickerEvent(
+                AffiliateAnalytics.EventKeys.VIEW_ITEM,
+                AffiliateAnalytics.ActionKeys.IMPRESSION_TICKER_COMMUNICATION,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE,
+                "$tickerType - $tickerId",
+                PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY,
+                tickerId!!,
+                AffiliateAnalytics.ItemKeys.AFFILIATE_PENDAPATAN_TICKER_COMMUNICATION,
+               UserSession(context).userId
+            )
+        }
     }
 
     private fun onGetError(error: Throwable?) {

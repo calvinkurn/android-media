@@ -79,7 +79,7 @@ class ProductShippingHeaderViewHolder(view: View,
             icShippingLine?.setMargin(0, 0, 0, 0)
             txtShippingFrom?.text = context.getString(R.string.pdp_shipping_from_builder, element.tokoCabangTitle).boldOrLinkText(false, context, element.tokoCabangTitle to {})
             renderGeneralContentTokoCabang(element.tokoCabangContent)
-        } else if (element.isFulfillment && element.boType == ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA) {
+        } else if (shouldRenderFulFillment(element)) {
             icShippingLine?.setMargin(0, 20.toDp(), 0, 20.toDp())
             renderGeneralContentTokoCabang(element.tokoCabangContent, element.uspTokoCabangImgUrl)
             txtShippingFrom?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_bold_html_builder, element.tokoCabangTitle)).spannedString
@@ -90,6 +90,16 @@ class ProductShippingHeaderViewHolder(view: View,
             icTokoCabang?.setImage(IconUnify.LOCATION)
             txtShippingFrom?.text = context.getString(R.string.pdp_shipping_from_builder, element.shippingFrom).boldOrLinkText(false, context, element.shippingFrom to {})
         }
+    }
+
+    private fun shouldRenderFulFillment(element: ProductShippingHeaderDataModel): Boolean {
+        val boTypes = listOf(
+            ProductDetailCommonConstant.BEBAS_ONGKIR_NORMAL,
+            ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA,
+            ProductDetailCommonConstant.BO_PLUS,
+            ProductDetailCommonConstant.BO_PLUS_DT
+        )
+        return element.isFulfillment && boTypes.contains(element.boType)
     }
 
     private fun renderGeneralContentTokoCabang(tokoCabangContent: String, uspTokoCabangImgUrl: String = "") = with(itemView) {

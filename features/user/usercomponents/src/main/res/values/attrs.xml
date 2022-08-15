@@ -23,12 +23,4 @@
             <enum name="TNC_PRIVACY_OPTIONAL" value="3"/>
         </attr>
     </declare-styleable>
-
-    <!--EXPLICIT PROFILE-->
-    <declare-styleable name="ExplicitView">
-        <attr name="template_name" format="string"/>
-        <attr name="page_name" format="string"/>
-        <attr name="page_path" format="string"/>
-        <attr name="page_type" format="string"/>
-    </declare-styleable>
 </resources>

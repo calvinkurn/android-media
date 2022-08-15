@@ -136,14 +136,16 @@ object CreateReviewMapper {
                                     finishUploadTimestamp = it.finishUploadTimestamp.takeIf {
                                         it.isMoreThanZero()
                                     } ?: System.currentTimeMillis(),
-                                    state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                                    state = CreateReviewMediaUiModel.State.UPLOAD_FAILED,
+                                    message = uploadResult.message
                                 )
                             } else if (it is CreateReviewMediaUiModel.Video) {
                                 it.copy(
                                     finishUploadTimestamp = it.finishUploadTimestamp.takeIf {
                                         it.isMoreThanZero()
                                     } ?: System.currentTimeMillis(),
-                                    state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                                    state = CreateReviewMediaUiModel.State.UPLOAD_FAILED,
+                                    message = uploadResult.message
                                 )
                             } else null
                         } ?: if (isVideoFormat(uri)) {
@@ -151,14 +153,16 @@ object CreateReviewMapper {
                                 uri = uri,
                                 uploadBatchNumber = uploadBatchNumber,
                                 finishUploadTimestamp = System.currentTimeMillis(),
-                                state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                                state = CreateReviewMediaUiModel.State.UPLOAD_FAILED,
+                                message = uploadResult.message
                             )
                         } else {
                             CreateReviewMediaUiModel.Image(
                                 uri = uri,
                                 uploadBatchNumber = uploadBatchNumber,
                                 finishUploadTimestamp = System.currentTimeMillis(),
-                                state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                                state = CreateReviewMediaUiModel.State.UPLOAD_FAILED,
+                                message = uploadResult.message
                             )
                         }
                         add(mediaItem)

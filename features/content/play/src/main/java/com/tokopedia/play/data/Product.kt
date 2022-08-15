@@ -42,4 +42,6 @@ data class Product(
         val webLink: String = "",
         @SerializedName("is_toko_now")
         val isTokoNow: Boolean = false,
+        @SerializedName("is_pinned")
+        val isPinned: Boolean = false,
 )

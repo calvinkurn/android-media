@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.robot.prepare
 import com.tokopedia.play.data.PlayVodMockModelConfig
+import com.tokopedia.play.test.espresso.clickOnViewChild
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.util.*
 import com.tokopedia.play.view.activity.PlayActivity
