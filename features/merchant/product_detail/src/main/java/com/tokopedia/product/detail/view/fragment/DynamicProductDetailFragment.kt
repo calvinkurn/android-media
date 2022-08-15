@@ -4744,7 +4744,8 @@ open class DynamicProductDetailFragment :
                     if (result.success && WishlistV2RemoteConfigRollenceUtil.isUsingWishlistCollection(context)) {
                         val applinkCollection = "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?$PATH_PRODUCT_ID=$productId&$PATH_SRC=$DEFAULT_X_SOURCE"
                         val intentBottomSheetWishlistCollection = RouteManager.getIntent(context, applinkCollection)
-                        intentBottomSheetWishlistCollection.putExtra(WishlistV2CommonConsts.IS_PRODUCT_ACTIVE, isProductOos())
+                        val isOos = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0
+                        intentBottomSheetWishlistCollection.putExtra(WishlistV2CommonConsts.IS_PRODUCT_ACTIVE, !isOos)
                         startActivityForResult(intentBottomSheetWishlistCollection, REQUEST_CODE_ADD_WISHLIST_COLLECTION)
                     } else {
                         view?.let { v ->
