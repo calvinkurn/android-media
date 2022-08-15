@@ -1,11 +1,14 @@
 package com.tokopedia.product.manage.feature.cashback.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.OtherCampaignStockDataUseCase
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
+@GqlQuery("GoldSetProductCashbackGqlQuery", SetCashbackUseCase.query)
 class SetCashbackUseCase @Inject constructor(
         repository: GraphqlRepository) : GraphqlUseCase<SetCashbackResponse>(repository) {
 
@@ -15,7 +18,7 @@ class SetCashbackUseCase @Inject constructor(
         private const val PARAM_PRODUCT_ID = "ProductIDStr"
         private const val PARAM_CASHBACK = "Cashback"
         private const val PARAM_IS_BY_SYSTEM = "IsBySystem"
-        private val query =
+        const val query =
             """
             mutation GoldSetProductCashback(${'$'}ProductIDStr: String, ${'$'}Cashback : Int!, ${'$'}IsBySystem : Boolean!){
                 GoldSetProductCashback(ProductIDStr: ${'$'}ProductIDStr, Cashback: ${'$'}Cashback, IsBySystem: ${'$'}IsBySystem){
@@ -27,11 +30,11 @@ class SetCashbackUseCase @Inject constructor(
                     }
                 }
             }
-            """.trimIndent()
+            """
     }
 
     init {
-        setGraphqlQuery(query)
+        setGraphqlQuery(GoldSetProductCashbackGqlQuery())
         setTypeClass(SetCashbackResponse::class.java)
     }
 

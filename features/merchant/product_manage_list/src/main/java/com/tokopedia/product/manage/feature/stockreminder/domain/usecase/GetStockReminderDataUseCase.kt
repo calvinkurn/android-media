@@ -1,11 +1,13 @@
 package com.tokopedia.product.manage.feature.stockreminder.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.StockReminderQuery
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
 import javax.inject.Inject
 
+@GqlQuery("GetStockReminderGqlQuery", StockReminderQuery.GET_QUERY)
 class GetStockReminderDataUseCase @Inject constructor(
         repository: GraphqlRepository
 ): GraphqlUseCase<GetStockReminderResponse>(repository) {
@@ -15,8 +17,7 @@ class GetStockReminderDataUseCase @Inject constructor(
     }
 
     init {
-        val query = StockReminderQuery.GET_QUERY
-        setGraphqlQuery(query)
+        setGraphqlQuery(GetStockReminderGqlQuery())
         setTypeClass(GetStockReminderResponse::class.java)
     }
 
