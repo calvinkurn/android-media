@@ -135,29 +135,7 @@ class DataPlanDataFactory {
         )
     }
 
-    fun getErrors() = """
-        {
-            "errors": [
-                {
-                    "id": "1104"
-                    "status": 400,
-                    "title": "this is an error",
-                    "error_page": {
-                      "show_error_page": true,
-                      "title": "Waduh Ada Error",
-                      "subtitle": "Hayolo Ada Error",
-                      "image_url": "https://images.tokopedia.net/img/verify_account.png",
-                      "buttons": [
-                        "label": "Tambah Nomor HP",
-                        "url": "https://tokopedia.com",
-                        "applink_url": "tokopedia://home",
-                        "type": "primary"
-                      ] 
-                    }
-                }
-            ]
-        }
-    """.trimIndent()
+    val errorAtcResponse = gson.JsonToString(ERROR_UNVERIFIED_PHONE_NUMBER)
 
     fun getCheckoutPassData(denomData: DenomData = getDenomData()): DigitalCheckoutPassData {
         return DigitalCheckoutPassData().apply {
@@ -249,6 +227,7 @@ class DataPlanDataFactory {
         const val GET_ADD_TO_CART_WITH_ERRORS = "common_telco/get_add_to_cart_not_empty_error_mock.json"
         const val GET_CATALOG_INPUT_MULTITAB = "dataplan/get_catalog_input_multitab_mock.json"
         const val GET_MENU_DETAIL = "dataplan/get_menu_detail_mock.json"
+        const val ERROR_UNVERIFIED_PHONE_NUMBER = "common_telco/unverified_phone_number_error_mock.json"
 
         const val FILTER_PARAM_NAME = "param_name"
         const val FILTER_VALUE = "value"

@@ -500,7 +500,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when getting addToCart should run and return DigitalAtcErrorException when get error atc`(){
-        val error = DigitalAtcErrorException(dataFactory.getErrors())
+        val error = DigitalAtcErrorException(dataFactory.errorAtcResponse)
         onGetAddToCart_thenReturn(error)
 
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)

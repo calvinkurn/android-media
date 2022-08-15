@@ -175,29 +175,7 @@ class PulsaDataFactory {
         )
     }
 
-    fun getErrors() = """
-        {
-            "errors": [
-                {
-                    "id": "1104"
-                    "status": 400,
-                    "title": "this is an error",
-                    "error_page": {
-                      "show_error_page": true,
-                      "title": "Waduh Ada Error",
-                      "subtitle": "Hayolo Ada Error",
-                      "image_url": "https://images.tokopedia.net/img/verify_account.png",
-                      "buttons": [
-                        "label": "Tambah Nomor HP",
-                        "url": "https://tokopedia.com",
-                        "applink_url": "tokopedia://home",
-                        "type": "primary"
-                      ] 
-                    }
-                }
-            ]
-        }
-    """.trimIndent()
+    val errorAtcResponse = gson.JsonToString(ERROR_UNVERIFIED_PHONE_NUMBER)
 
     companion object {
         const val GET_FAVORITE_NUMBER = "common_telco/get_favorite_number_mock.json"
@@ -207,6 +185,7 @@ class PulsaDataFactory {
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"
         const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "common_telco/get_prefix_operator_empty_validation_mock.json"
         const val GET_MENU_DETAIL = "pulsa/get_menu_detail_mock.json"
+        const val ERROR_UNVERIFIED_PHONE_NUMBER = "common_telco/unverified_phone_number_error_mock.json"
 
         const val CATEGORY_ID = "1"
         const val OPERATOR_ID = "5"
