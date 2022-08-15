@@ -195,7 +195,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                         categoryName,
                         officialStoreConfig.isEligibleForDisableMappingBanner()
                     ){
-                        _officialStoreLiveData.postValue(it)
+                        _officialStoreLiveData.postValue(it, isCache)
                     }
                 }
             } catch (t: Throwable) {
