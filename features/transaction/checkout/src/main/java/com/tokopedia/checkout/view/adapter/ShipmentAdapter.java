@@ -15,6 +15,7 @@ import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.uimodel.CrossSellModel;
+import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -22,6 +23,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel;
@@ -33,6 +35,7 @@ import com.tokopedia.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentNewUpsellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder;
@@ -95,6 +98,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private EgoldAttributeModel egoldAttributeModel;
     private ShippingCompletionTickerModel shippingCompletionTickerModel;
     private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
+    private ShipmentNewUpsellModel shipmentUpsellModel;
 
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
     private RatesDataConverter ratesDataConverter;
@@ -153,6 +157,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return ShipmentTickerErrorViewHolder.Companion.getITEM_VIEW_SHIPMENT_TICKER_ERROR();
         } else if (item instanceof ShipmentUpsellModel) {
             return ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL;
+        } else if (item instanceof ShipmentNewUpsellModel) {
+            return ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL;
         }
 
         return super.getItemViewType(position);
@@ -194,6 +200,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentTickerErrorViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
             return new ShipmentUpsellViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL) {
+            return new ShipmentNewUpsellViewHolder(view, shipmentAdapterActionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -231,6 +239,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentTickerErrorViewHolder) holder).bind((ShipmentTickerErrorModel) data);
         } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
             ((ShipmentUpsellViewHolder) holder).bind((ShipmentUpsellModel) data);
+        } else if (viewType == ShipmentNewUpsellViewHolder.ITEM_VIEW_UPSELL) {
+            ((ShipmentNewUpsellViewHolder) holder).bind((ShipmentNewUpsellModel) data);
         }
     }
 
@@ -283,8 +293,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void addUpsellData(ShipmentUpsellModel shipmentUpsellModel) {
+    public void addUpsellData(ShipmentNewUpsellModel shipmentUpsellModel) {
         shipmentDataList.add(shipmentUpsellModel);
+        this.shipmentUpsellModel = shipmentUpsellModel;
     }
 
     public void addAddressShipmentData(RecipientAddressModel recipientAddressModel) {
@@ -960,8 +971,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         totalPrice += shipmentCostModel.getDonation();
         shipmentCostModel.setTotalPrice(totalPrice);
 
+        ShipmentCrossSellModel upsellCost = null;
+        if (shipmentUpsellModel != null && shipmentUpsellModel.isSelected() && shipmentUpsellModel.isShow()) {
+            CrossSellModel crossSellModel = new CrossSellModel();
+            crossSellModel.setOrderSummary(new CrossSellOrderSummaryModel(shipmentUpsellModel.getWording(), ""));
+            crossSellModel.setPrice(shipmentUpsellModel.getPrice());
+            upsellCost = new ShipmentCrossSellModel(crossSellModel, true, true);
+        }
+        ArrayList<ShipmentCrossSellModel> listCheckedCrossModel = new ArrayList<>();
         if (shipmentCrossSellModelList != null && !shipmentCrossSellModelList.isEmpty()) {
-            ArrayList<ShipmentCrossSellModel> listCheckedCrossModel = new ArrayList<>();
             for (ShipmentCrossSellModel crossSellModel : shipmentCrossSellModelList) {
                 if (crossSellModel.isChecked()) {
                     listCheckedCrossModel.add(crossSellModel);
@@ -969,8 +987,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     shipmentCostModel.setTotalPrice(totalPrice);
                 }
             }
-            shipmentCostModel.setListCrossSell(listCheckedCrossModel);
         }
+        if (upsellCost != null) {
+            listCheckedCrossModel.add(upsellCost);
+            totalPrice += upsellCost.getCrossSellModel().getPrice();
+            shipmentCostModel.setTotalPrice(totalPrice);
+        }
+        shipmentCostModel.setListCrossSell(listCheckedCrossModel);
 
         if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             updateEmasCostModel();

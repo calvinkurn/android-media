@@ -996,11 +996,15 @@ class ShipmentMapper @Inject constructor() {
 
     private fun mapUpsell(upsell: Upsell): UpsellData {
         return UpsellData(
-                upsell.isShow,
-                upsell.title,
-                upsell.description,
+                true,
+                false,
+                "Yay, <b>PLUS</b> ditambahkan ke keranjang! Nikmati keuntungannya di transaksi ini",
                 upsell.appLink,
-                upsell.image
+                "https://images.tokopedia.net/img/plus/logo/default_logo.png",
+                300000,
+                "6 bulan",
+                "Langganan 6 bulan",
+                "Cek PLUS"
         )
     }
 

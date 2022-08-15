@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
@@ -375,7 +376,7 @@ public interface ShipmentContract {
 
         void updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult saveAddOnStateResult);
 
-        ShipmentUpsellModel getShipmentUpsellModel();
+        ShipmentNewUpsellModel getShipmentUpsellModel();
     }
 
 }

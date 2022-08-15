@@ -88,6 +88,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity;
@@ -504,7 +505,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void initRecyclerViewData(ShipmentTickerErrorModel shipmentTickerErrorModel,
                                       TickerAnnouncementHolderData tickerAnnouncementHolderData,
                                       RecipientAddressModel recipientAddressModel,
-                                      ShipmentUpsellModel shipmentUpsellModel,
+                                      ShipmentNewUpsellModel shipmentUpsellModel,
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
                                       List<ShipmentCrossSellModel> shipmentCrossSellModelList,
@@ -3454,6 +3455,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             checkoutAnalyticsCourierSelection.eventClickGotoplusUpsellTicker();
             RouteManager.route(getContext(), shipmentUpsellModel.getAppLink());
         }
+    }
+
+    @Override
+    public void onViewNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel) {
+
+    }
+
+    @Override
+    public void onClickApplyNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel) {
+
+    }
+
+    @Override
+    public void onClickCancelNewUpsellCard(ShipmentNewUpsellModel shipmentUpsellModel) {
+
     }
 
     @Override

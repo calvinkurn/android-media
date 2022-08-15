@@ -62,6 +62,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
@@ -182,7 +183,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
-    private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
+    private ShipmentNewUpsellModel shipmentUpsellModel = new ShipmentNewUpsellModel();
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private ShipmentTickerErrorModel shipmentTickerErrorModel = new ShipmentTickerErrorModel();
     private TickerAnnouncementHolderData tickerAnnouncementHolderData = new TickerAnnouncementHolderData();
@@ -2371,7 +2372,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public ShipmentUpsellModel getShipmentUpsellModel() {
+    public ShipmentNewUpsellModel getShipmentUpsellModel() {
         return shipmentUpsellModel;
     }
 }

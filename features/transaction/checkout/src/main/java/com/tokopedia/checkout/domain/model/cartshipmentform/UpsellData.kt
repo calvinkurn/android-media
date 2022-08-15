@@ -6,8 +6,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class UpsellData(
         val isShow: Boolean = false,
-        val title: String = "",
+        val isSelected: Boolean = false,
         val description: String = "",
         val appLink: String = "",
-        val image: String = ""
+        val image: String = "",
+        val price: Long = 0,
+        val duration: String = "",
+        val wording: String = "",
+        val buttonText: String = ""
 ): Parcelable

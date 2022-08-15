@@ -13,6 +13,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -417,13 +418,17 @@ public class ShipmentDataConverter {
         return addOnWordingModel;
     }
 
-    public ShipmentUpsellModel getShipmentUpsellModel(UpsellData upsellData) {
-        ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
+    public ShipmentNewUpsellModel getShipmentUpsellModel(UpsellData upsellData) {
+        ShipmentNewUpsellModel shipmentUpsellModel = new ShipmentNewUpsellModel();
         shipmentUpsellModel.setShow(upsellData.isShow());
-        shipmentUpsellModel.setTitle(upsellData.getTitle());
+        shipmentUpsellModel.setSelected(upsellData.isSelected());
         shipmentUpsellModel.setDescription(upsellData.getDescription());
         shipmentUpsellModel.setAppLink(upsellData.getAppLink());
         shipmentUpsellModel.setImage(upsellData.getImage());
+        shipmentUpsellModel.setPrice(upsellData.getPrice());
+        shipmentUpsellModel.setDuration(upsellData.getDuration());
+        shipmentUpsellModel.setWording(upsellData.getWording());
+        shipmentUpsellModel.setButtonText(upsellData.getButtonText());
         return shipmentUpsellModel;
     }
 
