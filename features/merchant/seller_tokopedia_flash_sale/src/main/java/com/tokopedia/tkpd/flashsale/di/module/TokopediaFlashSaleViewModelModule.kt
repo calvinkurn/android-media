@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
-import com.tokopedia.tkpd.flashsale.presentation.landing.LandingContainerViewModel
+import com.tokopedia.tkpd.flashsale.presentation.list.LandingContainerViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
 
