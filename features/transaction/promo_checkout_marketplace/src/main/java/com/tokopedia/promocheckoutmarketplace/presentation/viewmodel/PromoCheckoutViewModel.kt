@@ -18,6 +18,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutLogger
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoErrorException
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.BoInfoBottomSheetUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
@@ -88,6 +89,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     private val _promoListUiModel = MutableLiveData<MutableList<Visitable<*>>>()
     val promoListUiModel: LiveData<MutableList<Visitable<*>>>
         get() = _promoListUiModel
+
+    // BO Promo Bottom Sheet UI Model
+    private val _boInfoBottomSheetUiModel = MutableLiveData<BoInfoBottomSheetUiModel>()
+    val boInfoBottomSheetUiModel: LiveData<BoInfoBottomSheetUiModel>
+        get() = _boInfoBottomSheetUiModel
 
     // Temporary single data. This live data is used for modify or delete single item
     private val _tmpUiModel = MutableLiveData<Action<Visitable<*>>>()
@@ -279,6 +285,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         initGetPromoListResponseAction()
         setGetPromoListResponseActionClearData(tmpPromoCode)
         initPromoList(response)
+        initBoInfoBottomSheet(response)
 
         sendAnalyticsPromoPageLoaded()
 
@@ -496,6 +503,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
         }
         _promoListUiModel.value = couponList
+    }
+
+    private fun initBoInfoBottomSheet(response: CouponListRecommendationResponse) {
+        val boInfoBottomSheetUiModel = uiModelMapper.mapBoInfoBottomSheetUiModel(response.couponListRecommendation.data.bottomSheet)
+        _boInfoBottomSheetUiModel.value = boInfoBottomSheetUiModel
     }
 
     private fun getAllPreSelectedPromo(response: CouponListRecommendationResponse): ArrayList<String> {

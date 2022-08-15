@@ -341,6 +341,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void updateCheckoutButtonData(String defaultTotal) {
         if (shipmentCostModel != null && shipmentCartItemModelList != null) {
             int cartItemCounter = 0;
+            int cartItemErrorCounter = 0;
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                     if ((shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null && !shipmentAdapterActionListener.isTradeInByDropOff()) ||
@@ -348,16 +349,19 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         cartItemCounter++;
                     }
                 }
+                if (shipmentCartItemModel.isError()) {
+                    cartItemErrorCounter++;
+                }
             }
             if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList.size()) {
                 double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
                 String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) priceTotal, false));
-                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted);
+                shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, true);
             } else {
-                shipmentAdapterActionListener.onTotalPaymentChange("-");
+                shipmentAdapterActionListener.onTotalPaymentChange("-", cartItemErrorCounter < shipmentCartItemModelList.size());
             }
         } else if (defaultTotal != null) {
-            shipmentAdapterActionListener.onTotalPaymentChange(defaultTotal);
+            shipmentAdapterActionListener.onTotalPaymentChange(defaultTotal, false);
         }
     }
 

@@ -349,6 +349,11 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun getScreenName() = "Camera"
 
+    /**
+     * on thumbnail finish load callback for testing purpose
+     */
+    override fun onThumbnailLoaded() {}
+
     companion object {
         private const val OVERLAY_SHUTTER_DELAY = 100L
     }

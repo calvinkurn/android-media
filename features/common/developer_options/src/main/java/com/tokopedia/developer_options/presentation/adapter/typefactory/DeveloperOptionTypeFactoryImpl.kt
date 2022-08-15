@@ -60,6 +60,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ShowApplinkOnToastUiModel): Int = ShowApplinkOnToastViewHolder.LAYOUT
     override fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int = PlayWebSocketSseLoggingViewHolder.LAYOUT
     override fun type(uiModel: TypographySwitchUiModel): Int = TypographySwitcherViewHolder.LAYOUT
+    override fun type(uiModel: ConvertResourceIdUiModel): Int = ConvertResourceIdViewHolder.LAYOUT
     override fun type(uiModel: ForceLogoutUiModel): Int = ForceLogoutViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -106,6 +107,7 @@ class DeveloperOptionTypeFactoryImpl(
             ShowApplinkOnToastViewHolder.LAYOUT -> ShowApplinkOnToastViewHolder(view)
             PlayWebSocketSseLoggingViewHolder.LAYOUT -> PlayWebSocketSseLoggingViewHolder(view)
             TypographySwitcherViewHolder.LAYOUT -> TypographySwitcherViewHolder(view)
+            ConvertResourceIdViewHolder.LAYOUT -> ConvertResourceIdViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

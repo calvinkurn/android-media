@@ -428,6 +428,53 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         orderShipment.value = logisticProcessor.resetBbo(orderShipment.value)
     }
 
+    fun validateBboStacking() {
+        validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.let {
+            for (voucherOrderUiModel in it) {
+                if (voucherOrderUiModel.shippingId > 0 && voucherOrderUiModel.spId > 0)
+                    if (voucherOrderUiModel.messageUiModel.state == "red") {
+                        unApplyBbo(voucherOrderUiModel.code)
+                    } else if (voucherOrderUiModel.messageUiModel.state == "green") {
+                        applyBbo(voucherOrderUiModel.code)
+                    }
+            }
+        }
+        displayingAdjustmentPromoToaster()
+    }
+
+    private fun unApplyBbo(code: String) {
+        orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
+        promoProcessor.clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest, code)
+    }
+
+    private fun applyBbo(code: String) {
+        if (orderShipment.value.logisticPromoViewModel == null ||
+            orderShipment.value.logisticPromoViewModel!!.promoCode != code
+        ) {
+            orderShipment.value = orderShipment.value.copy(
+                isApplyLogisticPromo = true,
+                logisticPromoViewModel = LogisticPromoUiModel(promoCode = code)
+            )
+        }
+    }
+
+    private fun displayingAdjustmentPromoToaster() {
+        validateUsePromoRevampUiModel?.promoUiModel?.additionalInfoUiModel?.errorDetailUiModel?.message?.let {
+            if (it.isNotBlank())
+                globalEvent.value = OccGlobalEvent.ToasterInfo(it)
+        }
+    }
+
+    fun autoUnApplyBBO() {
+        lastValidateUsePromoRequest?.orders?.firstOrNull {
+            it.uniqueId == orderCart.cartString
+        }?.let {
+            if (it.codes.isEmpty()) {
+                orderShipment.value = orderShipment.value.copy(isApplyLogisticPromo = false)
+            }
+        }
+    }
+
     fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
         val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, orderShipment.value)
         newOrderShipment?.let {
@@ -718,8 +765,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun updatePromoState(promoUiModel: PromoUiModel) {
-        orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), isDisabled = false, state = OccButtonState.NORMAL)
+        orderPromo.value = orderPromo.value.copy(
+            lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel),
+            isDisabled = false,
+            state = OccButtonState.NORMAL
+        )
         calculateTotal()
+    }
+
+    fun updatePromoStateWithoutCalculate(promoUiModel: PromoUiModel) {
+        orderPromo.value = orderPromo.value.copy(
+            lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel),
+            isDisabled = false,
+            state = OccButtonState.NORMAL
+        )
     }
 
     fun calculateTotal(skipDynamicFee: Boolean = false) {

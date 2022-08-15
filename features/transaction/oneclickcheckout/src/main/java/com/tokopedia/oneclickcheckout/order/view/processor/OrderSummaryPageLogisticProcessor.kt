@@ -56,7 +56,9 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
     private fun generateRatesParam(orderCart: OrderCart, orderProfile: OrderProfile, orderCost: OrderCost, listShopShipment: List<ShopShipment>): Pair<RatesParam?, Double> {
         val (shipping, overweight) = generateShippingParam(orderCart, orderProfile, orderCost)
         if (shipping == null) return null to overweight
-        return RatesParam.Builder(listShopShipment, shipping).build().apply {
+        return RatesParam.Builder(listShopShipment, shipping)
+                .cartData(orderCart.cartData)
+                .build().apply {
             occ = "1"
         } to 0.0
     }

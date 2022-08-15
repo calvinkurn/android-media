@@ -220,27 +220,27 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     activity?.finish()
                 }
             } else {
-                // todo: check do we need to reset/apply BO?
-                // todo: show toaster from validateUsePromoRevampUiModel.promoUiModel.additionalInfoUiModel.errorDetailUiModel.message
-                val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
-                if (validateUsePromoRevampUiModel != null) {
-                    viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
-                    viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
+
+                data?.getParcelableExtra<ValidateUsePromoRequest>(ARGS_LAST_VALIDATE_USE_REQUEST)?.let {
+                    viewModel.lastValidateUsePromoRequest = it
+                }
+
+                data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)?.let {
+                    viewModel.validateUsePromoRevampUiModel = it
+                    viewModel.validateBboStacking()
+                    viewModel.updatePromoStateWithoutCalculate(it.promoUiModel)
                     viewModel.reloadRates()
                 }
 
-                val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
-                if (validateUsePromoRequest != null) {
-                    viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
-                }
-
-                val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
-                if (clearPromoUiModel != null) {
+                data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)?.let {
                     //reset
                     viewModel.validateUsePromoRevampUiModel = null
-                    viewModel.updatePromoState(PromoUiModel().apply {
-                        titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
+                    viewModel.updatePromoStateWithoutCalculate(PromoUiModel().apply {
+                        titleDescription = it.successDataModel.defaultEmptyPromoMessage
                     })
+                    // todo: reset BO -> if lastValidateUsePromoRequest do not contains BO promo then isApplyLogisticPromo = false, else no op
+                    // todo: flow auto unapply BO
+                    viewModel.autoUnApplyBBO()
                     //refresh shipping section and calculate total
                     viewModel.reloadRates()
                 }

@@ -38,7 +38,9 @@ data class Data(
         @SerializedName("attempted_promo_code_error")
         val attemptedPromoCodeError: AttemptedPromoCodeError = AttemptedPromoCodeError(),
         @SerializedName("section_tabs")
-        val sectionTabs: List<SectionTab> = emptyList()
+        val sectionTabs: List<SectionTab> = emptyList(),
+        @SerializedName("bottom_sheet")
+        val bottomSheet: BottomSheet = BottomSheet()
 )
 
 data class GainRewardPointsTnc(
@@ -293,4 +295,17 @@ data class SectionTab(
         val id: String = "",
         @SerializedName("title")
         val title: String = ""
+)
+
+data class BottomSheet(
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("content_title")
+        val contentTitle: String = "",
+        @SerializedName("content_description")
+        val contentDescription: String = "",
+        @SerializedName("image_url")
+        val imageUrl: String = "",
+        @SerializedName("button_txt")
+        val buttonText: String = ""
 )

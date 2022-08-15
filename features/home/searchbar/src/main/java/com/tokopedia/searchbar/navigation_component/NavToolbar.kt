@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -26,12 +27,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_BACK
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_CLOSE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.BackType.BACK_TYPE_NONE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
@@ -73,6 +76,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val BACK_TYPE_NONE = 0
             const val BACK_TYPE_CLOSE = 1
             const val BACK_TYPE_BACK = 2
+            const val BACK_TYPE_BACK_WITHOUT_COLOR = 3
         }
 
         object ContentType {
@@ -136,6 +140,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
     private val layoutCustomView: ViewGroup by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.layout_custom_view)
+    }
+    private val etSearch : EditText by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.et_search)
     }
 
     @Inject
@@ -214,6 +221,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 ta.recycle()
             }
         }
+        etSearch.typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
         userSessionInterface = UserSession(context)
         configureInvertedSearchBar()
         configureInitialFillBasedOnAttribute()
@@ -682,6 +690,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                         lightCondition = { navIconBack.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getDarkIconColor()) },
                         darkCondition = { navIconBack.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getLightIconColor()) }
                 )
+            }
+            BACK_TYPE_BACK_WITHOUT_COLOR -> {
+                val arrowBackIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK)
+                navIconBack.setImageDrawable(arrowBackIcon)
             }
         }
     }

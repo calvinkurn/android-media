@@ -5,7 +5,14 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.RatesParam
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.network.utils.ErrorHandler.Companion.getErrorMessage
@@ -46,7 +53,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                            isTradeInDropOff: Boolean,
                                            recipientAddressModel: RecipientAddressModel,
                                            isFulfillment: Boolean, preOrderTime: Int,
-                                           mvc: String) {
+                                           mvc: String, cartData: String) {
         if (view != null) {
             view!!.showLoading()
             val shippingParam = getShippingParam(shipmentDetailData, products, cartString,
@@ -56,7 +63,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                 selectedSpId = shipmentDetailData.selectedCourier!!.shipperProductId
             }
             loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
-                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, mvc)
+                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, mvc, cartData)
         }
     }
 
@@ -64,13 +71,14 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                              isCorner: Boolean, isLeasing: Boolean,
                              shopShipmentList: List<ShopShipment>, isRatesTradeInApi: Boolean,
                              shippingParam: ShippingParam, pslCode: String,
-                             mvc: String) {
+                             mvc: String, cartData: String) {
         val param = RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(isCorner)
                 .codHistory(codHistory)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
                 .mvc(mvc)
+                .cartData(cartData)
                 .build()
         val observable: Observable<ShippingRecommendationData> = if (isRatesTradeInApi) {
             ratesApiUseCase.execute(param)
