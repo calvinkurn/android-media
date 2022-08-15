@@ -7,9 +7,9 @@ import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleViewModelModule
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
 import com.tokopedia.tkpd.flashsale.presentation.landing.LandingActivity
 import com.tokopedia.tkpd.flashsale.presentation.landing.LandingContainerFragment
-import com.tokopedia.tkpd.flashsale.presentation.list.fragment.CampaignCriteriaFragment
-import com.tokopedia.tkpd.flashsale.presentation.list.fragment.CampaignProductCriteriaFragment
-import com.tokopedia.tkpd.flashsale.presentation.list.fragment.CampaignTimelineFragment
+import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignCriteriaFragment
+import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignProductCriteriaFragment
+import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignTimelineFragment
 import dagger.Component
 
 @TokopediaFlashSaleScope

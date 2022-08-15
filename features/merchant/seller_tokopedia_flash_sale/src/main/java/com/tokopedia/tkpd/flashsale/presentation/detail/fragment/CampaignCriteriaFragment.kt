@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.list.fragment
+package com.tokopedia.tkpd.flashsale.presentation.detail.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentCampaignCriteriaBinding
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
-import com.tokopedia.tkpd.flashsale.presentation.list.adapter.campaigndetail.CriteriaAdapter
+import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.campaigndetail.CriteriaAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CampaignCriteriaFragment: BaseDaggerFragment() {

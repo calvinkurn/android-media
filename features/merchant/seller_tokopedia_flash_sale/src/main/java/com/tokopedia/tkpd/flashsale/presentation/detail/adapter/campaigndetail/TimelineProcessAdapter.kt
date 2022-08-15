@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.list.adapter.campaigndetail
+package com.tokopedia.tkpd.flashsale.presentation.detail.adapter.campaigndetail
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.list.bottomsheet
+package com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,9 +8,9 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsBottomsheetCampaignDetailBinding
 import com.tokopedia.tkpd.flashsale.common.adapter.TabPagerAdapter
-import com.tokopedia.tkpd.flashsale.presentation.list.fragment.CampaignCriteriaFragment
-import com.tokopedia.tkpd.flashsale.presentation.list.fragment.CampaignProductCriteriaFragment
-import com.tokopedia.tkpd.flashsale.presentation.list.fragment.CampaignTimelineFragment
+import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignCriteriaFragment
+import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignProductCriteriaFragment
+import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignTimelineFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
