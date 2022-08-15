@@ -17,6 +17,8 @@ data class PromoCheckoutVoucherOrdersItemUiModel(
         var duration: String = "",
         var cartId: Int = -1,
         var shopId: Int = -1,
+        var shippingId: Int = 0,
+        var spId: Int = 0,
         var benefitDetailUiModels: List<BenefitDetailsItemUiModel> = listOf(),
         var success: Boolean = false,
         var invoiceDescription: String = "",
