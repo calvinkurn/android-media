@@ -34,7 +34,7 @@ class CustomOrderDetailBottomSheet :
     }
 
     companion object {
-
+        private const val TAG = "CustomOrderDetailBottomSheet"
         const val BUNDLE_KEY_PRODUCT_UI_MODEL = "bundle_key_custom_order_detail"
         const val BUNDLE_KEY_PRODUCT_POSITION = "bundle_key_product_position_custom_order_detail"
         const val BUNDLE_KEY_ADAPTER_POSITION = "bundle_key_adapter_position_custom_order_detail"
@@ -125,7 +125,7 @@ class CustomOrderDetailBottomSheet :
 
     fun show(fragmentManager: FragmentManager) {
         if (!isVisible) {
-            show(fragmentManager, this::class.java.simpleName)
+            show(fragmentManager, TAG)
         }
     }
 
@@ -166,6 +166,16 @@ class CustomOrderDetailBottomSheet :
                 customOrderDetail = customOrderDetail,
                 quantity = quantity,
                 productId = it.id
+            )
+        }
+    }
+
+    override fun onUpdateQty(quantity: Int, customOrderDetail: CustomOrderDetail) {
+        productUiModel?.let {
+            clickListener?.onUpdateCustomOrderQtyButtonClicked(
+                    customOrderDetail = customOrderDetail,
+                    quantity = quantity,
+                    productId = it.id
             )
         }
     }

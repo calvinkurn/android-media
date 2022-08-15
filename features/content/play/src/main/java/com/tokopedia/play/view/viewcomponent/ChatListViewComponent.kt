@@ -21,10 +21,6 @@ class ChatListViewComponent(
         playChatListView.setChatList(chatList)
     }
 
-    fun setMask(height: Float, animate: Boolean) {
-        playChatListView.setTopMask(height, animate)
-    }
-
     fun setMaxHeight(height: Float) {
         playChatListView.setMaxHeight(height)
     }

@@ -16,7 +16,7 @@ import com.tokopedia.chooseaccount.common.analytics.LoginPhoneNumberAnalytics
  * Created by Ade Fulki on 2020-01-23.
  * ade.hadian@tokopedia.com
  * For navigating to this class
- * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHOOSE_ACCOUNT
+ * @see com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT
  */
 
 open class ChooseAccountActivity : BaseSimpleActivity() {

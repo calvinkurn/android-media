@@ -141,12 +141,12 @@ class HomeFragmentNonLoginUiTest {
         /**
          * Assert header background
          */
-        onView(withId(R.id.view_background_image)).check(matches(isDisplayed()))
+        onView(withId(R.id.header_background_home_background)).check(matches(isDisplayed()))
 
         /**
          * Assert choose address widget
          */
-        onView(withId(R.id.widget_choose_address)).check(matches(isDisplayed()))
+        onView(withId(R.id.view_choose_address)).check(matches(isDisplayed()))
     }
 
     /**

@@ -80,19 +80,22 @@ class ProductCarouselUiComponent(
                 { it.tagItems },
                 { it.bottomInsets },
                 { it.status.channelStatus.statusType },
+                { it.featuredProducts },
                 { it.address })) return
 
         val tagItems = state.value.tagItems
 
         if (tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
             uiView.setLoading()
-        } else if (state.isChanged{ it.tagItems.product.productSectionList }) {
-            uiView.setProducts(
-                getFeaturedProducts(
-                    state.value.tagItems.product.productSectionList,
-                    state.value.tagItems.maxFeatured,
-                )
-            )
+        } else if (state.isChanged { it.featuredProducts }) {
+            uiView.setProducts(state.value.featuredProducts)
+
+            val oldPinnedProduct = state.prevValue?.featuredProducts?.firstOrNull()?.takeIf { it.isPinned }
+            val newPinnedProduct = state.value.featuredProducts.firstOrNull()?.takeIf { it.isPinned }
+
+            if (newPinnedProduct != oldPinnedProduct && newPinnedProduct != null) {
+                uiView.scrollToFirstPosition()
+            }
         }
 
         if (!tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
@@ -105,44 +108,6 @@ class ProductCarouselUiComponent(
             !state.value.address.shouldShow
         ) uiView.show()
         else uiView.hide()
-    }
-
-    private fun getFeaturedProducts(
-        sectionList: List<ProductSectionUiModel>,
-        maxProducts: Int,
-    ): List<PlayProductUiModel.Product> {
-        var pinnedProduct: PlayProductUiModel.Product? = null
-
-        run {
-            sectionList.forEach { section ->
-                if (section is ProductSectionUiModel.Section) {
-                    pinnedProduct = section.productList.firstOrNull { it.isPinned }
-                    if (pinnedProduct != null) return@run
-                }
-            }
-        }
-
-        val rawFeaturedProducts = getRawFeaturedProducts(sectionList, maxProducts)
-
-        return pinnedProduct?.let { pinned ->
-            listOf(pinned) + rawFeaturedProducts.filterNot { it.isPinned }
-        } ?: rawFeaturedProducts
-    }
-
-    private fun getRawFeaturedProducts(
-        sectionList: List<ProductSectionUiModel>,
-        maxProducts: Int,
-    ): List<PlayProductUiModel.Product> {
-        val products = mutableListOf<PlayProductUiModel.Product>()
-        sectionList.forEach { section ->
-            if (section is ProductSectionUiModel.Section) {
-                products.addAll(section.productList.take(maxProducts - products.size))
-            }
-
-            if (products.size >= maxProducts) return@forEach
-        }
-
-        return products
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {

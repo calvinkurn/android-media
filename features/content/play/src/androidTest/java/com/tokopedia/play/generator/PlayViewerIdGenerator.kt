@@ -8,6 +8,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.BuildConfig
 import com.tokopedia.play.R
@@ -18,8 +19,14 @@ import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.play.test.factory.TestFragmentFactory
+import com.tokopedia.play.test.factory.TestViewModelFactory
 import com.tokopedia.play.test.util.isSiblingWith
 import com.tokopedia.play.view.activity.PlayActivity
+import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
+import com.tokopedia.play.view.fragment.PlayFragment
+import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
+import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.*
@@ -28,12 +35,20 @@ import com.tokopedia.play.view.uimodel.mapper.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
+import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
+import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
+import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
 import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -53,8 +68,107 @@ class PlayViewerIdGenerator {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
+    private val userSession: UserSessionInterface = mockk(relaxed = true)
+
     private val repo: PlayViewerRepository = mockk(relaxed = true)
 
+    private val decodeHtml = DefaultHtmlTextTransformer()
+
+    private val mapper = PlayUiModelMapper(
+        productTagMapper = PlayProductTagUiMapper(),
+        merchantVoucherMapper = PlayMerchantVoucherUiMapper(),
+        chatMapper = PlayChatUiMapper(userSession),
+        channelStatusMapper = PlayChannelStatusMapper(),
+        channelInteractiveMapper = PlayChannelInteractiveMapper(),
+        interactiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(decodeHtml),
+        cartMapper = PlayCartMapper(),
+        playUserReportMapper = PlayUserReportReasoningMapper(),
+        interactiveMapper = PlayInteractiveMapper(decodeHtml),
+    )
+
+    private val mockViewModelFactory = TestViewModelFactory(
+        mapOf(
+            PlayInteractionViewModel::class.java to {
+                mockk<PlayInteractionViewModel>(relaxed = true)
+            },
+            PlayBottomSheetViewModel::class.java to {
+                PlayBottomSheetViewModel(
+                    userSession,
+                )
+            }
+        )
+    )
+
+    private val playViewModelFactory = object : PlayViewModel.Factory {
+        override fun create(channelId: String): PlayViewModel {
+            return PlayViewModel(
+                channelId = "12345",
+                playVideoBuilder = mockk(relaxed = true),
+                videoStateProcessorFactory = mockk(relaxed = true),
+                channelStateProcessorFactory = mockk(relaxed = true),
+                videoBufferGovernorFactory = mockk(relaxed = true),
+                getReportSummariesUseCase = mockk(relaxed = true),
+                playSocketToModelMapper = mockk(relaxed = true),
+                playUiModelMapper = mapper,
+                userSession = mockk(relaxed = true),
+                dispatchers = CoroutineDispatchersProvider,
+                remoteConfig = mockk(relaxed = true),
+                playPreference = mockk(relaxed = true),
+                videoLatencyPerformanceMonitoring = mockk(relaxed = true),
+                playChannelWebSocket = mockk(relaxed = true),
+                repo = mockk(relaxed = true),
+                playAnalytic = mockk(relaxed = true),
+                timerFactory = mockk(relaxed = true),
+                castPlayerHelper = mockk(relaxed = true),
+                playShareExperience = mockk(relaxed = true),
+                playLog = mockk(relaxed = true),
+                chatStreamsFactory = mockk(relaxed = true),
+                liveRoomMetricsCommon = mockk(relaxed = true),
+            )
+        }
+    }
+
+    private val fragmentFactory = TestFragmentFactory(
+        mapOf(
+            PlayFragment::class.java to {
+                PlayFragment(
+                    playViewModelFactory,
+                    mockk(relaxed = true),
+                    mockk(relaxed = true),
+                    mockk(relaxed = true),
+                )
+            },
+            PlayUserInteractionFragment::class.java to {
+                PlayUserInteractionFragment(
+                    viewModelFactory = mockViewModelFactory,
+                    dispatchers = CoroutineDispatchersProvider,
+                    pipAnalytic = mockk(relaxed = true),
+                    analytic = mockk(relaxed = true),
+                    multipleLikesIconCacheStorage = mockk(relaxed = true),
+                    castAnalyticHelper = mockk(relaxed = true),
+                    performanceClassConfig = mockk(relaxed = true),
+                    newAnalytic = mockk(relaxed = true),
+                    analyticManagerFactory = mockk(relaxed = true),
+                )
+            },
+            PlayBottomSheetFragment::class.java to {
+                PlayBottomSheetFragment(
+                    viewModelFactory = mockViewModelFactory,
+                    analytic = mockk(relaxed = true),
+                    newAnalytic = mockk(relaxed = true),
+                )
+            },
+            PlayVideoFragment::class.java to {
+                PlayVideoFragment(
+                    dispatchers = CoroutineDispatchersProvider,
+                    pipAnalytic = mockk(relaxed = true),
+                    analytic = mockk(relaxed = true),
+                    pipSessionStorage = mockk(relaxed = true),
+                    playLog = mockk(relaxed = true),
+                )
+            }
+        )
+    )
     private val uiModelBuilder = UiModelBuilder.get()
 
     private val printConditions = listOf(

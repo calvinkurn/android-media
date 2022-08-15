@@ -35,22 +35,18 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
     private val newAnalytic: PlayNewAnalytic,
     private val analytic2Factory: PlayAnalytic2.Factory,
     private val dispatchers: CoroutineDispatchers,
-    @Assisted context: Context,
+    private val trackingQueue: TrackingQueue,
     @Assisted private val productAnalyticHelper: ProductAnalyticHelper,
 ) {
 
     @AssistedFactory
     interface Factory {
         fun create(
-            context: Context,
             productAnalyticHelper: ProductAnalyticHelper,
         ) : PlayChannelAnalyticManager
     }
 
-    private val trackingQueue = TrackingQueue(context)
     private var analytic2 : PlayAnalytic2? = null
-
-    private var isAtcFeaturedProduct: Boolean = false
 
     fun observe(
         scope: CoroutineScope,
@@ -86,12 +82,6 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
                         }
                         productAnalyticHelper.trackImpressedProducts(it.productMap)
                     }
-                    is ProductCarouselUiComponent.Event.OnAtcClicked -> {
-                        isAtcFeaturedProduct = true
-                    }
-                    is ProductCarouselUiComponent.Event.OnBuyClicked -> {
-                        isAtcFeaturedProduct = true
-                    }
                     KebabIconUiComponent.Event.OnClicked -> analytic.clickKebabMenu()
                 }
             }
@@ -101,32 +91,27 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
             uiEvent.collect {
                 when (it) {
                     is BuySuccessEvent -> {
-                        if (!it.product.isPinned) return@collect
-
-                        whenFeatured {
-                            analytic2?.buyPinnedProductInCarousel(
-                                product = it.product,
-                                cartId = it.cartId,
-                                quantity = it.product.minQty,
-                            )
-                        }
+                        if (!it.product.isPinned || !it.isProductFeatured) return@collect
+                        analytic2?.buyPinnedProductInCarousel(
+                            product = it.product,
+                            cartId = it.cartId,
+                            quantity = it.product.minQty,
+                        )
                     }
                     is AtcSuccessEvent -> {
-                        if (!it.product.isPinned) return@collect
+                        if (!it.product.isPinned || !it.isProductFeatured) return@collect
 
-                        whenFeatured {
-                            analytic2?.atcPinnedProductInCarousel(
-                                product = it.product,
-                                cartId = it.cartId,
-                                quantity = it.product.minQty,
-                            )
+                        analytic2?.atcPinnedProductInCarousel(
+                            product = it.product,
+                            cartId = it.cartId,
+                            quantity = it.product.minQty,
+                        )
 
-                            /**
-                             * Because Toaster doesn't have any identifier and show listener,
-                             * this is currently the best way to do this
-                             */
-                            analytic2?.impressToasterAtcPinnedProductCarousel()
-                        }
+                        /**
+                         * Because Toaster doesn't have any identifier and show listener,
+                         * this is currently the best way to do this
+                         */
+                        analytic2?.impressToasterAtcPinnedProductCarousel()
                     }
                     else -> {}
                 }
@@ -138,7 +123,7 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
         if (product.isPinned) analytic2?.clickPinnedProductInCarousel(product, position)
 
         if (product.isTokoNow) {
-            newAnalytic.clickFeaturedProduct(product, position)
+            newAnalytic.clickFeaturedProductNow(product, position)
         } else {
             analytic.clickFeaturedProduct(product, position)
         }
@@ -146,14 +131,5 @@ class PlayChannelAnalyticManager @AssistedInject constructor(
 
     fun sendPendingTrackers(partnerType: PartnerType) {
         productAnalyticHelper.sendImpressedFeaturedProducts(partnerType)
-    }
-
-    private fun whenFeatured(
-        fn: () -> Unit
-    ) {
-        if (!isAtcFeaturedProduct) return
-        isAtcFeaturedProduct = false
-
-        fn()
     }
 }

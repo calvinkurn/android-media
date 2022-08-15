@@ -77,7 +77,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
-    private val dispatchers: CoroutineDispatchers,
 ) : TkpdBaseV4Fragment(),
     PlayFragmentContract,
     ProductSheetViewComponent.Listener,
@@ -93,12 +92,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private val productSheetView by viewComponent {
-        ProductSheetViewComponent(
-            it,
-            this,
-            viewLifecycleOwner.lifecycleScope,
-            dispatchers
-        )
+        ProductSheetViewComponent(it, this)
     }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
@@ -156,7 +150,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
-        return getLoadingDialogFragment().isVisible
+        return getLoadingDialogFragment()?.isVisible == true
     }
 
     /**
@@ -201,7 +195,7 @@ class PlayBottomSheetFragment @Inject constructor(
         sectionInfo: ProductSectionUiModel.Section
     ) {
         if(playViewModel.bottomInsets.isProductSheetsShown) {
-            if(sectionInfo.config.type == ProductSectionType.TokoNow) newAnalytic.impressProductBottomSheet(products, sectionInfo)
+            if(sectionInfo.config.type == ProductSectionType.TokoNow) newAnalytic.impressProductBottomSheetNow(products, sectionInfo)
             else analytic.impressBottomSheetProducts(products, sectionInfo)
         }
     }
@@ -254,12 +248,12 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+        newAnalytic.clickRefreshLeaderBoard(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), channelId = playViewModel.channelId)
         playViewModel.submitAction(RefreshLeaderboard)
-        analytic.clickRefreshLeaderBoard(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString())
     }
 
     override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
-        analytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
+        newAnalytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id, channelId = playViewModel.channelId)
     }
 
     override fun onLeaderBoardImpressed(
@@ -267,7 +261,7 @@ class PlayBottomSheetFragment @Inject constructor(
         leaderboard: PlayLeaderboardUiModel
     ) {
         if (leaderboard.leaderBoardType != LeadeboardType.Quiz) return
-        analytic.impressLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = leaderboard.id)
+        newAnalytic.impressLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = leaderboard.id, channelId = playViewModel.channelId)
     }
 
     /**
@@ -347,13 +341,13 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun showLoadingView() {
-        getLoadingDialogFragment()
+        getOrCreateLoadingDialogFragment()
             .showNow(childFragmentManager)
     }
 
     private fun hideLoadingView() {
         val loadingDialog = getLoadingDialogFragment()
-        if (loadingDialog.isVisible) loadingDialog.dismiss()
+        loadingDialog?.dismiss()
     }
 
     private fun shouldOpenProductDetail(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int) {
@@ -421,7 +415,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun doOpenProductDetail(product: PlayProductUiModel.Product, configUiModel: ProductSectionUiModel.Section, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
             if(configUiModel.config.type == ProductSectionType.TokoNow)
-                newAnalytic.clickProductBottomSheet(product, configUiModel, position)
+                newAnalytic.clickProductBottomSheetNow(product, configUiModel, position)
             else analytic.clickProduct(product, configUiModel, position)
             openPageByApplink(product.applink, pipMode = true)
         }
@@ -569,7 +563,7 @@ class PlayBottomSheetFragment @Inject constructor(
                             val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
 
                             if(sectionInfo.config.type == ProductSectionType.TokoNow)
-                                newAnalytic.clickBeli(
+                                newAnalytic.clickBeliNowProduct(
                                     product = event.product,
                                     cartId = event.cartId,
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
@@ -642,7 +636,6 @@ class PlayBottomSheetFragment @Inject constructor(
                                         newAnalytic.clickLihatNowToaster()
                                         analytic.clickSeeToasterAfterAtc()
                                     }
-                                    else if(!event.product.isTokoNow) newAnalytic.clickGlobalToaster()
                                     else analytic.clickSeeToasterAfterAtc()
                                 }
                             )
@@ -652,7 +645,7 @@ class PlayBottomSheetFragment @Inject constructor(
                             val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
 
                             if(sectionInfo.config.type == ProductSectionType.TokoNow)
-                                newAnalytic.clickAtc(
+                                newAnalytic.clickAtcNowProduct(
                                     product = event.product,
                                     cartId = event.cartId,
                                     shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
@@ -753,8 +746,12 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun getLoadingDialogFragment(): PlayLoadingDialogFragment {
-        return PlayLoadingDialogFragment.get(
+    private fun getLoadingDialogFragment(): PlayLoadingDialogFragment? {
+        return PlayLoadingDialogFragment.get(childFragmentManager)
+    }
+
+    private fun getOrCreateLoadingDialogFragment(): PlayLoadingDialogFragment {
+        return PlayLoadingDialogFragment.getOrCreate(
             childFragmentManager,
             requireActivity().classLoader
         )

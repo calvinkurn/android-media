@@ -68,7 +68,8 @@ data class ReviewerUserInfo(
     @SerializedName("userID") @Expose val userId: String = "",
     @SerializedName("fullName") @Expose val fullName: String = "",
     @SerializedName("image") @Expose val image: String = "",
-    @SerializedName("url") @Expose val url: String = ""
+    @SerializedName("url") @Expose val url: String = "",
+    @SerializedName("label") @Expose val label: String = ""
 ) : Serializable
 
 data class UserReviewStats(

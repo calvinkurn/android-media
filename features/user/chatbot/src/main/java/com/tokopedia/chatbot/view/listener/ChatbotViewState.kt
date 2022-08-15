@@ -72,6 +72,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun handleReplyBox(isEnable: Boolean)
 
-
+    fun hideQuickReplyOnClick()
 
 }

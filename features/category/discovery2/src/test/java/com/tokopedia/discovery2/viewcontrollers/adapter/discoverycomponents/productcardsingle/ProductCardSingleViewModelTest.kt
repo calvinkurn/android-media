@@ -122,10 +122,275 @@ class ProductCardSingleViewModelTest {
         } returns true
         viewModel.onAttachToViewHolder()
         assert(childComponentsItem.properties?.template == Constant.ProductTemplate.LIST)
-        assert(dataItem.hasThreeDotsWishlist)
-        assert(dataItem.hasATCWishlist)
-
         assert(viewModel.getProductData().value === childComponentsItem)
+    }
+
+    @Test
+    fun `test for fetchProductData for success and atc is allowed but product is OOS`() {
+        viewModel.productCardsUseCase = productCardsUseCase
+
+        //      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val childComponentsItem: ComponentsItem = spyk()
+        val dataItem: DataItem = spyk()
+        val listOfComps = arrayListOf(childComponentsItem)
+        val listOfData = arrayListOf(dataItem)
+        every { componentsItem.getComponentsItem() } returns listOfComps
+        every { childComponentsItem.data } returns listOfData
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )
+        } returns true
+        every { dataItem.atcButtonCTA } returns Constant.ATCButtonCTATypes.GENERAL_CART
+        every { dataItem.isActiveProductCard } returns false
+        viewModel.onAttachToViewHolder()
+        assert(!dataItem.hasATCWishlist)
+    }
+
+    @Test
+    fun `test for fetchProductData for success and atc is allowed but product is active`() {
+        viewModel.productCardsUseCase = productCardsUseCase
+
+        //      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val childComponentsItem: ComponentsItem = spyk()
+        val dataItem: DataItem = spyk()
+        val listOfComps = arrayListOf(childComponentsItem)
+        val listOfData = arrayListOf(dataItem)
+        every { componentsItem.getComponentsItem() } returns listOfComps
+        every { childComponentsItem.data } returns listOfData
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )
+        } returns true
+        every { dataItem.atcButtonCTA } returns Constant.ATCButtonCTATypes.GENERAL_CART
+        every { dataItem.isActiveProductCard } returns true
+        viewModel.onAttachToViewHolder()
+        assert(dataItem.hasATCWishlist)
+    }
+
+    @Test
+    fun `test for fetchProductData for success and atc is not allowed and product is OOS`() {
+        viewModel.productCardsUseCase = productCardsUseCase
+
+        //      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val childComponentsItem: ComponentsItem = spyk()
+        val dataItem: DataItem = spyk()
+        val listOfComps = arrayListOf(childComponentsItem)
+        val listOfData = arrayListOf(dataItem)
+        every { componentsItem.getComponentsItem() } returns listOfComps
+        every { childComponentsItem.data } returns listOfData
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )
+        } returns true
+        every { dataItem.atcButtonCTA } returns ""
+        every { dataItem.isActiveProductCard } returns false
+        viewModel.onAttachToViewHolder()
+        assert(!dataItem.hasATCWishlist)
+    }
+
+    @Test
+    fun `test for fetchProductData for success and atc is not allowed and product is active`() {
+        viewModel.productCardsUseCase = productCardsUseCase
+
+        //      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val childComponentsItem: ComponentsItem = spyk()
+        val dataItem: DataItem = spyk()
+        val listOfComps = arrayListOf(childComponentsItem)
+        val listOfData = arrayListOf(dataItem)
+        every { componentsItem.getComponentsItem() } returns listOfComps
+        every { childComponentsItem.data } returns listOfData
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )
+        } returns true
+        every { dataItem.atcButtonCTA } returns ""
+        every { dataItem.isActiveProductCard } returns true
+        viewModel.onAttachToViewHolder()
+        assert(!dataItem.hasATCWishlist)
+    }
+
+    @Test
+    fun `test for fetchProductData for success and product is active and targetComponentId is not present`() {
+        viewModel.productCardsUseCase = productCardsUseCase
+
+        //      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val childComponentsItem: ComponentsItem = spyk()
+        val dataItem: DataItem = spyk()
+        val listOfComps = arrayListOf(childComponentsItem)
+        val listOfData = arrayListOf(dataItem)
+        every { componentsItem.getComponentsItem() } returns listOfComps
+        every { childComponentsItem.data } returns listOfData
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )
+        } returns true
+        every { dataItem.isActiveProductCard } returns true
+        every { dataItem.targetComponentId } returns ""
+        viewModel.onAttachToViewHolder()
+        assert(dataItem.hasSimilarProductWishlist == false||dataItem.hasSimilarProductWishlist == null)
+    }
+
+    @Test
+    fun `test for fetchProductData for success and product is OOS and targetComponentId is not present`() {
+        viewModel.productCardsUseCase = productCardsUseCase
+
+        //      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val childComponentsItem: ComponentsItem = spyk()
+        val dataItem: DataItem = spyk()
+        val listOfComps = arrayListOf(childComponentsItem)
+        val listOfData = arrayListOf(dataItem)
+        every { componentsItem.getComponentsItem() } returns listOfComps
+        every { childComponentsItem.data } returns listOfData
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )
+        } returns true
+        every { dataItem.isActiveProductCard } returns false
+        every { dataItem.targetComponentId } returns ""
+        viewModel.onAttachToViewHolder()
+        assert(dataItem.hasSimilarProductWishlist == false||dataItem.hasSimilarProductWishlist == null)
+    }
+
+    @Test
+    fun `test for fetchProductData for success and product is active and targetComponentId is present`() {
+        viewModel.productCardsUseCase = productCardsUseCase
+
+        //      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val childComponentsItem: ComponentsItem = spyk()
+        val dataItem: DataItem = spyk()
+        val listOfComps = arrayListOf(childComponentsItem)
+        val listOfData = arrayListOf(dataItem)
+        every { componentsItem.getComponentsItem() } returns listOfComps
+        every { childComponentsItem.data } returns listOfData
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )
+        } returns true
+        every { dataItem.isActiveProductCard } returns true
+        every { dataItem.targetComponentId } returns "3"
+        viewModel.onAttachToViewHolder()
+        assert(dataItem.hasSimilarProductWishlist == false||dataItem.hasSimilarProductWishlist == null)
+    }
+
+    @Test
+    fun `test for fetchProductData for success and product is OOS and targetComponentId is present`() {
+        viewModel.productCardsUseCase = productCardsUseCase
+
+        //      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val childComponentsItem: ComponentsItem = spyk()
+        val dataItem: DataItem = spyk()
+        val listOfComps = arrayListOf(childComponentsItem)
+        val listOfData = arrayListOf(dataItem)
+        every { componentsItem.getComponentsItem() } returns listOfComps
+        every { childComponentsItem.data } returns listOfData
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )
+        } returns true
+        every { dataItem.isActiveProductCard } returns false
+        every { dataItem.targetComponentId } returns "3"
+        viewModel.onAttachToViewHolder()
+        assert(dataItem.hasSimilarProductWishlist == true)
+    }
+
+    @Test
+    fun `test for fetchProductData for success and 3dots is not allowed`() {
+        viewModel.productCardsUseCase = productCardsUseCase
+
+        //      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val childComponentsItem: ComponentsItem = spyk()
+        val dataItem: DataItem = spyk()
+        val listOfComps = arrayListOf(childComponentsItem)
+        val listOfData = arrayListOf(dataItem)
+        every { componentsItem.getComponentsItem() } returns listOfComps
+        every { childComponentsItem.data } returns listOfData
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )
+        } returns true
+        every { dataItem.show3Dots } returns false
+        viewModel.onAttachToViewHolder()
+        assert(!dataItem.hasThreeDotsWishlist)
+    }
+
+    @Test
+    fun `test for fetchProductData for success and 3dots is allowed`() {
+        viewModel.productCardsUseCase = productCardsUseCase
+
+        //      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+        mockkConstructor(URLParser::class)
+        every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+        val childComponentsItem: ComponentsItem = spyk()
+        val dataItem: DataItem = spyk()
+        val listOfComps = arrayListOf(childComponentsItem)
+        val listOfData = arrayListOf(dataItem)
+        every { componentsItem.getComponentsItem() } returns listOfComps
+        every { childComponentsItem.data } returns listOfData
+        coEvery {
+            productCardsUseCase.loadFirstPageComponents(
+                componentsItem.id,
+                componentsItem.pageEndPoint,
+                PRODUCT_PER_PAGE
+            )
+        } returns true
+        every { dataItem.show3Dots } returns true
+        viewModel.onAttachToViewHolder()
+        assert(dataItem.hasThreeDotsWishlist)
     }
 
     @Test

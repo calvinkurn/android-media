@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.State
@@ -23,6 +22,7 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.search.analytics.GeneralSearchTrackingShop
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.result.shop.chooseaddress.ChooseAddressDataView
@@ -32,10 +32,11 @@ import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTitleDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopSuggestionDataView
+import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.convertValuesToString
-import com.tokopedia.search.utils.ChooseAddressWrapper
 import com.tokopedia.search.utils.createSearchShopDefaultQuickFilter
+import com.tokopedia.search.utils.getValueString
 import com.tokopedia.search.utils.toSearchParams
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.Cpm
@@ -45,7 +46,6 @@ import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
-import java.util.ArrayList
 
 @Suppress("LongParameterList")
 internal class SearchShopViewModel(
@@ -457,6 +457,7 @@ internal class SearchShopViewModel(
             pageSource = Dimension90Utils.getDimension90(getSearchParameter()),
             relatedKeyword = relatedKeyword,
             searchFilter = getSearchParamAsString(),
+            externalReference = getExternalReference(),
         )
         generalSearchTrackingMutableLiveData.postValue(generalSearchTracking)
     }
@@ -464,6 +465,10 @@ internal class SearchShopViewModel(
     private fun getSearchParamAsString(): String {
         val filterParameter = getFilterParams(searchParameter as Map<String?, String>)
         return UrlParamUtils.generateUrlParamString(filterParameter)
+    }
+
+    private fun getExternalReference() : String {
+        return searchParameter.getValueString(SearchApiConst.SRP_EXT_REF)
     }
 
     private fun createGeneralSearchTrackingEventLabel(searchShopModel: SearchShopModel): String {

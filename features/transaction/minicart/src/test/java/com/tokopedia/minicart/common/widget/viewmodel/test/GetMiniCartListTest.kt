@@ -3,6 +3,7 @@ package com.tokopedia.minicart.common.widget.viewmodel.test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
@@ -12,10 +13,12 @@ import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetProductBundleRecomUseCase
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
@@ -34,13 +37,29 @@ class GetMiniCartListTest {
     private val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     private val updateCartUseCase: UpdateCartUseCase = mockk()
     private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase = mockk()
+    private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase = mockk()
+    private val addToCartBundleUseCase: AddToCartBundleUseCase = mockk()
+    private val userSession: UserSessionInterface = mockk()
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
-        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, addToCartOccMultiUseCase, miniCartListUiModelMapper, miniCartChatListUiModelMapper)
+        viewModel = MiniCartViewModel(
+            dispatcher,
+            getMiniCartListSimplifiedUseCase,
+            getMiniCartListUseCase,
+            deleteCartUseCase,
+            undoDeleteCartUseCase,
+            updateCartUseCase,
+            getProductBundleRecomUseCase,
+            addToCartBundleUseCase,
+            addToCartOccMultiUseCase,
+            miniCartListUiModelMapper,
+            miniCartChatListUiModelMapper,
+            userSession
+        )
     }
 
     @Test
@@ -286,4 +305,35 @@ class GetMiniCartListTest {
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET)
     }
 
+    @Test
+    fun `WHEN first load mini cart list success with multiple available items in one cart THEN total product count should more than one`() {
+        //given
+        val mockResponse = DataProvider.provideGetMiniCartListSuccessMultipleAvailableAndUnavailableOneCart()
+        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.getCartList(isFirstLoad = true)
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductCount ?: 0 > 1)
+    }
+
+    @Test
+    fun `WHEN first load mini cart list success with multiple unavailable items in one cart THEN total product error should more than one`() {
+        //given
+        val mockResponse = DataProvider.provideGetMiniCartListSuccessMultipleAvailableAndUnavailableOneCart()
+        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.getCartList(isFirstLoad = true)
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductError ?: 0 > 1)
+    }
 }

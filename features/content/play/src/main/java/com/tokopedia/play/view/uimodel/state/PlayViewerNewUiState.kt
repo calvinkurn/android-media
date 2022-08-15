@@ -2,6 +2,7 @@ package com.tokopedia.play.view.uimodel.state
 
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.WarehouseInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
@@ -32,6 +33,7 @@ data class PlayViewerNewUiState(
     val selectedVariant: NetworkResult<VariantUiModel>,
     val isLoadingBuy: Boolean,
     val address: AddressWidgetUiState,
+    val featuredProducts: List<PlayProductUiModel.Product>,
 ) {
 
     companion object {
@@ -60,7 +62,8 @@ data class PlayViewerNewUiState(
                 address = AddressWidgetUiState(
                     shouldShow = false,
                     warehouseInfo = WarehouseInfoUiModel.Empty,
-                )
+                ),
+                featuredProducts = emptyList(),
             )
     }
 }

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/unify_space_32"
+    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/goto_seamless_main_img"
+        android:layout_width="280dp"
+        android:layout_height="210dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_url="@string/lottie_goto_seamless_illustration"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/goto_seamless_title_txt"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goto_seamless_main_img"
+        app:typographyType="heading_2"
+        android:textAlignment="center"
+        android:text="@string/goto_seamless_primary_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:id="@+id/goto_seamless_description_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/goto_seamless_description_text"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goto_seamless_title_txt"
+        app:typographyType="paragraph_2" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/goto_seamless_primary_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_24"
+        tools:text="Masuk ke 081231231231"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goto_seamless_description_txt" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="@integer/int_3"
+        app:layout_constraintEnd_toEndOf="@+id/goto_seamless_primary_btn"
+        app:layout_constraintStart_toStartOf="@+id/goto_seamless_primary_btn"
+        app:layout_constraintTop_toBottomOf="@+id/goto_seamless_primary_btn">
+
+        <View
+            android:layout_width="100dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="@color/Unify_NN200" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="atau"
+            app:typographyType="display_3"
+            android:textAlignment="center" />
+
+        <View
+            android:layout_width="100dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="@color/Unify_NN200" />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:id="@+id/goto_seamless_secondary_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/goto_seamless_secondary_btn_text"
+        app:layout_constraintEnd_toEndOf="@+id/goto_seamless_primary_btn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/goto_seamless_primary_btn"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonType="alternate" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

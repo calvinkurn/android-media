@@ -41,6 +41,7 @@ interface TagItemBuilder {
         appLink: String = "",
         isTokoNow: Boolean = false,
         isPinned: Boolean = false,
+        isRilisanSpesial: Boolean = false,
     ): PlayProductUiModel.Product
 
     fun buildMerchantVoucher(

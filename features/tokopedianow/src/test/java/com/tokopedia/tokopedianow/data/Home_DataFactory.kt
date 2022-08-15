@@ -134,6 +134,10 @@ fun createDynamicChannelLayoutList(): List<HomeLayoutResponse> {
     )
 }
 
+fun createDynamicChannelLayoutList(listResponses: List<HomeLayoutResponse>): List<HomeLayoutResponse> {
+    return listResponses
+}
+
 fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
     return listOf(
             HomeLayoutResponse(
@@ -306,7 +310,8 @@ fun createCategoryGridListFirstFetch(): CategoryListResponse {
                     appLinks = "tokoepdia://",
                     imageUrl = "tokopedia://",
                     parentId = "5",
-                    childList = listOf()
+                    childList = listOf(),
+                    isAdult = 0
             )
     ))
 }
@@ -322,9 +327,58 @@ fun createCategoryGridListSecondFetch(): CategoryListResponse {
                             appLinks = "tokoepdia://",
                             imageUrl = "tokopedia://",
                             parentId = "2",
-                            childList = listOf()
+                            childList = listOf(),
+                            isAdult = 0
                     )
             ))
+}
+
+fun createCategoryGridWithAdultDataFetch(): CategoryListResponse {
+    return CategoryListResponse(
+        header = com.tokopedia.abstraction.common.data.model.response.Header(),
+        data = listOf(
+            CategoryResponse(
+                id = "1",
+                name = "Category 1",
+                url = "tokopedia://",
+                appLinks = "tokoepdia://",
+                imageUrl = "tokopedia://",
+                parentId = "2",
+                childList = listOf(),
+                isAdult = 0
+            ),
+            CategoryResponse(
+                id = "2",
+                name = "Category 2",
+                url = "tokopedia://",
+                appLinks = "tokoepdia://",
+                imageUrl = "tokopedia://",
+                parentId = "2",
+                childList = listOf(),
+                isAdult = 1
+            ),
+            CategoryResponse(
+                id = "3",
+                name = "Category 3",
+                url = "tokopedia://",
+                appLinks = "tokoepdia://",
+                imageUrl = "tokopedia://",
+                parentId = "2",
+                childList = listOf(),
+                isAdult = 0
+            ),
+            CategoryResponse(
+                id = "4",
+                name = "Category 4",
+                url = "tokopedia://",
+                appLinks = "tokoepdia://",
+                imageUrl = "tokopedia://",
+                parentId = "2",
+                childList = listOf(),
+                isAdult = 1
+            )
+        )
+    )
 }
 
 fun createDynamicLegoBannerDataModel(

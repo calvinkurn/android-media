@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.KycConstant.PADDING_0_5F
 import com.tokopedia.kyc_centralized.KycConstant.PADDING_16
@@ -36,7 +37,7 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
     override fun getScreenName(): String = ""
 
     override fun setContentView() {
-        val scale = resources.displayMetrics.density
+        val scale = context?.resources?.displayMetrics?.density.orZero()
         onboardingImage?.setPadding(
             PADDING_ZERO,
             (PADDING_16 * scale + PADDING_0_5F).toInt(),

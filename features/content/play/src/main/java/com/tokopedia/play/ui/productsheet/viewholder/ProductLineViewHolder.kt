@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.text.buildSpannedString
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
@@ -17,19 +16,16 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.product.ProductBasicViewHolder
-import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.type.ComingSoon
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.R as unifyR
