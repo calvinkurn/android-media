@@ -650,7 +650,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 if (portraitInsets == null && orientation.isPortrait) portraitInsets = rootInsets
                 val insets = if (orientation.isPortrait) portraitInsets else rootInsets
                 if (insets != null) {
-                    layoutParams.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
+                    layoutParams?.updateMargins(top = insets.systemWindowInsetTop, bottom = initialBottomMargin + insets.systemWindowInsetBottom)
                 } else error("Insets not supported")
             } catch (e: Throwable) {  }
         }
