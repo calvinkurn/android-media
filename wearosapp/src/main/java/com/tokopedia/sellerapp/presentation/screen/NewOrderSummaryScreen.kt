@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.wear.compose.material.Button
@@ -21,7 +22,7 @@ fun NewOrderSummaryScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(com.tokopedia.unifyprinciples.R.color.Unify_NN1000)),
+            .background(color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN1000)),
         contentAlignment = Alignment.Center
     ) {
         Column(
