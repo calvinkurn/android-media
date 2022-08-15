@@ -52,7 +52,7 @@ object DigitalAtcMapper {
                 userId = userId,
                 isSpecialProduct = digitalCheckoutPassData.isSpecialProduct,
                 channelId = it.data.attributes.channelId.toString(),
-                atcError = error ?: ErrorAtc()
+                atcError = error
             )
         }
 

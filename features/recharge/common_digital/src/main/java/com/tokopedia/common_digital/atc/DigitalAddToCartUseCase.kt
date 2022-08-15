@@ -10,7 +10,6 @@ import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTracking
 import com.tokopedia.network.data.model.response.DataResponse
 import javax.inject.Inject
 
-
 /**
  * @author Created By : Muhammad Furqan on Aug 5, 2022
  */
@@ -33,16 +32,27 @@ class DigitalAddToCartUseCase @Inject constructor(
 
             val result = gqlUseCase.executeOnBackground().atcResponse
 
-            returnResult = if (result.data.id.isNotEmpty() || result.errors.isNotEmpty()) {
-                DigitalAtcMapper.mapToDigitalAtcTrackingModel(
-                    null,
-                    result,
-                    digitalCheckoutPassData,
-                    userId,
-                    error = DigitalAtcMapper.mapErrorToErrorAtc(result.errors)
-                )
-            } else {
-                null
+            returnResult = when {
+                result.data.id.isNotEmpty() -> {
+                    DigitalAtcMapper.mapToDigitalAtcTrackingModel(
+                        null,
+                        result,
+                        digitalCheckoutPassData,
+                        userId
+                    )
+                }
+                result.errors.isNotEmpty() -> {
+                    DigitalAtcMapper.mapToDigitalAtcTrackingModel(
+                        null,
+                        result,
+                        digitalCheckoutPassData,
+                        userId,
+                        error = DigitalAtcMapper.mapErrorToErrorAtc(result.errors)
+                    )
+                }
+                else -> {
+                    null
+                }
             }
 
             returnResult
