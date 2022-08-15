@@ -16,6 +16,7 @@ import com.tokopedia.content.common.R.color.soft_dark
 import com.tokopedia.content.common.R.color.soft_gray
 import com.tokopedia.content.common.databinding.ImagepickerInstaComToolbarBinding
 import com.tokopedia.content.common.ui.toolbar.ContentColor.*
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.R.color.Unify_NN0
 import com.tokopedia.unifyprinciples.R.color.Unify_NN400
@@ -123,20 +124,23 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
     }
 
     fun showCoachMarkSwitchAccount() {
-        coachMark = CoachMark2(context)
-        coachMark.showCoachMark(
-            arrayListOf(
-                CoachMark2Item(
-                    mBinding.textComToolbarSubtitle,
-                    context.getString(contentCommonR.string.sa_coach_mark_title),
-                    context.getString(contentCommonR.string.sa_coach_mark_subtitle),
+        getToolbarParentView().addOneTimeGlobalLayoutListener {
+            coachMark = CoachMark2(context)
+            coachMark.showCoachMark(
+                arrayListOf(
+                    CoachMark2Item(
+                        mBinding.textComToolbarSubtitle,
+                        context.getString(contentCommonR.string.sa_coach_mark_title),
+                        context.getString(contentCommonR.string.sa_coach_mark_subtitle),
+                        CoachMark2.POSITION_BOTTOM
+                    )
                 )
             )
-        )
+        }
     }
 
     fun hideCoachMarkSwitchAccount() {
-        if (this::coachMark.isInitialized && coachMark.isShowing) coachMark.dismissCoachMark()
+        if (::coachMark.isInitialized && coachMark.isShowing) coachMark.dismissCoachMark()
     }
 
 }

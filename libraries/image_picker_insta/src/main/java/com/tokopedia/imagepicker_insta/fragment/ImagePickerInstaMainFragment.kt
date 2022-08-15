@@ -322,13 +322,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
-    private fun showFabCoachMark() {
-        Prefs.saveShouldShowCoachMarkValue(activity as Context)
-        if (::coachMark.isInitialized) {
-            coachMark.showCoachMark(coachMarkItem)
-        }
-    }
-
     private fun setClicks() {
         recentSection.setOnClickListener {
             if (folders.isEmpty()) return@setOnClickListener
@@ -502,20 +495,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.feedAccountListState.collectLatest {
                 if(viewModel.isAllowChangeAccount) {
-                    toolbarCommon.getToolbarParentView().addOneTimeGlobalLayoutListener {
-                        coachMark = CoachMark2(requireContext())
-
-                        coachMarkItem.add(
-                            CoachMark2Item(
-                                toolbarCommon.getToolbarParentView(),
-                                getString(R.string.imagepicker_coachmark_header),
-                                getString(R.string.imagepicker_coachmark_text),
-                                CoachMark2.POSITION_BOTTOM
-                            )
-                        )
-
-                        if (Prefs.getShouldShowCoachMarkValue(requireContext()))
-                            showFabCoachMark()
+                    if (Prefs.getShouldShowCoachMarkValue(requireContext())) {
+                        Prefs.saveShouldShowCoachMarkValue(activity as Context)
+                        toolbarCommon.showCoachMarkSwitchAccount()
                     }
 
                     toolbarCommon.setOnAccountClickListener {
