@@ -93,7 +93,7 @@ internal open class ProductListPresenterTestFixtures {
             { performanceMonitoring },
             chooseAddressPresenterDelegate,
             BannerPresenterDelegate(pagination),
-            RequestParamsGenerator(userSession, pagination),
+            requestParamsGenerator,
             pagination,
             LastFilterPresenterDelegate(
                 requestParamsGenerator,
