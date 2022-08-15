@@ -1665,12 +1665,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check interest pick appLink then should return tokopedia internal interest pick in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://interestpick"
-        assertEqualsDeepLinkMapper(ApplinkConst.INTEREST_PICK, expectedDeepLink)
-    }
-
-    @Test
     fun `check kol comment appLink then should return tokopedia internal kol comment in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://content/comment/1234?isFromApplink=true"

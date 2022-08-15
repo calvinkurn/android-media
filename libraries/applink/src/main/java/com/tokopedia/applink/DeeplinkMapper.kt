@@ -351,7 +351,6 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.SELLER_STATUS) { _, uri, _, _ -> getSomShippedAppLink(uri) },
             DLP.startWith(ApplinkConst.FEED_DETAILS) { _, _, deeplink, _ -> getRegisteredFeed(deeplink) },
             DLP.startWith(ApplinkConst.FEED_PlAY_LIVE_DETAIL, ApplinkConstInternalFeed.INTERNAL_PLAY_LIVE_DETAILS),
-            DLP.startWith(ApplinkConst.INTEREST_PICK) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
             DLP.exact(ApplinkConst.FEED,
                 targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeed() }),
             DLP(Exact(ApplinkConst.PROMO).or(Exact(ApplinkConst.PROMO_LIST)),

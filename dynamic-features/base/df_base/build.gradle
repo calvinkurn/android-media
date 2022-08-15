@@ -65,7 +65,6 @@ dependencies {
     //Content
     implementation projectOrAar(rootProject.ext.features.play)
     implementation projectOrAar(rootProject.ext.features.kol)
-    implementation projectOrAar(rootProject.ext.features.interestPick)
     implementation projectOrAar(rootProject.ext.features.feed)
 
     //Digital

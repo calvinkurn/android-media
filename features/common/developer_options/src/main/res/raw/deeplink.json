@@ -1993,12 +1993,7 @@
           "destination_activity": "com.tokopedia.explore.view.activity.HashtagLandingPageActivity", 
           "deeplink": "tokopedia-android-internal://content/explore-hashtag/.*\\/", 
           "deeplink_variable": "ApplinkConstInternalContent.HASHTAG_PAGE"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.interestpick.view.activity.InterestPickActivity", 
-          "deeplink": "tokopedia-android-internal://interestpick", 
-          "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity", 
           "deeplink": "tokopedia-android-internal://content/comment/.*\\", 
