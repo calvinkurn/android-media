@@ -129,6 +129,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             EditorToolType.CONTRAST -> editorR.string.editor_tool_contrast
             EditorToolType.WATERMARK -> editorR.string.editor_tool_watermark
             EditorToolType.ROTATE -> editorR.string.editor_tool_rotate
+            EditorToolType.CROP -> editorR.string.editor_tool_crop
             else -> editorR.string.editor_tool_remove_background
         }
 
