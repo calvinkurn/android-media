@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.viewcomponent
 
-import android.os.Build
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
