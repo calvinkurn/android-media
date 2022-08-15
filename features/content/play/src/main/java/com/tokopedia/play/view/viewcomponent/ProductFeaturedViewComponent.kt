@@ -88,8 +88,6 @@ class ProductFeaturedViewComponent(
     }
 
     fun setTransparent(isTransparent: Boolean) {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
-
         rootView.alpha = if (isTransparent) 0f else 1f
     }
 
