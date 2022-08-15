@@ -1,0 +1,13 @@
+{
+    "TokonowBundleWidget": {
+                "header": {
+                  "process_time": 0.07950089,
+                  "reason": "",
+                  "error_code": "0"
+                },
+                "data": {
+                  "widgetName": "Bundling Mini Cart Recommendation Staging",
+                  "widgetData": []
+                }
+              }
+}

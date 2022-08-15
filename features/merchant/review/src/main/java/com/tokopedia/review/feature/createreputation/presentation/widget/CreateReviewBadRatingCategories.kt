@@ -18,7 +18,7 @@ class CreateReviewBadRatingCategories @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewBadRatingCategoriesBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewBadRatingCategoriesBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val SPAN_COUNT = 2
