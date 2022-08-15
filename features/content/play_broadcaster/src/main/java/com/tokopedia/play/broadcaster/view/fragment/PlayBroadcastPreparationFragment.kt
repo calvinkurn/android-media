@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
@@ -223,31 +224,23 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                 })
             }
+            is FeedAccountTypeBottomSheet -> {
+                childFragment.setData(parentViewModel.feedAccountList)
+                childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+                    override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                        parentViewModel.submitAction(PlayBroadcastAction.SelectFeedAccount(feedAccount))
+                    }
+                })
+            }
         }
     }
 
     /** Setup */
     private fun setupView() {
         binding.toolbarContentCommon.apply {
-            title = getString(contentCommonR.string.feed_content_post_sebagai)
-            subtitle = parentViewModel.getShopName()
-            icon = parentViewModel.getShopIconUrl()
             navIcon = CLOSE
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
 
-            if (viewModel.isFirstSwitchAccount) {
-                showCoachMarkSwitchAccount()
-                viewModel.setNotFirstSwitchAccount()
-            }
-
-            setOnAccountClickListener {
-                hideCoachMarkSwitchAccount()
-                FeedAccountTypeBottomSheet
-                    .getFragment(childFragmentManager, requireContext().classLoader)
-//                    TODO implement this when the data ready
-//                    .setData()
-                    .showNow(childFragmentManager)
-            }
             setOnBackClickListener {
                 analytic.clickCloseOnPreparation()
                 activity?.onBackPressed()
@@ -331,6 +324,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun setupObserver() {
+        observerAccountList()
         observeTitle()
         observeCover()
         observeCreateLiveStream()
@@ -338,6 +332,32 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeUiState()
         observeUiEvent()
         observeViewEvent()
+    }
+
+    private fun observerAccountList() = with(binding.toolbarContentCommon) {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            parentViewModel.selectedFeedAccount.collectLatest {
+                title = getString(contentCommonR.string.feed_content_live_sebagai)
+                subtitle = it.name
+                icon = it.iconUrl
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            parentViewModel.feedAccountListState.collectLatest {
+                if(parentViewModel.isAllowChangeAccount) {
+                    if (viewModel.isFirstSwitchAccount) {
+                        showCoachMarkSwitchAccount()
+                        viewModel.setNotFirstSwitchAccount()
+                    }
+
+                    setOnAccountClickListener {
+                        hideCoachMarkSwitchAccount()
+                        openFeedAccountBottomSheet()
+                    }
+                }
+                else setOnAccountClickListener(null)
+            }
+        }
     }
 
     private fun observeTitle() {
@@ -577,6 +597,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             } else null,
             listener = schedulePickerListener,
         )
+    }
+
+    private fun openFeedAccountBottomSheet() {
+        try {
+            FeedAccountTypeBottomSheet
+                .getFragment(childFragmentManager, requireActivity().classLoader)
+                .showNow(childFragmentManager)
+        }
+        catch (e: Exception) {}
     }
 
     /** Callback Preparation Menu */

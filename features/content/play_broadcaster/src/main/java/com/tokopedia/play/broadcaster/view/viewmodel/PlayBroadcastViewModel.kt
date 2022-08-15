@@ -4,6 +4,8 @@ import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.ui.model.FeedAccountUiModel
+import com.tokopedia.content.common.usecase.GetContentFormUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -79,6 +81,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val getChannelUseCase: GetChannelUseCase,
     private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
     private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
+    private val getContentFormUseCase: GetContentFormUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val playBroadcastWebSocket: PlayWebSocket,
@@ -174,6 +177,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _interactive = MutableStateFlow<InteractiveUiModel>(InteractiveUiModel.Unknown)
     private val _interactiveConfig = MutableStateFlow(InteractiveConfigUiModel.empty())
     private val _interactiveSetup = MutableStateFlow(InteractiveSetupUiModel.Empty)
+
+    val selectedFeedAccountId: String
+        get() = _selectedFeedAccount.value.id
+
+    private val _selectedFeedAccount = MutableStateFlow(FeedAccountUiModel.Empty)
+    val selectedFeedAccount: Flow<FeedAccountUiModel>
+        get() = _selectedFeedAccount
+
+    private val _feedAccountListState = MutableStateFlow<List<FeedAccountUiModel>>(emptyList())
+    val feedAccountListState: Flow<List<FeedAccountUiModel>>
+        get() = _feedAccountListState
+
+    val feedAccountList: List<FeedAccountUiModel>
+        get() = _feedAccountListState.value
+
+    val isAllowChangeAccount: Boolean
+        get() = feedAccountList.size > 1 && feedAccountList.find { it.isUserPostEligible } != null
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -292,7 +312,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         _observableChatList.value = mutableListOf()
 
-
+        submitAction(PlayBroadcastAction.FeedAccountList)
     }
 
     override fun onCleared() {
@@ -309,6 +329,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
+            is PlayBroadcastAction.FeedAccountList -> handleFeedAccountList()
+            is PlayBroadcastAction.SelectFeedAccount -> handleSetSelectedFeedAccount(event.feedAccount)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -1420,6 +1442,41 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) {}
 
         mIsBroadcastStopped = true
+    }
+
+    private fun handleFeedAccountList() {
+        viewModelScope.launchCatchError(block = {
+            val response = getContentFormUseCase.apply {
+                setRequestParams(GetContentFormUseCase.createParams(mutableListOf(), "entrypoint", ""))
+            }.executeOnBackground()
+
+            val feedAccountList = response.feedContentForm.authors.map {
+                FeedAccountUiModel(
+                    id = it.id,
+                    name = it.name,
+                    iconUrl = it.thumbnail,
+                    badge = it.badge,
+                    type = it.type,
+                    hasUsername = response.feedContentForm.hasUsername,
+                    hasAcceptTnc = response.feedContentForm.hasAcceptTnc,
+                )
+            }
+
+            _feedAccountListState.value = feedAccountList
+
+            if(feedAccountList.isNotEmpty()) {
+                _selectedFeedAccount.value = feedAccountList.first()
+            }
+        }, onError = {})
+    }
+
+    private fun handleSetSelectedFeedAccount(feedAccount: FeedAccountUiModel) {
+        viewModelScope.launchCatchError(block = {
+            val current = _selectedFeedAccount.value
+            if(current.id != feedAccount.id) {
+                _selectedFeedAccount.value = feedAccount
+            }
+        }, onError = { })
     }
 
     /**
