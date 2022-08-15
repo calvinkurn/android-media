@@ -13,6 +13,7 @@
             android:label="@string/fs_tkpd_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
+
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -24,6 +25,7 @@
                     android:pathPattern="@string/path_seller_tokopedia_flash_sale"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
+
         </activity>
     </application>
 
