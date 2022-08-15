@@ -341,8 +341,8 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
 
     private fun shouldGetMiniCart(shopId: List<String>): Boolean {
         val warehouseId = addressData.getWarehouseId()
-        val outOfCoverage = warehouseId != OOC_WAREHOUSE_ID
-        return !shopId.isNullOrEmpty() && outOfCoverage && userSession.isLoggedIn
+        val outOfCoverage = warehouseId == OOC_WAREHOUSE_ID
+        return !shopId.isNullOrEmpty() && !outOfCoverage && userSession.isLoggedIn
     }
 
     private fun getRecipeTitle() = _recipeInfo.value?.title.orEmpty()
