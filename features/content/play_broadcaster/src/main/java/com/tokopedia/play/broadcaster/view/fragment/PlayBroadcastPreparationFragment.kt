@@ -18,7 +18,6 @@ import com.tokopedia.iconunify.IconUnify.Companion.CLOSE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
@@ -61,6 +60,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -89,6 +89,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val fragmentViewContainer = FragmentViewContainer()
 
     private lateinit var earlyLiveStreamDialog: DialogUnify
+    private lateinit var switchAccountConfirmationDialog: DialogUnify
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -228,7 +229,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setData(parentViewModel.feedAccountList)
                 childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                        parentViewModel.submitAction(PlayBroadcastAction.SelectFeedAccount(feedAccount))
+                        getSwitchAccountConfirmationDialog(feedAccount).show()
                     }
                 })
             }
@@ -772,6 +773,41 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
         }
         return earlyLiveStreamDialog
+    }
+
+    private fun getSwitchAccountConfirmationDialog(feedAccount: FeedAccountUiModel): DialogUnify {
+        if (!::switchAccountConfirmationDialog.isInitialized) {
+            switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(
+                    String.format(
+                        getString(R.string.play_bro_switch_account_title_dialog),
+                        if (feedAccount.isShop) getString(R.string.play_bro_switch_account_buyer)
+                        else getString(R.string.play_bro_switch_account_shop)
+                    )
+                )
+                setDescription(
+                    String.format(
+                        getString(R.string.play_bro_switch_account_description_dialog),
+                        if (feedAccount.isShop) getString(R.string.play_bro_switch_account_buyer)
+                        else getString(R.string.play_bro_switch_account_shop)
+                    )
+                )
+                setPrimaryCTAText(getString(R.string.play_bro_switch_account_primary_cta_dialog))
+                setPrimaryCTAClickListener { dismiss() }
+                setSecondaryCTAText(
+                    String.format(
+                        getString(R.string.play_bro_switch_account_secondary_cta_dialog),
+                        if (feedAccount.isShop) getString(R.string.play_bro_switch_account_buyer).replaceFirstChar { it.uppercase() }
+                        else getString(R.string.play_bro_switch_account_shop).replaceFirstChar { it.uppercase() }
+                    )
+                )
+                setSecondaryCTAClickListener {
+                    parentViewModel.submitAction(PlayBroadcastAction.SelectFeedAccount(feedAccount))
+                    dismiss()
+                }
+            }
+        }
+        return switchAccountConfirmationDialog
     }
 
     private fun showLoading(isShow: Boolean) {
