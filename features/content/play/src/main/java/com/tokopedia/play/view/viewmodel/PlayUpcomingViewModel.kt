@@ -255,7 +255,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleRemindMeUpcomingChannel(userClick: Boolean)  {
         suspend fun failedRemindMe() {
-            _upcomingState.emit(if (isReminderSet) PlayUpcomingState.RemindMe else PlayUpcomingState.Reminded)
+            _upcomingState.emit(if (!isReminderSet) PlayUpcomingState.RemindMe else PlayUpcomingState.Reminded)
             _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
         }
 
