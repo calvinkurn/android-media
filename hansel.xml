@@ -6,6 +6,7 @@
 
     <includePackage name="includePackage">
         <name>com.tokopedia</name>
+        <name>com.laku6.tradeinsdk</name>
     </includePackage>
 
     <exceptPackname name="exceptPackage">
