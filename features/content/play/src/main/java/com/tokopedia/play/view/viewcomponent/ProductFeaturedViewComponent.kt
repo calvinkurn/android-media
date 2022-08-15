@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.os.Build
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
@@ -87,6 +88,8 @@ class ProductFeaturedViewComponent(
     }
 
     fun setTransparent(isTransparent: Boolean) {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
+
         rootView.alpha = if (isTransparent) 0f else 1f
     }
 
