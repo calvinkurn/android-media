@@ -1,11 +1,11 @@
-package com.tokopedia.imagepicker_insta.usecase
+package com.tokopedia.content.common.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.imagepicker_insta.models.GetContentFormDomain
+import com.tokopedia.content.common.model.GetContentFormDomain
 import javax.inject.Inject
 
 /**

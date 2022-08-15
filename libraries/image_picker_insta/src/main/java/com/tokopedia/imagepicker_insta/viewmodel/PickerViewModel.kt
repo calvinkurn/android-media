@@ -13,7 +13,7 @@ import com.tokopedia.imagepicker_insta.models.ZoomInfo
 import com.tokopedia.imagepicker_insta.models.MediaUseCaseData
 import com.tokopedia.imagepicker_insta.models.MediaImporterData
 import com.tokopedia.imagepicker_insta.usecase.CropUseCase
-import com.tokopedia.imagepicker_insta.usecase.GetContentFormUseCase
+import com.tokopedia.content.common.usecase.GetContentFormUseCase
 import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
 import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
