@@ -386,4 +386,25 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
         assert(request.orders.firstOrNull()?.codes?.isEmpty() == true)
     }
 
+    // todo
+    @Test
+    fun `WHEN apply promo BO THEN promo request should contain shipping id and sp id`() {
+        //given
+        val request = provideApplyPromoMerchantRequest()
+        val response = provideApplyPromoMerchantResponseSuccess()
+        viewModel.setPromoListValue(provideCurrentDisabledExpandedMerchantPromoData())
+
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { validateUseUseCase.setParam(any()) } returns validateUseUseCase
+        coEvery { validateUseUseCase.execute(any(), any()) } answers {
+            firstArg<(ValidateUsePromoRevampUiModel) -> Unit>().invoke(ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response.validateUsePromoRevamp))
+        }
+
+        //when
+        viewModel.applyPromo(request, ArrayList())
+
+        //then
+        assert(request.orders.firstOrNull()?.codes?.isEmpty() == true)
+    }
+
 }
