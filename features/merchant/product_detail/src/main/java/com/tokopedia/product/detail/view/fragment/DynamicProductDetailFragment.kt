@@ -3853,11 +3853,6 @@ open class DynamicProductDetailFragment :
                 containerDynamicProductDetail.id, ConstraintSet.TOP,
                 0
             )
-            constraintSet.connect(
-                swipeRefreshPdp.id, ConstraintSet.BOTTOM,
-                pdpButtonBarrier.id, ConstraintSet.TOP,
-                0
-            )
             constraintSet.applyTo(containerDynamicProductDetail)
         }
     }
@@ -3873,11 +3868,6 @@ open class DynamicProductDetailFragment :
             constraintSet.connect(
                 swipeRefreshPdp.id, ConstraintSet.TOP,
                 pdpNavtoolbar.id, ConstraintSet.BOTTOM,
-                0
-            )
-            constraintSet.connect(
-                swipeRefreshPdp.id, ConstraintSet.BOTTOM,
-                pdpButtonBarrier.id, ConstraintSet.TOP,
                 0
             )
             constraintSet.applyTo(containerDynamicProductDetail)
