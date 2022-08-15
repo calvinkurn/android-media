@@ -636,7 +636,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun isExistsOriginal(position: Int): Boolean {
-        return (originalKeyList.find { (adapter.items[position] as EditKeywordItemViewModel).data.name == it } != null)
+        return (originalKeyList.find { (adapter.items.getOrNull(position) as? EditKeywordItemViewModel)?.data?.name == it } != null)
     }
 
     private fun isExistsOriginal(name: String): Boolean {

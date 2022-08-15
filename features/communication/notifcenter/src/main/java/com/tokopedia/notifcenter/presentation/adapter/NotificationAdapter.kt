@@ -39,7 +39,6 @@ class NotificationAdapter constructor(
     private val orderWidgetPool = RecyclerView.RecycledViewPool()
     private var recommendationTitlePosition: Int? = null
     var shopAdsWidgetAdded = false
-        private set
 
     interface Listener {
         fun hasFilter(): Boolean

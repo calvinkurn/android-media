@@ -156,6 +156,26 @@ class MainNavAnalyticsTest {
         }
     }
 
+    @Test
+    fun testComponentTokopediaPlus() {
+        mainNavCassavaTest {
+            login()
+            waitForData()
+            doActivityTestByModelClass(
+                delayBeforeRender = 2000,
+                dataModelClass = AccountHeaderDataModel::class
+            ) { _: RecyclerView.ViewHolder, _: Int ->
+                clickOnTokopediaPlus()
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(
+                cassavaTestRule,
+                ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TOKOPEDIA_PLUS
+            )
+        }
+    }
+
     private fun checkViewHolderOnRecyclerView(recyclerView: RecyclerView, position: Int) {
         when (recyclerView.findViewHolderForAdapterPosition(position)) {
             is HomeNavTitleViewHolder -> {
