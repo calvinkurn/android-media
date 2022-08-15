@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ShopMessageChatExist(
         @SerializedName("messageId")
         @Expose
-        val messageId: Int = 0,
+        val messageId: String = "",
 ) {
     data class Response(
             @SerializedName("chatExistingChat")

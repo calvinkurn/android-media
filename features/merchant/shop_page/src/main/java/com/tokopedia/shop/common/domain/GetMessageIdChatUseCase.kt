@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.constant.GqlQueryConstant.SHOP_REPUTATION_QUERY_STRING
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -44,6 +45,6 @@ class GetMessageIdChatUseCase @Inject constructor(private val gqlUseCase: MultiR
         private const val PARAM_SHOP_IDS = "shopIds"
 
         @JvmStatic
-        fun createParams(shopId: Int): Map<String, Any> = mapOf(PARAM_SHOP_IDS to listOf(shopId))
+        fun createParams(shopId: String): Map<String, Any> = mapOf(PARAM_SHOP_IDS to listOf(shopId.toIntOrZero()))
     }
 }

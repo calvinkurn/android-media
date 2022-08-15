@@ -197,11 +197,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun observerMessageIdOnChatExist() {
-        shopViewModel?.messageIdOnChateExist?.observe(viewLifecycleOwner) {
-            if (it is Success) {
-                showReportView()
-            } else {
-                hideReportView()
+        shopViewModel?.messageIdOnChatExist?.observe(viewLifecycleOwner) {
+            when(it){
+                is Success -> showReportView()
+                else -> hideReportView()
             }
         }
     }

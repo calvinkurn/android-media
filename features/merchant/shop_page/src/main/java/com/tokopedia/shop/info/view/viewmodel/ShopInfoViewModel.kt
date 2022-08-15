@@ -37,7 +37,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopInfo = MutableLiveData<ShopInfoData>()
     val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
-    val messageIdOnChateExist = MutableLiveData<Result<Int>>()
+    val messageIdOnChatExist = MutableLiveData<Result<String>>()
 
     fun getShopInfo(shopId: String) {
         launchCatchError(block = {
@@ -96,14 +96,14 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
 
     fun getMessageIdOnChatExist(shopId: String) {
         launchCatchError(coroutineDispatcherProvider.io, block = {
-            messageIdOnChateExist.postValue(Success(getMessageId(shopId).messageId))
+            messageIdOnChatExist.postValue(Success(getMessageId(shopId).messageId))
         }) {
-            messageIdOnChateExist.postValue(Fail(it))
+            messageIdOnChatExist.postValue(Fail(it))
         }
     }
 
     private suspend fun getMessageId(shopId: String): ShopMessageChatExist {
-        getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
+        getMessageIdChatUseCase.params = GetMessageIdChatUseCase.createParams(shopId)
         return getMessageIdChatUseCase.executeOnBackground()
     }
 
