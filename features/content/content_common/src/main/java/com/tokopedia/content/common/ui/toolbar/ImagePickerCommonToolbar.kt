@@ -65,12 +65,14 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
         set(value) {
             field = value
             mBinding.textComToolbarTitle.text = value
+            mBinding.textComToolbarTitle.visibility = if(value.isNotEmpty()) View.VISIBLE else View.GONE
         }
 
     var subtitle: String = ""
         set(value) {
             field = value
             mBinding.textComToolbarSubtitle.text = value
+            mBinding.textComToolbarSubtitle.visibility = if(value.isNotEmpty()) View.VISIBLE else View.GONE
         }
 
     var navIcon: Int = 0
